@@ -1,0 +1,340 @@
+package com.ankamagames.jerakine.utils.misc
+{
+    import __AS3__.vec.*;
+    import com.ankamagames.jerakine.logger.*;
+    import flash.utils.*;
+
+    public class StringUtils extends Object
+    {
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(StringUtils));
+        private static var pattern:Vector.<RegExp>;
+        private static var patternReplace:Vector.<String>;
+
+        public function StringUtils()
+        {
+            return;
+        }// end function
+
+        public static function cleanString(param1:String) : String
+        {
+            param1 = param1.split("&").join("&amp;");
+            param1 = param1.split("<").join("&lt;");
+            param1 = param1.split(">").join("&gt;");
+            return param1;
+        }// end function
+
+        public static function fill(param1:String, param2:uint, param3:String, param4:Boolean = true) : String
+        {
+            if (!param3 || !param3.length)
+            {
+                return param1;
+            }
+            while (param1.length != param2)
+            {
+                
+                if (param4)
+                {
+                    param1 = param3 + param1;
+                    continue;
+                }
+                param1 = param1 + param3;
+            }
+            return param1;
+        }// end function
+
+        public static function replace(param1:String, param2 = null, param3 = null) : String
+        {
+            var _loc_6:uint = 0;
+            if (!param2)
+            {
+                return param1;
+            }
+            if (!param3)
+            {
+                if (param2 is Array)
+                {
+                    param3 = new Array(param2.length);
+                }
+                else
+                {
+                    return param1.split(param2).join("");
+                }
+            }
+            if (!(param2 is Array))
+            {
+                return param1.split(param2).join(param3);
+            }
+            var _loc_4:* = param2.length;
+            var _loc_5:* = param1;
+            if (param3 is Array)
+            {
+                _loc_6 = 0;
+                while (_loc_6 < _loc_4)
+                {
+                    
+                    _loc_5 = _loc_5.split(param2[_loc_6]).join(param3[_loc_6]);
+                    _loc_6 = _loc_6 + 1;
+                }
+            }
+            else
+            {
+                _loc_6 = 0;
+                while (_loc_6 < _loc_4)
+                {
+                    
+                    _loc_5 = _loc_5.split(param2[_loc_6]).join(param3);
+                    _loc_6 = _loc_6 + 1;
+                }
+            }
+            return _loc_5;
+        }// end function
+
+        public static function concatSameString(param1:String, param2:String) : String
+        {
+            var _loc_3:* = param1.indexOf(param2);
+            var _loc_4:int = 0;
+            var _loc_5:* = _loc_3;
+            while (_loc_5 != -1)
+            {
+                
+                _loc_4 = _loc_5;
+                _loc_5 = param1.indexOf(param2, (_loc_4 + 1));
+                if (_loc_5 == _loc_3)
+                {
+                    break;
+                }
+                if (_loc_5 == _loc_4 + param2.length)
+                {
+                    param1 = param1.substring(0, _loc_5) + param1.substring(_loc_5 + param2.length);
+                    _loc_5 = _loc_5 - param2.length;
+                }
+            }
+            return param1;
+        }// end function
+
+        public static function getDelimitedText(param1:String, param2:String, param3:String, param4:Boolean = false) : Vector.<String>
+        {
+            var _loc_8:String = null;
+            var _loc_9:String = null;
+            var _loc_10:String = null;
+            var _loc_5:* = new Vector.<String>;
+            var _loc_6:Boolean = false;
+            var _loc_7:* = param1;
+            while (!_loc_6)
+            {
+                
+                _loc_8 = getSingleDelimitedText(_loc_7, param2, param3, param4);
+                if (_loc_8 == "")
+                {
+                    _loc_6 = true;
+                    continue;
+                }
+                _loc_5.push(_loc_8);
+                if (!param4)
+                {
+                    _loc_8 = param2 + _loc_8 + param3;
+                }
+                _loc_9 = _loc_7.slice(0, _loc_7.indexOf(_loc_8));
+                _loc_10 = _loc_7.slice(_loc_7.indexOf(_loc_8) + _loc_8.length);
+                _loc_7 = _loc_9 + _loc_10;
+            }
+            return _loc_5;
+        }// end function
+
+        public static function getAllIndexOf(param1:String, param2:String) : Array
+        {
+            var _loc_7:int = 0;
+            var _loc_3:* = new Array();
+            var _loc_4:uint = 0;
+            var _loc_5:Boolean = false;
+            var _loc_6:uint = 0;
+            while (!_loc_5)
+            {
+                
+                _loc_7 = param2.indexOf(param1, _loc_6);
+                if (_loc_7 < _loc_6)
+                {
+                    _loc_5 = true;
+                    continue;
+                }
+                _loc_3.push(_loc_7);
+                _loc_6 = _loc_7 + param1.length;
+            }
+            return _loc_3;
+        }// end function
+
+        public static function noAccent(param1:String) : String
+        {
+            if (pattern == null || patternReplace == null)
+            {
+                initPattern();
+            }
+            return decomposeUnicode(param1);
+        }// end function
+
+        private static function initPattern() : void
+        {
+            pattern = new Vector.<RegExp>(29);
+            pattern[0] = new RegExp("", "g");
+            pattern[1] = new RegExp("", "g");
+            pattern[2] = new RegExp("", "g");
+            pattern[3] = new RegExp("", "g");
+            pattern[4] = new RegExp("", "g");
+            pattern[5] = new RegExp("", "g");
+            pattern[6] = new RegExp("[¿¡¬√ƒ≈]", "g");
+            pattern[7] = new RegExp("∆;
+            pattern[8] = new RegExp("«;
+            pattern[9] = new RegExp("[»… À]", "g");
+            pattern[10] = new RegExp("[ÃÕŒœ]", "g");
+            pattern[11] = new RegExp("–;
+            pattern[12] = new RegExp("—;
+            pattern[13] = new RegExp("[“”‘’÷ÿ]", "g");
+            pattern[14] = new RegExp("[Ÿ⁄€‹]", "g");
+            pattern[15] = new RegExp("[", "g");
+            pattern[16] = new RegExp("ﬁ;
+            pattern[17] = new RegExp("ﬂ;
+            pattern[18] = new RegExp("[‡·‚„‰Â]", "g");
+            pattern[19] = new RegExp("Ê;
+            pattern[20] = new RegExp("Á;
+            pattern[21] = new RegExp("[ËÈÍÎ];
+            pattern[22] = new RegExp("[ÏÌÓÔ];
+            pattern[23] = new RegExp("", "g");
+            pattern[24] = new RegExp("", "g");
+            pattern[25] = new RegExp("[", "g");
+            pattern[26] = new RegExp("[", "g");
+            pattern[27] = new RegExp("[", "g");
+            pattern[28] = new RegExp("", "g");
+            patternReplace = new Vector.<String>(29);
+            patternReplace[0] = "S";
+            patternReplace[1] = "Oe";
+            patternReplace[2] = "Z";
+            patternReplace[3] = "s";
+            patternReplace[4] = "oe";
+            patternReplace[5] = "z";
+            patternReplace[6] = "A";
+            patternReplace[7] = "Ae";
+            patternReplace[8] = "C";
+            patternReplace[9] = "E";
+            patternReplace[10] = "I";
+            patternReplace[11] = "D";
+            patternReplace[12] = "N";
+            patternReplace[13] = "O";
+            patternReplace[14] = "U";
+            patternReplace[15] = "Y";
+            patternReplace[16] = "Th";
+            patternReplace[17] = "ss";
+            patternReplace[18] = "a";
+            patternReplace[19] = "ae";
+            patternReplace[20] = "c";
+            patternReplace[21] = "e";
+            patternReplace[22] = "i";
+            patternReplace[23] = "d";
+            patternReplace[24] = "n";
+            patternReplace[25] = "o";
+            patternReplace[26] = "u";
+            patternReplace[27] = "y";
+            patternReplace[28] = "th";
+            return;
+        }// end function
+
+        private static function decomposeUnicode(param1:String) : String
+        {
+            var _loc_2:int = 0;
+            var _loc_3:* = pattern.length;
+            _loc_2 = 0;
+            while (_loc_2 < _loc_3)
+            {
+                
+                param1 = param1.replace(pattern[_loc_2], patternReplace[_loc_2]);
+                _loc_2++;
+            }
+            return param1;
+        }// end function
+
+        private static function getSingleDelimitedText(param1:String, param2:String, param3:String, param4:Boolean = false) : String
+        {
+            var _loc_7:int = 0;
+            var _loc_8:int = 0;
+            var _loc_9:int = 0;
+            var _loc_5:String = "";
+            var _loc_6:uint = 0;
+            var _loc_10:uint = 0;
+            var _loc_11:Boolean = false;
+            _loc_7 = param1.indexOf(param2, _loc_6);
+            if (_loc_7 == -1)
+            {
+                return "";
+            }
+            _loc_6 = _loc_7 + param2.length;
+            while (!_loc_11)
+            {
+                
+                _loc_8 = param1.indexOf(param2, _loc_6);
+                _loc_9 = param1.indexOf(param3, _loc_6);
+                if (_loc_9 == -1)
+                {
+                    trace("Erreur ! On n\'a pas trouvÈ d\'occurence du second dÈlimiteur.");
+                    _loc_11 = true;
+                }
+                if (_loc_8 < _loc_9 && _loc_8 != -1)
+                {
+                    _loc_10 = _loc_10 + getAllIndexOf(param2, param1.slice(_loc_8 + param2.length, _loc_9)).length;
+                    _loc_6 = _loc_9 + param2.length;
+                    continue;
+                }
+                if (_loc_10 > 1)
+                {
+                    _loc_6 = _loc_9 + param3.length;
+                    _loc_10 = _loc_10 - 1;
+                    continue;
+                }
+                _loc_5 = param1.slice(_loc_7, _loc_9 + param3.length);
+                _loc_11 = true;
+            }
+            if (!param4 && _loc_5 != "")
+            {
+                _loc_5 = _loc_5.slice(param2.length);
+                _loc_5 = _loc_5.slice(0, _loc_5.length - param3.length);
+            }
+            return _loc_5;
+        }// end function
+
+        public static function formateIntToString(param1:Number) : String
+        {
+            var _loc_5:int = 0;
+            var _loc_2:String = "";
+            var _loc_3:Number = 1000;
+            while (true)
+            {
+                
+                if (param1 / _loc_3 < 1)
+                {
+                    _loc_2 = int(param1 % _loc_3 / (_loc_3 / 1000)) + "" + _loc_2;
+                    break;
+                    continue;
+                }
+                _loc_5 = int(param1 % _loc_3 / (_loc_3 / 1000));
+                if (_loc_5 < 10)
+                {
+                    _loc_2 = "00" + _loc_5 + "" + _loc_2;
+                }
+                else if (_loc_5 < 100)
+                {
+                    _loc_2 = "0" + _loc_5 + "" + _loc_2;
+                }
+                else
+                {
+                    _loc_2 = _loc_5 + "" + _loc_2;
+                }
+                _loc_3 = _loc_3 * 1000;
+            }
+            var _loc_4:* = _loc_2.charAt((_loc_2.length - 1));
+            if (_loc_2.charAt((_loc_2.length - 1)) == "")
+            {
+                return _loc_2.substr(0, (_loc_2.length - 1));
+            }
+            return _loc_2;
+        }// end function
+
+    }
+}

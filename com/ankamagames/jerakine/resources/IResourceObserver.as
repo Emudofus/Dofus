@@ -1,0 +1,17 @@
+package com.ankamagames.jerakine.resources
+{
+    import com.ankamagames.jerakine.types.*;
+
+    public interface IResourceObserver
+    {
+
+        public function IResourceObserver();
+
+        function onLoaded(param1:Uri, param2:uint, param3) : void;
+
+        function onFailed(param1:Uri, param2:String, param3:uint) : void;
+
+        function onProgress(param1:Uri, param2:uint, param3:uint) : void;
+
+    }
+}
