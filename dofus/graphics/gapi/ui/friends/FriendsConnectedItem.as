@@ -1,109 +1,55 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20519]
-#initclip 40
-if (!dofus.graphics.gapi.ui.friends.FriendsConnectedItem)
+// [Initial MovieClip Action of sprite 1074]
+#initclip 44
+class dofus.graphics.gapi.ui.friends.FriendsConnectedItem extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui.friends)
-    {
-        _global.dofus.graphics.gapi.ui.friends = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.friends.FriendsConnectedItem = function ()
+    var _mcList, __get__list, _oItem, _lblName, _lblLevel, _mcFight, _ldrGuild, _btnRemove, addToQueue, __set__list;
+    function FriendsConnectedItem()
     {
         super();
-    }).prototype;
-    _loc1.__set__list = function (mcList)
+    } // End of the function
+    function set list(mcList)
     {
-        this._mcList = mcList;
+        _mcList = mcList;
         //return (this.list());
-    };
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+        null;
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
         if (bUsed)
         {
-            this._oItem = oItem;
-            if (oItem.account != undefined && !this._mcList._parent._parent.api.config.isStreaming)
-            {
-                this._lblName.text = oItem.account + " (" + oItem.name + ")";
-            }
-            else
-            {
-                this._lblName.text = oItem.name;
-            } // end else if
-            if (oItem.level != undefined)
-            {
-                this._lblLevel.text = oItem.level;
-            }
-            else
-            {
-                this._lblLevel.text = "";
-            } // end else if
-            this._mcFight._visible = oItem.state == "IN_MULTI";
-            this._ldrGuild.contentPath = dofus.Constants.GUILDS_MINI_PATH + oItem.gfxID + ".swf";
-            if (oItem.alignement != -1)
-            {
-                this._ldrAlignement.contentPath = dofus.Constants.ALIGNMENTS_MINI_PATH + oItem.alignement + ".swf";
-            }
-            else
-            {
-                this._ldrAlignement.contentPath = "";
-            } // end else if
-            this._btnRemove._visible = true;
-        }
-        else if (this._lblName.text != undefined)
-        {
-            this._lblName.text = "";
-            this._lblLevel.text = "";
-            this._ldrAlignement.contentPath = "";
-            this._mcFight._visible = false;
-            this._ldrGuild.contentPath = "";
-            this._btnRemove._visible = false;
-        } // end else if
-    };
-    _loc1.init = function ()
-    {
-        super.init(false);
-        this._mcFight._visible = false;
-        this._btnRemove._visible = false;
-    };
-    _loc1.createChildren = function ()
-    {
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.addListeners = function ()
-    {
-        this._btnRemove.addEventListener("click", this);
-    };
-    _loc1.click = function (oEvent)
-    {
-        if (this._oItem.account != undefined)
-        {
-            this._mcList._parent._parent.removeFriend("*" + this._oItem.account);
+            _oItem = oItem;
+            _lblName.__set__text(oItem.account + " (" + oItem.name + ")");
+            _lblLevel.__set__text(oItem.level);
+            _mcFight._visible = oItem.state == "IN_MULTI";
+            _ldrGuild.__set__contentPath(dofus.Constants.GUILDS_MINI_PATH + oItem.gfxID + ".swf");
+            _btnRemove._visible = true;
         }
         else
         {
-            this._mcList._parent._parent.removeFriend(this._oItem.name);
+            _lblName.__set__text("");
+            _lblLevel.__set__text("");
+            _mcFight._visible = false;
+            _ldrGuild.__set__contentPath("");
+            _btnRemove._visible = false;
         } // end else if
-    };
-    _loc1.addProperty("list", function ()
+    } // End of the function
+    function init()
     {
-    }, _loc1.__set__list);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        super.init(false);
+    } // End of the function
+    function createChildren()
+    {
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function addListeners()
+    {
+        _btnRemove.addEventListener("click", this);
+    } // End of the function
+    function click(oEvent)
+    {
+        _mcList._parent._parent.removeFriend("*" + _oItem.account);
+    } // End of the function
+} // End of Class
 #endinitclip

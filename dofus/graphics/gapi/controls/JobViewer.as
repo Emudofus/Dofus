@@ -1,168 +1,129 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20644]
-#initclip 165
-if (!dofus.graphics.gapi.controls.JobViewer)
+// [Initial MovieClip Action of sprite 996]
+#initclip 213
+class dofus.graphics.gapi.controls.JobViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.JobViewer = function ()
+    var _oJob, addToQueue, __get__job, _lblNoTool, _mcCraftViewerPlacer, api, _lblXP, _lblSkill, _lblTool, _btnTabCharacteristics, _btnTabCrafts, _lstSkills, _ldrIcon, _lblName, _lblLevel, _pbXP, _mcXP, _parent, _itvItemViewer, attachMovie, _cvCraftViewer, __set__job;
+    function JobViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__job = function (oJob)
+    } // End of the function
+    function set job(oJob)
     {
-        this._oJob = oJob;
-        this.addToQueue({object: this, method: this.layoutContent});
+        _oJob = oJob;
+        this.addToQueue({object: this, method: layoutContent});
         //return (this.job());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.JobViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._lblNoTool._visible = false;
-        this._mcPlacer._visible = false;
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.initTexts = function ()
+        _lblNoTool._visible = false;
+        _mcCraftViewerPlacer._visible = false;
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function initTexts()
     {
-        this._lblXP.text = this.api.lang.getText("EXPERIMENT");
-        this._lblSkill.text = this.api.lang.getText("SKILLS");
-        this._lblTool.text = this.api.lang.getText("TOOL");
-        this._lblNoTool.text = this.api.lang.getText("NO_TOOL_JOB");
-        this._btnTabCharacteristics.label = this.api.lang.getText("CHARACTERISTICS");
-        this._btnTabCrafts.label = this.api.lang.getText("RECEIPTS");
-        this._btnTabOptions.label = this.api.lang.getText("OPTIONS");
-    };
-    _loc1.addListeners = function ()
+        _lblXP.__set__text(api.lang.getText("EXPERIMENT"));
+        _lblSkill.__set__text(api.lang.getText("SKILLS"));
+        _lblTool.__set__text(api.lang.getText("TOOL"));
+        _lblNoTool.__set__text(api.lang.getText("NO_TOOL_JOB"));
+        _btnTabCharacteristics.__set__label(api.lang.getText("CHARACTERISTICS"));
+        _btnTabCrafts.__set__label(api.lang.getText("RECEIPTS"));
+    } // End of the function
+    function addListeners()
     {
-        this._btnTabCharacteristics.addEventListener("click", this);
-        this._btnTabCrafts.addEventListener("click", this);
-        this._btnTabOptions.addEventListener("click", this);
-    };
-    _loc1.layoutContent = function ()
+        _btnTabCharacteristics.addEventListener("click", this);
+        _btnTabCrafts.addEventListener("click", this);
+    } // End of the function
+    function layoutContent()
     {
-        if (this._oJob == undefined)
+        if (_oJob == undefined)
         {
             return;
         } // end if
-        this.setCurrentTab(this._sCurrentTab);
-        this._lstSkills.removeMovieClip();
-        var _loc2 = this.api.datacenter.Player.currentJobID == this._oJob.id;
-        this._ldrIcon.contentPath = this._oJob.iconFile;
-        this._lblName.text = this._oJob.name;
-        this._lblLevel.text = this.api.lang.getText("LEVEL") + " " + this._oJob.level;
-        this._pbXP.minimum = this._oJob.xpMin;
-        this._pbXP.maximum = this._oJob.xpMax;
-        this._pbXP.value = this._oJob.xp;
-        this._mcXP.onRollOver = function ()
+        this.setCurrentTab(_sCurrentTab);
+        _lstSkills.removeMovieClip();
+        var _loc3 = api.datacenter.Player.currentJobID == _oJob.id;
+        _ldrIcon.__set__contentPath(_oJob.iconFile);
+        _lblName.__set__text(_oJob.name);
+        _lblLevel.__set__text(api.lang.getText("LEVEL") + " " + _oJob.level);
+        _pbXP.__set__minimum(_oJob.xpMin);
+        _pbXP.__set__maximum(_oJob.xpMax);
+        _pbXP.__set__value(_oJob.xp);
+        _mcXP.onRollOver = function ()
         {
-            this._parent._parent.gapi.showTooltip(new ank.utils.ExtendedString(this._parent._oJob.xp).addMiddleChar(this._parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3) + " / " + new ank.utils.ExtendedString(this._parent._oJob.xpMax).addMiddleChar(this._parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3), this, -10);
+            _parent._parent.gapi.showTooltip(String(_parent._oJob.xp).addMiddleChar(_parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3) + " / " + String(_parent._oJob.xpMax).addMiddleChar(_parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3), this, -10);
         };
-        this._mcXP.onRollOut = function ()
+        _mcXP.onRollOut = function ()
         {
-            this._parent._parent.gapi.hideTooltip();
+            _parent._parent.gapi.hideTooltip();
         };
-        var _loc3 = this._oJob.skills;
-        if (_loc3.length != 0)
+        var _loc2 = _oJob.skills;
+        if (_loc2.length != 0)
         {
-            _loc3.sortOn("skillName");
-            this._lstSkills.dataProvider = _loc3;
+            _lstSkills.__set__dataProvider(_loc2);
         } // end if
-        if (_loc2)
+        if (_loc3)
         {
-            this._lblNoTool._visible = false;
-            this._itvItemViewer._visible = true;
-            var _loc4 = this.api.datacenter.Player.Inventory.findFirstItem("position", 1).item;
-            this._itvItemViewer.itemData = _loc4;
+            _lblNoTool._visible = false;
+            _itvItemViewer._visible = true;
+            var _loc4 = api.datacenter.Player.Inventory.findFirstItem("position", 1).item;
+            _itvItemViewer.__set__itemData(_loc4);
         }
         else
         {
-            this._lblNoTool._visible = true;
-            this._itvItemViewer._visible = false;
+            _lblNoTool._visible = true;
+            _itvItemViewer._visible = false;
         } // end else if
-    };
-    _loc1.showCraftViewer = function (bShow)
+    } // End of the function
+    function showCraftViewer(bShow)
     {
         if (bShow)
         {
-            var _loc3 = this.attachMovie("CraftViewer", "_cvCraftViewer", 20);
-            _loc3._x = this._mcPlacer._x;
-            _loc3._y = this._mcPlacer._y;
-            _loc3.job = this._oJob;
+            var _loc2 = this.attachMovie("CraftViewer", "_cvCraftViewer", 20);
+            _loc2._x = _mcCraftViewerPlacer._x;
+            _loc2._y = _mcCraftViewerPlacer._y;
+            _loc2.job = _oJob;
         }
         else
         {
-            this._cvCraftViewer.removeMovieClip();
+            _cvCraftViewer.removeMovieClip();
         } // end else if
-    };
-    _loc1.showOptionViewer = function (bShow)
+    } // End of the function
+    function updateCurrentTabInformations()
     {
-        if (bShow)
-        {
-            var _loc3 = this.attachMovie("JobOptionsViewer", "_jovJobOptionsViewer", 20);
-            _loc3._x = this._mcPlacer._x;
-            _loc3._y = this._mcPlacer._y;
-            _loc3.job = this._oJob;
-        }
-        else
-        {
-            this._jovJobOptionsViewer.removeMovieClip();
-        } // end else if
-    };
-    _loc1.updateCurrentTabInformations = function ()
-    {
-        switch (this._sCurrentTab)
+        switch (_sCurrentTab)
         {
             case "Characteristics":
             {
-                this.showOptionViewer(false);
                 this.showCraftViewer(false);
                 break;
             } 
             case "Crafts":
             {
-                this.showOptionViewer(false);
                 this.showCraftViewer(true);
                 break;
             } 
-            case "Options":
-            {
-                this.showCraftViewer(false);
-                this.showOptionViewer(true);
-                break;
-            } 
         } // End of switch
-    };
-    _loc1.setCurrentTab = function (sNewTab)
+    } // End of the function
+    function setCurrentTab(sNewTab)
     {
-        var _loc3 = this["_btnTab" + this._sCurrentTab];
-        var _loc4 = this["_btnTab" + sNewTab];
-        _loc3.selected = true;
-        _loc3.enabled = true;
-        _loc4.selected = false;
-        _loc4.enabled = false;
-        this._sCurrentTab = sNewTab;
+        var _loc2 = this["_btnTab" + _sCurrentTab];
+        var _loc3 = this["_btnTab" + sNewTab];
+        _loc2.__set__selected(true);
+        _loc2.__set__enabled(true);
+        _loc3.__set__selected(false);
+        _loc3.__set__enabled(false);
+        _sCurrentTab = sNewTab;
         this.updateCurrentTabInformations();
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -176,20 +137,9 @@ if (!dofus.graphics.gapi.controls.JobViewer)
                 this.setCurrentTab("Crafts");
                 break;
             } 
-            case "_btnTabOptions":
-            {
-                this.setCurrentTab("Options");
-            } 
         } // End of switch
-    };
-    _loc1.addProperty("job", function ()
-    {
-    }, _loc1.__set__job);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.JobViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "JobViewer";
-    _loc1._sCurrentTab = "Characteristics";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "JobViewer";
+    var _sCurrentTab = "Characteristics";
+} // End of Class
 #endinitclip

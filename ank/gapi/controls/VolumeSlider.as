@@ -1,183 +1,169 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20862]
-#initclip 127
-if (!ank.gapi.controls.VolumeSlider)
+// [Initial MovieClip Action of sprite 411]
+#initclip 225
+class ank.gapi.controls.VolumeSlider extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.VolumeSlider = function ()
+    var __get__min, __get__max, _bInitialized, __get__value, __get__markerCount, __get__markerWidthRatio, __get__markerSkin, __height, __width, _mcMarkers, _mcOvers, addToQueue, createEmptyMovieClip, drawRoundRect, getStyle, setMovieClipColor, _parent, __set__value, dispatchEvent, __set__markerCount, __set__markerSkin, __get__markerWidth, __set__markerWidthRatio, __set__max, __set__min;
+    function VolumeSlider()
     {
         super();
-    }).prototype;
-    _loc1.__set__min = function (nMin)
+    } // End of the function
+    function set min(nMin)
     {
-        this._nMin = Number(nMin);
+        _nMin = Number(nMin);
         //return (this.min());
-    };
-    _loc1.__get__min = function ()
+        null;
+    } // End of the function
+    function get min()
     {
-        return (this._nMin);
-    };
-    _loc1.__set__max = function (nMax)
+        return (_nMin);
+    } // End of the function
+    function set max(nMax)
     {
-        this._nMax = Number(nMax);
+        _nMax = Number(nMax);
         //return (this.max());
-    };
-    _loc1.__get__max = function ()
+        null;
+    } // End of the function
+    function get max()
     {
-        return (this._nMax);
-    };
-    _loc1.__set__value = function (nValue)
+        return (_nMax);
+    } // End of the function
+    function set value(nValue)
     {
         nValue = Number(nValue);
-        if (_global.isNaN(nValue))
+        if (isNaN(nValue))
         {
             return;
         } // end if
-        if (nValue > this.max)
+        if (nValue > this.__get__max())
         {
-            nValue = this.max;
+            nValue = max;
         } // end if
-        if (nValue < this.min)
+        if (nValue < this.__get__min())
         {
-            nValue = this.min;
+            nValue = min;
         } // end if
-        this._nValue = nValue;
-        if (this._bInitialized)
+        _nValue = nValue;
+        if (_bInitialized)
         {
-            var _loc3 = Math.floor((this._nMarkerCount - 1) * (nValue - this._nMin) / (this._nMax - this._nMin));
+            var _loc3 = Math.floor((_nMarkerCount - 1) * (nValue - _nMin) / (_nMax - _nMin));
             this.setValueByIndex(_loc3);
         } // end if
         //return (this.value());
-    };
-    _loc1.__get__value = function ()
+        null;
+    } // End of the function
+    function get value()
     {
-        return (this._nValue);
-    };
-    _loc1.__set__markerCount = function (nMarkerCount)
+        return (_nValue);
+    } // End of the function
+    function set markerCount(nMarkerCount)
     {
         if (Number(nMarkerCount) > 0)
         {
-            this._nMarkerCount = Number(nMarkerCount);
+            _nMarkerCount = Number(nMarkerCount);
         }
         else
         {
             ank.utils.Logger.err("[markerCount] ne peut être < à 0");
         } // end else if
         //return (this.markerCount());
-    };
-    _loc1.__get__markerWidth = function ()
+        null;
+    } // End of the function
+    function get markerWidth()
     {
-        return (this._nMarkerCount);
-    };
-    _loc1.__set__markerWidthRatio = function (nMarkerWidthRatio)
+        return (_nMarkerCount);
+    } // End of the function
+    function set markerWidthRatio(nMarkerWidthRatio)
     {
         if (Number(nMarkerWidthRatio) >= 0 && Number(nMarkerWidthRatio) <= 1)
         {
-            this._nMarkerWidthRatio = Number(nMarkerWidthRatio);
+            _nMarkerWidthRatio = Number(nMarkerWidthRatio);
         }
         else
         {
             ank.utils.Logger.err("[markerCount] ne peut être < à 0 et > 1");
         } // end else if
         //return (this.markerWidthRatio());
-    };
-    _loc1.__get__markerWidthRatio = function ()
+        null;
+    } // End of the function
+    function get markerWidthRatio()
     {
-        return (this._nMarkerWidthRatio);
-    };
-    _loc1.__set__markerSkin = function (sMarkerSkin)
+        return (_nMarkerWidthRatio);
+    } // End of the function
+    function set markerSkin(sMarkerSkin)
     {
-        this._sMarkerSkin = sMarkerSkin;
+        _sMarkerSkin = sMarkerSkin;
         //return (this.markerSkin());
-    };
-    _loc1.__get__markerSkin = function ()
+        null;
+    } // End of the function
+    function get markerSkin()
     {
-        return (this._sMarkerSkin);
-    };
-    _loc1.redraw = function ()
-    {
-        this.createMarkers();
-        this.arrange();
-    };
-    _loc1.init = function ()
+        return (_sMarkerSkin);
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.VolumeSlider.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
         this.createMarkers();
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        var _loc2 = this.__height;
-        var _loc3 = this.__height / 2;
-        var _loc4 = this.__width / this._nMarkerCount;
-        var _loc5 = (this.__width + _loc4 * (1 - this._nMarkerWidthRatio)) / this._nMarkerCount;
-        var _loc6 = 0;
-        
-        while (++_loc6, _loc6 < this._nMarkerCount)
+        var _loc9 = __height;
+        var _loc8 = __height / 2;
+        var _loc10 = __width / _nMarkerCount;
+        var _loc6 = (__width + _loc10 * (1 - _nMarkerWidthRatio)) / _nMarkerCount;
+        for (var _loc4 = 0; _loc4 < _nMarkerCount; ++_loc4)
         {
-            var _loc7 = this._mcMarkers["mcMarker" + _loc6];
-            var _loc8 = this._mcOvers["mcOver" + _loc6];
-            var _loc9 = _loc8.index;
-            var _loc10 = _loc9 / this._nMarkerCount;
-            _loc7._width = _loc5 * this._nMarkerWidthRatio;
-            _loc8._width = _loc5;
-            _loc7._height = _loc3 + _loc10 * (_loc2 - _loc3);
-            _loc8._height = this.__height;
-            _loc7._x = _loc9 * _loc5;
-            _loc7._y = this.__height;
-            _loc8._x = _loc9 * _loc5;
-            _loc8._y = 0;
-        } // end while
-    };
-    _loc1.draw = function ()
+            var _loc3 = _mcMarkers["mcMarker" + _loc4];
+            var _loc2 = _mcOvers["mcOver" + _loc4];
+            var _loc5 = _loc2.index;
+            var _loc7 = _loc5 / _nMarkerCount;
+            _loc3._width = _loc6 * _nMarkerWidthRatio;
+            _loc2._width = _loc6;
+            _loc3._height = _loc8 + _loc7 * (_loc9 - _loc8);
+            _loc2._height = __height;
+            _loc3._x = _loc5 * _loc6;
+            _loc3._y = __height;
+            _loc2._x = _loc5 * _loc6;
+            _loc2._y = 0;
+        } // end of for
+    } // End of the function
+    function draw()
     {
         this.addToQueue({object: this, method: function ()
         {
-            this.value = this._nValue;
+            value = _nValue;
         }});
-    };
-    _loc1.createMarkers = function ()
+    } // End of the function
+    function createMarkers()
     {
-        this._mcMarkers.removeMovieClip();
+        _mcMarkers.removeMovieClip();
         this.createEmptyMovieClip("_mcOvers", 10);
         this.createEmptyMovieClip("_mcMarkers", 20);
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < this._nMarkerCount)
+        for (var _loc2 = 0; _loc2 < _nMarkerCount; ++_loc2)
         {
-            var _loc3 = this._mcMarkers.attachMovie(this._sMarkerSkin, "mcMarker" + _loc2, _loc2);
-            var _loc4 = this._mcOvers.createEmptyMovieClip("mcOver" + _loc2, _loc2);
-            this.drawRoundRect(_loc4, 0, 0, 1, 1, 0, 16711935, 0);
-            _loc4.index = _loc2;
-            this.setMovieClipColor(_loc3, this.getStyle().offcolor);
-            _loc4.trackAsMenu = true;
-            _loc4.onDragOver = function ()
+            var _loc4 = _mcMarkers.attachMovie(_sMarkerSkin, "mcMarker" + _loc2, _loc2);
+            var _loc3 = _mcOvers.createEmptyMovieClip("mcOver" + _loc2, _loc2);
+            this.drawRoundRect(_loc3, 0, 0, 1, 1, 0, 16711935, 0);
+            _loc3.index = _loc2;
+            this.setMovieClipColor(_loc4, this.getStyle().offcolor);
+            _loc3.trackAsMenu = true;
+            _loc3.onDragOver = function ()
             {
-                this._parent._parent.dragOver({target: this});
+                _parent._parent.dragOver({target: this});
             };
-            _loc4.onPress = function ()
+            _loc3.onPress = function ()
             {
-                this._parent._parent.press({target: this});
+                _parent._parent.press({target: this});
             };
-        } // end while
-    };
-    _loc1.setValueByIndex = function (nIndex)
+        } // end of for
+    } // End of the function
+    function setValueByIndex(nIndex)
     {
-        if (nIndex > this._nMarkerCount - 1)
+        if (nIndex > _nMarkerCount - 1)
         {
             return;
         } // end if
@@ -189,56 +175,37 @@ if (!ank.gapi.controls.VolumeSlider)
         {
             return;
         } // end if
-        var _loc3 = this.getStyle().oncolor;
-        var _loc4 = this.getStyle().offcolor;
-        var _loc5 = 0;
-        
-        while (++_loc5, _loc5 <= nIndex)
+        var _loc6 = this.getStyle().oncolor;
+        var _loc5 = this.getStyle().offcolor;
+        for (var _loc3 = 0; _loc3 <= nIndex; ++_loc3)
         {
-            this.setMovieClipColor(this._mcMarkers["mcMarker" + _loc5], _loc3);
-        } // end while
-        var _loc6 = nIndex + 1;
-        
-        while (++_loc6, _loc6 < this._nMarkerCount)
+            this.setMovieClipColor(_mcMarkers["mcMarker" + _loc3], _loc6);
+        } // end of for
+        for (var _loc2 = nIndex + 1; _loc2 < _nMarkerCount; ++_loc2)
         {
-            this.setMovieClipColor(this._mcMarkers["mcMarker" + _loc6], _loc4);
-        } // end while
-    };
-    _loc1.getValueByIndex = function (nIndex)
+            this.setMovieClipColor(_mcMarkers["mcMarker" + _loc2], _loc5);
+        } // end of for
+    } // End of the function
+    function getValueByIndex(nIndex)
     {
-        return (nIndex * (this._nMax - this._nMin) / (this._nMarkerCount - 1) + this._nMin);
-    };
-    _loc1.dragOver = function (oEvent)
+        return (nIndex * (_nMax - _nMin) / (_nMarkerCount - 1) + _nMin);
+    } // End of the function
+    function dragOver(oEvent)
     {
-        this.value = this.getValueByIndex(oEvent.target.index);
+        this.__set__value(this.getValueByIndex(oEvent.target.index));
         this.dispatchEvent({type: "change"});
-    };
-    _loc1.press = function (oEvent)
+    } // End of the function
+    function press(oEvent)
     {
-        this.value = this.getValueByIndex(oEvent.target.index);
+        this.__set__value(this.getValueByIndex(oEvent.target.index));
         this.dispatchEvent({type: "change"});
-    };
-    _loc1.addProperty("markerSkin", _loc1.__get__markerSkin, _loc1.__set__markerSkin);
-    _loc1.addProperty("markerWidthRatio", _loc1.__get__markerWidthRatio, _loc1.__set__markerWidthRatio);
-    _loc1.addProperty("value", _loc1.__get__value, _loc1.__set__value);
-    _loc1.addProperty("markerWidth", _loc1.__get__markerWidth, function ()
-    {
-    });
-    _loc1.addProperty("max", _loc1.__get__max, _loc1.__set__max);
-    _loc1.addProperty("min", _loc1.__get__min, _loc1.__set__min);
-    _loc1.addProperty("markerCount", function ()
-    {
-    }, _loc1.__set__markerCount);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.VolumeSlider = function ()
-    {
-        super();
-    }).CLASS_NAME = "VolumeSlider";
-    _loc1._nMin = 0;
-    _loc1._nMax = 100;
-    _loc1._nValue = 0;
-    _loc1._nMarkerCount = 5;
-    _loc1._nMarkerWidthRatio = 7.000000E-001;
-    _loc1._sMarkerSkin = "VolumeSliderMarkerDefault";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "VolumeSlider";
+    var _nMin = 0;
+    var _nMax = 100;
+    var _nValue = 0;
+    var _nMarkerCount = 5;
+    var _nMarkerWidthRatio = 7.000000E-001;
+    var _sMarkerSkin = "VolumeSliderMarkerDefault";
+} // End of Class
 #endinitclip

@@ -1,136 +1,107 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20856]
-#initclip 121
-if (!dofus.aks.Emotes)
+// [Initial MovieClip Action of sprite 953]
+#initclip 165
+class dofus.aks.Emotes extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Emotes = function (oAKS, oAPI)
+    var api, aks;
+    function Emotes(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.useEmote = function (nEmoteID)
+    } // End of the function
+    function useEmote(nEmoteID)
     {
-        if (this.api.datacenter.Game.isFight)
+        if (api.datacenter.Game.isFight)
         {
             return;
         } // end if
-        if (getTimer() - this.api.datacenter.Basics.aks_emote_lastActionTime < dofus.Constants.CLICK_MIN_DELAY)
+        if (getTimer() - api.datacenter.Basics.aks_emote_lastActionTime < dofus.Constants.CLICK_MIN_DELAY)
         {
             return;
         } // end if
-        this.api.datacenter.Basics.aks_emote_lastActionTime = getTimer();
-        this.aks.send("eU" + nEmoteID, true);
-    };
-    _loc1.setDirection = function (nDir)
+        api.datacenter.Basics.aks_emote_lastActionTime = getTimer();
+        aks.send("eU" + nEmoteID, false);
+    } // End of the function
+    function onUse(bSuccess, sExtraData)
     {
-        this.aks.send("eD" + nDir, true);
-    };
-    _loc1.onUse = function (bSuccess, sExtraData)
-    {
-        if (this.api.datacenter.Game.isFight)
+        if (api.datacenter.Game.isFight)
         {
             return;
         } // end if
         if (!bSuccess)
         {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_USE_EMOTE"), "ERROR_CHAT");
-            return;
-        } // end if
-        var _loc4 = sExtraData.split("|");
-        var _loc5 = _loc4[0];
-        var _loc6 = Number(_loc4[1]);
-        var _loc7 = Number(_loc4[2]);
-        var _loc8 = _global.isNaN(_loc6) ? ("static") : ("emote" + _loc6);
-        this.api.gfx.convertHeightToFourSpriteDirection(_loc5);
-        if (_global.isNaN(_loc7) && _global.isNaN(_loc6))
-        {
-            this.api.gfx.setForcedSpriteAnim(_loc5, _loc8);
-        }
-        else
-        {
-            this.api.gfx.setSpriteTimerAnim(_loc5, _loc8, true, _loc7);
-        } // end else if
-    };
-    _loc1.onList = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = Number(_loc3[1]);
-        var _loc6 = this.api.datacenter.Player;
-        _loc6.clearEmotes();
-        var _loc7 = 0;
-        
-        while (++_loc7, _loc7 < 32)
-        {
-            if ((_loc4 >> _loc7 & 1) == 1)
-            {
-                if (this.api.lang.getEmoteText(_loc7 + 1) != undefined)
-                {
-                    _loc6.addEmote(_loc7 + 1);
-                } // end if
-            } // end if
-        } // end while
-        var _loc8 = 0;
-        
-        while (++_loc8, _loc8 < 32)
-        {
-            if ((_loc5 >> _loc8 & 1) == 1)
-            {
-                if (this.api.lang.getEmoteText(_loc8 + 1) != undefined)
-                {
-                    _loc6.addEmote(_loc8 + 1);
-                } // end if
-            } // end if
-        } // end while
-    };
-    _loc1.onAdd = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = _loc3[1] == "0";
-        if (!_loc5)
-        {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("NEW_EMOTE", [this.api.lang.getEmoteText(_loc4).n]), "INFO_CHAT");
-        } // end if
-        this.refresh();
-    };
-    _loc1.onRemove = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = _loc3[1] == "0";
-        if (!_loc5)
-        {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("REMOVE_EMOTE", [this.api.lang.getEmoteText(_loc4).n]), "INFO_CHAT");
-        } // end if
-        this.refresh();
-    };
-    _loc1.onDirection = function (sExtraData)
-    {
-        if (this.api.datacenter.Game.isFight)
-        {
+            api.kernel.showMessage(undefined, api.lang.getText("CANT_USE_EMOTE"), "ERROR_CHAT");
             return;
         } // end if
         var _loc3 = sExtraData.split("|");
         var _loc4 = _loc3[0];
-        var _loc5 = Number(_loc3[1]);
-        var _loc6 = this.api.gfx.getSprite(_loc4).animation;
-        this.api.gfx.setSpriteDirection(_loc4, _loc5);
-        this.api.gfx.setSpriteAnim(_loc4, _loc6);
-    };
-    _loc1.refresh = function ()
+        var _loc2 = Number(_loc3[1]);
+        var _loc6 = Number(_loc3[2]);
+        var _loc5 = isNaN(_loc2) ? ("static") : ("emote" + _loc2);
+        api.gfx.convertHeightToFourSpriteDirection(_loc4);
+        if (isNaN(_loc6) && isNaN(_loc2))
+        {
+            api.gfx.setForcedSpriteAnim(_loc4, _loc5);
+        }
+        else
+        {
+            api.gfx.setSpriteTimerAnim(_loc4, _loc5, true, _loc6);
+        } // end else if
+    } // End of the function
+    function onList(sExtraData)
     {
-        this.api.ui.getUIComponent("Banner").updateSmileysEmotes();
-        this.api.ui.getUIComponent("Banner").showSmileysEmotesPanel(true);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        var _loc7 = sExtraData.split("|");
+        var _loc5 = Number(_loc7[0]);
+        var _loc6 = Number(_loc7[1]);
+        var _loc4 = api.datacenter.Player;
+        _loc4.clearEmotes();
+        for (var _loc3 = 0; _loc3 < 32; ++_loc3)
+        {
+            if ((_loc5 >> _loc3 & 1) == 1)
+            {
+                if (api.lang.getEmoteText(_loc3 + 1) != undefined)
+                {
+                    _loc4.addEmote(_loc3 + 1);
+                } // end if
+            } // end if
+        } // end of for
+        for (var _loc2 = 0; _loc2 < 32; ++_loc2)
+        {
+            if ((_loc6 >> _loc2 & 1) == 1)
+            {
+                if (api.lang.getEmoteText(_loc2 + 1) != undefined)
+                {
+                    _loc4.addEmote(_loc2 + 1);
+                } // end if
+            } // end if
+        } // end of for
+    } // End of the function
+    function onAdd(sExtraData)
+    {
+        var _loc2 = sExtraData.split("|");
+        var _loc3 = Number(_loc2[0]);
+        var _loc4 = _loc2[1] == "0";
+        if (!_loc4)
+        {
+            api.kernel.showMessage(undefined, api.lang.getText("NEW_EMOTE", [api.lang.getEmoteText(_loc3).n]), "INFO_CHAT");
+        } // end if
+        this.refresh();
+    } // End of the function
+    function onRemove(sExtraData)
+    {
+        var _loc2 = sExtraData.split("|");
+        var _loc3 = Number(_loc2[0]);
+        var _loc4 = _loc2[1] == "0";
+        if (!_loc4)
+        {
+            api.kernel.showMessage(undefined, api.lang.getText("REMOVE_EMOTE", [api.lang.getEmoteText(_loc3).n]), "INFO_CHAT");
+        } // end if
+        this.refresh();
+    } // End of the function
+    function refresh()
+    {
+        api.ui.getUIComponent("Banner").updateSmileysEmotes();
+        api.ui.getUIComponent("Banner").showSmileysEmotesPanel(true);
+    } // End of the function
+} // End of Class
 #endinitclip

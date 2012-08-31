@@ -1,69 +1,47 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20609]
-#initclip 130
-if (!ank.battlefield.Battlefield)
+// [Initial MovieClip Action of sprite 843]
+#initclip 55
+class ank.battlefield.Battlefield extends MovieClip
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.battlefield)
-    {
-        _global.ank.battlefield = new Object();
-    } // end if
-    var _loc1 = (_global.ank.battlefield.Battlefield = function ()
+    var _bMapBuild, _nScreenWidth, __get__screenWidth, _nScreenHeight, __get__screenHeight, _oDatacenter, _sGroundFile, onInitError, attachClassMovie, _mcMainContainer, __get__isMapBuild, mapHandler, overHeadHandler, textHandler, pointsHandler, onMapLoaded, selectionHandler, interactionHandler, zoneHandler, pointerHandler, spriteHandler, gridHandler, visualEffectHandler, onInitComplete, onInitProgress, __set__screenHeight, __set__screenWidth;
+    function Battlefield()
     {
         super();
-    }).prototype;
-    _loc1.__get__isMapBuild = function ()
+    } // End of the function
+    function get isMapBuild()
     {
-        if (this._bMapBuild)
+        if (_bMapBuild)
         {
             return (true);
         } // end if
-        ank.utils.Logger.err("[isMapBuild] Carte non chargée");
+        ank.utils.Logger.err("[isMapBuild] Carte non chargÃ©e");
         return (false);
-    };
-    _loc1.__set__screenWidth = function (nScreenWidth)
+    } // End of the function
+    function set screenWidth(nScreenWidth)
     {
-        this._nScreenWidth = nScreenWidth;
+        _nScreenWidth = nScreenWidth;
         //return (this.screenWidth());
-    };
-    _loc1.__get__screenWidth = function ()
+        null;
+    } // End of the function
+    function get screenWidth()
     {
-        return (this._nScreenWidth == undefined ? (ank.battlefield.Constants.DISPLAY_WIDTH) : (this._nScreenWidth));
-    };
-    _loc1.__set__screenHeight = function (nScreenHeight)
+        return (_nScreenWidth == undefined ? (ank.battlefield.Constants.DISPLAY_WIDTH) : (_nScreenWidth));
+    } // End of the function
+    function set screenHeight(nScreenHeight)
     {
-        this._nScreenHeight = nScreenHeight;
+        _nScreenHeight = nScreenHeight;
         //return (this.screenHeight());
-    };
-    _loc1.__get__screenHeight = function ()
+        null;
+    } // End of the function
+    function get screenHeight()
     {
-        return (this._nScreenHeight == undefined ? (ank.battlefield.Constants.DISPLAY_HEIGHT) : (this._nScreenHeight));
-    };
-    _loc1.__set__isJumpActivate = function (bJumpActivate)
+        return (_nScreenHeight == undefined ? (ank.battlefield.Constants.DISPLAY_HEIGHT) : (_nScreenHeight));
+    } // End of the function
+    function initialize(oDatacenter, sGroundFile, sObjectFile)
     {
-        this._bJumpActivate = bJumpActivate;
-        //return (this.isJumpActivate());
-    };
-    _loc1.__get__isJumpActivate = function ()
-    {
-        return (this._bJumpActivate);
-    };
-    _loc1.__get__container = function ()
-    {
-        return (this._mcMainContainer);
-    };
-    _loc1.__get__datacenter = function ()
-    {
-        return (this._oDatacenter);
-    };
-    _loc1.initialize = function (oDatacenter, sGroundFile, sObjectFile, sAccessoriesPath)
-    {
-        this._oDatacenter = oDatacenter;
-        this._sGroundFile = sGroundFile;
+        _oDatacenter = oDatacenter;
+        _sGroundFile = sGroundFile;
         if (!this.initializeDatacenter())
         {
             ank.utils.Logger.err("BattleField -> Init datacenter impossible");
@@ -73,55 +51,26 @@ if (!ank.battlefield.Battlefield)
         if (_global.GAC == undefined)
         {
             _global.GAC = new ank.battlefield.GlobalSpriteHandler();
-            _global.GAC.setAccessoriesRoot(sAccessoriesPath);
         } // end if
-        this.attachClassMovie(ank.battlefield.mc.Container, "_mcMainContainer", 10, [this, this._oDatacenter, sObjectFile]);
-        this._bMapBuild = false;
-        this.loadManager = new ank.battlefield.LoadManager(this.createEmptyMovieClip("LoadManager", this.getNextHighestDepth()));
-    };
-    _loc1.setStreaming = function (status, objectsDir, groundsDir)
+        this.attachClassMovie(ank.battlefield.mc.Container, "_mcMainContainer", 10, [this, _oDatacenter, sObjectFile]);
+        _bMapBuild = false;
+    } // End of the function
+    function clear()
     {
-        ank.battlefield.Constants.USE_STREAMING_FILES = status;
-        ank.battlefield.Constants.STREAMING_OBJECTS_DIR = objectsDir;
-        ank.battlefield.Constants.STREAMING_GROUNDS_DIR = groundsDir;
-    };
-    _loc1.setStreamingMethod = function (sName)
-    {
-        ank.battlefield.Constants.STREAMING_METHOD = sName;
-    };
-    _loc1.setCustomGfxFile = function (sPathGfxGround, sPathGfxObject)
-    {
-        if (sPathGfxGround && (sPathGfxGround != "" && this._sGroundFile != sPathGfxGround))
-        {
-            this._sGroundFile = sPathGfxGround;
-            this._bUseCustomGroundGfxFile = true;
-            this.bCustomFileLoaded = false;
-        } // end if
-        if (sPathGfxObject && (sPathGfxObject != "" && this._sObjectFile != sPathGfxObject))
-        {
-            this._mcMainContainer.initialize(this._mcMainContainer, this._oDatacenter, sPathGfxObject);
-            this.bCustomFileLoaded = false;
-            this._sObjectFile = sPathGfxObject;
-        } // end if
-    };
-    _loc1.clear = function ()
-    {
-        this._mcMainContainer.clear();
-        this._sGroundFile = "";
-        this._sObjectFile = "";
+        _mcMainContainer.clear();
         ank.utils.Timer.clear("battlefield");
         ank.utils.CyclicTimer.clear();
         this.initializeDatacenter();
         this.createHandlers();
-        this._bMapBuild = false;
-    };
-    _loc1.setColor = function (t)
+        _bMapBuild = false;
+    } // End of the function
+    function setColor(t)
     {
-        this._mcMainContainer.setColor(t);
-    };
-    _loc1.cleanMap = function (nPermanentLevel, bKeepData)
+        _mcMainContainer.setColor(t);
+    } // End of the function
+    function cleanMap(nPermanentLevel, bKeepData)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
@@ -133,64 +82,42 @@ if (!ank.battlefield.Battlefield)
         {
             nPermanentLevel = Number(nPermanentLevel);
         } // end else if
-        this.mapHandler.initializeMap(nPermanentLevel);
+        mapHandler.initializeMap(nPermanentLevel);
         this.unSelect(true);
         this.clearAllZones();
         this.clearPointer();
         this.removeGrid();
         this.clearAllSprites(bKeepData);
-        this.overHeadHandler.clear();
-        this.textHandler.clear();
-        this.pointsHandler.clear();
+        overHeadHandler.clear();
+        textHandler.clear();
+        pointsHandler.clear();
         ank.utils.Timer.clean();
         ank.utils.CyclicTimer.clear();
-    };
-    _loc1.getZoom = function ()
+    } // End of the function
+    function getZoom()
     {
-        return (this._mcMainContainer.getZoom());
-    };
-    _loc1.showContainer = function (bool)
+        return (_mcMainContainer.getZoom());
+    } // End of the function
+    function showContainer(bool)
     {
-        this._mcMainContainer._visible = bool;
-    };
-    _loc1.zoom = function (nFactor)
+        _mcMainContainer._visible = bool;
+    } // End of the function
+    function zoom(nFactor)
     {
-        this._mcMainContainer.zoom(nFactor);
-    };
-    _loc1.buildMapFromObject = function (oMap, bBuildAll)
+        _mcMainContainer.zoom(nFactor);
+    } // End of the function
+    function buildMapFromObject(oMap, bBuildAll)
     {
         this.clear();
         if (oMap == undefined)
         {
             return;
         } // end if
-        this.onMapBuilding();
-        this.mapHandler.build(oMap, undefined, bBuildAll);
-        if (this.mapHandler.LoaderRequestLeft == 0)
-        {
-            this.DispatchMapLoaded();
-        }
-        else
-        {
-            this._nFrameLoadTimeOut = ank.battlefield.Battlefield.FRAMELOADTIMOUT;
-            var ref = this;
-            this.onEnterFrame = function ()
-            {
-                --ref._nFrameLoadTimeOut;
-                if (ref._nFrameLoadTimeOut <= 0 || ref.mapHandler.LoaderRequestLeft <= 0)
-                {
-                    delete ref.onEnterFrame;
-                    ref.DispatchMapLoaded();
-                } // end if
-            };
-        } // end else if
-    };
-    _loc1.DispatchMapLoaded = function ()
-    {
-        this._bMapBuild = true;
+        mapHandler.build(oMap, undefined, bBuildAll);
+        _bMapBuild = true;
         this.onMapLoaded();
-    };
-    _loc1.buildMap = function (nID, sName, nWidth, nHeight, nBackID, sCompressedData, oMap, bBuildAll)
+    } // End of the function
+    function buildMap(nID, sName, nWidth, nHeight, nBackID, sCompressedData, oMap, bBuildAll)
     {
         if (oMap == undefined)
         {
@@ -198,644 +125,525 @@ if (!ank.battlefield.Battlefield)
         } // end if
         ank.battlefield.utils.Compressor.uncompressMap(nID, sName, nWidth, nHeight, nBackID, sCompressedData, oMap, bBuildAll);
         this.buildMapFromObject(oMap, bBuildAll);
-    };
-    _loc1.updateCell = function (nCellNum, sCompressData, sMaskHexStr, nPermanentLevel)
+    } // End of the function
+    function buildMultiMap(nW, nH, nBgID, sData, nCoordX, nCoordY, oMap)
     {
-        if (!this.isMapBuild)
+        if (oMap == undefined)
+        {
+            oMap = new ank.battlefield.datacenter.Map();
+        } // end if
+        ank.battlefield.utils.Compressor.uncompressMap(null, null, nW, nH, nBgID, sData, oMap);
+        mapHandler.buildMulti(oMap, nCoordX, nCoordY);
+        _bMapBuild = true;
+        this.onMapLoaded();
+    } // End of the function
+    function updateCell(nCellNum, sCompressData, sMaskHexStr, nPermanentLevel)
+    {
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
         if (sCompressData == undefined)
         {
-            this.mapHandler.initializeCell(nCellNum, Number.POSITIVE_INFINITY);
+            mapHandler.initializeCell(nCellNum, Number.POSITIVE_INFINITY);
         }
         else
         {
-            var _loc6 = ank.battlefield.utils.Compressor.uncompressCell(sCompressData, true);
-            this.mapHandler.updateCell(nCellNum, _loc6, sMaskHexStr, nPermanentLevel);
+            var _loc2 = ank.battlefield.utils.Compressor.uncompressCell(sCompressData, true);
+            mapHandler.updateCell(nCellNum, _loc2, sMaskHexStr, nPermanentLevel);
         } // end else if
-    };
-    _loc1.setObject2Frame = function (nCellNum, frame)
+    } // End of the function
+    function setObject2Frame(nCellNum, frame)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.mapHandler.setObject2Frame(nCellNum, frame);
-    };
-    _loc1.setObject2Interactive = function (nCellNum, bInteractive, nPermanentLevel)
+        mapHandler.setObject2Frame(nCellNum, frame);
+    } // End of the function
+    function setObject2Interactive(nCellNum, bInteractive, nPermanentLevel)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.mapHandler.setObject2Interactive(nCellNum, bInteractive, nPermanentLevel);
-    };
-    _loc1.updateCellObjectExternalWithExternalClip = function (nCellNum, sFile, nPermanentLevel, bInteractive, bAutoSize, oExternalData)
+        mapHandler.setObject2Interactive(nCellNum, bInteractive, nPermanentLevel);
+    } // End of the function
+    function updateCellObjectExternalWithExternalClip(nCellNum, sFile, nPermanentLevel)
     {
-        var _loc8 = new ank.battlefield.datacenter.Cell();
-        _loc8.layerObjectExternal = sFile;
-        _loc8.layerObjectExternalInteractive = bInteractive == undefined ? (true) : (bInteractive);
-        _loc8.layerObjectExternalAutoSize = bAutoSize;
-        _loc8.layerObjectExternalData = oExternalData;
-        this.mapHandler.updateCell(nCellNum, _loc8, "1C000", nPermanentLevel);
-    };
-    _loc1.setObjectExternalFrame = function (nCellNum, frame)
+        var _loc2 = new ank.battlefield.datacenter.Cell();
+        _loc2.layerObjectExternal = sFile;
+        _loc2.layerObjectExternalInteractive = true;
+        mapHandler.updateCell(nCellNum, _loc2, "C000", nPermanentLevel);
+    } // End of the function
+    function initializeCell(nCellNum, nPermanentLevel)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.mapHandler.setObjectExternalFrame(nCellNum, frame);
-    };
-    _loc1.initializeCell = function (nCellNum, nPermanentLevel)
+        mapHandler.initializeCell(nCellNum, nPermanentLevel);
+    } // End of the function
+    function select(cellList, nColor)
     {
-        if (!this.isMapBuild)
-        {
-            return;
-        } // end if
-        this.mapHandler.initializeCell(nCellNum, nPermanentLevel);
-    };
-    _loc1.select = function (cellList, nColor, sLayer, nAlpha)
-    {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
         if (typeof(cellList) == "object")
         {
-            this.selectionHandler.selectMultiple(true, cellList, nColor, sLayer, nAlpha);
+            selectionHandler.selectMultiple(true, cellList, nColor);
         }
         else if (typeof(cellList) == "number")
         {
-            this.selectionHandler.select(true, cellList, nColor, sLayer, nAlpha);
+            selectionHandler.select(true, cellList, nColor);
         } // end else if
-    };
-    _loc1.unSelect = function (bAll, cellList, sLayer)
+    } // End of the function
+    function unSelect(bAll, cellList)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
         if (bAll)
         {
-            this.selectionHandler.clear();
+            selectionHandler.clear();
         }
         else if (typeof(cellList) == "object")
         {
-            this.selectionHandler.selectMultiple(false, cellList, undefined, sLayer);
+            selectionHandler.selectMultiple(false, cellList);
         }
         else if (typeof(cellList) == "number")
         {
-            this.selectionHandler.select(false, cellList, undefined, sLayer);
-        }
-        else if (sLayer != undefined)
-        {
-            this.selectionHandler.clearLayer(sLayer);
+            selectionHandler.select(false, cellList);
         } // end else if
-    };
-    _loc1.unSelectAllButOne = function (sLayer)
+    } // End of the function
+    function setInteraction(nState)
     {
-        var _loc3 = this.selectionHandler.getLayers();
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
-        {
-            if (_loc3[_loc4] != sLayer)
-            {
-                this.selectionHandler.clearLayer(_loc3[_loc4]);
-            } // end if
-        } // end while
-    };
-    _loc1.setInteraction = function (nState)
-    {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.interactionHandler.setEnabled(nState);
-    };
-    _loc1.setInteractionOnCell = function (nCellNum, nState)
+        interactionHandler.setEnabled(nState);
+    } // End of the function
+    function setInteractionOnCell(nCellNum, nState)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.interactionHandler.setEnabledCell(nCellNum, nState);
-    };
-    _loc1.setInteractionOnCells = function (aCells, nState)
+        interactionHandler.setEnabledCell(nCellNum, nState);
+    } // End of the function
+    function setInteractionOnCells(aCells, nState)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        for (var k in aCells)
+        for (var _loc4 in aCells)
         {
-            this.interactionHandler.setEnabledCell(aCells[k], nState);
+            interactionHandler.setEnabledCell(aCells[_loc4], nState);
         } // end of for...in
-    };
-    _loc1.drawZone = function (nCellNum, nRadiusIn, nRadiusOut, sLayer, nColor, sShape)
+    } // End of the function
+    function drawZone(nCellNum, nRadiusIn, nRadiusOut, sLayer, nColor, sShape)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.zoneHandler.drawZone(nCellNum, nRadiusIn, nRadiusOut, sLayer, nColor, sShape);
-    };
-    _loc1.clearZone = function (nCellNum, nRadius, sLayer)
+        zoneHandler.drawZone(nCellNum, nRadiusIn, nRadiusOut, sLayer, nColor, sShape);
+    } // End of the function
+    function clearZone(nCellNum, nRadius, sLayer)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.zoneHandler.clearZone(nCellNum, nRadius, sLayer);
-    };
-    _loc1.clearZoneLayer = function (sLayer)
+        zoneHandler.clearZone(nCellNum, nRadius, sLayer);
+    } // End of the function
+    function clearZoneLayer(sLayer)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.zoneHandler.clearZoneLayer(sLayer);
-    };
-    _loc1.clearAllZones = function (Void)
+        zoneHandler.clearZoneLayer(sLayer);
+    } // End of the function
+    function clearAllZones(Void)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.zoneHandler.clear();
-    };
-    _loc1.clearPointer = function (Void)
+        zoneHandler.clear();
+    } // End of the function
+    function clearPointer(Void)
     {
-        this.pointerHandler.clear();
-    };
-    _loc1.hidePointer = function (Void)
+        pointerHandler.clear();
+    } // End of the function
+    function hidePointer(Void)
     {
-        this.pointerHandler.hide();
-    };
-    _loc1.addPointerShape = function (sShape, mSize, nColor, nCellNumRef)
+        pointerHandler.hide();
+    } // End of the function
+    function addPointerShape(sShape, mSize, nColor, nCellNumRef)
     {
-        this.pointerHandler.addShape(sShape, mSize, nColor, nCellNumRef);
-    };
-    _loc1.drawPointer = function (nCellNum)
+        pointerHandler.addShape(sShape, mSize, nColor, nCellNumRef);
+    } // End of the function
+    function drawPointer(nCellNum)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.pointerHandler.draw(nCellNum);
-    };
-    _loc1.getSprite = function (sID)
+        pointerHandler.draw(nCellNum);
+    } // End of the function
+    function addSprite(sID, spriteData)
     {
-        return (this.spriteHandler.getSprite(sID));
-    };
-    _loc1.getSprites = function ()
-    {
-        return (this.spriteHandler.getSprites());
-    };
-    _loc1.addSprite = function (sID, spriteData)
-    {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.addSprite(sID, spriteData);
-    };
-    _loc1.addLinkedSprite = function (sID, sParentID, nChildIndex, oSprite)
+        spriteHandler.addSprite(sID, spriteData);
+    } // End of the function
+    function addLinkedSprite(sID, sParentID, nChildIndex, oSprite)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.addLinkedSprite(sID, sParentID, nChildIndex, oSprite);
-    };
-    _loc1.carriedSprite = function (sID, sParentID)
+        spriteHandler.addLinkedSprite(sID, sParentID, nChildIndex, oSprite);
+    } // End of the function
+    function clearAllSprites(bKeepData)
     {
-        if (!this.isMapBuild)
+        spriteHandler.clear(bKeepData);
+    } // End of the function
+    function removeSprite(sID, bKeepData)
+    {
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.carriedSprite(sID, sParentID);
-    };
-    _loc1.uncarriedSprite = function (sID, nCellNum, bWithAnimation, oSeq)
+        spriteHandler.removeSprite(sID, bKeepData);
+    } // End of the function
+    function hideSprite(sID, bool)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.uncarriedSprite(sID, nCellNum, bWithAnimation, oSeq);
-    };
-    _loc1.mountSprite = function (sID, oMount)
+        spriteHandler.hideSprite(sID, bool);
+    } // End of the function
+    function setSpritePosition(sID, nCellNum, dir)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.mountSprite(sID, oMount);
-    };
-    _loc1.unmountSprite = function (sID)
+        spriteHandler.setSpritePosition(sID, nCellNum, dir);
+    } // End of the function
+    function setSpriteDirection(sID, nDir)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.unmountSprite(sID);
-    };
-    _loc1.clearAllSprites = function (bKeepData)
+        spriteHandler.setSpriteDirection(sID, nDir);
+    } // End of the function
+    function moveSprite(sID, compressedPath, oSeq, bClearSequencer, bForcedRun, bForcedWalk, nRunLimit)
     {
-        this.spriteHandler.clear(bKeepData);
-    };
-    _loc1.removeSprite = function (sID, bKeepData)
-    {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.removeSprite(sID, bKeepData);
-    };
-    _loc1.hideSprite = function (sID, bool)
+        var _loc2 = ank.battlefield.utils.Compressor.extractFullPath(mapHandler, compressedPath);
+        this.moveSpriteWithUncompressedPath(sID, _loc2, oSeq, bClearSequencer, bForcedRun, bForcedWalk, nRunLimit);
+    } // End of the function
+    function moveSpriteWithUncompressedPath(sID, aPath, oSeq, bClearSequencer, bForcedRun, bForcedWalk, nRunLimit)
     {
-        if (!this.isMapBuild)
-        {
-            return;
-        } // end if
-        this.spriteHandler.hideSprite(sID, bool);
-    };
-    _loc1.setSpritePosition = function (sID, nCellNum, dir)
-    {
-        if (!this.isMapBuild)
-        {
-            return;
-        } // end if
-        this.spriteHandler.setSpritePosition(sID, nCellNum, dir);
-    };
-    _loc1.setSpriteDirection = function (sID, nDir)
-    {
-        if (!this.isMapBuild)
-        {
-            return;
-        } // end if
-        this.spriteHandler.setSpriteDirection(sID, nDir);
-    };
-    _loc1.stopSpriteMove = function (sID, oSeq, nCellNum)
-    {
-        if (!this.isMapBuild)
-        {
-            return;
-        } // end if
-        this.spriteHandler.stopSpriteMove(sID, oSeq, nCellNum);
-    };
-    _loc1.moveSprite = function (sID, compressedPath, oSeq, bClearSequencer, bForcedRun, bForcedWalk, nRunLimit)
-    {
-        if (!this.isMapBuild)
-        {
-            return;
-        } // end if
-        var _loc9 = ank.battlefield.utils.Compressor.extractFullPath(this.mapHandler, compressedPath);
-        this.moveSpriteWithUncompressedPath(sID, _loc9, oSeq, bClearSequencer, bForcedRun, bForcedWalk, nRunLimit);
-    };
-    _loc1.moveSpriteWithUncompressedPath = function (sID, aPath, oSeq, bClearSequencer, bForcedRun, bForcedWalk, nRunLimit, sAnimation)
-    {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
         if (aPath != undefined)
         {
-            this.spriteHandler.moveSprite(sID, aPath, oSeq, bClearSequencer, sAnimation, bForcedRun, bForcedWalk, nRunLimit);
+            spriteHandler.moveSprite(sID, aPath, oSeq, bClearSequencer, undefined, bForcedRun, bForcedWalk, nRunLimit);
         } // end if
-    };
-    _loc1.slideSprite = function (sID, nCellNum, oSeq, sAnimation)
+    } // End of the function
+    function slideSprite(sID, nCellNum, oSeq, sAnimation)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.slideSprite(sID, nCellNum, oSeq, sAnimation);
-    };
-    _loc1.autoCalculateSpriteDirection = function (sID, nCellNum)
+        spriteHandler.slideSprite(sID, nCellNum, oSeq, sAnimation);
+    } // End of the function
+    function autoCalculateSpriteDirection(sID, nCellNum)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.autoCalculateSpriteDirection(sID, nCellNum);
-    };
-    _loc1.convertHeightToFourSpriteDirection = function (sID)
+        spriteHandler.autoCalculateSpriteDirection(sID, nCellNum);
+    } // End of the function
+    function convertHeightToFourSpriteDirection(sID)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.convertHeightToFourSpriteDirection(sID);
-    };
-    _loc1.setForcedSpriteAnim = function (sID, sAnim)
+        spriteHandler.convertHeightToFourSpriteDirection(sID);
+    } // End of the function
+    function setForcedSpriteAnim(sID, sAnim)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.setSpriteAnim(sID, sAnim, true);
-    };
-    _loc1.setSpriteAnim = function (sID, sAnim)
+        spriteHandler.setSpriteAnim(sID, sAnim, true);
+    } // End of the function
+    function setSpriteAnim(sID, sAnim)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.setSpriteAnim(sID, sAnim);
-    };
-    _loc1.setSpriteLoopAnim = function (sID, sAnim, nTimer)
+        spriteHandler.setSpriteAnim(sID, sAnim);
+    } // End of the function
+    function setSpriteLoopAnim(sID, sAnim, nTimer)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.setSpriteLoopAnim(sID, sAnim, nTimer);
-    };
-    _loc1.setSpriteTimerAnim = function (sID, sAnim, bForced, nTimer)
+        spriteHandler.setSpriteLoopAnim(sID, sAnim, nTimer);
+    } // End of the function
+    function setSpriteTimerAnim(sID, sAnim, bForced, nTimer)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.setSpriteTimerAnim(sID, sAnim, bForced, nTimer);
-    };
-    _loc1.setSpriteGfx = function (sID, sFile)
+        spriteHandler.setSpriteTimerAnim(sID, sAnim, bForced, nTimer);
+    } // End of the function
+    function setSpriteGfx(sID, sFile)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.setSpriteGfx(sID, sFile);
-    };
-    _loc1.setSpriteColorTransform = function (sID, oTransform)
+        spriteHandler.setSpriteGfx(sID, sFile);
+    } // End of the function
+    function setSpriteColorTransform(sID, oTransform)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.setSpriteColorTransform(sID, oTransform);
-    };
-    _loc1.setSpriteAlpha = function (sID, nAlpha)
+        spriteHandler.setSpriteColorTransform(sID, oTransform);
+    } // End of the function
+    function spriteLaunchVisualEffect(sID, oEffectData, nCellNum, nDisplayType, mSpriteAnimation)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.setSpriteAlpha(sID, nAlpha);
-    };
-    _loc1.spriteLaunchVisualEffect = function (sID, oEffectData, nCellNum, nDisplayType, mSpriteAnimation, sTargetID, oSpriteToHideDuringAnimation, bForceVisible)
+        spriteHandler.launchVisualEffect(sID, oEffectData, nCellNum, nDisplayType, mSpriteAnimation);
+    } // End of the function
+    function selectSprite(sID, bSelect)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.spriteHandler.launchVisualEffect(sID, oEffectData, nCellNum, nDisplayType, mSpriteAnimation, sTargetID, oSpriteToHideDuringAnimation, bForceVisible);
-    };
-    _loc1.spriteLaunchCarriedSprite = function (sID, oEffectData, nCellNum, nDisplayType)
+        spriteHandler.selectSprite(sID, bSelect);
+    } // End of the function
+    function addSpriteBubble(sID, sText)
     {
-        if (!this.isMapBuild)
+        var _loc2 = _oDatacenter.Sprites.getItemAt(sID);
+        if (_loc2 == undefined)
+        {
+            ank.utils.Logger.err("[addSpriteBubble] Sprite inexistant");
+            return;
+        } // end if
+        if (_loc2.__get__isInMove())
         {
             return;
         } // end if
-        this.spriteHandler.launchCarriedSprite(sID, oEffectData, nCellNum, nDisplayType);
-    };
-    _loc1.selectSprite = function (sID, bSelect)
+        if (!_loc2.__get__isVisible())
+        {
+            return;
+        } // end if
+        var _loc3 = _loc2.mc;
+        var _loc5 = _loc3._x;
+        var _loc4 = _loc3._y;
+        if (_loc5 == 0 || _loc4 == 0)
+        {
+            ank.utils.Logger.err("[addSpriteBubble] le sprite n\'est pas encore placÃ©");
+            return;
+        } // end if
+        textHandler.addBubble(sID, _loc5, _loc4, sText);
+    } // End of the function
+    function removeSpriteBubble(sID)
     {
-        if (!this.isMapBuild)
+        var _loc2 = _oDatacenter.Sprites.getItemAt(sID);
+        if (_loc2 == undefined)
         {
+            ank.utils.Logger.err("[hideSpriteBubble] Sprite inexistant");
             return;
         } // end if
-        this.spriteHandler.selectSprite(sID, bSelect);
-    };
-    _loc1.addSpriteBubble = function (sID, sText, nType)
+        textHandler.removeBubble(sID);
+    } // End of the function
+    function addSpritePoints(sID, sValue, nColor)
     {
-        var _loc5 = this._oDatacenter.Sprites.getItemAt(sID);
-        if (_loc5 == undefined)
-        {
-            ank.utils.Logger.err("[addSpriteBubble] Sprite inexistant (sprite Id : " + sID + ")");
-            return;
-        } // end if
-        if (_loc5.isInMove)
-        {
-            return;
-        } // end if
-        if (!_loc5.isVisible)
-        {
-            return;
-        } // end if
-        var _loc6 = _loc5.mc;
-        var _loc7 = _loc6._x;
-        var _loc8 = _loc6._y;
-        if (nType == undefined)
-        {
-            nType = ank.battlefield.TextHandler.BUBBLE_TYPE_CHAT;
-        } // end if
-        if (_loc7 == 0 || _loc8 == 0)
-        {
-            ank.utils.Logger.err("[addSpriteBubble] le sprite n\'est pas encore placé ");
-            return;
-        } // end if
-        this.textHandler.addBubble(sID, _loc7, _loc8, sText, nType);
-    };
-    _loc1.removeSpriteBubble = function (sID)
-    {
-        var _loc3 = this._oDatacenter.Sprites.getItemAt(sID);
-        if (_loc3 == undefined)
-        {
-            return;
-        } // end if
-        this.textHandler.removeBubble(sID);
-    };
-    _loc1.addSpritePoints = function (sID, sValue, nColor)
-    {
-        var _loc5 = this._oDatacenter.Sprites.getItemAt(sID);
-        if (_loc5 == undefined)
+        var _loc2 = _oDatacenter.Sprites.getItemAt(sID);
+        if (_loc2 == undefined)
         {
             ank.utils.Logger.err("[addSpritePoints] Sprite inexistant");
             return;
         } // end if
-        if (!_loc5.isVisible)
+        if (!_loc2.__get__isVisible())
         {
             return;
         } // end if
-        var _loc6 = _loc5.mc;
-        var _loc7 = _loc6._x;
-        var _loc8 = _loc6._y - ank.battlefield.Constants.DEFAULT_SPRITE_HEIGHT;
-        if (_loc7 == 0 || _loc8 == 0)
+        var _loc3 = _loc2.mc;
+        var _loc5 = _loc3._x;
+        var _loc4 = _loc3._y - ank.battlefield.Constants.DEFAULT_SPRITE_HEIGHT;
+        if (_loc5 == 0 || _loc4 == 0)
         {
-            ank.utils.Logger.err("[addSpritePoints] le sprite n\'est pas encore placé ");
+            ank.utils.Logger.err("[addSpritePoints] le sprite n\'est pas encore placÃ©");
             return;
         } // end if
-        this.pointsHandler.addPoints(sID, _loc7, _loc8, sValue, nColor);
-    };
-    _loc1.addSpriteOverHeadItem = function (sID, sLayerName, className, aArgs, nDelay, bEvenInMove)
+        pointsHandler.addPoints(sID, _loc5, _loc4, sValue, nColor);
+    } // End of the function
+    function addSpriteOverHeadItem(sID, sLayerName, className, aArgs, nDelay)
     {
-        var _loc8 = this._oDatacenter.Sprites.getItemAt(sID);
-        if (_loc8 == undefined)
+        var _loc2 = _oDatacenter.Sprites.getItemAt(sID);
+        if (_loc2 == undefined)
         {
             ank.utils.Logger.err("[addSpriteOverHeadItem] Sprite inexistant");
             return;
         } // end if
-        if (_loc8.isInMove && !bEvenInMove)
+        if (_loc2.__get__isInMove())
         {
             return;
         } // end if
-        if (!_loc8.isVisible)
+        if (!_loc2.__get__isVisible())
         {
             return;
         } // end if
-        var _loc9 = _loc8.mc;
-        this.overHeadHandler.addOverHeadItem(sID, _loc9._x, _loc9._y, _loc9, sLayerName, className, aArgs, nDelay);
-    };
-    _loc1.removeSpriteOverHeadLayer = function (sID, sLayerName)
+        var _loc3 = _loc2.mc;
+        var _loc5 = _loc3._x;
+        var _loc4 = _loc3._y;
+        overHeadHandler.addOverHeadItem(sID, _loc5, _loc4, _loc3, sLayerName, className, aArgs, nDelay);
+    } // End of the function
+    function removeSpriteOverHeadLayer(sID, sLayerName)
     {
-        this.overHeadHandler.removeOverHeadLayer(sID, sLayerName);
-    };
-    _loc1.hideSpriteOverHead = function (sID)
+        overHeadHandler.removeOverHeadLayer(sID, sLayerName);
+    } // End of the function
+    function hideSpriteOverHead(sID)
     {
-        this.overHeadHandler.removeOverHead(sID);
-    };
-    _loc1.addSpriteExtraClipOnTimer = function (sID, sFile, nColor, bTop, nDuration)
+        overHeadHandler.removeOverHead(sID);
+    } // End of the function
+    function addSpriteExtraClip(sID, sFile, nColor, bTop)
     {
-        this.addSpriteExtraClip(sID, sFile, nColor, bTop);
-        var _loc7 = new Object();
-        _loc7.timerId = _global.setInterval(this, "removeSpriteExtraClipOnTimer", nDuration, _loc7, sID, bTop);
-    };
-    _loc1.removeSpriteExtraClipOnTimer = function (oTimer, sID, bTop)
+        spriteHandler.addSpriteExtraClip(sID, sFile, nColor, bTop);
+    } // End of the function
+    function removeSpriteExtraClip(sID, bTop)
     {
-        _global.clearInterval(oTimer.timerId);
-        this.removeSpriteExtraClip(sID, bTop);
-    };
-    _loc1.addSpriteExtraClip = function (sID, sFile, nColor, bTop)
+        spriteHandler.removeSpriteExtraClip(sID, bTop);
+    } // End of the function
+    function showSpritePoints(sID, nValue, nColor)
     {
-        this.spriteHandler.addSpriteExtraClip(sID, sFile, nColor, bTop);
-    };
-    _loc1.removeSpriteExtraClip = function (sID, bTop)
+        spriteHandler.showSpritePoints(sID, nValue, nColor);
+    } // End of the function
+    function setSpriteGhostView(bool)
     {
-        this.spriteHandler.removeSpriteExtraClip(sID, bTop);
-    };
-    _loc1.showSpritePoints = function (sID, nValue, nColor)
+        bGhostView = bool;
+        spriteHandler.setSpriteGhostView(bool);
+    } // End of the function
+    function drawGrid(bAll)
     {
-        this.spriteHandler.showSpritePoints(sID, nValue, nColor);
-    };
-    _loc1.setSpriteGhostView = function (bool)
-    {
-        this.bGhostView = bool;
-        this.spriteHandler.setSpriteGhostView(bool);
-    };
-    _loc1.setSpriteScale = function (sID, nScaleX, nScaleY)
-    {
-        this.spriteHandler.setSpriteScale(sID, nScaleX, nScaleY);
-    };
-    _loc1.drawGrid = function (bAll)
-    {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        if (this.gridHandler.bGridVisible)
+        if (gridHandler.bGridVisible)
         {
             this.removeGrid();
         }
         else
         {
-            this.gridHandler.draw(bAll);
+            gridHandler.draw(bAll);
         } // end else if
-    };
-    _loc1.removeGrid = function (Void)
+    } // End of the function
+    function removeGrid(Void)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        this.gridHandler.clear();
-    };
-    _loc1.addVisualEffectOnSprite = function (sID, oEffectData, nCellNum, nDisplayType, sTargetID)
+        gridHandler.clear();
+    } // End of the function
+    function addVisualEffectOnSprite(sID, oEffectData, nCellNum, nDisplayType)
     {
-        if (!this.isMapBuild)
+        if (!this.__get__isMapBuild())
         {
             return;
         } // end if
-        var _loc7 = this._oDatacenter.Sprites.getItemAt(sID);
-        var _loc8 = this._oDatacenter.Sprites.getItemAt(sTargetID);
-        this.visualEffectHandler.addEffect(_loc7, oEffectData, nCellNum, nDisplayType, _loc8);
-    };
-    _loc1.initializeDatacenter = function (Void)
+        var _loc2 = _oDatacenter.Sprites.getItemAt(sID);
+        if (_loc2 == undefined)
+        {
+            ank.utils.Logger.err("[addVisualEffectOnSprite] Sprite inexistant");
+            return;
+        } // end if
+        visualEffectHandler.addEffect(_loc2, oEffectData, nCellNum, nDisplayType);
+    } // End of the function
+    function initializeDatacenter(Void)
     {
-        if (this._oDatacenter == undefined)
+        if (_oDatacenter == undefined)
         {
             return (false);
         } // end if
-        this._oDatacenter.Map.cleanSpritesOn();
-        this._oDatacenter.Map = new ank.battlefield.datacenter.Map();
-        this._oDatacenter.Sprites = new ank.utils.ExtendedObject();
+        _oDatacenter.Map.cleanSpritesOn();
+        _oDatacenter.Map = new ank.battlefield.datacenter.Map();
+        _oDatacenter.Sprites = new ank.utils.ExtendedObject();
         return (true);
-    };
-    _loc1.createHandlers = function (Void)
+    } // End of the function
+    function createHandlers(Void)
     {
-        this.mapHandler = new ank.battlefield.MapHandler(this, this._mcMainContainer, this._oDatacenter);
-        this.spriteHandler = new ank.battlefield.SpriteHandler(this, this._mcMainContainer.ExternalContainer.Object2, this._oDatacenter.Sprites);
-        this.interactionHandler = new ank.battlefield.InteractionHandler(this._mcMainContainer.ExternalContainer.InteractionCell, this._oDatacenter);
-        this.zoneHandler = new ank.battlefield.ZoneHandler(this, this._mcMainContainer.ExternalContainer.Zone);
-        this.pointerHandler = new ank.battlefield.PointerHandler(this, this._mcMainContainer.ExternalContainer.Pointer);
-        this.selectionHandler = new ank.battlefield.SelectionHandler(this, this._mcMainContainer.ExternalContainer, this._oDatacenter);
-        this.gridHandler = new ank.battlefield.GridHandler(this._mcMainContainer.ExternalContainer.Grid, this._oDatacenter);
-        this.visualEffectHandler = new ank.battlefield.VisualEffectHandler(this, this._mcMainContainer.ExternalContainer.Object2);
-        this.textHandler = new ank.battlefield.TextHandler(this, this._mcMainContainer.Text, this._oDatacenter);
-        this.pointsHandler = new ank.battlefield.PointsHandler(this, this._mcMainContainer.Points, this._oDatacenter);
-        this.overHeadHandler = new ank.battlefield.OverHeadHandler(this, this._mcMainContainer.OverHead);
-    };
-    _loc1.onLoadInit = function (mc)
+        mapHandler = new ank.battlefield.MapHandler(this, _mcMainContainer, _oDatacenter);
+        spriteHandler = new ank.battlefield.SpriteHandler(this, _mcMainContainer.ExternalContainer.Object2, _oDatacenter.Sprites);
+        interactionHandler = new ank.battlefield.InteractionHandler(_mcMainContainer.ExternalContainer.InteractionCell);
+        zoneHandler = new ank.battlefield.ZoneHandler(this, _mcMainContainer.ExternalContainer.Zone);
+        pointerHandler = new ank.battlefield.PointerHandler(this, _mcMainContainer.ExternalContainer.Pointer);
+        selectionHandler = new ank.battlefield.SelectionHandler(this, _mcMainContainer.ExternalContainer.Select, _oDatacenter);
+        gridHandler = new ank.battlefield.GridHandler(_mcMainContainer.ExternalContainer.Grid, _oDatacenter);
+        visualEffectHandler = new ank.battlefield.VisualEffectHandler(this, _mcMainContainer.ExternalContainer.Object2);
+        textHandler = new ank.battlefield.TextHandler(this, _mcMainContainer.Text, _oDatacenter);
+        pointsHandler = new ank.battlefield.PointsHandler(this, _mcMainContainer.Points, _oDatacenter);
+        overHeadHandler = new ank.battlefield.OverHeadHandler(this, _mcMainContainer.OverHead);
+    } // End of the function
+    function onLoadInit(mc)
     {
-        switch (mc._name)
+        if (mc._name != "Ground")
         {
-            case "Ground":
-            {
-                mc._parent.useCustomGroundGfxFile(this._bUseCustomGroundGfxFile);
-                this.bCustomFileLoaded = true;
-                this.onInitComplete();
-                break;
-            } 
-            default:
-            {
-                mc.__proto__ = ank.battlefield.mc.ExternalContainer.prototype;
-                mc.initialize(this._sGroundFile);
-                this.createHandlers();
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.onLoadError = function (mc)
+            mc.__proto__ = ank.battlefield.mc.ExternalContainer.prototype;
+            mc.initialize(_sGroundFile);
+            this.createHandlers();
+        }
+        else
+        {
+            this.onInitComplete();
+        } // end else if
+    } // End of the function
+    function onLoadError(mc)
     {
         this.onInitError();
-    };
-    _loc1.onLoadProgress = function (mc, nBL, nBT)
+    } // End of the function
+    function onLoadProgress(mc, nBL, nBT)
     {
         this.onInitProgress(nBL, nBT);
-    };
-    _loc1.addProperty("datacenter", _loc1.__get__datacenter, function ()
-    {
-    });
-    _loc1.addProperty("isJumpActivate", _loc1.__get__isJumpActivate, _loc1.__set__isJumpActivate);
-    _loc1.addProperty("screenHeight", _loc1.__get__screenHeight, _loc1.__set__screenHeight);
-    _loc1.addProperty("screenWidth", _loc1.__get__screenWidth, _loc1.__set__screenWidth);
-    _loc1.addProperty("isMapBuild", _loc1.__get__isMapBuild, function ()
-    {
-    });
-    _loc1.addProperty("container", _loc1.__get__container, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._bJumpActivate = false;
-    (_global.ank.battlefield.Battlefield = function ()
-    {
-        super();
-    }).FRAMELOADTIMOUT = 500;
-    _loc1._bUseCustomGroundGfxFile = false;
-    _loc1.bGhostView = false;
-    _loc1.bCustomFileLoaded = false;
-} // end if
+    } // End of the function
+    var bGhostView = false;
+} // End of Class
 #endinitclip

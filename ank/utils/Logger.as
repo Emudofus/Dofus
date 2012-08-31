@@ -1,46 +1,28 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20978]
-#initclip 243
-if (!ank.utils.Logger)
+// [Initial MovieClip Action of sprite 415]
+#initclip 19
+class ank.utils.Logger
 {
-    if (!ank)
+    var _logs, _errors;
+    static var __get__logs, __get__errors;
+    function Logger()
     {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
+        _logs = new Array();
+        _errors = new Array();
         ank.utils.Logger.LC.connect("loggerIn");
         ank.utils.Logger.LC.getLogs = function ()
         {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
+            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.__get__logs());
         };
         ank.utils.Logger.LC.getErrors = function ()
         {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
+            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.__get__errors());
         };
-    }).prototype;
-    (_global.ank.utils.Logger = function ()
+    } // End of the function
+    static function log(txt, sSource)
     {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).log = function (txt, sSource)
-    {
+        trace (txt);
         ank.utils.Logger.LC.send("loggerOut", "log", txt);
         if (txt.length < ank.utils.Logger.MAX_LOG_SIZE)
         {
@@ -50,174 +32,25 @@ if (!ank.utils.Logger)
         {
             ank.utils.Logger._instance._logs.shift();
         } // end if
-    };
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).err = function (txt)
+    } // End of the function
+    static function err(txt)
     {
         txt = "ERROR : " + txt;
+        trace (txt);
         ank.utils.Logger.LC.send("loggerOut", "err", txt);
         ank.utils.Logger._instance._errors.push(txt);
-    };
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).__get__logs = function ()
+    } // End of the function
+    static function get logs()
     {
         return (ank.utils.Logger._instance._logs.join("\n"));
-    };
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).__get__errors = function ()
+    } // End of the function
+    static function get errors()
     {
         return (ank.utils.Logger._instance._errors.join("\n"));
-    };
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).addProperty("errors", (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).__get__errors, function ()
-    {
-    });
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).addProperty("logs", (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).__get__logs, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).LC = new LocalConnection();
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).MAX_LOG_COUNT = 50;
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    }).MAX_LOG_SIZE = 300;
-    (_global.ank.utils.Logger = function ()
-    {
-        this._logs = new Array();
-        this._errors = new Array();
-        ank.utils.Logger.LC.connect("loggerIn");
-        ank.utils.Logger.LC.getLogs = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "log", ank.utils.Logger.logs);
-        };
-        ank.utils.Logger.LC.getErrors = function ()
-        {
-            ank.utils.Logger.LC.send("loggerOut", "err", ank.utils.Logger.errors);
-        };
-    })._instance = new ank.utils.Logger();
-} // end if
+    } // End of the function
+    static var LC = new LocalConnection();
+    static var MAX_LOG_COUNT = 50;
+    static var MAX_LOG_SIZE = 300;
+    static var _instance = new ank.utils.Logger();
+} // End of Class
 #endinitclip

@@ -1,189 +1,158 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20795]
-#initclip 60
-if (!ank.utils.PatternDecoder)
+// [Initial MovieClip Action of sprite 816]
+#initclip 25
+class ank.utils.PatternDecoder
 {
-    if (!ank)
+    function PatternDecoder()
     {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.PatternDecoder = function ()
-    {
-    }).prototype;
-    (_global.ank.utils.PatternDecoder = function ()
-    {
-    }).getDescription = function (sText, aParams)
+    } // End of the function
+    static function getDescription(sText, aParams)
     {
         ank.utils.Extensions.addExtensions();
-        var _loc4 = sText.split("");
-        var _loc5 = ank.utils.PatternDecoder.decodeDescription(_loc4, aParams).join("");
-        return (_loc5);
-    };
-    (_global.ank.utils.PatternDecoder = function ()
-    {
-    }).combine = function (str, gender, singular)
+        var _loc2 = sText.split("");
+        var _loc1 = ank.utils.PatternDecoder.decodeDescription(_loc2, aParams).join("");
+        return (_loc1);
+    } // End of the function
+    static function combine(str, gender, singular)
     {
         ank.utils.Extensions.addExtensions();
-        var _loc5 = str.split("");
-        var _loc6 = new Object();
-        _loc6.m = gender == "m";
-        _loc6.f = gender == "f";
-        _loc6.n = gender == "n";
-        _loc6.p = !singular;
-        _loc6.s = singular;
-        var _loc7 = ank.utils.PatternDecoder.decodeCombine(_loc5, _loc6).join("");
-        return (_loc7);
-    };
-    (_global.ank.utils.PatternDecoder = function ()
+        var _loc3 = str.split("");
+        var _loc1 = new Object();
+        _loc1.m = gender == "m";
+        _loc1.f = gender == "f";
+        _loc1.n = gender == "n";
+        _loc1.p = !singular;
+        _loc1.s = singular;
+        var _loc2 = ank.utils.PatternDecoder.decodeCombine(_loc3, _loc1).join("");
+        return (_loc2);
+    } // End of the function
+    static function replace(sSrc, sPattern)
     {
-    }).replace = function (sSrc, sPattern)
-    {
-        var _loc4 = sSrc.split("##");
-        var _loc5 = 1;
-        
-        while (_loc5 = _loc5 + 2, _loc5 < _loc4.length)
+        var _loc2 = sSrc.split("##");
+        for (var _loc1 = 1; _loc1 < _loc2.length; _loc1 = _loc1 + 2)
         {
-            var _loc6 = _loc4[_loc5].split(",");
-            _loc4[_loc5] = ank.utils.PatternDecoder.getDescription(sPattern, _loc6);
-        } // end while
-        return (_loc4.join(""));
-    };
-    (_global.ank.utils.PatternDecoder = function ()
+            var _loc3 = _loc2[_loc1].split(",");
+            _loc2[_loc1] = ank.utils.PatternDecoder.getDescription(sPattern, _loc3);
+        } // end of for
+        return (_loc2.join(""));
+    } // End of the function
+    static function decodeDescription(aStr, aParams)
     {
-    }).replaceStr = function (sSrc, sSearchPattern, sReplaceStr)
-    {
-        var _loc5 = sSrc.split(sSearchPattern);
-        return (_loc5.join(sReplaceStr));
-    };
-    (_global.ank.utils.PatternDecoder = function ()
-    {
-    }).decodeDescription = function (aStr, aParams)
-    {
-        var _loc4 = 0;
-        var _loc5 = new String();
-        var _loc6 = aStr.length;
-        while (_loc4 < _loc6)
+        var _loc1 = 0;
+        var _loc7 = new String();
+        var _loc8 = aStr.length;
+        while (_loc1 < _loc8)
         {
-            _loc5 = aStr[_loc4];
-            switch (_loc5)
+            _loc7 = aStr[_loc1];
+            switch (_loc7)
             {
                 case "#":
                 {
-                    var _loc7 = aStr[_loc4 + 1];
-                    if (!_global.isNaN(_loc7))
+                    var _loc5 = aStr[_loc1 + 1];
+                    if (!isNaN(_loc5))
                     {
-                        if (aParams[_loc7 - 1] != undefined)
+                        if (aParams[_loc5 - 1] != undefined)
                         {
-                            aStr.splice(_loc4, 2, aParams[_loc7 - 1]);
-                            --_loc4;
+                            aStr.splice(_loc1, 2, aParams[_loc5 - 1]);
+                            --_loc1;
                         }
                         else
                         {
-                            aStr.splice(_loc4, 2);
-                            _loc4 = _loc4 - 2;
+                            aStr.splice(_loc1, 2);
+                            _loc1 = _loc1 - 2;
                         } // end if
                     } // end else if
                     break;
                 } 
                 case "~":
                 {
-                    var _loc8 = aStr[_loc4 + 1];
-                    if (!_global.isNaN(_loc8))
+                    _loc5 = aStr[_loc1 + 1];
+                    if (!isNaN(_loc5))
                     {
-                        if (aParams[_loc8 - 1] != undefined)
+                        if (aParams[_loc5 - 1] != undefined)
                         {
-                            aStr.splice(_loc4, 2);
-                            _loc4 = _loc4 - 2;
+                            aStr.splice(_loc1, 2);
+                            _loc1 = _loc1 - 2;
                         }
                         else
                         {
-                            return (aStr.slice(0, _loc4));
+                            return (aStr.slice(0, _loc1));
                         } // end if
                     } // end else if
                     break;
                 } 
                 case "{":
                 {
-                    var _loc9 = ank.utils.PatternDecoder.find(aStr.slice(_loc4), "}");
-                    var _loc10 = ank.utils.PatternDecoder.decodeDescription(aStr.slice(_loc4 + 1, _loc4 + _loc9), aParams).join("");
-                    aStr.splice(_loc4, _loc9 + 1, _loc10);
+                    var _loc4 = ank.utils.PatternDecoder.find(aStr.slice(_loc1), "}");
+                    var _loc6 = ank.utils.PatternDecoder.decodeDescription(aStr.slice(_loc1 + 1, _loc1 + _loc4), aParams).join("");
+                    aStr.splice(_loc1, _loc4 + 1, _loc6);
                     break;
                 } 
                 case "[":
                 {
-                    var _loc11 = ank.utils.PatternDecoder.find(aStr.slice(_loc4), "]");
-                    var _loc12 = Number(aStr.slice(_loc4 + 1, _loc4 + _loc11).join(""));
-                    if (!_global.isNaN(_loc12))
+                    _loc4 = ank.utils.PatternDecoder.find(aStr.slice(_loc1), "]");
+                    _loc5 = Number(aStr.slice(_loc1 + 1, _loc1 + _loc4).join(""));
+                    if (!isNaN(_loc5))
                     {
-                        aStr.splice(_loc4, _loc11 + 1, aParams[_loc12] + " ");
-                        _loc4 = _loc4 - _loc11;
+                        aStr.splice(_loc1, _loc4 + 1, aParams[_loc5] + " ");
+                        _loc1 = _loc1 - _loc4;
                     } // end if
                     break;
                 } 
             } // End of switch
-            ++_loc4;
+            ++_loc1;
         } // end while
         return (aStr);
-    };
-    (_global.ank.utils.PatternDecoder = function ()
+    } // End of the function
+    static function decodeCombine(aStr, oParams)
     {
-    }).decodeCombine = function (aStr, oParams)
-    {
-        var _loc4 = 0;
-        var _loc5 = new String();
-        var _loc6 = aStr.length;
-        while (_loc4 < _loc6)
+        var _loc1 = 0;
+        var _loc6 = new String();
+        var _loc8 = aStr.length;
+        while (_loc1 < _loc8)
         {
-            _loc5 = aStr[_loc4];
-            switch (_loc5)
+            _loc6 = aStr[_loc1];
+            switch (_loc6)
             {
                 case "~":
                 {
-                    var _loc7 = aStr[_loc4 + 1];
-                    if (oParams[_loc7])
+                    var _loc4 = aStr[_loc1 + 1];
+                    if (oParams[_loc4])
                     {
-                        aStr.splice(_loc4, 2);
-                        _loc4 = _loc4 - 2;
+                        aStr.splice(_loc1, 2);
+                        _loc1 = _loc1 - 2;
                     }
                     else
                     {
-                        return (aStr.slice(0, _loc4));
+                        return (aStr.slice(0, _loc1));
                     } // end else if
                     break;
                 } 
                 case "{":
                 {
-                    var _loc8 = ank.utils.PatternDecoder.find(aStr.slice(_loc4), "}");
-                    var _loc9 = ank.utils.PatternDecoder.decodeCombine(aStr.slice(_loc4 + 1, _loc4 + _loc8), oParams).join("");
-                    aStr.splice(_loc4, _loc8 + 1, _loc9);
+                    var _loc3 = ank.utils.PatternDecoder.find(aStr.slice(_loc1), "}");
+                    var _loc5 = ank.utils.PatternDecoder.decodeCombine(aStr.slice(_loc1 + 1, _loc1 + _loc3), oParams).join("");
+                    aStr.splice(_loc1, _loc3 + 1, _loc5);
                     break;
                 } 
             } // End of switch
-            ++_loc4;
+            ++_loc1;
         } // end while
         return (aStr);
-    };
-    (_global.ank.utils.PatternDecoder = function ()
+    } // End of the function
+    static function find(a, f)
     {
-    }).find = function (a, f)
-    {
-        var _loc4 = a.length;
-        var _loc5 = 0;
-        
-        while (++_loc5, _loc5 < _loc4)
+        var _loc2 = a.length;
+        var _loc1;
+        for (var _loc1 = 0; _loc1 < _loc2; ++_loc1)
         {
-            if (a[_loc5] == f)
+            if (a[_loc1] == f)
             {
-                return (_loc5);
+                return (_loc1);
             } // end if
-        } // end while
+        } // end of for
         return (-1);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

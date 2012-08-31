@@ -1,107 +1,100 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20564]
-#initclip 85
-if (!dofus.managers.GameActionsManager)
+// [Initial MovieClip Action of sprite 836]
+#initclip 48
+class dofus.managers.GameActionsManager extends dofus.utils.ApiElement
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.managers)
-    {
-        _global.dofus.managers = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.managers.GameActionsManager = function (d, oAPI)
+    var _data, _id, _bNextAction, _state, _currentType, api;
+    function GameActionsManager(d, oAPI)
     {
         super();
         this.initialize(d, oAPI);
-    }).prototype;
-    _loc1.initialize = function (d, oAPI)
+    } // End of the function
+    function initialize(d, oAPI)
     {
         super.initialize(oAPI);
-        this._data = d;
+        _data = d;
         this.clear();
-    };
-    _loc1.clear = function (Void)
+    } // End of the function
+    function clear(Void)
     {
-        this._id = undefined;
-        this._bNextAction = false;
-        this._state = dofus.managers.GameActionsManager.STATE_READY;
-        this._currentType = null;
-    };
-    _loc1.transmittingMove = function (type, params)
+        _id = undefined;
+        _bNextAction = false;
+        _state = dofus.managers.GameActionsManager.STATE_READY;
+        _currentType = null;
+    } // End of the function
+    function transmittingMove(type, params)
     {
         if (!this.isWaiting())
         {
-            this.api.network.GameActions.sendActions(type, params);
-            this._state = dofus.managers.GameActionsManager.STATE_TRANSMITTING;
-            this._currentType = type;
+            api.network.GameActions.sendActions(type, params);
+            _state = dofus.managers.GameActionsManager.STATE_TRANSMITTING;
+            _currentType = type;
         }
         else if (this.canCancel(type))
         {
-            this.cancel(this._data.cellNum);
+            this.cancel(_data.cellNum);
             this.transmittingMove(type, params);
         }
         else
         {
             ank.utils.Logger.err("L\'état de l\'action ne permet pas de faire ceci");
         } // end else if
-    };
-    _loc1.transmittingOther = function (type, params)
+    } // End of the function
+    function transmittingOther(type, params)
     {
         if (!this.isWaiting())
         {
-            this.api.network.GameActions.sendActions(type, params);
-            this._state = dofus.managers.GameActionsManager.STATE_TRANSMITTING;
-            this._currentType = type;
+            api.network.GameActions.sendActions(type, params);
+            _state = dofus.managers.GameActionsManager.STATE_TRANSMITTING;
+            _currentType = type;
         }
         else
         {
             ank.utils.Logger.err("L\'état de l\'action ne permet pas de faire ceci " + type + " " + params);
         } // end else if
-    };
-    _loc1.onServerResponse = function (id)
+    } // End of the function
+    function onServerResponse(id)
     {
-        this._id = id;
-        this._state = dofus.managers.GameActionsManager.STATE_IN_PROGRESS;
-    };
-    _loc1.cancel = function (params, bForceStatic)
+        _id = id;
+        _state = dofus.managers.GameActionsManager.STATE_IN_PROGRESS;
+    } // End of the function
+    function cancel(params, bForceStatic)
     {
-        this._currentType = null;
+        _currentType = null;
         if (this.canCancel())
         {
-            this.api.network.GameActions.actionCancel(this._id, params);
-            var _loc4 = this._data.sequencer;
-            var _loc5 = this._data.mc;
-            _loc4.clearAllNextActions();
+            api.network.GameActions.actionCancel(_id, params);
+            var _loc3 = _data.sequencer;
+            var _loc2 = _data.mc;
+            _loc3.clearAllNextActions();
             if (bForceStatic == true)
             {
-                _loc4.addAction(false, _loc5, _loc5.setAnim, ["Static"]);
+                _loc3.addAction(false, _loc2, _loc2.setAnim, ["Static"]);
             } // end if
             this.clear();
         } // end if
-    };
-    _loc1.end = function (bIAmSender)
+    } // End of the function
+    function end(bIAmSender)
     {
-        if (this._bNextAction == false || !bIAmSender)
+        if (_bNextAction == false || !bIAmSender)
         {
             this.clear();
         }
         else
         {
-            this._state = dofus.managers.GameActionsManager.STATE_TRANSMITTING;
-            this._id = undefined;
+            _state = dofus.managers.GameActionsManager.STATE_TRANSMITTING;
+            _id = undefined;
         } // end else if
-    };
-    _loc1.ack = function (idAction)
+    } // End of the function
+    function ack(idAction)
     {
-        this.api.network.GameActions.actionAck(idAction);
+        api.network.GameActions.actionAck(idAction);
         this.end(true);
-    };
-    _loc1.isWaiting = function (Void)
+    } // End of the function
+    function isWaiting(Void)
     {
-        switch (this._state)
+        switch (_state)
         {
             case dofus.managers.GameActionsManager.STATE_READY:
             {
@@ -114,18 +107,18 @@ if (!dofus.managers.GameActionsManager)
             } 
         } // End of switch
         return (false);
-    };
-    _loc1.canCancel = function (type)
+    } // End of the function
+    function canCancel(type)
     {
-        if (type != this._currentType)
+        if (type != _currentType)
         {
             return (false);
         } // end if
-        if (this._id == undefined)
+        if (_id == undefined)
         {
             return (false);
         } // end if
-        switch (this._state)
+        switch (_state)
         {
             case dofus.managers.GameActionsManager.STATE_TRANSMITTING:
             {
@@ -138,22 +131,9 @@ if (!dofus.managers.GameActionsManager)
             } 
         } // End of switch
         return (false);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.managers.GameActionsManager = function (d, oAPI)
-    {
-        super();
-        this.initialize(d, oAPI);
-    }).STATE_TRANSMITTING = 2;
-    (_global.dofus.managers.GameActionsManager = function (d, oAPI)
-    {
-        super();
-        this.initialize(d, oAPI);
-    }).STATE_IN_PROGRESS = 1;
-    (_global.dofus.managers.GameActionsManager = function (d, oAPI)
-    {
-        super();
-        this.initialize(d, oAPI);
-    }).STATE_READY = 0;
-} // end if
+    } // End of the function
+    static var STATE_TRANSMITTING = 2;
+    static var STATE_IN_PROGRESS = 1;
+    static var STATE_READY = 0;
+} // End of Class
 #endinitclip

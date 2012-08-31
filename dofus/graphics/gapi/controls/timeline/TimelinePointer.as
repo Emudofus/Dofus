@@ -1,61 +1,34 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20981]
-#initclip 246
-if (!dofus.graphics.gapi.controls.timeline.TimelinePointer)
+// [Initial MovieClip Action of sprite 977]
+#initclip 191
+class dofus.graphics.gapi.controls.timeline.TimelinePointer extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.timeline)
-    {
-        _global.dofus.graphics.gapi.controls.timeline = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.timeline.TimelinePointer = function ()
+    var _x, _destX;
+    function TimelinePointer()
     {
         super();
-    }).prototype;
-    _loc1.moveTween = function (destX, destScale)
+    } // End of the function
+    function moveTween(destX)
     {
-        var nDir = destX > this._x ? (1) : (-1);
+        var nDir = destX > _x ? (1) : (-1);
         var i = 0;
-        this._destX = destX;
-        this.onEnterFrame = function ()
+        _destX = destX;
+        function onEnterFrame()
         {
             ++i;
-            this._x = this._x + i * i * nDir;
-            this._xscale = this._xscale + (destScale - this._xscale) / 2;
-            this._yscale = this._yscale + (destScale - this._yscale) / 2;
-            if (this._x * nDir > this._destX * nDir)
+            _x = _x + i * i * nDir;
+            if (_x * nDir > _destX * nDir)
             {
-                this._x = this._destX;
-                this._xscale = destScale;
-                this._yscale = destScale;
+                _x = _destX;
                 delete this.onEnterFrame;
             } // end if
-        };
-    };
-    _loc1.init = function ()
+        } // End of the function
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.timeline.TimelinePointer.CLASS_NAME);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.timeline.TimelinePointer = function ()
-    {
-        super();
-    }).CLASS_NAME = "Timeline";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Timeline";
+} // End of Class
 #endinitclip

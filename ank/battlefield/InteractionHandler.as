@@ -1,30 +1,21 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20910]
-#initclip 175
-if (!ank.battlefield.InteractionHandler)
+// [Initial MovieClip Action of sprite 855]
+#initclip 67
+class ank.battlefield.InteractionHandler
 {
-    if (!ank)
+    var _mcContainer, _extraProto;
+    function InteractionHandler(c)
     {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.battlefield)
+        this.initialize(c);
+    } // End of the function
+    function initialize(c)
     {
-        _global.ank.battlefield = new Object();
-    } // end if
-    var _loc1 = (_global.ank.battlefield.InteractionHandler = function (c, d)
-    {
-        this.initialize(c, d);
-    }).prototype;
-    _loc1.initialize = function (c, d)
-    {
-        this._mcContainer = c;
-        this._oDatacenter = d;
-        this._extraProto = new Object();
+        _mcContainer = c;
+        _extraProto = new Object();
         this.setEnabled(ank.battlefield.Constants.INTERACTION_NONE);
-        this._bIs8 = Number(System.capabilities.version.substr(0, 1)) >= 8;
-    };
-    _loc1.setEnabled = function (nState)
+    } // End of the function
+    function setEnabled(nState)
     {
         switch (nState)
         {
@@ -63,42 +54,23 @@ if (!ank.battlefield.InteractionHandler)
             {
                 this.setEnabledProtoRelease(ank.battlefield.mc.InteractiveObject.prototype, false);
                 this.setEnabledProtoOutOver(ank.battlefield.mc.InteractiveObject.prototype, false);
-                if (this._bIs8)
-                {
-                    this.setEnabledObject2Release(false);
-                    this.setEnabledObject2OutOver(false);
-                } // end if
                 break;
             } 
             case ank.battlefield.Constants.INTERACTION_OBJECT_RELEASE:
             {
                 this.setEnabledProtoRelease(ank.battlefield.mc.InteractiveObject.prototype, true);
                 this.setEnabledProtoOutOver(ank.battlefield.mc.InteractiveObject.prototype, false);
-                if (this._bIs8)
-                {
-                    this.setEnabledObject2Release(true);
-                    this.setEnabledObject2OutOver(false);
-                } // end if
                 break;
             } 
             case ank.battlefield.Constants.INTERACTION_OBJECT_OVER_OUT:
             {
                 this.setEnabledProtoRelease(ank.battlefield.mc.InteractiveObject.prototype, false);
                 this.setEnabledProtoOutOver(ank.battlefield.mc.InteractiveObject.prototype, true);
-                if (this._bIs8)
-                {
-                    this.setEnabledObject2Release(false);
-                    this.setEnabledObject2OutOver(true);
-                } // end if
                 break;
             } 
             case ank.battlefield.Constants.INTERACTION_OBJECT_RELEASE_OVER_OUT:
             {
                 this.setEnabledProtoAll(ank.battlefield.mc.InteractiveObject.prototype, true);
-                if (this._bIs8)
-                {
-                    this.setEnabledObject2All(true);
-                } // end if
                 break;
             } 
             case ank.battlefield.Constants.INTERACTION_SPRITE_NONE:
@@ -125,52 +97,52 @@ if (!ank.battlefield.InteractionHandler)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.setEnabledCell = function (nCellNum, nState)
+    } // End of the function
+    function setEnabledCell(nCellNum, nState)
     {
-        var _loc4 = this._mcContainer["cell" + nCellNum];
-        if (_loc4 == undefined)
+        var _loc2 = _mcContainer["cell" + nCellNum];
+        if (_loc2 == undefined)
         {
             ank.utils.Logger.err("[setEnabledCell] Cell inexistante");
             return;
         } // end if
-        this._extraProto[_loc4._name] = _loc4;
+        _extraProto[_loc2._name] = _loc2;
         switch (nState)
         {
             case ank.battlefield.Constants.INTERACTION_NONE:
             {
-                this.setEnabledProtoAll(_loc4, false);
+                this.setEnabledProtoAll(_loc2, false);
                 break;
             } 
             case ank.battlefield.Constants.INTERACTION_CELL_RELEASE:
             {
-                this.setEnabledProtoRelease(_loc4, true);
-                this.setEnabledProtoOutOver(_loc4, false);
+                this.setEnabledProtoRelease(_loc2, true);
+                this.setEnabledProtoOutOver(_loc2, false);
                 break;
             } 
             case ank.battlefield.Constants.INTERACTION_CELL_OVER_OUT:
             {
-                this.setEnabledProtoRelease(_loc4, false);
-                this.setEnabledProtoOutOver(_loc4, true);
+                this.setEnabledProtoRelease(_loc2, false);
+                this.setEnabledProtoOutOver(_loc2, true);
                 break;
             } 
             case ank.battlefield.Constants.INTERACTION_CELL_RELEASE_OVER_OUT:
             {
-                this.setEnabledProtoAll(_loc4, true);
+                this.setEnabledProtoAll(_loc2, true);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.setEnabledOffAllExtraProto = function (Void)
+    } // End of the function
+    function setEnabledOffAllExtraProto(Void)
     {
-        for (var p in this._extraProto)
+        for (var _loc3 in _extraProto)
         {
-            var _loc3 = this._extraProto[p];
-            this.setEnabledProtoAll(_loc3, false);
+            var _loc2 = _extraProto[_loc3];
+            this.setEnabledProtoAll(_loc2, false);
         } // end of for...in
-        this._extraProto = new Array();
-    };
-    _loc1.setEnabledProtoAll = function (proto, bool)
+        _extraProto = new Array();
+    } // End of the function
+    function setEnabledProtoAll(proto, bool)
     {
         if (bool)
         {
@@ -185,8 +157,8 @@ if (!ank.battlefield.InteractionHandler)
             delete proto.onRollOut;
             delete proto.onReleaseOutside;
         } // end else if
-    };
-    _loc1.setEnabledProtoRelease = function (proto, bool)
+    } // End of the function
+    function setEnabledProtoRelease(proto, bool)
     {
         if (bool)
         {
@@ -196,8 +168,8 @@ if (!ank.battlefield.InteractionHandler)
         {
             delete proto.onRelease;
         } // end else if
-    };
-    _loc1.setEnabledProtoOutOver = function (proto, bool)
+    } // End of the function
+    function setEnabledProtoOutOver(proto, bool)
     {
         if (bool)
         {
@@ -211,82 +183,6 @@ if (!ank.battlefield.InteractionHandler)
             delete proto.onRollOut;
             delete proto.onReleaseOutside;
         } // end else if
-    };
-    _loc1.setEnabledObject2All = function (bool)
-    {
-        var _loc3 = this._oDatacenter.Map.data;
-        for (var k in _loc3)
-        {
-            var _loc4 = _loc3[k].mcObject2;
-            if (!_loc3[k].layerObject2Interactive)
-            {
-                continue;
-            } // end if
-            if (_loc4 == undefined)
-            {
-                continue;
-            } // end if
-            if (bool)
-            {
-                _loc4.onRelease = _loc4._release;
-                _loc4.onRollOver = _loc4._rollOver;
-                _loc4.onRollOut = _loc4.onReleaseOutside = _loc4._rollOut;
-                continue;
-            } // end if
-            delete _loc4.onRelease;
-            delete _loc4.onRollOver;
-            delete _loc4.onRollOut;
-            delete _loc4.onReleaseOutside;
-        } // end of for...in
-    };
-    _loc1.setEnabledObject2Release = function (bool)
-    {
-        var _loc3 = this._oDatacenter.Map.data;
-        for (var k in _loc3)
-        {
-            var _loc4 = _loc3[k].mcObject2;
-            if (!_loc3[k].layerObject2Interactive)
-            {
-                continue;
-            } // end if
-            if (_loc4 == undefined)
-            {
-                continue;
-            } // end if
-            if (bool)
-            {
-                _loc4.onRelease = _loc4._release;
-                continue;
-            } // end if
-            delete _loc4.onRelease;
-        } // end of for...in
-    };
-    _loc1.setEnabledObject2OutOver = function (bool)
-    {
-        var _loc3 = this._oDatacenter.Map.data;
-        for (var k in _loc3)
-        {
-            var _loc4 = _loc3[k].mcObject2;
-            if (!_loc3[k].layerObject2Interactive)
-            {
-                continue;
-            } // end if
-            if (_loc4 == undefined)
-            {
-                continue;
-            } // end if
-            if (bool)
-            {
-                _loc4.onRollOver = _loc4._rollOver;
-                _loc4.onRollOut = _loc4._rollOut;
-                _loc4.onRollOut = _loc4.onReleaseOutside = _loc4._rollOut;
-                continue;
-            } // end if
-            delete _loc4.onRollOver;
-            delete _loc4.onRollOut;
-            delete _loc4.onReleaseOutside;
-        } // end of for...in
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

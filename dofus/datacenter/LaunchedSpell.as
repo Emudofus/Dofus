@@ -1,63 +1,49 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20740]
-#initclip 5
-if (!dofus.datacenter.LaunchedSpell)
+// [Initial MovieClip Action of sprite 942]
+#initclip 154
+class dofus.datacenter.LaunchedSpell
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.LaunchedSpell = function (nSpellID, sSpriteOnID)
+    var _nRemainingTurn, __get__remainingTurn, _sSpriteOnID, _oSpell, __set__remainingTurn, __get__spell, __get__spriteOnID;
+    function LaunchedSpell(nSpellID, sSpriteOnID)
     {
         this.initialize(nSpellID, sSpriteOnID);
-    }).prototype;
-    _loc1.__set__remainingTurn = function (nRemainingTurn)
+    } // End of the function
+    function set remainingTurn(nRemainingTurn)
     {
-        this._nRemainingTurn = Number(nRemainingTurn);
+        _nRemainingTurn = Number(nRemainingTurn);
         //return (this.remainingTurn());
-    };
-    _loc1.__get__remainingTurn = function ()
+        null;
+    } // End of the function
+    function get remainingTurn()
     {
-        return (this._nRemainingTurn);
-    };
-    _loc1.__get__spriteOnID = function ()
+        return (_nRemainingTurn);
+    } // End of the function
+    function get spriteOnID()
     {
-        return (this._sSpriteOnID);
-    };
-    _loc1.__get__spell = function ()
+        return (_sSpriteOnID);
+    } // End of the function
+    function get spell()
     {
-        return (this._oSpell);
-    };
-    _loc1.initialize = function (nSpellID, sSpriteOnID)
+        return (_oSpell);
+    } // End of the function
+    function initialize(nSpellID, sSpriteOnID)
     {
-        this._oSpell = _global.API.datacenter.Player.Spells.findFirstItem("ID", nSpellID).item;
-        this._sSpriteOnID = sSpriteOnID;
-        var _loc4 = this._oSpell.delayBetweenLaunch;
-        if (_loc4 == undefined)
+        _oSpell = _global.API.datacenter.Player.Spells.findFirstItem("ID", nSpellID).item;
+        _sSpriteOnID = sSpriteOnID;
+        var _loc3 = _oSpell.delayBetweenLaunch;
+        if (_loc3 == undefined)
         {
-            _loc4 = 0;
+            _loc3 = 0;
         } // end if
-        if (_loc4 >= 63)
+        if (_loc3 >= 63)
         {
-            this._nRemainingTurn = Number.MAX_VALUE;
+            _nRemainingTurn = Number.MAX_VALUE;
         }
         else
         {
-            this._nRemainingTurn = _loc4;
+            _nRemainingTurn = _loc3;
         } // end else if
-    };
-    _loc1.addProperty("spriteOnID", _loc1.__get__spriteOnID, function ()
-    {
-    });
-    _loc1.addProperty("remainingTurn", _loc1.__get__remainingTurn, _loc1.__set__remainingTurn);
-    _loc1.addProperty("spell", _loc1.__get__spell, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

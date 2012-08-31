@@ -1,63 +1,58 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20572]
-#initclip 93
-if (!dofus.datacenter.Alignment)
+// [Initial MovieClip Action of sprite 840]
+#initclip 52
+class dofus.datacenter.Alignment
 {
-    if (!dofus)
+    var api, _nIndex, __get__index, _nValue, __get__value, __get__frame, __get__iconFile, __set__index, __get__name, __set__value;
+    function Alignment(nIndex, nValue)
     {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Alignment = function (nIndex, nValue)
-    {
-        this.api = _global.API;
+        api = _global.API;
         this.initialize(nIndex, nValue);
-    }).prototype;
-    _loc1.__get__index = function ()
+    } // End of the function
+    function get index()
     {
-        return (this._nIndex);
-    };
-    _loc1.__set__index = function (nIndex)
+        return (_nIndex);
+    } // End of the function
+    function set index(nIndex)
     {
-        this._nIndex = _global.isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
+        _nIndex = isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
         //return (this.index());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        if (this._nIndex == -1)
+        if (_nIndex == -1)
         {
             return ("");
         } // end if
-        return (this.api.lang.getAlignment(this._nIndex).n);
-    };
-    _loc1.__get__value = function ()
+        return (api.lang.getAlignment(_nIndex));
+    } // End of the function
+    function get value()
     {
-        return (this._nValue);
-    };
-    _loc1.__set__value = function (nValue)
+        return (_nValue);
+    } // End of the function
+    function set value(nValue)
     {
-        this._nValue = _global.isNaN(nValue) || nValue == undefined ? (0) : (nValue);
+        _nValue = isNaN(nValue) || nValue == undefined ? (0) : (nValue);
         //return (this.value());
-    };
-    _loc1.__get__frame = function ()
+        null;
+    } // End of the function
+    function get frame()
     {
-        if (this._nValue <= 20)
+        if (_nValue <= 20)
         {
             return (1);
         }
-        else if (this._nValue <= 40)
+        else if (_nValue <= 40)
         {
             return (2);
         }
-        else if (this._nValue <= 60)
+        else if (_nValue <= 60)
         {
             return (3);
         }
-        else if (this._nValue <= 80)
+        else if (_nValue <= 80)
         {
             return (4);
         }
@@ -65,41 +60,15 @@ if (!dofus.datacenter.Alignment)
         {
             return (5);
         } // end else if
-    };
-    _loc1.__get__iconFile = function ()
+    } // End of the function
+    function get iconFile()
     {
-        return (dofus.Constants.ALIGNMENTS_PATH + this._nIndex + ".swf");
-    };
-    _loc1.initialize = function (nIndex, nValue)
+        return (dofus.Constants.ALIGNMENTS_PATH + _nIndex + ".swf");
+    } // End of the function
+    function initialize(nIndex, nValue)
     {
-        this._nIndex = _global.isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
-        this._nValue = _global.isNaN(nValue) || nValue == undefined ? (0) : (nValue);
-    };
-    _loc1.clone = function ()
-    {
-        return (new dofus.datacenter.Alignment(this._nIndex, this._nValue));
-    };
-    _loc1.compareTo = function (obj)
-    {
-        var _loc3 = (dofus.datacenter.Alignment)(obj);
-        if (_loc3.index == this._nIndex)
-        {
-            return (0);
-        } // end if
-        return (-1);
-    };
-    _loc1.addProperty("frame", _loc1.__get__frame, function ()
-    {
-    });
-    _loc1.addProperty("value", _loc1.__get__value, _loc1.__set__value);
-    _loc1.addProperty("iconFile", _loc1.__get__iconFile, function ()
-    {
-    });
-    _loc1.addProperty("index", _loc1.__get__index, _loc1.__set__index);
-    _loc1.addProperty("name", _loc1.__get__name, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1.fallenAngelDemon = false;
-} // end if
+        _nIndex = isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
+        _nValue = isNaN(nValue) || nValue == undefined ? (0) : (nValue);
+    } // End of the function
+} // End of Class
 #endinitclip

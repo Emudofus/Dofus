@@ -1,39 +1,31 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20591]
-#initclip 112
-if (!dofus.aks.Documents)
+// [Initial MovieClip Action of sprite 954]
+#initclip 166
+class dofus.aks.Documents extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Documents = function (oAKS, oAPI)
+    var aks, api;
+    function Documents(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.leave = function ()
+    } // End of the function
+    function leave()
     {
-        this.aks.send("dV");
-    };
-    _loc1.onCreate = function (bSuccess, sExtraData)
+        aks.send("dV");
+    } // End of the function
+    function onCreate(bSuccess, sExtraData)
     {
         if (bSuccess)
         {
-            var _loc4 = sExtraData;
-            var _loc5 = this.api.config.language;
-            this.api.ui.loadUIComponent("CenterText", "CenterText", {text: this.api.lang.getText("LOADING"), background: false}, {bForceLoad: true});
-            this.api.kernel.DocumentsServersManager.loadDocument(_loc5 + "_" + _loc4);
+            var _loc2 = sExtraData;
+            var _loc3 = api.config.language;
+            api.ui.loadUIComponent("CenterText", "CenterText", {text: api.lang.getText("LOADING"), background: false}, {bForceLoad: true});
+            api.kernel.DocumentsServersManager.loadDocument(_loc3 + "_" + _loc2);
         } // end if
-    };
-    _loc1.onLeave = function ()
+    } // End of the function
+    function onLeave()
     {
-        this.api.ui.unloadUIComponent("Document");
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        api.ui.unloadUIComponent("Document");
+    } // End of the function
+} // End of Class
 #endinitclip

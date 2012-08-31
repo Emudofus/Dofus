@@ -1,98 +1,75 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20594]
-#initclip 115
-if (!dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTreeItem)
+// [Initial MovieClip Action of sprite 1068]
+#initclip 38
+class dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTreeItem extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.alignmentviewer)
-    {
-        _global.dofus.graphics.gapi.controls.alignmentviewer = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTreeItem = function ()
+    var _ldrIcon, _nLdrX, _lblName, __width, _mcBackgroundLight, _mcBackgroundDark, _lblLevel, _nLblX;
+    function AlignmentViewerTreeItem()
     {
         super();
-    }).prototype;
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
         if (bUsed)
         {
-            var _loc5 = dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTreeItem.DEPTH_X_OFFSET * oItem.depth;
+            var _loc3 = dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTreeItem.DEPTH_X_OFFSET * oItem.depth;
             if (oItem.data instanceof dofus.datacenter.Alignment)
             {
-                this._ldrIcon._x = this._nLdrX + _loc5;
-                this._lblName._x = this._nLdrX + _loc5;
-                this._lblName.width = this.__width - this._lblName._x;
-                this._lblName.styleName = "BrownLeftMediumBoldLabel";
-                this._mcBackgroundLight._visible = false;
-                this._mcBackgroundDark._visible = true;
-                this._ldrIcon.contentPath = "";
-                this._lblName.text = oItem.data.name;
-                this._lblLevel.text = "";
+                _ldrIcon._x = _nLdrX + _loc3;
+                _lblName._x = _nLdrX + _loc3;
+                _lblName.__set__width(__width - _lblName._x);
+                _lblName.__set__styleName("BrownLeftMediumBoldLabel");
+                _mcBackgroundLight._visible = false;
+                _mcBackgroundDark._visible = true;
+                _ldrIcon.__set__contentPath("");
+                _lblName.__set__text(oItem.data.name);
+                _lblLevel.__set__text("");
             } // end if
             if (oItem.data instanceof dofus.datacenter.Order)
             {
-                this._ldrIcon._x = this._nLdrX + _loc5;
-                this._lblName._x = this._nLblX + _loc5;
-                this._lblName.width = this.__width - this._lblName._x;
-                this._lblName.styleName = "BrownLeftSmallBoldLabel";
-                this._mcBackgroundLight._visible = false;
-                this._mcBackgroundDark._visible = false;
-                this._ldrIcon.contentPath = oItem.data.iconFile;
-                this._lblName.text = oItem.data.name;
-                this._lblLevel.text = "";
+                _ldrIcon._x = _nLdrX + _loc3;
+                _lblName._x = _nLblX + _loc3;
+                _lblName.__set__width(__width - _lblName._x);
+                _lblName.__set__styleName("BrownLeftSmallBoldLabel");
+                _mcBackgroundLight._visible = true;
+                _mcBackgroundDark._visible = false;
+                _ldrIcon.__set__contentPath(oItem.data.iconFile);
+                _lblName.__set__text(oItem.data.name);
+                _lblLevel.__set__text("");
             }
             else if (oItem.data instanceof dofus.datacenter.Specialization)
             {
-                this._ldrIcon._x = this._nLdrX + _loc5;
-                this._lblName._x = this._nLblX + _loc5;
-                this._lblName.width = this.__width - this._lblName._x;
-                this._lblName.styleName = "BrownLeftSmallLabel";
-                this._mcBackgroundLight._visible = false;
-                this._mcBackgroundDark._visible = false;
-                this._ldrIcon.contentPath = "";
-                this._lblLevel.text = oItem.data.alignment.value > 0 ? (oItem.data.alignment.value + " ") : ("- ");
-                this._lblName.text = oItem.data.name;
-                this._lblLevel.setSize(this.__width);
-                this._lblName.setSize(this.__width - this._lblName._x - this._lblLevel.textWidth - 30);
+                _ldrIcon._x = _nLdrX + _loc3;
+                _lblName._x = _nLblX + _loc3;
+                _lblName.__set__width(__width - _lblName._x);
+                _lblName.__set__styleName("BrownLeftSmallLabel");
+                _mcBackgroundLight._visible = false;
+                _mcBackgroundDark._visible = false;
+                _ldrIcon.__set__contentPath("");
+                _lblLevel.__set__text(oItem.data.alignment.value > 0 ? (oItem.data.alignment.value + " ") : ("- "));
+                _lblName.__set__text(oItem.data.name);
+                _lblLevel.setSize(__width);
+                _lblName.setSize(__width - _lblName._x - _lblLevel.__get__textWidth() - 30);
             } // end else if
         }
-        else if (this._lblName.text != undefined)
+        else
         {
-            this._ldrIcon._x = this._nLdrX;
-            this._lblName._x = this._nLblX;
-            this._ldrIcon.contentPath = "";
-            this._lblName.text = "";
-            this._lblLevel.text = "";
-            this._mcBackgroundLight._visible = false;
-            this._mcBackgroundDark._visible = false;
+            _ldrIcon._x = _nLdrX;
+            _lblName._x = _nLblX;
+            _ldrIcon.__set__contentPath("");
+            _lblName.__set__text("");
+            _lblLevel.__set__text("");
+            _mcBackgroundLight._visible = false;
+            _mcBackgroundDark._visible = false;
         } // end else if
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false);
-        this._nLdrX = this._ldrIcon._x;
-        this._nLblX = this._lblName._x;
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTreeItem = function ()
-    {
-        super();
-    }).DEPTH_X_OFFSET = 10;
-} // end if
+        _nLdrX = _ldrIcon._x;
+        _nLblX = _lblName._x;
+    } // End of the function
+    static var DEPTH_X_OFFSET = 10;
+} // End of Class
 #endinitclip

@@ -1,177 +1,147 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20916]
-#initclip 181
-if (!dofus.graphics.gapi.ui.CreateGuild)
+// [Initial MovieClip Action of sprite 1041]
+#initclip 8
+class dofus.graphics.gapi.ui.CreateGuild extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.CreateGuild = function ()
+    var _bEnabled, api, _eaBacks, _eaUps, _nBackID, _nUpID, addToQueue, _winBg, _lblName, _lblEmblem, _lblColors, _btnCancel, _btnCreate, _btnTabBack, _btnTabUp, _btnClose, _cpColors, _cgGrid, _itName, _eEmblem, __set__enabled;
+    function CreateGuild()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.CreateGuild.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        if (this._bEnabled)
+        if (_bEnabled)
         {
-            this.api.network.Guild.leave();
+            api.network.Guild.leave();
             return (true);
         }
         else
         {
             return (false);
         } // end else if
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._eaBacks = new ank.utils.ExtendedArray();
-        var _loc2 = 1;
-        
-        while (++_loc2, _loc2 <= dofus.Constants.EMBLEM_BACKS_COUNT)
+        _eaBacks = new ank.utils.ExtendedArray();
+        for (var _loc3 = 1; _loc3 <= dofus.Constants.EMBLEM_BACKS_COUNT; ++_loc3)
         {
-            this._eaBacks.push({iconFile: dofus.Constants.EMBLEMS_BACK_PATH + _loc2 + ".swf"});
-        } // end while
-        this._eaUps = new ank.utils.ExtendedArray();
-        var _loc3 = 1;
-        
-        while (++_loc3, _loc3 <= dofus.Constants.EMBLEM_UPS_COUNT)
+            _eaBacks.push({iconFile: dofus.Constants.EMBLEMS_BACK_PATH + _loc3 + ".swf"});
+        } // end of for
+        _eaUps = new ank.utils.ExtendedArray();
+        for (var _loc2 = 1; _loc2 <= dofus.Constants.EMBLEM_UPS_COUNT; ++_loc2)
         {
-            this._eaUps.push({iconFile: dofus.Constants.EMBLEMS_UP_PATH + _loc3 + ".swf"});
-        } // end while
-        this._nBackID = 1;
-        this._nUpID = 1;
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.setTextFocus});
-        this.addToQueue({object: this, method: this.updateCurrentTabInformations});
-        this.addToQueue({object: this, method: this.updateBack});
-        this.addToQueue({object: this, method: this.updateUp});
-    };
-    _loc1.initTexts = function ()
+            _eaUps.push({iconFile: dofus.Constants.EMBLEMS_UP_PATH + _loc2 + ".swf"});
+        } // end of for
+        _nBackID = 1;
+        _nUpID = 1;
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: setTextFocus});
+        this.addToQueue({object: this, method: updateCurrentTabInformations});
+        this.addToQueue({object: this, method: updateBack});
+        this.addToQueue({object: this, method: updateUp});
+    } // End of the function
+    function initTexts()
     {
-        this._winBg.title = this.api.lang.getText("GUILD_CREATION");
-        this._lblName.text = this.api.lang.getText("GUILD_NAME");
-        this._lblEmblem.text = this.api.lang.getText("EMBLEM");
-        this._lblColors.text = this.api.lang.getText("CREATE_COLOR");
-        this._btnCancel.label = this.api.lang.getText("CANCEL_SMALL");
-        this._btnCreate.label = this.api.lang.getText("CREATE");
-        this._btnTabBack.label = this.api.lang.getText("EMBLEM_BACK");
-        this._btnTabUp.label = this.api.lang.getText("EMBLEM_UP");
-    };
-    _loc1.addListeners = function ()
+        _winBg.__set__title(api.lang.getText("GUILD_CREATION"));
+        _lblName.__set__text(api.lang.getText("GUILD_NAME"));
+        _lblEmblem.__set__text(api.lang.getText("EMBLEM"));
+        _lblColors.__set__text(api.lang.getText("CREATE_COLOR"));
+        _btnCancel.__set__label(api.lang.getText("CANCEL_SMALL"));
+        _btnCreate.__set__label(api.lang.getText("CREATE"));
+        _btnTabBack.__set__label(api.lang.getText("EMBLEM_BACK"));
+        _btnTabUp.__set__label(api.lang.getText("EMBLEM_UP"));
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        this._btnCancel.addEventListener("click", this);
-        this._btnCreate.addEventListener("click", this);
-        this._btnTabBack.addEventListener("click", this);
-        this._btnTabUp.addEventListener("click", this);
-        this._cpColors.addEventListener("change", this);
-        this._cgGrid.addEventListener("selectItem", this);
-    };
-    _loc1.setTextFocus = function ()
+        _btnClose.addEventListener("click", this);
+        _btnCancel.addEventListener("click", this);
+        _btnCreate.addEventListener("click", this);
+        _btnTabBack.addEventListener("click", this);
+        _btnTabUp.addEventListener("click", this);
+        _cpColors.addEventListener("change", this);
+        _cgGrid.addEventListener("selectItem", this);
+    } // End of the function
+    function setTextFocus()
     {
-        this._itName.setFocus();
-    };
-    _loc1.updateCurrentTabInformations = function ()
+        _itName.setFocus();
+    } // End of the function
+    function updateCurrentTabInformations()
     {
-        switch (this._sCurrentTab)
+        switch (_sCurrentTab)
         {
             case "Back":
             {
-                this._cpColors.setColor(this._nBackColor);
-                this._cgGrid.dataProvider = this._eaBacks;
-                this._cgGrid.selectedIndex = this._nBackID - 1;
+                _cpColors.setColor(_nBackColor);
+                _cgGrid.__set__dataProvider(_eaBacks);
+                _cgGrid.__set__selectedIndex(_nBackID - 1);
                 break;
             } 
             case "Up":
             {
-                this._cpColors.setColor(this._nUpColor);
-                this._cgGrid.dataProvider = this._eaUps;
-                this._cgGrid.selectedIndex = this._nUpID - 1;
+                _cpColors.setColor(_nUpColor);
+                _cgGrid.__set__dataProvider(_eaUps);
+                _cgGrid.__set__selectedIndex(_nUpID - 1);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.setCurrentTab = function (sNewTab)
+    } // End of the function
+    function setCurrentTab(sNewTab)
     {
-        var _loc3 = this["_btnTab" + this._sCurrentTab];
-        var _loc4 = this["_btnTab" + sNewTab];
-        _loc3.selected = true;
-        _loc3.enabled = true;
-        _loc4.selected = false;
-        _loc4.enabled = false;
-        this._sCurrentTab = sNewTab;
+        var _loc2 = this["_btnTab" + _sCurrentTab];
+        var _loc3 = this["_btnTab" + sNewTab];
+        _loc2.__set__selected(true);
+        _loc2.__set__enabled(true);
+        _loc3.__set__selected(false);
+        _loc3.__set__enabled(false);
+        _sCurrentTab = sNewTab;
         this.updateCurrentTabInformations();
-    };
-    _loc1.updateBack = function ()
+    } // End of the function
+    function updateBack()
     {
-        this._eEmblem.backID = this._nBackID;
-        this._eEmblem.backColor = this._nBackColor;
-    };
-    _loc1.updateUp = function ()
+        _eEmblem.__set__backID(_nBackID);
+        _eEmblem.__set__backColor(_nBackColor);
+    } // End of the function
+    function updateUp()
     {
-        this._eEmblem.upID = this._nUpID;
-        this._eEmblem.upColor = this._nUpColor;
-    };
-    _loc1.setEnabled = function (bEnabled)
+        _eEmblem.__set__upID(_nUpID);
+        _eEmblem.__set__upColor(_nUpColor);
+    } // End of the function
+    function setEnabled(bEnabled)
     {
-        this._btnCancel.enabled = this._bEnabled;
-        this._btnClose.enabled = this._bEnabled;
-        this._btnCreate.enabled = this._bEnabled;
-    };
-    _loc1.click = function (oEvent)
+        _btnCancel.__set__enabled(_bEnabled);
+        _btnClose.__set__enabled(_bEnabled);
+        _btnCreate.__set__enabled(_bEnabled);
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnClose":
             case "_btnCancel":
             {
-                this.api.network.Guild.leave();
+                api.network.Guild.leave();
                 break;
             } 
             case "_btnCreate":
             {
-                var _loc3 = this._itName.text;
-                if (_loc3 == undefined || _loc3.length < 3)
+                var _loc2 = _itName.__get__text();
+                if (_loc2 == undefined || _loc2.length < 3)
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("BAD_GUILD_NAME"), "ERROR_BOX");
+                    api.kernel.showMessage(undefined, api.lang.getText("BAD_GUILD_NAME"), "ERROR_BOX");
                     return;
                 } // end if
-                if (this._nBackID == undefined || this._nUpID == undefined)
+                if (_nBackID == undefined || _nUpID == undefined)
                 {
                     return;
                 } // end if
-                if (this.api.lang.getConfigText("GUILD_NAME_FILTER"))
-                {
-                    var _loc4 = new dofus.utils.nameChecker.NameChecker(_loc3);
-                    var _loc5 = new dofus.utils.nameChecker.rules.NameCheckerGuildNameRules();
-                    var _loc6 = _loc4.isValidAgainstWithDetails(_loc5);
-                    if (!_loc6.IS_SUCCESS)
-                    {
-                        this.api.kernel.showMessage(undefined, this.api.lang.getText("INVALID_GUILD_NAME") + "\r\n" + _loc6.toString("\r\n"), "ERROR_BOX");
-                        return;
-                    } // end if
-                } // end if
-                this.enabled = false;
-                this.api.network.Guild.create(this._nBackID, this._nBackColor, this._nUpID, this._nUpColor, _loc3);
+                this.__set__enabled(false);
+                api.network.Guild.create(_nBackID, _nBackColor, _nUpID, _nUpColor, _loc2);
                 break;
             } 
             case "_btnTabBack":
@@ -185,50 +155,46 @@ if (!dofus.graphics.gapi.ui.CreateGuild)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.change = function (oEvent)
+    } // End of the function
+    function change(oEvent)
     {
-        switch (this._sCurrentTab)
+        switch (_sCurrentTab)
         {
             case "Back":
             {
-                this._nBackColor = oEvent.value;
+                _nBackColor = oEvent.value;
                 this.updateBack();
                 break;
             } 
             case "Up":
             {
-                this._nUpColor = oEvent.value;
+                _nUpColor = oEvent.value;
                 this.updateUp();
                 break;
             } 
         } // End of switch
-    };
-    _loc1.selectItem = function (oEvent)
+    } // End of the function
+    function selectItem(oEvent)
     {
-        switch (this._sCurrentTab)
+        switch (_sCurrentTab)
         {
             case "Back":
             {
-                this._nBackID = oEvent.owner.selectedIndex + 1;
+                _nBackID = oEvent.owner.selectedIndex + 1;
                 this.updateBack();
                 break;
             } 
             case "Up":
             {
-                this._nUpID = oEvent.owner.selectedIndex + 1;
+                _nUpID = oEvent.owner.selectedIndex + 1;
                 this.updateUp();
                 break;
             } 
         } // End of switch
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.CreateGuild = function ()
-    {
-        super();
-    }).CLASS_NAME = "CreateGuild";
-    _loc1._nBackColor = 14933949;
-    _loc1._nUpColor = 0;
-    _loc1._sCurrentTab = "Back";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "CreateGuild";
+    var _nBackColor = 14933949;
+    var _nUpColor = 0;
+    var _sCurrentTab = "Back";
+} // End of Class
 #endinitclip

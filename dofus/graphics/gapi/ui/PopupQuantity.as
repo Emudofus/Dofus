@@ -1,111 +1,84 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20612]
-#initclip 133
-if (!dofus.graphics.gapi.ui.PopupQuantity)
+// [Initial MovieClip Action of sprite 980]
+#initclip 194
+class dofus.graphics.gapi.ui.PopupQuantity extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.PopupQuantity = function ()
+    var __get__value, __get__useAllStage, addToQueue, _winBackground, _bgHidder, _xmouse, _ymouse, gapi, _oParams, dispatchEvent, unloadThis, __set__useAllStage, __set__value;
+    function PopupQuantity()
     {
         super();
-    }).prototype;
-    _loc1.__set__value = function (nValue)
+    } // End of the function
+    function set value(nValue)
     {
-        this._nValue = nValue;
+        _nValue = nValue;
         //return (this.value());
-    };
-    _loc1.__set__max = function (nMax)
+        null;
+    } // End of the function
+    function set useAllStage(bUseAllStage)
     {
-        this._nMax = nMax;
-        //return (this.max());
-    };
-    _loc1.__set__min = function (nMin)
-    {
-        this._nMin = nMin;
-        //return (this.min());
-    };
-    _loc1.__set__useAllStage = function (bUseAllStage)
-    {
-        this._bUseAllStage = bUseAllStage;
+        _bUseAllStage = bUseAllStage;
         //return (this.useAllStage());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.PopupQuantity.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function addListeners()
     {
-        this._winBackground.addEventListener("complete", this);
-        this._bgHidder.addEventListener("click", this);
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-    };
-    _loc1.initWindowContent = function ()
+        _winBackground.addEventListener("complete", this);
+        _bgHidder.addEventListener("click", this);
+        Key.addListener(this);
+    } // End of the function
+    function initWindowContent()
     {
-        var _loc2 = this._winBackground.content;
+        var _loc2 = _winBackground.__get__content();
         _loc2._btnOk.addEventListener("click", this);
-        _loc2._btnMax.addEventListener("click", this);
-        _loc2._btnMin.addEventListener("click", this);
-        _loc2._btnMax.label = this.api.lang.getText("MAX_WORD");
-        _loc2._btnMin.label = this.api.lang.getText("MIN_WORD");
-        _loc2._tiInput.restrict = "0-9";
-        _loc2._tiInput.text = this._nValue;
-        _loc2._tiInput.setFocus();
-    };
-    _loc1.placeWindow = function ()
+        _loc2._txtInput.restrict = "0-9";
+        _loc2._txtInput.text = _nValue;
+        Selection.setFocus(_loc2._txtInput);
+    } // End of the function
+    function placeWindow()
     {
-        var _loc2 = this._xmouse - this._winBackground.width;
-        var _loc3 = this._ymouse - this._winBackground._height;
-        var _loc4 = this._bUseAllStage ? (Stage.width) : (this.gapi.screenWidth);
-        var _loc5 = this._bUseAllStage ? (Stage.height) : (this.gapi.screenHeight);
-        if (_loc2 < 0)
-        {
-            _loc2 = 0;
-        } // end if
+        var _loc3 = _xmouse - _winBackground.__get__width();
+        var _loc2 = _ymouse - _winBackground._height;
+        var _loc4 = _bUseAllStage ? (Stage.width) : (gapi.screenWidth);
+        var _loc5 = _bUseAllStage ? (Stage.height) : (gapi.screenHeight);
         if (_loc3 < 0)
         {
             _loc3 = 0;
         } // end if
-        if (_loc2 > _loc4 - this._winBackground.width)
+        if (_loc2 < 0)
         {
-            _loc2 = _loc4 - this._winBackground.width;
+            _loc2 = 0;
         } // end if
-        if (_loc3 > _loc5 - this._winBackground.height)
+        if (_loc3 > _loc4 - _winBackground.__get__width())
         {
-            _loc3 = _loc5 - this._winBackground.height;
+            _loc3 = _loc4 - _winBackground.__get__width();
         } // end if
-        this._winBackground._x = _loc2;
-        this._winBackground._y = _loc3;
-    };
-    _loc1.validate = function ()
+        if (_loc2 > _loc5 - _winBackground.__get__height())
+        {
+            _loc2 = _loc5 - _winBackground.__get__height();
+        } // end if
+        _winBackground._x = _loc3;
+        _winBackground._y = _loc2;
+    } // End of the function
+    function validate()
     {
-        this.api.kernel.KeyManager.removeShortcutsListener(this);
-        this.dispatchEvent({type: "validate", value: _global.parseInt(this._winBackground.content._tiInput.text, 10), params: this._oParams});
-    };
-    _loc1.complete = function (oEvent)
+        Key.removeListener(this);
+        this.dispatchEvent({type: "validate", value: Number(_winBackground.content._txtInput.text), params: _oParams});
+    } // End of the function
+    function complete(oEvent)
     {
         this.placeWindow();
-        this.addToQueue({object: this, method: this.initWindowContent});
-    };
-    _loc1.click = function (oEvent)
+        this.addToQueue({object: this, method: initWindowContent});
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -114,55 +87,23 @@ if (!dofus.graphics.gapi.ui.PopupQuantity)
                 this.validate();
                 break;
             } 
-            case "_btnMax":
-            {
-                this._winBackground.content._tiInput.text = this._nMax;
-                this._winBackground.content._tiInput.setFocus();
-                return;
-            } 
-            case "_btnMin":
-            {
-                this._winBackground.content._tiInput.text = this._nMin;
-                this._winBackground.content._tiInput.setFocus();
-                return;
-            } 
             case "_bgHidder":
             {
                 break;
             } 
         } // End of switch
         this.unloadThis();
-    };
-    _loc1.onShortcut = function (sShortcut)
+    } // End of the function
+    function onKeyDown()
     {
-        if (sShortcut == "ACCEPT_CURRENT_DIALOG")
+        if (Key.isDown(13))
         {
             this.validate();
             this.unloadThis();
-            return (false);
         } // end if
-        return (true);
-    };
-    _loc1.addProperty("useAllStage", function ()
-    {
-    }, _loc1.__set__useAllStage);
-    _loc1.addProperty("value", function ()
-    {
-    }, _loc1.__set__value);
-    _loc1.addProperty("max", function ()
-    {
-    }, _loc1.__set__max);
-    _loc1.addProperty("min", function ()
-    {
-    }, _loc1.__set__min);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.PopupQuantity = function ()
-    {
-        super();
-    }).CLASS_NAME = "PopupQuantity";
-    _loc1._nValue = 0;
-    _loc1._bUseAllStage = false;
-    _loc1._nMax = 1;
-    _loc1._nMin = 1;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "PopupQuantity";
+    var _nValue = 0;
+    var _bUseAllStage = false;
+} // End of Class
 #endinitclip

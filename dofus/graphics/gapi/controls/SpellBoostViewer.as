@@ -1,83 +1,62 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20794]
-#initclip 59
-if (!dofus.graphics.gapi.controls.SpellBoostViewer)
+// [Initial MovieClip Action of sprite 1017]
+#initclip 238
+class dofus.graphics.gapi.controls.SpellBoostViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.SpellBoostViewer = function ()
+    var _oSpell, __get__initialized, __get__spell, addToQueue, api, _lblNew, _ldrIcon, _lblName, _lblLevel1, _lblAP1, _lblRange1, _txtDamages1, _txtCritical1, _mcArrowCritical, _lblLevel2, _lblAP2, _lblRange2, _txtDamages2, _txtCritical2, __set__spell;
+    function SpellBoostViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__spell = function (oSpell)
+    } // End of the function
+    function set spell(oSpell)
     {
-        this._oSpell = oSpell;
-        if (this.initialized)
+        _oSpell = oSpell;
+        if (this.__get__initialized())
         {
             this.initData();
         } // end if
         //return (this.spell());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.SpellBoostViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
-    };
-    _loc1.initData = function ()
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
+    } // End of the function
+    function initData()
     {
         this.updateData();
-    };
-    _loc1.initTexts = function ()
+    } // End of the function
+    function initTexts()
     {
-        this._lblNew.text = this.api.lang.getText("NEW_CHARACTERISTICS");
-    };
-    _loc1.updateData = function ()
+        _lblNew.__set__text(api.lang.getText("NEW_CHARACTERISTICS"));
+    } // End of the function
+    function updateData()
     {
-        if (this._oSpell != undefined)
+        if (_oSpell != undefined)
         {
-            this._ldrIcon.contentPath = this._oSpell.iconFile;
-            this._lblName.text = this._oSpell.name;
-            this._lblLevel1.text = this.api.lang.getText("LEVEL") + " " + this._oSpell.level;
-            this._lblAP1.text = this._oSpell.apCost + " " + this.api.lang.getText("AP");
-            this._lblRange1.text = this._oSpell.rangeStr + " " + this.api.lang.getText("RANGE");
-            this._txtDamages1.text = this._oSpell.descriptionNormalHit;
-            this._txtCritical1.text = this._oSpell.descriptionCriticalHit == undefined ? ("") : (this._oSpell.descriptionCriticalHit);
-            this._mcArrowCritical._visible = this._oSpell.descriptionCriticalHit != undefined;
-            this._oSpell.level = this._oSpell.level + 1;
-            this._lblLevel2.text = this.api.lang.getText("LEVEL") + " " + this._oSpell.level;
-            this._lblAP2.text = this._oSpell.apCost + " " + this.api.lang.getText("AP");
-            this._lblRange2.text = this._oSpell.rangeStr + " " + this.api.lang.getText("RANGE");
-            this._txtDamages2.text = this._oSpell.descriptionNormalHit;
-            this._txtCritical2.text = this._oSpell.descriptionCriticalHit == undefined ? ("") : (this._oSpell.descriptionCriticalHit);
-            this._oSpell.level = this._oSpell.level - 1;
+            _ldrIcon.__set__contentPath(_oSpell.iconFile);
+            _lblName.__set__text(_oSpell.name);
+            _lblLevel1.__set__text(api.lang.getText("LEVEL") + " " + _oSpell.level);
+            _lblAP1.__set__text(_oSpell.apCost + " " + api.lang.getText("AP"));
+            _lblRange1.__set__text(_oSpell.rangeStr + " " + api.lang.getText("RANGE"));
+            _txtDamages1.__set__text(_oSpell.descriptionNormalHit);
+            _txtCritical1.__set__text(_oSpell.descriptionCriticalHit == undefined ? ("") : (_oSpell.descriptionCriticalHit));
+            _mcArrowCritical._visible = _oSpell.descriptionCriticalHit != undefined;
+            _oSpell.level = _oSpell.level + 1;
+            _lblLevel2.__set__text(api.lang.getText("LEVEL") + " " + _oSpell.level);
+            _lblAP2.__set__text(_oSpell.apCost + " " + api.lang.getText("AP"));
+            _lblRange2.__set__text(_oSpell.rangeStr + " " + api.lang.getText("RANGE"));
+            _txtDamages2.__set__text(_oSpell.descriptionNormalHit);
+            _txtCritical2.__set__text(_oSpell.descriptionCriticalHit == undefined ? ("") : (_oSpell.descriptionCriticalHit));
+            _oSpell.level = _oSpell.level - 1;
         } // end if
-    };
-    _loc1.addProperty("spell", function ()
-    {
-    }, _loc1.__set__spell);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.SpellBoostViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "SpellBoostViewer";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "SpellBoostViewer";
+} // End of Class
 #endinitclip

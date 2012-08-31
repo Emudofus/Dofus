@@ -1,101 +1,83 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20735]
-#initclip 256
-if (!ank.utils.ConsoleUtils)
+// [Initial MovieClip Action of sprite 905]
+#initclip 117
+class ank.utils.ConsoleUtils
 {
-    if (!ank)
+    function ConsoleUtils()
     {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
+    } // End of the function
+    static function autoCompletion(aList, sCmd)
     {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.ConsoleUtils = function ()
-    {
-    }).prototype;
-    (_global.ank.utils.ConsoleUtils = function ()
-    {
-    }).autoCompletion = function (aList, sCmd)
-    {
-        var _loc4 = ank.utils.ConsoleUtils.removeAndGetLastWord(sCmd);
-        var _loc5 = _loc4.lastWord;
-        sCmd = _loc4.leftCmd;
-        _loc5 = _loc5.toLowerCase();
-        var _loc6 = ank.utils.ConsoleUtils.getStringsStartWith(aList, _loc5);
-        if (_loc6.length > 1)
+        var _loc6 = ank.utils.ConsoleUtils.removeAndGetLastWord(sCmd);
+        var _loc4 = _loc6.lastWord;
+        sCmd = _loc6.leftCmd;
+        _loc4 = _loc4.toLowerCase();
+        var _loc2 = ank.utils.ConsoleUtils.getStringsStartWith(aList, _loc4);
+        if (_loc2.length > 1)
         {
-            var _loc7 = "";
-            var _loc8 = 0;
-            
-            while (++_loc8, _loc8 < _loc6.length)
+            var _loc3 = "";
+            for (var _loc1 = 0; _loc1 < _loc2.length; ++_loc1)
             {
-                _loc7 = String(_loc6[_loc8]).charAt(_loc5.length);
-                if (_loc7 != "")
+                _loc3 = String(_loc2[_loc1]).charAt(_loc4.length);
+                if (_loc3 != "")
                 {
                     break;
                 } // end if
-            } // end while
-            if (_loc7 == "")
+            } // end of for
+            if (_loc3 == "")
             {
-                return ({result: sCmd + _loc5, full: false});
+                return ({result: sCmd + _loc4, full: false});
             }
             else
             {
-                return (ank.utils.ConsoleUtils.autoCompletionRecurcive(_loc6, sCmd, _loc5 + _loc7));
+                return (ank.utils.ConsoleUtils.autoCompletionRecurcive(_loc2, sCmd, _loc4 + _loc3));
             } // end else if
         }
-        else if (_loc6.length != 0)
+        else if (_loc2.length != 0)
         {
-            return ({result: sCmd + _loc6[0], isFull: true});
+            return ({result: sCmd + _loc2[0], isFull: true});
         }
         else
         {
-            return ({result: sCmd + _loc5, list: _loc6, isFull: false});
+            return ({result: sCmd + _loc4, list: _loc2, isFull: false});
         } // end else if
-    };
-    (_global.ank.utils.ConsoleUtils = function ()
+    } // End of the function
+    static function removeAndGetLastWord(sCmd)
     {
-    }).removeAndGetLastWord = function (sCmd)
-    {
-        var _loc3 = sCmd.split(" ");
-        if (_loc3.length == 0)
+        var _loc1 = sCmd.split(" ");
+        if (_loc1.length == 0)
         {
             return ({leftCmd: "", lastWord: ""});
         } // end if
-        var _loc4 = String(_loc3.pop());
-        return ({leftCmd: _loc3.length == 0 ? ("") : (_loc3.join(" ") + " "), lastWord: _loc4});
-    };
-    (_global.ank.utils.ConsoleUtils = function ()
-    {
-    }).autoCompletionRecurcive = function (aList, sLeftCmd, sPattern)
+        var _loc2 = String(_loc1.pop());
+        return ({leftCmd: _loc1.length == 0 ? ("") : (_loc1.join(" ") + " "), lastWord: _loc2});
+    } // End of the function
+    static function autoCompletionRecurcive(aList, sLeftCmd, sPattern)
     {
         sPattern = sPattern.toLowerCase();
-        var _loc5 = ank.utils.ConsoleUtils.getStringsStartWith(aList, sPattern);
-        if (_loc5.length > 1 && _loc5.length == aList.length)
+        var _loc2 = ank.utils.ConsoleUtils.getStringsStartWith(aList, sPattern);
+        if (_loc2.length > 1 && _loc2.length == aList.length)
         {
-            var _loc6 = "";
-            var _loc7 = 0;
-            
-            while (++_loc7, _loc7 < _loc5.length)
+            var _loc3 = "";
+            for (var _loc1 = 0; _loc1 < _loc2.length; ++_loc1)
             {
-                _loc6 = String(_loc5[_loc7]).charAt(sPattern.length);
-                if (_loc6 != "")
+                _loc3 = String(_loc2[_loc1]).charAt(sPattern.length);
+                if (_loc3 != "")
                 {
                     break;
                 } // end if
-            } // end while
-            if (_loc6 == "")
+            } // end of for
+            if (_loc3 == "")
             {
                 return ({result: sLeftCmd + sPattern, isFull: false});
             }
             else
             {
-                return (ank.utils.ConsoleUtils.autoCompletionRecurcive(_loc5, sLeftCmd, sPattern + _loc6));
+                return (ank.utils.ConsoleUtils.autoCompletionRecurcive(_loc2, sLeftCmd, sPattern + _loc3));
             } // end else if
         }
-        else if (_loc5.length != 0)
+        else if (_loc2.length != 0)
         {
             return ({result: sLeftCmd + sPattern.substr(0, sPattern.length - 1), list: aList, isFull: false});
         }
@@ -103,24 +85,19 @@ if (!ank.utils.ConsoleUtils)
         {
             return ({result: sLeftCmd + sPattern, list: aList, isFull: false});
         } // end else if
-    };
-    (_global.ank.utils.ConsoleUtils = function ()
+    } // End of the function
+    static function getStringsStartWith(aList, sPattern)
     {
-    }).getStringsStartWith = function (aList, sPattern)
-    {
-        var _loc4 = new Array();
-        var _loc5 = 0;
-        
-        while (++_loc5, _loc5 < aList.length)
+        var _loc5 = new Array();
+        for (var _loc1 = 0; _loc1 < aList.length; ++_loc1)
         {
-            var _loc6 = String(aList[_loc5]).toLowerCase().split(sPattern);
-            if (_loc6[0] == "" && (_loc6.length != 0 && String(aList[_loc5]).length >= sPattern.length))
+            var _loc3 = String(aList[_loc1]).toLowerCase().split(sPattern);
+            if (_loc3[0] == "" && _loc3.length != 0 && String(aList[_loc1]).length >= sPattern.length)
             {
-                _loc4.push(aList[_loc5]);
+                _loc5.push(aList[_loc1]);
             } // end if
-        } // end while
-        return (_loc4);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        } // end of for
+        return (_loc5);
+    } // End of the function
+} // End of Class
 #endinitclip

@@ -1,86 +1,62 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20648]
-#initclip 169
-if (!dofus.graphics.gapi.ui.SpellInfos)
+// [Initial MovieClip Action of sprite 1034]
+#initclip 256
+class dofus.graphics.gapi.ui.SpellInfos extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.SpellInfos = function ()
+    var _oSpell, __get__initialized, __get__spell, unloadThis, addToQueue, _bghBackground, _sfivSpellFullInfosViewer, __set__spell;
+    function SpellInfos()
     {
         super();
-    }).prototype;
-    _loc1.__set__spell = function (oSpell)
+    } // End of the function
+    function set spell(oSpell)
     {
-        if (oSpell == this._oSpell)
+        if (oSpell == _oSpell)
         {
             return;
         } // end if
-        this.addToQueue({object: this, method: function (s)
+        _oSpell = oSpell;
+        if (this.__get__initialized())
         {
-            this._oSpell = s;
-            if (this.initialized)
-            {
-                this.initData();
-            } // end if
-        }, params: [oSpell]});
+            this.initData();
+        } // end if
         //return (this.spell());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.SpellInfos.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
         this.unloadThis();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+    } // End of the function
+    function addListeners()
     {
-        this._bghBackground.addEventListener("click", this);
-        this._sfivSpellFullInfosViewer.addEventListener("close", this);
-    };
-    _loc1.initData = function ()
+        _bghBackground.addEventListener("click", this);
+        _sfivSpellFullInfosViewer.addEventListener("close", this);
+    } // End of the function
+    function initData()
     {
-        if (this._oSpell != undefined)
+        if (_oSpell != undefined)
         {
-            this._sfivSpellFullInfosViewer.spell = this._oSpell;
+            _sfivSpellFullInfosViewer.__set__spell(_oSpell);
         } // end if
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         this.unloadThis();
-    };
-    _loc1.close = function (oEvent)
+    } // End of the function
+    function close(oEvent)
     {
         this.unloadThis();
-    };
-    _loc1.addProperty("spell", function ()
-    {
-    }, _loc1.__set__spell);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.SpellInfos = function ()
-    {
-        super();
-    }).CLASS_NAME = "SpellInfos";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "SpellInfos";
+} // End of Class
 #endinitclip

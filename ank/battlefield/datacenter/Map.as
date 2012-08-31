@@ -1,41 +1,29 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20706]
-#initclip 227
-if (!ank.battlefield.datacenter.Map)
+// [Initial MovieClip Action of sprite 847]
+#initclip 59
+class ank.battlefield.datacenter.Map extends Object
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.battlefield)
-    {
-        _global.ank.battlefield = new Object();
-    } // end if
-    if (!ank.battlefield.datacenter)
-    {
-        _global.ank.battlefield.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.ank.battlefield.datacenter.Map = function (nID)
+    var id, originalsCellsBackup, data;
+    function Map(nID)
     {
         super();
         this.initialize(nID);
-    }).prototype;
-    _loc1.initialize = function (nID)
+    } // End of the function
+    function initialize(nID)
     {
-        this.id = nID;
-        this.originalsCellsBackup = new ank.utils.ExtendedObject();
-    };
-    _loc1.cleanSpritesOn = function ()
+        id = nID;
+        originalsCellsBackup = new ank.utils.ExtendedObject();
+    } // End of the function
+    function cleanSpritesOn()
     {
-        if (this.data != undefined)
+        if (data != undefined)
         {
-            for (var k in this.data)
+            for (var _loc2 in data)
             {
-                this.data[k].removeAllSpritesOnID();
+                data[_loc2].removeAllSpritesOnID();
             } // end of for...in
         } // end if
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

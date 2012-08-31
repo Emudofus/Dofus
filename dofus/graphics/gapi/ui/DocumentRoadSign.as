@@ -1,91 +1,73 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20529]
-#initclip 50
-if (!dofus.graphics.gapi.ui.DocumentRoadSign)
+// [Initial MovieClip Action of sprite 1050]
+#initclip 17
+class dofus.graphics.gapi.ui.DocumentRoadSign extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.DocumentRoadSign = function ()
+    var _oDoc, __get__document, api, _txtCore, addToQueue, _mcSmall, _btnClose, _bgHidder, _lblTitle, owner, __set__document;
+    function DocumentRoadSign()
     {
         super();
-    }).prototype;
-    _loc1.__set__document = function (oDoc)
+    } // End of the function
+    function set document(oDoc)
     {
-        this._oDoc = oDoc;
+        _oDoc = oDoc;
         //return (this.document());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.DocumentRoadSign.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Documents.leave();
+        api.network.Documents.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._txtCore.wordWrap = true;
-        this._txtCore.multiline = true;
-        this._txtCore.embedFonts = true;
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.updateData});
-        this._mcSmall._visible = false;
-    };
-    _loc1.addListeners = function ()
+        _txtCore.wordWrap = true;
+        _txtCore.multiline = true;
+        _txtCore.embedFonts = true;
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: updateData});
+        _mcSmall._visible = false;
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        this._bgHidder.addEventListener("click", this);
-    };
-    _loc1.updateData = function ()
+        _btnClose.addEventListener("click", this);
+        _bgHidder.addEventListener("click", this);
+    } // End of the function
+    function updateData()
     {
-        this.setCssStyle(this._oDoc.getPage(0).cssFile);
-        if (this._lblTitle.text == undefined)
+        this.setCssStyle(_oDoc.getPage(0).cssFile);
+        if (_oDoc.title.substr(0, 2) == "//")
         {
-            return;
-        } // end if
-        if (this._oDoc.title.substr(0, 2) == "//")
-        {
-            this._mcSmall._visible = false;
-            this._lblTitle.text = "";
+            _mcSmall._visible = false;
+            _lblTitle.__set__text("");
         }
         else
         {
-            this._mcSmall._visible = true;
-            this._lblTitle.text = this._oDoc.title;
+            _mcSmall._visible = true;
+            _lblTitle.__set__text(_oDoc.title);
         } // end else if
-    };
-    _loc1.setCssStyle = function (sCssFile)
+    } // End of the function
+    function setCssStyle(sCssFile)
     {
-        var _loc3 = new TextField.StyleSheet();
-        _loc3.owner = this;
-        _loc3.onLoad = function ()
+        var _loc2 = new TextField.StyleSheet();
+        _loc2.owner = this;
+        _loc2.onLoad = function ()
         {
-            this.owner.layoutContent(this);
+            owner.layoutContent(this);
         };
-        _loc3.load(sCssFile);
-    };
-    _loc1.layoutContent = function (ssStyle)
+        _loc2.load(sCssFile);
+    } // End of the function
+    function layoutContent(ssStyle)
     {
-        this._txtCore.styleSheet = ssStyle;
-        this._txtCore.htmlText = this._oDoc.getPage(0).text;
-    };
-    _loc1.click = function (oEvent)
+        _txtCore.styleSheet = ssStyle;
+        _txtCore.htmlText = _oDoc.getPage(0).text;
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -96,14 +78,7 @@ if (!dofus.graphics.gapi.ui.DocumentRoadSign)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addProperty("document", function ()
-    {
-    }, _loc1.__set__document);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.DocumentRoadSign = function ()
-    {
-        super();
-    }).CLASS_NAME = "DocumentRoadSign";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "DocumentRoadSign";
+} // End of Class
 #endinitclip

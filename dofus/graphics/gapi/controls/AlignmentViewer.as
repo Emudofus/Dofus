@@ -1,124 +1,147 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20758]
-#initclip 23
-if (!dofus.graphics.gapi.controls.AlignmentViewer)
+// [Initial MovieClip Action of sprite 997]
+#initclip 214
+class dofus.graphics.gapi.controls.AlignmentViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.AlignmentViewer = function ()
+    var _pbAlignment, _lblAlignment, addToQueue, api, _lblTitle, _lblFeats, _btnTabSpecialization, _btnTabTree, _mcTab, _mcTabPlacer, getNextHighestDepth, attachMovie, _lblNoSpecialization, _lstFeats, _mcAlignment, _parent, _ldrIcon;
+    function AlignmentViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__enable = function (b)
-    {
-        this._lblAlignment._visible = b;
-        this._pbAlignment._visible = b;
-        this._mcAlignment._visible = b;
-        //return (this.enable());
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.AlignmentViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._pbAlignment._visible = false;
-        this._lblAlignment._visible = false;
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-    };
-    _loc1.initTexts = function ()
+        _pbAlignment._visible = false;
+        _lblAlignment._visible = false;
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: layoutContent});
+    } // End of the function
+    function initTexts()
     {
-        this._lblTitle.text = this.api.lang.getText("ALIGNMENT");
-        this._lblAlignment.text = this.api.lang.getText("LEVEL");
-    };
-    _loc1.addListeners = function ()
+        _lblTitle.__set__text(api.lang.getText("ALIGNMENT"));
+        _lblAlignment.__set__text(api.lang.getText("LEVEL"));
+        _lblFeats.__set__text(api.lang.getText("FEATS"));
+        _btnTabSpecialization.__set__label(api.lang.getText("SPECIALIZATION"));
+        _btnTabTree.__set__label(api.lang.getText("SPECIALIZATION_TREE"));
+    } // End of the function
+    function addListeners()
     {
-        this.api.datacenter.Player.addEventListener("alignmentChanged", this);
-    };
-    _loc1.initData = function ()
+        _btnTabSpecialization.addEventListener("click", this);
+        _btnTabTree.addEventListener("click", this);
+        api.datacenter.Player.addEventListener("alignmentChanged", this);
+        api.datacenter.Player.addEventListener("specializationChanged", this);
+    } // End of the function
+    function layoutContent()
     {
-        this._sCurrentTab = "Specialization";
-        this.alignmentChanged({alignment: this.api.datacenter.Player.alignment});
-    };
-    _loc1.updateCurrentTabInformations = function ()
+        if (api.datacenter.Player.alignment.index != 0)
+        {
+            this.setCurrentTab("Specialization");
+        }
+        else
+        {
+            this.setCurrentTab("Tree");
+        } // end else if
+        this.alignmentChanged({alignment: api.datacenter.Player.alignment});
+    } // End of the function
+    function updateCurrentTabInformations()
     {
-        this._mcTab.removeMovieClip();
-        switch (this._sCurrentTab)
+        _mcTab.removeMovieClip();
+        switch (_sCurrentTab)
         {
             case "Specialization":
             {
-                this.attachMovie("SpecializationViewer", "_mcTab", this.getNextHighestDepth(), {_x: this._mcTabPlacer._x, _y: this._mcTabPlacer._y});
+                var _loc2 = api.datacenter.Player.specialization;
+                if (_loc2 != undefined)
+                {
+                    this.attachMovie("AlignmentViewerSpecialization", "_mcTab", this.getNextHighestDepth(), {_x: _mcTabPlacer._x, _y: _mcTabPlacer._y, specialization: _loc2});
+                    this.setFeatsFromSpecialization(_loc2);
+                }
+                else
+                {
+                    _lblNoSpecialization.__set__text(api.lang.getText("NO_SPECIALIZATION"));
+                    this.setFeatsFromSpecialization();
+                } // end else if
                 break;
             } 
-            case "Rank":
+            case "Tree":
             {
-                this.attachMovie("RankViewer", "_mcTab", this.getNextHighestDepth(), {_x: this._mcTabPlacer._x, _y: this._mcTabPlacer._y});
+                this.attachMovie("AlignmentViewerTree", "_mcTab", this.getNextHighestDepth(), {_x: _mcTabPlacer._x, _y: _mcTabPlacer._y});
+                _mcTab.addEventListener("specializationSelected", this);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.setCurrentTab = function (sNewTab)
+    } // End of the function
+    function setCurrentTab(sNewTab)
     {
-        var _loc3 = this["_btnTab" + this._sCurrentTab];
-        var _loc4 = this["_btnTab" + sNewTab];
-        _loc3.selected = true;
-        _loc3.enabled = true;
-        _loc4.selected = false;
-        _loc4.enabled = false;
-        this._sCurrentTab = sNewTab;
+        var _loc2 = this["_btnTab" + _sCurrentTab];
+        var _loc3 = this["_btnTab" + sNewTab];
+        _loc2.__set__selected(true);
+        _loc2.__set__enabled(true);
+        _loc3.__set__selected(false);
+        _loc3.__set__enabled(false);
+        _sCurrentTab = sNewTab;
         this.updateCurrentTabInformations();
-    };
-    _loc1.alignmentChanged = function (oEvent)
+    } // End of the function
+    function setFeatsFromSpecialization(oSpec)
     {
-        this._mcTab.removeMovieClip();
-        this._ldrIcon.contentPath = oEvent.alignment.iconFile;
-        this._lblTitle.text = this.api.lang.getText("ALIGNMENT") + " " + oEvent.alignment.name;
-        if (this.api.datacenter.Player.alignment.index != 0)
+        if (oSpec != undefined)
         {
-            this.enable = true;
-            this._lblNoAlignement.text = "";
-            this._pbAlignment.value = oEvent.alignment.value;
-            this._mcAlignment.onRollOver = function ()
-            {
-                this._parent.gapi.showTooltip(new ank.utils.ExtendedString(oEvent.alignment.value).addMiddleChar(this._parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3) + " / " + new ank.utils.ExtendedString(this._parent._pbAlignment.maximum).addMiddleChar(this._parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3), this, -10);
-            };
-            this._mcAlignment.onRollOut = function ()
-            {
-                this._parent.gapi.hideTooltip();
-            };
-            this.setCurrentTab(this._sCurrentTab);
+            _lblFeats.__set__text(api.lang.getText("FEATS") + " (" + oSpec.__get__name() + ")");
+            _lstFeats.__set__dataProvider(oSpec.feats);
         }
-        else if (this._lblNoAlignement.text != undefined)
+        else
         {
-            this.enable = false;
-            this._lblNoAlignement.text = this.api.lang.getText("NO_ALIGNEMENT");
+            _lblFeats.__set__text(api.lang.getText("FEATS"));
+            _lstFeats.__set__dataProvider(new ank.utils.ExtendedArray());
         } // end else if
-    };
-    _loc1.addProperty("enable", function ()
+    } // End of the function
+    function click(oEvent)
     {
-    }, _loc1.__set__enable);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.AlignmentViewer = function ()
+        switch (oEvent.target._name)
+        {
+            case "_btnTabSpecialization":
+            {
+                this.setCurrentTab("Specialization");
+                break;
+            } 
+            case "_btnTabTree":
+            {
+                this.setCurrentTab("Tree");
+                break;
+            } 
+        } // End of switch
+    } // End of the function
+    function alignmentChanged(oEvent)
     {
-        super();
-    }).CLASS_NAME = "AlignmentViewer";
-    _loc1._sCurrentTab = "Specialization";
-} // end if
+        _pbAlignment.__set__value(oEvent.alignment.value);
+        _mcAlignment.onRollOver = function ()
+        {
+            _parent.gapi.showTooltip(String(oEvent.alignment.value).addMiddleChar(_parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3) + " / " + String(_parent._pbAlignment.maximum).addMiddleChar(_parent.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3), this, -10);
+        };
+        _mcAlignment.onRollOut = function ()
+        {
+            _parent.gapi.hideTooltip();
+        };
+        _ldrIcon.__set__contentPath(oEvent.alignment.iconFile);
+        _lblTitle.__set__text(api.lang.getText("ALIGNMENT") + " " + oEvent.alignment.name);
+        var _loc2 = oEvent.alignment.index == 0;
+        _pbAlignment._visible = !_loc2;
+        _lblAlignment._visible = !_loc2;
+    } // End of the function
+    function specializationChanged(oEvent)
+    {
+        this.setCurrentTab("Specialization");
+    } // End of the function
+    function specializationSelected(oEvent)
+    {
+        this.setFeatsFromSpecialization(oEvent.specialization);
+    } // End of the function
+    static var CLASS_NAME = "AlignmentViewer";
+    var _sCurrentTab = "Specialization";
+} // End of Class
 #endinitclip

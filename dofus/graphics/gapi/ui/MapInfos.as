@@ -1,66 +1,47 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20522]
-#initclip 43
-if (!dofus.graphics.gapi.ui.MapInfos)
+// [Initial MovieClip Action of sprite 1031]
+#initclip 252
+class dofus.graphics.gapi.ui.MapInfos extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.MapInfos = function ()
+    var _visible, addToQueue, api, _lblArea, _lblCoordinates, _lblAreaShadow, _lblCoordinatesShadow;
+    function MapInfos()
     {
         super();
-    }).prototype;
-    _loc1.update = function ()
+    } // End of the function
+    function update()
     {
         this.initText();
-        this._visible = true;
-    };
-    _loc1.init = function ()
+        _visible = true;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.MapInfos.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initText});
-    };
-    _loc1.initText = function ()
+        this.addToQueue({object: this, method: initText});
+    } // End of the function
+    function initText()
     {
-        var _loc2 = this.api.datacenter.Map;
+        var _loc2 = api.datacenter.Map;
         if (_loc2.name == undefined)
         {
-            this._lblArea.text = "";
-            this._lblCoordinates.text = "";
-            this._lblAreaShadow.text = "";
-            this._lblCoordinatesShadow.text = "";
+            _lblArea.__set__text("");
+            _lblCoordinates.__set__text("");
+            _lblAreaShadow.__set__text("");
+            _lblCoordinatesShadow.__set__text("");
         }
         else
         {
-            var _loc3 = (dofus.datacenter.Subarea)(this.api.datacenter.Subareas.getItemAt(_loc2.subarea));
+            var _loc3 = api.datacenter.Areas.getItemAt(_loc2.area);
             var _loc4 = _loc2.name + (_loc3 == undefined ? ("") : (_loc3.alignment.name == undefined ? ("") : (" - " + _loc3.alignment.name)));
-            this._lblArea.text = _loc4;
-            this._lblCoordinates.text = _loc2.coordinates;
-            this._lblAreaShadow.text = _loc4;
-            this._lblCoordinatesShadow.text = _loc2.coordinates;
+            _lblArea.__set__text(_loc4);
+            _lblCoordinates.__set__text(_loc2.coordinates);
+            _lblAreaShadow.__set__text(_loc4);
+            _lblCoordinatesShadow.__set__text(_loc2.coordinates);
         } // end else if
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.MapInfos = function ()
-    {
-        super();
-    }).CLASS_NAME = "MapInfos";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "MapInfos";
+} // End of Class
 #endinitclip

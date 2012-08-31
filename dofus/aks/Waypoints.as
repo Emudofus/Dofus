@@ -1,54 +1,42 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20976]
-#initclip 241
-if (!dofus.aks.Waypoints)
+// [Initial MovieClip Action of sprite 958]
+#initclip 170
+class dofus.aks.Waypoints extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Waypoints = function (oAKS, oAPI)
+    var aks, api;
+    function Waypoints(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.leave = function ()
+    } // End of the function
+    function leave()
     {
-        this.aks.send("WV", true);
-    };
-    _loc1.use = function (nWaypointID)
+        aks.send("WV");
+    } // End of the function
+    function use(nWaypointID)
     {
-        this.aks.send("WU" + nWaypointID, true);
-    };
-    _loc1.onCreate = function (sExtraData)
+        aks.send("WU" + nWaypointID);
+    } // End of the function
+    function onCreate(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = new ank.utils.ExtendedArray();
-        var _loc6 = 1;
-        
-        while (++_loc6, _loc6 < _loc3.length)
+        var _loc5 = sExtraData.split("|");
+        var _loc7 = Number(_loc5[0]);
+        var _loc6 = new ank.utils.ExtendedArray();
+        for (var _loc3 = 1; _loc3 < _loc5.length; ++_loc3)
         {
-            var _loc7 = _loc3[_loc6].split(";");
-            var _loc8 = Number(_loc7[0]);
-            var _loc9 = Number(_loc7[1]);
-            var _loc10 = new dofus.datacenter.Waypoint(_loc8, _loc8 == this.api.datacenter.Map.id, _loc8 == _loc4, _loc9);
-            _loc5.push(_loc10);
-        } // end while
-        this.api.ui.loadUIComponent("Waypoints", "Waypoints", {data: _loc5});
-    };
-    _loc1.onLeave = function ()
+            var _loc2 = Number(_loc5[_loc3]);
+            var _loc4 = new dofus.datacenter.Waypoint(_loc2, _loc2 == api.datacenter.Map.id, _loc2 == _loc7);
+            _loc6.push(_loc4);
+        } // end of for
+        api.ui.loadUIComponent("Waypoints", "Waypoints", {data: _loc6});
+    } // End of the function
+    function onLeave()
     {
-        this.api.ui.unloadUIComponent("Waypoints");
-    };
-    _loc1.onUseError = function ()
+        api.ui.unloadUIComponent("Waypoints");
+    } // End of the function
+    function onUseError()
     {
-        this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_USE_WAYPOINT"), "ERROR_CHAT");
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        api.kernel.showMessage(undefined, api.lang.getText("CANT_USE_WAYPOINT"), "ERROR_CHAT");
+    } // End of the function
+} // End of Class
 #endinitclip

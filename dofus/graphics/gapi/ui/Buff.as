@@ -1,90 +1,69 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20787]
-#initclip 52
-if (!dofus.graphics.gapi.ui.Buff)
+// [Initial MovieClip Action of sprite 1047]
+#initclip 14
+class dofus.graphics.gapi.ui.Buff extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Buff = function ()
+    var addToQueue, api, gapi;
+    function Buff()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Buff.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.updateData});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: updateData});
+    } // End of the function
+    function addListeners()
     {
-        var _loc2 = 20;
-        
-        while (++_loc2, _loc2 <= dofus.graphics.gapi.ui.Buff.LAST_CONTAINER)
+        for (var _loc3 = 20; _loc3 <= dofus.graphics.gapi.ui.Buff.LAST_CONTAINER; ++_loc3)
         {
-            var _loc3 = this["_ctr" + _loc2];
-            _loc3.addEventListener("click", this);
-            _loc3.addEventListener("over", this);
-            _loc3.addEventListener("out", this);
-        } // end while
-        this.api.datacenter.Player.Inventory.addEventListener("modelChanged", this);
-    };
-    _loc1.updateData = function ()
+            var _loc2 = this["_ctr" + _loc3];
+            _loc2.addEventListener("click", this);
+            _loc2.addEventListener("over", this);
+            _loc2.addEventListener("out", this);
+        } // end of for
+        api.datacenter.Player.Inventory.addEventListener("modelChanged", this);
+    } // End of the function
+    function updateData()
     {
-        var _loc2 = new Array();
-        var _loc3 = 20;
-        
-        while (++_loc3, _loc3 <= dofus.graphics.gapi.ui.Buff.LAST_CONTAINER)
+        var _loc6 = new Array();
+        for (var _loc3 = 20; _loc3 <= dofus.graphics.gapi.ui.Buff.LAST_CONTAINER; ++_loc3)
         {
-            _loc2[_loc3] = true;
-        } // end while
-        var _loc4 = this.api.datacenter.Player.Inventory;
-        for (var k in _loc4)
+            _loc6[_loc3] = true;
+        } // end of for
+        var _loc7 = api.datacenter.Player.Inventory;
+        for (var _loc8 in _loc7)
         {
-            var _loc5 = _loc4[k];
-            if (!_global.isNaN(_loc5.position))
+            var _loc4 = _loc7[_loc8];
+            if (!isNaN(_loc4.position))
             {
-                var _loc6 = _loc5.position;
-                if (_loc6 < 20 || _loc6 > dofus.graphics.gapi.ui.Buff.LAST_CONTAINER)
+                var _loc2 = _loc4.position;
+                if (_loc2 < 20 || _loc2 > dofus.graphics.gapi.ui.Buff.LAST_CONTAINER)
                 {
                     continue;
                 } // end if
-                var _loc7 = this["_ctr" + _loc6];
-                _loc7.contentData = _loc5;
-                _loc7.enabled = true;
-                _loc2[_loc6] = false;
+                var _loc5 = this["_ctr" + _loc2];
+                _loc5.contentData = _loc4;
+                _loc5.enabled = true;
+                _loc6[_loc2] = false;
             } // end if
         } // end of for...in
-        var _loc8 = 20;
-        
-        while (++_loc8, _loc8 <= dofus.graphics.gapi.ui.Buff.LAST_CONTAINER)
+        for (var _loc3 = 20; _loc3 <= dofus.graphics.gapi.ui.Buff.LAST_CONTAINER; ++_loc3)
         {
-            if (_loc2[_loc8])
+            if (_loc6[_loc3])
             {
-                var _loc9 = this["_ctr" + _loc8];
-                _loc9.contentData = undefined;
-                _loc9.enabled = false;
+                _loc5 = this["_ctr" + _loc3];
+                _loc5.contentData = undefined;
+                _loc5.enabled = false;
             } // end if
-        } // end while
-    };
-    _loc1.modelChanged = function (oEvent)
+        } // end of for
+    } // End of the function
+    function modelChanged(oEvent)
     {
         switch (oEvent.eventName)
         {
@@ -93,31 +72,24 @@ if (!dofus.graphics.gapi.ui.Buff)
         } // End of switch
         this.updateData();
         
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
-        this.gapi.loadUIComponent("BuffInfos", "BuffInfos", {data: oEvent.target.contentData}, {bStayIfPresent: true});
-    };
-    _loc1.over = function (oEvent)
+        gapi.loadUIComponent("BuffInfos", "BuffInfos", {data: oEvent.target.contentData}, {bStayIfPresent: true});
+    } // End of the function
+    function over(oEvent)
     {
-        var _loc3 = oEvent.target.contentData;
-        if (_loc3 != undefined)
+        var _loc2 = oEvent.target.contentData;
+        if (_loc2 != undefined)
         {
-            this.gapi.showTooltip(_loc3.name + "\n" + _loc3.visibleEffects, oEvent.target, 30);
+            gapi.showTooltip(_loc2.name + "\n" + _loc2.visibleEffects, oEvent.target, 30);
         } // end if
-    };
-    _loc1.out = function (oEvent)
+    } // End of the function
+    function out(oEvent)
     {
-        this.gapi.hideTooltip();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Buff = function ()
-    {
-        super();
-    }).CLASS_NAME = "Buff";
-    (_global.dofus.graphics.gapi.ui.Buff = function ()
-    {
-        super();
-    }).LAST_CONTAINER = 27;
-} // end if
+        gapi.hideTooltip();
+    } // End of the function
+    static var CLASS_NAME = "Buff";
+    static var LAST_CONTAINER = 27;
+} // End of Class
 #endinitclip

@@ -1,300 +1,256 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20830]
-#initclip 95
-if (!dofus.graphics.gapi.ui.ChooseCharacter)
+// [Initial MovieClip Action of sprite 1023]
+#initclip 244
+class dofus.graphics.gapi.ui.ChooseCharacter extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.ChooseCharacter = function ()
+    var _aSpriteList, __get__initialized, __get__spriteList, _nRemainingTime, __get__remainingTime, _bShowComboBox, __get__showComboBox, addToQueue, _btnPlay, _cciSprite0, _cciSprite1, _cciSprite2, _cciSprite3, _cciSprite4, _btnCreate, _btnSubscribe, _txtRemainingTime, api, _lblTitle, _lblCopyright, _lblAccount, _nSelectedIndex, _nSelectedServerID, gapi, __set__remainingTime, __set__showComboBox, __set__spriteList;
+    function ChooseCharacter()
     {
         super();
-    }).prototype;
-    _loc1.__set__spriteList = function (aSpriteList)
+    } // End of the function
+    function set spriteList(aSpriteList)
     {
-        this._aSpriteList = aSpriteList;
-        if (this.initialized)
+        _aSpriteList = aSpriteList;
+        if (this.__get__initialized())
         {
             this.initData();
         } // end if
         //return (this.spriteList());
-    };
-    _loc1.__set__remainingTime = function (nRemainingTime)
+        null;
+    } // End of the function
+    function set remainingTime(nRemainingTime)
     {
-        this._nRemainingTime = nRemainingTime;
+        _nRemainingTime = nRemainingTime;
         //return (this.remainingTime());
-    };
-    _loc1.__set__showComboBox = function (bShowComboBox)
+        null;
+    } // End of the function
+    function set showComboBox(bShowComboBox)
     {
-        this._bShowComboBox = bShowComboBox;
+        _bShowComboBox = bShowComboBox;
         //return (this.showComboBox());
-    };
-    _loc1.__set__characterCount = function (nCharacterCount)
-    {
-        this._nCharacterCount = nCharacterCount;
-        //return (this.characterCount());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.ChooseCharacter.CLASS_NAME);
-        if (this.api.datacenter.Basics.aks_is_free_community)
-        {
-            this._btnSubscribe._visible = false;
-        } // end if
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
-        this._btnPlay._visible = false;
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
+        _btnPlay._visible = false;
+    } // End of the function
+    function addListeners()
     {
-        this._cciSprite0.addEventListener("select", this);
-        this._cciSprite1.addEventListener("select", this);
-        this._cciSprite2.addEventListener("select", this);
-        this._cciSprite3.addEventListener("select", this);
-        this._cciSprite4.addEventListener("select", this);
-        this._cciSprite0.addEventListener("remove", this);
-        this._cciSprite1.addEventListener("remove", this);
-        this._cciSprite2.addEventListener("remove", this);
-        this._cciSprite3.addEventListener("remove", this);
-        this._cciSprite4.addEventListener("remove", this);
-        this._cciSprite0.addEventListener("reset", this);
-        this._cciSprite1.addEventListener("reset", this);
-        this._cciSprite2.addEventListener("reset", this);
-        this._cciSprite3.addEventListener("reset", this);
-        this._cciSprite4.addEventListener("reset", this);
-        this._btnPlay.addEventListener("click", this);
-        this._btnCreate.addEventListener("click", this);
-        this._btnSubscribe.addEventListener("click", this);
-        this._btnBack.addEventListener("click", this);
-        this.api.kernel.StreamingDisplayManager.onCharacterChoice();
-    };
-    _loc1.updateCharactersList = function ()
+        _cciSprite0.addEventListener("select", this);
+        _cciSprite1.addEventListener("select", this);
+        _cciSprite2.addEventListener("select", this);
+        _cciSprite3.addEventListener("select", this);
+        _cciSprite4.addEventListener("select", this);
+        _cciSprite0.addEventListener("unselect", this);
+        _cciSprite1.addEventListener("unselect", this);
+        _cciSprite2.addEventListener("unselect", this);
+        _cciSprite3.addEventListener("unselect", this);
+        _cciSprite4.addEventListener("unselect", this);
+        _cciSprite0.addEventListener("remove", this);
+        _cciSprite1.addEventListener("remove", this);
+        _cciSprite2.addEventListener("remove", this);
+        _cciSprite3.addEventListener("remove", this);
+        _cciSprite4.addEventListener("remove", this);
+        _btnPlay.addEventListener("click", this);
+        _btnCreate.addEventListener("click", this);
+        _btnSubscribe.addEventListener("click", this);
+    } // End of the function
+    function initData()
     {
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < 5)
+        for (var _loc2 = 0; _loc2 < 5; ++_loc2)
         {
             var _loc3 = this["_cciSprite" + _loc2];
-            _loc3.showComboBox = this._bShowComboBox;
-            _loc3.params = {index: _loc2 + this._nCharacterStartIndex};
-            _loc3.data = this._aSpriteList[_loc2 + this._nCharacterStartIndex];
-            _loc3.enabled = this._aSpriteList[_loc2 + this._nCharacterStartIndex] != undefined;
-            _loc3.isDead = _loc3.data.isDead;
-            _loc3.death = _loc3.data.deathCount;
-            _loc3.deathState = _loc3.data.deathState;
-        } // end while
-    };
-    _loc1.initData = function ()
-    {
-        this.api.datacenter.Basics.inGame = false;
-        this._btnArrowLeft._visible = this._btnArrowRight._visible = this._aSpriteList.length > 5;
-        this._nCharacterStartIndex = 0;
-        this._btnArrowLeft.onRelease = function ()
+            _loc3.showComboBox = _bShowComboBox;
+            _loc3.params = {index: _loc2};
+            _loc3.data = _aSpriteList[_loc2];
+            _loc3.enabled = _aSpriteList[_loc2] != undefined;
+        } // end of for
+        _txtRemainingTime.__set__text(this.getRemainingString(_nRemainingTime));
+        _txtRemainingTime.__set__styleName(_nRemainingTime == 0 ? ("RedLeftSmallTextArea") : ("BrownLeftSmallTextArea"));
+        _btnSubscribe.__set__enabled(_nRemainingTime != -1);
+        if (_aSpriteList.length == 0)
         {
-            this._parent._btnArrowLeft.gotoAndStop("on");
-            this._parent._btnArrowRight.gotoAndStop("on");
-            --this._parent._nCharacterStartIndex;
-            if (this._parent._nCharacterStartIndex <= 0)
-            {
-                this._parent._nCharacterStartIndex = 0;
-                this.gotoAndStop("off");
-            } // end if
-            this._parent.updateCharactersList();
-        };
-        this._btnArrowRight.onRelease = function ()
-        {
-            this._parent._btnArrowLeft.gotoAndStop("on");
-            this._parent._btnArrowRight.gotoAndStop("on");
-            ++this._parent._nCharacterStartIndex;
-            if (this._parent._nCharacterStartIndex >= this._parent._aSpriteList.length - 5)
-            {
-                this._parent._nCharacterStartIndex = this._parent._aSpriteList.length - 5;
-                this.gotoAndStop("off");
-            } // end if
-            this._parent.updateCharactersList();
-        };
-        this._lblRemainingTime.text = this.api.kernel.GameManager.getRemainingString(this._nRemainingTime);
-        this._lblRemainingTime.styleName = this._nRemainingTime == 0 ? ("RedRightSmallBoldLabel") : ("WhiteRightSmallBoldLabel");
-        this._btnSubscribe.enabled = this._nRemainingTime != -1;
-        if (this._aSpriteList.length == 0)
-        {
-            this._btnPlay._visible = false;
+            _btnPlay._visible = false;
         }
         else
         {
-            this._btnPlay._visible = true;
+            _btnPlay._visible = true;
         } // end else if
-        if (!this.api.config.isStreaming)
+        if (_aSpriteList.length >= 5)
         {
-            this._lblLogin.onRollOver = function ()
-            {
-                this._parent.gapi.showTooltip(this._parent.api.lang.getText("PSEUDO_DOFUS_INFOS"), this, 20, undefined);
-            };
-            this._lblLogin.onRollOut = function ()
-            {
-                this._parent.gapi.hideTooltip();
-            };
-            this._lblLogin.onRelease = function ()
-            {
-                var _loc2 = this._parent.api.lang.getText("PSEUDO_DOFUS_LINK");
-                if (_loc2 != undefined && _loc2 != "")
-                {
-                    this.getURL(_loc2, "_blank");
-                } // end if
-            };
-        } // end if
-        this._btnArrowLeft.onRelease();
-        this._btnBack._visible = !this.api.config.isStreaming;
-    };
-    _loc1.initTexts = function ()
-    {
-        this._lblTitle.text = this.api.lang.getText("CHOOSE_TITLE");
-        this._btnPlay.label = this.api.lang.getText("MENU_PLAY");
-        this._btnCreate.label = this.api.lang.getText("CREATE_CHARACTER");
-        this._btnSubscribe.label = this.api.lang.getText("SUBSCRIPTION");
-        this._btnBack.label = this.api.lang.getText("CHANGE_SERVER");
-        this._lblCopyright.text = this.api.lang.getText("COPYRIGHT");
-        this._lblAccount.text = this.api.lang.getText("ACCOUNT_INFO");
-        if (!this.api.config.isStreaming)
-        {
-            this._lblLogin.text = this.api.lang.getText("PSEUDO_DOFUS", [this.api.datacenter.Basics.dofusPseudo]);
+            _btnCreate.__set__enabled(false);
         }
         else
         {
-            this._lblLogin.text = this.api.lang.getText("POPUP_GAME_BEGINNING_TITLE");
+            _btnCreate.__set__enabled(true);
         } // end else if
-        this._lblServer.text = this.api.lang.getText("CURRENT_SERVER", [this.api.datacenter.Basics.aks_current_server.label]);
-    };
-    _loc1.select = function (oEvent)
+    } // End of the function
+    function initTexts()
     {
-        var _loc3 = oEvent.target.params.index;
-        this["_cciSprite" + this._nSelectedIndex].selected = false;
-        if (this._nSelectedIndex == _loc3)
+        _lblTitle.__set__text(api.lang.getText("CHOOSE_TITLE"));
+        _btnPlay.__set__label(api.lang.getText("PLAY"));
+        _btnCreate.__set__label(api.lang.getText("CREATE_CHARACTER"));
+        _btnSubscribe.__set__label(api.lang.getText("SUBSCRIPTION"));
+        _lblCopyright.__set__text(api.lang.getText("COPYRIGHT"));
+        _lblAccount.__set__text(api.lang.getText("ACCOUNT_INFO"));
+    } // End of the function
+    function getRemainingString(nRemainingTime)
+    {
+        if (nRemainingTime == -1)
         {
-            delete this._nSelectedIndex;
+            return (api.lang.getText("OPEN_BETA_ACCOUNT"));
+        }
+        else if (nRemainingTime == 0)
+        {
+            return (api.lang.getText("SUBSCRIPTION_OUT"));
         }
         else
         {
-            this._nSelectedIndex = _loc3;
+            var _loc8 = new Date();
+            _loc8.setTime(nRemainingTime);
+            var _loc7 = _loc8.getUTCFullYear() - 1970;
+            var _loc5 = _loc8.getUTCMonth();
+            var _loc2 = _loc8.getUTCDate() - 1;
+            var _loc4 = _loc8.getUTCHours();
+            var _loc6 = _loc8.getUTCMinutes();
+            var _loc9 = " " + api.lang.getText("AND") + " ";
+            var _loc3 = api.lang.getText("REMAINING_TIME") + " ";
+            if (_loc7 != 0 && _loc5 == 0)
+            {
+                var _loc14 = ank.utils.PatternDecoder.combine(api.lang.getText("YEARS"), "m", _loc7 == 1);
+                _loc3 = _loc3 + (_loc7 + " " + _loc14);
+            }
+            else if (_loc7 != 0 && _loc5 != 0)
+            {
+                _loc14 = ank.utils.PatternDecoder.combine(api.lang.getText("YEARS"), "m", _loc7 == 1);
+                var _loc10 = ank.utils.PatternDecoder.combine(api.lang.getText("MONTHS"), "m", _loc5 == 1);
+                _loc3 = _loc3 + (_loc7 + " " + _loc14 + _loc9 + _loc5 + " " + _loc10);
+            }
+            else if (_loc5 != 0 && _loc2 == 0)
+            {
+                _loc10 = ank.utils.PatternDecoder.combine(api.lang.getText("MONTHS"), "m", _loc5 == 1);
+                _loc3 = _loc3 + (_loc5 + " " + _loc10);
+            }
+            else if (_loc5 != 0 && _loc2 != 0)
+            {
+                _loc10 = ank.utils.PatternDecoder.combine(api.lang.getText("MONTHS"), "m", _loc5 == 1);
+                var _loc11 = ank.utils.PatternDecoder.combine(api.lang.getText("DAYS"), "m", _loc2 == 1);
+                _loc3 = _loc3 + (_loc5 + " " + _loc10 + _loc9 + _loc2 + " " + _loc11);
+            }
+            else if (_loc2 != 0 && _loc4 == 0)
+            {
+                _loc11 = ank.utils.PatternDecoder.combine(api.lang.getText("DAYS"), "m", _loc2 == 1);
+                _loc3 = _loc3 + (_loc2 + " " + _loc11);
+            }
+            else if (_loc2 != 0 && _loc4 != 0)
+            {
+                _loc11 = ank.utils.PatternDecoder.combine(api.lang.getText("DAYS"), "m", _loc2 == 1);
+                var _loc13 = ank.utils.PatternDecoder.combine(api.lang.getText("HOURS"), "m", _loc4 == 1);
+                _loc3 = _loc3 + (_loc2 + " " + _loc11 + _loc9 + _loc4 + " " + _loc13);
+            }
+            else if (_loc4 != 0 && _loc6 == 0)
+            {
+                _loc13 = ank.utils.PatternDecoder.combine(api.lang.getText("HOURS"), "m", _loc4 == 1);
+                _loc3 = _loc3 + (_loc4 + " " + _loc13);
+            }
+            else if (_loc4 != 0 && _loc6 != 0)
+            {
+                _loc13 = ank.utils.PatternDecoder.combine(api.lang.getText("HOURS"), "m", _loc4 == 1);
+                var _loc15 = ank.utils.PatternDecoder.combine(api.lang.getText("MINUTES"), "m", _loc6 == 1);
+                _loc3 = _loc3 + (_loc4 + " " + _loc13 + _loc9 + _loc6 + " " + _loc15);
+            }
+            else if (_loc6 != 0)
+            {
+                _loc15 = ank.utils.PatternDecoder.combine(api.lang.getText("MINUTES"), "m", _loc6 == 1);
+                _loc3 = _loc3 + (_loc6 + " " + _loc15);
+            } // end else if
+            return (_loc3 + " " + api.lang.getText("ON_FULL_VERSION") + ".");
         } // end else if
-        if (getTimer() - this._nSaveLastClick < ank.gapi.Gapi.DBLCLICK_DELAY)
+        return (null);
+    } // End of the function
+    function select(oEvent)
+    {
+        var _loc2 = oEvent.target.params.index;
+        if (_nSelectedIndex == _loc2)
         {
-            this._nSelectedIndex = _loc3;
-            this.click({target: this._btnPlay});
+            _nSelectedServerID = oEvent.serverID;
+            this.click({target: _btnPlay});
             return;
         } // end if
-        this._nSaveLastClick = getTimer();
-    };
-    _loc1.remove = function (oEvent)
-    {
-        var _loc3 = oEvent.target.params.index;
-        if (this.api.lang.getConfigText("SECRET_ANSWER_ON_DELETE") && (this._aSpriteList[_loc3].Level >= this.api.lang.getConfigText("SECRET_ANSWER_SINCE_LEVEL") && (this.api.datacenter.Basics.aks_secret_question != undefined && this.api.datacenter.Basics.aks_secret_question.length > 0)))
+        this["_cciSprite" + _nSelectedIndex].selected = false;
+        if (_loc2 != undefined)
         {
-            this.gapi.loadUIComponent("AskSecretAnswer", "AskSecretAnswer", {title: this.api.lang.getText("DELETE_WORD"), charToDelete: this._aSpriteList[_loc3]});
+            _nSelectedIndex = _loc2;
+            _nSelectedServerID = oEvent.serverID;
         }
         else
         {
-            this.api.kernel.showMessage(this.api.lang.getText("DELETE_WORD"), this.api.lang.getText("DO_U_DELETE_A", [this._aSpriteList[_loc3].name]), "CAUTION_YESNO", {name: "Delete", listener: this, params: {index: _loc3}});
+            delete this._nSelectedIndex;
+            delete this._nSelectedServerID;
         } // end else if
-    };
-    _loc1.reset = function (oEvent)
+    } // End of the function
+    function unselect(oEvent)
     {
-        var _loc3 = this._aSpriteList[oEvent.target.params.index].id;
-        var _loc4 = this.gapi.loadUIComponent("AskYesNo", "AskYesReset", {title: this.api.lang.getText("RESET_SHORTCUT"), text: this.api.lang.getText("DO_U_RESET_CHARACTER"), params: {index: _loc3}});
-        _loc4.addEventListener("yes", this);
-    };
-    _loc1.click = function (oEvent)
+        var _loc2 = oEvent.target.params.index;
+        if (_nSelectedIndex == _loc2)
+        {
+            delete this._nSelectedIndex;
+        } // end if
+    } // End of the function
+    function remove(oEvent)
+    {
+        var _loc2 = oEvent.target.params.index;
+        api.kernel.showMessage(api.lang.getText("DELETE"), api.lang.getText("DO_U_DELETE_A", [_aSpriteList[_loc2].name]), "CAUTION_YESNO", {name: "Delete", listener: this, params: {index: _loc2}});
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnPlay":
             {
-                if (this._nSelectedIndex == undefined)
+                if (_nSelectedIndex == undefined)
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("SELECT_CHARACTER"), "ERROR_BOX", {name: "NoSelect"});
+                    api.kernel.showMessage(undefined, api.lang.getText("SELECT_CHARACTER"), "ERROR_BOX", {name: "NoSelect"});
                 }
                 else
                 {
-                    this.api.network.Account.setCharacter(this._aSpriteList[this._nSelectedIndex].id);
+                    api.datacenter.Basics.aks_current_server = new dofus.datacenter.Server(_nSelectedServerID, 1, 0);
                 } // end else if
+                api.network.Account.setCharacter(_aSpriteList[_nSelectedIndex].id, _nSelectedServerID);
                 break;
             } 
             case "_btnCreate":
             {
-                if (this._nCharacterCount >= 5 && !this.api.datacenter.Player.isAuthorized)
+                if (api.datacenter.Basics.aks_servers.length > 1)
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("TOO_MUCH_CHARACTER"), "ERROR_BOX");
+                    gapi.loadUIComponent("ChooseServer", "ChooseServer", {servers: api.datacenter.Basics.aks_servers});
                 }
                 else
                 {
-                    this.gapi.loadUIComponent("CreateCharacter", "CreateCharacter", {remainingTime: this._nRemainingTime});
-                    this.gapi.unloadUIComponent("ChooseCharacter");
+                    gapi.loadUIComponent("CreateCharacter", "CreateCharacter", {needToChooseServer: false, serverID: api.datacenter.Basics.aks_servers[0].id});
                 } // end else if
+                gapi.unloadUIComponent("ChooseCharacter");
                 break;
             } 
             case "_btnSubscribe":
             {
-                _root.getURL(this.api.lang.getConfigText("PAY_LINK"), "_blank");
-                break;
-            } 
-            case "_btnBack":
-            {
-                this.api.kernel.changeServer(true);
-                break;
-            } 
-            case "_btnChangeServer":
-        } // End of switch
-    };
-    _loc1.yes = function (oEvent)
-    {
-        switch (oEvent.target._name)
-        {
-            case "AskYesReset":
-            {
-                this.api.network.Account.resetCharacter(oEvent.params.index);
-                break;
-            } 
-            case "AskYesNoDelete":
-            {
-                this.api.network.Account.deleteCharacter(this._aSpriteList[oEvent.params.index].id);
+                _root.getURL(api.lang.getConfigText("PAY_LINK"), "_blank");
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addProperty("characterCount", function ()
+    } // End of the function
+    function yes(oEvent)
     {
-    }, _loc1.__set__characterCount);
-    _loc1.addProperty("showComboBox", function ()
-    {
-    }, _loc1.__set__showComboBox);
-    _loc1.addProperty("remainingTime", function ()
-    {
-    }, _loc1.__set__remainingTime);
-    _loc1.addProperty("spriteList", function ()
-    {
-    }, _loc1.__set__spriteList);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.ChooseCharacter = function ()
-    {
-        super();
-    }).CLASS_NAME = "ChooseCharacter";
-} // end if
+        api.network.Account.deleteCharacter(_aSpriteList[oEvent.params.index].id);
+    } // End of the function
+    static var CLASS_NAME = "ChooseCharacter";
+} // End of Class
 #endinitclip

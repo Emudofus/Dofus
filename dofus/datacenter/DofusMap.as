@@ -1,75 +1,46 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20707]
-#initclip 228
-if (!dofus.datacenter.DofusMap)
+// [Initial MovieClip Action of sprite 887]
+#initclip 99
+class dofus.datacenter.DofusMap extends ank.battlefield.datacenter.Map
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.DofusMap = function (nID)
+    var id, __get__subarea, __get__area, __get__coordinates, __get__musics, __get__superarea, __get__x, __get__y;
+    function DofusMap(nID)
     {
         super(nID);
-    }).prototype;
-    _loc1.__get__coordinates = function ()
+    } // End of the function
+    function get coordinates()
     {
-        var _loc2 = _global.API.lang.getMapText(this.id);
-        return (_global.API.lang.getText("COORDINATES") + " : " + _loc2.x + ", " + _loc2.y);
-    };
-    _loc1.__get__x = function ()
+        var _loc3 = _global.API.lang.getMapText(id);
+        return (_global.API.lang.getText("COORDINATES") + " : " + _loc3.x + ", " + _loc3.y);
+    } // End of the function
+    function get x()
     {
-        return (_global.API.lang.getMapText(this.id).x);
-    };
-    _loc1.__get__y = function ()
+        return (_global.API.lang.getMapText(id).x);
+    } // End of the function
+    function get y()
     {
-        return (_global.API.lang.getMapText(this.id).y);
-    };
-    _loc1.__get__superarea = function ()
+        return (_global.API.lang.getMapText(id).y);
+    } // End of the function
+    function get superarea()
     {
-        var _loc2 = _global.API.lang;
-        return (_loc2.getMapAreaInfos(this.subarea).superareaID);
-    };
-    _loc1.__get__area = function ()
+        var _loc3 = _global.API.lang;
+        //return (_loc3.getMapAreaInfos(this.subarea()).superareaID);
+    } // End of the function
+    function get area()
     {
-        var _loc2 = _global.API.lang;
-        return (_loc2.getMapAreaInfos(this.subarea).areaID);
-    };
-    _loc1.__get__subarea = function ()
+        var _loc3 = _global.API.lang;
+        //return (_loc3.getMapAreaInfos(this.subarea()).areaID);
+    } // End of the function
+    function get subarea()
     {
-        var _loc2 = _global.API.lang;
-        return (_loc2.getMapText(this.id).sa);
-    };
-    _loc1.__get__musics = function ()
+        var _loc3 = _global.API.lang;
+        return (_loc3.getMapText(id).sa);
+    } // End of the function
+    function get musics()
     {
-        var _loc2 = _global.API.lang;
-        return (_loc2.getMapSubAreaText(this.subarea).m);
-    };
-    _loc1.addProperty("y", _loc1.__get__y, function ()
-    {
-    });
-    _loc1.addProperty("musics", _loc1.__get__musics, function ()
-    {
-    });
-    _loc1.addProperty("area", _loc1.__get__area, function ()
-    {
-    });
-    _loc1.addProperty("subarea", _loc1.__get__subarea, function ()
-    {
-    });
-    _loc1.addProperty("coordinates", _loc1.__get__coordinates, function ()
-    {
-    });
-    _loc1.addProperty("superarea", _loc1.__get__superarea, function ()
-    {
-    });
-    _loc1.addProperty("x", _loc1.__get__x, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        var _loc3 = _global.API.lang;
+        //return (_loc3.getMapSubAreaText(this.subarea()).m);
+    } // End of the function
+} // End of Class
 #endinitclip

@@ -1,163 +1,137 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20840]
-#initclip 105
-if (!dofus.graphics.gapi.ui.TaxCollectorStorage)
+// [Initial MovieClip Action of sprite 820]
+#initclip 29
+class dofus.graphics.gapi.ui.TaxCollectorStorage extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.TaxCollectorStorage = function ()
+    var _oData, __get__data, api, addToQueue, _livInventory, _livInventory2, _btnGetItem, _btnGetKamas, _btnClose, _winInventory, _winInventory2, _ldrArtwork, _itvItemViewer, _winItemViewer, _oSelectedItem, _mcBuyArrow, gapi, __set__data;
+    function TaxCollectorStorage()
     {
         super();
-    }).prototype;
-    _loc1.__set__data = function (oData)
+    } // End of the function
+    function set data(oData)
     {
-        this._oData = oData;
+        _oData = oData;
         //return (this.data());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.TaxCollectorStorage.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Exchange.leave();
+        api.network.Exchange.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
         this.hideItemViewer(true);
         this.setGetItemMode(false);
-    };
-    _loc1.addListeners = function ()
+    } // End of the function
+    function addListeners()
     {
-        this._livInventory.addEventListener("selectedItem", this);
-        this._livInventory2.addEventListener("selectedItem", this);
-        this._livInventory2.addEventListener("itemdblClick", this);
-        this._btnGetItem.addEventListener("click", this);
-        this._btnGetKamas.addEventListener("click", this);
-        this._btnClose.addEventListener("click", this);
-        if (this._oData != undefined)
+        _livInventory.addEventListener("selectedItem", this);
+        _livInventory2.addEventListener("selectedItem", this);
+        _btnGetItem.addEventListener("click", this);
+        _btnGetKamas.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+        if (_oData != undefined)
         {
-            this._oData.addEventListener("modelChanged", this);
-            this._oData.addEventListener("kamaChanged", this);
+            _oData.addEventListener("modelChanged", this);
+            _oData.addEventListener("kamaChanged", this);
         }
         else
         {
             ank.utils.Logger.err("[TaxCollectorShop] il n\'y a pas de data");
         } // end else if
-    };
-    _loc1.initTexts = function ()
+    } // End of the function
+    function initTexts()
     {
-        this._btnGetItem.label = this.api.lang.getText("GET_ITEM");
-        this._winInventory.title = this.api.datacenter.Player.data.name;
-        this._winInventory2.title = this._oData.name;
-    };
-    _loc1.initData = function ()
+        _btnGetItem.__set__label(api.lang.getText("GET_ITEM"));
+        _winInventory.__set__title(api.datacenter.Player.data.name);
+        _winInventory2.__set__title(_oData.name);
+    } // End of the function
+    function initData()
     {
-        this._livInventory.dataProvider = this.api.datacenter.Player.Inventory;
-        this._livInventory.kamasProvider = this.api.datacenter.Player;
-        this._livInventory2.kamasProvider = this._oData;
-        this._ldrArtwork.contentPath = dofus.Constants.ARTWORKS_BIG_PATH + this._oData.gfx + ".swf";
+        _livInventory.__set__dataProvider(api.datacenter.Player.Inventory);
+        _livInventory.__set__kamasProvider(api.datacenter.Player);
+        _livInventory2.__set__kamasProvider(_oData);
+        _ldrArtwork.__set__contentPath(dofus.Constants.ARTWORKS_BIG_PATH + _oData.gfx + ".swf");
         this.modelChanged();
-    };
-    _loc1.hideItemViewer = function (bHide)
+    } // End of the function
+    function hideItemViewer(bHide)
     {
-        this._itvItemViewer._visible = !bHide;
-        this._winItemViewer._visible = !bHide;
+        _itvItemViewer._visible = !bHide;
+        _winItemViewer._visible = !bHide;
         if (bHide)
         {
-            this._oSelectedItem = undefined;
+            _oSelectedItem = undefined;
         } // end if
-    };
-    _loc1.setGetItemMode = function (bActive)
+    } // End of the function
+    function setGetItemMode(bActive)
     {
-        var _loc3 = false;
-        var _loc4 = this.api.datacenter.Player.guildInfos.playerRights;
-        switch (this._oSelectedItem.superType)
+        var _loc2 = false;
+        var _loc3 = api.datacenter.Player.guildInfos.playerRights;
+        switch (_oSelectedItem.superType)
         {
             case 9:
             {
-                _loc3 = _loc4.canCollectResources;
+                _loc2 = _loc3.canCollectResources;
                 break;
             } 
             default:
             {
-                _loc3 = _loc4.canCollectObjects;
+                _loc2 = _loc3.canCollectObjects;
                 break;
             } 
         } // End of switch
-        this._btnGetItem._visible = bActive && _loc3;
-        this._mcBuyArrow._visible = bActive;
-    };
-    _loc1.askQuantity = function (nQuantity, oParams)
+        _btnGetItem._visible = bActive && _loc2;
+        _mcBuyArrow._visible = bActive;
+    } // End of the function
+    function askQuantity(nQuantity, oParams)
     {
-        var _loc4 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: nQuantity, max: nQuantity, params: oParams});
-        _loc4.addEventListener("validate", this);
-    };
-    _loc1.validateGetItem = function (nQuantity)
-    {
-        if (nQuantity <= 0)
-        {
-            return;
-        } // end if
-        nQuantity = Math.min(this._oSelectedItem.Quantity, nQuantity);
-        this.api.network.Exchange.movementItem(false, this._oSelectedItem.ID, nQuantity);
-        this.hideItemViewer(true);
-        this.setGetItemMode(false);
-    };
-    _loc1.validateKamas = function (nQuantity)
+        var _loc2 = gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: nQuantity, params: oParams});
+        _loc2.addEventListener("validate", this);
+    } // End of the function
+    function validateGetItem(nQuantity)
     {
         if (nQuantity <= 0)
         {
             return;
         } // end if
-        nQuantity = Math.min(this._oData.Kama, nQuantity);
-        this.api.network.Exchange.movementKama(-nQuantity);
+        nQuantity = Math.min(_oSelectedItem.Quantity, nQuantity);
+        api.network.Exchange.movementItem(false, _oSelectedItem.ID, nQuantity);
         this.hideItemViewer(true);
         this.setGetItemMode(false);
-    };
-    _loc1.getItems = function ()
+    } // End of the function
+    function validateKamas(nQuantity)
     {
-        if (this._oSelectedItem.Quantity > 1)
+        if (nQuantity <= 0)
         {
-            this.askQuantity(this._oSelectedItem.Quantity, {type: "item"});
-        }
-        else
-        {
-            this.validateGetItem(1);
-        } // end else if
-    };
-    _loc1.modelChanged = function (oEvent)
+            return;
+        } // end if
+        nQuantity = Math.min(_oData.Kama, nQuantity);
+        api.network.Exchange.movementKama(-nQuantity);
+        this.hideItemViewer(true);
+        this.setGetItemMode(false);
+    } // End of the function
+    function modelChanged(oEvent)
     {
-        this._livInventory2.dataProvider = this._oData.inventory;
-    };
-    _loc1.click = function (oEvent)
+        _livInventory2.__set__dataProvider(_oData.inventory);
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnGetItem":
             {
-                if (this._oSelectedItem.Quantity > 1)
+                if (_oSelectedItem.Quantity > 1)
                 {
-                    this.askQuantity(this._oSelectedItem.Quantity, {type: "item"});
+                    this.askQuantity(_oSelectedItem.Quantity, {type: "item"});
                 }
                 else
                 {
@@ -167,11 +141,11 @@ if (!dofus.graphics.gapi.ui.TaxCollectorStorage)
             } 
             case "_btnGetKamas":
             {
-                if (this.api.datacenter.Player.guildInfos.playerRights.canCollect)
+                if (api.datacenter.Player.guildInfos.playerRights.canCollectKamas)
                 {
-                    if (this._oData.Kama > 0)
+                    if (_oData.Kama > 0)
                     {
-                        this.askQuantity(this._oData.Kama, {type: "kamas"});
+                        this.askQuantity(_oData.Kama, {type: "kamas"});
                     } // end if
                 } // end if
                 break;
@@ -182,26 +156,8 @@ if (!dofus.graphics.gapi.ui.TaxCollectorStorage)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.itemdblClick = function (oEvent)
-    {
-        if (!Key.isDown(Key.CONTROL))
-        {
-            if (this._oSelectedItem.Quantity > 1)
-            {
-                this.askQuantity(this._oSelectedItem.Quantity, {type: "item"});
-            }
-            else
-            {
-                this.validateGetItem(1);
-            } // end else if
-        }
-        else
-        {
-            this.validateGetItem(this._oSelectedItem.Quantity);
-        } // end else if
-    };
-    _loc1.selectedItem = function (oEvent)
+    } // End of the function
+    function selectedItem(oEvent)
     {
         if (oEvent.item == undefined)
         {
@@ -210,27 +166,27 @@ if (!dofus.graphics.gapi.ui.TaxCollectorStorage)
         }
         else
         {
-            this._oSelectedItem = oEvent.item;
+            _oSelectedItem = oEvent.item;
             this.hideItemViewer(false);
-            this._itvItemViewer.itemData = oEvent.item;
+            _itvItemViewer.__set__itemData(oEvent.item);
             switch (oEvent.target._name)
             {
                 case "_livInventory":
                 {
                     this.setGetItemMode(false);
-                    this._livInventory2.setFilter(this._livInventory.currentFilterID);
+                    _livInventory2.setFilter(_livInventory.__get__currentFilterID());
                     break;
                 } 
                 case "_livInventory2":
                 {
                     this.setGetItemMode(true);
-                    this._livInventory.setFilter(this._livInventory2.currentFilterID);
+                    _livInventory.setFilter(_livInventory2.__get__currentFilterID());
                     break;
                 } 
             } // End of switch
         } // end else if
-    };
-    _loc1.validate = function (oEvent)
+    } // End of the function
+    function validate(oEvent)
     {
         switch (oEvent.target.params.type)
         {
@@ -245,15 +201,7 @@ if (!dofus.graphics.gapi.ui.TaxCollectorStorage)
                 break;
             } 
         } // End of switch
-        
-    };
-    _loc1.addProperty("data", function ()
-    {
-    }, _loc1.__set__data);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.TaxCollectorStorage = function ()
-    {
-        super();
-    }).CLASS_NAME = "TaxCollectorStorage";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "TaxCollectorStorage";
+} // End of Class
 #endinitclip

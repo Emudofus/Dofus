@@ -1,57 +1,38 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20546]
-#initclip 67
-if (!dofus.datacenter.Question)
+// [Initial MovieClip Action of sprite 932]
+#initclip 144
+class dofus.datacenter.Question extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Question = function (nQuestionID, aResponsesID, aQuestionParams)
+    var _nQuestionID, _sQuestionText, _eaResponsesObjects, api, __get__id, __get__label, __get__responses;
+    function Question(nQuestionID, aResponsesID, aQuestionParams)
     {
         super();
         this.initialize(nQuestionID, aResponsesID, aQuestionParams);
-    }).prototype;
-    _loc1.__get__id = function ()
+    } // End of the function
+    function get id()
     {
-        return (this._nQuestionID);
-    };
-    _loc1.__get__label = function ()
+        return (_nQuestionID);
+    } // End of the function
+    function get label()
     {
-        return (this.api.lang.fetchString(this._sQuestionText));
-    };
-    _loc1.__get__responses = function ()
+        return (_sQuestionText);
+    } // End of the function
+    function get responses()
     {
-        return (this._eaResponsesObjects);
-    };
-    _loc1.initialize = function (nQuestionID, aResponsesID, aQuestionParams)
+        return (_eaResponsesObjects);
+    } // End of the function
+    function initialize(nQuestionID, aResponsesID, aQuestionParams)
     {
-        this.api = _global.API;
-        this._nQuestionID = nQuestionID;
-        this._sQuestionText = ank.utils.PatternDecoder.getDescription(this.api.lang.getDialogQuestionText(nQuestionID), aQuestionParams);
-        this._eaResponsesObjects = new ank.utils.ExtendedArray();
-        var _loc5 = 0;
-        
-        while (++_loc5, _loc5 < aResponsesID.length)
+        api = _global.API;
+        _nQuestionID = nQuestionID;
+        _sQuestionText = ank.utils.PatternDecoder.getDescription(api.lang.getDialogQuestionText(nQuestionID), aQuestionParams);
+        _eaResponsesObjects = new ank.utils.ExtendedArray();
+        for (var _loc3 = 0; _loc3 < aResponsesID.length; ++_loc3)
         {
-            var _loc6 = Number(aResponsesID[_loc5]);
-            this._eaResponsesObjects.push({label: this.api.lang.fetchString(this.api.lang.getDialogResponseText(_loc6)), id: _loc6});
-        } // end while
-    };
-    _loc1.addProperty("label", _loc1.__get__label, function ()
-    {
-    });
-    _loc1.addProperty("responses", _loc1.__get__responses, function ()
-    {
-    });
-    _loc1.addProperty("id", _loc1.__get__id, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+            var _loc4 = Number(aResponsesID[_loc3]);
+            _eaResponsesObjects.push({label: api.lang.getDialogResponseText(_loc4), id: _loc4});
+        } // end of for
+    } // End of the function
+} // End of Class
 #endinitclip

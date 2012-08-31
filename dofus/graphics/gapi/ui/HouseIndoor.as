@@ -1,99 +1,68 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20688]
-#initclip 209
-if (!dofus.graphics.gapi.ui.HouseIndoor)
+// [Initial MovieClip Action of sprite 1003]
+#initclip 220
+class dofus.graphics.gapi.ui.HouseIndoor extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.HouseIndoor = function ()
+    var _oHouse, _mcForSale, _mcLock, __get__house, _aSkills, __get__skills, _mcHouse, _parent, __set__house, __set__skills;
+    function HouseIndoor()
     {
         super();
-    }).prototype;
-    _loc1.__set__house = function (oHouse)
+    } // End of the function
+    function set house(oHouse)
     {
-        this._oHouse = oHouse;
+        _oHouse = oHouse;
         oHouse.addEventListener("forsale", this);
         oHouse.addEventListener("locked", this);
-        this._mcForSale._visible = oHouse.isForSale;
-        this._mcLock._visible = oHouse.isLocked;
+        _mcForSale._visible = oHouse.isForSale;
+        _mcLock._visible = oHouse.isLocked;
         //return (this.house());
-    };
-    _loc1.__set__skills = function (aSkills)
+        null;
+    } // End of the function
+    function set skills(aSkills)
     {
-        this._aSkills = aSkills;
+        _aSkills = aSkills;
         //return (this.skills());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.HouseIndoor.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._mcHouse.onRelease = this.click;
-        if (this._oHouse == undefined)
+        _mcHouse.onRelease = click;
+        if (_oHouse == undefined)
         {
-            this._mcForSale._visible = false;
-            this._mcLock._visible = false;
+            _mcForSale._visible = false;
+            _mcLock._visible = false;
         } // end if
-    };
-    _loc1.click = function ()
+    } // End of the function
+    function click()
     {
-        var _loc2 = this._parent.gapi.createPopupMenu();
-        var _loc3 = this._parent._oHouse;
-        var _loc4 = this._parent.api;
-        _loc2.addStaticItem(_loc3.name);
-        for (var k in this._parent._aSkills)
+        var _loc7 = _parent.gapi.createPopupMenu();
+        var _loc5 = _parent._oHouse;
+        var _loc6 = _parent.api;
+        _loc7.addStaticItem(_loc5.name);
+        for (var _loc8 in _parent._aSkills)
         {
-            var _loc5 = this._parent._aSkills[k];
-            var _loc6 = _loc5.getState(true, _loc3.localOwner, _loc3.isForSale, _loc3.isLocked, true);
-            if (_loc6 != "X")
+            var _loc3 = _parent._aSkills[_loc8];
+            var _loc4 = _loc3.getState(true, _loc5.localOwner, _loc5.isForSale, _loc5.isLocked, true);
+            if (_loc4 != "X")
             {
-                _loc2.addItem(_loc5.description, _loc4.kernel.GameManager, _loc4.kernel.GameManager.useSkill, [_loc5.id], _loc6 == "V");
+                _loc7.addItem(_loc3.description, _loc6.kernel.GameManager, _loc6.kernel.GameManager.useSkill, [_loc3.id], _loc4 == "V");
             } // end if
         } // end of for...in
-        if (_loc4.datacenter.Player.guildInfos != undefined && _loc4.datacenter.Player.guildInfos.isValid)
-        {
-            _loc2.addItem(_loc4.lang.getText("GUILD_HOUSE_CONFIGURATION"), this._parent, this._parent.guildHouse);
-        } // end if
-        _loc2.show(_root._xmouse, _root._ymouse);
-    };
-    _loc1.guildHouse = function ()
+        _loc7.show(_root._xmouse, _root._ymouse);
+    } // End of the function
+    function forsale(oEvent)
     {
-        this.api.ui.loadUIComponent("GuildHouseRights", "GuildHouseRights", {house: this._oHouse});
-    };
-    _loc1.forsale = function (oEvent)
+        _mcForSale._visible = oEvent.value;
+    } // End of the function
+    function locked(oEvent)
     {
-        this._mcForSale._visible = oEvent.value;
-    };
-    _loc1.locked = function (oEvent)
-    {
-        this._mcLock._visible = oEvent.value;
-    };
-    _loc1.addProperty("skills", function ()
-    {
-    }, _loc1.__set__skills);
-    _loc1.addProperty("house", function ()
-    {
-    }, _loc1.__set__house);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.HouseIndoor = function ()
-    {
-        super();
-    }).CLASS_NAME = "HouseIndoor";
-} // end if
+        _mcLock._visible = oEvent.value;
+    } // End of the function
+    static var CLASS_NAME = "HouseIndoor";
+} // End of Class
 #endinitclip

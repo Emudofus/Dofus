@@ -1,71 +1,46 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20485]
-#initclip 6
-if (!dofus.graphics.gapi.controls.Card)
+// [Initial MovieClip Action of sprite 1054]
+#initclip 21
+class dofus.graphics.gapi.controls.Card extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.Card = function ()
+    var _sName, __get__name, _nBackground, __get__background, _sGfxFile, __get__gfxFile, addToQueue, _lblName, _ldrBack, _ldrGfx, __set__background, __set__gfxFile, __set__name;
+    function Card()
     {
         super();
-    }).prototype;
-    _loc1.__set__name = function (sName)
+    } // End of the function
+    function set name(sName)
     {
-        this._sName = sName;
+        _sName = sName;
         //return (this.name());
-    };
-    _loc1.__set__background = function (nBackground)
+        null;
+    } // End of the function
+    function set background(nBackground)
     {
-        this._nBackground = nBackground;
+        _nBackground = nBackground;
         //return (this.background());
-    };
-    _loc1.__set__gfxFile = function (sGfxFile)
+        null;
+    } // End of the function
+    function set gfxFile(sGfxFile)
     {
-        this._sGfxFile = sGfxFile;
+        _sGfxFile = sGfxFile;
         //return (this.gfxFile());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.Card.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initData});
-    };
-    _loc1.initData = function ()
+        this.addToQueue({object: this, method: initData});
+    } // End of the function
+    function initData()
     {
-        this._lblName.text = this._sName;
-        this._ldrBack.contentPath = dofus.Constants.CARDS_PATH + this._nBackground + ".swf";
-        this._ldrGfx.contentPath = this._sGfxFile;
-    };
-    _loc1.addProperty("gfxFile", function ()
-    {
-    }, _loc1.__set__gfxFile);
-    _loc1.addProperty("background", function ()
-    {
-    }, _loc1.__set__background);
-    _loc1.addProperty("name", function ()
-    {
-    }, _loc1.__set__name);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.Card = function ()
-    {
-        super();
-    }).CLASS_NAME = "Card";
-} // end if
+        _lblName.__set__text(_sName);
+        _ldrBack.__set__contentPath(dofus.Constants.CARDS_PATH + _nBackground + ".swf");
+        _ldrGfx.__set__contentPath(_sGfxFile);
+    } // End of the function
+    static var CLASS_NAME = "Card";
+} // End of Class
 #endinitclip

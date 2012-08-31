@@ -1,62 +1,48 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20672]
-#initclip 193
-if (!dofus.datacenter.TaxCollector)
+// [Initial MovieClip Action of sprite 878]
+#initclip 90
+class dofus.datacenter.TaxCollector extends dofus.datacenter.PlayableCharacter
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.TaxCollector = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID)
+    var initialize, _sName, __get__name, _sGuildName, __get__guildName, _oEmblem, __get__emblem, __set__emblem, __set__guildName, __set__name, __get__resistances;
+    function TaxCollector(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super();
         this.initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID);
-    }).prototype;
-    _loc1.__set__name = function (sName)
+    } // End of the function
+    function set name(sName)
     {
-        this._sName = sName;
+        _sName = sName;
         //return (this.name());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this._sName);
-    };
-    _loc1.__set__guildName = function (sGuildName)
+        return (_sName);
+    } // End of the function
+    function get resistances()
     {
-        this._sGuildName = sGuildName;
+        return (new Array());
+    } // End of the function
+    function set guildName(sGuildName)
+    {
+        _sGuildName = sGuildName;
         //return (this.guildName());
-    };
-    _loc1.__get__guildName = function ()
+        null;
+    } // End of the function
+    function get guildName()
     {
-        return (this._sGuildName);
-    };
-    _loc1.__set__emblem = function (oEmblem)
+        return (_sGuildName);
+    } // End of the function
+    function set emblem(oEmblem)
     {
-        this._oEmblem = oEmblem;
+        _oEmblem = oEmblem;
         //return (this.emblem());
-    };
-    _loc1.__get__emblem = function ()
+        null;
+    } // End of the function
+    function get emblem()
     {
-        return (this._oEmblem);
-    };
-    _loc1.__set__resistances = function (aResistances)
-    {
-        this._aResistances = aResistances;
-        //return (this.resistances());
-    };
-    _loc1.__get__resistances = function ()
-    {
-        return (this._aResistances);
-    };
-    _loc1.addProperty("emblem", _loc1.__get__emblem, _loc1.__set__emblem);
-    _loc1.addProperty("resistances", _loc1.__get__resistances, _loc1.__set__resistances);
-    _loc1.addProperty("name", _loc1.__get__name, _loc1.__set__name);
-    _loc1.addProperty("guildName", _loc1.__get__guildName, _loc1.__set__guildName);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        return (_oEmblem);
+    } // End of the function
+} // End of Class
 #endinitclip

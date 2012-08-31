@@ -1,22 +1,11 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20482]
-#initclip 3
-if (!ank.gapi.core.UIBasicComponent)
+// [Initial MovieClip Action of sprite 7]
+#initclip 2
+class ank.gapi.core.UIBasicComponent extends ank.utils.QueueEmbedMovieClip
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.core)
-    {
-        _global.ank.gapi.core = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.core.UIBasicComponent = function ()
+    var createChildren, draw, arrange, _mcGAPI, __get__gapi, _parent, _sClassName, setEnabled, __get__enabled, __get__styleName, __get__width, __width, __get__height, __height, _oParams, __get__params, _rotation, _x, _y, _height, _width, boundingBox_mc, _yscale, _xscale, onEnterFrame, border_mc, createEmptyMovieClip, __get__className, __set__enabled, __set__gapi, __set__height, __get__initialized, __set__params, __set__styleName, __set__width;
+    function UIBasicComponent()
     {
         super();
         this.init();
@@ -24,97 +13,103 @@ if (!ank.gapi.core.UIBasicComponent)
         this.draw();
         this.arrange();
         this.size();
-        this._bInitialized = true;
-    }).prototype;
-    _loc1.__set__gapi = function (mcGAPI)
+        _bInitialized = true;
+    } // End of the function
+    function set gapi(mcGAPI)
     {
-        this._mcGAPI = mcGAPI;
+        _mcGAPI = mcGAPI;
         //return (this.gapi());
-    };
-    _loc1.__get__gapi = function ()
+        null;
+    } // End of the function
+    function get gapi()
     {
-        if (this._mcGAPI == undefined)
+        if (_mcGAPI == undefined)
         {
-            return (this._parent.gapi);
+            return (_parent.gapi);
         }
         else
         {
-            return (this._mcGAPI);
+            return (_mcGAPI);
         } // end else if
-    };
-    _loc1.__get__className = function ()
+    } // End of the function
+    function get className()
     {
-        return (this._sClassName);
-    };
-    _loc1.__set__enabled = function (bEnabled)
+        return (_sClassName);
+    } // End of the function
+    function set enabled(bEnabled)
     {
-        this._bEnabled = bEnabled;
-        this.addToQueue({object: this, method: this.setEnabled});
+        _bEnabled = bEnabled;
+        this.addToQueue({object: this, method: setEnabled});
         //return (this.enabled());
-    };
-    _loc1.__get__enabled = function ()
+        null;
+    } // End of the function
+    function get enabled()
     {
-        return (this._bEnabled);
-    };
-    _loc1.__set__styleName = function (sStyleName)
+        return (_bEnabled);
+    } // End of the function
+    function set styleName(sStyleName)
     {
-        this._sStyleName = sStyleName;
-        if (this._bInitialized && (sStyleName != "none" && sStyleName != undefined))
+        _sStyleName = sStyleName;
+        if (_bInitialized && sStyleName != "none" && sStyleName != undefined)
         {
             this.draw();
         } // end if
         //return (this.styleName());
-    };
-    _loc1.__get__styleName = function ()
+        null;
+    } // End of the function
+    function get styleName()
     {
-        var _loc2 = this._sStyleName;
-        if (_loc2.length == 0 || (_loc2 == undefined || _loc2 == "default"))
+        var _loc3 = _sStyleName;
+        if (_loc3.length == 0 || _loc3 == undefined || _loc3 == "default")
         {
-            for (var _loc3 = this._parent; !(_loc3 instanceof ank.gapi.core.UIBasicComponent) && _loc3 != undefined; _loc3 = _loc3._parent)
+            for (var _loc2 = _parent; !(_loc2 instanceof ank.gapi.core.UIBasicComponent) && _loc2 != undefined; _loc2 = _loc2._parent)
             {
             } // end of for
-            _loc2 = _loc3.styleName;
+            _loc3 = _loc2.styleName;
         } // end if
-        if (_loc2 == undefined)
+        if (_loc3 == undefined)
         {
-            _loc2 = this._sClassName;
+            _loc3 = _sClassName;
         } // end if
-        return (_loc2);
-    };
-    _loc1.__set__width = function (nWidth)
+        return (_loc3);
+    } // End of the function
+    function set width(nWidth)
     {
         this.setSize(nWidth, null);
         //return (this.width());
-    };
-    _loc1.__get__width = function ()
+        null;
+    } // End of the function
+    function get width()
     {
-        return (this.__width);
-    };
-    _loc1.__set__height = function (nHeight)
+        return (__width);
+    } // End of the function
+    function set height(nHeight)
     {
         this.setSize(null, nHeight);
         //return (this.height());
-    };
-    _loc1.__get__height = function ()
+        null;
+    } // End of the function
+    function get height()
     {
-        return (this.__height);
-    };
-    _loc1.__set__params = function (oParams)
+        return (__height);
+    } // End of the function
+    function set params(oParams)
     {
-        this._oParams = oParams;
+        _oParams = oParams;
         //return (this.params());
-    };
-    _loc1.__get__params = function ()
+        null;
+    } // End of the function
+    function get params()
     {
-        return (this._oParams);
-    };
-    _loc1.__get__initialized = function ()
+        return (_oParams);
+    } // End of the function
+    function get initialized()
     {
-        return (this._bInitialized);
-    };
-    _loc1.setSize = function (w, h)
+        return (_bInitialized);
+    } // End of the function
+    function setSize(w, h)
     {
-        if (Math.abs(this._rotation) == 90)
+        if (Math.abs(_rotation) == 90)
         {
             var _loc4 = w;
             w = h;
@@ -122,97 +117,118 @@ if (!ank.gapi.core.UIBasicComponent)
         } // end if
         if (w != undefined && w != null)
         {
-            this.__width = w;
+            __width = w;
         } // end if
         if (h != undefined && h != null)
         {
-            this.__height = h;
+            __height = h;
         } // end if
         this.size();
-    };
-    _loc1.move = function (x, y)
+    } // End of the function
+    function move(x, y)
     {
         if (x != undefined)
         {
-            this._x = x;
+            _x = x;
         } // end if
         if (x != undefined)
         {
-            this._y = y;
+            _y = y;
         } // end if
-    };
-    _loc1.init = function (bDontHideBoundingBox, sClassName)
+    } // End of the function
+    function init(bDontHideBoundingBox, sClassName)
     {
-        this._sClassName = sClassName;
-        if (Math.ceil(this._rotation % 180) > 45)
+        _sClassName = sClassName;
+        if (Math.ceil(_rotation % 180) > 45)
         {
-            this.__width = this._height;
-            this.__height = this._width;
+            __width = _height;
+            __height = _width;
         }
         else
         {
-            this.__width = this._width;
-            this.__height = this._height;
+            __width = _width;
+            __height = _height;
         } // end else if
         if (!bDontHideBoundingBox)
         {
-            this.boundingBox_mc._visible = false;
-            this.boundingBox_mc._width = this.boundingBox_mc._height = 0;
+            boundingBox_mc._visible = false;
+            boundingBox_mc._width = boundingBox_mc._height = 0;
         } // end if
         mx.events.EventDispatcher.initialize(this);
-    };
-    _loc1.getStyle = function ()
+    } // End of the function
+    function getStyle()
     {
-        return (ank.gapi.styles.StylesManager.getStyle(this.styleName));
-    };
-    _loc1.size = function ()
+        //return (ank.gapi.styles.StylesManager.getStyle(this.styleName()));
+    } // End of the function
+    function size()
     {
         this.initScale();
-    };
-    _loc1.initScale = function ()
+    } // End of the function
+    function initScale()
     {
-        this._xscale = this._yscale = 100;
-    };
-    _loc1.drawBorder = function ()
+        _xscale = _yscale = 100;
+    } // End of the function
+    function addToQueue(oCall)
     {
-        if (this.border_mc == undefined)
+        ank.gapi.core.UIBasicComponent._aQueue.push(oCall);
+        if (onEnterFrame == undefined)
+        {
+            onEnterFrame = runQueue;
+        } // end if
+    } // End of the function
+    function runQueue()
+    {
+        var _loc2 = ank.gapi.core.UIBasicComponent._aQueue.shift();
+        _loc2.method.apply(_loc2.object, _loc2.params);
+        if (ank.gapi.core.UIBasicComponent._aQueue.length == 0)
+        {
+            delete this.onEnterFrame;
+        } // end if
+    } // End of the function
+    function drawBorder()
+    {
+        if (border_mc == undefined)
         {
             this.createEmptyMovieClip("border_mc", 0);
         } // end if
-        this.border_mc.clear();
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 7305079, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(this.__width, 0);
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 9542041, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(this.__width, this.__height);
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 14015965, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(0, this.__height);
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 9542041, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(0, 0);
-        this.border_mc.moveTo(1, 1);
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 13290700, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(this.__width - 1, 1);
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 14015965, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(this.__width - 1, this.__height - 1);
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 15658734, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(1, this.__height - 1);
-        this.border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 14015965, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
-        this.border_mc.lineTo(1, 1);
-    };
-    _loc1.drawRoundRect = function (mc, x, y, w, h, r, c, alpha, rot, gradient, ratios)
+        border_mc.clear();
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 7305079, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(__width, 0);
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 9542041, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(__width, __height);
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 14015965, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(0, __height);
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 9542041, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(0, 0);
+        border_mc.moveTo(1, 1);
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 13290700, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(__width - 1, 1);
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 14015965, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(__width - 1, __height - 1);
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 15658734, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(1, __height - 1);
+        border_mc.lineStyle(ank.gapi.core.UIBasicComponent.BORDER_TICKNESS, 14015965, ank.gapi.core.UIBasicComponent.BORDER_ALPHA);
+        border_mc.lineTo(1, 1);
+    } // End of the function
+    function drawRoundRect(mc, x, y, w, h, r, c, alpha, rot, gradient, ratios)
     {
+        var _loc14;
+        var _loc17;
+        var _loc16;
+        var _loc11;
         if (typeof(r) == "object")
         {
-            var _loc13 = r.br;
-            var _loc14 = r.bl;
-            var _loc15 = r.tl;
-            var _loc16 = r.tr;
+            _loc14 = r.br;
+            _loc17 = r.bl;
+            _loc16 = r.tl;
+            _loc11 = r.tr;
         }
         else
         {
+            _loc11 = r;
             _loc16 = r;
-            _loc15 = r;
+            _loc17 = r;
             _loc14 = r;
-            _loc13 = r;
         } // end else if
         if (alpha == undefined)
         {
@@ -220,96 +236,90 @@ if (!ank.gapi.core.UIBasicComponent)
         } // end if
         if (typeof(c) == "object")
         {
+            var _loc9;
             if (typeof(alpha) != "object")
             {
-                var _loc17 = [alpha, alpha];
+                _loc9 = [alpha, alpha];
             }
             else
             {
-                _loc17 = alpha;
+                _loc9 = alpha;
             } // end else if
             if (ratios == undefined)
             {
                 ratios = [0, 255];
             } // end if
-            var _loc18 = h * 7.000000E-001;
+            var _loc15 = h * 7.000000E-001;
+            var _loc10;
             if (typeof(rot) != "object")
             {
-                var _loc19 = {matrixType: "box", x: -_loc18, y: _loc18, w: w * 2, h: h * 4, r: rot * 1.745329E-002};
+                _loc10 = {matrixType: "box", x: -_loc15, y: _loc15, w: w * 2, h: h * 4, r: rot * 1.745329E-002};
             }
             else
             {
-                _loc19 = rot;
-                if (_loc19.w == undefined)
-                {
-                    _loc19.w = w;
-                } // end if
-                if (_loc19.h == undefined)
-                {
-                    _loc19.h = h;
-                } // end if
+                _loc10 = rot;
             } // end else if
             if (gradient == "radial")
             {
-                mc.beginGradientFill("radial", c, _loc17, ratios, _loc19);
+                mc.beginGradientFill("radial", c, _loc9, ratios, _loc10);
             }
             else
             {
-                mc.beginGradientFill("linear", c, _loc17, ratios, _loc19);
+                mc.beginGradientFill("linear", c, _loc9, ratios, _loc10);
             } // end else if
         }
         else if (c != undefined)
         {
             mc.beginFill(c, alpha);
         } // end else if
-        r = _loc13;
+        r = _loc14;
         if (r != 0)
         {
-            var _loc20 = r - r * 7.071068E-001;
-            var _loc21 = r - r * 4.142136E-001;
+            var _loc13 = r - r * 7.071068E-001;
+            var _loc12 = r - r * 4.142136E-001;
             mc.moveTo(x + w, y + h - r);
             mc.lineTo(x + w, y + h - r);
-            mc.curveTo(x + w, y + h - _loc21, x + w - _loc20, y + h - _loc20);
-            mc.curveTo(x + w - _loc21, y + h, x + w - r, y + h);
+            mc.curveTo(x + w, y + h - _loc12, x + w - _loc13, y + h - _loc13);
+            mc.curveTo(x + w - _loc12, y + h, x + w - r, y + h);
         }
         else
         {
             mc.moveTo(x + w, y + h);
         } // end else if
-        r = _loc14;
+        r = _loc17;
         if (r != 0)
         {
-            var _loc22 = r - r * 7.071068E-001;
-            var _loc23 = r - r * 4.142136E-001;
+            _loc13 = r - r * 7.071068E-001;
+            _loc12 = r - r * 4.142136E-001;
             mc.lineTo(x + r, y + h);
-            mc.curveTo(x + _loc23, y + h, x + _loc22, y + h - _loc22);
-            mc.curveTo(x, y + h - _loc23, x, y + h - r);
+            mc.curveTo(x + _loc12, y + h, x + _loc13, y + h - _loc13);
+            mc.curveTo(x, y + h - _loc12, x, y + h - r);
         }
         else
         {
             mc.lineTo(x, y + h);
         } // end else if
-        r = _loc15;
+        r = _loc16;
         if (r != 0)
         {
-            var _loc24 = r - r * 7.071068E-001;
-            var _loc25 = r - r * 4.142136E-001;
+            _loc13 = r - r * 7.071068E-001;
+            _loc12 = r - r * 4.142136E-001;
             mc.lineTo(x, y + r);
-            mc.curveTo(x, y + _loc25, x + _loc24, y + _loc24);
-            mc.curveTo(x + _loc25, y, x + r, y);
+            mc.curveTo(x, y + _loc12, x + _loc13, y + _loc13);
+            mc.curveTo(x + _loc12, y, x + r, y);
         }
         else
         {
             mc.lineTo(x, y);
         } // end else if
-        r = _loc16;
+        r = _loc11;
         if (r != 0)
         {
-            var _loc26 = r - r * 7.071068E-001;
-            var _loc27 = r - r * 4.142136E-001;
+            _loc13 = r - r * 7.071068E-001;
+            _loc12 = r - r * 4.142136E-001;
             mc.lineTo(x + w - r, y);
-            mc.curveTo(x + w - _loc27, y, x + w - _loc26, y + _loc26);
-            mc.curveTo(x + w, y + _loc27, x + w, y + r);
+            mc.curveTo(x + w - _loc12, y, x + w - _loc13, y + _loc13);
+            mc.curveTo(x + w, y + _loc12, x + w, y + r);
             mc.lineTo(x + w, y + h - r);
         }
         else
@@ -321,56 +331,26 @@ if (!ank.gapi.core.UIBasicComponent)
         {
             mc.endFill();
         } // end if
-    };
-    _loc1.setMovieClipColor = function (mc, nColor)
+    } // End of the function
+    function setMovieClipColor(mc, nColor)
     {
-        var _loc4 = new Color(mc);
-        _loc4.setRGB(nColor);
+        var _loc1 = new Color(mc);
+        _loc1.setRGB(nColor);
         if (nColor == -1)
         {
             mc._alpha = 0;
         } // end if
-    };
-    _loc1.setMovieClipTransform = function (mc, oTransformation)
+    } // End of the function
+    function setMovieClipTransform(mc, oTransformation)
     {
-        var _loc4 = new Color(mc);
-        _loc4.setTransform(oTransformation);
-    };
-    _loc1.addProperty("styleName", _loc1.__get__styleName, _loc1.__set__styleName);
-    _loc1.addProperty("gapi", _loc1.__get__gapi, _loc1.__set__gapi);
-    _loc1.addProperty("enabled", _loc1.__get__enabled, _loc1.__set__enabled);
-    _loc1.addProperty("className", _loc1.__get__className, function ()
-    {
-    });
-    _loc1.addProperty("initialized", _loc1.__get__initialized, function ()
-    {
-    });
-    _loc1.addProperty("params", _loc1.__get__params, _loc1.__set__params);
-    _loc1.addProperty("height", _loc1.__get__height, _loc1.__set__height);
-    _loc1.addProperty("width", _loc1.__get__width, _loc1.__set__width);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.core.UIBasicComponent = function ()
-    {
-        super();
-        this.init();
-        this.createChildren();
-        this.draw();
-        this.arrange();
-        this.size();
-        this._bInitialized = true;
-    }).BORDER_TICKNESS = 1;
-    (_global.ank.gapi.core.UIBasicComponent = function ()
-    {
-        super();
-        this.init();
-        this.createChildren();
-        this.draw();
-        this.arrange();
-        this.size();
-        this._bInitialized = true;
-    }).BORDER_ALPHA = 50;
-    _loc1._bInitialized = false;
-    _loc1._sStyleName = "default";
-    _loc1._bEnabled = true;
-} // end if
+        var _loc1 = new Color(mc);
+        _loc1.setTransform(oTransformation);
+    } // End of the function
+    static var BORDER_TICKNESS = 1;
+    static var BORDER_ALPHA = 50;
+    static var _aQueue = new Array();
+    var _bInitialized = false;
+    var _sStyleName = "default";
+    var _bEnabled = true;
+} // End of Class
 #endinitclip

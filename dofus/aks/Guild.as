@@ -1,133 +1,92 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20932]
-#initclip 197
-if (!dofus.aks.Guild)
+// [Initial MovieClip Action of sprite 955]
+#initclip 167
+class dofus.aks.Guild extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Guild = function (oAKS, oAPI)
+    var aks, api;
+    function Guild(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.create = function (nBackID, nBackColor, nSymbolID, nSymbolColor, sName)
+    } // End of the function
+    function create(nBackID, nBackColor, nSymbolID, nSymbolColor, sName)
     {
-        this.aks.send("gC" + nBackID + "|" + nBackColor + "|" + nSymbolID + "|" + nSymbolColor + "|" + sName);
-    };
-    _loc1.leave = function ()
+        aks.send("gC" + nBackID + "|" + nBackColor + "|" + nSymbolID + "|" + nSymbolColor + "|" + sName);
+    } // End of the function
+    function leave()
     {
-        this.aks.send("gV");
-    };
-    _loc1.leaveTaxInterface = function ()
+        aks.send("gV");
+    } // End of the function
+    function leaveTaxInterface()
     {
-        this.aks.send("gITV", false);
-    };
-    _loc1.invite = function (sPlayerName)
+        aks.send("gITV", false);
+    } // End of the function
+    function invite(sPlayerName)
     {
-        this.aks.send("gJR" + sPlayerName);
-    };
-    _loc1.acceptInvitation = function (nPlayerID)
+        aks.send("gJR" + sPlayerName);
+    } // End of the function
+    function acceptInvitation(nPlayerID)
     {
-        this.aks.send("gJK" + nPlayerID);
-    };
-    _loc1.refuseInvitation = function (nPlayerID)
+        aks.send("gJK" + nPlayerID);
+    } // End of the function
+    function refuseInvitation(nPlayerID)
     {
-        this.aks.send("gJE" + nPlayerID, false);
-    };
-    _loc1.getInfosGeneral = function ()
+        aks.send("gJE" + nPlayerID, false);
+    } // End of the function
+    function getInfosGeneral()
     {
-        this.aks.send("gIG", true);
-    };
-    _loc1.getInfosMembers = function ()
+        aks.send("gIG", false);
+    } // End of the function
+    function getInfosMembers()
     {
-        this.aks.send("gIM", true);
-    };
-    _loc1.getInfosBoosts = function ()
+        aks.send("gIM", false);
+    } // End of the function
+    function getInfosBoosts()
     {
-        this.aks.send("gIB", true);
-    };
-    _loc1.getInfosTaxCollector = function ()
+        aks.send("gIB", false);
+    } // End of the function
+    function getInfosTaxCollector()
     {
-        this.aks.send("gIT", false);
-    };
-    _loc1.getInfosMountPark = function ()
+        aks.send("gIT", false);
+    } // End of the function
+    function bann(sPlayerName)
     {
-        this.aks.send("gIF", false);
-    };
-    _loc1.getInfosGuildHouses = function ()
+        aks.send("gK" + sPlayerName);
+    } // End of the function
+    function changeMemberProfil(oMember)
     {
-        this.aks.send("gIH", false);
-    };
-    _loc1.bann = function (sPlayerName)
+        aks.send("gP" + oMember.id + "|" + oMember.rank + "|" + oMember.percentxp + "|" + oMember.rights.value, false);
+    } // End of the function
+    function boostCharacteristic(sCharacteristic)
     {
-        this.aks.send("gK" + sPlayerName);
-    };
-    _loc1.changeMemberProfil = function (oMember)
+        aks.send("gB" + sCharacteristic);
+    } // End of the function
+    function boostSpell(nSpellID)
     {
-        this.aks.send("gP" + oMember.id + "|" + oMember.rank + "|" + oMember.percentxp + "|" + oMember.rights.value, true);
-    };
-    _loc1.boostCharacteristic = function (sCharacteristic)
+        aks.send("gb" + nSpellID);
+    } // End of the function
+    function hireTaxCollector()
     {
-        var _loc3 = sCharacteristic;
-        switch (_loc3)
-        {
-            case "c":
-            {
-                _loc3 = "k";
-                break;
-            } 
-            case "w":
-            {
-                _loc3 = "o";
-                break;
-            } 
-        } // End of switch
-        this.aks.send("gB" + _loc3, true);
-    };
-    _loc1.boostSpell = function (nSpellID)
+        aks.send("gH");
+    } // End of the function
+    function joinTaxCollector(nTaxID)
     {
-        this.aks.send("gb" + nSpellID, true);
-    };
-    _loc1.hireTaxCollector = function ()
+        aks.send("gTJ" + nTaxID, false);
+    } // End of the function
+    function leaveTaxCollector(nTaxID, nID)
     {
-        this.aks.send("gH");
-    };
-    _loc1.joinTaxCollector = function (nTaxID)
+        aks.send("gTV" + nTaxID + (nID != undefined ? ("|" + nID) : ("")), false);
+    } // End of the function
+    function onNew()
     {
-        this.aks.send("gTJ" + nTaxID, false);
-    };
-    _loc1.leaveTaxCollector = function (nTaxID, nID)
-    {
-        this.aks.send("gTV" + nTaxID + (nID != undefined ? ("|" + nID) : ("")), false);
-    };
-    _loc1.removeTaxCollector = function (nID)
-    {
-        this.aks.send("gF" + nID, false);
-    };
-    _loc1.teleportToGuildHouse = function (nHouseID)
-    {
-        this.aks.send("gh" + nHouseID, false);
-    };
-    _loc1.teleportToGuildFarm = function (nID)
-    {
-        this.aks.send("gf" + nID, false);
-    };
-    _loc1.onNew = function ()
-    {
-        this.api.ui.loadUIComponent("CreateGuild", "CreateGuild");
-    };
-    _loc1.onCreate = function (bSuccess, sExtraData)
+        api.ui.loadUIComponent("CreateGuild", "CreateGuild");
+    } // End of the function
+    function onCreate(bSuccess, sExtraData)
     {
         if (bSuccess)
         {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_CREATED"), "INFO_CHAT");
-            this.api.ui.loadUIAutoHideComponent("Guild", "Guild", {currentTab: "Members"}, {bStayIfPresent: true});
+            api.kernel.showMessage(undefined, "Guilde créée", "INFO_CHAT");
+            api.ui.loadUIAutoHideComponent("Guild", "Guild", {currentTab: "Members"}, {bStayIfPresent: true});
         }
         else
         {
@@ -135,674 +94,457 @@ if (!dofus.aks.Guild)
             {
                 case "an":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_CREATE_ALLREADY_USE_NAME"), "ERROR_BOX");
+                    api.kernel.showMessage(undefined, api.lang.getText("GUILD_CREATE_ALLREADY_USE_NAME"), "ERROR_BOX");
                     break;
                 } 
                 case "ae":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_CREATE_ALLREADY_USE_EMBLEM"), "ERROR_BOX");
+                    api.kernel.showMessage(undefined, api.lang.getText("GUILD_CREATE_ALLREADY_USE_EMBLEM"), "ERROR_BOX");
                     break;
                 } 
                 case "a":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_CREATE_ALLREADY_IN_GUILD"), "ERROR_BOX");
+                    api.kernel.showMessage(undefined, api.lang.getText("GUILD_CREATE_ALLREADY_IN_GUILD"), "ERROR_BOX");
                     break;
                 } 
             } // End of switch
-            this.api.ui.getUIComponent("CreateGuild").enabled = true;
+            api.ui.getUIComponent("CreateGuild").enabled = true;
         } // end else if
-    };
-    _loc1.onStats = function (sExtraData)
+    } // End of the function
+    function onStats(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = _loc3[0];
-        var _loc5 = _global.parseInt(_loc3[1], 36);
-        var _loc6 = _global.parseInt(_loc3[2], 36);
-        var _loc7 = _global.parseInt(_loc3[3], 36);
-        var _loc8 = _global.parseInt(_loc3[4], 36);
-        var _loc9 = _global.parseInt(_loc3[5], 36);
-        if (this.api.datacenter.Player.guildInfos == undefined)
+        var _loc2 = sExtraData.split("|");
+        var _loc7 = _loc2[0];
+        var _loc5 = parseInt(_loc2[1], 36);
+        var _loc8 = parseInt(_loc2[2], 36);
+        var _loc3 = parseInt(_loc2[3], 36);
+        var _loc6 = parseInt(_loc2[4], 36);
+        var _loc4 = parseInt(_loc2[5], 36);
+        if (api.datacenter.Player.guildInfos == undefined)
         {
-            this.api.datacenter.Player.guildInfos = new dofus.datacenter.GuildInfos(_loc4, _loc5, _loc6, _loc7, _loc8, _loc9);
+            api.datacenter.Player.guildInfos = new dofus.datacenter.GuildInfos(_loc7, _loc5, _loc8, _loc3, _loc6, _loc4);
         }
         else
         {
-            this.api.datacenter.Player.guildInfos.initialize(_loc4, _loc5, _loc6, _loc7, _loc8, _loc9);
+            api.datacenter.Player.guildInfos.initialize(_loc7, _loc5, _loc8, _loc3, _loc6, _loc4);
         } // end else if
-    };
-    _loc1.onInfosGeneral = function (sExtraData)
+    } // End of the function
+    function onInfosGeneral(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = _loc3[0] == "1";
-        var _loc5 = Number(_loc3[1]);
-        var _loc6 = Number(_loc3[2]);
-        var _loc7 = Number(_loc3[3]);
-        var _loc8 = Number(_loc3[4]);
-        this.api.datacenter.Player.guildInfos.setGeneralInfos(_loc4, _loc5, _loc6, _loc7, _loc8);
-    };
-    _loc1.onInfosMembers = function (sExtraData)
+        var _loc2 = sExtraData.split("|");
+        var _loc6 = _loc2[0] == "1";
+        var _loc4 = Number(_loc2[1]);
+        var _loc3 = Number(_loc2[2]);
+        var _loc5 = Number(_loc2[3]);
+        var _loc7 = Number(_loc2[4]);
+        api.datacenter.Player.guildInfos.setGeneralInfos(_loc6, _loc4, _loc3, _loc5, _loc7);
+    } // End of the function
+    function onInfosMembers(sExtraData)
     {
-        var _loc3 = sExtraData.charAt(0) == "+";
-        var _loc4 = sExtraData.substr(1).split("|");
-        var _loc5 = this.api.datacenter.Player.guildInfos;
-        var _loc6 = 0;
-        
-        while (++_loc6, _loc6 < _loc4.length)
+        var _loc9 = sExtraData.charAt(0) == "+";
+        var _loc8 = sExtraData.substr(1).split("|");
+        var _loc4 = api.datacenter.Player.guildInfos;
+        for (var _loc5 = 0; _loc5 < _loc8.length; ++_loc5)
         {
-            var _loc7 = _loc4[_loc6].split(";");
-            var _loc8 = new Object();
-            _loc8.id = Number(_loc7[0]);
-            if (_loc3)
+            var _loc3 = _loc8[_loc5].split(";");
+            var _loc2 = new Object();
+            _loc2.id = Number(_loc3[0]);
+            if (_loc9)
             {
-                var _loc9 = _loc5.members.length == 0;
-                _loc8.name = _loc7[1];
-                _loc8.level = Number(_loc7[2]);
-                _loc8.gfx = Number(_loc7[3]);
-                _loc8.rank = Number(_loc7[4]);
-                _loc8.rankOrder = this.api.lang.getRankInfos(_loc8.rank).o;
-                _loc8.winxp = Number(_loc7[5]);
-                _loc8.percentxp = Number(_loc7[6]);
-                _loc8.rights = new dofus.datacenter.GuildRights(Number(_loc7[7]));
-                _loc8.state = Number(_loc7[8]);
-                _loc8.alignement = Number(_loc7[9]);
-                _loc8.lastConnection = Number(_loc7[10]);
-                _loc8.isLocalPlayer = _loc8.id == this.api.datacenter.Player.ID;
-                if (_loc9)
+                var _loc7 = _loc4.members.length == 0;
+                _loc2.name = _loc3[1];
+                _loc2.level = Number(_loc3[2]);
+                _loc2.gfx = Number(_loc3[3]);
+                _loc2.rank = Number(_loc3[4]);
+                _loc2.rankOrder = api.lang.getRankInfos(_loc2.rank).o;
+                _loc2.winxp = Number(_loc3[5]);
+                _loc2.percentxp = Number(_loc3[6]);
+                _loc2.rights = new dofus.datacenter.GuildRights(Number(_loc3[7]));
+                _loc2.state = Number(_loc3[8]);
+                _loc2.isLocalPlayer = _loc2.id == api.datacenter.Player.ID;
+                if (_loc7)
                 {
-                    _loc5.members.push(_loc8);
+                    _loc4.members.push(_loc2);
                 }
                 else
                 {
-                    var _loc10 = _loc5.members.findFirstItem("id", _loc8.id);
-                    if (_loc10.index != -1)
+                    var _loc6 = _loc4.members.findFirstItem("id", _loc2.id);
+                    if (_loc6.index != -1)
                     {
-                        _loc5.members.updateItem(_loc10.index, _loc8);
+                        _loc4.members.updateItem(_loc6.index, _loc2);
                     }
                     else
                     {
-                        _loc5.members.push(_loc8);
+                        _loc4.members.push(_loc2);
                     } // end else if
                 } // end else if
-                _loc5.members.sortOn("rankOrder", Array.NUMERIC);
+                _loc4.members.sortOn("rankOrder", Array.NUMERIC);
                 continue;
             } // end if
-            var _loc11 = _loc5.members.findFirstItem("id", _loc8.id);
-            if (_loc11.index != -1)
+            _loc6 = _loc4.members.findFirstItem("id", _loc2.id);
+            if (_loc6.index != -1)
             {
-                _loc5.members.removeItems(_loc11.index, 1);
+                _loc4.members.removeItems(_loc6.index, 1);
             } // end if
-        } // end while
-        _loc5.setMembers();
-    };
-    _loc1.onInfosBoosts = function (sExtraData)
+        } // end of for
+        _loc4.setMembers();
+    } // End of the function
+    function onInfosBoosts(sExtraData)
     {
         if (sExtraData.length == 0)
         {
-            this.api.datacenter.Player.guildInfos.setNoBoosts();
+            api.datacenter.Player.guildInfos.setNoBoosts();
         }
         else
         {
-            var _loc3 = sExtraData.split("|");
-            var _loc4 = Number(_loc3[0]);
-            var _loc5 = Number(_loc3[1]);
-            var _loc6 = Number(_loc3[2]);
-            var _loc7 = Number(_loc3[3]);
-            var _loc8 = Number(_loc3[4]);
-            var _loc9 = Number(_loc3[5]);
-            var _loc10 = Number(_loc3[6]);
-            var _loc11 = Number(_loc3[7]);
-            var _loc12 = Number(_loc3[8]);
-            var _loc13 = Number(_loc3[9]);
-            _loc3.splice(0, 10);
-            var _loc14 = 0;
-            
-            while (++_loc14, _loc14 < _loc3.length)
+            var _loc2 = sExtraData.split("|");
+            var _loc12 = Number(_loc2[0]);
+            var _loc13 = Number(_loc2[1]);
+            var _loc8 = Number(_loc2[2]);
+            var _loc9 = Number(_loc2[3]);
+            var _loc15 = Number(_loc2[4]);
+            var _loc10 = Number(_loc2[5]);
+            var _loc7 = Number(_loc2[6]);
+            var _loc11 = Number(_loc2[7]);
+            var _loc14 = Number(_loc2[8]);
+            _loc2.splice(0, 9);
+            for (var _loc3 = 0; _loc3 < _loc2.length; ++_loc3)
             {
-                _loc3[_loc14] = _loc3[_loc14].split(";");
-            } // end while
-            _loc3.sortOn("0");
-            var _loc15 = new ank.utils.ExtendedArray();
-            var _loc16 = 0;
-            
-            while (++_loc16, _loc16 < _loc3.length)
+                _loc2[_loc3] = _loc2[_loc3].split(";");
+            } // end of for
+            _loc2.sortOn("0");
+            var _loc6 = new ank.utils.ExtendedArray();
+            for (var _loc3 = 0; _loc3 < _loc2.length; ++_loc3)
             {
-                var _loc17 = Number(_loc3[_loc16][0]);
-                var _loc18 = Number(_loc3[_loc16][1]);
-                _loc15.push(new dofus.datacenter.Spell(_loc17, _loc18));
-            } // end while
-            this.api.datacenter.Player.guildInfos.setBoosts(_loc5, _loc4, _loc6, _loc7, _loc8, _loc9, _loc10, _loc11, _loc12, _loc13, _loc15);
+                var _loc4 = Number(_loc2[_loc3][0]);
+                var _loc5 = Number(_loc2[_loc3][1]);
+                _loc6.push(new dofus.datacenter.Spell(_loc4, _loc5));
+            } // end of for
+            api.datacenter.Player.guildInfos.setBoosts(_loc13, _loc12, _loc8, _loc9, _loc15, _loc10, _loc7, _loc11, _loc14, _loc6);
         } // end else if
-    };
-    _loc1.onInfosMountPark = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = new ank.utils.ExtendedArray();
-        var _loc6 = 1;
-        
-        while (++_loc6, _loc6 < _loc3.length)
-        {
-            var _loc7 = _loc3[_loc6].split(";");
-            var _loc8 = Number(_loc7[0]);
-            var _loc9 = Number(_loc7[1]);
-            var _loc10 = Number(_loc7[2]);
-            var _loc11 = new dofus.datacenter.MountPark(0, -1, _loc9, _loc10, this.api.datacenter.Player.guildInfos.name);
-            _loc11.map = _loc8;
-            _loc11.mounts = new ank.utils.ExtendedArray();
-            if (_loc7[3] != "")
-            {
-                var _loc12 = _loc7[3].split(",");
-                var _loc13 = 0;
-                
-                while (_loc13 = _loc13 + 3, _loc13 < _loc12.length)
-                {
-                    var _loc14 = new dofus.datacenter.Mount(Number(_loc12[_loc13]));
-                    _loc14.name = _loc12[_loc13 + 1] == "" ? (this.api.lang.getText("NO_NAME")) : (_loc12[_loc13 + 1]);
-                    _loc14.ownerName = _loc12[_loc13 + 2];
-                    _loc11.mounts.push(_loc14);
-                } // end while
-            } // end if
-            _loc5.push(_loc11);
-        } // end while
-        this.api.datacenter.Player.guildInfos.setMountParks(_loc4, _loc5);
-    };
-    _loc1.onInfosTaxCollectorsMovement = function (sExtraData)
+    } // End of the function
+    function onInfosTaxCollectorsMovement(sExtraData)
     {
         if (sExtraData.length == 0)
         {
-            this.api.datacenter.Player.guildInfos.setNoTaxCollectors();
+            api.datacenter.Player.guildInfos.setNoTaxCollectors();
         }
         else
         {
-            var _loc3 = sExtraData.charAt(0) == "+";
-            var _loc4 = sExtraData.substr(1).split("|");
-            var _loc5 = this.api.datacenter.Player.guildInfos;
-            var _loc6 = 0;
-            
-            while (++_loc6, _loc6 < _loc4.length)
+            var _loc12 = sExtraData.charAt(0) == "+";
+            var _loc11 = sExtraData.substr(1).split("|");
+            var _loc4 = api.datacenter.Player.guildInfos;
+            for (var _loc6 = 0; _loc6 < _loc11.length; ++_loc6)
             {
-                var _loc7 = _loc4[_loc6].split(";");
-                var _loc8 = new Object();
-                _loc8.id = _global.parseInt(_loc7[0], 36);
-                if (_loc3)
+                var _loc3 = _loc11[_loc6].split(";");
+                var _loc2 = new Object();
+                _loc2.id = parseInt(_loc3[0], 36);
+                if (_loc12)
                 {
-                    var _loc9 = _loc5.taxCollectors.length == 0;
-                    var _loc10 = _global.parseInt(_loc7[2], 36);
-                    var _loc11 = this.api.lang.getMapText(_loc10).x;
-                    var _loc12 = this.api.lang.getMapText(_loc10).y;
-                    _loc8.name = this.api.lang.getFullNameText(_loc7[1].split(","));
-                    _loc8.position = this.api.kernel.MapsServersManager.getMapName(_loc10) + " (" + _loc11 + ", " + _loc12 + ")";
-                    _loc8.state = Number(_loc7[3]);
-                    _loc8.timer = Number(_loc7[4]);
-                    _loc8.maxTimer = Number(_loc7[5]);
-                    _loc8.timerReference = getTimer();
-                    _loc8.maxPlayerCount = Number(_loc7[6]);
-                    var _loc13 = _loc7[1].split(",");
-                    if (_loc13.length != 2)
+                    var _loc8 = _loc4.taxCollectors.length == 0;
+                    var _loc5 = parseInt(_loc3[2], 36);
+                    var _loc10 = api.lang.getMapText(String(_loc5)).x;
+                    var _loc9 = api.lang.getMapText(String(_loc5)).y;
+                    _loc2.name = api.lang.getFullNameText(_loc3[1].split(","));
+                    _loc2.position = api.kernel.MapsServersManager.getMapName(_loc5) + " (" + _loc10 + ", " + _loc9 + ")";
+                    _loc2.state = Number(_loc3[3]);
+                    _loc2.timer = Number(_loc3[4]);
+                    _loc2.maxTimer = Number(_loc3[5]);
+                    _loc2.timerReference = getTimer();
+                    _loc2.maxPlayerCount = Number(_loc3[6]);
+                    _loc2.players = new ank.utils.ExtendedArray();
+                    _loc2.attackers = new ank.utils.ExtendedArray();
+                    if (_loc8)
                     {
-                        _loc8.showMoreInfo = true;
-                        _loc8.callerName = _loc13[2] == "" ? ("?") : (_loc13[2]);
-                        _loc8.startDate = _global.parseInt(_loc13[3], 10);
-                        _loc8.lastHarvesterName = _loc13[4] == "" ? ("?") : (_loc13[4]);
-                        _loc8.lastHarvestDate = _global.parseInt(_loc13[5], 10);
-                        _loc8.nextHarvestDate = _global.parseInt(_loc13[6], 10);
+                        _loc4.taxCollectors.push(_loc2);
                     }
                     else
                     {
-                        _loc8.showMoreInfo = false;
-                        _loc8.callerName = "?";
-                        _loc8.startDate = -1;
-                        _loc8.lastHarvesterName = "?";
-                        _loc8.lastHarvestDate = -1;
-                        _loc8.nextHarvestDate = -1;
-                    } // end else if
-                    _loc8.players = new ank.utils.ExtendedArray();
-                    _loc8.attackers = new ank.utils.ExtendedArray();
-                    if (_loc9)
-                    {
-                        _loc5.taxCollectors.push(_loc8);
-                    }
-                    else
-                    {
-                        var _loc14 = _loc5.taxCollectors.findFirstItem("id", _loc8.id);
-                        if (_loc14.index != -1)
+                        var _loc7 = _loc4.taxCollectors.findFirstItem("id", _loc2.id);
+                        if (_loc7.index != -1)
                         {
-                            _loc5.taxCollectors.updateItem(_loc14.index, _loc8);
+                            _loc4.taxCollectors.updateItem(_loc7.index, _loc2);
                         }
                         else
                         {
-                            _loc5.taxCollectors.push(_loc8);
+                            _loc4.taxCollectors.push(_loc2);
                         } // end else if
                     } // end else if
                     continue;
                 } // end if
-                var _loc15 = _loc5.taxCollectors.findFirstItem("id", _loc8.id);
-                if (_loc15.index != -1)
+                _loc7 = _loc4.taxCollectors.findFirstItem("id", _loc2.id);
+                if (_loc7.index != -1)
                 {
-                    _loc5.taxCollectors.removeItems(_loc15.index, 1);
+                    _loc4.taxCollectors.removeItems(_loc7.index, 1);
                 } // end if
-            } // end while
-            _loc5.setTaxCollectors();
+            } // end of for
+            _loc4.setTaxCollectors();
         } // end else if
-    };
-    _loc1.onInfosTaxCollectorsPlayers = function (sExtraData)
+    } // End of the function
+    function onInfosTaxCollectorsPlayers(sExtraData)
     {
-        var _loc3 = sExtraData.charAt(0) == "+";
-        var _loc4 = sExtraData.substr(1).split("|");
-        var _loc5 = _global.parseInt(_loc4[0], 36);
-        var _loc6 = this.api.datacenter.Player.guildInfos.taxCollectors;
-        var _loc7 = _loc6.findFirstItem("id", _loc5);
-        if (_loc7.index != -1)
+        var _loc10 = sExtraData.charAt(0) == "+";
+        var _loc8 = sExtraData.substr(1).split("|");
+        var _loc9 = parseInt(_loc8[0], 36);
+        var _loc12 = api.datacenter.Player.guildInfos.taxCollectors;
+        var _loc11 = _loc12.findFirstItem("id", _loc9);
+        if (_loc11.index != -1)
         {
-            var _loc8 = _loc7.item;
-            var _loc9 = 1;
-            
-            while (++_loc9, _loc9 < _loc4.length)
+            var _loc4 = _loc11.item;
+            for (var _loc5 = 1; _loc5 < _loc8.length; ++_loc5)
             {
-                var _loc10 = _loc4[_loc9].split(";");
-                if (_loc3)
+                var _loc3 = _loc8[_loc5].split(";");
+                if (_loc10)
                 {
-                    var _loc11 = new Object();
-                    _loc11.id = _global.parseInt(_loc10[0], 36);
-                    _loc11.name = _loc10[1];
-                    _loc11.gfxFile = dofus.Constants.CLIPS_PERSOS_PATH + _loc10[2] + ".swf";
-                    _loc11.level = Number(_loc10[3]);
-                    _loc11.color1 = _global.parseInt(_loc10[4], 36);
-                    _loc11.color2 = _global.parseInt(_loc10[5], 36);
-                    _loc11.color3 = _global.parseInt(_loc10[6], 36);
-                    var _loc12 = _loc8.players.findFirstItem("id", _loc11.id);
-                    if (_loc12.index != -1)
+                    var _loc2 = new Object();
+                    _loc2.id = parseInt(_loc3[0], 36);
+                    _loc2.name = _loc3[1];
+                    _loc2.gfxFile = dofus.Constants.CLIPS_PERSOS_PATH + _loc3[2] + ".swf";
+                    _loc2.level = Number(_loc3[3]);
+                    _loc2.color1 = parseInt(_loc3[4], 36);
+                    _loc2.color2 = parseInt(_loc3[5], 36);
+                    _loc2.color3 = parseInt(_loc3[6], 36);
+                    var _loc6 = _loc4.players.findFirstItem("id", _loc2.id);
+                    if (_loc6.index != -1)
                     {
-                        _loc8.players.updateItem(_loc12.index, _loc11);
+                        _loc4.players.updateItem(_loc6.index, _loc2);
                     }
                     else
                     {
-                        _loc8.players.push(_loc11);
+                        _loc4.players.push(_loc2);
                     } // end else if
-                    if (_loc11.id == this.api.datacenter.Player.ID)
+                    if (_loc2.id == api.datacenter.Player.ID)
                     {
-                        this.api.datacenter.Player.guildInfos.defendedTaxCollectorID = _loc5;
+                        api.datacenter.Player.guildInfos.defendedTaxCollectorID = _loc9;
                     } // end if
                     continue;
                 } // end if
-                var _loc13 = _global.parseInt(_loc10[0], 36);
-                var _loc14 = _loc8.players.findFirstItem("id", _loc13);
-                if (_loc14.index != -1)
+                var _loc7 = parseInt(_loc3[0], 36);
+                _loc6 = _loc4.players.findFirstItem("id", _loc7);
+                if (_loc6.index != -1)
                 {
-                    _loc8.players.removeItems(_loc14.index, 1);
+                    _loc4.players.removeItems(_loc6.index, 1);
                 } // end if
-                if (_loc13 == this.api.datacenter.Player.ID)
+                if (_loc7 == api.datacenter.Player.ID)
                 {
-                    this.api.datacenter.Player.guildInfos.defendedTaxCollectorID = undefined;
+                    api.datacenter.Player.guildInfos.defendedTaxCollectorID = undefined;
                 } // end if
-            } // end while
+            } // end of for
         }
         else
         {
             ank.utils.Logger.err("[gITP] impossible de trouver le percepteur");
         } // end else if
-    };
-    _loc1.onInfosTaxCollectorsAttackers = function (sExtraData)
+    } // End of the function
+    function onInfosTaxCollectorsAttackers(sExtraData)
     {
-        var _loc3 = sExtraData.charAt(0) == "+";
-        var _loc4 = sExtraData.substr(1).split("|");
-        var _loc5 = _global.parseInt(_loc4[0], 36);
-        var _loc6 = this.api.datacenter.Player.guildInfos.taxCollectors;
-        var _loc7 = _loc6.findFirstItem("id", _loc5);
-        if (_loc7.index != -1)
+        var _loc9 = sExtraData.charAt(0) == "+";
+        var _loc8 = sExtraData.substr(1).split("|");
+        var _loc12 = parseInt(_loc8[0], 36);
+        var _loc11 = api.datacenter.Player.guildInfos.taxCollectors;
+        var _loc10 = _loc11.findFirstItem("id", _loc12);
+        if (_loc10.index != -1)
         {
-            var _loc8 = _loc7.item;
-            var _loc9 = 1;
-            
-            while (++_loc9, _loc9 < _loc4.length)
+            var _loc4 = _loc10.item;
+            for (var _loc5 = 1; _loc5 < _loc8.length; ++_loc5)
             {
-                var _loc10 = _loc4[_loc9].split(";");
-                if (_loc3)
+                var _loc3 = _loc8[_loc5].split(";");
+                if (_loc9)
                 {
-                    var _loc11 = new Object();
-                    _loc11.id = _global.parseInt(_loc10[0], 36);
-                    _loc11.name = _loc10[1];
-                    _loc11.level = Number(_loc10[2]);
-                    var _loc12 = _loc8.attackers.findFirstItem("id", _loc11.id);
-                    if (_loc12.index != -1)
+                    var _loc2 = new Object();
+                    _loc2.id = parseInt(_loc3[0], 36);
+                    _loc2.name = _loc3[1];
+                    _loc2.level = Number(_loc3[2]);
+                    var _loc6 = _loc4.attackers.findFirstItem("id", _loc2.id);
+                    if (_loc6.index != -1)
                     {
-                        _loc8.attackers.updateItem(_loc12.index, _loc11);
+                        _loc4.attackers.updateItem(_loc6.index, _loc2);
                     }
                     else
                     {
-                        _loc8.attackers.push(_loc11);
+                        _loc4.attackers.push(_loc2);
                     } // end else if
                     continue;
                 } // end if
-                var _loc13 = _global.parseInt(_loc10[0], 36);
-                var _loc14 = _loc8.attackers.findFirstItem("id", _loc13);
-                if (_loc14.index != -1)
+                var _loc7 = parseInt(_loc3[0], 36);
+                _loc6 = _loc4.attackers.findFirstItem("id", _loc7);
+                if (_loc6.index != -1)
                 {
-                    _loc8.attackers.removeItems(_loc14.index, 1);
+                    _loc4.attackers.removeItems(_loc6.index, 1);
                 } // end if
-            } // end while
+            } // end of for
         }
         else
         {
             ank.utils.Logger.err("[gITp] impossible de trouver le percepteur");
         } // end else if
-    };
-    _loc1.onInfosHouses = function (sExtraData)
+    } // End of the function
+    function onRequestLocal(sExtraData)
     {
-        var _loc3 = sExtraData.charAt(0) == "+";
-        if (sExtraData.length <= 1)
-        {
-            this.api.datacenter.Player.guildInfos.setNoHouses();
-        }
-        else
-        {
-            var _loc4 = sExtraData.substr(1).split("|");
-            var _loc5 = new ank.utils.ExtendedArray();
-            var _loc6 = 0;
-            
-            while (++_loc6, _loc6 < _loc4.length)
-            {
-                var _loc7 = _loc4[_loc6].split(";");
-                var _loc8 = Number(_loc7[0]);
-                var _loc9 = _loc7[1];
-                var _loc10 = _loc7[2].split(",");
-                var _loc11 = new com.ankamagames.types.Point(Number(_loc10[0]), Number(_loc10[1]));
-                var _loc12 = new Array();
-                var _loc13 = _loc7[3].split(",");
-                var _loc14 = 0;
-                
-                while (++_loc14, _loc14 < _loc13.length)
-                {
-                    _loc12.push(Number(_loc13[_loc14]));
-                } // end while
-                var _loc15 = _loc7[4];
-                var _loc16 = new dofus.datacenter.House(_loc8);
-                _loc16.ownerName = _loc9;
-                _loc16.coords = _loc11;
-                _loc16.skills = _loc12;
-                _loc16.guildRights = _loc15;
-                _loc5.push(_loc16);
-            } // end while
-            this.api.datacenter.Player.guildInfos.setHouses(_loc5);
-        } // end else if
-    };
-    _loc1.onRequestLocal = function (sExtraData)
+        api.kernel.showMessage(api.lang.getText("GUILD"), api.lang.getText("YOU_INVIT_B_IN_GUILD", [sExtraData]), "INFO_CANCEL", {name: "Guild", listener: this, params: {spriteID: api.datacenter.Player.ID}});
+    } // End of the function
+    function onRequestDistant(sExtraData)
     {
-        this.api.kernel.showMessage(this.api.lang.getText("GUILD"), this.api.lang.getText("YOU_INVIT_B_IN_GUILD", [sExtraData]), "INFO_CANCEL", {name: "Guild", listener: this, params: {spriteID: this.api.datacenter.Player.ID}});
-    };
-    _loc1.onRequestDistant = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = _loc3[0];
-        var _loc5 = _loc3[1];
-        var _loc6 = _loc3[2];
-        if (this.api.kernel.ChatManager.isBlacklisted(_loc5))
-        {
-            this.refuseInvitation(Number(_loc4));
-            return;
-        } // end if
-        this.api.kernel.showMessage(undefined, this.api.lang.getText("CHAT_A_INVIT_YOU_IN_GUILD", [this.api.kernel.ChatManager.getLinkName(_loc5), _loc6]), "INFO_CHAT");
-        this.api.kernel.showMessage(this.api.lang.getText("GUILD"), this.api.lang.getText("A_INVIT_YOU_IN_GUILD", [_loc5, _loc6]), "CAUTION_YESNOIGNORE", {name: "Guild", player: _loc5, listener: this, params: {spriteID: _loc4, player: _loc5}});
-    };
-    _loc1.onJoinError = function (sExtraData)
+        var _loc2 = sExtraData.split("|");
+        var _loc4 = _loc2[0];
+        var _loc3 = _loc2[1];
+        var _loc5 = _loc2[2];
+        api.kernel.showMessage(api.lang.getText("GUILD"), api.lang.getText("A_INVIT_YOU_IN_GUILD", [_loc3, _loc5]), "CAUTION_YESNO", {name: "Guild", listener: this, params: {spriteID: _loc4}});
+    } // End of the function
+    function onJoinError(sExtraData)
     {
         var _loc3 = sExtraData.charAt(0);
         switch (_loc3)
         {
             case "a":
             {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_JOIN_ALREADY_IN_GUILD"), "ERROR_CHAT");
+                api.kernel.showMessage(undefined, api.lang.getText("GUILD_JOIN_ALREADY_IN_GUILD"), "ERROR_CHAT");
                 break;
             } 
             case "d":
             {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_JOIN_NO_RIGHTS"), "ERROR_CHAT");
+                api.kernel.showMessage(undefined, api.lang.getText("GUILD_JOIN_NO_RIGHTS"), "ERROR_CHAT");
                 break;
             } 
             case "u":
             {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_JOIN_UNKNOW"), "ERROR_CHAT");
+                api.kernel.showMessage(undefined, api.lang.getText("GUILD_JOIN_UNKNOW"), "ERROR_CHAT");
                 break;
             } 
             case "o":
             {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_JOIN_OCCUPED"), "ERROR_CHAT");
+                api.kernel.showMessage(undefined, api.lang.getText("GUILD_JOIN_OCCUPED"), "ERROR_CHAT");
                 break;
             } 
             case "r":
             {
-                var _loc4 = sExtraData.substr(1);
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("GUILD_JOIN_REFUSED", [_loc4]), "ERROR_CHAT");
-                this.api.ui.unloadUIComponent("AskCancelGuild");
+                var _loc2 = sExtraData.substr(1);
+                api.kernel.showMessage(undefined, api.lang.getText("GUILD_JOIN_REFUSED", [_loc2]), "ERROR_CHAT");
+                api.ui.unloadUIComponent("AskCancelGuild");
                 break;
             } 
             case "c":
             {
-                this.api.ui.unloadUIComponent("AskCancelGuild");
-                this.api.ui.unloadUIComponent("AskYesNoIgnoreGuild");
+                api.ui.unloadUIComponent("AskCancelGuild");
+                api.ui.unloadUIComponent("AskYesNoGuild");
                 break;
             } 
         } // End of switch
-    };
-    _loc1.onJoinOk = function (sExtraData)
+    } // End of the function
+    function onJoinOk(sExtraData)
     {
-        var _loc3 = sExtraData.charAt(0);
-        switch (_loc3)
+        var _loc2 = sExtraData.charAt(0);
+        switch (_loc2)
         {
             case "a":
             {
-                this.api.ui.unloadUIComponent("AskCancelGuild");
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("A_JOIN_YOUR_GUILD", [sExtraData.substr(1)]), "INFO_CHAT");
+                api.ui.unloadUIComponent("AskCancelGuild");
+                api.kernel.showMessage(undefined, api.lang.getText("A_JOIN_YOUR_GUILD", [sExtraData.substr(1)]), "INFO_CHAT");
                 break;
             } 
             case "j":
             {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("YOUR_R_NEW_IN_GUILD", [this.api.datacenter.Player.guildInfos.name]), "INFO_CHAT");
+                api.kernel.showMessage(undefined, api.lang.getText("YOUR_R_NEW_IN_GUILD", [api.datacenter.Player.guildInfos.name]), "INFO_CHAT");
                 break;
             } 
         } // End of switch
-    };
-    _loc1.onJoinDistantOk = function ()
+    } // End of the function
+    function onJoinDistantOk()
     {
-        this.api.ui.unloadUIComponent("AskYesNoIgnoreGuild");
-    };
-    _loc1.onLeave = function ()
+        api.ui.unloadUIComponent("AskYesNoGuild");
+    } // End of the function
+    function onLeave()
     {
-        this.api.ui.unloadUIComponent("CreateGuild");
-    };
-    _loc1.onBann = function (bSuccess, sExtraData)
+        api.ui.unloadUIComponent("CreateGuild");
+    } // End of the function
+    function onBann(bSuccess, sExtraData)
     {
         if (bSuccess)
         {
-            var _loc4 = sExtraData.split("|");
-            var _loc5 = _loc4[0];
-            var _loc6 = _loc4[1];
-            var _loc7 = _loc5 == this.api.datacenter.Player.Name;
-            if (_loc7)
+            var _loc3 = sExtraData.split("|");
+            var _loc2 = _loc3[0];
+            var _loc4 = _loc3[1];
+            var _loc5 = _loc2 == api.datacenter.Player.Name;
+            if (_loc5)
             {
-                if (_loc5 != _loc6)
+                if (_loc2 != _loc4)
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("YOU_BANN_A_FROM_GUILD", [_loc6]), "INFO_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("YOU_BANN_A_FROM_GUILD", [_loc4]), "INFO_CHAT");
                 }
                 else
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("YOU_BANN_YOU_FROM_GUILD"), "INFO_CHAT");
-                    this.api.ui.unloadUIComponent("Guild");
-                    this.api.datacenter.Player.guildInfos = undefined;
+                    api.kernel.showMessage(undefined, api.lang.getText("YOU_BANN_YOU_FROM_GUILD"), "INFO_CHAT");
+                    api.ui.unloadUIComponent("Guild");
+                    api.datacenter.Player.guildInfos = undefined;
                 } // end else if
             }
             else
             {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("YOU_ARE_BANN_BY_A_FROM_GUILD", [_loc5]), "INFO_CHAT");
-                this.api.ui.unloadUIComponent("Guild");
-                delete this.api.datacenter.Player.guildInfos;
+                api.kernel.showMessage(undefined, api.lang.getText("YOU_ARE_BANN_BY_A_FROM_GUILD", [_loc2]), "INFO_CHAT");
+                api.ui.unloadUIComponent("Guild");
+                delete api.datacenter.Player.guildInfos;
             } // end else if
         }
         else
         {
-            var _loc8 = sExtraData.charAt(0);
-            switch (_loc8)
+            var _loc6 = sExtraData.charAt(0);
+            switch (_loc6)
             {
                 case "d":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("NOT_ENOUGHT_RIGHTS_FROM_GUILD"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("NOT_ENOUGHT_RIGHTS_FROM_GUILD"), "ERROR_CHAT");
                     break;
                 } 
                 case "a":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_BANN_FROM_GUILD_NOT_MEMBER"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_BANN_FROM_GUILD_NOT_MEMBER"), "ERROR_CHAT");
                     break;
                 } 
             } // End of switch
         } // end else if
-    };
-    _loc1.onHireTaxCollector = function (bSuccess, sExtraData)
+    } // End of the function
+    function onHireTaxCollector(bSuccess, sExtraData)
     {
         if (!bSuccess)
         {
-            var _loc4 = sExtraData.charAt(0);
-            switch (_loc4)
+            var _loc2 = sExtraData.charAt(0);
+            switch (_loc2)
             {
                 case "d":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("NOT_ENOUGHT_RIGHTS_FROM_GUILD"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("NOT_ENOUGHT_RIGHTS_FROM_GUILD"), "ERROR_CHAT");
                     break;
                 } 
                 case "a":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("ALREADY_TAXCOLLECTOR_ON_MAP"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("ALREADY_TAXCOLLECTOR_ON_MAP"), "ERROR_CHAT");
                     break;
                 } 
                 case "k":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("NOT_ENOUGTH_RICH_TO_HIRE_TAX"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("NOT_ENOUGTH_RICH_TO_HIRE_TAX"), "ERROR_CHAT");
                     break;
                 } 
                 case "m":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_HIRE_MAX_TAXCOLLECTORS"), "ERROR_CHAT");
-                    break;
-                } 
-                case "b":
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("NOT_YOUR_TAXCOLLECTORS"), "ERROR_CHAT");
-                    break;
-                } 
-                case "y":
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_HIRE_TAXCOLLECTORS_TOO_TIRED"), "ERROR_CHAT");
-                    break;
-                } 
-                case "h":
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_HIRE_TAXCOLLECTORS_HERE"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_HIRE_MAX_TAXCOLLECTORS"), "ERROR_CHAT");
                     break;
                 } 
             } // End of switch
         } // end if
-    };
-    _loc1.onTaxCollectorAttacked = function (sExtraData)
+    } // End of the function
+    function onTaxCollectorAttacked(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = _loc3[0].charAt(0);
-        var _loc5 = this.api.lang.getFullNameText(_loc3[0].substr(1).split(","));
-        var _loc6 = Number(_loc3[1]);
-        var _loc7 = _loc3[2];
-        var _loc8 = _loc3[3];
-        var _loc9 = "(" + _loc7 + ", " + _loc8 + ")";
-        switch (_loc4)
-        {
-            case "A":
-            {
-                this.api.kernel.showMessage(undefined, "<img src=\"CautionIcon\" hspace=\'0\' vspace=\'0\' width=\'13\' height=\'13\' /><a href=\'asfunction:onHref,OpenGuildTaxCollectors\'>" + this.api.lang.getText("TAX_ATTACKED", [_loc5, _loc9]) + "</a>", "GUILD_CHAT");
-                this.api.sounds.events.onTaxcollectorAttack();
-                break;
-            } 
-            case "S":
-            {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("TAX_ATTACKED_SUVIVED", [_loc5, _loc9]), "GUILD_CHAT");
-                break;
-            } 
-            case "D":
-            {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("TAX_ATTACKED_DIED", [_loc5, _loc9]), "GUILD_CHAT");
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.onTaxCollectorInfo = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = _loc3[0].charAt(0);
-        var _loc5 = this.api.lang.getFullNameText(_loc3[0].substr(1).split(","));
-        var _loc6 = Number(_loc3[1]);
-        var _loc7 = _loc3[2];
-        var _loc8 = _loc3[3];
-        var _loc9 = "(" + _loc7 + ", " + _loc8 + ")";
-        var _loc10 = _loc3[4];
-        switch (_loc4)
-        {
-            case "S":
-            {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("TAXCOLLECTOR_ADDED", [_loc5, _loc9, _loc10]), "GUILD_CHAT");
-                break;
-            } 
-            case "R":
-            {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("TAXCOLLECTOR_REMOVED", [_loc5, _loc9, _loc10]), "GUILD_CHAT");
-                break;
-            } 
-            case "G":
-            {
-                var _loc11 = _loc3[5].split(";");
-                var _loc12 = Number(_loc11[0]);
-                var _loc13 = _loc12 + " " + this.api.lang.getText("EXPERIENCE_POINT");
-                var _loc14 = 1;
-                
-                while (++_loc14, _loc14 < _loc11.length)
-                {
-                    var _loc15 = _loc11[_loc14].split(",");
-                    var _loc16 = _loc15[0];
-                    var _loc17 = _loc15[1];
-                    _loc13 = _loc13 + (",<br/>" + _loc17 + " x " + this.api.lang.getItemUnicText(_loc16).n);
-                } // end while
-                _loc13 = _loc13 + ".";
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("TAXCOLLECTOR_RECOLTED", [_loc5, _loc9, _loc10, _loc13]), "GUILD_CHAT");
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.onUserInterfaceOpen = function (sExtraData)
-    {
-        switch (sExtraData)
-        {
-            case "T":
-            {
-                if (this.api.datacenter.Player.guildInfos.name != undefined)
-                {
-                    this.api.ui.loadUIAutoHideComponent("Guild", "Guild", {currentTab: "GuildHouses"});
-                }
-                else
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("ITEM_NEED_GUILD"), "ERROR_CHAT");
-                } // end else if
-                break;
-            } 
-            case "F":
-            {
-                if (this.api.datacenter.Player.guildInfos.name != undefined)
-                {
-                    this.api.ui.loadUIAutoHideComponent("Guild", "Guild", {currentTab: "MountParks"});
-                }
-                else
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("ITEM_NEED_GUILD"), "ERROR_CHAT");
-                } // end else if
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.cancel = function (oEvent)
+        var _loc2 = sExtraData.split("|");
+        var _loc5 = api.lang.getFullNameText(_loc2[0].split(","));
+        var _loc7 = Number(_loc2[1]);
+        var _loc4 = _loc2[2];
+        var _loc3 = _loc2[3];
+        var _loc6 = " (" + _loc4 + ", " + _loc3 + ")";
+        api.kernel.showMessage(undefined, "<img src=\"CautionIcon\" hspace=\'0\' vspace=\'0\' width=\'13\' height=\'13\'><a href=\'asfunction:onHref,OpenGuildTaxCollectors\'>" + api.lang.getText("TAX_ATTACKED", [_loc5, _loc6]) + "</a>", "GUILD_CHAT");
+        api.sounds.onTaxcollectorAttack();
+    } // End of the function
+    function cancel(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -812,42 +554,28 @@ if (!dofus.aks.Guild)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.yes = function (oEvent)
+    } // End of the function
+    function yes(oEvent)
     {
         switch (oEvent.target._name)
         {
-            case "AskYesNoIgnoreGuild":
+            case "AskYesNoGuild":
             {
                 this.acceptInvitation(oEvent.params.spriteID);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.no = function (oEvent)
+    } // End of the function
+    function no(oEvent)
     {
         switch (oEvent.target._name)
         {
-            case "AskYesNoIgnoreGuild":
+            case "AskYesNoGuild":
             {
                 this.refuseInvitation(oEvent.params.spriteID);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.ignore = function (oEvent)
-    {
-        switch (oEvent.target._name)
-        {
-            case "AskYesNoIgnoreGuild":
-            {
-                this.api.kernel.ChatManager.addToBlacklist(oEvent.params.player);
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("TEMPORARY_BLACKLISTED", [oEvent.params.player]), "INFO_CHAT");
-                this.refuseInvitation(oEvent.params.spriteID);
-                break;
-            } 
-        } // End of switch
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

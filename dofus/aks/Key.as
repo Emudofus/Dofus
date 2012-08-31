@@ -1,45 +1,37 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20748]
-#initclip 13
-if (!dofus.aks.Key)
+// [Initial MovieClip Action of sprite 950]
+#initclip 162
+class dofus.aks.Key extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Key = function (oAKS, oAPI)
+    var aks, api;
+    function Key(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.leave = function ()
+    } // End of the function
+    function leave()
     {
-        this.aks.send("KV", false);
-    };
-    _loc1.sendKey = function (nType, sKeyCode)
+        aks.send("KV", false);
+    } // End of the function
+    function sendKey(nType, sKeyCode)
     {
-        this.aks.send("KK" + nType + "|" + sKeyCode);
-    };
-    _loc1.onCreate = function (sExtraData)
+        aks.send("KK" + nType + "|" + sKeyCode);
+    } // End of the function
+    function onCreate(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = Number(_loc3[1]);
-        this.api.ui.loadUIComponent("KeyCode", "KeyCode", {title: this.api.lang.getText("TYPE_CODE"), changeType: _loc4, slotsCount: _loc5});
-    };
-    _loc1.onKey = function (bSuccess)
+        var _loc2 = sExtraData.split("|");
+        var _loc4 = Number(_loc2[0]);
+        var _loc3 = Number(_loc2[1]);
+        api.ui.loadUIComponent("KeyCode", "KeyCode", {title: api.lang.getText("TYPE_CODE"), changeType: _loc4, slotsCount: _loc3});
+    } // End of the function
+    function onKey(bSuccess)
     {
-        var _loc3 = bSuccess ? (this.api.lang.getText("CODE_CHANGED")) : (this.api.lang.getText("BAD_CODE"));
-        this.api.kernel.showMessage(this.api.lang.getText("CODE"), _loc3, "ERROR_BOX", {name: "Key"});
-    };
-    _loc1.onLeave = function ()
+        var _loc2 = bSuccess ? (api.lang.getText("CODE_CHANGED")) : (api.lang.getText("BAD_CODE"));
+        api.kernel.showMessage(api.lang.getText("CODE"), _loc2, "ERROR_BOX", {name: "Key"});
+    } // End of the function
+    function onLeave()
     {
-        this.api.ui.unloadUIComponent("KeyCode");
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        api.ui.unloadUIComponent("KeyCode");
+    } // End of the function
+} // End of Class
 #endinitclip

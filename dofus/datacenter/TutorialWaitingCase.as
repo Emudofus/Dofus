@@ -1,59 +1,30 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20716]
-#initclip 237
-if (!dofus.datacenter.TutorialWaitingCase)
+// [Initial MovieClip Action of sprite 895]
+#initclip 107
+class dofus.datacenter.TutorialWaitingCase extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.TutorialWaitingCase = function (sCode, aParams, mNextBlocID)
+    var _sCode, _aParams, _mNextBlocID, __get__code, __get__nextBlocID, __get__params;
+    function TutorialWaitingCase(sCode, aParams, mNextBlocID)
     {
         super();
-        this._sCode = sCode;
-        this._aParams = aParams;
-        this._mNextBlocID = mNextBlocID;
-    }).prototype;
-    _loc1.__get__code = function ()
+        _sCode = sCode;
+        _aParams = aParams;
+        _mNextBlocID = mNextBlocID;
+    } // End of the function
+    function get code()
     {
-        return (this._sCode);
-    };
-    _loc1.__get__params = function ()
+        return (_sCode);
+    } // End of the function
+    function get params()
     {
-        return (this._aParams);
-    };
-    _loc1.__get__nextBlocID = function ()
+        return (_aParams);
+    } // End of the function
+    function get nextBlocID()
     {
-        return (this._mNextBlocID);
-    };
-    _loc1.addProperty("params", _loc1.__get__params, function ()
-    {
-    });
-    _loc1.addProperty("nextBlocID", _loc1.__get__nextBlocID, function ()
-    {
-    });
-    _loc1.addProperty("code", _loc1.__get__code, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.datacenter.TutorialWaitingCase = function (sCode, aParams, mNextBlocID)
-    {
-        super();
-        this._sCode = sCode;
-        this._aParams = aParams;
-        this._mNextBlocID = mNextBlocID;
-    }).CASE_TIMEOUT = "TIMEOUT";
-    (_global.dofus.datacenter.TutorialWaitingCase = function (sCode, aParams, mNextBlocID)
-    {
-        super();
-        this._sCode = sCode;
-        this._aParams = aParams;
-        this._mNextBlocID = mNextBlocID;
-    }).CASE_DEFAULT = "DEFAULT";
-} // end if
+        return (_mNextBlocID);
+    } // End of the function
+    static var CASE_TIMEOUT = "TIMEOUT";
+    static var CASE_DEFAULT = "DEFAULT";
+} // End of Class
 #endinitclip

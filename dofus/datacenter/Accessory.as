@@ -1,75 +1,36 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20670]
-#initclip 191
-if (!dofus.datacenter.Accessory)
+// [Initial MovieClip Action of sprite 883]
+#initclip 95
+class dofus.datacenter.Accessory extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Accessory = function (nUnicID, nType, nFrame)
+    var api, _nUnicID, _oItemText, __get__type, __get__gfxID, __get__gfx, __get__unicID;
+    function Accessory(nUnicID)
     {
         super();
-        this.api = _global.API;
-        this.initialize(nUnicID, nType, nFrame);
-    }).prototype;
-    _loc1.__get__unicID = function ()
+        api = _global.API;
+        this.initialize(nUnicID);
+    } // End of the function
+    function get unicID()
     {
-        return (this._nUnicID);
-    };
-    _loc1.__get__type = function ()
+        return (_nUnicID);
+    } // End of the function
+    function get type()
     {
-        if (this._nType != undefined)
-        {
-            return (this._nType);
-        } // end if
-        return (this._oItemText.t);
-    };
-    _loc1.__get__gfxID = function ()
+        return (_oItemText.t);
+    } // End of the function
+    function get gfxID()
     {
-        return (this._oItemText.g);
-    };
-    _loc1.__get__gfx = function ()
+        return (_oItemText.g);
+    } // End of the function
+    function get gfx()
     {
-        return (this.type + "_" + this.gfxID);
-    };
-    _loc1.__get__frame = function ()
+        //return (this.type() + "_" + this.__get__gfxID());
+    } // End of the function
+    function initialize(nUnicID)
     {
-        return (this._nFrame);
-    };
-    _loc1.initialize = function (nUnicID, nType, nFrame)
-    {
-        this._nUnicID = nUnicID;
-        if (nFrame != undefined)
-        {
-            this._nFrame = nFrame;
-        } // end if
-        if (nType != undefined)
-        {
-            this._nType = nType;
-        } // end if
-        this._oItemText = this.api.lang.getItemUnicText(nUnicID);
-    };
-    _loc1.addProperty("unicID", _loc1.__get__unicID, function ()
-    {
-    });
-    _loc1.addProperty("type", _loc1.__get__type, function ()
-    {
-    });
-    _loc1.addProperty("frame", _loc1.__get__frame, function ()
-    {
-    });
-    _loc1.addProperty("gfx", _loc1.__get__gfx, function ()
-    {
-    });
-    _loc1.addProperty("gfxID", _loc1.__get__gfxID, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _nUnicID = nUnicID;
+        _oItemText = api.lang.getItemUnicText(nUnicID);
+    } // End of the function
+} // End of Class
 #endinitclip

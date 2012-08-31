@@ -1,29 +1,14 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20682]
-#initclip 203
-if (!ank.gapi.styles.StylesManager)
+// [Initial MovieClip Action of sprite 11]
+#initclip 4
+class ank.gapi.styles.StylesManager extends Object
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.styles)
-    {
-        _global.ank.gapi.styles = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.styles.StylesManager = function ()
+    function StylesManager()
     {
         super();
-    }).prototype;
-    (_global.ank.gapi.styles.StylesManager = function ()
-    {
-        super();
-    }).setStyle = function (sStyleName, oStyle)
+    } // End of the function
+    static function setStyle(sStyleName, oStyle)
     {
         if (!(oStyle instanceof Object))
         {
@@ -38,28 +23,18 @@ if (!ank.gapi.styles.StylesManager)
             return;
         } // end if
         ank.gapi.styles.StylesManager._styles[sStyleName] = oStyle;
-    };
-    (_global.ank.gapi.styles.StylesManager = function ()
-    {
-        super();
-    }).getStyle = function (sStyleName)
+    } // End of the function
+    static function getStyle(sStyleName)
     {
         return (ank.gapi.styles.StylesManager._styles[sStyleName]);
-    };
-    (_global.ank.gapi.styles.StylesManager = function ()
+    } // End of the function
+    static function loadStylePackage(oPackage)
     {
-        super();
-    }).loadStylePackage = function (oPackage)
-    {
-        for (var k in oPackage)
+        for (var _loc2 in oPackage)
         {
-            ank.gapi.styles.StylesManager.setStyle(k, oPackage[k]);
+            ank.gapi.styles.StylesManager.setStyle(_loc2, oPackage[_loc2]);
         } // end of for...in
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.styles.StylesManager = function ()
-    {
-        super();
-    })._styles = new Object();
-} // end if
+    } // End of the function
+    static var _styles = new Object();
+} // End of Class
 #endinitclip

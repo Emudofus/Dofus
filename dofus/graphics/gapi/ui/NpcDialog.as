@@ -1,183 +1,93 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20732]
-#initclip 253
-if (!dofus.graphics.gapi.ui.NpcDialog)
+// [Initial MovieClip Action of sprite 998]
+#initclip 215
+class dofus.graphics.gapi.ui.NpcDialog extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.NpcDialog = function ()
+    var _nNpcID, __get__id, _sName, __get__name, _sGfx, __get__gfx, api, addToQueue, gapi, getStyle, _ldrArtwork, _winBackgroundUp, _oQuestion, _qvQuestionViewer, _mcQuestionViewer, attachMovie, _winBackground, __set__gfx, __set__id, __set__name;
+    function NpcDialog()
     {
         super();
-    }).prototype;
-    _loc1.__set__id = function (nNpcID)
+    } // End of the function
+    function set id(nNpcID)
     {
-        this._nNpcID = nNpcID;
+        _nNpcID = nNpcID;
         //return (this.id());
-    };
-    _loc1.__set__name = function (sName)
+        null;
+    } // End of the function
+    function set name(sName)
     {
-        this._sName = sName;
+        _sName = sName;
         //return (this.name());
-    };
-    _loc1.__set__gfx = function (sGfx)
+        null;
+    } // End of the function
+    function set gfx(sGfx)
     {
-        this._sGfx = sGfx;
+        _sGfx = sGfx;
         //return (this.gfx());
-    };
-    _loc1.__set__customArtwork = function (nGfx)
-    {
-        this._nCustomArtwork = nGfx;
-        //return (this.customArtwork());
-    };
-    _loc1.__set__colors = function (aColors)
-    {
-        this._aColors = aColors;
-        //return (this.colors());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.NpcDialog.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Dialog.leave();
+        api.network.Dialog.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.setNpcCharacteristics});
-        this.gapi.unloadLastUIAutoHideComponent();
-    };
-    _loc1.draw = function ()
+        this.addToQueue({object: this, method: setNpcCharacteristics});
+        gapi.unloadLastUIAutoHideComponent();
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-    };
-    _loc1.setNpcCharacteristics = function ()
+    } // End of the function
+    function setNpcCharacteristics()
     {
-        this._mcPic._visible = false;
-        this._ldrArtwork.addEventListener("initialization", this);
-        this._ldrArtwork.addEventListener("complete", this);
-        if (this._nCustomArtwork != undefined && (!_global.isNaN(this._nCustomArtwork) && this._nCustomArtwork > 0))
+        _ldrArtwork.__set__contentPath(dofus.Constants.ARTWORKS_BIG_PATH + _sGfx + ".swf");
+        _winBackgroundUp.__set__title(_sName);
+    } // End of the function
+    function setQuestion(oQuestion)
+    {
+        _oQuestion = oQuestion;
+        if (_qvQuestionViewer == undefined)
         {
-            this._ldrArtwork.contentPath = dofus.Constants.ARTWORKS_BIG_PATH + this._nCustomArtwork + ".swf";
+            this.attachMovie("QuestionViewer", "_qvQuestionViewer", 10, {_x: _mcQuestionViewer._x, _y: _mcQuestionViewer._y, question: oQuestion, isFirstQuestion: _bFirstQuestion});
+            _qvQuestionViewer.addEventListener("response", this);
+            _qvQuestionViewer.addEventListener("resize", this);
         }
         else
         {
-            this._ldrArtwork.contentPath = dofus.Constants.ARTWORKS_BIG_PATH + this._sGfx + ".swf";
+            _qvQuestionViewer.__set__isFirstQuestion(_bFirstQuestion);
+            _qvQuestionViewer.__set__question(oQuestion);
         } // end else if
-        this._winBackgroundUp.title = this._sName;
-    };
-    _loc1.setPause = function ()
-    {
-        this.showElements(false);
-    };
-    _loc1.showElements = function (bShow)
-    {
-        this._ldrArtwork._visible = bShow;
-        this._mcPic._visible = bShow;
-        this._winBackground._visible = bShow;
-        this._winBackgroundUp._visible = bShow;
-        this._qvQuestionViewer._visible = bShow;
-    };
-    _loc1.setQuestion = function (oQuestion)
-    {
-        this._oQuestion = oQuestion;
-        if (this._qvQuestionViewer == undefined)
-        {
-            this.attachMovie("QuestionViewer", "_qvQuestionViewer", 10, {_x: this._mcQuestionViewer._x, _y: this._mcQuestionViewer._y, question: oQuestion, isFirstQuestion: this._bFirstQuestion});
-            this._qvQuestionViewer.addEventListener("response", this);
-            this._qvQuestionViewer.addEventListener("resize", this);
-        }
-        else
-        {
-            this._qvQuestionViewer.isFirstQuestion = this._bFirstQuestion;
-            this._qvQuestionViewer.question = oQuestion;
-        } // end else if
-        this.showElements(true);
-    };
-    _loc1.applyColor = function (mc, zone)
-    {
-        var _loc4 = this._aColors[zone];
-        if (_loc4 == -1 || _loc4 == undefined)
-        {
-            return;
-        } // end if
-        var _loc5 = (_loc4 & 16711680) >> 16;
-        var _loc6 = (_loc4 & 65280) >> 8;
-        var _loc7 = _loc4 & 255;
-        var _loc8 = new Color(mc);
-        var _loc9 = new Object();
-        _loc9 = {ra: 0, ga: 0, ba: 0, rb: _loc5, gb: _loc6, bb: _loc7};
-        _loc8.setTransform(_loc9);
-    };
-    _loc1.closeDialog = function ()
+    } // End of the function
+    function closeDialog()
     {
         this.callClose();
-    };
-    _loc1.response = function (oEvent)
+    } // End of the function
+    function response(oEvent)
     {
         if (oEvent.response.id == -1)
         {
-            this.api.network.Dialog.leave();
+            api.network.Dialog.begining(_nNpcID);
+            _bFirstQuestion = true;
         }
         else
         {
-            this.api.network.Dialog.response(this._oQuestion.id, oEvent.response.id);
-            this._bFirstQuestion = false;
+            api.network.Dialog.response(_oQuestion.__get__id(), oEvent.response.id);
+            _bFirstQuestion = false;
         } // end else if
-    };
-    _loc1.complete = function (oEvent)
+    } // End of the function
+    function resize(oEvent)
     {
-        var ref = this;
-        this._ldrArtwork.content.stringCourseColor = function (mc, z)
-        {
-            ref.applyColor(mc, z);
-        };
-    };
-    _loc1.resize = function (oEvent)
-    {
-        this._winBackground.setSize(undefined, oEvent.target.height + (oEvent.target._y - this._winBackground._y) + 12);
-        this._winBackgroundUp.setSize(undefined, oEvent.target.height + (oEvent.target._y - this._winBackground._y) + 10);
-    };
-    _loc1.initialization = function (oEvent)
-    {
-        this._mcPic._visible = true;
-    };
-    _loc1.addProperty("colors", function ()
-    {
-    }, _loc1.__set__colors);
-    _loc1.addProperty("customArtwork", function ()
-    {
-    }, _loc1.__set__customArtwork);
-    _loc1.addProperty("gfx", function ()
-    {
-    }, _loc1.__set__gfx);
-    _loc1.addProperty("id", function ()
-    {
-    }, _loc1.__set__id);
-    _loc1.addProperty("name", function ()
-    {
-    }, _loc1.__set__name);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.NpcDialog = function ()
-    {
-        super();
-    }).CLASS_NAME = "NpcDialog";
-    _loc1._bFirstQuestion = true;
-} // end if
+        _winBackground.setSize(undefined, oEvent.target.height + (oEvent.target._y - _winBackground._y) + 12);
+        _winBackgroundUp.setSize(undefined, oEvent.target.height + (oEvent.target._y - _winBackground._y) + 10);
+    } // End of the function
+    static var CLASS_NAME = "NpcDialog";
+    var _bFirstQuestion = true;
+} // End of Class
 #endinitclip

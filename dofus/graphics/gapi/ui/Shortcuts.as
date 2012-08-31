@@ -1,112 +1,52 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20983]
-#initclip 248
-if (!dofus.graphics.gapi.ui.Shortcuts)
+// [Initial MovieClip Action of sprite 1057]
+#initclip 24
+class dofus.graphics.gapi.ui.Shortcuts extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Shortcuts = function ()
+    var unloadThis, addToQueue, api, _winBg, _btnClose2, _lblDescription, _lblKeys, _btnClose, _lstShortcuts;
+    function Shortcuts()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Shortcuts.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
         this.unloadThis();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-    };
-    _loc1.initTexts = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+    } // End of the function
+    function initTexts()
     {
-        this._winBg.title = this.api.lang.getText("KEYBORD_SHORTCUT");
-        this._btnClose2.label = this.api.lang.getText("CLOSE");
-        this._lblDescription.text = this.api.lang.getText("SHORTCUTS_DESCRIPTION");
-        this._lblKeys.text = this.api.lang.getText("SHORTCUTS_KEYS");
-        this._lblDefaultSet.text = this.api.lang.getText("SHORTCUTS_SET_CHOICE");
-        this._btnApplyDefault.label = this.api.lang.getText("SHORTCUTS_APPLY_DEFAULT");
-    };
-    _loc1.addListeners = function ()
+        _winBg.__set__title(api.lang.getText("KEYBORD_SHORTCUT"));
+        _btnClose2.__set__label(api.lang.getText("CLOSE"));
+        _lblDescription.__set__text(api.lang.getText("SHORTCUTS_DESCRIPTION"));
+        _lblKeys.__set__text(api.lang.getText("SHORTCUTS_KEYS"));
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        this._btnClose2.addEventListener("click", this);
-        this._cbSetList.addEventListener("itemSelected", this);
-        this._btnApplyDefault.addEventListener("click", this);
-    };
-    _loc1.initData = function ()
+        _btnClose.addEventListener("click", this);
+        _btnClose2.addEventListener("click", this);
+    } // End of the function
+    function initData()
     {
-        var _loc2 = new ank.utils.ExtendedArray();
-        var _loc3 = this.api.lang.getKeyboardShortcutsSets();
-        _loc3.sortOn("d");
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
+        var _loc2 = api.lang.getKeyboardShortcuts();
+        var _loc3 = new ank.utils.ExtendedArray();
+        for (var _loc4 in _loc2)
         {
-            if (_loc3[_loc4] == undefined)
-            {
-                continue;
-            } // end if
-            _loc2.push({label: _loc3[_loc4].d, id: _loc3[_loc4].i});
-            if (_loc3[_loc4].i == this.api.kernel.OptionsManager.getOption("ShortcutSetDefault"))
-            {
-                this._cbSetList.selectedIndex = _loc4;
-            } // end if
-        } // end while
-        var _loc5 = this.api.lang.getKeyboardShortcutsCategories();
-        _loc5.sortOn("o", Array.NUMERIC);
-        var _loc6 = this.api.lang.getKeyboardShortcuts();
-        var _loc7 = new ank.utils.ExtendedArray();
-        var _loc8 = 0;
-        
-        while (++_loc8, _loc8 < _loc5.length)
-        {
-            if (_loc5[_loc8] == undefined)
-            {
-                continue;
-            } // end if
-            _loc7.push({c: true, d: _loc5[_loc8].d});
-            for (var k in _loc6)
-            {
-                if (_loc6[k] == undefined)
-                {
-                    continue;
-                } // end if
-                if (k == "CONSOLE" && !this.api.datacenter.Player.isAuthorized)
-                {
-                    continue;
-                } // end if
-                if (_loc6[k].c == _loc5[_loc8].i)
-                {
-                    _loc7.push({c: false, d: _loc6[k].d, s: this.api.kernel.KeyManager.getCurrentShortcut(k), k: k, l: _loc6[k].s});
-                } // end if
-            } // end of for...in
-        } // end while
-        this._lstShortcuts.dataProvider = _loc7;
-        this._cbSetList.dataProvider = _loc2;
-    };
-    _loc1.click = function (oEvent)
+            _loc3.push(_loc2[_loc4]);
+        } // end of for...in
+        _lstShortcuts.__set__dataProvider(_loc3);
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -116,31 +56,8 @@ if (!dofus.graphics.gapi.ui.Shortcuts)
                 this.callClose();
                 break;
             } 
-            case "_btnApplyDefault":
-            {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("SHORTCUTS_RESET_TO_DEFAULT"), "CAUTION_YESNO", {listener: this});
-                break;
-            } 
         } // End of switch
-    };
-    _loc1.itemSelected = function (oEvent)
-    {
-        this.api.kernel.OptionsManager.setOption("ShortcutSetDefault", this._cbSetList.selectedItem.id);
-    };
-    _loc1.yes = function (oEvent)
-    {
-        this.api.kernel.KeyManager.clearCustomShortcuts();
-        this.api.kernel.OptionsManager.setOption("ShortcutSet", this._cbSetList.selectedItem.id);
-        this.initData();
-    };
-    _loc1.refresh = function ()
-    {
-        this.initData();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Shortcuts = function ()
-    {
-        super();
-    }).CLASS_NAME = "Shortcuts";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Shortcuts";
+} // End of Class
 #endinitclip

@@ -1,66 +1,38 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20574]
-#initclip 95
-if (!dofus.graphics.gapi.controls.bookpageindex.BookPageIndexChapterItem)
+// [Initial MovieClip Action of sprite 1062]
+#initclip 32
+class dofus.graphics.gapi.controls.bookpageindex.BookPageIndexChapterItem extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.bookpageindex)
-    {
-        _global.dofus.graphics.gapi.controls.bookpageindex = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.bookpageindex.BookPageIndexChapterItem = function ()
+    var _lblPageNum, _lblChapter, __height, __width, addToQueue;
+    function BookPageIndexChapterItem()
     {
         super();
-    }).prototype;
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
-        if (bUsed)
-        {
-            this._lblPageNum.text = bUsed ? (oItem[4]) : ("");
-            var _loc5 = this._lblPageNum.textWidth;
-            this._lblChapter.text = bUsed ? (oItem[0]) : ("");
-            this._lblChapter.setSize(this.__width - _loc5 - 30, this.__height);
-        }
-        else if (this._lblPageNum.text != undefined)
-        {
-            this._lblPageNum.text = "";
-            this._lblChapter.text = "";
-        } // end else if
-    };
-    _loc1.init = function ()
+        _lblPageNum.__set__text(bUsed ? (oItem[4]) : (""));
+        var _loc2 = _lblPageNum.__get__textWidth();
+        _lblChapter.__set__text(bUsed ? (oItem[0]) : (""));
+        _lblChapter.setSize(__width - _loc2 - 30, __height);
+    } // End of the function
+    function init()
     {
         super.init(false);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
         this.arrange();
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
-        this.addToQueue({object: this, method: this.arrange});
-    };
-    _loc1.arrange = function ()
+        this.addToQueue({object: this, method: arrange});
+    } // End of the function
+    function arrange()
     {
-        this._lblChapter.setSize(this.__width - 50, this.__height);
-        this._lblPageNum.setSize(this.__width - 20, this.__height);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _lblChapter.setSize(__width - 50, __height);
+        _lblPageNum.setSize(__width - 20, __height);
+    } // End of the function
+} // End of Class
 #endinitclip

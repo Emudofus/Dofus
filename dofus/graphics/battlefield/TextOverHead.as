@@ -1,79 +1,40 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20635]
-#initclip 156
-if (!dofus.graphics.battlefield.TextOverHead)
+// [Initial MovieClip Action of sprite 972]
+#initclip 184
+class dofus.graphics.battlefield.TextOverHead extends dofus.graphics.battlefield.AbstractTextOverHead
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.battlefield)
-    {
-        _global.dofus.graphics.battlefield = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.battlefield.TextOverHead = function (sText, sFile, nColor, nFrame, nPvpGain, title)
+    var createTextField, _txtText, drawBackground, drawGfx;
+    function TextOverHead(sText, sFile, nColor, nFrame)
     {
         super();
-        this.initialize(title != undefined);
-        this.draw(sText, sFile, nColor, nFrame, nPvpGain, title);
-    }).prototype;
-    _loc1.initialize = function (displayTitle)
+        this.initialize();
+        this.draw(sText, sFile, nColor, nFrame);
+    } // End of the function
+    function initialize()
     {
         super.initialize();
         this.createTextField("_txtText", 30, 0, -3 + dofus.graphics.battlefield.AbstractTextOverHead.HEIGHT_SPACER, 0, 0);
-        if (displayTitle)
-        {
-            this.createTextField("_txtTitle", 31, 0, -3 + dofus.graphics.battlefield.AbstractTextOverHead.HEIGHT_SPACER, 0, 0);
-            this._txtTitle.embedFonts = true;
-        } // end if
-        this._txtText.embedFonts = true;
-    };
-    _loc1.draw = function (sText, sFile, nColor, nFrame, nPvpGain, title)
+        _txtText.embedFonts = true;
+    } // End of the function
+    function draw(sText, sFile, nColor, nFrame)
     {
-        var _loc8 = sFile != undefined && nFrame != undefined;
-        if (nPvpGain == undefined)
-        {
-            nPvpGain = 0;
-        } // end if
-        this._txtText.autoSize = "center";
-        this._txtText.text = sText;
-        this._txtText.selectable = false;
-        this._txtText.setTextFormat(dofus.graphics.battlefield.AbstractTextOverHead.TEXT_FORMAT);
+        var _loc2 = sFile != undefined && nFrame != undefined;
+        _txtText.autoSize = "center";
+        _txtText.text = sText;
+        _txtText.selectable = false;
+        _txtText.setTextFormat(dofus.graphics.battlefield.AbstractTextOverHead.TEXT_FORMAT);
         if (nColor != undefined)
         {
-            this._txtText.textColor = nColor;
+            _txtText.textColor = nColor;
         } // end if
-        if (title)
-        {
-            this._txtTitle.autoSize = "center";
-            this._txtTitle.text = title.text;
-            this._txtTitle.selectable = false;
-            this._txtTitle.setTextFormat(dofus.graphics.battlefield.AbstractTextOverHead.TEXT_FORMAT2);
-            if (title.color != undefined)
-            {
-                this._txtTitle.textColor = title.color;
-            } // end if
-            this._txtTitle._y = this._txtText._y + dofus.graphics.battlefield.AbstractTextOverHead.HEIGHT_SPACER + this._txtText.textHeight;
-            var _loc9 = Math.ceil(this._txtText.textHeight + this._txtTitle.textHeight + dofus.graphics.battlefield.AbstractTextOverHead.HEIGHT_SPACER * 3);
-            var _loc10 = Math.ceil(Math.max(this._txtText.textWidth, this._txtTitle.textWidth) + dofus.graphics.battlefield.AbstractTextOverHead.WIDTH_SPACER * 2);
-        }
-        else
-        {
-            _loc9 = Math.ceil(this._txtText.textHeight + dofus.graphics.battlefield.AbstractTextOverHead.HEIGHT_SPACER * 2);
-            _loc10 = Math.ceil(this._txtText.textWidth + dofus.graphics.battlefield.AbstractTextOverHead.WIDTH_SPACER * 2);
-        } // end else if
-        this.drawBackground(_loc10, _loc9, dofus.graphics.battlefield.AbstractTextOverHead.BACKGROUND_COLOR);
-        if (_loc8)
+        var _loc3 = Math.ceil(_txtText.textHeight + dofus.graphics.battlefield.AbstractTextOverHead.HEIGHT_SPACER * 2);
+        var _loc4 = Math.ceil(_txtText.textWidth + dofus.graphics.battlefield.AbstractTextOverHead.WIDTH_SPACER * 2);
+        this.drawBackground(_loc4, _loc3, dofus.graphics.battlefield.AbstractTextOverHead.BACKGROUND_COLOR);
+        if (_loc2)
         {
             this.drawGfx(sFile, nFrame);
-            this.addPvpGfxEffect(nPvpGain, nFrame);
         } // end if
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

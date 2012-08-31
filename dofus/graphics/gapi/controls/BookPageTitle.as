@@ -1,59 +1,38 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20501]
-#initclip 22
-if (!dofus.graphics.gapi.controls.BookPageTitle)
+// [Initial MovieClip Action of sprite 1038]
+#initclip 5
+class dofus.graphics.gapi.controls.BookPageTitle extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.BookPageTitle = function ()
+    var _oPage, __get__initialized, __get__page, addToQueue, _txtTitle, _lblSubTitle, _lblAuthor, __set__page;
+    function BookPageTitle()
     {
         super();
-    }).prototype;
-    _loc1.__set__page = function (oPage)
+    } // End of the function
+    function set page(oPage)
     {
-        this._oPage = oPage;
-        if (this.initialized)
+        _oPage = oPage;
+        if (this.__get__initialized())
         {
             this.updateData();
         } // end if
         //return (this.page());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.BookPageTitle.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.updateData});
-    };
-    _loc1.updateData = function ()
+        this.addToQueue({object: this, method: updateData});
+    } // End of the function
+    function updateData()
     {
-        this._txtTitle.text = this._oPage.title == undefined ? ("") : (this._oPage.title);
-        this._lblSubTitle.text = this._oPage.subtitle == undefined ? ("") : (this._oPage.subtitle);
-        this._lblAuthor.text = this._oPage.author == undefined ? ("") : (this._oPage.author);
-    };
-    _loc1.addProperty("page", function ()
-    {
-    }, _loc1.__set__page);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.BookPageTitle = function ()
-    {
-        super();
-    }).CLASS_NAME = "BookPageTitle";
-} // end if
+        _txtTitle.__set__text(_oPage.title == undefined ? ("") : (_oPage.title));
+        _lblSubTitle.__set__text(_oPage.subtitle == undefined ? ("") : (_oPage.subtitle));
+        _lblAuthor.__set__text(_oPage.author == undefined ? ("") : (_oPage.author));
+    } // End of the function
+    static var CLASS_NAME = "BookPageTitle";
+} // End of Class
 #endinitclip

@@ -1,100 +1,69 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20911]
-#initclip 176
-if (!dofus.graphics.gapi.ui.Indicator)
+// [Initial MovieClip Action of sprite 1055]
+#initclip 22
+class dofus.graphics.gapi.ui.Indicator extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Indicator = function ()
+    var __get__rotate, _aCoordinates, __get__coordinates, __get__offset, gapi, attachMovie, _mcArrowShadow, _mcLight, _mcArrow, __set__coordinates, __set__offset, __set__rotate;
+    function Indicator()
     {
         super();
-    }).prototype;
-    _loc1.__set__rotate = function (bRotate)
+    } // End of the function
+    function set rotate(bRotate)
     {
-        this._bRotate = bRotate;
+        _bRotate = bRotate;
         //return (this.rotate());
-    };
-    _loc1.__set__coordinates = function (aCoordinates)
+        null;
+    } // End of the function
+    function set coordinates(aCoordinates)
     {
-        this._aCoordinates = aCoordinates;
+        _aCoordinates = aCoordinates;
         //return (this.coordinates());
-    };
-    _loc1.__set__offset = function (nOffset)
+        null;
+    } // End of the function
+    function set offset(nOffset)
     {
-        this._nOffset = nOffset;
+        _nOffset = nOffset;
         //return (this.offset());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Indicator.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        var _loc2 = this._aCoordinates[0];
-        var _loc3 = this._aCoordinates[1];
-        if (this._bRotate)
+        var _loc3 = _aCoordinates[0];
+        var _loc2 = _aCoordinates[1];
+        if (_bRotate)
         {
-            var _loc5 = this.gapi.screenWidth / 2;
-            var _loc6 = this.gapi.screenHeight / 2;
-            var _loc7 = Math.atan2(this._aCoordinates[1] - _loc6, this._aCoordinates[0] - _loc5);
-            var _loc4 = _loc7 * 180 / Math.PI - 90;
-            _loc2 = _loc2 - (this._nOffset == undefined ? (0) : (this._nOffset * Math.cos(_loc7)));
-            _loc3 = _loc3 - (this._nOffset == undefined ? (0) : (this._nOffset * Math.sin(_loc7)));
+            var _loc8 = gapi.screenWidth / 2;
+            var _loc7 = gapi.screenHeight / 2;
+            var _loc4 = Math.atan2(_aCoordinates[1] - _loc7, _aCoordinates[0] - _loc8);
+            var _loc5 = _loc4 * 180 / 3.141593E+000 - 90;
+            _loc3 = _loc3 - (_nOffset == undefined ? (0) : (_nOffset * Math.cos(_loc4)));
+            _loc2 = _loc2 - (_nOffset == undefined ? (0) : (_nOffset * Math.sin(_loc4)));
         }
         else
         {
-            _loc3 = _loc3 - (this._nOffset == undefined ? (0) : (this._nOffset));
+            _loc2 = _loc2 - (_nOffset == undefined ? (0) : (_nOffset));
         } // end else if
-        this.attachMovie("UI_Indicatorlight", "_mcLight", 10, {_x: _loc2, _y: _loc3});
-        this.attachMovie("UI_IndicatorArrow", "_mcArrowShadow", 20, {_x: _loc2 + dofus.graphics.gapi.ui.Indicator.SHADOW_OFFSET, _y: _loc3 + dofus.graphics.gapi.ui.Indicator.SHADOW_OFFSET});
-        this.attachMovie("UI_IndicatorArrow", "_mcArrow", 30, {_x: _loc2, _y: _loc3});
-        var _loc8 = new Color(this._mcArrowShadow);
-        _loc8.setTransform(dofus.graphics.gapi.ui.Indicator.SHADOW_TRANSFORM);
-        if (this._bRotate)
+        this.attachMovie("UI_Indicatorlight", "_mcLight", 10, {_x: _loc3, _y: _loc2});
+        this.attachMovie("UI_IndicatorArrow", "_mcArrowShadow", 20, {_x: _loc3 + dofus.graphics.gapi.ui.Indicator.SHADOW_OFFSET, _y: _loc2 + dofus.graphics.gapi.ui.Indicator.SHADOW_OFFSET});
+        this.attachMovie("UI_IndicatorArrow", "_mcArrow", 30, {_x: _loc3, _y: _loc2});
+        var _loc6 = new Color(_mcArrowShadow);
+        _loc6.setTransform(dofus.graphics.gapi.ui.Indicator.SHADOW_TRANSFORM);
+        if (_bRotate)
         {
-            this._mcLight._rotation = _loc4;
-            this._mcArrow._rotation = _loc4;
-            this._mcArrowShadow._rotation = _loc4;
+            _mcLight._rotation = _loc5;
+            _mcArrow._rotation = _loc5;
+            _mcArrowShadow._rotation = _loc5;
         } // end if
-    };
-    _loc1.addProperty("rotate", function ()
-    {
-    }, _loc1.__set__rotate);
-    _loc1.addProperty("offset", function ()
-    {
-    }, _loc1.__set__offset);
-    _loc1.addProperty("coordinates", function ()
-    {
-    }, _loc1.__set__coordinates);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Indicator = function ()
-    {
-        super();
-    }).CLASS_NAME = "Indicator";
-    (_global.dofus.graphics.gapi.ui.Indicator = function ()
-    {
-        super();
-    }).SHADOW_OFFSET = 3;
-    (_global.dofus.graphics.gapi.ui.Indicator = function ()
-    {
-        super();
-    }).SHADOW_TRANSFORM = {ra: 0, rb: 0, ga: 0, gb: 0, ba: 0, bb: 0, aa: 40, ab: 0};
-    _loc1._bRotate = true;
-    _loc1._nOffset = 0;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Indicator";
+    static var SHADOW_OFFSET = 3;
+    static var SHADOW_TRANSFORM = {ra: 0, rb: 0, ga: 0, gb: 0, ba: 0, bb: 0, aa: 40, ab: 0};
+    var _bRotate = true;
+    var _nOffset = 0;
+} // End of Class
 #endinitclip

@@ -1,168 +1,133 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20725]
-#initclip 246
-if (!dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTree)
+// [Initial MovieClip Action of sprite 1083]
+#initclip 53
+class dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTree extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.alignmentviewer)
-    {
-        _global.dofus.graphics.gapi.controls.alignmentviewer = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTree = function ()
+    var addToQueue, api, _lblInfos, _lblLevel, _lstTree, gapi, dispatchEvent, __height;
+    function AlignmentViewerTree()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTree.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-    };
-    _loc1.initTexts = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+    } // End of the function
+    function initTexts()
     {
-        this._lblInfos.text = this.api.lang.getText("ALL_SPECIALIZATIONS");
-        this._lblLevel.text = this.api.lang.getText("LEVEL_SMALL");
-    };
-    _loc1.addListeners = function ()
+        _lblInfos.__set__text(api.lang.getText("ALL_SPECIALIZATIONS"));
+        _lblLevel.__set__text(api.lang.getText("LEVEL_SMALL"));
+    } // End of the function
+    function addListeners()
     {
-        this._lstTree.addEventListener("itemRollOver", this);
-        this._lstTree.addEventListener("itemRollOut", this);
-        this._lstTree.addEventListener("itemSelected", this);
-    };
-    _loc1.initData = function ()
+        _lstTree.addEventListener("itemRollOver", this);
+        _lstTree.addEventListener("itemRollOut", this);
+        _lstTree.addEventListener("itemSelected", this);
+    } // End of the function
+    function initData()
     {
-        var _loc2 = this.api.datacenter.Player.specialization;
-        var _loc3 = _loc2.alignment.index;
-        var _loc4 = _loc2.index;
-        var _loc5 = _loc2.order.index;
-        var _loc6 = new Array();
-        var _loc7 = this.api.lang.getAlignmentSpecializations();
-        for (var k in _loc7)
+        var _loc22 = api.datacenter.Player.specialization;
+        var _loc13 = _loc22.alignment.index;
+        var _loc18 = _loc22.__get__index();
+        var _loc19 = _loc22.order.index;
+        var _loc4 = new Array();
+        var _loc20 = api.lang.getAlignmentSpecializations();
+        for (var _loc21 in _loc20)
         {
-            var _loc8 = new dofus.datacenter.Specialization(Number(k));
-            if (_loc8.order.index != _loc5)
+            var _loc7 = new dofus.datacenter.Specialization(_loc21);
+            if (_loc7.order.index != _loc19)
             {
                 continue;
             } // end if
-            if (_loc8.description == "null")
+            if (_loc7.__get__description() == "null")
             {
                 continue;
             } // end if
-            var _loc9 = _loc8.alignment;
-            var _loc10 = _loc8.order;
-            var _loc11 = _loc6[_loc3 == _loc9.index ? (0) : (_loc9.index + 1)];
-            if (_loc11 == undefined)
+            var _loc5 = _loc7.__get__alignment();
+            var _loc10 = _loc7.__get__order();
+            var _loc6 = _loc4[_loc13 == _loc5.__get__index() ? (0) : (_loc5.__get__index() + 1)];
+            if (_loc6 == undefined)
             {
-                _loc11 = new Array({data: _loc9, depth: 0});
-                _loc6[_loc3 == _loc9.index ? (0) : (_loc9.index + 1)] = _loc11;
+                _loc6 = new Array({data: _loc5, depth: 0});
+                _loc4[_loc13 == _loc5.__get__index() ? (0) : (_loc5.__get__index() + 1)] = _loc6;
             } // end if
-            var _loc12 = _loc11[_loc10.index];
-            if (_loc12 == undefined)
+            var _loc9 = _loc6[_loc10.index];
+            if (_loc9 == undefined)
             {
-                _loc12 = new Array({data: _loc10, depth: 1, sortField: -1});
-                _loc11[_loc10.index] = _loc12;
+                _loc9 = new Array({data: _loc10, depth: 1, sortField: -1});
+                _loc6[_loc10.index] = _loc9;
             } // end if
-            _loc12.push({data: _loc8, depth: 2, sortField: _loc9.value});
+            _loc9.push({data: _loc7, depth: 2, sortField: _loc5.__get__value()});
         } // end of for...in
-        var _loc13 = new ank.utils.ExtendedArray();
-        var _loc14 = 0;
-        
-        while (++_loc14, _loc14 < _loc6.length)
+        var _loc11 = new ank.utils.ExtendedArray();
+        for (var _loc3 = 0; _loc3 < _loc4.length; ++_loc3)
         {
-            if (_loc6[_loc14] == undefined)
+            if (_loc4[_loc3] == undefined)
             {
                 continue;
             } // end if
-            var _loc15 = new ank.utils.ExtendedArray();
-            var _loc16 = 0;
-            
-            while (++_loc16, _loc16 < _loc6[_loc14].length)
+            var _loc8 = new ank.utils.ExtendedArray();
+            for (var _loc2 = 0; _loc2 < _loc4[_loc3].length; ++_loc2)
             {
-                if (_loc6[_loc14][_loc16] == undefined)
+                if (_loc4[_loc3][_loc2] == undefined)
                 {
                     continue;
                 } // end if
-                _loc6[_loc14][_loc16].sortOn("sortField", Array.NUMERIC);
-                _loc15 = _loc15.concat(_loc6[_loc14][_loc16]);
-            } // end while
-            _loc13 = _loc13.concat(_loc15);
-        } // end while
-        this._lstTree.dataProvider = _loc13;
-        if (_loc4 != undefined)
+                _loc4[_loc3][_loc2].sortOn("sortField", Array.NUMERIC);
+                _loc8 = _loc8.concat(_loc4[_loc3][_loc2]);
+            } // end of for
+            _loc11 = _loc11.concat(_loc8);
+        } // end of for
+        _lstTree.__set__dataProvider(_loc11);
+        if (_loc18 != undefined)
         {
             var _loc17 = -1;
-            for (var k in _loc13)
+            for (var _loc21 in _loc11)
             {
-                var _loc18 = _loc13[k].data;
-                if (_loc18 instanceof dofus.datacenter.Specialization)
+                var _loc12 = _loc11[_loc21].data;
+                if (_loc12 instanceof dofus.datacenter.Specialization)
                 {
-                    if (_loc18.index == _loc4)
+                    if (_loc12.index == _loc18)
                     {
-                        _loc17 = Number(k);
+                        _loc17 = Number(_loc21);
                         break;
                     } // end if
                 } // end if
             } // end of for...in
-            this._lstTree.selectedIndex = _loc17;
+            _lstTree.__set__selectedIndex(_loc17);
         } // end if
-    };
-    _loc1.itemSelected = function (oEvent)
+    } // End of the function
+    function itemSelected(oEvent)
     {
-        this.gapi.hideTooltip();
-        if (oEvent.row.item.data instanceof dofus.datacenter.Specialization)
+        gapi.hideTooltip();
+        if (oEvent.target.item.data instanceof dofus.datacenter.Specialization)
         {
-            this.dispatchEvent({type: "specializationSelected", specialization: oEvent.row.item.data});
-        }
-        else if (oEvent.row.item.data instanceof dofus.datacenter.Order)
-        {
-            this.dispatchEvent({type: "orderSelected", order: oEvent.row.item.data});
-        }
-        else if (oEvent.row.item.data instanceof dofus.datacenter.Alignment)
-        {
-            this.dispatchEvent({type: "alignementSelected", alignement: oEvent.row.item.data});
+            this.dispatchEvent({type: "specializationSelected", specialization: oEvent.target.item.data});
         }
         else
         {
-            this._lstTree.selectedIndex = -1;
-            this.dispatchEvent({type: "itemSelected"});
+            _lstTree.__set__selectedIndex(-1);
+            this.dispatchEvent({type: "specializationSelected"});
         } // end else if
-    };
-    _loc1.itemRollOver = function (oEvent)
+    } // End of the function
+    function itemRollOver(oEvent)
     {
-        var _loc3 = oEvent.target.item.data;
-        if (_loc3 instanceof dofus.datacenter.Specialization)
+        var _loc2 = oEvent.target.item.data;
+        if (_loc2 instanceof dofus.datacenter.Specialization)
         {
-            this.gapi.showTooltip(_loc3.description, this, this.__height + 30);
+            gapi.showTooltip(_loc2.description, this, __height + 30);
         } // end if
-    };
-    _loc1.itemRollOut = function (oEvent)
+    } // End of the function
+    function itemRollOut(oEvent)
     {
-        this.gapi.hideTooltip();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerTree = function ()
-    {
-        super();
-    }).CLASS_NAME = "AlignmentViewerTree";
-} // end if
+        gapi.hideTooltip();
+    } // End of the function
+    static var CLASS_NAME = "AlignmentViewerTree";
+} // End of Class
 #endinitclip

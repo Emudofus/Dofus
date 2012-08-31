@@ -1,66 +1,46 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20974]
-#initclip 239
-if (!dofus.datacenter.Challenge)
+// [Initial MovieClip Action of sprite 939]
+#initclip 151
+class dofus.datacenter.Challenge extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Challenge = function (nID, nFightType)
+    var _nID, _nFightType, _teams, __get__count, __get__fightType, __get__id, __get__teams;
+    function Challenge(nID, nFightType)
     {
         super();
         this.initialize(nID, nFightType);
-    }).prototype;
-    _loc1.initialize = function (nID, nFightType)
+    } // End of the function
+    function initialize(nID, nFightType)
     {
-        this._nID = nID;
-        this._nFightType = nFightType;
-        this._teams = new Object();
-    };
-    _loc1.addTeam = function (t)
+        _nID = nID;
+        _nFightType = nFightType;
+        _teams = new Object();
+    } // End of the function
+    function addTeam(t)
     {
-        this._teams[t.id] = t;
+        _teams[t.id] = t;
         t.setChallenge(this);
-    };
-    _loc1.__get__id = function ()
+    } // End of the function
+    function get id()
     {
-        return (this._nID);
-    };
-    _loc1.__get__fightType = function ()
+        return (_nID);
+    } // End of the function
+    function get fightType()
     {
-        return (this._nFightType);
-    };
-    _loc1.__get__teams = function ()
+        return (_nFightType);
+    } // End of the function
+    function get teams()
     {
-        return (this._teams);
-    };
-    _loc1.__get__count = function ()
+        return (_teams);
+    } // End of the function
+    function get count()
     {
         var _loc2 = 0;
-        for (var k in this._teams)
+        for (var _loc3 in _teams)
         {
-            _loc2 = _loc2 + this._teams[k].count;
+            _loc2 = _loc2 + _teams[_loc3].count;
         } // end of for...in
         return (_loc2);
-    };
-    _loc1.addProperty("count", _loc1.__get__count, function ()
-    {
-    });
-    _loc1.addProperty("teams", _loc1.__get__teams, function ()
-    {
-    });
-    _loc1.addProperty("fightType", _loc1.__get__fightType, function ()
-    {
-    });
-    _loc1.addProperty("id", _loc1.__get__id, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

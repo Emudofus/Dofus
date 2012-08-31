@@ -1,140 +1,64 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20615]
-#initclip 136
-if (!dofus.utils.Api)
+// [Initial MovieClip Action of sprite 827]
+#initclip 39
+class dofus.utils.Api extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.utils)
-    {
-        _global.dofus.utils = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.utils.Api = function ()
+    var _oConfig, _oKernel, _oDatacenter, _oNetwork, _oGfx, _oUI, _oSounds, _oLang, _oColors, __get__colors, __get__config, __get__datacenter, __get__gfx, __get__kernel, __get__lang, __get__network, __get__sounds, __get__ui;
+    function Api()
     {
         super();
-        dofus.utils.Api._oLastInstance = this;
-    }).prototype;
-    (_global.dofus.utils.Api = function ()
+    } // End of the function
+    function get config()
     {
-        super();
-        dofus.utils.Api._oLastInstance = this;
-    }).getInstance = function ()
+        return (_oConfig);
+    } // End of the function
+    function get kernel()
     {
-        return (dofus.utils.Api._oLastInstance);
-    };
-    _loc1.__get__config = function ()
+        return (_oKernel);
+    } // End of the function
+    function get datacenter()
     {
-        return (this._oConfig);
-    };
-    _loc1.__get__kernel = function ()
+        return (_oDatacenter);
+    } // End of the function
+    function get network()
     {
-        return (this._oKernel);
-    };
-    _loc1.__get__datacenter = function ()
+        return (_oNetwork);
+    } // End of the function
+    function get gfx()
     {
-        return (this._oDatacenter);
-    };
-    _loc1.__get__network = function ()
+        return (_oGfx);
+    } // End of the function
+    function get ui()
     {
-        return (this._oNetwork);
-    };
-    _loc1.__get__gfx = function ()
+        return (_oUI);
+    } // End of the function
+    function get sounds()
     {
-        return (this._oGfx);
-    };
-    _loc1.__get__ui = function ()
+        return (_oSounds);
+    } // End of the function
+    function get lang()
     {
-        return (this._oUI);
-    };
-    _loc1.__get__sounds = function ()
+        return (_oLang);
+    } // End of the function
+    function get colors()
     {
-        return (this._oSounds);
-    };
-    _loc1.__get__lang = function ()
+        return (_oColors);
+    } // End of the function
+    function initialize(mcCore)
     {
-        return (this._oLang);
-    };
-    _loc1.__get__colors = function ()
-    {
-        return (this._oColors);
-    };
-    _loc1.initialize = function ()
-    {
-        this._oConfig = _global.CONFIG;
-        this._oLang = new dofus.utils.DofusTranslator();
-        this._oUI = dofus.DofusCore.getClip().GAPI;
-        this._oUI.api = this;
-        this._oKernel = new dofus.Kernel(this);
-        this._oSounds = dofus.sounds.AudioManager.getInstance();
-        _global.SOMA = this._oSounds;
-        this._oDatacenter = new dofus.datacenter.Datacenter(this);
-        this._oNetwork = new dofus.aks.Aks(this);
-        this._oGfx = dofus.DofusCore.getClip().BATTLEFIELD;
-        if (this._oConfig.isStreaming && this._oConfig.streamingMethod == "explod")
-        {
-            this._oGfx.initialize(this._oDatacenter, dofus.Constants.OBJECTS_LIGHT_FILE, dofus.Constants.OBJECTS_LIGHT_FILE, dofus.Constants.ACCESSORIES_PATH, this);
-        }
-        else
-        {
-            this._oGfx.initialize(this._oDatacenter, dofus.Constants.GROUND_FILE, dofus.Constants.OBJECTS_FILE, dofus.Constants.ACCESSORIES_PATH, this);
-        } // end else if
-        this._oColors = _global.GAC;
-        this._oConfig.languages = this._oLang.getConfigText("LANGUAGES_LIST");
-    };
-    _loc1.checkFileSize = function (sFile, nCheckID)
-    {
-        var _loc3 = new Object();
-        var ref = this;
-        _loc3.onLoadComplete = function (mc, httpStatus)
-        {
-            ref.onFileCheckFinished(true, mc.getBytesTotal(), nCheckID);
-            mc.removeMovieClip();
-        };
-        _loc3.onLoadError = function (mc, errorCode, httpStatus)
-        {
-            ref.onFileCheckFinished(false, mc.getBytesLoaded(), nCheckID);
-            mc.removeMovieClip();
-        };
-        var _loc4 = dofus.DofusCore.getInstance().getTemporaryContainer();
-        var _loc5 = _loc4.createEmptyMovieClip("FC" + nCheckID, _loc4.getNextHighestDepth());
-        var _loc6 = new MovieClipLoader();
-        _loc6.addListener(_loc3);
-        _loc6.loadClip(sFile, _loc5);
-    };
-    _loc1.onFileCheckFinished = function (bSuccess, nFileSize, nCheckID)
-    {
-        this.network.Basics.fileCheckAnswer(nCheckID, bSuccess ? (nFileSize) : (-1));
-    };
-    _loc1.addProperty("datacenter", _loc1.__get__datacenter, function ()
-    {
-    });
-    _loc1.addProperty("kernel", _loc1.__get__kernel, function ()
-    {
-    });
-    _loc1.addProperty("colors", _loc1.__get__colors, function ()
-    {
-    });
-    _loc1.addProperty("ui", _loc1.__get__ui, function ()
-    {
-    });
-    _loc1.addProperty("sounds", _loc1.__get__sounds, function ()
-    {
-    });
-    _loc1.addProperty("network", _loc1.__get__network, function ()
-    {
-    });
-    _loc1.addProperty("lang", _loc1.__get__lang, function ()
-    {
-    });
-    _loc1.addProperty("config", _loc1.__get__config, function ()
-    {
-    });
-    _loc1.addProperty("gfx", _loc1.__get__gfx, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _oConfig = _global.CONFIG;
+        _oLang = new dofus.utils.DofusTranslator();
+        _oUI = mcCore.GAPI;
+        _oUI.__set__api(this);
+        _oSounds = _global.MODULE_SOMA.sm;
+        _global.SOMA = _oSounds;
+        _oKernel = new dofus.Kernel(this);
+        _oDatacenter = new dofus.datacenter.Datacenter(this);
+        _oNetwork = new dofus.aks.Aks(this);
+        _oGfx = mcCore.BATTLEFIELD;
+        _oGfx.initialize(_oDatacenter, dofus.Constants.GROUND_FILE, dofus.Constants.OBJECTS_FILE, this);
+        _oColors = _global.GAC;
+    } // End of the function
+} // End of Class
 #endinitclip

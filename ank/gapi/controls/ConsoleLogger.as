@@ -1,124 +1,71 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20812]
-#initclip 77
-if (!ank.gapi.controls.ConsoleLogger)
+// [Initial MovieClip Action of sprite 38]
+#initclip 57
+class ank.gapi.controls.ConsoleLogger extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.ConsoleLogger = function ()
+    var _aLogs, __height, __width, createTextField, _tText, getStyle;
+    function ConsoleLogger()
     {
         super();
-    }).prototype;
-    _loc1.__get__shadowy = function ()
+    } // End of the function
+    function log(sText, sHColor, sLColor)
     {
-        return (this._bShadowy);
-    };
-    _loc1.__set__shadowy = function (b)
-    {
-        this._bShadowy = b;
-        //return (this.shadowy());
-    };
-    _loc1.log = function (sText, sHColor, sLColor)
-    {
-        var _loc5 = new Object();
-        _loc5.text = sText;
-        _loc5.hColor = sHColor == undefined ? ("#FFFFFF") : (sHColor);
-        _loc5.lColor = sLColor == undefined ? ("#999999") : (sLColor);
-        this._aLogs.push(_loc5);
+        var _loc2 = new Object();
+        _loc2.text = sText;
+        _loc2.hColor = sHColor == undefined ? ("#FFFFFF") : (sHColor);
+        _loc2.lColor = sLColor == undefined ? ("#999999") : (sLColor);
+        _aLogs.push(_loc2);
         this.refreshLogs();
-    };
-    _loc1.clear = function ()
+    } // End of the function
+    function clear()
     {
-        this._aLogs = new Array();
+        _aLogs = new Array();
         this.refreshLogs();
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.ConsoleLogger.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.createTextField("_tText", 10, 0, 0, this.__width, this.__height);
-        this._tText.html = true;
-        this._tText.text = "";
-        this._tText.selectable = false;
-        this._tText.multiline = true;
-        this._tText.onSetFocus = function ()
-        {
-            this._parent.onSetFocus();
-        };
-        this._tText.onKillFocus = function ()
-        {
-            this._parent.onKillFocus();
-        };
-        if (this._bShadowy)
-        {
-            var _loc2 = new Array();
-            _loc2.push(new flash.filters.DropShadowFilter(1, 60, 0, 1, 3, 3, 4, 3, false, false, false));
-            this._tText.filters = _loc2;
-            this._tText.antiAliasType = "advanced";
-        } // end if
-        this._aLogs = new Array();
-    };
-    _loc1.size = function ()
+        this.createTextField("_tText", 10, 0, 0, __width, __height);
+        _tText.html = true;
+        _tText.text = "";
+        _tText.selectable = false;
+        _tText.multiline = true;
+        _aLogs = new Array();
+    } // End of the function
+    function size()
     {
         super.size();
-        this._tText._width = this.__width;
-        this._tText._height = this.__height;
-    };
-    _loc1.draw = function ()
+        _tText._width = __width;
+        _tText._height = __height;
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-        this._tText.embedFonts = this.getStyle().embedfonts;
-    };
-    _loc1.refreshLogs = function ()
+        _tText.embedFonts = this.getStyle().embedfonts;
+    } // End of the function
+    function refreshLogs()
     {
-        var _loc2 = "";
-        var _loc3 = this._aLogs.length - 1;
-        var _loc5 = this.getStyle();
-        var _loc6 = 0;
-        
-        while (++_loc6, _loc6 < _loc3)
+        var _loc5 = "";
+        var _loc6 = _aLogs.length - 1;
+        var _loc3;
+        var _loc4 = this.getStyle();
+        for (var _loc2 = 0; _loc2 < _loc6; ++_loc2)
         {
-            var _loc4 = this._aLogs[_loc6];
-            _loc2 = _loc2 + ("<p><font size=\'" + _loc5.size + "\' face=\'" + _loc5.font + "\' color=\'" + _loc4.lColor + "\'>" + _loc4.text + "</font></p>");
-        } // end while
-        _loc4 = this._aLogs[_loc3];
-        if (_loc4 != undefined)
+            _loc3 = _aLogs[_loc2];
+            _loc5 = _loc5 + ("<p><font size=\'" + _loc4.size + "\' face=\'" + _loc4.font + "\' color=\'" + _loc3.lColor + "\'>" + _loc3.text + "</font></p>");
+        } // end of for
+        _loc3 = _aLogs[_loc6];
+        if (_loc3 != undefined)
         {
-            _loc2 = _loc2 + ("<p><font size=\'" + _loc5.size + "\' face=\'" + _loc5.font + "\' color=\'" + _loc4.hColor + "\'>" + _loc4.text + "</font></p>");
+            _loc5 = _loc5 + ("<p><font size=\'" + _loc4.size + "\' face=\'" + _loc4.font + "\' color=\'" + _loc3.hColor + "\'>" + _loc3.text + "</font></p>");
         } // end if
-        this._tText.htmlText = _loc2;
-        this._tText.scroll = this._tText.maxscroll;
-    };
-    _loc1.onHref = function (sParams)
-    {
-        this.dispatchEvent({type: "href", params: sParams});
-    };
-    _loc1.onSetFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "false");
-    };
-    _loc1.onKillFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "true");
-    };
-    _loc1.addProperty("shadowy", _loc1.__get__shadowy, _loc1.__set__shadowy);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.ConsoleLogger = function ()
-    {
-        super();
-    }).CLASS_NAME = "ConsoleLogger";
-} // end if
+        _tText.htmlText = _loc5;
+        _tText.scroll = _tText.maxscroll;
+    } // End of the function
+    static var CLASS_NAME = "ConsoleLogger";
+} // End of Class
 #endinitclip

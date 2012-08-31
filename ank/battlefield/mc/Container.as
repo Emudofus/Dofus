@@ -1,110 +1,71 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20744]
-#initclip 9
-if (!ank.battlefield.mc.Container)
+// [Initial MovieClip Action of sprite 844]
+#initclip 56
+class ank.battlefield.mc.Container extends MovieClip
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.battlefield)
-    {
-        _global.ank.battlefield = new Object();
-    } // end if
-    if (!ank.battlefield.mc)
-    {
-        _global.ank.battlefield.mc = new Object();
-    } // end if
-    var _loc1 = (_global.ank.battlefield.mc.Container = function (b, d, ofile)
+    var _mcBattlefield, _oDatacenter, _sObjectsFile, maxDepth, minDepth, ExternalContainer, createEmptyMovieClip, _parent, SpriteInfos, Points, Text, OverHead, _mcMask, setMask, _xscale, _yscale, _x, _y;
+    function Container(b, d, ofile)
     {
         super();
-        if (b != undefined)
-        {
-            this.initialize(b, d, ofile);
-        } // end if
-    }).prototype;
-    _loc1.initialize = function (b, d, ofile)
+        this.initialize(b, d, ofile);
+    } // End of the function
+    function initialize(b, d, ofile)
     {
         if (d == undefined)
         {
             ank.utils.Logger.err("pas de _oDatacenter !");
         } // end if
-        this._mcBattlefield = b;
-        this._oDatacenter = d;
-        this._sObjectsFile = ofile;
-        this.clear(true);
-    };
-    _loc1.clear = function (bForceReload)
+        _mcBattlefield = b;
+        _oDatacenter = d;
+        _sObjectsFile = ofile;
+        this.clear();
+    } // End of the function
+    function clear()
     {
-        this.maxDepth = 0;
-        this.minDepth = -1000;
+        maxDepth = 0;
+        minDepth = -1000;
         this.zoom(100);
-        if (this.ExternalContainer == undefined || bForceReload)
+        if (ExternalContainer == undefined)
         {
             this.createEmptyMovieClip("ExternalContainer", 100);
-            var _loc3 = new MovieClipLoader();
-            _loc3.addListener(this._parent);
-            if (bForceReload)
-            {
-                this.ExternalContainer.clear();
-            } // end if
-            _loc3.loadClip(this._sObjectsFile, this.ExternalContainer);
+            var _loc2 = new MovieClipLoader();
+            _loc2.addListener(_parent);
+            _loc2.loadClip(_sObjectsFile, ExternalContainer);
         }
         else
         {
-            this.ExternalContainer.clear();
+            ExternalContainer.clear();
         } // end else if
-        this.SpriteInfos.removeMovieClip();
+        SpriteInfos.removeMovieClip();
         this.createEmptyMovieClip("SpriteInfos", 200);
-        this.Points.removeMovieClip();
+        Points.removeMovieClip();
         this.createEmptyMovieClip("Points", 300);
-        this.Text.removeMovieClip();
+        Text.removeMovieClip();
         this.createEmptyMovieClip("Text", 400);
-        this.OverHead.removeMovieClip();
+        OverHead.removeMovieClip();
         this.createEmptyMovieClip("OverHead", 500);
-        if (!this.LoadManager)
-        {
-            this.createEmptyMovieClip("LoadManager", 600);
-        } // end if
-    };
-    _loc1.applyMask = function (bFilled)
+    } // End of the function
+    function applyMask()
     {
-        var _loc3 = this._oDatacenter.Map.width - 1;
-        var _loc4 = this._oDatacenter.Map.height - 1;
-        if (bFilled == undefined)
-        {
-            bFilled = true;
-        } // end if
+        var _loc3 = _oDatacenter.Map.width - 1;
+        var _loc2 = _oDatacenter.Map.height - 1;
         this.createEmptyMovieClip("_mcMask", 10);
-        if (bFilled)
-        {
-            this._mcMask.beginFill(0);
-            this._mcMask.moveTo(0, 0);
-            this._mcMask.lineTo(_loc3 * ank.battlefield.Constants.CELL_WIDTH, 0);
-            this._mcMask.lineTo(_loc3 * ank.battlefield.Constants.CELL_WIDTH, _loc4 * ank.battlefield.Constants.CELL_HEIGHT);
-            this._mcMask.lineTo(0, _loc4 * ank.battlefield.Constants.CELL_HEIGHT);
-            this._mcMask.lineTo(0, 0);
-            this._mcMask.endFill();
-        }
-        else
-        {
-            this._mcMask.beginFill(0);
-            this._mcMask.moveTo(-1000, -1000);
-            this._mcMask.lineTo(-1000, -999);
-            this._mcMask.lineTo(-999, -999);
-            this._mcMask.lineTo(-999, -1000);
-            this._mcMask.lineTo(-1000, -1000);
-            this._mcMask.endFill();
-        } // end else if
-        this.setMask(this._mcMask);
-    };
-    _loc1.adjusteMap = function (Void)
+        _mcMask.beginFill(0);
+        _mcMask.moveTo(0, 0);
+        _mcMask.lineTo(_loc3 * ank.battlefield.Constants.CELL_WIDTH, 0);
+        _mcMask.lineTo(_loc3 * ank.battlefield.Constants.CELL_WIDTH, _loc2 * ank.battlefield.Constants.CELL_HEIGHT);
+        _mcMask.lineTo(0, _loc2 * ank.battlefield.Constants.CELL_HEIGHT);
+        _mcMask.lineTo(0, 0);
+        _mcMask.endFill();
+        this.setMask(_mcMask);
+    } // End of the function
+    function adjusteMap(Void)
     {
         this.zoomMap();
         this.center();
-    };
-    _loc1.setColor = function (oTransform)
+    } // End of the function
+    function setColor(oTransform)
     {
         if (oTransform == undefined)
         {
@@ -118,62 +79,51 @@ if (!ank.battlefield.mc.Container)
         } // end if
         var _loc3 = new Color(this);
         _loc3.setTransform(oTransform);
-    };
-    _loc1.zoom = function (zFactor)
+    } // End of the function
+    function zoom(zFactor)
     {
-        this._xscale = zFactor;
-        this._yscale = zFactor;
-    };
-    _loc1.getZoom = function ()
+        _xscale = zFactor;
+        _yscale = zFactor;
+    } // End of the function
+    function getZoom()
     {
-        return (this._xscale);
-    };
-    _loc1.setXY = function (x, y)
+        return (_xscale);
+    } // End of the function
+    function setXY(x, y)
     {
-        this._x = x;
-        this._y = y;
-    };
-    _loc1.center = function (Void)
+        _x = x;
+        _y = y;
+    } // End of the function
+    function center(Void)
     {
-        var _loc3 = this._xscale / 100;
-        var _loc4 = this._yscale / 100;
-        var _loc5 = (this._mcBattlefield.screenWidth - ank.battlefield.Constants.CELL_WIDTH * _loc3 * (this._oDatacenter.Map.width - 1)) / 2;
-        var _loc6 = (this._mcBattlefield.screenHeight - ank.battlefield.Constants.CELL_HEIGHT * _loc4 * (this._oDatacenter.Map.height - 1)) / 2;
-        this.setXY(_loc5, _loc6);
-    };
-    _loc1.zoomMap = function (Void)
+        var _loc3 = _xscale / 100;
+        var _loc2 = _yscale / 100;
+        var _loc5 = (_mcBattlefield.screenWidth - ank.battlefield.Constants.CELL_WIDTH * _loc3 * (_oDatacenter.Map.width - 1)) / 2;
+        var _loc4 = (_mcBattlefield.screenHeight - ank.battlefield.Constants.CELL_HEIGHT * _loc2 * (_oDatacenter.Map.height - 1)) / 2;
+        this.setXY(_loc5, _loc4);
+    } // End of the function
+    function zoomMap(Void)
     {
-        var _loc3 = this.getZoomFactor();
-        if (_loc3 == 100)
+        var _loc4 = _oDatacenter.Map.width;
+        var _loc3 = _oDatacenter.Map.height;
+        var _loc2 = 0;
+        if (_loc4 <= ank.battlefield.Constants.DEFAULT_MAP_WIDTH)
         {
-            return (false);
+            return;
         } // end if
-        this.zoom(_loc3, false);
-        return (true);
-    };
-    _loc1.getZoomFactor = function (Void)
-    {
-        var _loc3 = this._oDatacenter.Map.width;
-        var _loc4 = this._oDatacenter.Map.height;
-        var _loc5 = 0;
-        if (_loc3 <= ank.battlefield.Constants.DEFAULT_MAP_WIDTH)
+        if (_loc3 <= ank.battlefield.Constants.DEFAULT_MAP_HEIGHT)
         {
-            return (100);
+            return;
         } // end if
-        if (_loc4 <= ank.battlefield.Constants.DEFAULT_MAP_HEIGHT)
+        if (_loc3 > _loc4)
         {
-            return (100);
-        } // end if
-        if (_loc4 > _loc3)
-        {
-            _loc5 = this._mcBattlefield.screenWidth / (ank.battlefield.Constants.CELL_WIDTH * (_loc3 - 1)) * 100;
+            _loc2 = _mcBattlefield.screenWidth / (ank.battlefield.Constants.CELL_WIDTH * (_loc4 - 1)) * 100;
         }
         else
         {
-            _loc5 = this._mcBattlefield.screenHeight / (ank.battlefield.Constants.CELL_HEIGHT * (_loc4 - 1)) * 100;
+            _loc2 = _mcBattlefield.screenHeight / (ank.battlefield.Constants.CELL_HEIGHT * (_loc3 - 1)) * 100;
         } // end else if
-        return (_loc5);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        this.zoom(_loc2, false);
+    } // End of the function
+} // End of Class
 #endinitclip

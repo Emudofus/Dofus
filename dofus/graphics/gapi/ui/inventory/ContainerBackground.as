@@ -1,64 +1,36 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20577]
-#initclip 98
-if (!dofus.graphics.gapi.ui.inventory.ContainerBackground)
+// [Initial MovieClip Action of sprite 1059]
+#initclip 28
+class dofus.graphics.gapi.ui.inventory.ContainerBackground extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui.inventory)
-    {
-        _global.dofus.graphics.gapi.ui.inventory = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.inventory.ContainerBackground = function ()
+    var _mcBg, __width, __height, _mcL, _mcR, _mcT, _mcB;
+    function ContainerBackground()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.inventory.ContainerBackground.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
         this.arrange();
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        this._mcBg._width = this.__width - this._mcR._width;
-        this._mcBg._height = this.__height - this._mcB._height;
-        this._mcBg._x = this._mcL._width;
-        this._mcBg._y = this._mcT._height;
-        this._mcL._height = this._mcR._height = this.__height;
-        this._mcT._width = this._mcB._width = this.__width;
-        this._mcL._x = this._mcT._x = this._mcL._y = this._mcT._y = this._mcB._x = this._mcR._y = 0;
-        this._mcB._y = this.__height - this._mcL._width;
-        this._mcR._x = this.__width - this._mcR._width;
-        this._mcTL._x = this._mcTL._y = this._mcBL._x = this._mcTR._y = 0;
-        this._mcTR._x = this._mcBR._x = this.__width - (this._mcL._width + this._mcR._width) / 2;
-        this._mcBR._y = this._mcBL._y = this.__height - (this._mcB._height + this._mcT._height) / 2;
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.inventory.ContainerBackground = function ()
-    {
-        super();
-    }).CLASS_NAME = "ContainerBackground";
-} // end if
+        _mcBg._width = __width;
+        _mcBg._height = __height;
+        _mcL._height = _mcR._height = __height;
+        _mcT._width = _mcB._width = __width;
+        _mcL._x = _mcT._x = _mcL._y = _mcT._y = _mcB._x = _mcR._y = 0;
+        _mcB._y = __height - _mcL._width;
+        _mcR._x = __width - _mcR._width;
+    } // End of the function
+    static var CLASS_NAME = "ContainerBackground";
+} // End of Class
 #endinitclip

@@ -1,143 +1,125 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20869]
-#initclip 134
-if (!ank.utils.Sequencer)
+// [Initial MovieClip Action of sprite 834]
+#initclip 46
+class ank.utils.Sequencer extends Object
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.Sequencer = function (timeout)
+    var _nTimeout, _unicID, _nActionIndex, _aActions, _bPlaying, onSequenceEnd;
+    function Sequencer(timeout)
     {
         super();
         this.initialize(timeout);
-    }).prototype;
-    _loc1.initialize = function (nTimeout)
+    } // End of the function
+    function initialize(nTimeout)
     {
-        this._nTimeout = nTimeout == undefined ? (10000) : (nTimeout);
-        this._unicID = String(getTimer()) + random(10000);
-        this._nActionIndex = 0;
+        _nTimeout = nTimeout == undefined ? (10000) : (nTimeout);
+        _unicID = String(getTimer()) + random(10000);
+        _nActionIndex = 0;
         this.clear();
-    };
-    _loc1.clear = function (Void)
+    } // End of the function
+    function clear(Void)
     {
-        this._aActions = new Array();
-        this._bPlaying = false;
-        this._nTimeModerator = 1;
+        _aActions = new Array();
+        _bPlaying = false;
         ank.utils.Timer.removeTimer(this, "sequencer");
-    };
-    _loc1.setTimeModerator = function (nTimeModerator)
+    } // End of the function
+    function addAction(bWaitEnd, mRefObject, fFunction, aParams, nDuration)
     {
-        this._nTimeModerator = nTimeModerator;
-    };
-    _loc1.addAction = function (bWaitEnd, mRefObject, fFunction, aParams, nDuration)
+        var _loc2 = new Object();
+        _loc2.id = this.getActionIndex();
+        _loc2.waitEnd = bWaitEnd;
+        _loc2.object = mRefObject;
+        _loc2.fn = fFunction;
+        _loc2.parameters = aParams;
+        _loc2.duration = nDuration;
+        _aActions.push(_loc2);
+    } // End of the function
+    function execute(bForced)
     {
-        var _loc7 = new Object();
-        _loc7.id = this.getActionIndex();
-        _loc7.waitEnd = bWaitEnd;
-        _loc7.object = mRefObject;
-        _loc7.fn = fFunction;
-        _loc7.parameters = aParams;
-        _loc7.duration = nDuration;
-        this._aActions.push(_loc7);
-    };
-    _loc1.execute = function (bForced)
-    {
-        if (this._bPlaying && bForced == undefined)
+        if (_bPlaying && bForced == undefined)
         {
             return;
         } // end if
-        this._bPlaying = true;
+        _bPlaying = true;
         var _loc3 = true;
         while (_loc3)
         {
-            if (this._aActions.length > 0)
+            if (_aActions.length > 0)
             {
-                var _loc4 = this._aActions[0];
-                if (_loc4.waitEnd)
+                var _loc2 = _aActions[0];
+                if (_loc2.waitEnd)
                 {
-                    _loc4.object[this._unicID] = _loc4.id;
+                    _loc2.object[_unicID] = _loc2.id;
                 } // end if
-                _loc4.fn.apply(_loc4.object, _loc4.parameters);
-                if (!_loc4.waitEnd)
+                _loc2.fn.apply(_loc2.object, _loc2.parameters);
+                if (!_loc2.waitEnd)
                 {
                     this.onActionEnd(true);
                 }
                 else
                 {
                     _loc3 = false;
-                    ank.utils.Timer.setTimer(_loc4.object, "sequencer", this, this.onActionTimeOut, _loc4.duration != undefined ? (_loc4.duration * this._nTimeModerator) : (this._nTimeout), [_loc4.id]);
+                    ank.utils.Timer.setTimer(_loc2.object, "sequencer", this, onActionTimeOut, _loc2.duration != undefined ? (_loc2.duration) : (_nTimeout), [_loc2.id]);
                 } // end else if
                 continue;
             } // end if
             _loc3 = false;
             this.stop();
         } // end while
-    };
-    _loc1.stop = function ()
+    } // End of the function
+    function stop()
     {
-        this._bPlaying = false;
-    };
-    _loc1.isPlaying = function ()
+        _bPlaying = false;
+    } // End of the function
+    function isPlaying()
     {
-        return (this._bPlaying);
-    };
-    _loc1.clearAllNextActions = function (Void)
+        return (_bPlaying);
+    } // End of the function
+    function clearAllNextActions(Void)
     {
-        this._aActions.splice(1);
+        _aActions.splice(1);
         ank.utils.Timer.removeTimer(this, "sequencer");
-    };
-    _loc1.onActionTimeOut = function (nActionID)
+    } // End of the function
+    function onActionTimeOut(nActionID)
     {
-        if (nActionID != undefined && this._aActions[0].id != nActionID)
+        if (nActionID != undefined && _aActions[0].id != nActionID)
         {
             return;
         } // end if
         this.onActionEnd(false);
-    };
-    _loc1.onActionEnd = function (bDontCallExecute)
+    } // End of the function
+    function onActionEnd(bDontCallExecute)
     {
-        if (this._aActions.length == 0)
+        if (_aActions.length == 0)
         {
             return;
         } // end if
-        if (this._aActions[0].waitEnd)
+        if (_aActions[0].waitEnd)
         {
-            ank.utils.Timer.removeTimer(this._aActions[0].object, "sequencer");
+            ank.utils.Timer.removeTimer(_aActions[0].object, "sequencer");
         } // end if
-        this._aActions.shift();
-        if (this._aActions.length == 0)
+        _aActions.shift();
+        if (_aActions.length == 0)
         {
             this.clear();
             this.onSequenceEnd();
         }
         else if (bDontCallExecute != true)
         {
-            if (this._bPlaying)
+            if (_bPlaying)
             {
                 this.execute(true);
             } // end if
         } // end else if
-    };
-    _loc1.toString = function ()
+    } // End of the function
+    function getActionIndex(Void)
     {
-        return ("Sequencer unicID:" + this._unicID + " playing:" + this._bPlaying + " actionsCount:" + this._aActions.length + " currentActionID:" + this._aActions[0].id + " currentActionObject:" + this._aActions[0].object);
-    };
-    _loc1.getActionIndex = function (Void)
-    {
-        ++this._nActionIndex;
-        if (this._nActionIndex > 10000)
+        ++_nActionIndex;
+        if (_nActionIndex > 10000)
         {
-            this._nActionIndex = 0;
+            _nActionIndex = 0;
         } // end if
-        return (this._nActionIndex);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._nTimeModerator = 1;
-} // end if
+        return (_nActionIndex);
+    } // End of the function
+} // End of Class
 #endinitclip

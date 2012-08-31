@@ -1,153 +1,139 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20745]
-#initclip 10
-if (!dofus.graphics.gapi.controls.Emblem)
+// [Initial MovieClip Action of sprite 1040]
+#initclip 7
+class dofus.graphics.gapi.controls.Emblem extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.Emblem = function ()
+    var __get__shadow, _sBackFile, __get__initialized, __get__backID, _nBackColor, __get__backColor, _sUpFile, __get__upID, _nUpColor, __get__upColor, __get__data, addToQueue, _ldrEmblemBack, _ldrEmblemUp, _ldrEmblemShadow, setMovieClipColor, __set__backColor, __set__backID, __set__data, __set__shadow, __set__upColor, __set__upID;
+    function Emblem()
     {
         super();
-    }).prototype;
-    _loc1.__set__shadow = function (bShadow)
+    } // End of the function
+    function set shadow(bShadow)
     {
-        this._bShadow = bShadow;
+        _bShadow = bShadow;
         //return (this.shadow());
-    };
-    _loc1.__get__shadow = function ()
+        null;
+    } // End of the function
+    function get shadow()
     {
-        return (this._bShadow);
-    };
-    _loc1.__set__backID = function (nBackID)
+        return (_bShadow);
+    } // End of the function
+    function set backID(nBackID)
     {
-        this._sBackFile = dofus.Constants.EMBLEMS_BACK_PATH + nBackID + ".swf";
-        if (this.initialized)
+        _sBackFile = dofus.Constants.EMBLEMS_BACK_PATH + nBackID + ".swf";
+        if (this.__get__initialized())
         {
             this.layoutBack();
         } // end if
         //return (this.backID());
-    };
-    _loc1.__set__backColor = function (nBackColor)
+        null;
+    } // End of the function
+    function set backColor(nBackColor)
     {
-        this._nBackColor = nBackColor;
-        if (this.initialized)
+        _nBackColor = nBackColor;
+        if (this.__get__initialized())
         {
             this.layoutBack();
         } // end if
         //return (this.backColor());
-    };
-    _loc1.__set__upID = function (nUpID)
+        null;
+    } // End of the function
+    function set upID(nUpID)
     {
-        this._sUpFile = dofus.Constants.EMBLEMS_UP_PATH + nUpID + ".swf";
-        if (this.initialized)
+        _sUpFile = dofus.Constants.EMBLEMS_UP_PATH + nUpID + ".swf";
+        if (this.__get__initialized())
         {
             this.layoutUp();
         } // end if
         //return (this.upID());
-    };
-    _loc1.__set__upColor = function (nUpColor)
+        null;
+    } // End of the function
+    function set upColor(nUpColor)
     {
-        this._nUpColor = nUpColor;
-        if (this.initialized)
+        _nUpColor = nUpColor;
+        if (this.__get__initialized())
         {
             this.layoutUp();
         } // end if
         //return (this.upColor());
-    };
-    _loc1.__set__data = function (oData)
+        null;
+    } // End of the function
+    function set data(oData)
     {
-        this._sBackFile = dofus.Constants.EMBLEMS_BACK_PATH + oData.backID + ".swf";
-        this._nBackColor = oData.backColor;
-        this._sUpFile = dofus.Constants.EMBLEMS_UP_PATH + oData.upID + ".swf";
-        this._nUpColor = oData.upColor;
-        if (this.initialized)
-        {
-            this.layoutBack();
-            this.layoutUp();
-        } // end if
+        _sBackFile = dofus.Constants.EMBLEMS_BACK_PATH + oData.backID + ".swf";
+        _nBackColor = oData.backColor;
+        _sUpFile = dofus.Constants.EMBLEMS_UP_PATH + oData.upID + ".swf";
+        _nUpColor = oData.upColor;
         //return (this.data());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.Emblem.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.layoutContent});
-    };
-    _loc1.initScale = function ()
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: layoutContent});
+    } // End of the function
+    function initScale()
     {
-    };
-    _loc1.addListeners = function ()
+    } // End of the function
+    function addListeners()
     {
-        this._ldrEmblemBack.addEventListener("initialization", this);
-        this._ldrEmblemUp.addEventListener("initialization", this);
-    };
-    _loc1.layoutContent = function ()
+        _ldrEmblemBack.addEventListener("initialization", this);
+        _ldrEmblemUp.addEventListener("initialization", this);
+    } // End of the function
+    function layoutContent()
     {
-        if (this._sBackFile != undefined)
+        if (_sBackFile != undefined)
         {
-            if (this._bShadow)
+            if (_bShadow)
             {
-                this._ldrEmblemShadow.contentPath = this._sBackFile;
-                var _loc2 = new Color(this._ldrEmblemShadow);
+                _ldrEmblemShadow.__set__contentPath(_sBackFile);
+                var _loc2 = new Color(_ldrEmblemShadow);
                 _loc2.setRGB(16777215);
             } // end if
-            this._ldrEmblemShadow._visible = this._bShadow;
+            _ldrEmblemShadow._visible = _bShadow;
             this.layoutBack();
             this.layoutUp();
         } // end if
-    };
-    _loc1.layoutBack = function ()
+    } // End of the function
+    function layoutBack()
     {
-        if (this._ldrEmblemBack.contentPath == this._sBackFile)
+        if (_ldrEmblemBack.__get__contentPath() == _sBackFile)
         {
             this.applyBackColor();
         }
         else
         {
-            this._ldrEmblemBack.contentPath = this._sBackFile;
+            _ldrEmblemBack.__set__contentPath(_sBackFile);
         } // end else if
-    };
-    _loc1.layoutUp = function ()
+    } // End of the function
+    function layoutUp()
     {
-        if (this._ldrEmblemUp.contentPath == this._sUpFile)
+        if (_ldrEmblemUp.__get__contentPath() == _sUpFile)
         {
             this.applyUpColor();
         }
         else
         {
-            this._ldrEmblemUp.contentPath = this._sUpFile;
+            _ldrEmblemUp.__set__contentPath(_sUpFile);
         } // end else if
-    };
-    _loc1.applyBackColor = function ()
+    } // End of the function
+    function applyBackColor()
     {
-        this.setMovieClipColor(this._ldrEmblemBack.content.back, this._nBackColor);
-    };
-    _loc1.applyUpColor = function ()
+        this.setMovieClipColor(_ldrEmblemBack.content.back, _nBackColor);
+    } // End of the function
+    function applyUpColor()
     {
-        this.setMovieClipColor(this._ldrEmblemUp.content, this._nUpColor);
-    };
-    _loc1.initialization = function (oEvent)
+        this.setMovieClipColor(_ldrEmblemUp.__get__content(), _nUpColor);
+    } // End of the function
+    function initialization(oEvent)
     {
-        var _loc3 = oEvent.target;
-        switch (_loc3._name)
+        var _loc2 = oEvent.target;
+        switch (_loc2._name)
         {
             case "_ldrEmblemBack":
             {
@@ -160,28 +146,8 @@ if (!dofus.graphics.gapi.controls.Emblem)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addProperty("backColor", function ()
-    {
-    }, _loc1.__set__backColor);
-    _loc1.addProperty("data", function ()
-    {
-    }, _loc1.__set__data);
-    _loc1.addProperty("shadow", _loc1.__get__shadow, _loc1.__set__shadow);
-    _loc1.addProperty("upColor", function ()
-    {
-    }, _loc1.__set__upColor);
-    _loc1.addProperty("upID", function ()
-    {
-    }, _loc1.__set__upID);
-    _loc1.addProperty("backID", function ()
-    {
-    }, _loc1.__set__backID);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.Emblem = function ()
-    {
-        super();
-    }).CLASS_NAME = "Emblem";
-    _loc1._bShadow = false;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Emblem";
+    var _bShadow = false;
+} // End of Class
 #endinitclip

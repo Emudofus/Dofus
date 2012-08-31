@@ -1,43 +1,28 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20837]
-#initclip 102
-if (!ank.utils.MouseEvents)
+// [Initial MovieClip Action of sprite 170]
+#initclip 18
+class ank.utils.MouseEvents
 {
-    if (!ank)
+    function MouseEvents()
     {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.MouseEvents = function ()
-    {
-    }).prototype;
-    (_global.ank.utils.MouseEvents = function ()
-    {
-    }).addListener = function (oListener)
+    } // End of the function
+    static function addListener(oListener)
     {
         Mouse.addListener(oListener);
         ank.utils.MouseEvents.garbageCollector();
-    };
-    (_global.ank.utils.MouseEvents = function ()
+    } // End of the function
+    static function garbageCollector()
     {
-    }).garbageCollector = function ()
-    {
-        var _loc2 = Mouse._listeners;
-        var _loc3 = _loc2.length;
-        
-        while (--_loc3, _loc3 >= 0)
+        var _loc3 = Mouse._listeners;
+        for (var _loc1 = _loc3.length; _loc1 >= 0; --_loc1)
         {
-            var _loc4 = _loc2[_loc3];
-            if (_loc4 == undefined || _loc4._target == undefined)
+            var _loc2 = _loc3[_loc1];
+            if (_loc2 == undefined || _loc2._target == undefined)
             {
-                _loc2.splice(_loc3, 1);
+                _loc3.splice(_loc1, 1);
             } // end if
-        } // end while
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        } // end of for
+    } // End of the function
+} // End of Class
 #endinitclip

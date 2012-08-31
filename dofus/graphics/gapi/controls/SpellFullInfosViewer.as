@@ -1,148 +1,131 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20779]
-#initclip 44
-if (!dofus.graphics.gapi.controls.SpellFullInfosViewer)
+// [Initial MovieClip Action of sprite 1016]
+#initclip 237
+class dofus.graphics.gapi.controls.SpellFullInfosViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.SpellFullInfosViewer = function ()
+    var _oSpell, __get__initialized, __get__spell, addToQueue, _btnTabCreature, _btnTabGlyph, _btnTabTrap, _btnTabNormal, _btnTabCritical, _btnLevel1, _btnLevel2, _btnLevel3, _btnLevel4, _btnLevel5, _btnLevel6, _btnClose, api, _lblEffectsTitle, _lblOtherTitle, _lblCriticalHit, _lblCriticalMiss, _lblCountByTurn, _lblCountByTurnByPlayer, _lblDelay, _lblRangeBoost, _lblLineOfSight, _lblLineOnly, _lblFreeCell, _ldrIcon, _lblName, _lblLevel, _lblRange, _lblAP, _txtDescription, _lblCriticalHitValue, _lblCriticalMissValue, _lblCountByTurnValue, _lblCountByTurnByPlayerValue, _lblDelayValue, _mcCrossRangeBoost, _mcCheckRangeBoost, _mcCrossLineOfSight, _mcCheckLineOfSight, _mcCrossLineOnly, _mcCheckLineOnly, _mcCrossFreeCell, _mcCheckFreeCell, _lstEffects, __set__spell, dispatchEvent, unloadThis;
+    function SpellFullInfosViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__spell = function (oSpell)
+    } // End of the function
+    function set spell(oSpell)
     {
         if (oSpell == undefined)
         {
             return;
         } // end if
-        if (oSpell == this._oSpell)
+        if (oSpell == _oSpell)
         {
             return;
         } // end if
         if (!oSpell.isValid)
         {
-            this._oSpell = new dofus.datacenter.Spell(oSpell.ID, 1);
+            _oSpell = new dofus.datacenter.Spell(oSpell.ID, 1);
         }
         else
         {
-            this._oSpell = oSpell;
+            _oSpell = oSpell;
         } // end else if
-        if (this.initialized)
+        if (this.__get__initialized())
         {
             this.updateData();
         } // end if
         //return (this.spell());
-    };
-    _loc1.__get__spell = function ()
+        null;
+    } // End of the function
+    function get spell()
     {
-        return (this._oSpell);
-    };
-    _loc1.init = function ()
+        return (_oSpell);
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.SpellFullInfosViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
         this.hideAllCheck();
-        this._btnTabCreature._visible = false;
-        this._btnTabGlyph._visible = false;
-        this._btnTabTrap._visible = false;
-    };
-    _loc1.addListeners = function ()
+        _btnTabCreature._visible = false;
+        _btnTabGlyph._visible = false;
+        _btnTabTrap._visible = false;
+    } // End of the function
+    function addListeners()
     {
-        this._btnTabNormal.addEventListener("click", this);
-        this._btnTabCritical.addEventListener("click", this);
-        this._btnTabCreature.addEventListener("click", this);
-        this._btnTabGlyph.addEventListener("click", this);
-        this._btnTabTrap.addEventListener("click", this);
-        this._btnLevel1.addEventListener("click", this);
-        this._btnLevel2.addEventListener("click", this);
-        this._btnLevel3.addEventListener("click", this);
-        this._btnLevel4.addEventListener("click", this);
-        this._btnLevel5.addEventListener("click", this);
-        this._btnLevel6.addEventListener("click", this);
-        this._btnClose.addEventListener("click", this);
-    };
-    _loc1.initData = function ()
+        _btnTabNormal.addEventListener("click", this);
+        _btnTabCritical.addEventListener("click", this);
+        _btnTabCreature.addEventListener("click", this);
+        _btnTabGlyph.addEventListener("click", this);
+        _btnTabTrap.addEventListener("click", this);
+        _btnLevel1.addEventListener("click", this);
+        _btnLevel2.addEventListener("click", this);
+        _btnLevel3.addEventListener("click", this);
+        _btnLevel4.addEventListener("click", this);
+        _btnLevel5.addEventListener("click", this);
+        _btnLevel6.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+    } // End of the function
+    function initData()
     {
         this.updateData();
-    };
-    _loc1.initTexts = function ()
+    } // End of the function
+    function initTexts()
     {
-        this._lblEffectsTitle.text = this.api.lang.getText("EFFECTS");
-        this._lblOtherTitle.text = this.api.lang.getText("OTHER_CHARACTERISTICS");
-        this._lblCriticalHit.text = this.api.lang.getText("CRITICAL_HIT_PROBABILITY");
-        this._lblCriticalMiss.text = this.api.lang.getText("CRITICAL_MISS_PROBABILITY");
-        this._lblCountByTurn.text = this.api.lang.getText("COUNT_BY_TURN");
-        this._lblCountByTurnByPlayer.text = this.api.lang.getText("COUNT_BY_TURN_BY_PLAYER");
-        this._lblDelay.text = this.api.lang.getText("DELAY_RELAUNCH");
-        this._lblRangeBoost.text = this.api.lang.getText("RANGE_BOOST");
-        this._lblLineOfSight.text = this.api.lang.getText("LINE_OF_SIGHT");
-        this._lblLineOnly.text = this.api.lang.getText("LINE_ONLY");
-        this._lblFreeCell.text = this.api.lang.getText("FREE_CELL");
-        this._lblRealCrit.text = this.api.lang.getText("ACTUAL_CRITICAL_CHANCE");
-        this._lblFailureEndsTheTurn.text = this.api.lang.getText("FAILURE_ENDS_THE_TURN");
-        this._btnTabNormal.label = this.api.lang.getText("NORMAL_EFFECTS");
-        this._btnTabCritical.label = this.api.lang.getText("CRITICAL_EFECTS");
-        this._btnTabCreature.label = this.api.lang.getText("SUMMONED_CREATURE");
-        this._btnTabGlyph.label = this.api.lang.getText("GLYPH");
-        this._btnTabTrap.label = this.api.lang.getText("TRAP");
-    };
-    _loc1.updateData = function ()
+        _lblEffectsTitle.__set__text(api.lang.getText("EFFECTS"));
+        _lblOtherTitle.__set__text(api.lang.getText("OTHER_CHARACTERISTICS"));
+        _lblCriticalHit.__set__text(api.lang.getText("CRITICAL_HIT_PROBABILITY"));
+        _lblCriticalMiss.__set__text(api.lang.getText("CRITICAL_MISS_PROBABILITY"));
+        _lblCountByTurn.__set__text(api.lang.getText("COUNT_BY_TURN"));
+        _lblCountByTurnByPlayer.__set__text(api.lang.getText("COUNT_BY_TURN_BY_PLAYER"));
+        _lblDelay.__set__text(api.lang.getText("DELAY_RELAUNCH"));
+        _lblRangeBoost.__set__text(api.lang.getText("RANGE_BOOST"));
+        _lblLineOfSight.__set__text(api.lang.getText("LINE_OF_SIGHT"));
+        _lblLineOnly.__set__text(api.lang.getText("LINE_ONLY"));
+        _lblFreeCell.__set__text(api.lang.getText("FREE_CELL"));
+        _btnTabNormal.__set__label(api.lang.getText("NORMAL_EFFECTS"));
+        _btnTabCritical.__set__label(api.lang.getText("CRITICAL_EFECTS"));
+        _btnTabCreature.__set__label(api.lang.getText("SUMMONED_CREATURE"));
+        _btnTabGlyph.__set__label(api.lang.getText("GLYPH"));
+        _btnTabTrap.__set__label(api.lang.getText("TRAP"));
+    } // End of the function
+    function updateData()
     {
-        if (this._oSpell != undefined && this._txtDescription.text != undefined)
+        if (_oSpell != undefined)
         {
-            this._ldrIcon.contentPath = this._oSpell.iconFile;
-            this._lblName.text = this._oSpell.name;
-            this._lblLevel.text = this.api.lang.getText("ACTUAL_SPELL_LEVEL") + ":";
-            this._lblReqLevel.text = this._oSpell.minPlayerLevel != undefined ? (this.api.lang.getText("REQUIRED_SPELL_LEVEL") + ": " + this._oSpell.minPlayerLevel) : ("");
-            this._lblRange.text = this._oSpell.rangeStr + " " + this.api.lang.getText("RANGE");
-            this._lblAP.text = this._oSpell.apCost + " " + this.api.lang.getText("AP");
-            this._txtDescription.text = this._oSpell.description;
-            this._btnTabCreature._visible = this._oSpell.summonSpell;
-            this._btnTabGlyph._visible = this._oSpell.glyphSpell;
-            this._btnTabTrap._visible = this._oSpell.trapSpell;
-            if (this._oSpell.effectsCriticalHit[0] == undefined)
+            _ldrIcon.__set__contentPath(_oSpell.iconFile);
+            _lblName.__set__text(_oSpell.name);
+            _lblLevel.__set__text(_oSpell.level != undefined ? (api.lang.getText("LEVEL") + " " + _oSpell.level) : (""));
+            _lblRange.__set__text(_oSpell.rangeStr + " " + api.lang.getText("RANGE"));
+            _lblAP.__set__text(_oSpell.apCost + " " + api.lang.getText("AP"));
+            _txtDescription.__set__text(_oSpell.description);
+            _btnTabCreature._visible = _oSpell.summonSpell;
+            _btnTabGlyph._visible = _oSpell.glyphSpell;
+            _btnTabTrap._visible = _oSpell.trapSpell;
+            if (_oSpell.effectsCriticalHit[0] == undefined)
             {
-                if (this._sCurrentTab == "Critical")
+                if (_sCurrentTab == "Critical")
                 {
                     this.setCurrentTab("Normal");
                 } // end if
-                this._btnTabCritical._alpha = 70;
-                this._btnTabCritical.enabled = false;
+                _btnTabCritical._alpha = 70;
+                _btnTabCritical.__set__enabled(false);
             }
             else
             {
-                this._btnTabCritical._alpha = 100;
-                this._btnTabCritical.enabled = true;
+                _btnTabCritical._alpha = 100;
+                _btnTabCritical.__set__enabled(true);
             } // end else if
-            if (!this._oSpell.summonSpell && this._sCurrentTab == "Creature")
+            if (!_oSpell.summonSpell && _sCurrentTab == "Creature")
             {
                 this.setCurrentTab("Normal");
             }
-            else if (!this._oSpell.glyphSpell && this._sCurrentTab == "Glyph")
+            else if (!_oSpell.glyphSpell && _sCurrentTab == "Glyph")
             {
                 this.setCurrentTab("Normal");
             }
-            else if (!this._oSpell.trapSpell && this._sCurrentTab == "Trap")
+            else if (!_oSpell.trapSpell && _sCurrentTab == "Trap")
             {
                 this.setCurrentTab("Normal");
             }
@@ -150,192 +133,168 @@ if (!dofus.graphics.gapi.controls.SpellFullInfosViewer)
             {
                 this.updateCurrentTabInformations();
             } // end else if
-            var _loc2 = this.api.kernel.GameManager.getCriticalHitChance(this._oSpell.criticalHit);
-            this._lblRealCritValue.text = _loc2 == 0 ? ("-") : ("1/" + _loc2);
-            this._lblCriticalHitValue.text = this._oSpell.criticalHit == 0 ? ("-") : ("1/" + this._oSpell.criticalHit);
-            this._lblCriticalMissValue.text = this._oSpell.criticalFailure == 0 ? ("-") : ("1/" + this._oSpell.criticalFailure);
-            this._lblCountByTurnValue.text = this._oSpell.launchCountByTurn == 0 ? ("-") : (String(this._oSpell.launchCountByTurn));
-            this._lblCountByTurnByPlayerValue.text = this._oSpell.launchCountByPlayerTurn == 0 ? ("-") : (String(this._oSpell.launchCountByPlayerTurn));
-            this._lblDelayValue.text = this._oSpell.delayBetweenLaunch >= 63 ? ("inf.") : (this._oSpell.delayBetweenLaunch == 0 ? ("-") : (String(this._oSpell.delayBetweenLaunch)));
-            this._mcCrossRangeBoost._visible = !this._oSpell.canBoostRange;
-            this._mcCheckRangeBoost._visible = this._oSpell.canBoostRange;
-            this._mcCrossLineOfSight._visible = !this._oSpell.lineOfSight;
-            this._mcCheckLineOfSight._visible = this._oSpell.lineOfSight;
-            this._mcCrossLineOnly._visible = !this._oSpell.lineOnly;
-            this._mcCheckLineOnly._visible = this._oSpell.lineOnly;
-            this._mcCrossFreeCell._visible = !this._oSpell.freeCell;
-            this._mcCheckFreeCell._visible = this._oSpell.freeCell;
-            this._mcCrossFailureEndsTheTurn._visible = !this._oSpell.criticalFailureEndsTheTurn;
-            this._mcCheckFailureEndsTheTurn._visible = this._oSpell.criticalFailureEndsTheTurn;
-            if (this._oSpell.level != undefined)
+            _lblCriticalHitValue.__set__text(_oSpell.criticalHit == 0 ? ("-") : ("1/" + _oSpell.criticalHit));
+            _lblCriticalMissValue.__set__text(_oSpell.criticalFailure == 0 ? ("-") : ("1/" + _oSpell.criticalFailure));
+            _lblCountByTurnValue.__set__text(_oSpell.launchCountByTurn == 0 ? ("-") : (_oSpell.launchCountByTurn));
+            _lblCountByTurnByPlayerValue.__set__text(_oSpell.launchCountByPlayerTurn == 0 ? ("-") : (_oSpell.launchCountByPlayerTurn));
+            _lblDelayValue.__set__text(_oSpell.delayBetweenLaunch >= 63 ? ("inf.") : (_oSpell.delayBetweenLaunch == 0 ? ("-") : (_oSpell.delayBetweenLaunch)));
+            _mcCrossRangeBoost._visible = !_oSpell.canBoostRange;
+            _mcCheckRangeBoost._visible = _oSpell.canBoostRange;
+            _mcCrossLineOfSight._visible = !_oSpell.lineOfSight;
+            _mcCheckLineOfSight._visible = _oSpell.lineOfSight;
+            _mcCrossLineOnly._visible = !_oSpell.lineOnly;
+            _mcCheckLineOnly._visible = _oSpell.lineOnly;
+            _mcCrossFreeCell._visible = !_oSpell.freeCell;
+            _mcCheckFreeCell._visible = _oSpell.freeCell;
+            if (_oSpell.level != undefined)
             {
-                var _loc3 = 1;
-                
-                while (++_loc3, _loc3 <= 6)
+                for (var _loc3 = 1; _loc3 <= 6; ++_loc3)
                 {
-                    var _loc4 = this["_btnLevel" + _loc3];
-                    var _loc5 = _loc3 == this._oSpell.level;
-                    _loc4.selected = _loc5;
-                    _loc4.enabled = !_loc5;
-                    if (_loc3 <= this._oSpell.maxLevel)
+                    var _loc2 = this["_btnLevel" + _loc3];
+                    var _loc4 = _loc3 == _oSpell.level;
+                    _loc2.__set__selected(_loc4);
+                    _loc2.__set__enabled(!_loc4);
+                    if (_loc3 <= _oSpell.maxLevel)
                     {
-                        _loc4._alpha = 100;
+                        _loc2._alpha = 100;
                         continue;
                     } // end if
-                    _loc4.enabled = false;
-                    _loc4._alpha = 20;
-                } // end while
+                    _loc2.__set__enabled(false);
+                    _loc2._alpha = 20;
+                } // end of for
             }
             else
             {
-                var _loc6 = 1;
-                
-                while (++_loc6, _loc6 <= 6)
+                for (var _loc3 = 1; _loc3 <= 6; ++_loc3)
                 {
-                    var _loc7 = this["_btnLevel" + _loc6];
-                    _loc7.selected = false;
-                    _loc7.enabled = false;
-                    _loc7._alpha = 20;
-                } // end while
+                    _loc2 = this["_btnLevel" + _loc3];
+                    _loc2.__set__selected(false);
+                    _loc2.__set__enabled(false);
+                    _loc2._alpha = 20;
+                } // end of for
             } // end else if
         }
-        else if (this._lblName.text != undefined)
+        else
         {
-            this._ldrIcon.contentPath = "";
-            this._lblName.text = "";
-            this._lblLevel.text = "";
-            this._lblRange.text = "";
-            this._lblAP.text = "";
-            this._txtDescription.text = "";
-            this._lblCriticalHitValue.text = "";
-            this._lblCriticalMissValue.text = "";
-            this._lblCountByTurnValue.text = "";
-            this._lblCountByTurnByPlayerValue.text = "";
-            this._lblDelayValue.text = "";
+            _ldrIcon.__set__contentPath("");
+            _lblName.__set__text("");
+            _lblLevel.__set__text("");
+            _lblRange.__set__text("");
+            _lblAP.__set__text("");
+            _txtDescription.__set__text("");
+            _lblCriticalHitValue.__set__text("");
+            _lblCriticalMissValue.__set__text("");
+            _lblCountByTurnValue.__set__text("");
+            _lblCountByTurnByPlayerValue.__set__text("");
+            _lblDelayValue.__set__text("");
             this.hideAllCheck();
-            this._lstEffects.dataProvider = null;
         } // end else if
-    };
-    _loc1.updateCurrentTabInformations = function ()
+    } // End of the function
+    function updateCurrentTabInformations()
     {
-        switch (this._sCurrentTab)
+        switch (_sCurrentTab)
         {
             case "Normal":
             {
-                this._lstEffects.dataProvider = this._oSpell.effectsNormalHitWithArea;
+                _lstEffects.__set__dataProvider(_oSpell.effectsNormalHit);
                 break;
             } 
             case "Critical":
             {
-                this._lstEffects.dataProvider = this._oSpell.effectsCriticalHitWithArea;
+                _lstEffects.__set__dataProvider(_oSpell.effectsCriticalHit);
                 break;
             } 
             case "Creature":
             {
-                var _loc2 = this._oSpell.effectsNormalHit;
-                var _loc4 = 0;
-                
-                while (++_loc4, _loc4 < _loc2.length)
+                var _loc5 = _oSpell.effectsNormalHit;
+                var _loc4;
+                for (var _loc3 = 0; _loc3 < _loc5.length; ++_loc3)
                 {
-                    var _loc3 = _loc2[_loc4];
-                    if (_loc3.type == 181)
+                    _loc4 = _loc5[_loc3];
+                    if (_loc4.type == 181)
                     {
                         break;
                     } // end if
-                    if (_loc3.type = 180)
+                    if (_loc4.type = 180)
                     {
-                        var _loc5 = new ank.utils.ExtendedArray();
-                        var _loc6 = this.api.datacenter.Player.data;
-                        _loc5.push(_loc6.name + " (" + this.api.lang.getText("LEVEL") + " " + this.api.datacenter.Player.Level + ")");
-                        _loc5.push(this.api.lang.getText("LP") + " : " + this.api.datacenter.Player.LP);
-                        _loc5.push(this.api.lang.getText("AP") + " : " + _loc6.AP);
-                        _loc5.push(this.api.lang.getText("MP") + " : " + _loc6.MP);
-                        this._lstEffects.dataProvider = _loc5;
+                        var _loc7 = new ank.utils.ExtendedArray();
+                        var _loc2 = api.datacenter.Player.data;
+                        _loc7.push(_loc2.Name + " (" + api.lang.getText("LEVEL") + " " + _loc2.Level + ")");
+                        _loc7.push(api.lang.getText("LP") + " : " + _loc2.LP);
+                        _loc7.push(api.lang.getText("AP") + " : " + _loc2.AP);
+                        _loc7.push(api.lang.getText("MP") + " : " + _loc2.MP);
+                        _lstEffects.__set__dataProvider(_loc7);
                         return;
                     } // end if
-                } // end while
-                var _loc7 = new ank.utils.ExtendedArray();
-                if (_loc3 != undefined)
+                } // end of for
+                _loc7 = new ank.utils.ExtendedArray();
+                if (_loc4 != undefined)
                 {
-                    var _loc8 = _loc3.param1;
-                    var _loc9 = _loc3.param2;
-                    var _loc10 = this.api.lang.getMonstersText(_loc8);
-                    var _loc11 = _loc10["g" + _loc9];
-                    _loc7.push(_loc10.n + " (" + this.api.lang.getText("LEVEL") + " " + _loc11.l + ")");
-                    _loc7.push(this.api.lang.getText("LP") + " : " + _loc11.lp);
-                    _loc7.push(this.api.lang.getText("AP") + " : " + _loc11.ap);
-                    _loc7.push(this.api.lang.getText("MP") + " : " + _loc11.mp);
+                    var _loc12 = _loc4.param1;
+                    var _loc15 = _loc4.param2;
+                    var _loc9 = api.lang.getMonstersText(_loc12);
+                    var _loc8 = _loc9["g" + _loc15];
+                    _loc7.push(_loc9.n + " (" + api.lang.getText("LEVEL") + " " + _loc8.l + ")");
+                    _loc7.push(api.lang.getText("LP") + " : " + _loc8.lp);
+                    _loc7.push(api.lang.getText("AP") + " : " + _loc8.ap);
+                    _loc7.push(api.lang.getText("MP") + " : " + _loc8.mp);
                 } // end if
-                this._lstEffects.dataProvider = _loc7;
+                _lstEffects.__set__dataProvider(_loc7);
                 break;
             } 
             case "Glyph":
             case "Trap":
             {
-                var _loc12 = 400;
-                if (this._sCurrentTab == "Glyph")
+                var _loc6 = 400;
+                if (_sCurrentTab == "Glyph")
                 {
-                    _loc12 = 401;
+                    _loc6 = 401;
                 } // end if
-                var _loc13 = this._oSpell.effectsNormalHit;
-                var _loc15 = 0;
-                
-                while (++_loc15, _loc15 < _loc13.length)
+                _loc5 = _oSpell.effectsNormalHit;
+                for (var _loc3 = 0; _loc3 < _loc5.length; ++_loc3)
                 {
-                    var _loc14 = _loc13[_loc15];
-                    if (_loc14.type == _loc12)
+                    _loc4 = _loc5[_loc3];
+                    if (_loc4.type == _loc6)
                     {
                         break;
                     } // end if
-                } // end while
-                var _loc16 = new ank.utils.ExtendedArray();
-                if (_loc14 != undefined)
+                } // end of for
+                var _loc10 = new ank.utils.ExtendedArray();
+                if (_loc4 != undefined)
                 {
-                    var _loc17 = _loc14.param1;
-                    var _loc18 = _loc14.param2;
-                    var _loc19 = this.api.kernel.CharactersManager.getSpellObjectFromData(_loc17 + "~" + _loc18 + "~");
-                    _loc16 = _loc19.effectsNormalHit;
+                    var _loc13 = _loc4.param1;
+                    var _loc14 = _loc4.param2;
+                    var _loc11 = api.kernel.CharactersManager.getSpellObjectFromData(_loc13 + "~" + _loc14 + "~");
+                    _loc10 = _loc11.effectsNormalHit;
                 } // end if
-                this._lstEffects.dataProvider = _loc16;
+                _lstEffects.__set__dataProvider(_loc10);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.setCurrentTab = function (sNewTab)
+    } // End of the function
+    function setCurrentTab(sNewTab)
     {
-        var _loc3 = this["_btnTab" + this._sCurrentTab];
-        var _loc4 = this["_btnTab" + sNewTab];
-        _loc3.selected = true;
-        _loc3.enabled = true;
-        _loc4.selected = false;
-        _loc4.enabled = false;
-        this._sCurrentTab = sNewTab;
+        var _loc2 = this["_btnTab" + _sCurrentTab];
+        var _loc3 = this["_btnTab" + sNewTab];
+        _loc2.__set__selected(true);
+        _loc2.__set__enabled(true);
+        _loc3.__set__selected(false);
+        _loc3.__set__enabled(false);
+        _sCurrentTab = sNewTab;
         this.updateCurrentTabInformations();
-    };
-    _loc1.hideAllCheck = function ()
+    } // End of the function
+    function hideAllCheck()
     {
-        this._mcCrossRangeBoost._visible = true;
-        this._mcCheckRangeBoost._visible = false;
-        this._mcCrossLineOfSight._visible = true;
-        this._mcCheckLineOfSight._visible = false;
-        this._mcCrossLineOnly._visible = true;
-        this._mcCheckLineOnly._visible = false;
-        this._mcCrossFreeCell._visible = true;
-        this._mcCheckFreeCell._visible = false;
-    };
-    _loc1.setLevel = function (nLevel)
-    {
-        var _loc3 = this.api.kernel.CharactersManager.getSpellObjectFromData(this._oSpell.ID + "~" + nLevel);
-        if (_loc3.isValid)
-        {
-            this.spell = _loc3;
-        }
-        else
-        {
-            this["_btnLevel" + nLevel].selected = false;
-        } // end else if
-    };
-    _loc1.click = function (oEvent)
+        _mcCrossRangeBoost._visible = true;
+        _mcCheckRangeBoost._visible = false;
+        _mcCrossLineOfSight._visible = true;
+        _mcCheckLineOfSight._visible = false;
+        _mcCrossLineOnly._visible = true;
+        _mcCheckLineOnly._visible = false;
+        _mcCrossFreeCell._visible = true;
+        _mcCheckFreeCell._visible = false;
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -371,8 +330,16 @@ if (!dofus.graphics.gapi.controls.SpellFullInfosViewer)
             case "_btnLevel5":
             case "_btnLevel6":
             {
-                var _loc3 = oEvent.target._name.substr(9);
-                this.setLevel(Number(_loc3));
+                var _loc4 = oEvent.target._name.substr(9);
+                var _loc2 = api.kernel.CharactersManager.getSpellObjectFromData(_oSpell.ID + "~" + _loc4);
+                if (_loc2.isValid)
+                {
+                    this.__set__spell(_loc2);
+                }
+                else
+                {
+                    oEvent.target.selected = false;
+                } // end else if
                 break;
             } 
             case "_btnClose":
@@ -382,13 +349,8 @@ if (!dofus.graphics.gapi.controls.SpellFullInfosViewer)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addProperty("spell", _loc1.__get__spell, _loc1.__set__spell);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.SpellFullInfosViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "SpellFullInfosViewer";
-    _loc1._sCurrentTab = "Normal";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "SpellFullInfosViewer";
+    var _sCurrentTab = "Normal";
+} // End of Class
 #endinitclip

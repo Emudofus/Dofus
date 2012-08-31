@@ -1,60 +1,48 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20483]
-#initclip 4
-if (!ank.gapi.core.UIAdvancedComponent)
+// [Initial MovieClip Action of sprite 811]
+#initclip 5
+class ank.gapi.core.UIAdvancedComponent extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.core)
-    {
-        _global.ank.gapi.core = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.core.UIAdvancedComponent = function ()
+    var _oAPI, __get__api, _parent, _sInstanceName, __get__instanceName, gapi, __set__api, __set__instanceName;
+    function UIAdvancedComponent()
     {
         super();
-    }).prototype;
-    _loc1.__set__api = function (oAPI)
+    } // End of the function
+    function set api(oAPI)
     {
-        this._oAPI = oAPI;
+        _oAPI = oAPI;
         //return (this.api());
-    };
-    _loc1.__get__api = function ()
+        null;
+    } // End of the function
+    function get api()
     {
-        if (this._oAPI == undefined)
+        if (_oAPI == undefined)
         {
-            return (this._parent.api);
+            return (_parent.api);
         }
         else
         {
-            return (this._oAPI);
+            return (_oAPI);
         } // end else if
-    };
-    _loc1.__set__instanceName = function (sInstanceName)
+    } // End of the function
+    function set instanceName(sInstanceName)
     {
-        this._sInstanceName = sInstanceName;
+        _sInstanceName = sInstanceName;
         //return (this.instanceName());
-    };
-    _loc1.__get__instanceName = function ()
+        null;
+    } // End of the function
+    function get instanceName()
     {
-        return (this._sInstanceName);
-    };
-    _loc1.callClose = function ()
+        return (_sInstanceName);
+    } // End of the function
+    function callClose()
     {
         return (false);
-    };
-    _loc1.unloadThis = function ()
+    } // End of the function
+    function unloadThis()
     {
-        this.gapi.unloadUIComponent(this._sInstanceName);
-    };
-    _loc1.addProperty("api", _loc1.__get__api, _loc1.__set__api);
-    _loc1.addProperty("instanceName", _loc1.__get__instanceName, _loc1.__set__instanceName);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        gapi.unloadUIComponent(_sInstanceName);
+    } // End of the function
+} // End of Class
 #endinitclip

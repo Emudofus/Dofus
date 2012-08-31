@@ -1,150 +1,149 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20582]
-#initclip 103
-if (!ank.gapi.controls.TextArea)
+// [Initial MovieClip Action of sprite 168]
+#initclip 23
+class ank.gapi.controls.TextArea extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.TextArea = function ()
+    var _bBorder, border_mc, drawBorder, __get__border, _sURL, __get__url, _bInitialized, addToQueue, __get__editable, __get__autoHeight, __get__selectable, __get__wordWrap, __get__html, _sText, _bSettingNewText, __get__text, _tText, __get__scrollBarRight, __get__scrollBarMargin, _cssStyles, __get__styleSheet, __get__scrollPosition, __get__maxscroll, __get__maxChars, _tfFormatter, __height, __width, createTextField, _sbVertical, getStyle, _lvText, parent, attachMovie, setSize, dispatchEvent, _target, __set__autoHeight, __set__border, __set__editable, __set__html, __set__maxChars, __set__maxscroll, __set__scrollBarMargin, __set__scrollBarRight, __set__scrollPosition, __set__selectable, __set__styleSheet, __set__text, __set__url, __set__wordWrap;
+    function TextArea()
     {
         super();
-    }).prototype;
-    _loc1.__set__border = function (bBorder)
+    } // End of the function
+    function set border(bBorder)
     {
-        this._bBorder = bBorder;
-        if (this.border_mc == undefined)
+        _bBorder = bBorder;
+        if (border_mc == undefined)
         {
             this.drawBorder();
         } // end if
-        this.border_mc._visible = bBorder;
+        border_mc._visible = bBorder;
         //return (this.border());
-    };
-    _loc1.__get__border = function ()
+        null;
+    } // End of the function
+    function get border()
     {
-        return (this._bBorder);
-    };
-    _loc1.__set__url = function (sURL)
+        return (_bBorder);
+    } // End of the function
+    function set url(sURL)
     {
-        this._sURL = sURL;
-        if (this._sURL != "")
+        _sURL = sURL;
+        if (_sURL != "")
         {
             this.loadText();
         } // end if
         //return (this.url());
-    };
-    _loc1.__set__editable = function (bEditable)
+        null;
+    } // End of the function
+    function set editable(bEditable)
     {
-        this._bEditable = bEditable;
-        if (this._bInitialized)
+        _bEditable = bEditable;
+        if (_bInitialized)
         {
-            this.addToQueue({object: this, method: this.setTextFieldProperties});
+            this.addToQueue({object: this, method: setTextFieldProperties});
         } // end if
         //return (this.editable());
-    };
-    _loc1.__get__editable = function ()
+        null;
+    } // End of the function
+    function get editable()
     {
-        return (this._bEditable);
-    };
-    _loc1.__set__autoHeight = function (bAutoHeight)
+        return (_bEditable);
+    } // End of the function
+    function set autoHeight(bAutoHeight)
     {
-        this._bAutoHeight = bAutoHeight;
-        if (this._bInitialized)
+        _bAutoHeight = bAutoHeight;
+        if (_bInitialized)
         {
-            this.addToQueue({object: this, method: this.setTextFieldProperties});
+            this.addToQueue({object: this, method: setTextFieldProperties});
         } // end if
         //return (this.autoHeight());
-    };
-    _loc1.__get__autoHeight = function ()
+        null;
+    } // End of the function
+    function get autoHeight()
     {
-        return (this._bAutoHeight);
-    };
-    _loc1.__set__selectable = function (bSelectable)
+        return (_bAutoHeight);
+    } // End of the function
+    function set selectable(bSelectable)
     {
-        this._bSelectable = bSelectable;
-        if (this._bInitialized)
+        _bSelectable = bSelectable;
+        if (_bInitialized)
         {
-            this.addToQueue({object: this, method: this.setTextFieldProperties});
+            this.addToQueue({object: this, method: setTextFieldProperties});
         } // end if
         //return (this.selectable());
-    };
-    _loc1.__get__selectable = function ()
+        null;
+    } // End of the function
+    function get selectable()
     {
-        return (this._bSelectable);
-    };
-    _loc1.__set__wordWrap = function (bWordWrap)
+        return (_bSelectable);
+    } // End of the function
+    function set wordWrap(bWordWrap)
     {
-        this._bWordWrap = bWordWrap;
-        if (this._bInitialized)
+        _bWordWrap = bWordWrap;
+        if (_bInitialized)
         {
-            this.addToQueue({object: this, method: this.setTextFieldProperties});
+            this.addToQueue({object: this, method: setTextFieldProperties});
         } // end if
         //return (this.wordWrap());
-    };
-    _loc1.__get__wordWrap = function ()
+        null;
+    } // End of the function
+    function get wordWrap()
     {
-        return (this._bWordWrap);
-    };
-    _loc1.__set__html = function (bHTML)
+        return (_bWordWrap);
+    } // End of the function
+    function set html(bHTML)
     {
-        this._bHTML = bHTML;
-        if (this._bInitialized)
+        _bHTML = bHTML;
+        if (_bInitialized)
         {
-            this.addToQueue({object: this, method: this.setTextFieldProperties});
+            this.addToQueue({object: this, method: setTextFieldProperties});
         } // end if
         //return (this.html());
-    };
-    _loc1.__get__html = function ()
+        null;
+    } // End of the function
+    function get html()
     {
-        return (this._bHTML);
-    };
-    _loc1.__set__text = function (sText)
+        return (_bHTML);
+    } // End of the function
+    function set text(sText)
     {
-        this._sText = sText;
-        this._bSettingNewText = true;
-        this.addToQueue({object: this, method: this.setTextFieldProperties});
+        _sText = sText;
+        _bSettingNewText = true;
+        this.addToQueue({object: this, method: setTextFieldProperties});
         //return (this.text());
-    };
-    _loc1.__get__text = function ()
+        null;
+    } // End of the function
+    function get text()
     {
-        return (this._tText.text);
-    };
-    _loc1.__set__scrollBarRight = function (bScrollBarRight)
+        return (_tText.text);
+    } // End of the function
+    function set scrollBarRight(bScrollBarRight)
     {
-        this._bScrollBarRight = bScrollBarRight;
+        _bScrollBarRight = bScrollBarRight;
         //return (this.scrollBarRight());
-    };
-    _loc1.__get__scrollBarRight = function ()
+        null;
+    } // End of the function
+    function get scrollBarRight()
     {
-        return (this._bScrollBarRight);
-    };
-    _loc1.__set__scrollBarMargin = function (nScrollBarMargin)
+        return (_bScrollBarRight);
+    } // End of the function
+    function set scrollBarMargin(nScrollBarMargin)
     {
-        this._nScrollBarMargin = nScrollBarMargin;
+        _nScrollBarMargin = nScrollBarMargin;
         //return (this.scrollBarMargin());
-    };
-    _loc1.__get__scrollBarMargin = function ()
+        null;
+    } // End of the function
+    function get scrollBarMargin()
     {
-        return (this._nScrollBarMargin);
-    };
-    _loc1.__set__styleSheet = function (sCSS)
+        return (_nScrollBarMargin);
+    } // End of the function
+    function set styleSheet(sCSS)
     {
         if (sCSS != "")
         {
             var _owner = this;
-            this._cssStyles = new TextField.StyleSheet();
-            this._cssStyles.load(sCSS);
-            this._cssStyles.onLoad = function (bSuccess)
+            _cssStyles = new TextField.StyleSheet();
+            _cssStyles.load(sCSS);
+            _cssStyles.onLoad = function (bSuccess)
             {
                 if (_owner._tText != undefined)
                 {
@@ -154,194 +153,185 @@ if (!ank.gapi.controls.TextArea)
         }
         else
         {
-            this._cssStyles = undefined;
-            this._tText.styleSheet = null;
+            _cssStyles = undefined;
+            _tText.styleSheet = null;
         } // end else if
         //return (this.styleSheet());
-    };
-    _loc1.__set__scrollPosition = function (nScrollPosition)
+        null;
+    } // End of the function
+    function set scrollPosition(nScrollPosition)
     {
-        this._tText.scroll = nScrollPosition;
+        _tText.scroll = nScrollPosition;
         //return (this.scrollPosition());
-    };
-    _loc1.__get__scrollPosition = function ()
+        null;
+    } // End of the function
+    function get scrollPosition()
     {
-        return (this._tText.scroll);
-    };
-    _loc1.__set__maxscroll = function (nMaxScroll)
+        return (_tText.scroll);
+    } // End of the function
+    function set maxscroll(nMaxScroll)
     {
-        this._tText.maxscroll = nMaxScroll;
+        _tText.maxscroll = nMaxScroll;
         //return (this.maxscroll());
-    };
-    _loc1.__get__maxscroll = function ()
+        null;
+    } // End of the function
+    function get maxscroll()
     {
-        return (this._tText.maxscroll);
-    };
-    _loc1.__set__maxChars = function (nMaxChars)
+        return (_tText.maxscroll);
+    } // End of the function
+    function set maxChars(nMaxChars)
     {
-        this._tText.maxChars = nMaxChars;
+        _tText.maxChars = nMaxChars;
         //return (this.maxChars());
-    };
-    _loc1.__get__maxChars = function ()
+        null;
+    } // End of the function
+    function get maxChars()
     {
-        return (this._tText.maxChars);
-    };
-    _loc1.__get__textHeight = function ()
-    {
-        return (this._tText.textHeight);
-    };
-    _loc1.init = function ()
+        return (_tText.maxChars);
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.TextArea.CLASS_NAME);
-        if (this._sURL != undefined)
+        if (_sURL != undefined)
         {
             this.loadText();
         } // end if
-        this._tfFormatter = new TextFormat();
-    };
-    _loc1.createChildren = function ()
+        _tfFormatter = new TextFormat();
+    } // End of the function
+    function createChildren()
     {
-        this.createTextField("_tText", 10, 0, 0, this.__width - 2, this.__height - 2);
-        this._tText._x = 1;
-        this._tText._y = 1;
-        this._tText.addListener(this);
-        this._tText.onSetFocus = function ()
-        {
-            this._parent.onSetFocus();
-        };
-        this._tText.onKillFocus = function ()
-        {
-            this._parent.onKillFocus();
-        };
+        this.createTextField("_tText", 10, 0, 0, __width - 2, __height - 2);
+        _tText._x = 1;
+        _tText._y = 1;
+        _tText.addListener(this);
         ank.utils.MouseEvents.addListener(this);
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
         this.arrange();
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        this._sbVertical.setSize(this.__height);
-        this._tText._height = this.__height;
-        this._tText._width = this.__width;
-    };
-    _loc1.draw = function ()
+        _sbVertical.setSize(__height);
+        _tText._height = __height;
+        _tText._width = __width;
+    } // End of the function
+    function draw()
     {
-        if (this._bBorder)
+        if (_bBorder)
         {
             this.drawBorder();
         } // end if
-        if (!this._bBorder != undefined)
+        if (!_bBorder != undefined)
         {
-            this.border_mc._visible = this._bBorder;
+            border_mc._visible = _bBorder;
         } // end if
         var _loc2 = this.getStyle();
-        this._tfFormatter = new TextFormat();
-        this._tfFormatter.font = _loc2.font;
-        this._tfFormatter.align = _loc2.align;
-        this._tfFormatter.size = _loc2.size;
-        this._tfFormatter.color = _loc2.color;
-        this._tfFormatter.bold = _loc2.bold;
-        this._tfFormatter.italic = _loc2.italic;
-        this._tText.embedFonts = _loc2.embedfonts;
-        this._tText.antiAliasType = _loc2.antialiastype;
-        this._sbVertical.styleName = _loc2.scrollbarstyle;
-    };
-    _loc1.loadText = function ()
+        _tfFormatter = new TextFormat();
+        _tfFormatter.font = _loc2.font;
+        _tfFormatter.align = _loc2.align;
+        _tfFormatter.size = _loc2.size;
+        _tfFormatter.color = _loc2.color;
+        _tfFormatter.bold = _loc2.bold;
+        _tfFormatter.italic = _loc2.italic;
+        _tText.embedFonts = _loc2.embedfonts;
+        _sbVertical.__set__styleName(_loc2.scrollbarstyle);
+    } // End of the function
+    function loadText()
     {
-        if (this._sURL == undefined || this._sURL == "")
+        if (_sURL == undefined || _sURL == "")
         {
             return;
         } // end if
-        this._lvText = new LoadVars();
-        this._lvText.parent = this;
-        this._lvText.onData = function (sData)
+        _lvText = new LoadVars();
+        _lvText.parent = this;
+        _lvText.onData = function (sData)
         {
-            this.parent.text = sData;
+            parent.text = sData;
         };
-        this._lvText.load(this._sURL);
-    };
-    _loc1.setTextFieldProperties = function ()
+        _lvText.load(_sURL);
+    } // End of the function
+    function setTextFieldProperties()
     {
-        if (this._tText != undefined)
+        if (_tText != undefined)
         {
-            if (this._bAutoHeight)
+            if (_bAutoHeight)
             {
-                this._tText.autoSize = "left";
+                _tText.autoSize = "left";
             } // end if
-            this._tText.wordWrap = this._bWordWrap ? (true) : (false);
-            this._tText.multiline = true;
-            this._tText.selectable = this._bSelectable;
-            this._tText.type = this._bEditable ? ("input") : ("dynamic");
-            this._tText.html = this._bHTML;
-            if (this._cssStyles != undefined)
+            _tText.wordWrap = _bWordWrap ? (true) : (false);
+            _tText.multiline = true;
+            _tText.selectable = _bSelectable;
+            _tText.type = _bEditable ? ("input") : ("dynamic");
+            _tText.html = _bHTML;
+            if (_cssStyles != undefined)
             {
-                this._tText.styleSheet = this._cssStyles;
-                if (this._sText != undefined)
+                _tText.styleSheet = _cssStyles;
+                if (_sText != undefined)
                 {
-                    if (this._bHTML)
+                    if (_bHTML)
                     {
-                        this._tText.htmlText = this._sText;
+                        _tText.htmlText = _sText;
                     }
                     else
                     {
-                        this._tText.text = this._sText;
+                        _tText.text = _sText;
                     } // end if
                 } // end else if
             }
-            else if (this._tfFormatter.font != undefined)
+            else if (_tfFormatter.font != undefined)
             {
-                if (this._sText != undefined)
+                if (_sText != undefined)
                 {
-                    if (this._bHTML)
+                    if (_bHTML)
                     {
-                        this._tText.htmlText = this._sText;
+                        _tText.htmlText = _sText;
                     }
                     else
                     {
-                        this._tText.text = this._sText;
+                        _tText.text = _sText;
                     } // end if
                 } // end else if
-                this._tText.setNewTextFormat(this._tfFormatter);
-                this._tText.setTextFormat(this._tfFormatter);
+                _tText.setNewTextFormat(_tfFormatter);
+                _tText.setTextFormat(_tfFormatter);
             } // end else if
             this.onChanged();
         } // end if
-    };
-    _loc1.addScrollBar = function ()
+    } // End of the function
+    function addScrollBar()
     {
-        if (this._sbVertical == undefined)
+        if (_sbVertical == undefined)
         {
             this.attachMovie("ScrollBar", "_sbVertical", 20, {styleName: this.getStyle().scrollbarstyle});
-            this._sbVertical.setSize(this.__height - 2);
-            this._sbVertical._y = 1;
-            this._sbVertical._x = this._bScrollBarRight ? (this.__width - this._sbVertical._width - 3) : (0);
-            this._tText._width = this.__width - this._sbVertical._width - 3 - this._nScrollBarMargin;
-            this._tText._x = this._bScrollBarRight ? (0) : (this._sbVertical._width + this._nScrollBarMargin);
-            this._sbVertical.addEventListener("scroll", this);
+            _sbVertical.setSize(__height - 2);
+            _sbVertical._y = 1;
+            _sbVertical._x = _bScrollBarRight ? (__width - _sbVertical._width - 3) : (0);
+            _tText._width = __width - _sbVertical._width - 3 - _nScrollBarMargin;
+            _tText._x = _bScrollBarRight ? (0) : (_sbVertical._width + _nScrollBarMargin);
+            _sbVertical.addEventListener("scroll", this);
         } // end if
-        var _loc2 = this._tText.textHeight;
-        var _loc3 = 9.000000E-001 * this._tText._height / _loc2 * this._tText.maxscroll;
-        this._sbVertical.setScrollProperties(_loc3, 0, this._tText.maxscroll);
-        this._sbVertical.scrollPosition = this._tText.scroll;
-        if (this._bSettingNewText)
+        var _loc3 = _tText.textHeight;
+        var _loc2 = 9.000000E-001 * _tText._height / _loc3 * _tText.maxscroll;
+        _sbVertical.setScrollProperties(_loc2, 0, _tText.maxscroll);
+        _sbVertical.__set__scrollPosition(_tText.scroll);
+        if (_bSettingNewText)
         {
-            this._sbVertical.scrollPosition = 0;
-            this._bSettingNewText = false;
+            _sbVertical.__set__scrollPosition(0);
+            _bSettingNewText = false;
         } // end if
-    };
-    _loc1.removeScrollBar = function ()
+    } // End of the function
+    function removeScrollBar()
     {
-        if (this._sbVertical != undefined)
+        if (_sbVertical != undefined)
         {
-            this._sbVertical.removeMovieClip();
-            this._tText._width = this.__width;
+            _sbVertical.removeMovieClip();
+            _tText._width = __width;
         } // end if
-    };
-    _loc1.onChanged = function ()
+    } // End of the function
+    function onChanged()
     {
-        if (this._tText.textHeight >= this._tText._height || this._cssStyles != undefined && this._tText.textHeight + 5 >= this._tText._height)
+        if (_tText.textHeight >= _tText._height || _cssStyles != undefined && _tText.textHeight + 5 >= _tText._height)
         {
             this.addScrollBar();
         }
@@ -349,71 +339,33 @@ if (!ank.gapi.controls.TextArea)
         {
             this.removeScrollBar();
         } // end else if
-        if (this._bAutoHeight && this._tText.textHeight != this.__height)
+        if (_bAutoHeight)
         {
-            this.setSize(this.__width, this._tText.textHeight);
-            this.dispatchEvent({type: "resize"});
+            this.setSize(__width, _tText.textHeight);
         } // end if
         this.dispatchEvent({type: "change"});
-    };
-    _loc1.scroll = function (oEvent)
+    } // End of the function
+    function scroll(oEvent)
     {
-        if (oEvent.target == this._sbVertical)
+        if (oEvent.target == _sbVertical)
         {
-            this._tText.scroll = oEvent.target.scrollPosition;
+            _tText.scroll = oEvent.target.scrollPosition;
         } // end if
-    };
-    _loc1.onMouseWheel = function (nDelta, mc)
+    } // End of the function
+    function onMouseWheel(nDelta, mc)
     {
-        if (String(mc._target).indexOf(this._target) != -1)
+        if (String(mc._target).indexOf(_target) != -1)
         {
-            this._sbVertical.scrollPosition = this._sbVertical.scrollPosition - nDelta;
+            _sbVertical.scrollPosition = _sbVertical.scrollPosition - nDelta;
         } // end if
-    };
-    _loc1.onHref = function (sParams)
-    {
-        this.dispatchEvent({type: "href", params: sParams});
-    };
-    _loc1.onSetFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "false");
-    };
-    _loc1.onKillFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "true");
-    };
-    _loc1.addProperty("scrollBarMargin", _loc1.__get__scrollBarMargin, _loc1.__set__scrollBarMargin);
-    _loc1.addProperty("scrollPosition", _loc1.__get__scrollPosition, _loc1.__set__scrollPosition);
-    _loc1.addProperty("selectable", _loc1.__get__selectable, _loc1.__set__selectable);
-    _loc1.addProperty("border", _loc1.__get__border, _loc1.__set__border);
-    _loc1.addProperty("scrollBarRight", _loc1.__get__scrollBarRight, _loc1.__set__scrollBarRight);
-    _loc1.addProperty("wordWrap", _loc1.__get__wordWrap, _loc1.__set__wordWrap);
-    _loc1.addProperty("editable", _loc1.__get__editable, _loc1.__set__editable);
-    _loc1.addProperty("text", _loc1.__get__text, _loc1.__set__text);
-    _loc1.addProperty("autoHeight", _loc1.__get__autoHeight, _loc1.__set__autoHeight);
-    _loc1.addProperty("styleSheet", function ()
-    {
-    }, _loc1.__set__styleSheet);
-    _loc1.addProperty("maxChars", _loc1.__get__maxChars, _loc1.__set__maxChars);
-    _loc1.addProperty("maxscroll", _loc1.__get__maxscroll, _loc1.__set__maxscroll);
-    _loc1.addProperty("html", _loc1.__get__html, _loc1.__set__html);
-    _loc1.addProperty("textHeight", _loc1.__get__textHeight, function ()
-    {
-    });
-    _loc1.addProperty("url", function ()
-    {
-    }, _loc1.__set__url);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.TextArea = function ()
-    {
-        super();
-    }).CLASS_NAME = "TextArea";
-    _loc1._bEditable = true;
-    _loc1._bSelectable = true;
-    _loc1._bAutoHeight = false;
-    _loc1._bWordWrap = true;
-    _loc1._bScrollBarRight = true;
-    _loc1._bHTML = false;
-    _loc1._nScrollBarMargin = 0;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "TextArea";
+    var _bEditable = true;
+    var _bSelectable = true;
+    var _bAutoHeight = false;
+    var _bWordWrap = true;
+    var _bScrollBarRight = true;
+    var _bHTML = false;
+    var _nScrollBarMargin = 0;
+} // End of Class
 #endinitclip

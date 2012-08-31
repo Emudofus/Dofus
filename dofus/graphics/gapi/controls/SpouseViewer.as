@@ -1,138 +1,82 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20503]
-#initclip 24
-if (!dofus.graphics.gapi.controls.SpouseViewer)
+// [Initial MovieClip Action of sprite 983]
+#initclip 200
+class dofus.graphics.gapi.controls.SpouseViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.SpouseViewer = function ()
+    var _oSpouse, __get__initialized, __get__spouse, addToQueue, _mcInFight, _btnJoin, api, _lblPosition, _winBg, _lblSpouse, _lblName, _ldrArtwork, _lblLevel, _lblArea, _lblCoordinates, __set__spouse;
+    function SpouseViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__spouse = function (oSpouse)
+    } // End of the function
+    function set spouse(oSpouse)
     {
-        this._oSpouse = oSpouse;
-        if (this.initialized)
+        _oSpouse = oSpouse;
+        if (this.__get__initialized())
         {
             this.updateData();
         } // end if
         //return (this.spouse());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.SpouseViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
-        this._mcInFight._visible = false;
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
+        _mcInFight._visible = false;
+    } // End of the function
+    function addListeners()
     {
-        this._btnJoin.addEventListener("click", this);
-        this._btnCompass.addEventListener("click", this);
-    };
-    _loc1.initData = function ()
+        _btnJoin.addEventListener("click", this);
+    } // End of the function
+    function initData()
     {
         this.updateData();
-    };
-    _loc1.initTexts = function ()
+    } // End of the function
+    function initTexts()
     {
-        this._btnJoin.label = this.api.lang.getText("JOIN_SMALL");
-        if (this._oSpouse.isFollow)
-        {
-            this._btnCompass.label = this.api.lang.getText("STOP_FOLLOW");
-        }
-        else
-        {
-            this._btnCompass.label = this.api.lang.getText("FOLLOW");
-        } // end else if
-        this._lblPosition.text = this.api.lang.getText("LOCALISATION");
-    };
-    _loc1.updateData = function ()
+        _btnJoin.__set__label(api.lang.getText("JOIN_SMALL"));
+        _lblPosition.__set__text(api.lang.getText("LOCALISATION"));
+    } // End of the function
+    function updateData()
     {
-        if (this._oSpouse != undefined)
+        if (_oSpouse != undefined)
         {
-            this._winBg.title = ank.utils.PatternDecoder.combine(this.api.lang.getText("SPOUSE"), this._oSpouse.sex, true);
-            this._lblSpouse.text = ank.utils.PatternDecoder.combine(this.api.lang.getText("SPOUSE"), this._oSpouse.sex, true);
-            this._lblName.text = this._oSpouse.name;
-            this.api.colors.addSprite(this._ldrArtwork, this._oSpouse);
-            this._ldrArtwork.contentPath = dofus.Constants.GUILDS_FACES_PATH + this._oSpouse.gfx + ".swf";
-            if (this._oSpouse.isConnected && this._lblCoordinates.text != undefined)
+            _winBg.__set__title(ank.utils.PatternDecoder.combine(api.lang.getText("SPOUSE"), _oSpouse.sex, true) + " - " + api.lang.getText("FRIENDS"));
+            _lblSpouse.__set__text(ank.utils.PatternDecoder.combine(api.lang.getText("SPOUSE"), _oSpouse.sex, true));
+            _lblName.__set__text(_oSpouse.name);
+            api.colors.addSprite(_ldrArtwork, _oSpouse);
+            _ldrArtwork.__set__contentPath(dofus.Constants.GUILDS_FACES_PATH + _oSpouse.gfx + ".swf");
+            if (_oSpouse.isConnected)
             {
-                this._mcInFight._visible = this._oSpouse.isInFight;
-                this._lblLevel.text = _global.isNaN(this._oSpouse.level) ? ("") : (this.api.lang.getText("LEVEL") + " " + this._oSpouse.level);
-                this._lblArea.text = this.api.kernel.MapsServersManager.getMapName(this._oSpouse.mapID);
-                this._lblCoordinates.text = "";
-                this._btnJoin.enabled = !this.api.datacenter.Game.isFight;
-                this._btnCompass.enabled = true;
+                _mcInFight._visible = _oSpouse.isInFight;
+                _lblLevel.__set__text(isNaN(_oSpouse.level) ? ("") : (api.lang.getText("LEVEL") + " " + _oSpouse.level));
+                _lblArea.__set__text(api.kernel.MapsServersManager.getMapName(_oSpouse.mapID));
+                _lblCoordinates.__set__text("");
+                _btnJoin.__set__enabled(!api.datacenter.Game.isFight);
             }
-            else if (this._lblLevel.text != undefined)
+            else
             {
-                this._mcInFight._visible = false;
-                this._lblLevel.text = "";
-                this._lblArea.text = ank.utils.PatternDecoder.combine(this.api.lang.getText("SPOUSE_NOT_CONNECTED"), this._oSpouse.sex, true);
-                this._lblCoordinates.text = "";
-                this._btnJoin.enabled = false;
-                this._btnCompass.enabled = false;
+                _mcInFight._visible = false;
+                _lblLevel.__set__text("");
+                _lblArea.__set__text(ank.utils.PatternDecoder.combine(api.lang.getText("SPOUSE_NOT_CONNECTED"), _oSpouse.sex, true));
+                _lblCoordinates.__set__text("");
+                _btnJoin.__set__enabled(false);
             } // end if
         } // end else if
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
-        switch (oEvent.target)
+        if (!api.datacenter.Game.isFight)
         {
-            case this._btnJoin:
-            {
-                if (!this.api.datacenter.Game.isFight)
-                {
-                    this.api.network.Friends.join("S");
-                } // end if
-                break;
-            } 
-            case this._btnCompass:
-            {
-                if (this._oSpouse.isConnected)
-                {
-                    if (this._oSpouse.isFollow)
-                    {
-                        this.api.network.Friends.compass(true);
-                    }
-                    else
-                    {
-                        this.api.network.Friends.compass(false);
-                    } // end else if
-                    this._oSpouse.isFollow = !this._oSpouse.isFollow;
-                    this.initTexts();
-                } // end if
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.addProperty("spouse", function ()
-    {
-    }, _loc1.__set__spouse);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.SpouseViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "SpouseViewer";
-} // end if
+            api.network.Friends.join("S");
+        } // end if
+    } // End of the function
+    static var CLASS_NAME = "SpouseViewer";
+} // End of Class
 #endinitclip

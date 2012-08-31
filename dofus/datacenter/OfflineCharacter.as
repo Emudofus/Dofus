@@ -1,81 +1,73 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20858]
-#initclip 123
-if (!dofus.datacenter.OfflineCharacter)
+// [Initial MovieClip Action of sprite 877]
+#initclip 89
+class dofus.datacenter.OfflineCharacter extends ank.battlefield.datacenter.Sprite
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.OfflineCharacter = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID)
+    var __proto__, _sName, __get__name, _gfxID, __get__gfxID, _sGuildName, __get__guildName, _oEmblem, __get__emblem, _sOfflineType, __get__offlineType, __set__emblem, __set__gfxID, __set__guildName, __set__name, __set__offlineType;
+    function OfflineCharacter(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super();
-        if (this.__proto__ == dofus.datacenter.OfflineCharacter.prototype)
+        if (__proto__ == dofus.datacenter.OfflineCharacter.prototype)
         {
             this.initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID);
         } // end if
-    }).prototype;
-    _loc1.__set__name = function (sName)
+    } // End of the function
+    function set name(sName)
     {
-        this._sName = sName;
+        _sName = sName;
         //return (this.name());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this._sName);
-    };
-    _loc1.__get__gfxID = function ()
+        return (_sName);
+    } // End of the function
+    function get gfxID()
     {
-        return (this._gfxID);
-    };
-    _loc1.__set__gfxID = function (value)
+        return (_gfxID);
+    } // End of the function
+    function set gfxID(value)
     {
-        this._gfxID = value;
+        _gfxID = value;
         //return (this.gfxID());
-    };
-    _loc1.initialize = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID)
+        null;
+    } // End of the function
+    function initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super.initialize(sID, clipClass, sGfxFile, cellNum, dir);
-        this._gfxID = gfxID;
-    };
-    _loc1.__set__guildName = function (sGuildName)
+        _gfxID = gfxID;
+    } // End of the function
+    function set guildName(sGuildName)
     {
-        this._sGuildName = sGuildName;
+        _sGuildName = sGuildName;
         //return (this.guildName());
-    };
-    _loc1.__get__guildName = function ()
+        null;
+    } // End of the function
+    function get guildName()
     {
-        return (this._sGuildName);
-    };
-    _loc1.__set__emblem = function (oEmblem)
+        return (_sGuildName);
+    } // End of the function
+    function set emblem(oEmblem)
     {
-        this._oEmblem = oEmblem;
+        _oEmblem = oEmblem;
         //return (this.emblem());
-    };
-    _loc1.__get__emblem = function ()
+        null;
+    } // End of the function
+    function get emblem()
     {
-        return (this._oEmblem);
-    };
-    _loc1.__set__offlineType = function (sOfflineType)
+        return (_oEmblem);
+    } // End of the function
+    function set offlineType(sOfflineType)
     {
-        this._sOfflineType = sOfflineType;
+        _sOfflineType = sOfflineType;
         //return (this.offlineType());
-    };
-    _loc1.__get__offlineType = function ()
+        null;
+    } // End of the function
+    function get offlineType()
     {
-        return (this._sOfflineType);
-    };
-    _loc1.addProperty("emblem", _loc1.__get__emblem, _loc1.__set__emblem);
-    _loc1.addProperty("gfxID", _loc1.__get__gfxID, _loc1.__set__gfxID);
-    _loc1.addProperty("name", _loc1.__get__name, _loc1.__set__name);
-    _loc1.addProperty("guildName", _loc1.__get__guildName, _loc1.__set__guildName);
-    _loc1.addProperty("offlineType", _loc1.__get__offlineType, _loc1.__set__offlineType);
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1.xtraClipTopAnimations = {staticL: true, staticF: true, staticR: true};
-} // end if
+        return (_sOfflineType);
+    } // End of the function
+    var xtraClipTopAnimations = {staticL: true, staticF: true, staticR: true};
+} // End of Class
 #endinitclip

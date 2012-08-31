@@ -1,105 +1,83 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20625]
-#initclip 146
-if (!dofus.graphics.gapi.controls.ClassInfosViewer)
+// [Initial MovieClip Action of sprite 1022]
+#initclip 243
+class dofus.graphics.gapi.controls.ClassInfosViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.ClassInfosViewer = function ()
+    var _nClassID, addToQueue, __get__classID, api, _lblClassSpells, _txtDescription, _lblSpellName, _lblSpellRange, _lblSpellAP, _txtSpellDescription, _ldrSpellIcon, __set__classID;
+    function ClassInfosViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__classID = function (nClassID)
+    } // End of the function
+    function set classID(nClassID)
     {
-        this._nClassID = nClassID;
-        this.addToQueue({object: this, method: this.layoutContent});
+        _nClassID = nClassID;
+        this.addToQueue({object: this, method: layoutContent});
         //return (this.classID());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.ClassInfosViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.initTexts = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function initTexts()
     {
-        this._lblClassSpells.text = this.api.lang.getText("CLASS_SPELLS");
-    };
-    _loc1.addListeners = function ()
+        _lblClassSpells.__set__text(api.lang.getText("CLASS_SPELLS"));
+    } // End of the function
+    function addListeners()
     {
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < 20)
+        for (var _loc2 = 0; _loc2 < 20; ++_loc2)
         {
             this["_ctr" + _loc2].addEventListener("over", this);
             this["_ctr" + _loc2].addEventListener("out", this);
-            this["_ctr" + _loc2].addEventListener("click", this);
-        } // end while
-    };
-    _loc1.layoutContent = function ()
+        } // end of for
+    } // End of the function
+    function layoutContent()
     {
-        var _loc2 = dofus.Constants.SPELLS_ICONS_PATH;
-        var _loc3 = this.api.lang.getClassText(this._nClassID).s;
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < 20)
+        var _loc6 = dofus.Constants.SPELLS_ICONS_PATH;
+        var _loc4 = api.lang.getClassText(_nClassID).s;
+        for (var _loc2 = 0; _loc2 < 20; ++_loc2)
         {
-            var _loc5 = this["_ctr" + _loc4];
-            _loc5.contentPath = _loc2 + _loc3[_loc4] + ".swf";
-            _loc5.params = {spellID: _loc3[_loc4]};
-        } // end while
-        this._txtDescription.text = this.api.lang.getClassText(this._nClassID).d;
-        this.showSpellInfos(_loc3[0]);
-    };
-    _loc1.showSpellInfos = function (nSpellID)
+            var _loc3 = this["_ctr" + _loc2];
+            _loc3.__set__contentPath(_loc6 + _loc4[_loc2] + ".swf");
+            _loc3.__set__params({spellID: _loc4[_loc2]});
+        } // end of for
+        _txtDescription.__set__text(api.lang.getClassText(_nClassID).d);
+        this.showSpellInfos(_loc4[0]);
+    } // End of the function
+    function showSpellInfos(nSpellID)
     {
-        var _loc3 = this.api.kernel.CharactersManager.getSpellObjectFromData(nSpellID + "~1~");
-        if (_loc3.name == undefined)
+        var _loc2 = api.kernel.CharactersManager.getSpellObjectFromData(nSpellID + "~1~");
+        if (_loc2.name == undefined)
         {
-            this._lblSpellName.text = "";
-            this._lblSpellRange.text = "";
-            this._lblSpellAP.text = "";
-            this._txtSpellDescription.text = "";
-            this._ldrSpellIcon.contentPath = "";
+            _lblSpellName.__set__text("");
+            _lblSpellRange.__set__text("");
+            _lblSpellAP.__set__text("");
+            _txtSpellDescription.__set__text("");
+            _ldrSpellIcon.__set__contentPath("");
         }
-        else if (this._lblSpellName.text != undefined)
+        else
         {
-            this._lblSpellName.text = _loc3.name;
-            this._lblSpellRange.text = this.api.lang.getText("RANGEFULL") + " : " + _loc3.rangeStr;
-            this._lblSpellAP.text = this.api.lang.getText("ACTIONPOINTS") + " : " + _loc3.apCost;
-            this._txtSpellDescription.text = _loc3.description + "\n" + _loc3.descriptionNormalHit;
-            this._ldrSpellIcon.contentPath = _loc3.iconFile;
+            _lblSpellName.__set__text(_loc2.name);
+            _lblSpellRange.__set__text(api.lang.getText("RANGEFULL") + " : " + _loc2.rangeStr);
+            _lblSpellAP.__set__text(api.lang.getText("ACTIONPOINTS") + " : " + _loc2.apCost);
+            _txtSpellDescription.__set__text(_loc2.description + "\n" + _loc2.descriptionNormalHit);
+            _ldrSpellIcon.__set__contentPath(_loc2.iconFile);
         } // end else if
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function over(oEvent)
     {
         this.showSpellInfos(oEvent.target.params.spellID);
-    };
-    _loc1.addProperty("classID", function ()
+    } // End of the function
+    function out(oEvent)
     {
-    }, _loc1.__set__classID);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.ClassInfosViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "ClassInfosViewer";
-} // end if
+        this.showSpellInfos(api.lang.getClassText(_nClassID).s[0]);
+    } // End of the function
+    static var CLASS_NAME = "ClassInfosViewer";
+} // End of Class
 #endinitclip

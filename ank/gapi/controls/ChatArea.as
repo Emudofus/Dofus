@@ -1,287 +1,230 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20796]
-#initclip 61
-if (!ank.gapi.controls.ChatArea)
+// [Initial MovieClip Action of sprite 459]
+#initclip 233
+class ank.gapi.controls.ChatArea extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.ChatArea = function ()
+    var _bInitialized, addToQueue, __get__selectable, __get__wordWrap, _sText, __get__initialized, __get__text, _tText, __get__scrollBarSide, __get__scrollBarMargin, __get__hideScrollBar, _tfFormatter, __height, __width, createTextField, getStyle, _sbVertical, attachMovie, _target, dispatchEvent, __set__hideScrollBar, __get__htmlText, __set__scrollBarMargin, __set__scrollBarSide, __set__selectable, __set__text, __set__wordWrap;
+    function ChatArea()
     {
         super();
-    }).prototype;
-    _loc1.__set__selectable = function (bSelectable)
+    } // End of the function
+    function set selectable(bSelectable)
     {
-        this._bSelectable = bSelectable;
-        if (this._bInitialized)
+        _bSelectable = bSelectable;
+        if (_bInitialized)
         {
-            this.addToQueue({object: this, method: this.setTextFieldProperties});
+            this.addToQueue({object: this, method: setTextFieldProperties});
         } // end if
         //return (this.selectable());
-    };
-    _loc1.__get__selectable = function ()
+        null;
+    } // End of the function
+    function get selectable()
     {
-        return (this._bSelectable);
-    };
-    _loc1.__set__wordWrap = function (bWordWrap)
+        return (_bSelectable);
+    } // End of the function
+    function set wordWrap(bWordWrap)
     {
-        this._bWordWrap = bWordWrap;
-        if (this._bInitialized)
+        _bWordWrap = bWordWrap;
+        if (_bInitialized)
         {
-            this.addToQueue({object: this, method: this.setTextFieldProperties});
+            this.addToQueue({object: this, method: setTextFieldProperties});
         } // end if
         //return (this.wordWrap());
-    };
-    _loc1.__get__wordWrap = function ()
+        null;
+    } // End of the function
+    function get wordWrap()
     {
-        return (this._bWordWrap);
-    };
-    _loc1.__set__text = function (sText)
+        return (_bWordWrap);
+    } // End of the function
+    function set text(sText)
     {
-        this._sText = sText;
-        if (this.initialized)
+        _sText = sText;
+        if (this.__get__initialized())
         {
             this.setTextFieldProperties();
         } // end if
         //return (this.text());
-    };
-    _loc1.__get__text = function ()
+        null;
+    } // End of the function
+    function get text()
     {
-        return (this._tText.text);
-    };
-    _loc1.__get__htmlText = function ()
+        return (_tText.text);
+    } // End of the function
+    function get htmlText()
     {
-        return (this._tText.htmlText);
-    };
-    _loc1.__set__scrollBarSide = function (sScrollBarSide)
+        return (_tText.htmlText);
+    } // End of the function
+    function set scrollBarSide(sScrollBarSide)
     {
-        this._sScrollBarSide = sScrollBarSide;
+        _sScrollBarSide = sScrollBarSide;
         //return (this.scrollBarSide());
-    };
-    _loc1.__get__scrollBarSide = function ()
+        null;
+    } // End of the function
+    function get scrollBarSide()
     {
-        return (this._sScrollBarSide);
-    };
-    _loc1.__set__scrollBarMargin = function (nScrollBarMargin)
+        return (_sScrollBarSide);
+    } // End of the function
+    function set scrollBarMargin(nScrollBarMargin)
     {
-        this._nScrollBarMargin = nScrollBarMargin;
+        _nScrollBarMargin = nScrollBarMargin;
         //return (this.scrollBarMargin());
-    };
-    _loc1.__get__scrollBarMargin = function ()
+        null;
+    } // End of the function
+    function get scrollBarMargin()
     {
-        return (this._nScrollBarMargin);
-    };
-    _loc1.__set__hideScrollBar = function (bHideScrollBar)
+        return (_nScrollBarMargin);
+    } // End of the function
+    function set hideScrollBar(bHideScrollBar)
     {
-        this._bHideScrollBar = bHideScrollBar;
+        _bHideScrollBar = bHideScrollBar;
         //return (this.hideScrollBar());
-    };
-    _loc1.__get__hideScrollBar = function ()
+        null;
+    } // End of the function
+    function get hideScrollBar()
     {
-        return (this._bHideScrollBar);
-    };
-    _loc1.__set__useMouseWheel = function (bUseMouseWheel)
-    {
-        this._bUseMouseWheel = bUseMouseWheel;
-        //return (this.useMouseWheel());
-    };
-    _loc1.__get__useMouseWheel = function ()
-    {
-        return (this._bUseMouseWheel);
-    };
-    _loc1.init = function ()
+        return (_bHideScrollBar);
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.ChatArea.CLASS_NAME);
-        this._tfFormatter = new TextFormat();
-    };
-    _loc1.createChildren = function ()
+        _tfFormatter = new TextFormat();
+    } // End of the function
+    function createChildren()
     {
-        this.createTextField("_tText", 10, 0, 0, this.__width - 2, this.__height - 2);
-        this._tText._x = 1;
-        this._tText._y = 1;
-        this._tText.addListener(this);
-        this._tText.onSetFocus = function ()
-        {
-            this._parent.onSetFocus();
-        };
-        this._tText.onKillFocus = function ()
-        {
-            this._parent.onKillFocus();
-        };
-        this._tText.mouseWheelEnabled = true;
-        this.addToQueue({object: this, method: this.setTextFieldProperties});
+        this.createTextField("_tText", 10, 0, 0, __width - 2, __height - 2);
+        _tText._x = 1;
+        _tText._y = 1;
+        _tText.addListener(this);
+        _tText.mouseWheelEnabled = true;
+        this.addToQueue({object: this, method: setTextFieldProperties});
         ank.utils.MouseEvents.addListener(this);
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
         this.arrange();
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        this._tText._height = this.__height;
-        this._tText._width = this.__width;
-        this._bInvalidateMaxScrollStop = true;
+        _tText._height = __height;
+        _tText._width = __width;
+        _bInvalidateMaxScrollStop = true;
         this.setTextFieldProperties();
-    };
-    _loc1.draw = function ()
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-        this._tfFormatter = new TextFormat();
-        this._tfFormatter.font = _loc2.font;
-        this._tfFormatter.align = _loc2.align;
-        this._tfFormatter.size = _loc2.size;
-        this._tfFormatter.color = _loc2.color;
-        this._tfFormatter.bold = _loc2.bold;
-        this._tfFormatter.italic = _loc2.italic;
-        this._tText.embedFonts = _loc2.embedfonts;
-        this._tText.antiAliasType = _loc2.antialiastype;
-        this._sbVertical.styleName = _loc2.scrollbarstyle;
-        if (_loc2.filters != undefined)
-        {
-            this._tText.filters = _loc2.filters;
-        } // end if
-    };
-    _loc1.setTextFieldProperties = function ()
+        _tfFormatter = new TextFormat();
+        _tfFormatter.font = _loc2.font;
+        _tfFormatter.align = _loc2.align;
+        _tfFormatter.size = _loc2.size;
+        _tfFormatter.color = _loc2.color;
+        _tfFormatter.bold = _loc2.bold;
+        _tfFormatter.italic = _loc2.italic;
+        _tText.embedFonts = _loc2.embedfonts;
+        _sbVertical.__set__styleName(_loc2.scrollbarstyle);
+    } // End of the function
+    function setTextFieldProperties()
     {
-        if (this._tText != undefined)
+        if (_tText != undefined)
         {
-            this._tText.wordWrap = this._bWordWrap ? (true) : (false);
-            this._tText.multiline = true;
-            this._tText.selectable = this._bSelectable;
-            this._tText.embedFonts = this.getStyle().embedfonts;
-            this._tText.type = "dynamic";
-            this._tText.html = true;
-            if (this._tfFormatter.font != undefined)
+            _tText.wordWrap = _bWordWrap ? (true) : (false);
+            _tText.multiline = true;
+            _tText.selectable = _bSelectable;
+            _tText.embedFonts = this.getStyle().embedfonts;
+            _tText.type = "dynamic";
+            _tText.html = true;
+            if (_tfFormatter.font != undefined)
             {
-                if (this._sText != undefined)
+                if (_sText != undefined)
                 {
-                    this._nPreviousMaxscroll = this._tText.maxscroll;
+                    _nPreviousMaxscroll = _tText.maxscroll;
                     this.setTextWithBottomStart();
                 } // end if
-                this._tText.setNewTextFormat(this._tfFormatter);
-                this._tText.setTextFormat(this._tfFormatter);
+                _tText.setNewTextFormat(_tfFormatter);
+                _tText.setTextFormat(_tfFormatter);
             } // end if
             this.onChanged();
         } // end if
-    };
-    _loc1.addScrollBar = function ()
+    } // End of the function
+    function addScrollBar()
     {
-        if (this._sbVertical == undefined)
+        if (_sbVertical == undefined)
         {
-            this.attachMovie("ScrollBar", "_sbVertical", 20, {styleName: this.getStyle().scrollbarstyle, _visible: !this._bHideScrollBar});
-            this._sbVertical.addEventListener("scroll", this);
+            this.attachMovie("ScrollBar", "_sbVertical", 20, {styleName: this.getStyle().scrollbarstyle, _visible: !_bHideScrollBar});
+            _sbVertical.addEventListener("scroll", this);
         } // end if
-        this._sbVertical.setSize(this.__height - 2);
-        this._sbVertical._y = 1;
-        this._sbVertical._x = this._sScrollBarSide == "right" ? (this.__width - this._sbVertical._width - 3) : (0);
-        if (this._bHideScrollBar)
+        _sbVertical.setSize(__height - 2);
+        _sbVertical._y = 1;
+        _sbVertical._x = _sScrollBarSide == "right" ? (__width - _sbVertical._width - 3) : (0);
+        if (_bHideScrollBar)
         {
-            this._tText._width = this.__width;
-            this._tText._x = 0;
+            _tText._width = __width;
+            _tText._x = 0;
         }
         else
         {
-            this._tText._width = this.__width - this._sbVertical._width - 3 - this._nScrollBarMargin;
-            this._tText._x = this._sScrollBarSide == "right" ? (0) : (this._sbVertical._width + this._nScrollBarMargin);
+            _tText._width = __width - _sbVertical._width - 3 - _nScrollBarMargin;
+            _tText._x = _sScrollBarSide == "right" ? (0) : (_sbVertical._width + _nScrollBarMargin);
         } // end else if
         this.setScrollBarPosition();
-        if (Math.abs(this._nPreviousMaxscroll - this._tText.scroll) < ank.gapi.controls.ChatArea.STOP_SCROLL_LENGTH || this._bInvalidateMaxScrollStop)
+        if (Math.abs(_nPreviousMaxscroll - _tText.scroll) < ank.gapi.controls.ChatArea.STOP_SCROLL_LENGTH || _bInvalidateMaxScrollStop)
         {
-            this._tText.scroll = this._tText.maxscroll;
+            _tText.scroll = _tText.maxscroll;
         } // end if
-        this._bInvalidateMaxScrollStop = false;
-    };
-    _loc1.setScrollBarPosition = function ()
+        _bInvalidateMaxScrollStop = false;
+    } // End of the function
+    function setScrollBarPosition()
     {
-        var _loc2 = this._tText.textHeight;
-        var _loc3 = 9.000000E-001 * this._tText._height / _loc2 * this._tText.maxscroll;
-        this._sbVertical.setScrollProperties(_loc3, 0, this._tText.maxscroll);
-        this._sbVertical.scrollPosition = this._tText.scroll;
-    };
-    _loc1.setTextWithBottomStart = function ()
+        var _loc3 = _tText.textHeight;
+        var _loc2 = 9.000000E-001 * _tText._height / _loc3 * _tText.maxscroll;
+        _sbVertical.setScrollProperties(_loc2, 0, _tText.maxscroll);
+        _sbVertical.__set__scrollPosition(_tText.scroll);
+    } // End of the function
+    function setTextWithBottomStart()
     {
-        this._tText.text = "";
-        for (var _loc2 = 0; this._tText.maxscroll == 1 && _loc2 < 50; ++_loc2)
+        _tText.text = "";
+        for (var _loc2 = 0; _tText.maxscroll == 1 && _loc2 < 50; ++_loc2)
         {
-            this._tText.text = this._tText.text + "\n";
+            _tText.text = _tText.text + "\n";
         } // end of for
-        this._tText.htmlText = this._tText.htmlText + this._sText;
-    };
-    _loc1.onMouseWheel = function (nDelta, mc)
+        _tText.htmlText = _tText.htmlText + _sText;
+    } // End of the function
+    function onMouseWheel(nDelta, mc)
     {
-        if (!this._bUseMouseWheel)
+        if (String(mc._target).indexOf(_target) != -1)
         {
-            return;
+            _sbVertical.scrollPosition = _sbVertical.scrollPosition - nDelta;
         } // end if
-        if (String(mc._target).indexOf(this._target) != -1)
-        {
-            this._sbVertical.scrollPosition = this._sbVertical.scrollPosition - nDelta;
-        } // end if
-    };
-    _loc1.onChanged = function ()
+    } // End of the function
+    function onChanged()
     {
         this.addScrollBar();
-    };
-    _loc1.onScroller = function ()
+    } // End of the function
+    function onScroller()
     {
         this.setScrollBarPosition();
-    };
-    _loc1.scroll = function (oEvent)
+    } // End of the function
+    function scroll(oEvent)
     {
-        if (oEvent.target == this._sbVertical)
+        if (oEvent.target == _sbVertical)
         {
-            this._tText.scroll = oEvent.target.scrollPosition;
+            _tText.scroll = oEvent.target.scrollPosition;
         } // end if
-    };
-    _loc1.onHref = function (sParams)
+    } // End of the function
+    function onHref(sParams)
     {
         this.dispatchEvent({type: "href", params: sParams});
-    };
-    _loc1.onSetFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "false");
-    };
-    _loc1.onKillFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "true");
-    };
-    _loc1.addProperty("scrollBarMargin", _loc1.__get__scrollBarMargin, _loc1.__set__scrollBarMargin);
-    _loc1.addProperty("useMouseWheel", _loc1.__get__useMouseWheel, _loc1.__set__useMouseWheel);
-    _loc1.addProperty("scrollBarSide", _loc1.__get__scrollBarSide, _loc1.__set__scrollBarSide);
-    _loc1.addProperty("htmlText", _loc1.__get__htmlText, function ()
-    {
-    });
-    _loc1.addProperty("selectable", _loc1.__get__selectable, _loc1.__set__selectable);
-    _loc1.addProperty("hideScrollBar", _loc1.__get__hideScrollBar, _loc1.__set__hideScrollBar);
-    _loc1.addProperty("wordWrap", _loc1.__get__wordWrap, _loc1.__set__wordWrap);
-    _loc1.addProperty("text", _loc1.__get__text, _loc1.__set__text);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.ChatArea = function ()
-    {
-        super();
-    }).CLASS_NAME = "ChatArea";
-    (_global.ank.gapi.controls.ChatArea = function ()
-    {
-        super();
-    }).STOP_SCROLL_LENGTH = 6;
-    _loc1._bSelectable = false;
-    _loc1._bWordWrap = true;
-    _loc1._sScrollBarSide = "right";
-    _loc1._nScrollBarMargin = 0;
-    _loc1._bHideScrollBar = false;
-    _loc1._bUseMouseWheel = true;
-    _loc1._bInvalidateMaxScrollStop = false;
-    _loc1._nPreviousMaxscroll = 1;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "ChatArea";
+    static var STOP_SCROLL_LENGTH = 6;
+    var _bSelectable = true;
+    var _bWordWrap = true;
+    var _sScrollBarSide = "right";
+    var _nScrollBarMargin = 0;
+    var _bHideScrollBar = false;
+    var _bInvalidateMaxScrollStop = false;
+    var _nPreviousMaxscroll = 1;
+} // End of Class
 #endinitclip

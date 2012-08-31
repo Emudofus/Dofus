@@ -1,104 +1,82 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20580]
-#initclip 101
-if (!dofus.aks.Job)
+// [Initial MovieClip Action of sprite 948]
+#initclip 160
+class dofus.aks.Job extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Job = function (oAKS, oAPI)
+    var api;
+    function Job(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.changeJobStats = function (nJobID, params, minSlots)
+    } // End of the function
+    function onSkills(sExtraData)
     {
-        this.aks.send("JO" + nJobID + "|" + params + "|" + minSlots);
-    };
-    _loc1.onSkills = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = this.api.datacenter.Player.Jobs;
-        var _loc5 = 0;
-        
-        while (++_loc5, _loc5 < _loc3.length)
+        var _loc12 = sExtraData.split("|");
+        var _loc11 = api.datacenter.Player.Jobs;
+        for (var _loc6 = 0; _loc6 < _loc12.length; ++_loc6)
         {
-            var _loc6 = _loc3[_loc5].split(";");
-            var _loc7 = Number(_loc6[0]);
-            var _loc8 = new ank.utils.ExtendedArray();
-            var _loc9 = _loc6[1].split(",");
-            var _loc10 = _loc9.length;
-            while (_loc10-- > 0)
+            var _loc9 = _loc12[_loc6].split(";");
+            var _loc7 = Number(_loc9[0]);
+            var _loc4 = new ank.utils.ExtendedArray();
+            var _loc5 = _loc9[1].split(",");
+            var _loc3 = _loc5.length;
+            while (_loc3-- > 0)
             {
-                var _loc11 = _loc9[_loc10].split("~");
-                _loc8.push(new dofus.datacenter.Skill(_loc11[0], _loc11[1], _loc11[2], _loc11[3], _loc11[4]));
+                var _loc2 = _loc5[_loc3].split("~");
+                _loc4.push(new dofus.datacenter.Skill(_loc2[0], _loc2[1], _loc2[2], _loc2[3], _loc2[4]));
             } // end while
-            var _loc12 = new dofus.datacenter.Job(_loc7, _loc8);
-            var _loc13 = _loc4.findFirstItem("id", _loc7);
-            if (_loc13.index != -1)
+            var _loc10 = new dofus.datacenter.Job(_loc7, _loc4);
+            var _loc8 = _loc11.findFirstItem("id", _loc7);
+            if (_loc8.index != -1)
             {
-                _loc4.updateItem(_loc13.index, _loc12);
+                _loc11.updateItem(_loc8.index, _loc10);
                 continue;
             } // end if
-            _loc4.push(_loc12);
-        } // end while
-    };
-    _loc1.onXP = function (sExtraData)
+            _loc11.push(_loc10);
+        } // end of for
+    } // End of the function
+    function onXP(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = this.api.datacenter.Player.Jobs;
-        var _loc5 = _loc3.length;
-        while (_loc5-- > 0)
+        var _loc12 = sExtraData.split("|");
+        var _loc11 = api.datacenter.Player.Jobs;
+        var _loc10 = _loc12.length;
+        while (_loc10-- > 0)
         {
-            var _loc6 = _loc3[_loc5].split(";");
-            var _loc7 = Number(_loc6[0]);
-            var _loc8 = Number(_loc6[1]);
-            var _loc9 = Number(_loc6[2]);
-            var _loc10 = Number(_loc6[3]);
-            var _loc11 = Number(_loc6[4]);
-            var _loc12 = _loc4.findFirstItem("id", _loc7);
-            if (_loc12.index != -1)
+            var _loc2 = _loc12[_loc10].split(";");
+            var _loc6 = Number(_loc2[0]);
+            var _loc5 = Number(_loc2[1]);
+            var _loc9 = Number(_loc2[2]);
+            var _loc8 = Number(_loc2[3]);
+            var _loc7 = Number(_loc2[4]);
+            var _loc4 = _loc11.findFirstItem("id", _loc6);
+            if (_loc4.index != -1)
             {
-                var _loc13 = _loc12.item;
-                _loc13.level = _loc8;
-                _loc13.xpMin = _loc9;
-                _loc13.xp = _loc10;
-                _loc13.xpMax = _loc11;
-                _loc4.updateItem(_loc12.index, _loc13);
+                var _loc3 = _loc4.item;
+                _loc3.level = _loc5;
+                _loc3.xpMin = _loc9;
+                _loc3.xp = _loc8;
+                _loc3.xpMax = _loc7;
+                _loc11.updateItem(_loc4.index, _loc3);
             } // end if
         } // end while
-    };
-    _loc1.onLevel = function (sExtraData)
+    } // End of the function
+    function onLevel(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = Number(_loc3[1]);
-        this.api.kernel.showMessage(this.api.lang.getText("INFORMATIONS"), this.api.lang.getText("NEW_JOB_LEVEL", [this.api.lang.getJobText(_loc4).n, _loc5]), "ERROR_BOX", {name: "NewJobLevel"});
-    };
-    _loc1.onRemove = function (sExtraData)
+        var _loc2 = sExtraData.split("|");
+        var _loc4 = Number(_loc2[0]);
+        var _loc3 = Number(_loc2[1]);
+        api.kernel.showMessage(api.lang.getText("INFORMATIONS"), api.lang.getText("NEW_JOB_LEVEL", [api.lang.getJobText(_loc4).n, _loc3]), "ERROR_BOX", {name: "NewJobLevel"});
+    } // End of the function
+    function onRemove(sExtraData)
     {
-        var _loc3 = Number(sExtraData);
-        var _loc4 = this.api.datacenter.Player.Jobs;
-        var _loc5 = _loc4.findFirstItem("id", _loc3);
-        if (_loc5.index != -1)
+        var _loc4 = Number(sExtraData);
+        var _loc3 = api.datacenter.Player.Jobs;
+        var _loc2 = _loc3.findFirstItem("id", _loc4);
+        if (_loc2.index != -1)
         {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("REMOVE_JOB", [_loc5.item.name]), "INFO_CHAT");
-            _loc4.removeItems(_loc5.index, 1);
+            api.kernel.showMessage(undefined, api.lang.getText("REMOVE_JOB", [_loc2.item.name]), "INFO_CHAT");
+            _loc3.removeItems(_loc2.index, 1);
         } // end if
-    };
-    _loc1.onOptions = function (sExtraData)
-    {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = Number(_loc3[0]);
-        var _loc5 = Number(_loc3[1]);
-        var _loc6 = Number(_loc3[2]);
-        this.api.datacenter.Player.Jobs[_loc4].options = new dofus.datacenter.JobOptions(_loc5, _loc6);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

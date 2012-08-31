@@ -1,75 +1,55 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20763]
-#initclip 28
-if (!ank.utils.Timer)
+// [Initial MovieClip Action of sprite 43]
+#initclip 36
+class ank.utils.Timer extends Object
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.Timer = function ()
+    function Timer()
     {
         super();
-    }).prototype;
-    (_global.ank.utils.Timer = function ()
-    {
-        super();
-    }).setTimer = function (mRefObject, sLayer, mFuncObject, fFunction, nInterval, aParams, bRepeat)
+    } // End of the function
+    static function setTimer(mRefObject, sLayer, mFuncObject, fFunction, nInterval, aParams)
     {
         ank.utils.Timer.garbageCollector();
-        var _loc9 = ank.utils.Timer.getNextTimerIndex();
-        var _loc10 = _global.setInterval(ank.utils.Timer.getInstance(), "onTimer", nInterval, _loc9, mRefObject, sLayer, mFuncObject, fFunction, aParams);
-        mRefObject.__ANKTIMERID__ = _loc10;
-        mRefObject.__ANKTIMERREPEAT__ = bRepeat;
+        var _loc2 = ank.utils.Timer.getNextTimerIndex();
+        var _loc3 = setInterval(ank.utils.Timer.getInstance(), "onTimer", nInterval, _loc2, mRefObject, sLayer, mFuncObject, fFunction, aParams);
+        mRefObject.__ANKTIMERID__ = _loc3;
         if (ank.utils.Timer._oIDs[sLayer] == undefined)
         {
             ank.utils.Timer._oIDs[sLayer] = new Object();
         } // end if
-        ank.utils.Timer._oIDs[sLayer][_loc9] = new Array(mRefObject, _loc10, sLayer);
-    };
-    (_global.ank.utils.Timer = function ()
-    {
-        super();
-    }).clear = function (sLayer)
+        ank.utils.Timer._oIDs[sLayer][_loc2] = new Array(mRefObject, _loc3, sLayer);
+    } // End of the function
+    static function clear(sLayer)
     {
         if (sLayer != undefined)
         {
-            var _loc3 = ank.utils.Timer._oIDs[sLayer];
-            for (var k in _loc3)
+            var _loc1 = ank.utils.Timer._oIDs[sLayer];
+            for (var _loc4 in _loc1)
             {
-                ank.utils.Timer.removeTimer(_loc3[k][0], sLayer, _loc3[k][1]);
+                ank.utils.Timer.removeTimer(_loc1[_loc4][0], sLayer, _loc1[_loc4][1]);
             } // end of for...in
         }
         else
         {
-            for (var k in ank.utils.Timer._oIDs)
+            for (var _loc4 in ank.utils.Timer._oIDs)
             {
-                var _loc4 = ank.utils.Timer._oIDs[k];
-                for (var kk in _loc4)
+                _loc1 = ank.utils.Timer._oIDs[_loc4];
+                for (var _loc2 in _loc1)
                 {
-                    ank.utils.Timer.removeTimer(_loc4[kk][0], _loc4[kk][2], _loc4[kk][1]);
+                    ank.utils.Timer.removeTimer(_loc1[_loc2][0], _loc1[_loc2][2], _loc1[_loc2][1]);
                 } // end of for...in
             } // end of for...in
         } // end else if
         ank.utils.Timer.garbageCollector();
-    };
-    (_global.ank.utils.Timer = function ()
-    {
-        super();
-    }).clean = function ()
+    } // End of the function
+    static function clean()
     {
         ank.utils.Timer.garbageCollector();
-    };
-    (_global.ank.utils.Timer = function ()
+    } // End of the function
+    static function removeTimer(mRefObject, sLayer, nTimerIndex)
     {
-        super();
-    }).removeTimer = function (mRefObject, sLayer, nTimerIndex)
-    {
+        var _loc2;
         if (nTimerIndex == undefined)
         {
             if (mRefObject == undefined)
@@ -80,66 +60,55 @@ if (!ank.utils.Timer)
             {
                 return;
             } // end if
-            var _loc5 = mRefObject.__ANKTIMERID__;
+            _loc2 = mRefObject.__ANKTIMERID__;
         }
         else
         {
-            _loc5 = ank.utils.Timer._oIDs[sLayer][nTimerIndex][1];
+            _loc2 = ank.utils.Timer._oIDs[sLayer][nTimerIndex][1];
         } // end else if
-        _global.clearInterval(_loc5);
+        clearInterval(_loc2);
         delete mRefObject.__ANKTIMERID__;
         delete ank.utils.Timer._oIDs[sLayer][nTimerIndex];
-    };
-    (_global.ank.utils.Timer = function ()
-    {
-        super();
-    }).getInstance = function ()
+    } // End of the function
+    static function getInstance()
     {
         return (ank.utils.Timer._tTimer);
-    };
-    (_global.ank.utils.Timer = function ()
+    } // End of the function
+    static function garbageCollector()
     {
-        super();
-    }).garbageCollector = function ()
-    {
-        for (var k in ank.utils.Timer._oIDs)
+        for (var _loc4 in ank.utils.Timer._oIDs)
         {
-            var _loc2 = ank.utils.Timer._oIDs[k];
-            for (var kk in _loc2)
+            var _loc2 = ank.utils.Timer._oIDs[_loc4];
+            for (var _loc3 in _loc2)
             {
-                var _loc3 = _loc2[kk];
-                if (_loc3[0] == undefined || (typeof(_loc3[0]) == "movieclip" && _loc3[0]._name == undefined || _loc3[0].__ANKTIMERID__ != _loc3[1]))
+                var _loc1 = _loc2[_loc3];
+                if (_loc1[0] == undefined || typeof(_loc1[0]) == "movieclip" && _loc1[0]._name == undefined || _loc1[0].__ANKTIMERID__ != _loc1[1])
                 {
-                    _global.clearInterval(_loc3[1]);
-                    delete _loc2[kk];
+                    clearInterval(_loc1[1]);
+                    delete _loc2[_loc3];
                 } // end if
             } // end of for...in
         } // end of for...in
-    };
-    (_global.ank.utils.Timer = function ()
-    {
-        super();
-    }).getTimersCount = function ()
+    } // End of the function
+    static function getTimersCount()
     {
         var _loc2 = 0;
-        for (var k in ank.utils.Timer._oIDs)
+        for (var _loc4 in ank.utils.Timer._oIDs)
         {
-            var _loc3 = ank.utils.Timer._oIDs[k];
-            for (var kk in _loc3)
+            var _loc1 = ank.utils.Timer._oIDs[_loc4];
+            for (var _loc3 in _loc1)
             {
                 ++_loc2;
             } // end of for...in
         } // end of for...in
         return (_loc2);
-    };
-    (_global.ank.utils.Timer = function ()
+    } // End of the function
+    static function getNextTimerIndex()
     {
-        super();
-    }).getNextTimerIndex = function ()
-    {
-        return (ank.utils.Timer._nTimerIndex++);
-    };
-    _loc1.onTimer = function (nTimerIndex, mRefObject, sLayer, mFuncObject, fFunction, aParams)
+        _nTimerIndex = ++ank.utils.Timer._nTimerIndex;
+        return (ank.utils.Timer._nTimerIndex);
+    } // End of the function
+    function onTimer(nTimerIndex, mRefObject, sLayer, mFuncObject, fFunction, aParams)
     {
         if (mRefObject == undefined)
         {
@@ -151,25 +120,13 @@ if (!ank.utils.Timer)
             ank.utils.Timer.removeTimer(undefined, sLayer, nTimerIndex);
             return;
         } // end if
-        if (!mRefObject.__ANKTIMERREPEAT__)
-        {
-            ank.utils.Timer.removeTimer(mRefObject, sLayer, nTimerIndex);
-            delete mRefObject.__ANKTIMERID__;
-        } // end if
+        ank.utils.Timer.removeTimer(mRefObject, sLayer, nTimerIndex);
+        delete mRefObject.__ANKTIMERID__;
         fFunction.apply(mFuncObject, aParams);
         ank.utils.Timer.garbageCollector();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.utils.Timer = function ()
-    {
-        super();
-    })._nTimerIndex = 0;
-    (_global.ank.utils.Timer = function ()
-    {
-        super();
-    })._oIDs = new Object(, _global.ank.utils.Timer = function ()
-    {
-        super();
-    })._tTimer = new ank.utils.Timer();
-} // end if
+    } // End of the function
+    static var _nTimerIndex = 0;
+    static var _oIDs = new Object();
+    static var _tTimer = new ank.utils.Timer();
+} // End of Class
 #endinitclip

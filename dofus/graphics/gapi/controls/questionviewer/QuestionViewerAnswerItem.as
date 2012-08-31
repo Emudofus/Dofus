@@ -1,55 +1,34 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20704]
-#initclip 225
-if (!dofus.graphics.gapi.controls.questionviewer.QuestionViewerAnswerItem)
+// [Initial MovieClip Action of sprite 1065]
+#initclip 35
+class dofus.graphics.gapi.controls.questionviewer.QuestionViewerAnswerItem extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.questionviewer)
-    {
-        _global.dofus.graphics.gapi.controls.questionviewer = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.questionviewer.QuestionViewerAnswerItem = function ()
+    var _mcRound, _txtResponse;
+    function QuestionViewerAnswerItem()
     {
         super();
-    }).prototype;
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
         if (bUsed)
         {
-            this._mcRound._visible = true;
-            this._txtResponse.text = oItem.label;
+            _mcRound._visible = true;
+            _txtResponse.__set__text(oItem.label);
         }
-        else if (this._txtResponse.text != undefined)
+        else
         {
-            this._mcRound._visible = false;
-            this._txtResponse.text = "";
+            _mcRound._visible = false;
+            _txtResponse.__set__text("");
         } // end else if
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false);
-        this._mcRound._visible = false;
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

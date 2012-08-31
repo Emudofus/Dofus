@@ -1,81 +1,62 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20490]
-#initclip 11
-if (!dofus.datacenter.PlayableCharacter)
+// [Initial MovieClip Action of sprite 835]
+#initclip 47
+class dofus.datacenter.PlayableCharacter extends ank.battlefield.datacenter.Sprite
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.PlayableCharacter = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID)
+    var __proto__, api, _gfxID, GameActionsManager, CharacteristicsManager, EffectsManager, _ap, _mp, id, mc, __set__LP, __get__AP, __set__AP, __get__APinit, __get__MP, __set__MP, __get__MPinit, __get__gfxID, _name, __get__name, _level, broadcastMessage, __get__Level, _xp, __get__XP, _lp, dispatchEvent, __get__LPmax, __get__LP, _lpmax, _apinit, _mpinit, _kama, __get__Kama, _team, __get__Team, _aAccessories, __set__APinit, __set__Kama, __set__LPmax, __set__Level, __set__MPinit, __set__Team, __get__ToolAnimation, __get__Weapon, __set__XP, __get__artworkFile, __set__gfxID, __set__name;
+    function PlayableCharacter(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super();
-        if (this.__proto__ == dofus.datacenter.PlayableCharacter.prototype)
+        if (__proto__ == dofus.datacenter.PlayableCharacter.prototype)
         {
             this.initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID);
         } // end if
-    }).prototype;
-    _loc1.initialize = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID)
+    } // End of the function
+    function initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super.initialize(sID, clipClass, sGfxFile, cellNum, dir);
-        this.api = _global.API;
-        this._gfxID = gfxID;
-        this.GameActionsManager = new dofus.managers.GameActionsManager(this, this.api);
-        this.CharacteristicsManager = new dofus.managers.CharacteristicsManager(this, this.api);
-        this.EffectsManager = new dofus.managers.EffectsManager(this, this.api);
-        if (sID == this.api.datacenter.Player.ID)
+        api = _global.API;
+        _gfxID = gfxID;
+        GameActionsManager = new dofus.managers.GameActionsManager(this, api);
+        CharacteristicsManager = new dofus.managers.CharacteristicsManager(this, api);
+        EffectsManager = new dofus.managers.EffectsManager(this, api);
+        if (sID == api.datacenter.Player.ID)
         {
-            this._ap = this.api.datacenter.Player.AP;
-            this._mp = this.api.datacenter.Player.MP;
+            _ap = api.datacenter.Player.AP;
+            _mp = api.datacenter.Player.MP;
         } // end if
         AsBroadcaster.initialize(this);
         mx.events.EventDispatcher.initialize(this);
-        this._states = new Object();
-    };
-    _loc1.updateLP = function (dLP)
+    } // End of the function
+    function updateLP(dLP)
     {
-        this.LP = this.LP + Number(dLP);
-        if (dLP < 0 && this.api.datacenter.Game.isFight)
-        {
-            this.LPmax = this.LPmax - Math.floor(-dLP * this.api.lang.getConfigText("PERMANENT_DAMAGE"));
-            if (this.api.datacenter.Player.ID == this.id)
-            {
-                this.api.datacenter.Player.LPmax = this.LPmax;
-                this.api.ui.getUIComponent("Banner").lpmaxChanged({value: this.LPmax});
-                this.api.ui.getUIComponent("StatJob").lpMaxChanged({value: this.LPmax});
-            } // end if
-            this.api.ui.getUIComponent("Timeline").timelineControl.updateCharacters();
-        } // end if
-        this.api.gfx.addSpritePoints(this.id, String(dLP), 16711680);
+        LP = LP + Number(dLP);
+        api.gfx.addSpritePoints(id, String(dLP), 16711680);
         if (dLP < 0)
         {
-            this.mc.setAnim("Hit");
+            mc.setAnim("Hit");
         } // end if
-    };
-    _loc1.initLP = function (Void)
+    } // End of the function
+    function initLP(Void)
     {
-        this.LP = this.LPmax;
-    };
-    _loc1.updateAP = function (dAP, bUsed)
+        this.__set__LP(LPmax);
+    } // End of the function
+    function updateAP(dAP, bUsed)
     {
         if (bUsed == undefined)
         {
             bUsed = false;
         } // end if
-        if (this.api.datacenter.Game.currentPlayerID != this.id && bUsed)
+        if (api.datacenter.Game.currentPlayerID != id && bUsed)
         {
             return;
         } // end if
-        this.AP = this.AP + Number(dAP);
-        this.AP = Math.max(0, this.AP);
-        this.api.gfx.addSpritePoints(this.id, String(dAP), 255);
-    };
-    _loc1.initAP = function (bWithModerator)
+        AP = AP + Number(dAP);
+        this.__set__AP(Math.max(0, this.__get__AP()));
+        api.gfx.addSpritePoints(id, String(dAP), 255);
+    } // End of the function
+    function initAP(bWithModerator)
     {
         if (bWithModerator == undefined)
         {
@@ -83,29 +64,29 @@ if (!dofus.datacenter.PlayableCharacter)
         } // end if
         if (bWithModerator)
         {
-            var _loc3 = this.CharacteristicsManager.getModeratorValue("1");
-            this.AP = Number(this.APinit) + Number(_loc3);
+            var _loc3 = CharacteristicsManager.getModeratorValue("1");
+            this.__set__AP(Number(this.__get__APinit()) + Number(_loc3));
         }
         else
         {
-            this.AP = Number(this.APinit);
+            this.__set__AP(Number(this.__get__APinit()));
         } // end else if
-    };
-    _loc1.updateMP = function (dMP, bUsed)
+    } // End of the function
+    function updateMP(dMP, bUsed)
     {
         if (bUsed == undefined)
         {
             bUsed = false;
         } // end if
-        if (this.api.datacenter.Game.currentPlayerID != this.id && bUsed)
+        if (api.datacenter.Game.currentPlayerID != id && bUsed)
         {
             return;
         } // end if
-        this.MP = this.MP + Number(dMP);
-        this.MP = Math.max(0, this.MP);
-        this.api.gfx.addSpritePoints(this.id, String(dMP), 26112);
-    };
-    _loc1.initMP = function (bWithModerator)
+        MP = MP + Number(dMP);
+        this.__set__MP(Math.max(0, this.__get__MP()));
+        api.gfx.addSpritePoints(id, String(dMP), 26112);
+    } // End of the function
+    function initMP(bWithModerator)
     {
         if (bWithModerator == undefined)
         {
@@ -113,151 +94,155 @@ if (!dofus.datacenter.PlayableCharacter)
         } // end if
         if (bWithModerator)
         {
-            var _loc3 = this.CharacteristicsManager.getModeratorValue("23");
-            this.MP = Number(this.MPinit) + Number(_loc3);
+            var _loc3 = CharacteristicsManager.getModeratorValue("23");
+            this.__set__MP(Number(this.__get__MPinit()) + Number(_loc3));
         }
         else
         {
-            this.MP = Number(this.MPinit);
+            this.__set__MP(Number(this.__get__MPinit()));
         } // end else if
-    };
-    _loc1.isInState = function (stateID)
+    } // End of the function
+    function get gfxID()
     {
-        return (this._states[stateID] == true);
-    };
-    _loc1.setState = function (stateID, bActivate)
+        return (_gfxID);
+    } // End of the function
+    function set gfxID(value)
     {
-        this._states[stateID] = bActivate;
-    };
-    _loc1.__get__gfxID = function ()
-    {
-        return (this._gfxID);
-    };
-    _loc1.__set__gfxID = function (value)
-    {
-        this._gfxID = value;
+        _gfxID = value;
         //return (this.gfxID());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this._name);
-    };
-    _loc1.__set__name = function (value)
+        return (_name);
+    } // End of the function
+    function set name(value)
     {
-        this._name = value;
+        _name = value;
         //return (this.name());
-    };
-    _loc1.__get__Level = function ()
+        null;
+    } // End of the function
+    function get Level()
     {
-        return (this._level);
-    };
-    _loc1.__set__Level = function (value)
+        return (_level);
+    } // End of the function
+    function set Level(value)
     {
-        this._level = Number(value);
+        _level = Number(value);
         this.broadcastMessage("onSetLevel", value);
         //return (this.Level());
-    };
-    _loc1.__get__XP = function ()
+        null;
+    } // End of the function
+    function get XP()
     {
-        return (this._xp);
-    };
-    _loc1.__set__XP = function (value)
+        return (_xp);
+    } // End of the function
+    function set XP(value)
     {
-        this._xp = Number(value);
+        _xp = Number(value);
         this.broadcastMessage("onSetXP", value);
         //return (this.XP());
-    };
-    _loc1.__get__LP = function ()
+        null;
+    } // End of the function
+    function get LP()
     {
-        return (this._lp);
-    };
-    _loc1.__set__LP = function (value)
+        return (_lp);
+    } // End of the function
+    function set LP(value)
     {
-        this._lp = Number(value) > 0 ? (Number(value)) : (0);
+        _lp = Number(value) > 0 ? (Number(value)) : (0);
         this.dispatchEvent({type: "lpChanged", value: value});
-        this.broadcastMessage("onSetLP", value, this.LPmax);
+        this.broadcastMessage("onSetLP", value, this.__get__LPmax());
         //return (this.LP());
-    };
-    _loc1.__get__LPmax = function ()
+        null;
+    } // End of the function
+    function get LPmax()
     {
-        return (this._lpmax);
-    };
-    _loc1.__set__LPmax = function (value)
+        return (_lpmax);
+    } // End of the function
+    function set LPmax(value)
     {
-        this._lpmax = Number(value);
-        this.broadcastMessage("onSetLP", this.LP, value);
+        _lpmax = Number(value);
+        this.broadcastMessage("onSetLP", this.__get__LP(), value);
         //return (this.LPmax());
-    };
-    _loc1.__get__AP = function ()
+        null;
+    } // End of the function
+    function get AP()
     {
-        return (this._ap);
-    };
-    _loc1.__set__AP = function (value)
+        return (_ap);
+    } // End of the function
+    function set AP(value)
     {
-        this._ap = Number(value);
+        _ap = Number(value);
         this.dispatchEvent({type: "apChanged", value: value});
         this.broadcastMessage("onSetAP", value);
         //return (this.AP());
-    };
-    _loc1.__get__APinit = function ()
+        null;
+    } // End of the function
+    function get APinit()
     {
-        return (this._apinit);
-    };
-    _loc1.__set__APinit = function (value)
+        return (_apinit);
+    } // End of the function
+    function set APinit(value)
     {
-        this._apinit = Number(value);
+        _apinit = Number(value);
         //return (this.APinit());
-    };
-    _loc1.__get__MP = function ()
+        null;
+    } // End of the function
+    function get MP()
     {
-        return (this._mp);
-    };
-    _loc1.__set__MP = function (value)
+        return (_mp);
+    } // End of the function
+    function set MP(value)
     {
-        this._mp = Number(value);
+        _mp = Number(value);
         this.dispatchEvent({type: "mpChanged", value: value});
         this.broadcastMessage("onSetMP", value);
         //return (this.MP());
-    };
-    _loc1.__get__MPinit = function ()
+        null;
+    } // End of the function
+    function get MPinit()
     {
-        return (this._mpinit);
-    };
-    _loc1.__set__MPinit = function (value)
+        return (_mpinit);
+    } // End of the function
+    function set MPinit(value)
     {
-        this._mpinit = Number(value);
+        _mpinit = Number(value);
         //return (this.MPinit());
-    };
-    _loc1.__get__Kama = function ()
+        null;
+    } // End of the function
+    function get Kama()
     {
-        return (this._kama);
-    };
-    _loc1.__set__Kama = function (value)
+        return (_kama);
+    } // End of the function
+    function set Kama(value)
     {
-        this._kama = Number(value);
+        _kama = Number(value);
         this.broadcastMessage("onSetKama", value);
         //return (this.Kama());
-    };
-    _loc1.__get__Team = function ()
+        null;
+    } // End of the function
+    function get Team()
     {
-        return (this._team);
-    };
-    _loc1.__set__Team = function (value)
+        return (_team);
+    } // End of the function
+    function set Team(value)
     {
-        this._team = Number(value);
+        _team = Number(value);
         //return (this.Team());
-    };
-    _loc1.__get__Weapon = function ()
+        null;
+    } // End of the function
+    function get Weapon()
     {
-        return (this._aAccessories[0]);
-    };
-    _loc1.__get__ToolAnimation = function ()
+        return (_aAccessories[0]);
+    } // End of the function
+    function get ToolAnimation()
     {
-        var _loc2 = this.Weapon.unicID;
-        var _loc3 = this.api.lang.getItemUnicText(_loc2);
-        if (_loc3.an == undefined)
+        var _loc3 = Weapon.unicID;
+        var _loc2 = api.lang.getItemUnicText(_loc3);
+        if (_loc2.an == undefined)
         {
-            if (this.api.datacenter.Game.isFight)
+            if (api.datacenter.Game.isFight)
             {
                 return ("anim0");
             }
@@ -268,52 +253,12 @@ if (!dofus.datacenter.PlayableCharacter)
         }
         else
         {
-            return ("anim" + _loc3.an);
+            return ("anim" + _loc2.an);
         } // end else if
-    };
-    _loc1.__get__artworkFile = function ()
+    } // End of the function
+    function get artworkFile()
     {
-        return (dofus.Constants.ARTWORKS_BIG_PATH + this._gfxID + ".swf");
-    };
-    _loc1.__get__states = function ()
-    {
-        return (this._states);
-    };
-    _loc1.__set__isSummoned = function (bIsSummoned)
-    {
-        this._summoned = bIsSummoned;
-        //return (this.isSummoned());
-    };
-    _loc1.__get__isSummoned = function (bIsSummoned)
-    {
-        return (this._summoned);
-    };
-    _loc1.addProperty("MPinit", _loc1.__get__MPinit, _loc1.__set__MPinit);
-    _loc1.addProperty("MP", _loc1.__get__MP, _loc1.__set__MP);
-    _loc1.addProperty("Kama", _loc1.__get__Kama, _loc1.__set__Kama);
-    _loc1.addProperty("LPmax", _loc1.__get__LPmax, _loc1.__set__LPmax);
-    _loc1.addProperty("Weapon", _loc1.__get__Weapon, function ()
-    {
-    });
-    _loc1.addProperty("Level", _loc1.__get__Level, _loc1.__set__Level);
-    _loc1.addProperty("artworkFile", _loc1.__get__artworkFile, function ()
-    {
-    });
-    _loc1.addProperty("Team", _loc1.__get__Team, _loc1.__set__Team);
-    _loc1.addProperty("gfxID", _loc1.__get__gfxID, _loc1.__set__gfxID);
-    _loc1.addProperty("isSummoned", _loc1.__get__isSummoned, _loc1.__set__isSummoned);
-    _loc1.addProperty("states", _loc1.__get__states, function ()
-    {
-    });
-    _loc1.addProperty("LP", _loc1.__get__LP, _loc1.__set__LP);
-    _loc1.addProperty("name", _loc1.__get__name, _loc1.__set__name);
-    _loc1.addProperty("AP", _loc1.__get__AP, _loc1.__set__AP);
-    _loc1.addProperty("APinit", _loc1.__get__APinit, _loc1.__set__APinit);
-    _loc1.addProperty("ToolAnimation", _loc1.__get__ToolAnimation, function ()
-    {
-    });
-    _loc1.addProperty("XP", _loc1.__get__XP, _loc1.__set__XP);
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._summoned = false;
-} // end if
+        return (dofus.Constants.ARTWORKS_BIG_PATH + _gfxID + ".swf");
+    } // End of the function
+} // End of Class
 #endinitclip

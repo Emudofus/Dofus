@@ -1,114 +1,82 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20551]
-#initclip 72
-if (!dofus.datacenter.Exchange)
+// [Initial MovieClip Action of sprite 934]
+#initclip 146
+class dofus.datacenter.Exchange extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Exchange = function (nDistantPlayerID)
+    var _eaInventory, __get__inventory, _eaLocalGarbage, _eaDistantGarbage, _eaReadyStates, _nDistantPlayerID, dispatchEvent, __get__localKama, __get__distantKama, __get__distantGarbage, __set__distantKama, __get__distantPlayerID, __set__inventory, __get__localGarbage, __set__localKama, __get__readyStates;
+    function Exchange(nDistantPlayerID)
     {
         super();
         this.initialize(nDistantPlayerID);
-    }).prototype;
-    _loc1.__set__inventory = function (eaInventory)
+    } // End of the function
+    function set inventory(eaInventory)
     {
-        this._eaInventory = eaInventory;
+        _eaInventory = eaInventory;
         //return (this.inventory());
-    };
-    _loc1.__get__inventory = function ()
+        null;
+    } // End of the function
+    function get inventory()
     {
-        return (this._eaInventory);
-    };
-    _loc1.__get__localGarbage = function ()
+        return (_eaInventory);
+    } // End of the function
+    function get localGarbage()
     {
-        return (this._eaLocalGarbage);
-    };
-    _loc1.__get__distantGarbage = function ()
+        return (_eaLocalGarbage);
+    } // End of the function
+    function get distantGarbage()
     {
-        return (this._eaDistantGarbage);
-    };
-    _loc1.__get__coopGarbage = function ()
+        return (_eaDistantGarbage);
+    } // End of the function
+    function get readyStates()
     {
-        return (this._eaCoopGarbage);
-    };
-    _loc1.__get__readyStates = function ()
+        return (_eaReadyStates);
+    } // End of the function
+    function get distantPlayerID()
     {
-        return (this._eaReadyStates);
-    };
-    _loc1.__get__distantPlayerID = function ()
+        return (_nDistantPlayerID);
+    } // End of the function
+    function set localKama(nLocalKama)
     {
-        return (this._nDistantPlayerID);
-    };
-    _loc1.__set__localKama = function (nLocalKama)
-    {
-        this._nLocalKama = nLocalKama;
+        _nLocalKama = nLocalKama;
         this.dispatchEvent({type: "localKamaChange", value: nLocalKama});
         //return (this.localKama());
-    };
-    _loc1.__get__localKama = function ()
+        null;
+    } // End of the function
+    function get localKama()
     {
-        return (this._nLocalKama);
-    };
-    _loc1.__set__distantKama = function (nDistantKama)
+        return (_nLocalKama);
+    } // End of the function
+    function set distantKama(nDistantKama)
     {
-        this._nDistantKama = nDistantKama;
+        _nDistantKama = nDistantKama;
         this.dispatchEvent({type: "distantKamaChange", value: nDistantKama});
         //return (this.distantKama());
-    };
-    _loc1.__get__distantKama = function ()
+        null;
+    } // End of the function
+    function get distantKama()
     {
-        return (this._nDistantKama);
-    };
-    _loc1.initialize = function (nDistantPlayerID)
+        return (_nDistantKama);
+    } // End of the function
+    function initialize(nDistantPlayerID)
     {
         mx.events.EventDispatcher.initialize(this);
-        this._nDistantPlayerID = nDistantPlayerID;
-        this._eaLocalGarbage = new ank.utils.ExtendedArray();
-        this._eaDistantGarbage = new ank.utils.ExtendedArray();
-        this._eaCoopGarbage = new ank.utils.ExtendedArray();
-        this._eaReadyStates = new ank.utils.ExtendedArray();
-        this._eaReadyStates[0] = false;
-        this._eaReadyStates[1] = false;
-    };
-    _loc1.clearLocalGarbage = function ()
+        _nDistantPlayerID = nDistantPlayerID;
+        _eaLocalGarbage = new ank.utils.ExtendedArray();
+        _eaDistantGarbage = new ank.utils.ExtendedArray();
+        _eaReadyStates = new ank.utils.ExtendedArray();
+        _eaReadyStates[0] = false;
+        _eaReadyStates[1] = false;
+    } // End of the function
+    function clearLocalGarbage()
     {
-        this._eaLocalGarbage.removeAll();
-    };
-    _loc1.clearDistantGarbage = function ()
+        _eaLocalGarbage.removeAll();
+    } // End of the function
+    function clearDistantGarbage()
     {
-        this._eaDistantGarbage.removeAll();
-    };
-    _loc1.clearCoopGarbage = function ()
-    {
-        this._eaCoopGarbage.removeAll();
-    };
-    _loc1.addProperty("distantKama", _loc1.__get__distantKama, _loc1.__set__distantKama);
-    _loc1.addProperty("localKama", _loc1.__get__localKama, _loc1.__set__localKama);
-    _loc1.addProperty("distantPlayerID", _loc1.__get__distantPlayerID, function ()
-    {
-    });
-    _loc1.addProperty("readyStates", _loc1.__get__readyStates, function ()
-    {
-    });
-    _loc1.addProperty("inventory", _loc1.__get__inventory, _loc1.__set__inventory);
-    _loc1.addProperty("localGarbage", _loc1.__get__localGarbage, function ()
-    {
-    });
-    _loc1.addProperty("coopGarbage", _loc1.__get__coopGarbage, function ()
-    {
-    });
-    _loc1.addProperty("distantGarbage", _loc1.__get__distantGarbage, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._nLocalKama = 0;
-    _loc1._nDistantKama = 0;
-} // end if
+        _eaDistantGarbage.removeAll();
+    } // End of the function
+    var _nLocalKama = 0;
+    var _nDistantKama = 0;
+} // End of Class
 #endinitclip

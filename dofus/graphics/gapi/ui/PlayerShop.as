@@ -1,153 +1,113 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20650]
-#initclip 171
-if (!dofus.graphics.gapi.ui.PlayerShop)
+// [Initial MovieClip Action of sprite 822]
+#initclip 31
+class dofus.graphics.gapi.ui.PlayerShop extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.PlayerShop = function ()
+    var _oData, __get__data, api, addToQueue, _livInventory, _livInventory2, _btnBuy, _btnClose, _winInventory, _winInventory2, _ldrArtwork, _itvItemViewer, _winItemViewer, _oSelectedItem, _mcBuyArrow, gapi, __set__data;
+    function PlayerShop()
     {
         super();
-    }).prototype;
-    _loc1.__set__data = function (oData)
+    } // End of the function
+    function set data(oData)
     {
-        this._oData = oData;
+        _oData = oData;
         //return (this.data());
-    };
-    _loc1.__set__colors = function (aColors)
-    {
-        this._colors = aColors;
-        //return (this.colors());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.PlayerShop.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Exchange.leave();
+        api.network.Exchange.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
         this.hideItemViewer(true);
         this.setBuyMode(false);
-    };
-    _loc1.addListeners = function ()
+    } // End of the function
+    function addListeners()
     {
-        this._livInventory.addEventListener("selectedItem", this);
-        this._livInventory2.addEventListener("selectedItem", this);
-        this._btnBuy.addEventListener("click", this);
-        this._btnClose.addEventListener("click", this);
-        this._ldrArtwork.addEventListener("complete", this);
-        if (this._oData != undefined)
+        _livInventory.addEventListener("selectedItem", this);
+        _livInventory2.addEventListener("selectedItem", this);
+        _btnBuy.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+        if (_oData != undefined)
         {
-            this._oData.addEventListener("modelChanged", this);
+            _oData.addEventListener("modelChanged", this);
         }
         else
         {
             ank.utils.Logger.err("[PlayerShop] il n\'y a pas de data");
         } // end else if
-    };
-    _loc1.initTexts = function ()
+    } // End of the function
+    function initTexts()
     {
-        this._btnBuy.label = this.api.lang.getText("BUY");
-        this._winInventory.title = this.api.datacenter.Player.data.name;
-        this._winInventory2.title = this._oData.name;
-    };
-    _loc1.initData = function ()
+        _btnBuy.__set__label(api.lang.getText("BUY"));
+        _winInventory.__set__title(api.datacenter.Player.data.name);
+        _winInventory2.__set__title(_oData.name);
+    } // End of the function
+    function initData()
     {
-        this._livInventory.dataProvider = this.api.datacenter.Player.Inventory;
-        this._livInventory.kamasProvider = this.api.datacenter.Player;
-        this._ldrArtwork.contentPath = dofus.Constants.ARTWORKS_BIG_PATH + this._oData.gfx + ".swf";
+        _livInventory.__set__dataProvider(api.datacenter.Player.Inventory);
+        _livInventory.__set__kamasProvider(api.datacenter.Player);
+        _ldrArtwork.__set__contentPath(dofus.Constants.ARTWORKS_BIG_PATH + _oData.gfx + ".swf");
         this.modelChanged();
-    };
-    _loc1.hideItemViewer = function (bHide)
+    } // End of the function
+    function hideItemViewer(bHide)
     {
-        this._itvItemViewer._visible = !bHide;
-        this._winItemViewer._visible = !bHide;
+        _itvItemViewer._visible = !bHide;
+        _winItemViewer._visible = !bHide;
         if (bHide)
         {
-            this._oSelectedItem = undefined;
+            _oSelectedItem = undefined;
         } // end if
-    };
-    _loc1.setBuyMode = function (bActive)
+    } // End of the function
+    function setBuyMode(bActive)
     {
-        this._btnBuy._visible = bActive;
-        this._mcBuyArrow._visible = bActive;
-    };
-    _loc1.askQuantity = function (nQte, nPrice)
+        _btnBuy._visible = bActive;
+        _mcBuyArrow._visible = bActive;
+    } // End of the function
+    function askQuantity()
     {
-        var _loc4 = Math.floor(this.api.datacenter.Player.Kama / nPrice);
-        if (_loc4 > nQte)
-        {
-            _loc4 = nQte;
-        } // end if
-        var _loc5 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1, max: _loc4, min: 1});
-        _loc5.addEventListener("validate", this);
-    };
-    _loc1.validateBuy = function (nQuantity)
+        var _loc2 = gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1});
+        _loc2.addEventListener("validate", this);
+    } // End of the function
+    function validateBuy(nQuantity)
     {
         if (nQuantity <= 0)
         {
             return;
         } // end if
-        nQuantity = Math.min(this._oSelectedItem.Quantity, nQuantity);
-        if (this.api.datacenter.Player.Kama < this._oSelectedItem.price * nQuantity)
+        nQuantity = Math.min(_oSelectedItem.Quantity, nQuantity);
+        if (api.datacenter.Player.Kama < _oSelectedItem.price * nQuantity)
         {
-            this.gapi.loadUIComponent("AskOk", "AskOkRich", {title: this.api.lang.getText("ERROR_WORD"), text: this.api.lang.getText("NOT_ENOUGH_RICH")});
+            gapi.loadUIComponent("AskOk", "AskOkRich", {title: api.lang.getText("ERROR_WORD"), text: api.lang.getText("NOT_ENOUGH_RICH")});
             return;
         } // end if
-        this.api.network.Exchange.buy(this._oSelectedItem.ID, nQuantity);
+        api.network.Exchange.buy(_oSelectedItem.ID, nQuantity);
         this.hideItemViewer(true);
         this.setBuyMode(false);
-    };
-    _loc1.applyColor = function (mc, zone)
+    } // End of the function
+    function modelChanged(oEvent)
     {
-        var _loc4 = this._colors[zone];
-        if (_loc4 == -1 || _loc4 == undefined)
-        {
-            return;
-        } // end if
-        var _loc5 = (_loc4 & 16711680) >> 16;
-        var _loc6 = (_loc4 & 65280) >> 8;
-        var _loc7 = _loc4 & 255;
-        var _loc8 = new Color(mc);
-        var _loc9 = new Object();
-        _loc9 = {ra: 0, ga: 0, ba: 0, rb: _loc5, gb: _loc6, bb: _loc7};
-        _loc8.setTransform(_loc9);
-    };
-    _loc1.modelChanged = function (oEvent)
-    {
-        this._livInventory2.dataProvider = this._oData.inventory;
-    };
-    _loc1.click = function (oEvent)
+        _livInventory2.__set__dataProvider(_oData.inventory);
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnBuy":
             {
-                if (this._oSelectedItem.Quantity > 1)
+                if (_oSelectedItem.Quantity > 1)
                 {
-                    this.askQuantity(this._oSelectedItem.Quantity, this._oSelectedItem.price);
+                    this.askQuantity();
                 }
                 else
                 {
@@ -161,8 +121,8 @@ if (!dofus.graphics.gapi.ui.PlayerShop)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.selectedItem = function (oEvent)
+    } // End of the function
+    function selectedItem(oEvent)
     {
         if (oEvent.item == undefined)
         {
@@ -171,49 +131,30 @@ if (!dofus.graphics.gapi.ui.PlayerShop)
         }
         else
         {
-            this._oSelectedItem = oEvent.item;
+            _oSelectedItem = oEvent.item;
             this.hideItemViewer(false);
-            this._itvItemViewer.itemData = oEvent.item;
+            _itvItemViewer.__set__itemData(oEvent.item);
             switch (oEvent.target._name)
             {
                 case "_livInventory":
                 {
                     this.setBuyMode(false);
-                    this._livInventory2.setFilter(this._livInventory.currentFilterID);
+                    _livInventory2.setFilter(_livInventory.__get__currentFilterID());
                     break;
                 } 
                 case "_livInventory2":
                 {
                     this.setBuyMode(true);
-                    this._livInventory.setFilter(this._livInventory2.currentFilterID);
+                    _livInventory.setFilter(_livInventory2.__get__currentFilterID());
                     break;
                 } 
             } // End of switch
         } // end else if
-    };
-    _loc1.validate = function (oEvent)
+    } // End of the function
+    function validate(oEvent)
     {
         this.validateBuy(oEvent.value);
-        
-    };
-    _loc1.complete = function (oEvent)
-    {
-        var ref = this;
-        this._ldrArtwork.content.stringCourseColor = function (mc, z)
-        {
-            ref.applyColor(mc, z);
-        };
-    };
-    _loc1.addProperty("colors", function ()
-    {
-    }, _loc1.__set__colors);
-    _loc1.addProperty("data", function ()
-    {
-    }, _loc1.__set__data);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.PlayerShop = function ()
-    {
-        super();
-    }).CLASS_NAME = "PlayerShop";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "PlayerShop";
+} // End of Class
 #endinitclip

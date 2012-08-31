@@ -1,113 +1,85 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20784]
-#initclip 49
-if (!dofus.graphics.gapi.controls.QuestionViewer)
+// [Initial MovieClip Action of sprite 999]
+#initclip 216
+class dofus.graphics.gapi.controls.QuestionViewer extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.QuestionViewer = function ()
+    var _oQuestion, addToQueue, __get__question, _bFirstQuestion, __get__isFirstQuestion, _lstResponses, getStyle, _parent, _txtQuestion, setSize, dispatchEvent, __set__isFirstQuestion, __set__question;
+    function QuestionViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__question = function (oQuestion)
+    } // End of the function
+    function set question(oQuestion)
     {
-        this._oQuestion = oQuestion;
-        this.addToQueue({object: this, method: this.layoutContent});
+        _oQuestion = oQuestion;
+        this.addToQueue({object: this, method: layoutContent});
         //return (this.question());
-    };
-    _loc1.__set__isFirstQuestion = function (bFirstQuestion)
+        null;
+    } // End of the function
+    function set isFirstQuestion(bFirstQuestion)
     {
-        this._bFirstQuestion = bFirstQuestion;
+        _bFirstQuestion = bFirstQuestion;
         //return (this.isFirstQuestion());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.QuestionViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._lstResponses._visible = false;
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.draw = function ()
+        _lstResponses._visible = false;
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-    };
-    _loc1.layoutContent = function ()
+    } // End of the function
+    function layoutContent()
     {
-        if (this._bFirstQuestion)
+        var _loc2;
+        if (_bFirstQuestion)
         {
-            var _loc2 = this._oQuestion.responses;
+            _loc2 = _oQuestion.responses;
         }
-        else if (this._oQuestion.responses.length == 0)
+        else if (_oQuestion.responses.length == 0)
         {
             var _loc3 = new ank.utils.ExtendedArray();
-            _loc3.push({label: this._parent.api.lang.getText("CONTINUE_TO_SPEAK"), id: -1});
+            _loc3.push({label: _parent.api.lang.getText("CONTINUE_TO_SPEAK"), id: -1});
             _loc2 = _loc3;
         }
         else
         {
-            _loc2 = this._oQuestion.responses;
+            _loc2 = _oQuestion.responses;
         } // end else if
         var _loc4 = _loc2.length;
-        this._lstResponses.removeAll();
-        this._lstResponses.setSize(undefined, dofus.graphics.gapi.controls.QuestionViewer.RESPONSE_HEIGHT * _loc4);
-        this.addToQueue({object: this, method: this.addResponses, params: [_loc2]});
-        this._txtQuestion.text = this._oQuestion.label;
-    };
-    _loc1.addListeners = function ()
+        _lstResponses.removeAll();
+        _lstResponses.setSize(undefined, dofus.graphics.gapi.controls.QuestionViewer.RESPONSE_HEIGHT * _loc4);
+        this.addToQueue({object: this, method: addResponses, params: [_loc2]});
+        _txtQuestion.__set__text(_oQuestion.label);
+    } // End of the function
+    function addListeners()
     {
-        this._lstResponses.addEventListener("itemSelected", this);
-        this._txtQuestion.addEventListener("change", this);
-    };
-    _loc1.addResponses = function (eaResp)
+        _lstResponses.addEventListener("itemSelected", this);
+        _txtQuestion.addEventListener("change", this);
+    } // End of the function
+    function addResponses(eaResp)
     {
-        this._lstResponses.dataProvider = eaResp;
-    };
-    _loc1.change = function (oEvent)
+        _lstResponses.__set__dataProvider(eaResp);
+    } // End of the function
+    function change(oEvent)
     {
-        this._lstResponses._y = this._txtQuestion._y + dofus.graphics.gapi.controls.QuestionViewer.QUESTION_RESPONSE_SPACE + this._txtQuestion.height;
-        this._lstResponses._visible = true;
-        this.setSize(undefined, this._lstResponses._y + this._lstResponses.height);
+        _lstResponses._y = _txtQuestion._y + dofus.graphics.gapi.controls.QuestionViewer.QUESTION_RESPONSE_SPACE + _txtQuestion.__get__height();
+        _lstResponses._visible = true;
+        this.setSize(undefined, _lstResponses._y + _lstResponses.__get__height());
         this.dispatchEvent({type: "resize"});
-    };
-    _loc1.itemSelected = function (oEvent)
+    } // End of the function
+    function itemSelected(oEvent)
     {
-        this.dispatchEvent({type: "response", response: oEvent.row.item});
-    };
-    _loc1.addProperty("isFirstQuestion", function ()
-    {
-    }, _loc1.__set__isFirstQuestion);
-    _loc1.addProperty("question", function ()
-    {
-    }, _loc1.__set__question);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.QuestionViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "QuestionViewer";
-    (_global.dofus.graphics.gapi.controls.QuestionViewer = function ()
-    {
-        super();
-    }).RESPONSE_HEIGHT = 30;
-    (_global.dofus.graphics.gapi.controls.QuestionViewer = function ()
-    {
-        super();
-    }).QUESTION_RESPONSE_SPACE = 20;
-} // end if
+        this.dispatchEvent({type: "response", response: oEvent.target.item});
+    } // End of the function
+    static var CLASS_NAME = "QuestionViewer";
+    static var RESPONSE_HEIGHT = 30;
+    static var QUESTION_RESPONSE_SPACE = 20;
+} // End of Class
 #endinitclip

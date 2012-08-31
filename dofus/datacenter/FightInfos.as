@@ -1,151 +1,121 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20480]
-#initclip 1
-if (!dofus.datacenter.FightInfos)
+// [Initial MovieClip Action of sprite 964]
+#initclip 176
+class dofus.datacenter.FightInfos extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.FightInfos = function (nID, nDuration)
+    var _nID, duration, api, _eaTeam1Players, _eaTeam2Players, _nTeam1AlignmentIndex, _nTeam1Type, _nTeam1Count, _nTeam2AlignmentIndex, _nTeam2Type, _nTeam2Count, __get__durationString, __get__hasTeamPlayers, __get__id, __get__team1Count, __get__team1IconFile, __get__team1Level, __get__team1Players, __get__team2Count, __get__team2IconFile, __get__team2Level, __get__team2Players;
+    function FightInfos(nID, nDuration)
     {
         super();
         this.initialize(nID, nDuration);
-    }).prototype;
-    _loc1.__get__id = function ()
+    } // End of the function
+    function get id()
     {
-        return (this._nID);
-    };
-    _loc1.__get__durationString = function ()
+        return (_nID);
+    } // End of the function
+    function get durationString()
     {
-        return (this.api.kernel.GameManager.getDurationString(this.duration));
-    };
-    _loc1.__get__hasTeamPlayers = function ()
+        if (duration <= 0)
+        {
+            return ("-");
+        }
+        else
+        {
+            var _loc2 = new Date();
+            _loc2.setTime(duration);
+            var _loc3 = _loc2.getUTCHours();
+            var _loc4 = _loc2.getUTCMinutes();
+            return ((_loc3 != 0 ? (_loc3 + " " + api.lang.getText("HOURS_SMALL") + " ") : ("")) + _loc4 + " " + api.lang.getText("MINUTES_SMALL"));
+        } // end else if
+    } // End of the function
+    function get hasTeamPlayers()
     {
-        return (this._eaTeam1Players != undefined && this._eaTeam2Players != undefined);
-    };
-    _loc1.__get__team1IconFile = function ()
+        return (_eaTeam1Players != undefined && _eaTeam2Players != undefined);
+    } // End of the function
+    function get team1IconFile()
     {
-        return (dofus.Constants.getTeamFileFromType(this._nTeam1Type, this._nTeam1AlignmentIndex));
-    };
-    _loc1.__get__team1Count = function ()
+        return (dofus.Constants.getTeamFileFromType(_nTeam1Type, _nTeam1AlignmentIndex));
+    } // End of the function
+    function get team1Count()
     {
-        return (this._nTeam1Count);
-    };
-    _loc1.__get__team1Players = function ()
+        return (_nTeam1Count);
+    } // End of the function
+    function get team1Players()
     {
-        return (this._eaTeam1Players);
-    };
-    _loc1.__get__team1Level = function ()
+        return (_eaTeam1Players);
+    } // End of the function
+    function get team1Level()
     {
         var _loc2 = 0;
-        for (var k in this._eaTeam1Players)
+        for (var _loc3 in _eaTeam1Players)
         {
-            _loc2 = _loc2 + this._eaTeam1Players[k].level;
+            _loc2 = _loc2 + _eaTeam1Players[_loc3].level;
         } // end of for...in
         return (_loc2);
-    };
-    _loc1.__get__team2IconFile = function ()
+    } // End of the function
+    function get team2IconFile()
     {
-        return (dofus.Constants.getTeamFileFromType(this._nTeam2Type, this._nTeam2AlignmentIndex));
-    };
-    _loc1.__get__team2Count = function ()
+        return (dofus.Constants.getTeamFileFromType(_nTeam2Type, _nTeam2AlignmentIndex));
+    } // End of the function
+    function get team2Count()
     {
-        return (this._nTeam2Count);
-    };
-    _loc1.__get__team2Players = function ()
+        return (_nTeam2Count);
+    } // End of the function
+    function get team2Players()
     {
-        return (this._eaTeam2Players);
-    };
-    _loc1.__get__team2Level = function ()
+        return (_eaTeam2Players);
+    } // End of the function
+    function get team2Level()
     {
         var _loc2 = 0;
-        for (var k in this._eaTeam2Players)
+        for (var _loc3 in _eaTeam2Players)
         {
-            _loc2 = _loc2 + this._eaTeam2Players[k].level;
+            _loc2 = _loc2 + _eaTeam2Players[_loc3].level;
         } // end of for...in
         return (_loc2);
-    };
-    _loc1.initialize = function (nID, nDuration)
+    } // End of the function
+    function initialize(nID, nDuration)
     {
-        this.api = _global.API;
-        this._nID = nID;
-        this.duration = nDuration;
-    };
-    _loc1.addTeam = function (nIndex, nType, nAlignmentIndex, nCount)
+        api = _global.API;
+        _nID = nID;
+        duration = nDuration;
+    } // End of the function
+    function addTeam(nIndex, nType, nAlignmentIndex, nCount)
     {
         switch (nIndex)
         {
             case 1:
             {
-                this._nTeam1Type = nType;
-                this._nTeam1AlignmentIndex = nAlignmentIndex;
-                this._nTeam1Count = nCount;
+                _nTeam1Type = nType;
+                _nTeam1AlignmentIndex = nAlignmentIndex;
+                _nTeam1Count = nCount;
                 break;
             } 
             case 2:
             {
-                this._nTeam2Type = nType;
-                this._nTeam2AlignmentIndex = nAlignmentIndex;
-                this._nTeam2Count = nCount;
+                _nTeam2Type = nType;
+                _nTeam2AlignmentIndex = nAlignmentIndex;
+                _nTeam2Count = nCount;
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addPlayers = function (nIndex, eaPlayers)
+    } // End of the function
+    function addPlayers(nIndex, eaPlayers)
     {
         switch (nIndex)
         {
             case 1:
             {
-                this._eaTeam1Players = eaPlayers;
+                _eaTeam1Players = eaPlayers;
                 break;
             } 
             case 2:
             {
-                this._eaTeam2Players = eaPlayers;
+                _eaTeam2Players = eaPlayers;
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addProperty("team2Players", _loc1.__get__team2Players, function ()
-    {
-    });
-    _loc1.addProperty("team1Count", _loc1.__get__team1Count, function ()
-    {
-    });
-    _loc1.addProperty("team1IconFile", _loc1.__get__team1IconFile, function ()
-    {
-    });
-    _loc1.addProperty("team1Level", _loc1.__get__team1Level, function ()
-    {
-    });
-    _loc1.addProperty("team1Players", _loc1.__get__team1Players, function ()
-    {
-    });
-    _loc1.addProperty("team2IconFile", _loc1.__get__team2IconFile, function ()
-    {
-    });
-    _loc1.addProperty("team2Level", _loc1.__get__team2Level, function ()
-    {
-    });
-    _loc1.addProperty("team2Count", _loc1.__get__team2Count, function ()
-    {
-    });
-    _loc1.addProperty("durationString", _loc1.__get__durationString, function ()
-    {
-    });
-    _loc1.addProperty("id", _loc1.__get__id, function ()
-    {
-    });
-    _loc1.addProperty("hasTeamPlayers", _loc1.__get__hasTeamPlayers, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

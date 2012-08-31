@@ -1,82 +1,57 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20655]
-#initclip 176
-if (!dofus.graphics.gapi.ui.waypoints.WaypointsItem)
+// [Initial MovieClip Action of sprite 1081]
+#initclip 51
+class dofus.graphics.gapi.ui.waypoints.WaypointsItem extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui.waypoints)
-    {
-        _global.dofus.graphics.gapi.ui.waypoints = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.waypoints.WaypointsItem = function ()
+    var _mcList, __get__list, _oItem, _lblCost, _lblCoords, _lblName, _mcRespawn, _mcCurrent, _btnLocate, addToQueue, __set__list;
+    function WaypointsItem()
     {
         super();
-    }).prototype;
-    _loc1.__set__list = function (mcList)
+    } // End of the function
+    function set list(mcList)
     {
-        this._mcList = mcList;
+        _mcList = mcList;
         //return (this.list());
-    };
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+        null;
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
         if (bUsed)
         {
-            this._oItem = oItem;
-            this._lblCost.text = oItem.cost == 0 ? ("-") : (oItem.cost + "k");
-            this._lblCoords.text = oItem.coordinates;
-            this._lblName.text = oItem.name;
-            this._mcRespawn._visible = oItem.isRespawn;
-            this._mcCurrent._visible = oItem.isCurrent;
-            this._btnLocate._visible = true;
+            _oItem = oItem;
+            _lblCost.__set__text(oItem.cost == 0 ? ("-") : (oItem.cost + "k"));
+            _lblCoords.__set__text(oItem.coordinates);
+            _lblName.__set__text(oItem.name);
+            _mcRespawn._visible = oItem.isRespawn;
+            _mcCurrent._visible = oItem.isCurrent;
+            _btnLocate._visible = true;
         }
-        else if (this._lblCost.text != undefined)
+        else
         {
-            this._lblCost.text = "";
-            this._lblCoords.text = "";
-            this._lblName.text = "";
-            this._mcRespawn._visible = false;
-            this._mcCurrent._visible = false;
-            this._btnLocate._visible = false;
+            _lblCost.__set__text("");
+            _lblCoords.__set__text("");
+            _lblName.__set__text("");
+            _mcRespawn._visible = false;
+            _mcCurrent._visible = false;
+            _btnLocate._visible = false;
         } // end else if
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false);
-        this._mcRespawn._visible = false;
-        this._mcCurrent._visible = false;
-        this._btnLocate._visible = false;
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function addListeners()
     {
-        this._btnLocate.addEventListener("click", this);
-    };
-    _loc1.click = function (oEvent)
+        _btnLocate.addEventListener("click", this);
+    } // End of the function
+    function click(oEvent)
     {
-        this._mcList.gapi.loadUIAutoHideComponent("MapExplorer", "MapExplorer", {mapID: this._oItem.id});
-    };
-    _loc1.addProperty("list", function ()
-    {
-    }, _loc1.__set__list);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _mcList.gapi.loadUIAutoHideComponent("MapExplorer", "MapExplorer", {mapID: _oItem.id});
+    } // End of the function
+} // End of Class
 #endinitclip

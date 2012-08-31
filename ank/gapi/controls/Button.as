@@ -1,320 +1,255 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20979]
-#initclip 244
-if (!ank.gapi.controls.Button)
+// [Initial MovieClip Action of sprite 137]
+#initclip 7
+class ank.gapi.controls.Button extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.Button = function ()
+    var __get__label, _bSelected, _lblLabel, _mcIcon, _mcDown, _mcUp, __get__selected, __get__toggle, _sIcon, __get__initialized, __get__icon, __get__backgroundUp, __get__backgroundDown, attachMovie, __set__selected, getStyle, __height, __width, _bEnabled, setMovieClipTransform, _bInitialized, dispatchEvent, __set__backgroundDown, __set__backgroundUp, __set__icon, __get__iconClip, __set__label, __set__toggle;
+    function Button()
     {
         super();
-    }).prototype;
-    _loc1.__set__label = function (sLabel)
+    } // End of the function
+    function set label(sLabel)
     {
-        this._sLabel = sLabel;
+        _sLabel = sLabel;
         this.displayLabel();
         //return (this.label());
-    };
-    _loc1.__set__selected = function (bSelected)
+        null;
+    } // End of the function
+    function set selected(bSelected)
     {
-        if (this._bSelected != bSelected)
+        if (_bSelected != bSelected)
         {
-            this._lblLabel._x = this._lblLabel._x + (bSelected ? (5.000000E-001) : (-5.000000E-001));
-            this._lblLabel._y = this._lblLabel._y + (bSelected ? (5.000000E-001) : (-5.000000E-001));
-            this._mcIcon._x = this._mcIcon._x + (bSelected ? (5.000000E-001) : (-5.000000E-001));
-            this._mcIcon._y = this._mcIcon._y + (bSelected ? (5.000000E-001) : (-5.000000E-001));
-            this.dispatchEvent({type: "stateChanged", target: this, value: bSelected});
+            _lblLabel._x = _lblLabel._x + (bSelected ? (5.000000E-001) : (-5.000000E-001));
+            _lblLabel._y = _lblLabel._y + (bSelected ? (5.000000E-001) : (-5.000000E-001));
+            _mcIcon._x = _mcIcon._x + (bSelected ? (5.000000E-001) : (-5.000000E-001));
+            _mcIcon._y = _mcIcon._y + (bSelected ? (5.000000E-001) : (-5.000000E-001));
         } // end if
-        this._bSelected = bSelected;
-        this._mcDown._visible = this._bSelected;
-        this._mcUp._visible = !this._bSelected;
+        _bSelected = bSelected;
+        _mcDown._visible = _bSelected;
+        _mcUp._visible = !_bSelected;
         this.setLabelStyle();
         //return (this.selected());
-    };
-    _loc1.__get__selected = function ()
+        null;
+    } // End of the function
+    function get selected()
     {
-        return (this._bSelected);
-    };
-    _loc1.__set__toggle = function (bToggle)
+        return (_bSelected);
+    } // End of the function
+    function set toggle(bToggle)
     {
-        this._bToggle = bToggle;
+        _bToggle = bToggle;
         //return (this.toggle());
-    };
-    _loc1.__get__toggle = function ()
+        null;
+    } // End of the function
+    function get toggle()
     {
-        return (this._bToggle);
-    };
-    _loc1.__set__radio = function (bRadio)
+        return (_bToggle);
+    } // End of the function
+    function set icon(sIcon)
     {
-        this._bRadio = bRadio;
-        //return (this.radio());
-    };
-    _loc1.__get__radio = function ()
-    {
-        return (this._bRadio);
-    };
-    _loc1.__set__icon = function (sIcon)
-    {
-        this._sIcon = sIcon;
-        if (this.initialized)
+        _sIcon = sIcon;
+        if (this.__get__initialized())
         {
             this.displayIcon();
         } // end if
         //return (this.icon());
-    };
-    _loc1.__get__icon = function ()
+        null;
+    } // End of the function
+    function get icon()
     {
-        return (this._sIcon);
-    };
-    _loc1.__get__iconClip = function ()
+        return (_sIcon);
+    } // End of the function
+    function get iconClip()
     {
-        return (this._mcIcon);
-    };
-    _loc1.__set__backgroundUp = function (sBackgroundUp)
+        return (_mcIcon);
+    } // End of the function
+    function set backgroundUp(sBackgroundUp)
     {
-        this._sBackgroundUp = sBackgroundUp;
-        if (this.initialized)
-        {
-            this.drawBackgrounds();
-        } // end if
+        _sBackgroundUp = sBackgroundUp;
         //return (this.backgroundUp());
-    };
-    _loc1.__get__backgroundUp = function ()
+        null;
+    } // End of the function
+    function get backgroundUp()
     {
-        return (this._sBackgroundUp);
-    };
-    _loc1.__set__backgroundDown = function (sBackgroundDown)
+        return (_sBackgroundUp);
+    } // End of the function
+    function set backgroundDown(sBackgroundDown)
     {
-        this._sBackgroundDown = sBackgroundDown;
-        if (this.initialized)
-        {
-            this.drawBackgrounds();
-        } // end if
+        _sBackgroundDown = sBackgroundDown;
         //return (this.backgroundDown());
-    };
-    _loc1.__get__backgroundDown = function ()
+        null;
+    } // End of the function
+    function get backgroundDown()
     {
-        return (this._sBackgroundDown);
-    };
-    _loc1.setPreferedSize = function (nLabelPadding)
-    {
-        if (this._sLabel != "")
-        {
-            if (_global.isNaN(Number(nLabelPadding)))
-            {
-                this._nLabelPadding = 0;
-            }
-            else
-            {
-                this._nLabelPadding = Number(nLabelPadding);
-            } // end else if
-            this._lblLabel.setPreferedSize("left");
-            this.setSize(this._lblLabel.width + this._nLabelPadding * 2);
-        } // end if
-    };
-    _loc1.init = function ()
+        return (_sBackgroundDown);
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.Button.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
         super.createChildren();
-        this.drawBackgrounds();
-        this.selected = this._bSelected && this._bToggle;
-        this.attachMovie("Label", "_lblLabel", 30, {styleName: this.getStyle().labelupstyle});
-        this._lblLabel.addEventListener("change", this);
-        if (this._sLabel == undefined)
+        if (_sBackgroundDown != "none")
         {
-            this._sLabel = "Label";
+            this.attachMovie(_sBackgroundDown, "_mcDown", 10);
         } // end if
-    };
-    _loc1.draw = function ()
+        if (_sBackgroundUp != "none")
+        {
+            this.attachMovie(_sBackgroundUp, "_mcUp", 20);
+        } // end if
+        this.__set__selected(_bSelected && _bToggle);
+        this.attachMovie("Label", "_lblLabel", 30, {styleName: this.getStyle().labelupstyle});
+        _lblLabel.addEventListener("change", this);
+        if (_sLabel == undefined)
+        {
+            _sLabel = "Label";
+        } // end if
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
         this.setLabelStyle();
         this.displayLabel();
-        this._mcUp.setStyleColor(_loc2, "color");
-        this._mcDown.setStyleColor(_loc2, "downcolor");
-    };
-    _loc1.size = function ()
+        _mcUp.setStyleColor(_loc2, "color");
+        _mcDown.setStyleColor(_loc2, "downcolor");
+    } // End of the function
+    function size()
     {
         super.size();
         this.arrange();
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        var _loc2 = this._mcUp;
-        var _loc3 = this._mcDown;
-        _loc2.setSize(this.__width, this.__height, true);
-        _loc3.setSize(this.__width, this.__height, true);
+        var _loc3 = _mcUp;
+        var _loc2 = _mcDown;
+        _loc3.setSize(__width, __height, true);
+        _loc2.setSize(__width, __height, true);
         this.displayLabel();
         this.displayIcon();
-    };
-    _loc1.setEnabled = function ()
+    } // End of the function
+    function setEnabled()
     {
-        if (!this._bEnabled)
+        if (!_bEnabled)
         {
             this.setMovieClipTransform(this, this.getStyle().disabledtransform);
         }
         else
         {
-            this.setMovieClipTransform(this, {ra: 100, rb: 0, ga: 100, gb: 0, ba: 100, bb: 0});
+            this.setMovieClipTransform(this, {ra: 100, rb: 0, ga: 100, gb: 0, ba: 100, bb: 0, aa: 100, ab: 0});
         } // end else if
-    };
-    _loc1.drawBackgrounds = function ()
+    } // End of the function
+    function displayIcon()
     {
-        if (this._sBackgroundDown != "none")
+        if (_mcIcon != undefined)
         {
-            this.attachMovie(this._sBackgroundDown, "_mcDown", 10);
+            _mcIcon.removeMovieClip();
         } // end if
-        if (this._sBackgroundUp != "none")
-        {
-            this.attachMovie(this._sBackgroundUp, "_mcUp", 20);
-        } // end if
-    };
-    _loc1.displayIcon = function ()
-    {
-        if (this._mcIcon != undefined)
-        {
-            this._mcIcon.removeMovieClip();
-        } // end if
-        if (this._sIcon.length == 0)
+        if (_sIcon.length == 0)
         {
             return;
         } // end if
-        this.attachMovie(this._sIcon, "_mcIcon", 40);
-        var _loc2 = this._mcIcon.getBounds(this);
-        this._mcIcon._x = (this.__width - this._mcIcon._width) / 2 - _loc2.xMin;
-        this._mcIcon._y = (this.__height - this._mcIcon._height) / 2 - _loc2.yMin;
-    };
-    _loc1.setLabelStyle = function (bOver)
+        this.attachMovie(_sIcon, "_mcIcon", 40);
+        var _loc2 = _mcIcon.getBounds(this);
+        _mcIcon._x = (__width - _mcIcon._width) / 2 - _loc2.xMin;
+        _mcIcon._y = (__height - _mcIcon._height) / 2 - _loc2.yMin;
+    } // End of the function
+    function setLabelStyle(bOver)
     {
-        if (this._bSelected)
+        if (_bSelected)
         {
-            this._lblLabel.styleName = this.getStyle().labeldownstyle;
+            _lblLabel.__set__styleName(this.getStyle().labeldownstyle);
         }
         else if (bOver == true && this.getStyle().labeloverstyle != undefined)
         {
-            this._lblLabel.styleName = this.getStyle().labeloverstyle;
+            _lblLabel.__set__styleName(this.getStyle().labeloverstyle);
         }
         else
         {
-            this._lblLabel.styleName = this.getStyle().labelupstyle;
+            _lblLabel.__set__styleName(this.getStyle().labelupstyle);
         } // end else if
-    };
-    _loc1.displayLabel = function ()
+    } // End of the function
+    function displayLabel()
     {
-        this._lblLabel.text = this._sLabel;
-        if (this._bInitialized)
+        _lblLabel.__set__text(_sLabel);
+        if (_bInitialized)
         {
             this.placeLabel();
         } // end if
-    };
-    _loc1.placeLabel = function ()
+    } // End of the function
+    function placeLabel()
     {
-        this._lblLabel.setSize(this.__width - 2 * this._nLabelPadding, this._lblLabel.textHeight + 4);
-        if (this._sLabel.length == 0)
+        if (_sLabel.length == 0)
         {
-            this._lblLabel._visible = false;
+            _lblLabel._visible = false;
         }
         else
         {
-            this._lblLabel._visible = true;
-            this._lblLabel._x = (this.__width - this._lblLabel.width) / 2;
-            this._lblLabel._y = (this.__height - this._lblLabel.textHeight) / 2 - 4;
+            _lblLabel._visible = true;
+            _lblLabel._x = (__width - _lblLabel._width) / 2;
+            _lblLabel._y = (__height - _lblLabel.__get__textHeight()) / 2 - 4;
         } // end else if
-    };
-    _loc1.change = function (oEvent)
+        _lblLabel.setSize(__width, _lblLabel.__get__textHeight() + 4);
+    } // End of the function
+    function change(oEvent)
     {
         this.placeLabel();
-    };
-    _loc1.onPress = function ()
+    } // End of the function
+    function onPress()
     {
-        if (!this.selected && !this._bToggle)
+        if (!this.__get__selected() && !_bToggle)
         {
-            this.selected = true;
+            this.__set__selected(true);
         }
-        else if (this._bToggle && !this.selected)
+        else if (_bToggle && !this.__get__selected())
         {
-            this._mcUp._visible = false;
-            this._mcDown._visible = true;
+            _mcUp._visible = false;
+            _mcDown._visible = true;
         } // end else if
-    };
-    _loc1.onRelease = function ()
+    } // End of the function
+    function onRelease()
     {
-        if (this._bRadio)
+        if (_bToggle)
         {
-            this.selected = true;
-        }
-        else if (this._bToggle)
-        {
-            this.selected = !this.selected;
+            this.__set__selected(!this.__get__selected());
         }
         else
         {
-            this.selected = false;
+            this.__set__selected(false);
         } // end else if
-        this.dispatchEvent({type: "click"});
-    };
-    _loc1.onReleaseOutside = function ()
+        this.dispatchEvent({type: "click", target: this});
+    } // End of the function
+    function onReleaseOutside()
     {
-        if (this._bToggle)
+        if (_bToggle)
         {
-            if (!this.selected)
+            if (!this.__get__selected())
             {
-                this._mcUp._visible = true;
-                this._mcDown._visible = false;
+                _mcUp._visible = true;
+                _mcDown._visible = false;
             } // end if
         }
         else
         {
-            this.selected = false;
+            this.__set__selected(false);
         } // end else if
         this.onRollOut();
-    };
-    _loc1.onRollOver = function ()
+    } // End of the function
+    function onRollOver()
     {
         this.setLabelStyle(true);
         this.dispatchEvent({type: "over", target: this});
-    };
-    _loc1.onRollOut = function ()
+    } // End of the function
+    function onRollOut()
     {
         this.setLabelStyle(false);
         this.dispatchEvent({type: "out", target: this});
-    };
-    _loc1.addProperty("icon", _loc1.__get__icon, _loc1.__set__icon);
-    _loc1.addProperty("radio", _loc1.__get__radio, _loc1.__set__radio);
-    _loc1.addProperty("toggle", _loc1.__get__toggle, _loc1.__set__toggle);
-    _loc1.addProperty("selected", _loc1.__get__selected, _loc1.__set__selected);
-    _loc1.addProperty("backgroundDown", _loc1.__get__backgroundDown, _loc1.__set__backgroundDown);
-    _loc1.addProperty("label", function ()
-    {
-    }, _loc1.__set__label);
-    _loc1.addProperty("backgroundUp", _loc1.__get__backgroundUp, _loc1.__set__backgroundUp);
-    _loc1.addProperty("iconClip", _loc1.__get__iconClip, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.Button = function ()
-    {
-        super();
-    }).CLASS_NAME = "Button";
-    _loc1._bToggle = false;
-    _loc1._bRadio = false;
-    _loc1._sLabel = "";
-    _loc1._sBackgroundUp = "ButtonNormalUp";
-    _loc1._sBackgroundDown = "ButtonNormalDown";
-    _loc1._nLabelPadding = 0;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Button";
+    var _bToggle = false;
+    var _sLabel = "";
+    var _sBackgroundUp = "ButtonNormalUp";
+    var _sBackgroundDown = "ButtonNormalDown";
+} // End of Class
 #endinitclip

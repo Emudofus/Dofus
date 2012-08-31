@@ -1,47 +1,40 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20852]
-#initclip 117
-if (!dofus.datacenter.ItemSet)
+// [Initial MovieClip Action of sprite 826]
+#initclip 38
+class dofus.datacenter.ItemSet extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.ItemSet = function (nID, sEffects, aItemIDs)
+    var _nID, api, _aItems, _aEffects, _sEffects, __get__description, __get__effects, __get__id, __get__itemCount, __get__items, __get__name;
+    function ItemSet(nID, sEffects, aItemIDs)
     {
         super();
         this.initialize(nID, sEffects, aItemIDs);
-    }).prototype;
-    _loc1.__get__id = function ()
+    } // End of the function
+    function get id()
     {
-        return (this._nID);
-    };
-    _loc1.__get__name = function ()
+        return (_nID);
+    } // End of the function
+    function get name()
     {
-        return (this.api.lang.getItemSetText(this._nID).n);
-    };
-    _loc1.__get__description = function ()
+        return (api.lang.getItemSetText(_nID).n);
+    } // End of the function
+    function get description()
     {
-        return (this.api.lang.getItemSetText(this._nID).d);
-    };
-    _loc1.__get__itemCount = function ()
+        return (api.lang.getItemSetText(_nID).d);
+    } // End of the function
+    function get itemCount()
     {
-        return (this._aItems.length);
-    };
-    _loc1.__get__items = function ()
+        return (_aItems.length);
+    } // End of the function
+    function get items()
     {
-        return (this._aItems);
-    };
-    _loc1.__get__effects = function ()
+        return (_aItems);
+    } // End of the function
+    function get effects()
     {
-        return (dofus.datacenter.Item.getItemDescriptionEffects(this._aEffects));
-    };
-    _loc1.initialize = function (nID, sEffects, aItemIDs)
+        return (dofus.datacenter.Item.getItemDescriptionEffects(_aEffects));
+    } // End of the function
+    function initialize(nID, sEffects, aItemIDs)
     {
         if (sEffects == undefined)
         {
@@ -51,69 +44,46 @@ if (!dofus.datacenter.ItemSet)
         {
             aItemIDs = [];
         } // end if
-        this.api = _global.API;
-        this._nID = nID;
+        api = _global.API;
+        _nID = nID;
         this.setEffects(sEffects);
         this.setItems(aItemIDs);
-    };
-    _loc1.setEffects = function (compressedData)
+    } // End of the function
+    function setEffects(compressedData)
     {
-        this._sEffects = compressedData;
-        this._aEffects = new Array();
-        var _loc3 = compressedData.split(",");
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
+        _sEffects = compressedData;
+        _aEffects = new Array();
+        var _loc4 = compressedData.split(",");
+        for (var _loc3 = 0; _loc3 < _loc4.length; ++_loc3)
         {
-            var _loc5 = _loc3[_loc4].split("#");
-            _loc5[0] = _global.parseInt(_loc5[0], 16);
-            _loc5[1] = _loc5[1] == "0" ? (undefined) : (_global.parseInt(_loc5[1], 16));
-            _loc5[2] = _loc5[2] == "0" ? (undefined) : (_global.parseInt(_loc5[2], 16));
-            _loc5[3] = _loc5[3] == "0" ? (undefined) : (_global.parseInt(_loc5[3], 16));
-            this._aEffects.push(_loc5);
-        } // end while
-    };
-    _loc1.setItems = function (aItemIDs)
+            var _loc2 = _loc4[_loc3].split("#");
+            _loc2[0] = parseInt(_loc2[0], 16);
+            _loc2[1] = _loc2[1] == "0" ? (undefined) : (parseInt(_loc2[1], 16));
+            _loc2[2] = _loc2[2] == "0" ? (undefined) : (parseInt(_loc2[2], 16));
+            _loc2[3] = _loc2[3] == "0" ? (undefined) : (parseInt(_loc2[3], 16));
+            _aEffects.push(_loc2);
+        } // end of for
+    } // End of the function
+    function setItems(aItemIDs)
     {
-        var _loc3 = this.api.lang.getItemSetText(this._nID).i;
-        this._aItems = new Array();
-        var _loc4 = new Object();
-        for (var k in aItemIDs)
+        var _loc6 = api.lang.getItemSetText(_nID).i;
+        _aItems = new Array();
+        var _loc7 = new Object();
+        for (var _loc11 in aItemIDs)
         {
-            _loc4[aItemIDs[k]] = true;
+            _loc7[aItemIDs[_loc11]] = true;
         } // end of for...in
-        var _loc5 = 0;
-        
-        while (++_loc5, _loc5 < _loc3.length)
+        for (var _loc3 = 0; _loc3 < _loc6.length; ++_loc3)
         {
-            var _loc6 = Number(_loc3[_loc5]);
-            if (_global.isNaN(_loc6))
+            var _loc2 = Number(_loc6[_loc3]);
+            if (isNaN(_loc2))
             {
                 continue;
             } // end if
-            var _loc7 = new dofus.datacenter.Item(0, _loc6, 1);
-            var _loc8 = _loc4[_loc6] == true;
-            this._aItems.push({isEquiped: _loc8, item: _loc7});
-        } // end while
-    };
-    _loc1.addProperty("effects", _loc1.__get__effects, function ()
-    {
-    });
-    _loc1.addProperty("items", _loc1.__get__items, function ()
-    {
-    });
-    _loc1.addProperty("itemCount", _loc1.__get__itemCount, function ()
-    {
-    });
-    _loc1.addProperty("name", _loc1.__get__name, function ()
-    {
-    });
-    _loc1.addProperty("description", _loc1.__get__description, function ()
-    {
-    });
-    _loc1.addProperty("id", _loc1.__get__id, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+            var _loc4 = new dofus.datacenter.Item(0, _loc2, 1);
+            var _loc5 = _loc7[_loc2] == true;
+            _aItems.push({isEquiped: _loc5, item: _loc4});
+        } // end of for
+    } // End of the function
+} // End of Class
 #endinitclip

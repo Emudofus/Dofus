@@ -1,105 +1,46 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20857]
-#initclip 122
-if (!dofus.datacenter.Mutant)
+// [Initial MovieClip Action of sprite 879]
+#initclip 91
+class dofus.datacenter.Mutant extends dofus.datacenter.Character
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Mutant = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID, bShowIsPlayer)
+    var initialize, _nNameID, __get__name, api, _nPowerLevel, __get__powerLevel, __get__Level, __get__alignment, __set__name, __set__powerLevel, __get__resistances;
+    function Mutant(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super();
-        this._bShowIsPlayer = bShowIsPlayer != undefined ? (bShowIsPlayer) : (false);
         this.initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID);
-    }).prototype;
-    _loc1.__get__name = function ()
+    } // End of the function
+    function set name(nNameID)
     {
-        if (!this._bShowIsPlayer)
-        {
-            return (this.monsterName);
-        }
-        else
-        {
-            return (this._sPlayerName);
-        } // end else if
-    };
-    _loc1.__set__monsterID = function (n)
+        _nNameID = Number(nNameID);
+        //return (this.name());
+        null;
+    } // End of the function
+    function get name()
     {
-        this._nMonsterID = n;
-        //return (this.monsterID());
-    };
-    _loc1.__get__monsterID = function ()
-    {
-        return (this._nMonsterID);
-    };
-    _loc1.__set__playerName = function (n)
-    {
-        this._sPlayerName = n;
-        //return (this.playerName());
-    };
-    _loc1.__get__playerName = function ()
-    {
-        return (this._sPlayerName);
-    };
-    _loc1.__get__monsterName = function ()
-    {
-        return (this.api.lang.getMonstersText(this._nMonsterID).n);
-    };
-    _loc1.__get__alignment = function ()
+        return (api.lang.getMonstersText(_nNameID).n);
+    } // End of the function
+    function get alignment()
     {
         return (new dofus.datacenter.Alignment());
-    };
-    _loc1.__set__powerLevel = function (nPowerLevel)
+    } // End of the function
+    function set powerLevel(nPowerLevel)
     {
-        this._nPowerLevel = Number(nPowerLevel);
+        _nPowerLevel = Number(nPowerLevel);
         //return (this.powerLevel());
-    };
-    _loc1.__get__powerLevel = function ()
+        null;
+    } // End of the function
+    function get powerLevel()
     {
-        return (this._nPowerLevel);
-    };
-    _loc1.__get__Level = function ()
+        return (_nPowerLevel);
+    } // End of the function
+    function get Level()
     {
-        return (this.api.lang.getMonstersText(this._nMonsterID)["g" + this._nPowerLevel].l);
-    };
-    _loc1.__get__resistances = function ()
+        return (api.lang.getMonstersText(_nNameID)["g" + _nPowerLevel].l);
+    } // End of the function
+    function get resistances()
     {
-        return (this.api.lang.getMonstersText(this._nMonsterID)["g" + this._nPowerLevel].r);
-    };
-    _loc1.__set__showIsPlayer = function (b)
-    {
-        this._bShowIsPlayer = b;
-        //return (this.showIsPlayer());
-    };
-    _loc1.__get__showIsPlayer = function ()
-    {
-        return (this._bShowIsPlayer);
-    };
-    _loc1.addProperty("showIsPlayer", _loc1.__get__showIsPlayer, _loc1.__set__showIsPlayer);
-    _loc1.addProperty("monsterID", _loc1.__get__monsterID, _loc1.__set__monsterID);
-    _loc1.addProperty("powerLevel", _loc1.__get__powerLevel, _loc1.__set__powerLevel);
-    _loc1.addProperty("playerName", _loc1.__get__playerName, _loc1.__set__playerName);
-    _loc1.addProperty("name", _loc1.__get__name, function ()
-    {
-    });
-    _loc1.addProperty("resistances", _loc1.__get__resistances, function ()
-    {
-    });
-    _loc1.addProperty("Level", _loc1.__get__Level, function ()
-    {
-    });
-    _loc1.addProperty("alignment", _loc1.__get__alignment, function ()
-    {
-    });
-    _loc1.addProperty("monsterName", _loc1.__get__monsterName, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        return (api.lang.getMonstersText(_nNameID)["g" + _nPowerLevel].r);
+    } // End of the function
+} // End of Class
 #endinitclip

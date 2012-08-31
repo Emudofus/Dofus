@@ -1,68 +1,48 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20859]
+// [Initial MovieClip Action of sprite 912]
 #initclip 124
-if (!dofus.datacenter.Feat)
+class dofus.datacenter.Feat extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Feat = function (nIndex, nLevel, aParams)
+    var api, _nIndex, __get__index, _oFeatInfos, _nLevel, _aParams, __get__effect, __get__iconFile, __set__index, __get__level, __get__name;
+    function Feat(nIndex, nLevel, aParams)
     {
         super();
-        this.api = _global.API;
+        api = _global.API;
         this.initialize(nIndex, nLevel, aParams);
-    }).prototype;
-    _loc1.__get__index = function ()
+    } // End of the function
+    function get index()
     {
-        return (this._nIndex);
-    };
-    _loc1.__set__index = function (nIndex)
+        return (_nIndex);
+    } // End of the function
+    function set index(nIndex)
     {
-        this._nIndex = _global.isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
+        _nIndex = isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
         //return (this.index());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this._oFeatInfos.n);
-    };
-    _loc1.__get__level = function ()
+        return (_oFeatInfos.n);
+    } // End of the function
+    function get level()
     {
-        return (this._nLevel);
-    };
-    _loc1.__get__effect = function ()
+        return (_nLevel);
+    } // End of the function
+    function get effect()
     {
-        return (new dofus.datacenter.FeatEffect(this._oFeatInfos.e, this._aParams));
-    };
-    _loc1.__get__iconFile = function ()
+        return (new dofus.datacenter.FeatEffect(_oFeatInfos.e, _aParams));
+    } // End of the function
+    function get iconFile()
     {
-        return (dofus.Constants.FEATS_PATH + this._oFeatInfos.g + ".swf");
-    };
-    _loc1.initialize = function (nIndex, nLevel, aParams)
+        return (dofus.Constants.FEATS_PATH + _oFeatInfos.g + ".swf");
+    } // End of the function
+    function initialize(nIndex, nLevel, aParams)
     {
-        this._nIndex = nIndex;
-        this._nLevel = nLevel;
-        this._aParams = aParams;
-        this._oFeatInfos = this.api.lang.getAlignmentFeat(nIndex);
-    };
-    _loc1.addProperty("level", _loc1.__get__level, function ()
-    {
-    });
-    _loc1.addProperty("index", _loc1.__get__index, _loc1.__set__index);
-    _loc1.addProperty("iconFile", _loc1.__get__iconFile, function ()
-    {
-    });
-    _loc1.addProperty("effect", _loc1.__get__effect, function ()
-    {
-    });
-    _loc1.addProperty("name", _loc1.__get__name, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _nIndex = nIndex;
+        _nLevel = nLevel;
+        _aParams = aParams;
+        _oFeatInfos = api.lang.getAlignmentFeat(nIndex);
+    } // End of the function
+} // End of Class
 #endinitclip

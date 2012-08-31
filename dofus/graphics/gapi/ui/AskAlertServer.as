@@ -1,47 +1,34 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20935]
-#initclip 200
-if (!dofus.graphics.gapi.ui.AskAlertServer)
+// [Initial MovieClip Action of sprite 992]
+#initclip 209
+class dofus.graphics.gapi.ui.AskAlertServer extends ank.gapi.ui.FlyWindow
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.AskAlertServer = function ()
+    var _sText, __get__text, __get__hideNext, _winBackground, api, dispatchEvent, unloadThis, __set__hideNext, __set__text;
+    function AskAlertServer()
     {
         super();
-    }).prototype;
-    _loc1.__set__text = function (sText)
+    } // End of the function
+    function set text(sText)
     {
-        this._sText = sText;
+        _sText = sText;
         //return (this.text());
-    };
-    _loc1.__set__hideNext = function (bHideNext)
+        null;
+    } // End of the function
+    function set hideNext(bHideNext)
     {
-        this._bHideNext = bHideNext;
+        _bHideNext = bHideNext;
         //return (this.hideNext());
-    };
-    _loc1.initWindowContent = function ()
+        null;
+    } // End of the function
+    function initWindowContent()
     {
-        var c = this._winBackground.content;
+        var c = _winBackground.__get__content();
         c._btnClose.addEventListener("click", this);
         c._btnHideNext.addEventListener("click", this);
-        c._txtText.text = this._sText;
-        c._btnClose.label = this.api.lang.getText("CLOSE");
-        c._lblHideNext.text = this.api.lang.getText("ALERT_HIDENEXT");
+        c._txtText.text = _sText;
+        c._btnClose.label = api.lang.getText("CLOSE");
+        c._lblHideNext.text = api.lang.getText("ALERT_HIDENEXT");
         SharedObject.getLocal(dofus.Constants.OPTIONS_SHAREDOBJECT_NAME).onStatus = function (oEvent)
         {
             if (oEvent.level == "status" && oEvent.code == "SharedObject.Flush.Success")
@@ -61,54 +48,42 @@ if (!dofus.graphics.gapi.ui.AskAlertServer)
         }
         else
         {
-            c._btnHideNext.selected = this._bHideNext;
+            c._btnHideNext.selected = _bHideNext;
         } // end else if
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-    };
-    _loc1.click = function (oEvent)
+        Key.addListener(this);
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnClose":
             {
-                this.api.kernel.KeyManager.removeShortcutsListener(this);
-                this.dispatchEvent({type: "close", hideNext: this._bHideNext});
+                Key.removeListener(this);
+                this.dispatchEvent({type: "close", hideNext: _bHideNext});
                 this.unloadThis();
                 break;
             } 
             case "_btnHideNext":
             {
-                this._bHideNext = oEvent.target.selected;
+                _bHideNext = oEvent.target.selected;
                 break;
             } 
         } // End of switch
-    };
-    _loc1.change = function (oEvent)
+    } // End of the function
+    function change(oEvent)
     {
-        var _loc3 = this._winBackground.content;
-        _loc3._btnOk._y = _loc3._txtText._y + _loc3._txtText.height + 20;
-        this._winBackground.setPreferedSize();
-    };
-    _loc1.onShortcut = function (sShortcut)
+        var _loc2 = _winBackground.__get__content();
+        _loc2._btnOk._y = _loc2._txtText._y + _loc2._txtText.height + 20;
+        _winBackground.setPreferedSize();
+    } // End of the function
+    function onKeyDown()
     {
-        if (sShortcut == "ACCEPT_CURRENT_DIALOG")
+        if (Key.isDown(13))
         {
-            this.click(this._winBackground.content._btnClose);
-            return (false);
+            this.click(_winBackground.content._btnClose);
         } // end if
-        return (true);
-    };
-    _loc1.addProperty("hideNext", function ()
-    {
-    }, _loc1.__set__hideNext);
-    _loc1.addProperty("text", function ()
-    {
-    }, _loc1.__set__text);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.AskAlertServer = function ()
-    {
-        super();
-    }).CLASS_NAME = "AskAlertServer";
-    _loc1._bHideNext = false;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "AskAlertServer";
+    var _bHideNext = false;
+} // End of Class
 #endinitclip

@@ -1,187 +1,156 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20949]
-#initclip 214
-if (!dofus.datacenter.Game)
+// [Initial MovieClip Action of sprite 920]
+#initclip 132
+class dofus.datacenter.Game extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Game = function ()
+    var _nPlayerCount, __get__playerCount, _sCurrentPlayerID, __get__currentPlayerID, _sLastPlayerID, __get__lastPlayerID, _nState, __get__state, _bSpectator, __get__isSpectator, _aTurnSequence, __get__turnSequence, _oResults, __get__results, _bInCreaturesMode, __get__isInCreaturesMode, __get__isRunning, _nInteractionType, __set__currentPlayerID, __get__interactionType, __get__isFight, __set__isInCreaturesMode, __set__isRunning, __set__isSpectator, __set__lastPlayerID, __set__playerCount, __set__results, __set__state, __set__turnSequence;
+    function Game()
     {
         super();
         this.initialize();
-    }).prototype;
-    _loc1.__set__playerCount = function (nPlayerCount)
+    } // End of the function
+    function set playerCount(nPlayerCount)
     {
-        this._nPlayerCount = Number(nPlayerCount);
+        _nPlayerCount = Number(nPlayerCount);
         //return (this.playerCount());
-    };
-    _loc1.__get__playerCount = function ()
+        null;
+    } // End of the function
+    function get playerCount()
     {
-        return (this._nPlayerCount);
-    };
-    _loc1.__set__currentPlayerID = function (sCurrentPlayerID)
+        return (_nPlayerCount);
+    } // End of the function
+    function set currentPlayerID(sCurrentPlayerID)
     {
-        this._sCurrentPlayerID = sCurrentPlayerID;
+        _sCurrentPlayerID = sCurrentPlayerID;
         //return (this.currentPlayerID());
-    };
-    _loc1.__get__currentPlayerID = function ()
+        null;
+    } // End of the function
+    function get currentPlayerID()
     {
-        return (this._sCurrentPlayerID);
-    };
-    _loc1.__set__lastPlayerID = function (sLastPlayerID)
+        return (_sCurrentPlayerID);
+    } // End of the function
+    function set lastPlayerID(sLastPlayerID)
     {
-        this._sLastPlayerID = sLastPlayerID;
+        _sLastPlayerID = sLastPlayerID;
         //return (this.lastPlayerID());
-    };
-    _loc1.__get__lastPlayerID = function ()
+        null;
+    } // End of the function
+    function get lastPlayerID()
     {
-        return (this._sLastPlayerID);
-    };
-    _loc1.__set__state = function (nState)
+        return (_sLastPlayerID);
+    } // End of the function
+    function set state(nState)
     {
-        this._nState = Number(nState);
-        this.dispatchEvent({type: "stateChanged", value: this._nState});
+        _nState = Number(nState);
         //return (this.state());
-    };
-    _loc1.__get__state = function ()
+        null;
+    } // End of the function
+    function get state()
     {
-        return (this._nState);
-    };
-    _loc1.__set__fightType = function (nFightType)
+        return (_nState);
+    } // End of the function
+    function set isSpectator(bSpectator)
     {
-        this._nFightType = nFightType;
-        //return (this.fightType());
-    };
-    _loc1.__get__fightType = function ()
-    {
-        return (this._nFightType);
-    };
-    _loc1.__set__isSpectator = function (bSpectator)
-    {
-        this._bSpectator = bSpectator;
+        _bSpectator = bSpectator;
         //return (this.isSpectator());
-    };
-    _loc1.__get__isSpectator = function ()
+        null;
+    } // End of the function
+    function get isSpectator()
     {
-        return (this._bSpectator);
-    };
-    _loc1.__set__turnSequence = function (aTurnSequence)
+        return (_bSpectator);
+    } // End of the function
+    function set turnSequence(aTurnSequence)
     {
-        this._aTurnSequence = aTurnSequence;
+        _aTurnSequence = aTurnSequence;
         //return (this.turnSequence());
-    };
-    _loc1.__get__turnSequence = function ()
+        null;
+    } // End of the function
+    function get turnSequence()
     {
-        return (this._aTurnSequence);
-    };
-    _loc1.__set__results = function (oResults)
+        return (_aTurnSequence);
+    } // End of the function
+    function set results(oResults)
     {
-        this._oResults = oResults;
+        _oResults = oResults;
         //return (this.results());
-    };
-    _loc1.__get__results = function ()
+        null;
+    } // End of the function
+    function get results()
     {
-        return (this._oResults);
-    };
-    _loc1.__set__isInCreaturesMode = function (bInCreaturesMode)
+        return (_oResults);
+    } // End of the function
+    function set isInCreaturesMode(bInCreaturesMode)
     {
-        this._bInCreaturesMode = bInCreaturesMode;
+        _bInCreaturesMode = bInCreaturesMode;
         //return (this.isInCreaturesMode());
-    };
-    _loc1.__get__isInCreaturesMode = function ()
+        null;
+    } // End of the function
+    function get isInCreaturesMode()
     {
-        return (this._bInCreaturesMode);
-    };
-    _loc1.__set__isRunning = function (bRunning)
+        return (_bInCreaturesMode);
+    } // End of the function
+    function set isRunning(bRunning)
     {
-        this._bRunning = bRunning;
+        _bRunning = bRunning;
         //return (this.isRunning());
-    };
-    _loc1.__get__isRunning = function ()
+        null;
+    } // End of the function
+    function get isRunning()
     {
-        return (this._bRunning);
-    };
-    _loc1.__get__isFight = function ()
+        return (_bRunning);
+    } // End of the function
+    function get isFight()
     {
-        return (this._nState > 1 && this._nState != undefined);
-    };
-    _loc1.__get__interactionType = function ()
+        return (_nState > 1 && _nState != undefined);
+    } // End of the function
+    function get interactionType()
     {
-        return (this._nInteractionType);
-    };
-    _loc1.initialize = function ()
+        return (_nInteractionType);
+    } // End of the function
+    function initialize()
     {
-        mx.events.EventDispatcher.initialize(this);
-        this._bRunning = false;
-        this._nPlayerCount = 0;
-        this._sCurrentPlayerID = null;
-        this._sLastPlayerID = null;
-        this._nState = 0;
-        this._aTurnSequence = new Array();
-        this._oResults = new Object();
-        this._nInteractionType = 0;
-        this._bInCreaturesMode = false;
-    };
-    _loc1.setInteractionType = function (sType)
+        _bRunning = false;
+        _nPlayerCount = 0;
+        _sCurrentPlayerID = null;
+        _sLastPlayerID = null;
+        _nState = 0;
+        _aTurnSequence = new Array();
+        _oResults = new Object();
+        _nInteractionType = 0;
+        _bInCreaturesMode = false;
+    } // End of the function
+    function setInteractionType(sType)
     {
         switch (sType)
         {
             case "move":
             {
-                this._nInteractionType = 1;
+                _nInteractionType = 1;
                 break;
             } 
             case "spell":
             {
-                this._nInteractionType = 2;
+                _nInteractionType = 2;
                 break;
             } 
             case "cc":
             {
-                this._nInteractionType = 3;
+                _nInteractionType = 3;
                 break;
             } 
             case "place":
             {
-                this._nInteractionType = 4;
+                _nInteractionType = 4;
                 break;
             } 
             case "target":
             {
-                this._nInteractionType = 5;
-                break;
-            } 
-            case "flag":
-            {
-                this._nInteractionType = 6;
+                _nInteractionType = 5;
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addProperty("turnSequence", _loc1.__get__turnSequence, _loc1.__set__turnSequence);
-    _loc1.addProperty("state", _loc1.__get__state, _loc1.__set__state);
-    _loc1.addProperty("lastPlayerID", _loc1.__get__lastPlayerID, _loc1.__set__lastPlayerID);
-    _loc1.addProperty("isSpectator", _loc1.__get__isSpectator, _loc1.__set__isSpectator);
-    _loc1.addProperty("isRunning", _loc1.__get__isRunning, _loc1.__set__isRunning);
-    _loc1.addProperty("results", _loc1.__get__results, _loc1.__set__results);
-    _loc1.addProperty("currentPlayerID", _loc1.__get__currentPlayerID, _loc1.__set__currentPlayerID);
-    _loc1.addProperty("isInCreaturesMode", _loc1.__get__isInCreaturesMode, _loc1.__set__isInCreaturesMode);
-    _loc1.addProperty("playerCount", _loc1.__get__playerCount, _loc1.__set__playerCount);
-    _loc1.addProperty("fightType", _loc1.__get__fightType, _loc1.__set__fightType);
-    _loc1.addProperty("isFight", _loc1.__get__isFight, function ()
-    {
-    });
-    _loc1.addProperty("interactionType", _loc1.__get__interactionType, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._bRunning = false;
-} // end if
+    } // End of the function
+    var _bRunning = false;
+} // End of Class
 #endinitclip

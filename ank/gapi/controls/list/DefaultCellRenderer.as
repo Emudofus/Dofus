@@ -1,61 +1,38 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20651]
-#initclip 172
-if (!ank.gapi.controls.list.DefaultCellRenderer)
+// [Initial MovieClip Action of sprite 177]
+#initclip 14
+class ank.gapi.controls.list.DefaultCellRenderer extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    if (!ank.gapi.controls.list)
-    {
-        _global.ank.gapi.controls.list = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.list.DefaultCellRenderer = function ()
+    var _lblText, getStyle, attachMovie, __height, __width;
+    function DefaultCellRenderer()
     {
         super();
-    }).prototype;
-    _loc1.setState = function (sState)
+    } // End of the function
+    function setState(sState)
     {
-    };
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
-        if (bUsed)
-        {
-            this._lblText.text = sSuggested;
-        }
-        else if (this._lblText.text != undefined)
-        {
-            this._lblText.text = "";
-        } // end else if
-    };
-    _loc1.init = function ()
+        _lblText.__set__text(bUsed ? (sSuggested) : (""));
+    } // End of the function
+    function init()
     {
         super.init(false);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
         this.attachMovie("Label", "_lblText", 10, {styleName: this.getStyle().defaultstyle});
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
-        this._lblText.setSize(this.__width, this.__height);
-    };
-    _loc1.draw = function ()
+        _lblText.setSize(__width, __height);
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-        this._lblText.styleName = _loc2.defaultstyle;
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _lblText.__set__styleName(_loc2.defaultstyle);
+    } // End of the function
+} // End of Class
 #endinitclip

@@ -1,69 +1,45 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20961]
-#initclip 226
-if (!dofus.datacenter.Waypoint)
+// [Initial MovieClip Action of sprite 959]
+#initclip 171
+class dofus.datacenter.Waypoint extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Waypoint = function (nID, bCurrent, bRespawn, nCost)
+    var api, _nID, _bCurrent, _bRespawn, __get__name, fieldToSort, __get__coordinates, __get__cost, __get__id, __get__isCurrent, __get__isRespawn;
+    function Waypoint(nID, bCurrent, bRespawn)
     {
         super();
-        this.api = _global.API;
-        this._nID = nID;
-        this._bCurrent = bCurrent;
-        this._bRespawn = bRespawn;
-        this._nCost = nCost;
-        this.fieldToSort = this.name + nID;
-    }).prototype;
-    _loc1.__get__id = function ()
+        api = _global.API;
+        _nID = nID;
+        _bCurrent = bCurrent;
+        _bRespawn = bRespawn;
+        fieldToSort = this.__get__name() + nID;
+    } // End of the function
+    function get id()
     {
-        return (this._nID);
-    };
-    _loc1.__get__name = function ()
+        return (_nID);
+    } // End of the function
+    function get name()
     {
-        return (this.api.kernel.MapsServersManager.getMapName(this._nID));
-    };
-    _loc1.__get__coordinates = function ()
+        return (api.kernel.MapsServersManager.getMapName(_nID));
+    } // End of the function
+    function get coordinates()
     {
-        return (this.api.lang.getMapText(this._nID).x + ", " + this.api.lang.getMapText(this._nID).y);
-    };
-    _loc1.__get__isRespawn = function ()
+        return (api.lang.getMapText(String(_nID)).x + ", " + api.lang.getMapText(String(_nID)).y);
+    } // End of the function
+    function get isRespawn()
     {
-        return (this._bRespawn);
-    };
-    _loc1.__get__isCurrent = function ()
+        return (_bRespawn);
+    } // End of the function
+    function get isCurrent()
     {
-        return (this._bCurrent);
-    };
-    _loc1.__get__cost = function ()
+        return (_bCurrent);
+    } // End of the function
+    function get cost()
     {
-        return (this._nCost);
-    };
-    _loc1.addProperty("cost", _loc1.__get__cost, function ()
-    {
-    });
-    _loc1.addProperty("isCurrent", _loc1.__get__isCurrent, function ()
-    {
-    });
-    _loc1.addProperty("isRespawn", _loc1.__get__isRespawn, function ()
-    {
-    });
-    _loc1.addProperty("coordinates", _loc1.__get__coordinates, function ()
-    {
-    });
-    _loc1.addProperty("name", _loc1.__get__name, function ()
-    {
-    });
-    _loc1.addProperty("id", _loc1.__get__id, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        var _loc2 = api.datacenter.Map;
+        var _loc3 = api.lang.getMapText(String(_nID));
+        var _loc4 = Math.floor(Math.sqrt(Math.pow(_loc3.x - _loc2.x, 2) + Math.pow(_loc3.y - _loc2.y, 2)));
+        return (_loc4 * api.lang.getConfigText("WAYPOINT_BASE_PRICE"));
+    } // End of the function
+} // End of Class
 #endinitclip

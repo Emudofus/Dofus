@@ -1,58 +1,37 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20507]
-#initclip 28
-if (!dofus.graphics.gapi.ui.WaitingMessage)
+// [Initial MovieClip Action of sprite 1027]
+#initclip 248
+class dofus.graphics.gapi.ui.WaitingMessage extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.WaitingMessage = function ()
+    var __get__text, addToQueue, _lblBlackBR, _lblBlackBL, _lblBlackTR, _lblBlackTL, _lblWhite, __set__text;
+    function WaitingMessage()
     {
         super();
-    }).prototype;
-    _loc1.__set__text = function (sText)
+    } // End of the function
+    function set text(sText)
     {
-        this._sText = sText;
+        _sText = sText;
         //return (this.text());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.WaitingMessage.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        if (this._sText.length == 0)
+        if (_sText.length == 0)
         {
             return;
         } // end if
-        this.addToQueue({object: this, method: this.initText});
-    };
-    _loc1.initText = function ()
+        this.addToQueue({object: this, method: initText});
+    } // End of the function
+    function initText()
     {
-        this._lblWhite.text = this._lblBlackTL.text = this._lblBlackTR.text = this._lblBlackBL.text = this._lblBlackBR.text = this._sText;
-    };
-    _loc1.addProperty("text", function ()
-    {
-    }, _loc1.__set__text);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.WaitingMessage = function ()
-    {
-        super();
-    }).CLASS_NAME = "WaitingMessage";
-    _loc1._sText = "";
-} // end if
+        _lblWhite.__set__text(_lblBlackTL.__set__text(_lblBlackTR.__set__text(_lblBlackBL.__set__text(_lblBlackBR.__set__text(_sText)))));
+    } // End of the function
+    static var CLASS_NAME = "WaitingMessage";
+    var _sText = "";
+} // End of Class
 #endinitclip

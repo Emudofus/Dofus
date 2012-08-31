@@ -1,40 +1,22 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20801]
-#initclip 66
-if (!ank.gapi.controls.scrollbar.ScrollThumb)
+// [Initial MovieClip Action of sprite 32]
+#initclip 16
+class ank.gapi.controls.scrollbar.ScrollThumb extends MovieClip
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    if (!ank.gapi.controls.scrollbar)
-    {
-        _global.ank.gapi.controls.scrollbar = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.scrollbar.ScrollThumb = function ()
+    var top_mc, middle_mc, bottom_mc, __get__height, __set__height;
+    function ScrollThumb()
     {
         super();
-    }).prototype;
-    _loc1.__set__height = function (nHeight)
+    } // End of the function
+    function set height(nHeight)
     {
-        this.top_mc._y = 0;
-        this.middle_mc._y = this.top_mc._height;
-        this.middle_mc._height = nHeight - this.top_mc._height - this.bottom_mc._height;
-        this.bottom_mc._y = this.middle_mc._y + this.middle_mc._height;
+        top_mc._y = 0;
+        middle_mc._y = top_mc._height;
+        middle_mc._height = nHeight - top_mc._height - bottom_mc._height;
+        bottom_mc._y = middle_mc._y + middle_mc._height;
         //return (this.height());
-    };
-    _loc1.addProperty("height", function ()
-    {
-    }, _loc1.__set__height);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        null;
+    } // End of the function
+} // End of Class
 #endinitclip

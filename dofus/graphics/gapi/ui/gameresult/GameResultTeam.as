@@ -1,92 +1,52 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20991]
-#initclip 256
-if (!dofus.graphics.gapi.ui.gameresult.GameResultTeam)
+// [Initial MovieClip Action of sprite 1001]
+#initclip 218
+class dofus.graphics.gapi.ui.gameresult.GameResultTeam extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui.gameresult)
-    {
-        _global.dofus.graphics.gapi.ui.gameresult = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.gameresult.GameResultTeam = function ()
+    var _sTitle, __get__title, _eaDataProvider, __get__dataProvider, addToQueue, _lstPlayers, _lblWinLoose, api, _lblName, _lblLevel, _lblKama, _lblXP, _lblItems, __set__dataProvider, __set__title;
+    function GameResultTeam()
     {
         super();
-    }).prototype;
-    _loc1.__set__title = function (sTitle)
+    } // End of the function
+    function set title(sTitle)
     {
-        this._sTitle = sTitle;
+        _sTitle = sTitle;
         //return (this.title());
-    };
-    _loc1.__set__dataProvider = function (eaDataProvider)
+        null;
+    } // End of the function
+    function set dataProvider(eaDataProvider)
     {
-        this._eaDataProvider = eaDataProvider;
+        _eaDataProvider = eaDataProvider;
         //return (this.dataProvider());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.gameresult.GameResultTeam.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.initData});
-        this._lstPlayers._visible = false;
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: initData});
+        _lstPlayers._visible = false;
+    } // End of the function
+    function initTexts()
     {
-    };
-    _loc1.initTexts = function ()
+        _lblWinLoose.__set__text(_sTitle);
+        _lblName.__set__text(api.lang.getText("NAME_BIG"));
+        _lblLevel.__set__text(api.lang.getText("LEVEL_SMALL"));
+        _lblKama.__set__text(api.lang.getText("KAMAS"));
+        _lblXP.__set__text(api.lang.getText("EXPERIMENT"));
+        _lblItems.__set__text(api.lang.getText("WIN_ITEMS"));
+    } // End of the function
+    function initData()
     {
-        this._lblWinLoose.text = this._sTitle;
-        this._lblName.text = this.api.lang.getText("NAME_BIG");
-        this._lblLevel.text = this.api.lang.getText("LEVEL_SMALL");
-        this._lblKama.text = this.api.lang.getText("KAMAS");
-        this._lblXP.text = this.api.lang.getText("WIN_XP");
-        this._lblMountXP.text = this.api.lang.getText("XP_MOUNT");
-        this._lblGuildXP.text = this.api.lang.getText("XP_GUILD");
-        this._lblItems.text = this.api.lang.getText("WIN_ITEMS");
-    };
-    _loc1.initData = function ()
-    {
-        var _loc2 = this._eaDataProvider.length;
-        this._lstPlayers.dataProvider = this._eaDataProvider;
-        this._lstPlayers.setSize(undefined, Math.min(_loc2, dofus.graphics.gapi.ui.GameResult.MAX_VISIBLE_PLAYERS_IN_TEAM) * this._lstPlayers.rowHeight);
-        this._lstPlayers._visible = true;
-    };
-    _loc1.itemRollOver = function (oEvent)
-    {
-    };
-    _loc1.itemRollOut = function (oEvent)
-    {
-        this.gapi.hideTooltip();
-    };
-    _loc1.addProperty("dataProvider", function ()
-    {
-    }, _loc1.__set__dataProvider);
-    _loc1.addProperty("title", function ()
-    {
-    }, _loc1.__set__title);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.gameresult.GameResultTeam = function ()
-    {
-        super();
-    }).CLASS_NAME = "GameResultTeam";
-} // end if
+        var _loc2 = _eaDataProvider.length;
+        _lstPlayers.__set__dataProvider(_eaDataProvider);
+        _lstPlayers.setSize(undefined, Math.min(_loc2, dofus.graphics.gapi.ui.GameResult.MAX_VISIBLE_PLAYERS_IN_TEAM) * _lstPlayers.__get__rowHeight());
+        _lstPlayers._visible = true;
+    } // End of the function
+    static var CLASS_NAME = "GameResultTeam";
+} // End of Class
 #endinitclip

@@ -1,56 +1,34 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20867]
-#initclip 132
-if (!dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerFeatsItem)
+// [Initial MovieClip Action of sprite 1084]
+#initclip 54
+class dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerFeatsItem extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.alignmentviewer)
-    {
-        _global.dofus.graphics.gapi.controls.alignmentviewer = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.alignmentviewer.AlignmentViewerFeatsItem = function ()
+    var _mcList, __get__list, _ldrIcon, _lblName, _lblEffect, __set__list;
+    function AlignmentViewerFeatsItem()
     {
         super();
-    }).prototype;
-    _loc1.__set__list = function (mcList)
+    } // End of the function
+    function set list(mcList)
     {
-        this._mcList = mcList;
+        _mcList = mcList;
         //return (this.list());
-    };
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+        null;
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
         if (bUsed)
         {
-            this._ldrIcon.contentPath = oItem.iconFile;
-            this._lblName.text = oItem.name + (oItem.level == undefined ? ("") : (" (" + this._mcList.gapi.api.lang.getText("LEVEL_SMALL") + " " + oItem.level + ")"));
-            this._lblEffect.text = oItem.effect.description == undefined ? ("") : (oItem.effect.description);
+            _ldrIcon.__set__contentPath(oItem.iconFile);
+            _lblName.__set__text(oItem.name + (oItem.level == undefined ? ("") : (" (" + _mcList.gapi.api.lang.getText("LEVEL_SMALL") + " " + oItem.level + ")")));
+            _lblEffect.__set__text(oItem.effect.description == undefined ? ("") : (oItem.effect.description));
         }
-        else if (this._lblName.text != undefined)
+        else
         {
-            this._ldrIcon.contentPath = "";
-            this._lblName.text = "";
-            this._lblEffect.text = "";
+            _ldrIcon.__set__contentPath("");
+            _lblName.__set__text("");
+            _lblEffect.__set__text("");
         } // end else if
-    };
-    _loc1.addProperty("list", function ()
-    {
-    }, _loc1.__set__list);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

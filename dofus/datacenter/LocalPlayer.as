@@ -1,454 +1,447 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20956]
-#initclip 221
-if (!dofus.datacenter.LocalPlayer)
+// [Initial MovieClip Action of sprite 909]
+#initclip 121
+class dofus.datacenter.LocalPlayer extends dofus.utils.ApiElement
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.LocalPlayer = function (oAPI)
+    var SpellsManager, __get__api, InteractionsManager, Inventory, ItemSets, Jobs, Spells, Emotes, _nMaxSummonedCreatures, summonedCreaturesID, _sID, api, __get__ID, _sName, __get__Name, _nGuild, __get__Guild, _nLevel, dispatchEvent, __get__Level, _nSex, __get__Sex, _nColor1, __get__color1, _nColor2, __get__color2, _nColor3, __get__color3, _nLP, __get__LP, _nLPMax, __get__LPmax, _nAP, __get__AP, _nMP, __get__MP, _nKama, __get__Kama, _nXPLow, __get__XPlow, _nXP, __get__XP, _nXPHigh, __get__XPhigh, _nInitiative, __get__Initiative, _nDiscernment, __get__Discernment, _nForce, __get__Force, _nForceXtra, __get__ForceXtra, _nVitality, __get__Vitality, _nVitalityXtra, __get__VitalityXtra, _nWisdom, __get__Wisdom, _nWisdomXtra, __get__WisdomXtra, _nChance, __get__Chance, _nChanceXtra, __get__ChanceXtra, _agility, __get__Agility, _nAgilityXtra, __get__AgilityXtra, _intelligence, __get__Intelligence, _nIntelligenceXtra, __get__IntelligenceXtra, _nBonusPoints, __get__BonusPoints, _nBonusPointsSpell, __get__BonusPointsSpell, _nRangeModerator, __get__RangeModerator, _nEnergy, __get__Energy, _nEnergyMax, __get__EnergyMax, __get__SummonedCreatures, __get__MaxSummonedCreatures, _nCurrentJobID, __get__currentJobID, _nCurrentWeight, __get__currentWeight, _nMaxWeight, __get__maxWeight, __get__data, _nRestrictions, __get__restrictions, _oSpecialization, __get__specialization, _oAlignment, __get__alignment, currentUseObject, _oWeaponItem, __set__AP, __set__Agility, __set__AgilityXtra, __set__BonusPoints, __set__BonusPointsSpell, __set__Chance, __set__ChanceXtra, __set__Discernment, __set__Energy, __set__EnergyMax, __set__Force, __set__ForceXtra, __set__Guild, __set__ID, __set__Initiative, __set__Intelligence, __set__IntelligenceXtra, __set__Kama, __set__LP, __set__LPmax, __set__Level, __set__MP, __set__MaxSummonedCreatures, __set__Name, __set__RangeModerator, __set__Sex, __set__SummonedCreatures, __set__Vitality, __set__VitalityXtra, __set__Wisdom, __set__WisdomXtra, __set__XP, __set__XPhigh, __set__XPlow, __set__alignment, __get__canAssault, __get__canAttack, __get__canBeMerchant, __get__canChallenge, __get__canChatToAll, __get__canExchange, __get__canUseInteractiveObjects, __get__canUseObject, __get__cantInteractWithTaxCollector, __get__cantSpeakNPC, __get__clip, __set__color1, __set__color2, __set__color3, __get__currentJob, __set__currentJobID, __set__currentWeight, __get__isCurrentPlayer, __get__isMutant, __set__maxWeight, __set__restrictions, __set__specialization;
+    function LocalPlayer(oAPI)
     {
         super();
         this.initialize(oAPI);
-    }).prototype;
-    _loc1.initialize = function (oAPI)
+    } // End of the function
+    function initialize(oAPI)
     {
         super.initialize(oAPI);
         mx.events.EventDispatcher.initialize(this);
         this.clean();
         mx.events.EventDispatcher.initialize(this);
-    };
-    _loc1.clean = function ()
+    } // End of the function
+    function clean()
     {
-        this.SpellsManager = new dofus.managers.SpellsManager(this);
-        this.InteractionsManager = new dofus.managers.InteractionsManager(this, this.api);
-        this.Inventory = new ank.utils.ExtendedArray();
-        this.ItemSets = new ank.utils.ExtendedObject();
-        this.Jobs = new ank.utils.ExtendedArray();
-        this.Spells = new ank.utils.ExtendedArray();
-        this.Emotes = new ank.utils.ExtendedObject();
+        SpellsManager = new dofus.managers.SpellsManager(this);
+        InteractionsManager = new dofus.managers.InteractionsManager(this, this.__get__api());
+        Inventory = new ank.utils.ExtendedArray();
+        ItemSets = new ank.utils.ExtendedObject();
+        Jobs = new ank.utils.ExtendedArray();
+        Spells = new ank.utils.ExtendedArray();
+        Emotes = new ank.utils.ExtendedObject();
         this.clearSummon();
-        this._bCraftPublicMode = false;
-        this._bInParty = false;
-    };
-    _loc1.clearSummon = function ()
+    } // End of the function
+    function clearSummon()
     {
-        this._nSummonedCreatures = 0;
-        this._nMaxSummonedCreatures = 1;
-        this.summonedCreaturesID = new Object();
-    };
-    _loc1.__get__clip = function ()
+        _nSummonedCreatures = 0;
+        _nMaxSummonedCreatures = 1;
+        summonedCreaturesID = new Object();
+    } // End of the function
+    function get clip()
     {
-        return (this.api.datacenter.Sprites.getItemAt(this._sID).mc);
-    };
-    _loc1.__get__data = function ()
+        return (api.datacenter.Sprites.getItemAt(_sID).mc);
+    } // End of the function
+    function get data()
     {
-        return (this.api.datacenter.Sprites.getItemAt(this._sID));
-    };
-    _loc1.__get__isCurrentPlayer = function ()
+        return (api.datacenter.Sprites.getItemAt(_sID));
+    } // End of the function
+    function get isCurrentPlayer()
     {
-        return (this.api.datacenter.Game.currentPlayerID == this._sID);
-    };
-    _loc1.__set__ID = function (value)
+        return (api.datacenter.Game.currentPlayerID == _sID);
+    } // End of the function
+    function set ID(value)
     {
-        this._sID = value;
+        _sID = value;
         //return (this.ID());
-    };
-    _loc1.__get__ID = function ()
+        null;
+    } // End of the function
+    function get ID()
     {
-        return (this._sID);
-    };
-    _loc1.__set__Name = function (value)
+        return (_sID);
+    } // End of the function
+    function set Name(value)
     {
-        this._sName = String(value);
+        _sName = String(value);
         //return (this.Name());
-    };
-    _loc1.__get__Name = function ()
+        null;
+    } // End of the function
+    function get Name()
     {
-        return (this._sName);
-    };
-    _loc1.__set__Guild = function (value)
+        return (_sName);
+    } // End of the function
+    function set Guild(value)
     {
-        this._nGuild = Number(value);
+        _nGuild = Number(value);
         //return (this.Guild());
-    };
-    _loc1.__get__Guild = function ()
+        null;
+    } // End of the function
+    function get Guild()
     {
-        return (this._nGuild);
-    };
-    _loc1.__set__Level = function (value)
+        return (_nGuild);
+    } // End of the function
+    function set Level(value)
     {
-        this._nLevel = Number(value);
+        _nLevel = Number(value);
         this.dispatchEvent({type: "levelChanged", value: value});
         //return (this.Level());
-    };
-    _loc1.__get__Level = function ()
+        null;
+    } // End of the function
+    function get Level()
     {
-        return (this._nLevel);
-    };
-    _loc1.__set__Sex = function (value)
+        return (_nLevel);
+    } // End of the function
+    function set Sex(value)
     {
-        this._nSex = Number(value);
+        _nSex = Number(value);
         //return (this.Sex());
-    };
-    _loc1.__get__Sex = function ()
+        null;
+    } // End of the function
+    function get Sex()
     {
-        return (this._nSex);
-    };
-    _loc1.__set__color1 = function (value)
+        return (_nSex);
+    } // End of the function
+    function set color1(value)
     {
-        this._nColor1 = Number(value);
+        _nColor1 = Number(value);
         //return (this.color1());
-    };
-    _loc1.__get__color1 = function ()
+        null;
+    } // End of the function
+    function get color1()
     {
-        return (this._nColor1);
-    };
-    _loc1.__set__color2 = function (value)
+        return (_nColor1);
+    } // End of the function
+    function set color2(value)
     {
-        this._nColor2 = Number(value);
+        _nColor2 = Number(value);
         //return (this.color2());
-    };
-    _loc1.__get__color2 = function ()
+        null;
+    } // End of the function
+    function get color2()
     {
-        return (this._nColor2);
-    };
-    _loc1.__set__color3 = function (value)
+        return (_nColor2);
+    } // End of the function
+    function set color3(value)
     {
-        this._nColor3 = Number(value);
+        _nColor3 = Number(value);
         //return (this.color3());
-    };
-    _loc1.__get__color3 = function ()
+        null;
+    } // End of the function
+    function get color3()
     {
-        return (this._nColor3);
-    };
-    _loc1.__set__LP = function (value)
+        return (_nColor3);
+    } // End of the function
+    function set LP(value)
     {
-        this._nLP = Number(value) > 0 ? (Number(value)) : (0);
+        _nLP = Number(value) > 0 ? (Number(value)) : (0);
         this.dispatchEvent({type: "lpChanged", value: value});
         //return (this.LP());
-    };
-    _loc1.__get__LP = function ()
+        null;
+    } // End of the function
+    function get LP()
     {
-        return (this._nLP);
-    };
-    _loc1.__set__LPmax = function (value)
+        return (_nLP);
+    } // End of the function
+    function set LPmax(value)
     {
-        this._nLPMax = Number(value);
+        _nLPMax = Number(value);
         this.dispatchEvent({type: "lpmaxChanged", value: value});
         //return (this.LPmax());
-    };
-    _loc1.__get__LPmax = function ()
+        null;
+    } // End of the function
+    function get LPmax()
     {
-        return (this._nLPMax);
-    };
-    _loc1.__set__AP = function (value)
+        return (_nLPMax);
+    } // End of the function
+    function set AP(value)
     {
-        this._nAP = Number(value);
-        this.data.AP = Number(value);
+        _nAP = Number(value);
         this.dispatchEvent({type: "apChanged", value: value});
         //return (this.AP());
-    };
-    _loc1.__get__AP = function ()
+        null;
+    } // End of the function
+    function get AP()
     {
-        return (this._nAP);
-    };
-    _loc1.__set__MP = function (value)
+        return (_nAP);
+    } // End of the function
+    function set MP(value)
     {
-        this._nMP = Number(value);
-        this.data.MP = Number(value);
+        _nMP = Number(value);
         this.dispatchEvent({type: "mpChanged", value: value});
         //return (this.MP());
-    };
-    _loc1.__get__MP = function ()
+        null;
+    } // End of the function
+    function get MP()
     {
-        return (this._nMP);
-    };
-    _loc1.__set__Kama = function (value)
+        return (_nMP);
+    } // End of the function
+    function set Kama(value)
     {
-        this._nKama = Number(value);
+        _nKama = Number(value);
         this.dispatchEvent({type: "kamaChanged", value: value});
         //return (this.Kama());
-    };
-    _loc1.__get__Kama = function ()
+        null;
+    } // End of the function
+    function get Kama()
     {
-        return (this._nKama);
-    };
-    _loc1.__set__XPlow = function (value)
+        return (_nKama);
+    } // End of the function
+    function set XPlow(value)
     {
-        this._nXPLow = Number(value);
+        _nXPLow = Number(value);
         //return (this.XPlow());
-    };
-    _loc1.__get__XPlow = function ()
+        null;
+    } // End of the function
+    function get XPlow()
     {
-        return (this._nXPLow);
-    };
-    _loc1.__set__XP = function (value)
+        return (_nXPLow);
+    } // End of the function
+    function set XP(value)
     {
-        this._nXP = Number(value);
+        _nXP = Number(value);
         this.dispatchEvent({type: "xpChanged", value: value});
         //return (this.XP());
-    };
-    _loc1.__get__XP = function ()
+        null;
+    } // End of the function
+    function get XP()
     {
-        return (this._nXP);
-    };
-    _loc1.__set__XPhigh = function (value)
+        return (_nXP);
+    } // End of the function
+    function set XPhigh(value)
     {
-        this._nXPHigh = Number(value);
+        _nXPHigh = Number(value);
         //return (this.XPhigh());
-    };
-    _loc1.__get__XPhigh = function ()
+        null;
+    } // End of the function
+    function get XPhigh()
     {
-        return (this._nXPHigh);
-    };
-    _loc1.__set__Initiative = function (value)
+        return (_nXPHigh);
+    } // End of the function
+    function set Initiative(value)
     {
-        this._nInitiative = Number(value);
+        _nInitiative = Number(value);
         this.dispatchEvent({type: "initiativeChanged", value: value});
         //return (this.Initiative());
-    };
-    _loc1.__get__Initiative = function ()
+        null;
+    } // End of the function
+    function get Initiative()
     {
-        return (this._nInitiative);
-    };
-    _loc1.__set__Discernment = function (value)
+        return (_nInitiative);
+    } // End of the function
+    function set Discernment(value)
     {
-        this._nDiscernment = Number(value);
+        _nDiscernment = Number(value);
         this.dispatchEvent({type: "discernmentChanged", value: value});
         //return (this.Discernment());
-    };
-    _loc1.__get__Discernment = function ()
+        null;
+    } // End of the function
+    function get Discernment()
     {
-        return (this._nDiscernment);
-    };
-    _loc1.__set__Force = function (value)
+        return (_nDiscernment);
+    } // End of the function
+    function set Force(value)
     {
-        this._nForce = Number(value);
+        _nForce = Number(value);
         this.dispatchEvent({type: "forceChanged", value: value});
         //return (this.Force());
-    };
-    _loc1.__get__Force = function ()
+        null;
+    } // End of the function
+    function get Force()
     {
-        return (this._nForce);
-    };
-    _loc1.__set__ForceXtra = function (value)
+        return (_nForce);
+    } // End of the function
+    function set ForceXtra(value)
     {
-        this._nForceXtra = Number(value);
+        _nForceXtra = Number(value);
         this.dispatchEvent({type: "forceXtraChanged", value: value});
         //return (this.ForceXtra());
-    };
-    _loc1.__get__ForceXtra = function ()
+        null;
+    } // End of the function
+    function get ForceXtra()
     {
-        return (this._nForceXtra);
-    };
-    _loc1.__set__Vitality = function (value)
+        return (_nForceXtra);
+    } // End of the function
+    function set Vitality(value)
     {
-        this._nVitality = Number(value);
+        _nVitality = Number(value);
         this.dispatchEvent({type: "vitalityChanged", value: value});
         //return (this.Vitality());
-    };
-    _loc1.__get__Vitality = function ()
+        null;
+    } // End of the function
+    function get Vitality()
     {
-        return (this._nVitality);
-    };
-    _loc1.__set__VitalityXtra = function (value)
+        return (_nVitality);
+    } // End of the function
+    function set VitalityXtra(value)
     {
-        this._nVitalityXtra = Number(value);
+        _nVitalityXtra = Number(value);
         this.dispatchEvent({type: "vitalityXtraChanged", value: value});
         //return (this.VitalityXtra());
-    };
-    _loc1.__get__VitalityXtra = function ()
+        null;
+    } // End of the function
+    function get VitalityXtra()
     {
-        return (this._nVitalityXtra);
-    };
-    _loc1.__set__Wisdom = function (value)
+        return (_nVitalityXtra);
+    } // End of the function
+    function set Wisdom(value)
     {
-        this._nWisdom = Number(value);
+        _nWisdom = Number(value);
         this.dispatchEvent({type: "wisdomChanged", value: value});
         //return (this.Wisdom());
-    };
-    _loc1.__get__Wisdom = function ()
+        null;
+    } // End of the function
+    function get Wisdom()
     {
-        return (this._nWisdom);
-    };
-    _loc1.__set__WisdomXtra = function (value)
+        return (_nWisdom);
+    } // End of the function
+    function set WisdomXtra(value)
     {
-        this._nWisdomXtra = Number(value);
+        _nWisdomXtra = Number(value);
         this.dispatchEvent({type: "wisdomXtraChanged", value: value});
         //return (this.WisdomXtra());
-    };
-    _loc1.__get__WisdomXtra = function ()
+        null;
+    } // End of the function
+    function get WisdomXtra()
     {
-        return (this._nWisdomXtra);
-    };
-    _loc1.__set__Chance = function (value)
+        return (_nWisdomXtra);
+    } // End of the function
+    function set Chance(value)
     {
-        this._nChance = Number(value);
+        _nChance = Number(value);
         this.dispatchEvent({type: "chanceChanged", value: value});
         //return (this.Chance());
-    };
-    _loc1.__get__Chance = function ()
+        null;
+    } // End of the function
+    function get Chance()
     {
-        return (this._nChance);
-    };
-    _loc1.__set__ChanceXtra = function (value)
+        return (_nChance);
+    } // End of the function
+    function set ChanceXtra(value)
     {
-        this._nChanceXtra = Number(value);
+        _nChanceXtra = Number(value);
         this.dispatchEvent({type: "chanceXtraChanged", value: value});
         //return (this.ChanceXtra());
-    };
-    _loc1.__get__ChanceXtra = function ()
+        null;
+    } // End of the function
+    function get ChanceXtra()
     {
-        return (this._nChanceXtra);
-    };
-    _loc1.__set__Agility = function (value)
+        return (_nChanceXtra);
+    } // End of the function
+    function set Agility(value)
     {
-        this._agility = Number(value);
+        _agility = Number(value);
         this.dispatchEvent({type: "agilityChanged", value: value});
         //return (this.Agility());
-    };
-    _loc1.__get__Agility = function ()
+        null;
+    } // End of the function
+    function get Agility()
     {
-        return (this._agility);
-    };
-    _loc1.__set__AgilityXtra = function (value)
+        return (_agility);
+    } // End of the function
+    function set AgilityXtra(value)
     {
-        this._nAgilityXtra = Number(value);
+        _nAgilityXtra = Number(value);
         this.dispatchEvent({type: "agilityXtraChanged", value: value});
         //return (this.AgilityXtra());
-    };
-    _loc1.__get__AgilityXtra = function ()
+        null;
+    } // End of the function
+    function get AgilityXtra()
     {
-        return (this._nAgilityXtra);
-    };
-    _loc1.__set__AgilityTotal = function (value)
+        return (_nAgilityXtra);
+    } // End of the function
+    function set Intelligence(value)
     {
-        this._nAgilityTotal = Number(value);
-        this.dispatchEvent({type: "agilityTotalChanged", value: value});
-        //return (this.AgilityTotal());
-    };
-    _loc1.__get__AgilityTotal = function ()
-    {
-        return (this._nAgilityTotal);
-    };
-    _loc1.__set__Intelligence = function (value)
-    {
-        this._intelligence = Number(value);
+        _intelligence = Number(value);
         this.dispatchEvent({type: "intelligenceChanged", value: value});
         //return (this.Intelligence());
-    };
-    _loc1.__get__Intelligence = function ()
+        null;
+    } // End of the function
+    function get Intelligence()
     {
-        return (this._intelligence);
-    };
-    _loc1.__set__IntelligenceXtra = function (value)
+        return (_intelligence);
+    } // End of the function
+    function set IntelligenceXtra(value)
     {
-        this._nIntelligenceXtra = Number(value);
+        _nIntelligenceXtra = Number(value);
         this.dispatchEvent({type: "intelligenceXtraChanged", value: value});
         //return (this.IntelligenceXtra());
-    };
-    _loc1.__get__IntelligenceXtra = function ()
+        null;
+    } // End of the function
+    function get IntelligenceXtra()
     {
-        return (this._nIntelligenceXtra);
-    };
-    _loc1.__set__BonusPoints = function (value)
+        return (_nIntelligenceXtra);
+    } // End of the function
+    function set BonusPoints(value)
     {
-        this._nBonusPoints = Number(value);
+        _nBonusPoints = Number(value);
         this.dispatchEvent({type: "bonusPointsChanged", value: value});
         //return (this.BonusPoints());
-    };
-    _loc1.__get__BonusPoints = function ()
+        null;
+    } // End of the function
+    function get BonusPoints()
     {
-        return (this._nBonusPoints);
-    };
-    _loc1.__set__BonusPointsSpell = function (value)
+        return (_nBonusPoints);
+    } // End of the function
+    function set BonusPointsSpell(value)
     {
-        this._nBonusPointsSpell = Number(value);
+        _nBonusPointsSpell = Number(value);
         this.dispatchEvent({type: "bonusSpellsChanged", value: value});
         //return (this.BonusPointsSpell());
-    };
-    _loc1.__get__BonusPointsSpell = function ()
+        null;
+    } // End of the function
+    function get BonusPointsSpell()
     {
-        return (this._nBonusPointsSpell);
-    };
-    _loc1.__set__RangeModerator = function (value)
+        return (_nBonusPointsSpell);
+    } // End of the function
+    function set RangeModerator(value)
     {
-        this._nRangeModerator = Number(value);
+        _nRangeModerator = Number(value);
         //return (this.RangeModerator());
-    };
-    _loc1.__get__RangeModerator = function ()
+        null;
+    } // End of the function
+    function get RangeModerator()
     {
-        return (this._nRangeModerator);
-    };
-    _loc1.__set__Energy = function (value)
+        return (_nRangeModerator);
+    } // End of the function
+    function set Energy(value)
     {
-        this._nEnergy = Number(value);
+        _nEnergy = Number(value);
         this.dispatchEvent({type: "energyChanged", value: value});
         //return (this.Energy());
-    };
-    _loc1.__get__Energy = function ()
+        null;
+    } // End of the function
+    function get Energy()
     {
-        return (this._nEnergy);
-    };
-    _loc1.__set__EnergyMax = function (value)
+        return (_nEnergy);
+    } // End of the function
+    function set EnergyMax(value)
     {
-        this._nEnergyMax = Number(value);
+        _nEnergyMax = Number(value);
         this.dispatchEvent({type: "energyMaxChanged", value: value});
         //return (this.EnergyMax());
-    };
-    _loc1.__get__EnergyMax = function ()
+        null;
+    } // End of the function
+    function get EnergyMax()
     {
-        return (this._nEnergyMax);
-    };
-    _loc1.__set__SummonedCreatures = function (value)
+        return (_nEnergyMax);
+    } // End of the function
+    function set SummonedCreatures(value)
     {
-        this._nSummonedCreatures = Number(value);
+        _nSummonedCreatures = Number(value);
         //return (this.SummonedCreatures());
-    };
-    _loc1.__get__SummonedCreatures = function ()
+        null;
+    } // End of the function
+    function get SummonedCreatures()
     {
-        return (this._nSummonedCreatures);
-    };
-    _loc1.__set__MaxSummonedCreatures = function (value)
+        return (_nSummonedCreatures);
+    } // End of the function
+    function set MaxSummonedCreatures(value)
     {
-        this._nMaxSummonedCreatures = Number(value);
+        _nMaxSummonedCreatures = Number(value);
         //return (this.MaxSummonedCreatures());
-    };
-    _loc1.__get__MaxSummonedCreatures = function ()
+        null;
+    } // End of the function
+    function get MaxSummonedCreatures()
     {
-        return (this._nMaxSummonedCreatures);
-    };
-    _loc1.__set__CriticalHitBonus = function (value)
-    {
-        this._nCriticalHitBonus = Number(value);
-        //return (this.CriticalHitBonus());
-    };
-    _loc1.__get__CriticalHitBonus = function ()
-    {
-        return (this._nCriticalHitBonus);
-    };
-    _loc1.__get__weaponItem = function ()
-    {
-        return (this._oWeaponItem);
-    };
-    _loc1.__set__FullStats = function (value)
-    {
-        this._aFullStats = value;
-        this.dispatchEvent({type: "fullStatsChanged", value: value});
-        //return (this.FullStats());
-    };
-    _loc1.__get__FullStats = function ()
-    {
-        return (this._aFullStats);
-    };
-    _loc1.__set__currentJobID = function (value)
+        return (_nMaxSummonedCreatures);
+    } // End of the function
+    function set currentJobID(value)
     {
         if (value == undefined)
         {
@@ -456,315 +449,226 @@ if (!dofus.datacenter.LocalPlayer)
         }
         else
         {
-            this._nCurrentJobID = Number(value);
+            _nCurrentJobID = Number(value);
         } // end else if
         //return (this.currentJobID());
-    };
-    _loc1.__get__currentJobID = function ()
+        null;
+    } // End of the function
+    function get currentJobID()
     {
-        return (this._nCurrentJobID);
-    };
-    _loc1.__get__currentJob = function ()
+        return (_nCurrentJobID);
+    } // End of the function
+    function get currentJob()
     {
-        var _loc2 = this.Jobs.findFirstItem("id", this._nCurrentJobID);
+        var _loc2 = Jobs.findFirstItem("id", _nCurrentJobID);
         return (_loc2.item);
-    };
-    _loc1.__set__currentWeight = function (value)
+    } // End of the function
+    function set currentWeight(value)
     {
-        this._nCurrentWeight = value;
+        _nCurrentWeight = value;
         this.dispatchEvent({type: "currentWeightChanged", value: value});
         //return (this.currentWeight());
-    };
-    _loc1.__get__currentWeight = function ()
+        null;
+    } // End of the function
+    function get currentWeight()
     {
-        return (this._nCurrentWeight);
-    };
-    _loc1.__set__maxWeight = function (value)
+        return (_nCurrentWeight);
+    } // End of the function
+    function set maxWeight(value)
     {
-        this._nMaxWeight = value;
+        _nMaxWeight = value;
         this.dispatchEvent({type: "maxWeightChanged", value: value});
         //return (this.maxWeight());
-    };
-    _loc1.__get__maxWeight = function ()
+        null;
+    } // End of the function
+    function get maxWeight()
     {
-        return (this._nMaxWeight);
-    };
-    _loc1.__get__isMutant = function ()
+        return (_nMaxWeight);
+    } // End of the function
+    function get isMutant()
     {
-        return (this.data instanceof dofus.datacenter.Mutant);
-    };
-    _loc1.__set__restrictions = function (value)
+        //return (this.data() instanceof dofus.datacenter.Mutant);
+    } // End of the function
+    function set restrictions(value)
     {
-        this._nRestrictions = value;
+        _nRestrictions = value;
         //return (this.restrictions());
-    };
-    _loc1.__get__restrictions = function ()
+        null;
+    } // End of the function
+    function get restrictions()
     {
-        return (this._nRestrictions);
-    };
-    _loc1.__set__specialization = function (value)
+        return (_nRestrictions);
+    } // End of the function
+    function set specialization(value)
     {
-        this._oSpecialization = value;
+        _oSpecialization = value;
         this.dispatchEvent({type: "specializationChanged", value: value});
         //return (this.specialization());
-    };
-    _loc1.__get__specialization = function ()
+        null;
+    } // End of the function
+    function get specialization()
     {
-        return (this._oSpecialization);
-    };
-    _loc1.__set__alignment = function (value)
+        return (_oSpecialization);
+    } // End of the function
+    function set alignment(value)
     {
-        this._oAlignment = value;
+        _oAlignment = value;
         this.dispatchEvent({type: "alignmentChanged", alignment: value});
         //return (this.alignment());
-    };
-    _loc1.__get__alignment = function ()
+        null;
+    } // End of the function
+    function get alignment()
     {
-        return (this._oAlignment);
-    };
-    _loc1.__set__fakeAlignment = function (value)
+        return (_oAlignment);
+    } // End of the function
+    function get canAssault()
     {
-        this._oFakeAlignment = value;
-        //return (this.fakeAlignment());
-    };
-    _loc1.__get__fakeAlignment = function ()
+        return ((_nRestrictions & 1) != 1);
+    } // End of the function
+    function get canChallenge()
     {
-        return (this._oFakeAlignment);
-    };
-    _loc1.__set__rank = function (value)
+        return ((_nRestrictions & 2) != 2);
+    } // End of the function
+    function get canExchange()
     {
-        this._oRank = value;
-        this.dispatchEvent({type: "rankChanged", rank: value});
-        //return (this.rank());
-    };
-    _loc1.__get__rank = function ()
+        return ((_nRestrictions & 4) != 4);
+    } // End of the function
+    function get canAttack()
     {
-        return (this._oRank);
-    };
-    _loc1.__set__mount = function (value)
+        return ((_nRestrictions & 8) == 8);
+    } // End of the function
+    function get canChatToAll()
     {
-        this._oMount = value;
-        this.dispatchEvent({type: "mountChanged", mount: value});
-        //return (this.mount());
-    };
-    _loc1.__get__mount = function ()
+        return ((_nRestrictions & 16) != 16);
+    } // End of the function
+    function get canBeMerchant()
     {
-        return (this._oMount);
-    };
-    _loc1.__get__isRiding = function ()
+        return ((_nRestrictions & 32) != 32);
+    } // End of the function
+    function get canUseObject()
     {
-        return (this._bIsRiding);
-    };
-    _loc1.__set__isRiding = function (value)
+        return ((_nRestrictions & 64) != 64);
+    } // End of the function
+    function get cantInteractWithTaxCollector()
     {
-        this._bIsRiding = value;
-        //return (this.isRiding());
-    };
-    _loc1.__set__mountXPPercent = function (value)
+        return ((_nRestrictions & 128) == 128);
+    } // End of the function
+    function get canUseInteractiveObjects()
     {
-        this._nMountXPPercent = value;
-        this.dispatchEvent({type: "mountXPPercentChanged", value: value});
-        //return (this.mountXPPercent());
-    };
-    _loc1.__get__mountXPPercent = function ()
+        return ((_nRestrictions & 256) != 256);
+    } // End of the function
+    function get cantSpeakNPC()
     {
-        return (this._nMountXPPercent);
-    };
-    _loc1.__set__craftPublicMode = function (value)
+        return ((_nRestrictions & 512) == 512);
+    } // End of the function
+    function reset()
     {
-        this._bCraftPublicMode = value;
-        this.dispatchEvent({type: "craftPublicModeChanged", value: value});
-        //return (this.craftPublicMode());
-    };
-    _loc1.__get__craftPublicMode = function ()
-    {
-        return (this._bCraftPublicMode);
-    };
-    _loc1.__set__inParty = function (value)
-    {
-        this._bInParty = value;
-        this.dispatchEvent({type: "inPartyChanged", inParty: value});
-        //return (this.inParty());
-    };
-    _loc1.__get__inParty = function ()
-    {
-        return (this._bInParty);
-    };
-    _loc1.__get__canAssault = function ()
-    {
-        return ((this._nRestrictions & 1) != 1);
-    };
-    _loc1.__get__canChallenge = function ()
-    {
-        return ((this._nRestrictions & 2) != 2);
-    };
-    _loc1.__get__canExchange = function ()
-    {
-        return ((this._nRestrictions & 4) != 4);
-    };
-    _loc1.__get__canAttack = function ()
-    {
-        return ((this._nRestrictions & 8) == 8);
-    };
-    _loc1.__get__canChatToAll = function ()
-    {
-        return ((this._nRestrictions & 16) != 16);
-    };
-    _loc1.__get__canBeMerchant = function ()
-    {
-        return ((this._nRestrictions & 32) != 32);
-    };
-    _loc1.__get__canUseObject = function ()
-    {
-        return ((this._nRestrictions & 64) != 64);
-    };
-    _loc1.__get__cantInteractWithTaxCollector = function ()
-    {
-        return ((this._nRestrictions & 128) == 128);
-    };
-    _loc1.__get__canUseInteractiveObjects = function ()
-    {
-        return ((this._nRestrictions & 256) != 256);
-    };
-    _loc1.__get__cantSpeakNPC = function ()
-    {
-        return ((this._nRestrictions & 512) == 512);
-    };
-    _loc1.__get__canAttackDungeonMonstersWhenMutant = function ()
-    {
-        return ((this._nRestrictions & 4096) == 4096);
-    };
-    _loc1.__get__canMoveInAllDirections = function ()
-    {
-        return ((this._nRestrictions & 8192) == 8192);
-    };
-    _loc1.__get__canAttackMonstersAnywhereWhenMutant = function ()
-    {
-        return ((this._nRestrictions & 16384) == 16384);
-    };
-    _loc1.__get__cantInteractWithPrism = function ()
-    {
-        return ((this._nRestrictions & 32768) == 32768);
-    };
-    _loc1.reset = function ()
-    {
-        this.currentUseObject = null;
-    };
-    _loc1.updateLP = function (dLP)
+        currentUseObject = null;
+    } // End of the function
+    function updateLP(dLP)
     {
         dLP = Number(dLP);
-        if (this.LP + dLP > this.LPmax)
+        if (this.__get__LP() + dLP > this.__get__LPmax())
         {
-            dLP = this.LPmax - this.LP;
+            dLP = this.__get__LPmax() - this.__get__LP();
         } // end if
-        this.LP = this.LP + dLP;
-    };
-    _loc1.hasEnoughAP = function (wantedAP)
+        LP = LP + dLP;
+    } // End of the function
+    function hasEnoughAP(wantedAP)
     {
-        return (this.data.AP >= wantedAP);
-    };
-    _loc1.addItem = function (oItem)
+        return (data.AP >= wantedAP);
+    } // End of the function
+    function addItem(oItem)
     {
         if (oItem.position == 1)
         {
             this.setWeaponItem(oItem);
         } // end if
-        this.Inventory.push(oItem);
-    };
-    _loc1.updateItem = function (oNewItem)
+        Inventory.push(oItem);
+    } // End of the function
+    function updateItem(oNewItem)
     {
-        var _loc3 = this.Inventory.findFirstItem("ID", oNewItem.ID);
-        if (_loc3.item.ID == oNewItem.ID && _loc3.item.maxSkin != oNewItem.maxSkin)
-        {
-            if (!_loc3.item.isLeavingItem && oNewItem.isLeavingItem)
-            {
-                this.api.kernel.SpeakingItemsManager.triggerPrivateEvent(dofus.managers.SpeakingItemsManager.SPEAK_TRIGGER_ASSOCIATE);
-            } // end if
-            if (_loc3.item.isLeavingItem && oNewItem.isLeavingItem)
-            {
-                this.api.kernel.SpeakingItemsManager.triggerPrivateEvent(dofus.managers.SpeakingItemsManager.SPEAK_TRIGGER_LEVEL_UP);
-            } // end if
-        } // end if
-        this.Inventory.updateItem(_loc3.index, oNewItem);
-    };
-    _loc1.updateItemQuantity = function (nItemNum, nQuantity)
+        var _loc2 = Inventory.findFirstItem("ID", oNewItem.ID);
+        Inventory.updateItem(_loc2.index, oNewItem);
+    } // End of the function
+    function updateItemQuantity(nItemNum, nQuantity)
     {
-        var _loc4 = this.Inventory.findFirstItem("ID", nItemNum);
-        var _loc5 = _loc4.item;
-        _loc5.Quantity = nQuantity;
-        this.Inventory.updateItem(_loc4.index, _loc5);
-    };
-    _loc1.updateItemPosition = function (nItemNum, nPosition)
+        var _loc2 = Inventory.findFirstItem("ID", nItemNum);
+        var _loc3 = _loc2.item;
+        _loc3.Quantity = nQuantity;
+        Inventory.updateItem(_loc2.index, _loc3);
+    } // End of the function
+    function updateItemPosition(nItemNum, nPosition)
     {
-        var _loc4 = this.Inventory.findFirstItem("ID", nItemNum);
-        var _loc5 = _loc4.item;
-        if (_loc5.position == 1)
+        var _loc3 = Inventory.findFirstItem("ID", nItemNum);
+        var _loc2 = _loc3.item;
+        if (_loc2.position == 1)
         {
             this.setWeaponItem();
         }
         else if (nPosition == 1)
         {
-            this.setWeaponItem(_loc5);
+            this.setWeaponItem(_loc2);
         } // end else if
-        _loc5.position = nPosition;
-        this.Inventory.updateItem(_loc4.index, _loc5);
-    };
-    _loc1.dropItem = function (nItemNum)
+        _loc2.position = nPosition;
+        Inventory.updateItem(_loc3.index, _loc2);
+    } // End of the function
+    function dropItem(nItemNum)
     {
-        var _loc3 = this.Inventory.findFirstItem("ID", nItemNum);
-        if (_loc3.item.position == 1)
+        var _loc2 = Inventory.findFirstItem("ID", nItemNum);
+        if (_loc2.item.position == 1)
         {
             this.setWeaponItem();
         } // end if
-        this.Inventory.removeItems(_loc3.index, 1);
-    };
-    _loc1.updateSpell = function (oSpell)
+        Inventory.removeItems(_loc2.index, 1);
+    } // End of the function
+    function updateSpell(oSpell)
     {
-        var _loc3 = this.Spells.findFirstItem("ID", oSpell.ID);
-        if (_loc3.index != -1)
+        var _loc2 = Spells.findFirstItem("ID", oSpell.ID);
+        if (_loc2.index != -1)
         {
-            oSpell.position = _loc3.item.position;
-            this.Spells.updateItem(_loc3.index, oSpell);
+            oSpell.position = _loc2.item.position;
+            Spells.updateItem(_loc2.index, oSpell);
         }
         else
         {
-            this.Spells.push(oSpell);
+            Spells.push(oSpell);
         } // end else if
-    };
-    _loc1.updateSpellPosition = function (oSpell)
+    } // End of the function
+    function updateSpellPosition(oSpell)
     {
-        var _loc3 = this.Spells.findFirstItem("position", oSpell.position);
-        var _loc4 = this.Spells.findFirstItem("ID", oSpell.ID);
-        if (_loc3.index != -1)
+        var _loc2 = Spells.findFirstItem("position", oSpell.position);
+        var _loc4 = Spells.findFirstItem("ID", oSpell.ID);
+        if (_loc2.index != -1)
         {
-            _loc3.item.position = undefined;
-            this.Spells.updateItem(_loc3.index, oSpell);
+            _loc2.item.position = undefined;
+            Spells.updateItem(_loc2.index, oSpell);
         } // end if
         if (_loc4.index != -1)
         {
-            this.Spells.updateItem(_loc3.index, oSpell);
+            Spells.updateItem(_loc2.index, oSpell);
         }
         else
         {
-            this.Spells.push(oSpell);
+            Spells.push(oSpell);
         } // end else if
-    };
-    _loc1.removeSpell = function (nID)
+    } // End of the function
+    function removeSpell(nID)
     {
-        var _loc3 = this.Spells.findFirstItem("ID", nID);
-        if (_loc3.index != -1)
+        var _loc2 = Spells.findFirstItem("ID", nID);
+        if (_loc2.index != -1)
         {
-            this.Spells.removeItems(_loc3.index, 1);
+            Spells.removeItems(_loc2.index, 1);
         } // end if
-    };
-    _loc1.canBoost = function (nCharacID)
+    } // End of the function
+    function canBoost(nCharacID)
     {
-        if (this.api.datacenter.Game.isRunning)
+        if (api.datacenter.Game.isRunning)
         {
             return (false);
         } // end if
-        var _loc3 = this.getBoostCostAndCountForCharacteristic(nCharacID).cost;
-        if (this._nBonusPoints >= _loc3)
+        var _loc2 = this.getBoostCostAndCountForCharacteristic(nCharacID).cost;
+        if (_nBonusPoints >= _loc2)
         {
             return (true);
         }
@@ -772,211 +676,93 @@ if (!dofus.datacenter.LocalPlayer)
         {
             return (false);
         } // end else if
-    };
-    _loc1.getBoostCostAndCountForCharacteristic = function (nCharacID)
+    } // End of the function
+    function getBoostCostAndCountForCharacteristic(nCharacID)
     {
-        var _loc3 = this.api.lang.getClassText(this._nGuild)["b" + nCharacID];
-        var _loc4 = 1;
-        var _loc5 = 1;
-        var _loc6 = 0;
+        var _loc3 = api.lang.getClassText(_nGuild)["b" + nCharacID];
+        var _loc7 = 1;
+        var _loc6 = 1;
+        var _loc5 = 0;
         switch (nCharacID)
         {
             case 10:
             {
-                _loc6 = this._nForce;
+                _loc5 = _nForce;
                 break;
             } 
             case 11:
             {
-                _loc6 = this._nVitality;
+                _loc5 = _nVitality;
                 break;
             } 
             case 12:
             {
-                _loc6 = this._nWisdom;
+                _loc5 = _nWisdom;
                 break;
             } 
             case 13:
             {
-                _loc6 = this._nChance;
+                _loc5 = _nChance;
                 break;
             } 
             case 14:
             {
-                _loc6 = this._agility;
+                _loc5 = _agility;
                 break;
             } 
             case 15:
             {
-                _loc6 = this._intelligence;
+                _loc5 = _intelligence;
                 break;
             } 
         } // End of switch
-        var _loc7 = 0;
-        
-        while (++_loc7, _loc7 < _loc3.length)
+        for (var _loc2 = 0; _loc2 < _loc3.length; ++_loc2)
         {
-            var _loc8 = _loc3[_loc7][0];
-            if (_loc6 >= _loc8)
+            var _loc4 = _loc3[_loc2][0];
+            if (_loc5 >= _loc4)
             {
-                _loc4 = _loc3[_loc7][1];
-                _loc5 = _loc3[_loc7][2] == undefined ? (1) : (_loc3[_loc7][2]);
+                _loc7 = _loc3[_loc2][1];
+                _loc6 = _loc3[_loc2][2] == undefined ? (1) : (_loc3[_loc2][2]);
                 continue;
             } // end if
             break;
-        } // end while
-        return ({cost: _loc4, count: _loc5});
-    };
-    _loc1.isAtHome = function (nMapID)
+        } // end of for
+        return ({cost: _loc7, count: _loc6});
+    } // End of the function
+    function isAtHome(nMapID)
     {
-        var _loc3 = Number(this.api.lang.getHousesMapText(nMapID));
-        if (_loc3 != undefined)
+        var _loc2 = Number(api.lang.getHousesMapText(nMapID));
+        if (_loc2 != undefined)
         {
-            return (this.api.datacenter.Houses.getItemAt(_loc3).localOwner);
+            return (api.datacenter.Houses.getItemAt(_loc2).localOwner);
         }
         else
         {
             return (false);
         } // end else if
-    };
-    _loc1.clearEmotes = function ()
+    } // End of the function
+    function clearEmotes()
     {
-        this.Emotes = new ank.utils.ExtendedObject();
-    };
-    _loc1.addEmote = function (nEmoteID)
+        Emotes = new ank.utils.ExtendedObject();
+    } // End of the function
+    function addEmote(nEmoteID)
     {
-        this.Emotes.addItemAt(nEmoteID, true);
-    };
-    _loc1.hasEmote = function (nEmoteID)
+        Emotes.addItemAt(nEmoteID, true);
+    } // End of the function
+    function hasEmote(nEmoteID)
     {
-        return (this.Emotes.getItemAt(nEmoteID) == true);
-    };
-    _loc1.updateCloseCombat = function ()
+        return (Emotes.getItemAt(nEmoteID) == true);
+    } // End of the function
+    function updateCloseCombat()
     {
-        this.Spells[0] = new dofus.datacenter.CloseCombat(this._oWeaponItem, this._nGuild);
-    };
-    _loc1.setWeaponItem = function (oItem)
+        Spells[0] = new dofus.datacenter.CloseCombat(_oWeaponItem, _nGuild);
+    } // End of the function
+    function setWeaponItem(oItem)
     {
-        this._oWeaponItem = oItem;
+        _oWeaponItem = oItem;
         this.updateCloseCombat();
-    };
-    _loc1.addProperty("canBeMerchant", _loc1.__get__canBeMerchant, function ()
-    {
-    });
-    _loc1.addProperty("currentJobID", _loc1.__get__currentJobID, _loc1.__set__currentJobID);
-    _loc1.addProperty("EnergyMax", _loc1.__get__EnergyMax, _loc1.__set__EnergyMax);
-    _loc1.addProperty("Force", _loc1.__get__Force, _loc1.__set__Force);
-    _loc1.addProperty("mountXPPercent", _loc1.__get__mountXPPercent, _loc1.__set__mountXPPercent);
-    _loc1.addProperty("VitalityXtra", _loc1.__get__VitalityXtra, _loc1.__set__VitalityXtra);
-    _loc1.addProperty("restrictions", _loc1.__get__restrictions, _loc1.__set__restrictions);
-    _loc1.addProperty("XPlow", _loc1.__get__XPlow, _loc1.__set__XPlow);
-    _loc1.addProperty("currentWeight", _loc1.__get__currentWeight, _loc1.__set__currentWeight);
-    _loc1.addProperty("weaponItem", _loc1.__get__weaponItem, function ()
-    {
-    });
-    _loc1.addProperty("cantInteractWithPrism", _loc1.__get__cantInteractWithPrism, function ()
-    {
-    });
-    _loc1.addProperty("Wisdom", _loc1.__get__Wisdom, _loc1.__set__Wisdom);
-    _loc1.addProperty("Vitality", _loc1.__get__Vitality, _loc1.__set__Vitality);
-    _loc1.addProperty("XPhigh", _loc1.__get__XPhigh, _loc1.__set__XPhigh);
-    _loc1.addProperty("inParty", _loc1.__get__inParty, _loc1.__set__inParty);
-    _loc1.addProperty("Agility", _loc1.__get__Agility, _loc1.__set__Agility);
-    _loc1.addProperty("MaxSummonedCreatures", _loc1.__get__MaxSummonedCreatures, _loc1.__set__MaxSummonedCreatures);
-    _loc1.addProperty("alignment", _loc1.__get__alignment, _loc1.__set__alignment);
-    _loc1.addProperty("Chance", _loc1.__get__Chance, _loc1.__set__Chance);
-    _loc1.addProperty("isCurrentPlayer", _loc1.__get__isCurrentPlayer, function ()
-    {
-    });
-    _loc1.addProperty("canChallenge", _loc1.__get__canChallenge, function ()
-    {
-    });
-    _loc1.addProperty("specialization", _loc1.__get__specialization, _loc1.__set__specialization);
-    _loc1.addProperty("MP", _loc1.__get__MP, _loc1.__set__MP);
-    _loc1.addProperty("canExchange", _loc1.__get__canExchange, function ()
-    {
-    });
-    _loc1.addProperty("craftPublicMode", _loc1.__get__craftPublicMode, _loc1.__set__craftPublicMode);
-    _loc1.addProperty("RangeModerator", _loc1.__get__RangeModerator, _loc1.__set__RangeModerator);
-    _loc1.addProperty("BonusPointsSpell", _loc1.__get__BonusPointsSpell, _loc1.__set__BonusPointsSpell);
-    _loc1.addProperty("BonusPoints", _loc1.__get__BonusPoints, _loc1.__set__BonusPoints);
-    _loc1.addProperty("data", _loc1.__get__data, function ()
-    {
-    });
-    _loc1.addProperty("canAttackMonstersAnywhereWhenMutant", _loc1.__get__canAttackMonstersAnywhereWhenMutant, function ()
-    {
-    });
-    _loc1.addProperty("canAttack", _loc1.__get__canAttack, function ()
-    {
-    });
-    _loc1.addProperty("fakeAlignment", _loc1.__get__fakeAlignment, _loc1.__set__fakeAlignment);
-    _loc1.addProperty("XP", _loc1.__get__XP, _loc1.__set__XP);
-    _loc1.addProperty("Kama", _loc1.__get__Kama, _loc1.__set__Kama);
-    _loc1.addProperty("Level", _loc1.__get__Level, _loc1.__set__Level);
-    _loc1.addProperty("SummonedCreatures", _loc1.__get__SummonedCreatures, _loc1.__set__SummonedCreatures);
-    _loc1.addProperty("clip", _loc1.__get__clip, function ()
-    {
-    });
-    _loc1.addProperty("maxWeight", _loc1.__get__maxWeight, _loc1.__set__maxWeight);
-    _loc1.addProperty("AP", _loc1.__get__AP, _loc1.__set__AP);
-    _loc1.addProperty("LPmax", _loc1.__get__LPmax, _loc1.__set__LPmax);
-    _loc1.addProperty("rank", _loc1.__get__rank, _loc1.__set__rank);
-    _loc1.addProperty("canUseObject", _loc1.__get__canUseObject, function ()
-    {
-    });
-    _loc1.addProperty("color1", _loc1.__get__color1, _loc1.__set__color1);
-    _loc1.addProperty("color2", _loc1.__get__color2, _loc1.__set__color2);
-    _loc1.addProperty("isRiding", _loc1.__get__isRiding, _loc1.__set__isRiding);
-    _loc1.addProperty("Discernment", _loc1.__get__Discernment, _loc1.__set__Discernment);
-    _loc1.addProperty("color3", _loc1.__get__color3, _loc1.__set__color3);
-    _loc1.addProperty("mount", _loc1.__get__mount, _loc1.__set__mount);
-    _loc1.addProperty("Intelligence", _loc1.__get__Intelligence, _loc1.__set__Intelligence);
-    _loc1.addProperty("isMutant", _loc1.__get__isMutant, function ()
-    {
-    });
-    _loc1.addProperty("AgilityXtra", _loc1.__get__AgilityXtra, _loc1.__set__AgilityXtra);
-    _loc1.addProperty("ID", _loc1.__get__ID, _loc1.__set__ID);
-    _loc1.addProperty("IntelligenceXtra", _loc1.__get__IntelligenceXtra, _loc1.__set__IntelligenceXtra);
-    _loc1.addProperty("Name", _loc1.__get__Name, _loc1.__set__Name);
-    _loc1.addProperty("AgilityTotal", _loc1.__get__AgilityTotal, _loc1.__set__AgilityTotal);
-    _loc1.addProperty("canAssault", _loc1.__get__canAssault, function ()
-    {
-    });
-    _loc1.addProperty("canAttackDungeonMonstersWhenMutant", _loc1.__get__canAttackDungeonMonstersWhenMutant, function ()
-    {
-    });
-    _loc1.addProperty("LP", _loc1.__get__LP, _loc1.__set__LP);
-    _loc1.addProperty("cantSpeakNPC", _loc1.__get__cantSpeakNPC, function ()
-    {
-    });
-    _loc1.addProperty("Sex", _loc1.__get__Sex, _loc1.__set__Sex);
-    _loc1.addProperty("canMoveInAllDirections", _loc1.__get__canMoveInAllDirections, function ()
-    {
-    });
-    _loc1.addProperty("ChanceXtra", _loc1.__get__ChanceXtra, _loc1.__set__ChanceXtra);
-    _loc1.addProperty("currentJob", _loc1.__get__currentJob, function ()
-    {
-    });
-    _loc1.addProperty("FullStats", _loc1.__get__FullStats, _loc1.__set__FullStats);
-    _loc1.addProperty("Guild", _loc1.__get__Guild, _loc1.__set__Guild);
-    _loc1.addProperty("cantInteractWithTaxCollector", _loc1.__get__cantInteractWithTaxCollector, function ()
-    {
-    });
-    _loc1.addProperty("ForceXtra", _loc1.__get__ForceXtra, _loc1.__set__ForceXtra);
-    _loc1.addProperty("canChatToAll", _loc1.__get__canChatToAll, function ()
-    {
-    });
-    _loc1.addProperty("Initiative", _loc1.__get__Initiative, _loc1.__set__Initiative);
-    _loc1.addProperty("WisdomXtra", _loc1.__get__WisdomXtra, _loc1.__set__WisdomXtra);
-    _loc1.addProperty("canUseInteractiveObjects", _loc1.__get__canUseInteractiveObjects, function ()
-    {
-    });
-    _loc1.addProperty("CriticalHitBonus", _loc1.__get__CriticalHitBonus, _loc1.__set__CriticalHitBonus);
-    _loc1.addProperty("Energy", _loc1.__get__Energy, _loc1.__set__Energy);
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1.isAuthorized = false;
-    _loc1.haveFakeAlignment = false;
-    _loc1._nSummonedCreatures = 0;
-    _loc1._bIsRiding = false;
-} // end if
+    } // End of the function
+    var isAuthorized = false;
+    var _nSummonedCreatures = 0;
+} // End of Class
 #endinitclip

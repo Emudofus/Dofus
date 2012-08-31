@@ -1,66 +1,45 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20871]
-#initclip 136
-if (!dofus.graphics.gapi.controls.BuffViewer)
+// [Initial MovieClip Action of sprite 1048]
+#initclip 15
+class dofus.graphics.gapi.controls.BuffViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.BuffViewer = function ()
+    var _oItem, addToQueue, __get__itemData, _lblName, _txtDescription, _ldrIcon, _lstInfos, __set__itemData;
+    function BuffViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__itemData = function (oItem)
+    } // End of the function
+    function set itemData(oItem)
     {
-        this._oItem = oItem;
-        this.addToQueue({object: this, method: this.showItemData, params: [oItem]});
+        _oItem = oItem;
+        this.addToQueue({object: this, method: showItemData, params: [oItem]});
         //return (this.itemData());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.BuffViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-    };
-    _loc1.showItemData = function (oItem)
+    } // End of the function
+    function showItemData(oItem)
     {
         if (oItem != undefined)
         {
-            this._lblName.text = oItem.name;
-            this._txtDescription.text = oItem.description;
-            this._ldrIcon.contentPath = oItem.iconFile;
-            this._lstInfos.dataProvider = oItem.effects;
+            _lblName.__set__text(oItem.name);
+            _txtDescription.__set__text(oItem.description);
+            _ldrIcon.__set__contentPath(oItem.iconFile);
+            _lstInfos.__set__dataProvider(oItem.effects);
         }
-        else if (this._lblName.text != undefined)
+        else
         {
-            this._lblName.text = "";
-            this._txtDescription.text = "";
-            this._ldrIcon.contentPath = "";
-            this._lstInfos.removeAll();
+            _lblName.__set__text("");
+            _txtDescription.__set__text("");
+            _ldrIcon.__set__contentPath("");
+            _lstInfos.removeAll();
         } // end else if
-    };
-    _loc1.addProperty("itemData", function ()
-    {
-    }, _loc1.__set__itemData);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.BuffViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "BuffViewer";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "BuffViewer";
+} // End of Class
 #endinitclip

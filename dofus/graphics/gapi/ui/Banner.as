@@ -1,484 +1,459 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20719]
-#initclip 240
-if (!dofus.graphics.gapi.ui.Banner)
+// [Initial MovieClip Action of sprite 1009]
+#initclip 228
+class dofus.graphics.gapi.ui.Banner extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Banner = function ()
+    var _oData, __get__data, _btnFights, api, __get__fightsCount, __get__chatAutoFocus, _btnNextTurn, _btnGiveUp, _pvAP, _pvMP, _sCurrentCircleXtra, _mcCircleXtraMask, _mcCircleXtraPlacer, getNextHighestDepth, attachMovie, _mcXtra, _ccChrono, _cChat, addToQueue, setMovieClipTransform, _ctrCC, _mcRightPanel, _mcRightPanelPlacer, gapi, _btnTabSpells, _btnTabItems, _btnGuild, _btnStatsJob, _btnSpells, _btnInventory, _btnMap, _btnFriends, _btnHelp, _txtConsole, _ctr1, _ctr2, _ctr3, _ctr4, _ctr5, _ctr6, _ctr7, _lblFinalCountDown, _hHeart, __get__gapi, __set__chatAutoFocus, __set__data, __set__fightsCount;
+    function Banner()
     {
         super();
-    }).prototype;
-    _loc1.__set__data = function (oData)
+    } // End of the function
+    function set data(oData)
     {
-        this._oData = oData;
+        _oData = oData;
         //return (this.data());
-    };
-    _loc1.__set__fightsCount = function (nFightsCount)
+        null;
+    } // End of the function
+    function set fightsCount(nFightsCount)
     {
-        this._nFightsCount = nFightsCount;
-        this._btnFights._visible = nFightsCount != 0 && (!this.api.datacenter.Game.isFight && this._msShortcuts.currentTab == dofus.graphics.gapi.controls.MouseShortcuts.TAB_ITEMS);
-        if (this._btnFights.icon == "")
+        _nFightsCount = nFightsCount;
+        _btnFights._visible = nFightsCount != 0 && !api.datacenter.Game.isFight && _sCurrentTab == "Items";
+        if (_btnFights.__get__icon() == "")
         {
-            this._btnFights.icon = "Eye2";
+            _btnFights.__set__icon("Eye2");
         } // end if
         //return (this.fightsCount());
-    };
-    _loc1.__get__chatAutoFocus = function ()
+        null;
+    } // End of the function
+    function get chatAutoFocus()
     {
-        return (this._bChatAutoFocus);
-    };
-    _loc1.__set__chatAutoFocus = function (bChatAutoFocus)
+        return (_bChatAutoFocus);
+    } // End of the function
+    function set chatAutoFocus(bChatAutoFocus)
     {
-        this._bChatAutoFocus = bChatAutoFocus;
+        _bChatAutoFocus = bChatAutoFocus;
         //return (this.chatAutoFocus());
-    };
-    _loc1.__set__txtConsole = function (sText)
+        null;
+    } // End of the function
+    function showNextTurnButton(bShow)
     {
-        this._txtConsole.text = sText;
-        //return (this.txtConsole());
-    };
-    _loc1.__get__chat = function ()
+        _btnNextTurn._visible = bShow;
+    } // End of the function
+    function showGiveUpButton(bShow)
     {
-        return (this._cChat);
-    };
-    _loc1.__get__shortcuts = function ()
+        _btnGiveUp._visible = bShow;
+    } // End of the function
+    function showPoints(bShow)
     {
-        return (this._msShortcuts);
-    };
-    _loc1.__get__illustration = function ()
-    {
-        return (this._mcXtra);
-    };
-    _loc1.__get__illustrationType = function ()
-    {
-        return (this._sCurrentCircleXtra);
-    };
-    _loc1.updateEye = function ()
-    {
-        this._btnFights._visible = this._nFightsCount != 0 && (!this.api.datacenter.Game.isFight && this._msShortcuts.currentTab == dofus.graphics.gapi.controls.MouseShortcuts.TAB_ITEMS);
-        if (this._btnFights.icon == "")
-        {
-            this._btnFights.icon = "Eye2";
-        } // end if
-    };
-    _loc1.setSelectable = function (bSelectable)
-    {
-        this._cChat.selectable = bSelectable;
-    };
-    _loc1.insertChat = function (sText)
-    {
-        this._txtConsole.text = this._txtConsole.text + sText;
-    };
-    _loc1.showNextTurnButton = function (bShow)
-    {
-        this._btnNextTurn._visible = bShow;
-    };
-    _loc1.showGiveUpButton = function (bShow)
-    {
-        this.setXtraFightMask(bShow);
-        this._btnGiveUp._visible = bShow;
-    };
-    _loc1.showPoints = function (bShow)
-    {
-        this._pvAP._visible = bShow;
-        this._pvMP._visible = bShow;
-        this._cChat.showSitDown(!bShow);
+        _pvAP._visible = bShow;
+        _pvMP._visible = bShow;
         if (bShow)
         {
-            this._oData.data.addEventListener("lpChanged", this);
-            this._oData.data.addEventListener("apChanged", this);
-            this._oData.data.addEventListener("mpChanged", this);
-            this.apChanged({value: Math.max(0, this._oData.data.AP)});
-            this.mpChanged({value: Math.max(0, this._oData.data.MP)});
+            _oData.data.addEventListener("lpChanged", this);
+            _oData.data.addEventListener("apChanged", this);
+            _oData.data.addEventListener("mpChanged", this);
+            this.apChanged({value: Math.max(0, _oData.data.AP)});
+            this.mpChanged({value: Math.max(0, _oData.data.MP)});
         } // end if
-    };
-    _loc1.setXtraFightMask = function (bInFight)
-    {
-        if (!bInFight)
-        {
-            if (this._sDefaultMaskType == "big")
-            {
-                this._mcXtra.setMask(this._mcCircleXtraMaskBig);
-            }
-            else
-            {
-                this._mcXtra.setMask(this._mcCircleXtraMask);
-            } // end else if
-        }
-        else
-        {
-            this._mcXtra.setMask(this._mcCircleXtraMask);
-        } // end else if
-        this.displayMovableBar(this.api.kernel.OptionsManager.getOption("MovableBar") && (!this.api.kernel.OptionsManager.getOption("HideSpellBar") || this.api.datacenter.Game.isFight));
-    };
-    _loc1.showCircleXtra = function (sXtraName, bShow, oParams, oComponentParams)
+    } // End of the function
+    function showCircleXtra(sXtraName, bShow, oParams, oComponentParams)
     {
         if (sXtraName == undefined)
         {
-            return (null);
+            return (false);
         } // end if
-        if (sXtraName == this._sCurrentCircleXtra && bShow)
+        if (sXtraName == _sCurrentCircleXtra && bShow)
         {
-            return (null);
+            return (false);
         } // end if
-        if (sXtraName != this._sCurrentCircleXtra && !bShow)
+        if (sXtraName != _sCurrentCircleXtra && !bShow)
         {
-            return (null);
+            return (false);
         } // end if
-        if (this._sCurrentCircleXtra != undefined && bShow)
+        if (_sCurrentCircleXtra != undefined && bShow)
         {
-            this.showCircleXtra(this._sCurrentCircleXtra, false);
+            this.showCircleXtra(_sCurrentCircleXtra, false);
         } // end if
-        var _loc7 = new Object();
-        var _loc8 = new Array();
+        var _loc5;
+        var _loc3 = new Object();
+        var _loc2 = new Array();
         if (oComponentParams == undefined)
         {
             oComponentParams = new Object();
         } // end if
-        this.api.kernel.OptionsManager.setOption("BannerIllustrationMode", sXtraName);
         switch (sXtraName)
         {
             case "artwork":
             {
-                var _loc6 = "Loader";
-                _loc7 = {_x: this._mcCircleXtraMask._x, _y: this._mcCircleXtraMask._y, contentPath: dofus.Constants.GUILDS_FACES_PATH + this._oData.data.gfxID + ".swf", enabled: true};
-                _loc8 = ["complete", "click"];
+                _loc5 = "Loader";
+                _loc3 = {_x: _mcCircleXtraMask._x, _y: _mcCircleXtraMask._y, contentPath: dofus.Constants.GUILDS_FACES_PATH + _oData.data.gfxID + ".swf", enabled: true};
+                _loc2 = ["complete", "click"];
                 break;
             } 
             case "compass":
             {
-                var _loc9 = this.api.datacenter.Map;
-                _loc6 = "Compass";
-                _loc7 = {_x: this._mcCircleXtraPlacer._x, _y: this._mcCircleXtraPlacer._y, _width: this._mcCircleXtraPlacer._width, _height: this._mcCircleXtraPlacer._height, arrow: "UI_BannerCompassArrow", noArrow: "UI_BannerCompassNoArrow", background: "UI_BannerCompassBack", targetCoords: this.api.datacenter.Basics.banner_targetCoords, currentCoords: [_loc9.x, _loc9.y]};
-                _loc8 = ["click", "over", "out"];
+                var _loc9 = api.datacenter.Map;
+                _loc5 = "Compass";
+                _loc3 = {_x: _mcCircleXtraPlacer._x, _y: _mcCircleXtraPlacer._y, _width: _mcCircleXtraPlacer._width, _height: _mcCircleXtraPlacer._height, arrow: "UI_BannerCompassArrow", noArrow: "UI_BannerCompassNoArrow", background: "UI_BannerCompassBack", targetCoords: api.datacenter.Basics.banner_targetCoords, currentCoords: [_loc9.x, _loc9.y]};
+                _loc2 = ["click", "over", "out"];
                 break;
             } 
             case "clock":
             {
-                _loc6 = "Clock";
-                _loc7 = {_x: this._mcCircleXtraPlacer._x, _y: this._mcCircleXtraPlacer._y, _width: this._mcCircleXtraPlacer._width, _height: this._mcCircleXtraPlacer._height, arrowHours: "UI_BannerClockArrowHours", arrowMinutes: "UI_BannerClockArrowMinutes", background: "UI_BannerClockBack", updateFunction: {object: this.api.kernel.NightManager, method: this.api.kernel.NightManager.getCurrentTime}};
-                _loc8 = ["click", "over", "out"];
-                break;
-            } 
-            case "helper":
-            {
-                _loc6 = "Loader";
-                _loc7 = {_x: this._mcCircleXtraPlacer._x, _y: this._mcCircleXtraPlacer._y, contentPath: "Helper", enabled: true};
-                _loc8 = ["click", "over", "out"];
-                break;
-            } 
-            case "map":
-            {
-                _loc6 = "MiniMap";
-                _loc7 = {_x: this._mcCircleXtraPlacer._x, _y: this._mcCircleXtraPlacer._y, contentPath: "Map", enabled: true};
-                _loc8 = [];
+                _loc5 = "Clock";
+                _loc3 = {_x: _mcCircleXtraPlacer._x, _y: _mcCircleXtraPlacer._y, _width: _mcCircleXtraPlacer._width, _height: _mcCircleXtraPlacer._height, arrowHours: "UI_BannerClockArrowHours", arrowMinutes: "UI_BannerClockArrowMinutes", background: "UI_BannerClockBack", updateFunction: {object: api.kernel.NightManager, method: api.kernel.NightManager.getCurrentTime}};
+                _loc2 = ["click", "over", "out"];
                 break;
             } 
             default:
             {
-                _loc6 = "Loader";
-                _loc7 = {_x: this._mcCircleXtraPlacer._x, _y: this._mcCircleXtraPlacer._y, _width: this._mcCircleXtraPlacer._width, _height: this._mcCircleXtraPlacer._height};
+                _loc5 = "Loader";
+                _loc3 = {_x: _mcCircleXtraPlacer._x, _y: _mcCircleXtraPlacer._y, _width: _mcCircleXtraPlacer._width, _height: _mcCircleXtraPlacer._height};
                 break;
             } 
         } // End of switch
-        var _loc10 = null;
         if (bShow)
         {
-            for (var k in _loc7)
+            for (var _loc6 in _loc3)
             {
-                oComponentParams[k] = _loc7[k];
+                oComponentParams[_loc6] = _loc3[_loc6];
             } // end of for...in
-            _loc10 = this.attachMovie(_loc6, "_mcXtra", this.getNextHighestDepth(), oComponentParams);
+            this.attachMovie(_loc5, "_mcXtra", this.getNextHighestDepth(), oComponentParams);
             if (oParams.bMask)
             {
-                this._sDefaultMaskType = oParams.sMaskSize;
-                if (oParams.sMaskSize == "big" && !this.api.datacenter.Game.isFight)
-                {
-                    this._mcXtra.setMask(this._mcCircleXtraMaskBig);
-                }
-                else
-                {
-                    this._mcXtra.setMask(this._mcCircleXtraMask);
-                } // end if
-            } // end else if
-            for (var k in _loc8)
+                _mcXtra.setMask(_mcCircleXtraMask);
+            } // end if
+            for (var _loc6 in _loc2)
             {
-                this._mcXtra.addEventListener(_loc8[k], this);
+                _mcXtra.addEventListener(_loc2[_loc6], this);
             } // end of for...in
-            this._mcXtra.swapDepths(this._mcCircleXtraPlacer);
-            this._sCurrentCircleXtra = sXtraName;
+            _mcXtra.swapDepths(_mcCircleXtraPlacer);
+            _sCurrentCircleXtra = sXtraName;
         }
-        else if (this._mcXtra != undefined)
+        else if (_mcXtra != undefined)
         {
-            for (var k in _loc8)
+            for (var _loc6 in _loc2)
             {
-                this._mcXtra.removeEventListener(_loc8[k], this);
+                _mcXtra.removeEventListener(_loc2[_loc6], this);
             } // end of for...in
-            this._mcCircleXtraPlacer.swapDepths(this._mcXtra);
-            this._mcXtra.removeMovieClip();
+            _mcCircleXtraPlacer.swapDepths(_mcXtra);
+            _mcXtra.removeMovieClip();
             delete this._sCurrentCircleXtra;
         } // end else if
-        return (_loc10);
-    };
-    _loc1.setCircleXtraParams = function (oParams)
+        return (true);
+    } // End of the function
+    function setCircleXtraParams(oParams)
     {
-        for (var k in oParams)
+        for (var _loc3 in oParams)
         {
-            this._mcXtra[k] = oParams[k];
+            _mcXtra[_loc3] = oParams[_loc3];
         } // end of for...in
-    };
-    _loc1.startTimer = function (nDuration)
+    } // End of the function
+    function startTimer(nDuration)
     {
-        this.setXtraFightMask(true);
-        this._ccChrono.startTimer(nDuration);
-    };
-    _loc1.stopTimer = function ()
+        _ccChrono.startTimer(nDuration);
+    } // End of the function
+    function stopTimer()
     {
-        this._ccChrono.stopTimer();
-    };
-    _loc1.setChatText = function (sText)
+        _ccChrono.stopTimer();
+    } // End of the function
+    function setChatText(sText)
     {
-        this._cChat.setText(sText);
-    };
-    _loc1.showRightPanel = function (sPanelName, oParams)
+        _cChat.setText(sText);
+    } // End of the function
+    function updateSpells()
     {
-        if (this._mcRightPanel.className == sPanelName)
+        var _loc5 = new Array();
+        for (var _loc2 = 1; _loc2 <= 14; ++_loc2)
+        {
+            _loc5[_loc2] = true;
+        } // end of for
+        var _loc6 = _oData.Spells;
+        for (var _loc7 in _loc6)
+        {
+            var _loc4 = _loc6[_loc7];
+            var _loc3 = _loc4.position;
+            if (!isNaN(_loc3))
+            {
+                this["_ctr" + _loc3].contentData = _loc4;
+                _loc5[_loc3] = false;
+            } // end if
+        } // end of for...in
+        for (var _loc2 = 1; _loc2 <= 14; ++_loc2)
+        {
+            if (_loc5[_loc2])
+            {
+                this["_ctr" + _loc2].contentData = undefined;
+            } // end if
+        } // end of for
+        this.addToQueue({object: this, method: setSpellStateOnAllContainers});
+    } // End of the function
+    function updateItems()
+    {
+        var _loc6 = new Array();
+        for (var _loc3 = 1; _loc3 <= 14; ++_loc3)
+        {
+            _loc6[_loc3] = true;
+        } // end of for
+        var _loc7 = _oData.Inventory;
+        for (var _loc8 in _loc7)
+        {
+            var _loc2 = _loc7[_loc8];
+            if (!isNaN(_loc2.position))
+            {
+                if (_loc2.position < 40)
+                {
+                    continue;
+                } // end if
+                var _loc4 = _loc2.position - 39;
+                var _loc5 = this["_ctr" + _loc4];
+                _loc5.contentData = _loc2;
+                if (_loc2.Quantity > 1)
+                {
+                    _loc5.label = String(_loc2.Quantity);
+                } // end if
+                _loc6[_loc4] = false;
+            } // end if
+        } // end of for...in
+        for (var _loc3 = 1; _loc3 <= 14; ++_loc3)
+        {
+            if (_loc6[_loc3])
+            {
+                this["_ctr" + _loc3].contentData = undefined;
+            } // end if
+        } // end of for
+        this.addToQueue({object: this, method: setItemStateOnAllContainers});
+    } // End of the function
+    function clearSpellStateOnAllContainers()
+    {
+        var _loc3 = _oData.Spells;
+        for (var _loc4 in _loc3)
+        {
+            if (isNaN(_loc3[_loc4].position))
+            {
+                continue;
+            } // end if
+            var _loc2 = this["_ctr" + _loc3[_loc4].position];
+            _loc2.__set__showLabel(false);
+            this.setMovieClipTransform(_loc2.__get__content(), dofus.graphics.gapi.ui.Banner.NO_TRANSFORM);
+        } // end of for...in
+        this.setMovieClipTransform(_ctrCC.__get__content(), dofus.graphics.gapi.ui.Banner.NO_TRANSFORM);
+    } // End of the function
+    function setSpellStateOnAllContainers()
+    {
+        if (_sCurrentTab != "Spells")
         {
             return;
         } // end if
-        if (this._mcRightPanel != undefined)
+        var _loc2 = _oData.Spells;
+        for (var _loc3 in _loc2)
+        {
+            if (isNaN(_loc2[_loc3].position))
+            {
+                continue;
+            } // end if
+            this.setSpellStateOnContainer(_loc2[_loc3].position);
+        } // end of for...in
+        this.setSpellStateOnContainer(0);
+    } // End of the function
+    function setItemStateOnAllContainers()
+    {
+        if (_sCurrentTab != "Items")
+        {
+            return;
+        } // end if
+        var _loc3 = _oData.Inventory;
+        for (var _loc4 in _loc3)
+        {
+            var _loc2 = _loc3[_loc4].position - 39;
+            if (isNaN(_loc2) && _loc2 < 1)
+            {
+                continue;
+            } // end if
+            this.setItemStateOnContainer(_loc2);
+        } // end of for...in
+        this.setSpellStateOnContainer(0);
+    } // End of the function
+    function showRightPanel(sPanelName, oParams)
+    {
+        if (_mcRightPanel.className == sPanelName)
+        {
+            return;
+        } // end if
+        if (_mcRightPanel != undefined)
         {
             this.hideRightPanel();
         } // end if
-        oParams._x = this._mcRightPanelPlacer._x;
-        oParams._y = this._mcRightPanelPlacer._y;
-        var _loc4 = this.attachMovie(sPanelName, "_mcRightPanel", this.getNextHighestDepth(), oParams);
-        _loc4.swapDepths(this._mcRightPanelPlacer);
-    };
-    _loc1.hideRightPanel = function ()
+        oParams._x = _mcRightPanelPlacer._x;
+        oParams._y = _mcRightPanelPlacer._y;
+        var _loc2 = this.attachMovie(sPanelName, "_mcRightPanel", this.getNextHighestDepth(), oParams);
+        _loc2.swapDepths(_mcRightPanelPlacer);
+    } // End of the function
+    function hideRightPanel()
     {
-        if (this._mcRightPanel != undefined)
+        if (_mcRightPanel != undefined)
         {
-            this._mcRightPanel.swapDepths(this._mcRightPanelPlacer);
-            this._mcRightPanel.removeMovieClip();
+            _mcRightPanel.swapDepths(_mcRightPanelPlacer);
+            _mcRightPanel.removeMovieClip();
         } // end if
-    };
-    _loc1.updateSmileysEmotes = function ()
+    } // End of the function
+    function updateSmileysEmotes()
     {
-        this._cChat.updateSmileysEmotes();
-    };
-    _loc1.showSmileysEmotesPanel = function (bShow)
+        _cChat.updateSmileysEmotes();
+    } // End of the function
+    function showSmileysEmotesPanel(bShow)
     {
         if (bShow == undefined)
         {
             bShow = true;
         } // end if
-        this._cChat.hideSmileys(!bShow);
-    };
-    _loc1.updateLocalPlayer = function ()
+        _cChat.hideSmileys(!bShow);
+    } // End of the function
+    function updateLocalPlayer()
     {
-        if (this._sCurrentCircleXtra == "artwork")
+        _mcXtra.contentPath = dofus.Constants.GUILDS_FACES_PATH + _oData.data.gfxID + ".swf";
+        _ctrCC._visible = !_oData.isMutant && _sCurrentTab == "Spells";
+    } // End of the function
+    function setCurrentTab(sNewTab)
+    {
+        if (sNewTab != _sCurrentTab)
         {
-            this._mcXtra.contentPath = dofus.Constants.GUILDS_FACES_PATH + this._oData.data.gfxID + ".swf";
+            var _loc2 = this["_btnTab" + _sCurrentTab];
+            var _loc3 = this["_btnTab" + sNewTab];
+            _loc2.__set__selected(true);
+            _loc2.__set__enabled(true);
+            _loc3.__set__selected(false);
+            _loc3.__set__enabled(false);
+            _sCurrentTab = sNewTab;
+            this.updateCurrentTabInformations();
         } // end if
-        this._msShortcuts.meleeVisible = !this._oData.isMutant && this._msShortcuts.currentTab == dofus.graphics.gapi.controls.MouseShortcuts.TAB_SPELLS;
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Banner.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._btnFights._visible = false;
-        this.addToQueue({object: this, method: this.hideEpisodicContent});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
+        _btnFights._visible = false;
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
         this.showPoints(false);
         this.showNextTurnButton(false);
         this.showGiveUpButton(false);
-        this._mcRightPanelPlacer._visible = false;
-        this._mcCircleXtraPlacer._visible = false;
-        this.api.ui.unloadUIComponent("FightOptionButtons");
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-        this.api.kernel.KeyManager.addKeysListener("onKeys", this);
-        this.api.kernel.SpeakingItemsManager.triggerEvent(dofus.managers.SpeakingItemsManager.SPEAK_TRIGGER_ON_CONNECT);
-        this.api.network.Game.nLastMapIdReceived = -1;
-        this._txtConsole.onSetFocus = function ()
+        _mcRightPanelPlacer._visible = false;
+        _mcCircleXtraPlacer._visible = false;
+        if (api.kernel.OptionsManager.getOption("TipsOnStart"))
         {
-            this._parent.onSetFocus();
-        };
-        this._txtConsole.onKillFocus = function ()
-        {
-            this._parent.onKillFocus();
-        };
-        this._txtConsole.maxChars = dofus.Constants.MAX_MESSAGE_LENGTH + dofus.Constants.MAX_MESSAGE_LENGTH_MARGIN;
-        ank.battlefield.Battlefield.useCacheAsBitmapOnStaticAnim = this.api.lang.getConfigText("USE_CACHEASBITMAP_ON_STATICANIM");
-    };
-    _loc1.linkMovableContainer = function ()
-    {
-        var _loc2 = this._mcbMovableBar.containers;
-        var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < _loc2.length)
-        {
-            var _loc4 = _loc2[_loc3];
-            this._msShortcuts.setContainer(_loc3 + 15, _loc4);
-            _loc4.addEventListener("click", this);
-            _loc4.addEventListener("dblClick", this);
-            _loc4.addEventListener("over", this);
-            _loc4.addEventListener("out", this);
-            _loc4.addEventListener("drag", this);
-            _loc4.addEventListener("drop", this);
-            _loc4.params = {position: _loc3 + 15};
-        } // end while
-    };
-    _loc1.addListeners = function ()
-    {
-        this._btnPvP.addEventListener("click", this);
-        this._btnMount.addEventListener("click", this);
-        this._btnGuild.addEventListener("click", this);
-        this._btnStatsJob.addEventListener("click", this);
-        this._btnSpells.addEventListener("click", this);
-        this._btnInventory.addEventListener("click", this);
-        this._btnQuests.addEventListener("click", this);
-        this._btnMap.addEventListener("click", this);
-        this._btnFriends.addEventListener("click", this);
-        this._btnFights.addEventListener("click", this);
-        this._btnHelp.addEventListener("click", this);
-        this._btnPvP.addEventListener("over", this);
-        this._btnMount.addEventListener("over", this);
-        this._btnGuild.addEventListener("over", this);
-        this._btnStatsJob.addEventListener("over", this);
-        this._btnSpells.addEventListener("over", this);
-        this._btnInventory.addEventListener("over", this);
-        this._btnQuests.addEventListener("over", this);
-        this._btnMap.addEventListener("over", this);
-        this._btnFriends.addEventListener("over", this);
-        this._btnFights.addEventListener("over", this);
-        this._btnHelp.addEventListener("over", this);
-        this._btnPvP.addEventListener("out", this);
-        this._btnMount.addEventListener("out", this);
-        this._btnGuild.addEventListener("out", this);
-        this._btnStatsJob.addEventListener("out", this);
-        this._btnSpells.addEventListener("out", this);
-        this._btnInventory.addEventListener("out", this);
-        this._btnQuests.addEventListener("out", this);
-        this._btnMap.addEventListener("out", this);
-        this._btnFriends.addEventListener("out", this);
-        this._btnFights.addEventListener("out", this);
-        this._btnHelp.addEventListener("out", this);
-        this._btnStatsJob.tabIndex = 0;
-        this._btnSpells.tabIndex = 1;
-        this._btnInventory.tabIndex = 2;
-        this._btnQuests.tabIndex = 3;
-        this._btnMap.tabIndex = 4;
-        this._btnFriends.tabIndex = 5;
-        this._btnGuild.tabIndex = 6;
-        this._ccChrono.addEventListener("finalCountDown", this);
-        this._ccChrono.addEventListener("beforeFinalCountDown", this);
-        this._ccChrono.addEventListener("tictac", this);
-        this._ccChrono.addEventListener("finish", this);
-        this._cChat.addEventListener("filterChanged", this);
-        this._cChat.addEventListener("selectSmiley", this);
-        this._cChat.addEventListener("selectEmote", this);
-        this._cChat.addEventListener("href", this);
-        this._oData.addEventListener("lpChanged", this);
-        this._oData.addEventListener("lpmaxChanged", this);
-        this._btnNextTurn.addEventListener("click", this);
-        this._btnNextTurn.addEventListener("over", this);
-        this._btnNextTurn.addEventListener("out", this);
-        this._btnGiveUp.addEventListener("click", this);
-        this._btnGiveUp.addEventListener("over", this);
-        this._btnGiveUp.addEventListener("out", this);
-        this._oData.SpellsManager.addEventListener("spellLaunched", this);
-        this._oData.SpellsManager.addEventListener("nextTurn", this);
-        this._pvAP.addEventListener("over", this);
-        this._pvAP.addEventListener("out", this);
-        this._pvMP.addEventListener("over", this);
-        this._pvMP.addEventListener("out", this);
-        this._oData.Spells.addEventListener("modelChanged", this);
-        this._oData.Inventory.addEventListener("modelChanged", this);
-        this._hHeart.onRollOver = function ()
-        {
-            this._parent.over({target: this});
-        };
-        this._hHeart.onRollOut = function ()
-        {
-            this._parent.out({target: this});
-        };
-        this._hHeart.onRelease = function ()
-        {
-            this.toggleDisplay();
-        };
-    };
-    _loc1.initData = function ()
-    {
-        switch (this.api.kernel.OptionsManager.getOption("BannerIllustrationMode"))
-        {
-            case "artwork":
-            {
-                this.showCircleXtra("artwork", true, {bMask: true});
-                break;
-            } 
-            case "clock":
-            {
-                this.showCircleXtra("clock", true, {bMask: true});
-                break;
-            } 
-            case "compass":
-            {
-                this.showCircleXtra("compass", true);
-            } 
-            case "helper":
-            {
-                this.showCircleXtra("helper", true);
-            } 
-            case "map":
-            {
-                this.showCircleXtra("map", true, {bMask: true, sMaskSize: "big"});
-            } 
-        } // End of switch
-        this.drawBar();
-        this.lpmaxChanged({value: this._oData.LPmax});
-        this.lpChanged({value: this._oData.LP});
-        this.api.kernel.ChatManager.refresh();
-        if (this.api.kernel.OptionsManager.getOption("MovableBar"))
-        {
-            this.displayMovableBar(this.api.kernel.OptionsManager.getOption("MovableBar") && (!this.api.kernel.OptionsManager.getOption("HideSpellBar") || this.api.datacenter.Game.isFight));
+            gapi.loadUIComponent("Tips", "Tips");
         } // end if
-    };
-    _loc1.setChatFocus = function ()
+    } // End of the function
+    function initTexts()
     {
-        Selection.setFocus(this._txtConsole);
-    };
-    _loc1.isChatFocus = function ()
+        _btnTabSpells.__set__label(api.lang.getText("BANNER_TAB_SPELLS"));
+        _btnTabItems.__set__label(api.lang.getText("BANNER_TAB_ITEMS"));
+    } // End of the function
+    function addListeners()
+    {
+        _btnGuild.addEventListener("click", this);
+        _btnStatsJob.addEventListener("click", this);
+        _btnSpells.addEventListener("click", this);
+        _btnInventory.addEventListener("click", this);
+        _btnMap.addEventListener("click", this);
+        _btnFriends.addEventListener("click", this);
+        _btnTabSpells.addEventListener("click", this);
+        _btnTabItems.addEventListener("click", this);
+        _btnFights.addEventListener("click", this);
+        _btnHelp.addEventListener("click", this);
+        _btnGuild.addEventListener("over", this);
+        _btnStatsJob.addEventListener("over", this);
+        _btnSpells.addEventListener("over", this);
+        _btnInventory.addEventListener("over", this);
+        _btnMap.addEventListener("over", this);
+        _btnFriends.addEventListener("over", this);
+        _btnTabSpells.addEventListener("over", this);
+        _btnTabItems.addEventListener("over", this);
+        _btnFights.addEventListener("over", this);
+        _btnGuild.addEventListener("out", this);
+        _btnStatsJob.addEventListener("out", this);
+        _btnSpells.addEventListener("out", this);
+        _btnInventory.addEventListener("out", this);
+        _btnMap.addEventListener("out", this);
+        _btnFriends.addEventListener("out", this);
+        _btnTabSpells.addEventListener("out", this);
+        _btnTabItems.addEventListener("out", this);
+        _btnFights.addEventListener("out", this);
+        _btnStatsJob.tabIndex = 0;
+        _btnSpells.tabIndex = 1;
+        _btnInventory.tabIndex = 2;
+        _btnMap.tabIndex = 3;
+        _btnFriends.tabIndex = 4;
+        _btnGuild.tabIndex = 5;
+        _ccChrono.addEventListener("finalCountDown", this);
+        _ccChrono.addEventListener("finish", this);
+        for (var _loc3 = 1; _loc3 <= 14; ++_loc3)
+        {
+            var _loc2 = this["_ctr" + _loc3];
+            _loc2.addEventListener("click", this);
+            _loc2.addEventListener("dblClick", this);
+            _loc2.addEventListener("over", this);
+            _loc2.addEventListener("out", this);
+            _loc2.addEventListener("drag", this);
+            _loc2.addEventListener("drop", this);
+            _loc2.params = {position: _loc3};
+        } // end of for
+        _ctrCC.addEventListener("click", this);
+        _ctrCC.addEventListener("dblClick", this);
+        _ctrCC.addEventListener("over", this);
+        _ctrCC.addEventListener("out", this);
+        _cChat.addEventListener("filterChanged", this);
+        _cChat.addEventListener("selectSmiley", this);
+        _cChat.addEventListener("selectEmote", this);
+        _cChat.addEventListener("href", this);
+        _oData.addEventListener("lpChanged", this);
+        _oData.addEventListener("lpmaxChanged", this);
+        _btnNextTurn.addEventListener("click", this);
+        _btnNextTurn.addEventListener("over", this);
+        _btnNextTurn.addEventListener("out", this);
+        _btnGiveUp.addEventListener("click", this);
+        _btnGiveUp.addEventListener("over", this);
+        _btnGiveUp.addEventListener("out", this);
+        Key.addListener(this);
+        _oData.SpellsManager.addEventListener("spellLaunched", this);
+        _oData.SpellsManager.addEventListener("nextTurn", this);
+        _pvAP.addEventListener("over", this);
+        _pvAP.addEventListener("out", this);
+        _pvMP.addEventListener("over", this);
+        _pvMP.addEventListener("out", this);
+        _oData.Spells.addEventListener("modelChanged", this);
+        _oData.Inventory.addEventListener("modelChanged", this);
+    } // End of the function
+    function initData()
+    {
+        _ctrCC.__set__contentPath(dofus.Constants.SPELLS_ICONS_PATH + "0.swf");
+        this.showCircleXtra("artwork", true, {bMask: true});
+        this.updateCurrentTabInformations();
+        this.lpmaxChanged({value: _oData.LPmax});
+        this.lpChanged({value: _oData.LP});
+        api.kernel.ChatManager.refresh();
+    } // End of the function
+    function setChatFocus()
+    {
+        Selection.setFocus(_txtConsole);
+    } // End of the function
+    function isChatFocus()
     {
         return (Selection.getFocus()._name == "_txtConsole");
-    };
-    _loc1.placeCursorAtTheEnd = function ()
+    } // End of the function
+    function placeCursorAtTheEnd()
     {
-        Selection.setFocus(this._txtConsole);
-        Selection.setSelection(this._txtConsole.text.length, dofus.Constants.MAX_MESSAGE_LENGTH + dofus.Constants.MAX_MESSAGE_LENGTH_MARGIN);
-    };
-    _loc1.setChatFocusWithLastKey = function ()
+        Selection.setFocus(_txtConsole);
+        Selection.setSelection(_txtConsole.text.length, 1000);
+    } // End of the function
+    function setChatFocusWithLastKey(sChar)
     {
-        if (!this._bChatAutoFocus)
+        if (!_bChatAutoFocus)
         {
             return;
         } // end if
@@ -486,621 +461,560 @@ if (!dofus.graphics.gapi.ui.Banner)
         {
             return;
         } // end if
-        this.setChatFocus();
-        this.placeCursorAtTheEnd();
-    };
-    _loc1.setChatPrefix = function (sPrefix)
-    {
-        this._sChatPrefix = sPrefix;
-        if (sPrefix != "")
+        if (Key.getCode() == 9)
         {
-            this._btnHelp.label = sPrefix;
-            this._btnHelp.icon = "";
-        }
-        else
-        {
-            this._btnHelp.label = "";
-            this._btnHelp.icon = "UI_BannerChatCommandAll";
-        } // end else if
-        this.addToQueue({object: this, method: this.placeCursorAtTheEnd});
-    };
-    _loc1.getChatCommand = function ()
-    {
-        var _loc2 = this._txtConsole.text;
-        var _loc3 = _loc2.split(" ");
-        if (_loc3[0].charAt(0) == "/")
-        {
-            return (_loc2);
-        }
-        else if (this._sChatPrefix != "")
-        {
-            return (this._sChatPrefix + " " + _loc2);
-        } // end else if
-        return (_loc2);
-    };
-    _loc1.hideEpisodicContent = function ()
-    {
-        this._btnPvP._visible = this.api.datacenter.Basics.aks_current_regional_version >= 16;
-        this._btnMount._visible = this.api.datacenter.Basics.aks_current_regional_version >= 20;
-        this._btnGuild._visible = !this.api.config.isStreaming;
-        var _loc2 = this._btnStatsJob._x;
-        var _loc3 = this._btnPvP._x;
-        var _loc4 = new Array();
-        _loc4.push(this._btnStatsJob);
-        _loc4.push(this._btnSpells);
-        _loc4.push(this._btnInventory);
-        _loc4.push(this._btnQuests);
-        _loc4.push(this._btnMap);
-        _loc4.push(this._btnFriends);
-        if (this._btnGuild._visible)
-        {
-            _loc4.push(this._btnGuild);
-        } // end if
-        if (this._btnMount._visible)
-        {
-            _loc4.push(this._btnMount);
-        } // end if
-        if (this._btnPvP._visible)
-        {
-            _loc4.push(this._btnPvP);
-        } // end if
-        var _loc5 = (_loc3 - _loc2) / (_loc4.length - 1);
-        var _loc6 = 0;
-        
-        while (++_loc6, _loc6 < _loc4.length)
-        {
-            _loc4[_loc6]._x = _loc6 * _loc5 + _loc2;
-        } // end while
-    };
-    _loc1.displayChatHelp = function ()
-    {
-        this.api.kernel.Console.process("/help");
-        this._cChat.open(false);
-    };
-    _loc1.displayMovableBar = function (bShow)
-    {
-        if (bShow == undefined)
-        {
-            bShow = this._mcbMovableBar == undefined;
-        } // end if
-        if (bShow)
-        {
-            if (this._mcbMovableBar._name != undefined)
-            {
-                return;
-            } // end if
-            this._mcbMovableBar = (dofus.graphics.gapi.ui.MovableContainerBar)(this.api.ui.loadUIComponent("MovableContainerBar", "MovableBar", [], {bAlwaysOnTop: true}));
-            this._mcbMovableBar.addEventListener("drawBar", this);
-            this._mcbMovableBar.addEventListener("drop", this);
-            this._mcbMovableBar.addEventListener("dblClick", this);
-            var _loc3 = {left: 0, top: 0, right: this.gapi.screenWidth, bottom: this.gapi.screenHeight};
-            var _loc4 = this.api.kernel.OptionsManager.getOption("MovableBarSize");
-            var _loc5 = this.api.kernel.OptionsManager.getOption("MovableBarCoord");
-            _loc5 = _loc5 ? (_loc5) : ({x: 0, y: (this.gapi.screenHeight - this._mcbMovableBar._height) / 2});
-            this.addToQueue({object: this._mcbMovableBar, method: this._mcbMovableBar.setOptions, params: [9, 20, _loc3, _loc4, _loc5]});
-        }
-        else
-        {
-            this.api.ui.unloadUIComponent("MovableBar");
-        } // end else if
-    };
-    _loc1.setMovableBarSize = function (nSize)
-    {
-        this._mcbMovableBar.size = nSize;
-    };
-    _loc1.onKeys = function (sKey)
-    {
-        if (this._lastKeyIsShortcut)
-        {
-            this._lastKeyIsShortcut = false;
             return;
         } // end if
-        this.setChatFocusWithLastKey();
-    };
-    _loc1.onShortcut = function (sShortcut)
-    {
-        var _loc3 = true;
-        switch (sShortcut)
+        if (Key.getCode() == 27)
         {
-            case "CTRL_STATE_CHANGED_ON":
+            return;
+        } // end if
+        if (Key.getCode() == 8)
+        {
+            return;
+        } // end if
+        if (Key.getCode() == 46)
+        {
+            return;
+        } // end if
+        _txtConsole.text = sChar;
+        this.setChatFocus();
+        this.placeCursorAtTheEnd();
+    } // End of the function
+    function setSpellStateOnContainer(nIndex)
+    {
+        var _loc2 = nIndex == 0 ? (_ctrCC) : (this["_ctr" + nIndex]);
+        var _loc4 = nIndex == 0 ? (_oData.Spells[0]) : (_loc2.__get__contentData());
+        if (_loc4 == undefined)
+        {
+            return;
+        } // end if
+        var _loc3;
+        if (api.kernel.TutorialManager.isTutorialMode)
+        {
+            _loc3.can = true;
+        }
+        else
+        {
+            _loc3 = _oData.SpellsManager.checkCanLaunchSpellReturnObject(_loc4.ID);
+        } // end else if
+        if (_loc3.can == false)
+        {
+            switch (_loc3.type)
             {
-                if (this._bIsOnFocus && !(this.api.config.isLinux || this.api.config.isMac))
+                case "NOT_ENOUGH_AP":
+                case "CANT_SUMMON_MORE_CREATURE":
+                case "CANT_LAUNCH_MORE":
+                case "CANT_RELAUNCH":
+                case "NOT_IN_FIGHT":
                 {
-                    getURL("FSCommand:" add "trapallkeys", "false");
-                } // end if
+                    _loc2.__set__showLabel(false);
+                    this.setMovieClipTransform(_loc2.__get__content(), dofus.graphics.gapi.ui.Banner.INACTIVE_TRANSFORM);
+                    break;
+                } 
+                case "CANT_LAUNCH_BEFORE":
+                {
+                    this.setMovieClipTransform(_loc2.__get__content(), dofus.graphics.gapi.ui.Banner.INACTIVE_TRANSFORM);
+                    _loc2.__set__showLabel(true);
+                    _loc2.__set__label(_loc3.params[0]);
+                    break;
+                } 
+            } // End of switch
+        }
+        else
+        {
+            _loc2.__set__showLabel(false);
+            this.setMovieClipTransform(_loc2.__get__content(), dofus.graphics.gapi.ui.Banner.NO_TRANSFORM);
+        } // end else if
+    } // End of the function
+    function setItemStateOnContainer(nIndex)
+    {
+        var _loc2 = this["_ctr" + nIndex];
+        var _loc3 = _loc2.__get__contentData();
+        if (_loc3 == undefined)
+        {
+            return;
+        } // end if
+        _loc2.__set__showLabel(_loc3.Quantity > 1);
+        if (api.datacenter.Game.isRunning)
+        {
+            this.setMovieClipTransform(_loc2.__get__content(), dofus.graphics.gapi.ui.Banner.INACTIVE_TRANSFORM);
+        }
+        else
+        {
+            this.setMovieClipTransform(_loc2.__get__content(), dofus.graphics.gapi.ui.Banner.NO_TRANSFORM);
+        } // end else if
+    } // End of the function
+    function updateCurrentTabInformations()
+    {
+        switch (_sCurrentTab)
+        {
+            case "Spells":
+            {
+                this.updateSpells();
+                _ctrCC._visible = !_oData.isMutant;
+                _btnFights._visible = false;
                 break;
             } 
-            case "CTRL_STATE_CHANGED_OFF":
+            case "Items":
             {
-                if (this._bIsOnFocus && !(this.api.config.isLinux || this.api.config.isMac))
-                {
-                    getURL("FSCommand:" add "trapallkeys", "true");
-                } // end if
-                break;
-            } 
-            case "ESCAPE":
-            {
-                if (this.isChatFocus())
-                {
-                    Selection.setFocus(null);
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "SEND_CHAT_MSG":
-            {
-                if (this.isChatFocus())
-                {
-                    if (this._txtConsole.text.length != 0)
-                    {
-                        this.api.kernel.Console.process(this.getChatCommand(), this.api.datacenter.Basics.chatParams);
-                        this.api.datacenter.Basics.chatParams = new Object();
-                        if (this._txtConsole.text != undefined)
-                        {
-                            this._txtConsole.text = "";
-                        } // end if
-                        _loc3 = false;
-                    } // end if
-                }
-                else if (Selection.getFocus() == undefined && this._bChatAutoFocus)
-                {
-                    this.setChatFocus();
-                } // end else if
-                break;
-            } 
-            case "TEAM_MESSAGE":
-            {
-                if (this.isChatFocus())
-                {
-                    if (this._txtConsole.text.length != 0)
-                    {
-                        var _loc4 = this.getChatCommand();
-                        if (_loc4.charAt(0) == "/")
-                        {
-                            _loc4 = _loc4.substr(_loc4.indexOf(" ") + 1);
-                        } // end if
-                        this.api.kernel.Console.process("/t " + _loc4, this.api.datacenter.Basics.chatParams);
-                        this.api.datacenter.Basics.chatParams = new Object();
-                        if (this._txtConsole.text != undefined)
-                        {
-                            this._txtConsole.text = "";
-                        } // end if
-                        _loc3 = false;
-                    } // end if
-                }
-                else if (Selection.getFocus() == undefined && this._bChatAutoFocus)
-                {
-                    this.setChatFocus();
-                } // end else if
-                break;
-            } 
-            case "GUILD_MESSAGE":
-            {
-                if (this.isChatFocus())
-                {
-                    if (this._txtConsole.text.length != 0)
-                    {
-                        var _loc5 = this.getChatCommand();
-                        if (_loc5.charAt(0) == "/")
-                        {
-                            _loc5 = _loc5.substr(_loc5.indexOf(" ") + 1);
-                        } // end if
-                        this.api.kernel.Console.process("/g " + _loc5, this.api.datacenter.Basics.chatParams);
-                        this.api.datacenter.Basics.chatParams = new Object();
-                        if (this._txtConsole.text != undefined)
-                        {
-                            this._txtConsole.text = "";
-                        } // end if
-                        _loc3 = false;
-                    } // end if
-                }
-                else if (Selection.getFocus() == undefined && this._bChatAutoFocus)
-                {
-                    this.setChatFocus();
-                } // end else if
-                break;
-            } 
-            case "WHISPER_HISTORY_UP":
-            {
-                if (this.isChatFocus())
-                {
-                    this._txtConsole.text = this.api.kernel.Console.getWhisperHistoryUp();
-                    this.addToQueue({object: this, method: this.placeCursorAtTheEnd});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "WHISPER_HISTORY_DOWN":
-            {
-                if (this.isChatFocus())
-                {
-                    this._txtConsole.text = this.api.kernel.Console.getWhisperHistoryDown();
-                    this.addToQueue({object: this, method: this.placeCursorAtTheEnd});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "HISTORY_UP":
-            {
-                if (this.isChatFocus())
-                {
-                    var _loc6 = this.api.kernel.Console.getHistoryUp();
-                    if (_loc6 != undefined)
-                    {
-                        this.api.datacenter.Basics.chatParams = _loc6.params;
-                        this._txtConsole.text = _loc6.value;
-                    } // end if
-                    this.addToQueue({object: this, method: this.placeCursorAtTheEnd});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "HISTORY_DOWN":
-            {
-                if (this.isChatFocus())
-                {
-                    var _loc7 = this.api.kernel.Console.getHistoryDown();
-                    if (_loc7 != undefined)
-                    {
-                        this.api.datacenter.Basics.chatParams = _loc7.params;
-                        this._txtConsole.text = _loc7.value;
-                    }
-                    else
-                    {
-                        this._txtConsole.text = "";
-                    } // end else if
-                    this.addToQueue({object: this, method: this.placeCursorAtTheEnd});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "AUTOCOMPLETE":
-            {
-                var _loc8 = new Array();
-                var _loc9 = this.api.datacenter.Sprites.getItems();
-                for (var k in _loc9)
-                {
-                    if (_loc9[k] instanceof dofus.datacenter.Character)
-                    {
-                        _loc8.push(_loc9[k].name);
-                    } // end if
-                } // end of for...in
-                var _loc10 = this.api.kernel.Console.autoCompletion(_loc8, this._txtConsole.text);
-                if (!_loc10.isFull)
-                {
-                    if (_loc10.list == undefined || _loc10.list.length == 0)
-                    {
-                        this.api.sounds.events.onError();
-                    }
-                    else
-                    {
-                        this.api.ui.showTooltip(_loc10.list.sort().join(", "), 0, 520);
-                    } // end if
-                } // end else if
-                this._txtConsole.text = _loc10.result + (_loc10.isFull ? (" ") : (""));
-                this.placeCursorAtTheEnd();
-                break;
-            } 
-            case "NEXTTURN":
-            {
-                if (this.api.datacenter.Game.isFight)
-                {
-                    this.api.network.Game.turnEnd();
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "MAXI":
-            {
-                this._cChat.open(false);
-                _loc3 = false;
-                break;
-            } 
-            case "MINI":
-            {
-                this._cChat.open(true);
-                _loc3 = false;
-                break;
-            } 
-            case "CHARAC":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnStatsJob});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "SPELLS":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnSpells});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "INVENTORY":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnInventory});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "QUESTS":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnQuests});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "MAP":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnMap});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "FRIENDS":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnFriends});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "GUILD":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnGuild});
-                    _loc3 = false;
-                } // end if
-                break;
-            } 
-            case "MOUNT":
-            {
-                if (this.api.kernel.OptionsManager.getOption("BannerShortcuts"))
-                {
-                    this.click({target: this._btnMount});
-                    _loc3 = false;
-                } // end if
+                this.updateItems();
+                _ctrCC._visible = false;
+                _btnFights._visible = _nFightsCount != 0 && !api.datacenter.Game.isFight;
                 break;
             } 
         } // End of switch
-        this._lastKeyIsShortcut = _loc3;
-        return (_loc3);
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function onKeyUp()
     {
-        this.api.kernel.GameManager.signalFightActivity();
-        switch (oEvent.target._name)
+        switch (Key.getCode())
         {
-            case "_btnPvP":
+            case 191:
             {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                if (this.api.datacenter.Player.data.alignment.index == 0)
+                if (!Key.isDown(16))
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("NEED_ALIGNMENT"), "ERROR_CHAT");
+                    break;
+                } // end if
+            } 
+            case 111:
+            {
+                this.setChatFocusWithLastKey("/");
+                break;
+            } 
+            case 13:
+            {
+                if (this.isChatFocus())
+                {
+                    if (_txtConsole.text.length != 0)
+                    {
+                        if (Key.isDown(16))
+                        {
+                            api.kernel.Console.process("/t " + _txtConsole.text);
+                        }
+                        else if (Key.isDown(17))
+                        {
+                            api.kernel.Console.process("/g " + _txtConsole.text);
+                        }
+                        else
+                        {
+                            api.kernel.Console.process(_txtConsole.text);
+                        } // end else if
+                        _txtConsole.text = "";
+                    } // end if
                 }
-                else
+                else if (Selection.getFocus() == undefined && _bChatAutoFocus)
                 {
-                    this.showSmileysEmotesPanel(false);
-                    this.gapi.loadUIAutoHideComponent("Conquest", "Conquest", {currentTab: "Stats"});
+                    this.setChatFocus();
                 } // end else if
                 break;
             } 
-            case "_btnMount":
+            case 33:
             {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                if (this._oData.isMutant)
+                if (this.isChatFocus())
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_U_ARE_MUTANT"), "ERROR_CHAT");
-                    return;
+                    _txtConsole.text = api.kernel.Console.getWhisperHistoryUp();
+                    this.placeCursorAtTheEnd();
                 } // end if
-                if (this._oData.mount != undefined)
+                break;
+            } 
+            case 34:
+            {
+                if (this.isChatFocus())
                 {
-                    this.showSmileysEmotesPanel(false);
-                    if (this.gapi.getUIComponent("MountAncestorsViewer") != undefined)
+                    _txtConsole.text = api.kernel.Console.getWhisperHistoryDown();
+                    this.placeCursorAtTheEnd();
+                } // end if
+                break;
+            } 
+            case 38:
+            {
+                if (this.isChatFocus())
+                {
+                    if (Key.isDown(16))
                     {
-                        this.gapi.unloadUIComponent("MountAncestorsViewer");
-                        this.gapi.unloadUIComponent("Mount");
+                        _txtConsole.text = api.kernel.Console.getWhisperHistoryUp();
                     }
                     else
                     {
-                        this.gapi.loadUIAutoHideComponent("Mount", "Mount");
+                        _txtConsole.text = api.kernel.Console.getHistoryUp();
                     } // end else if
-                }
-                else
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("UI_ONLY_FOR_MOUNT"), "ERROR_CHAT");
-                } // end else if
-                break;
-            } 
-            case "_btnGuild":
-            {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                if (this._oData.isMutant)
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_U_ARE_MUTANT"), "ERROR_CHAT");
-                    return;
-                } // end if
-                if (this._oData.guildInfos != undefined)
-                {
-                    this.showSmileysEmotesPanel(false);
-                    this.gapi.loadUIAutoHideComponent("Guild", "Guild", {currentTab: "Members"});
-                }
-                else
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("UI_ONLY_FOR_GUILD"), "ERROR_CHAT");
-                } // end else if
-                break;
-            } 
-            case "_btnStatsJob":
-            {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                if (this._oData.isMutant)
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_U_ARE_MUTANT"), "ERROR_CHAT");
-                    return;
-                } // end if
-                this.showSmileysEmotesPanel(false);
-                this.gapi.loadUIAutoHideComponent("StatsJob", "StatsJob");
-                break;
-            } 
-            case "_btnSpells":
-            {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                if (this._oData.isMutant)
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_U_ARE_MUTANT"), "ERROR_CHAT");
-                    return;
-                } // end if
-                this.showSmileysEmotesPanel(false);
-                this.gapi.loadUIAutoHideComponent("Spells", "Spells");
-                break;
-            } 
-            case "_btnInventory":
-            {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                this.showSmileysEmotesPanel(false);
-                this.gapi.loadUIAutoHideComponent("Inventory", "Inventory");
-                break;
-            } 
-            case "_btnQuests":
-            {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                this.showSmileysEmotesPanel(false);
-                this.gapi.loadUIAutoHideComponent("Quests", "Quests");
-                break;
-            } 
-            case "_btnMap":
-            {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                this.showSmileysEmotesPanel(false);
-                this.gapi.loadUIAutoHideComponent("MapExplorer", "MapExplorer");
-                break;
-            } 
-            case "_btnFriends":
-            {
-                this.api.sounds.events.onBannerRoundButtonClick();
-                this.showSmileysEmotesPanel(false);
-                this.gapi.loadUIAutoHideComponent("Friends", "Friends");
-                break;
-            } 
-            case "_btnFights":
-            {
-                if (!this.api.datacenter.Game.isFight)
-                {
-                    this.gapi.loadUIComponent("FightsInfos", "FightsInfos");
+                    this.placeCursorAtTheEnd();
                 } // end if
                 break;
             } 
-            case "_btnHelp":
+            case 40:
             {
-                var _loc3 = this.api.lang.getConfigText("CHAT_FILTERS");
-                var _loc4 = this.api.ui.createPopupMenu();
-                _loc4.addStaticItem(this.api.lang.getText("CHAT_PREFIX"));
-                _loc4.addItem(this.api.lang.getText("DEFAUT"), this, this.setChatPrefix, [""]);
-                _loc4.addItem(this.api.lang.getText("TEAM") + " (/t)", this, this.setChatPrefix, ["/t"], this.api.datacenter.Game.isFight);
-                _loc4.addItem(this.api.lang.getText("PARTY") + " (/p)", this, this.setChatPrefix, ["/p"], this.api.ui.getUIComponent("Party") != undefined);
-                _loc4.addItem(this.api.lang.getText("GUILD") + " (/g)", this, this.setChatPrefix, ["/g"], this.api.datacenter.Player.guildInfos != undefined);
-                if (_loc3[4])
+                if (this.isChatFocus())
                 {
-                    _loc4.addItem(this.api.lang.getText("ALIGNMENT") + " (/a)", this, this.setChatPrefix, ["/a"], this.api.datacenter.Player.alignment.index != 0);
-                } // end if
-                if (_loc3[5])
-                {
-                    _loc4.addItem(this.api.lang.getText("RECRUITMENT") + " (/r)", this, this.setChatPrefix, ["/r"]);
-                } // end if
-                if (_loc3[6])
-                {
-                    _loc4.addItem(this.api.lang.getText("TRADE") + " (/b)", this, this.setChatPrefix, ["/b"]);
-                } // end if
-                if (_loc3[7])
-                {
-                    _loc4.addItem(this.api.lang.getText("MEETIC") + " (/i)", this, this.setChatPrefix, ["/i"]);
-                } // end if
-                if (this.api.datacenter.Player.isAuthorized)
-                {
-                    _loc4.addItem(this.api.lang.getText("PRIVATE_CHANNEL") + " (/q)", this, this.setChatPrefix, ["/q"]);
-                } // end if
-                _loc4.addItem(this.api.lang.getText("HELP"), this, this.displayChatHelp, []);
-                _loc4.show(this._btnHelp._x, this._btnHelp._y, true);
-                break;
-            } 
-            case "_btnNextTurn":
-            {
-                if (this.api.datacenter.Game.isFight)
-                {
-                    this.api.network.Game.turnEnd();
-                } // end if
-                break;
-            } 
-            case "_btnGiveUp":
-            {
-                if (this.api.datacenter.Game.isFight)
-                {
-                    if (this.api.datacenter.Game.isSpectator)
+                    if (Key.isDown(16))
                     {
-                        this.api.network.Game.leave();
+                        _txtConsole.text = api.kernel.Console.getWhisperHistoryDown();
                     }
                     else
                     {
-                        this.api.kernel.GameManager.giveUpGame();
-                    } // end if
-                } // end else if
+                        _txtConsole.text = api.kernel.Console.getHistoryDown();
+                    } // end else if
+                    this.placeCursorAtTheEnd();
+                } // end if
                 break;
             } 
-            case "_mcXtra":
+            case 39:
             {
-                if (!Key.isDown(Key.SHIFT))
+                if (this.isChatFocus())
                 {
-                    if (this._sCurrentCircleXtra == "helper" && dofus.managers.TipsManager.getInstance().hasNewTips())
+                    if (Key.isDown(17))
                     {
-                        dofus.managers.TipsManager.getInstance().displayNextTips();
-                        break;
+                        var _loc3 = new Array();
+                        var _loc2 = api.datacenter.Sprites.getItems();
+                        for (var _loc5 in _loc2)
+                        {
+                            if (_loc2[_loc5] instanceof dofus.datacenter.Character)
+                            {
+                                _loc3.push(_loc2[_loc5].name);
+                            } // end if
+                        } // end of for...in
+                        false;
+                        var _loc4 = api.kernel.Console.autoCompletion(_loc3, _txtConsole.text);
+                        if (!_loc4.isFull)
+                        {
+                            if (_loc4.list == undefined || _loc4.list.length == 0)
+                            {
+                                api.sounds.onError();
+                            }
+                            else
+                            {
+                                api.ui.showTooltip(_loc4.list.sort().join(", "), 0, 520);
+                            } // end if
+                        } // end else if
+                        _txtConsole.text = _loc4.result + (_loc4.isFull ? (" ") : (""));
+                        this.placeCursorAtTheEnd();
                     } // end if
-                    var _loc5 = this.api.ui.createPopupMenu();
-                    if (this._sCurrentCircleXtra == "helper")
+                } // end if
+                break;
+            } 
+            case 35:
+            {
+                if (Key.isDown(17))
+                {
+                    if (api.datacenter.Game.isFight)
                     {
-                        _loc5.addStaticItem(this.api.lang.getText("HELP_ME"));
-                        _loc5.addItem(this.api.lang.getText("KB_TITLE"), this.api.ui, this.api.ui.loadUIComponent, ["KnownledgeBase", "KnownledgeBase"], true);
-                        _loc5.addStaticItem(this.api.lang.getText("OTHER_DISPLAY_OPTIONS"));
+                        api.network.Game.turnEnd();
                     } // end if
-                    _loc5.addItem(this.api.lang.getText("BANNER_ARTWORK"), this, this.showCircleXtra, ["artwork", true, {bMask: true}], this._sCurrentCircleXtra != "artwork");
-                    _loc5.addItem(this.api.lang.getText("BANNER_CLOCK"), this, this.showCircleXtra, ["clock", true, {bMask: true}], this._sCurrentCircleXtra != "clock");
-                    _loc5.addItem(this.api.lang.getText("BANNER_COMPASS"), this, this.showCircleXtra, ["compass", true], this._sCurrentCircleXtra != "compass");
-                    _loc5.addItem(this.api.lang.getText("BANNER_HELPER"), this, this.showCircleXtra, ["helper", true], this._sCurrentCircleXtra != "helper");
-                    _loc5.addItem(this.api.lang.getText("BANNER_MAP"), this, this.showCircleXtra, ["map", true, {bMask: true, sMaskSize: "big"}], this._sCurrentCircleXtra != "map");
-                    _loc5.show(_root._xmouse, _root._ymouse, true);
+                } // end if
+                break;
+            } 
+            case 107:
+            {
+                if (Selection.getFocus() == null)
+                {
+                    _cChat.open(false);
+                } // end if
+                break;
+            } 
+            case 109:
+            {
+                if (Selection.getFocus() == null)
+                {
+                    _cChat.open(true);
+                } // end if
+                break;
+            } 
+            case 226:
+            {
+                if (Selection.getFocus() == null)
+                {
+                    this.setCurrentTab(_sCurrentTab == "Spells" ? ("Items") : ("Spells"));
+                } // end if
+                break;
+            } 
+            case 222:
+            case 48:
+            {
+                if (Selection.getFocus() == null)
+                {
+                    this.click({target: _ctrCC});
+                } // end if
+                break;
+            } 
+            case 49:
+            {
+                if (Selection.getFocus() == null && !Key.isDown(16))
+                {
+                    this.click({target: _ctr1, keyBoard: true});
+                } // end if
+                break;
+            } 
+            case 50:
+            {
+                if (Selection.getFocus() == null && !Key.isDown(16))
+                {
+                    this.click({target: _ctr2, keyBoard: true});
+                } // end if
+                break;
+            } 
+            case 51:
+            {
+                if (Selection.getFocus() == null && !Key.isDown(16))
+                {
+                    this.click({target: _ctr3, keyBoard: true});
+                } // end if
+                break;
+            } 
+            case 52:
+            {
+                if (Selection.getFocus() == null && !Key.isDown(16))
+                {
+                    this.click({target: _ctr4, keyBoard: true});
+                } // end if
+                break;
+            } 
+            case 53:
+            {
+                if (Selection.getFocus() == null && !Key.isDown(16))
+                {
+                    this.click({target: _ctr5, keyBoard: true});
+                } // end if
+                break;
+            } 
+            case 54:
+            {
+                if (Selection.getFocus() == null)
+                {
+                    this.click({target: _ctr6, keyBoard: true});
+                } // end if
+                break;
+            } 
+            case 55:
+            {
+                if (Selection.getFocus() == null)
+                {
+                    this.click({target: _ctr7, keyBoard: true});
+                } // end if
+                break;
+            } 
+            case 73:
+            {
+                if (Selection.getFocus() == null && api.kernel.OptionsManager.getOption("BannerShortcuts"))
+                {
+                    this.click({target: _btnInventory});
                 }
                 else
                 {
-                    this.api.kernel.GameManager.showPlayerPopupMenu(undefined, this.api.datacenter.Player.Name);
+                    this.setChatFocusWithLastKey(String.fromCharCode(Key.getAscii()));
+                } // end else if
+                break;
+            } 
+            case 83:
+            {
+                if (Selection.getFocus() == null && api.kernel.OptionsManager.getOption("BannerShortcuts"))
+                {
+                    this.click({target: _btnSpells});
+                }
+                else
+                {
+                    this.setChatFocusWithLastKey(String.fromCharCode(Key.getAscii()));
+                } // end else if
+                break;
+            } 
+            case 77:
+            {
+                if (Selection.getFocus() == null && api.kernel.OptionsManager.getOption("BannerShortcuts"))
+                {
+                    this.click({target: _btnMap});
+                }
+                else
+                {
+                    this.setChatFocusWithLastKey(String.fromCharCode(Key.getAscii()));
+                } // end else if
+                break;
+            } 
+            case 70:
+            {
+                if (Selection.getFocus() == null && !Key.isDown(17) && api.kernel.OptionsManager.getOption("BannerShortcuts"))
+                {
+                    this.click({target: _btnFriends});
+                }
+                else
+                {
+                    this.setChatFocusWithLastKey(String.fromCharCode(Key.getAscii()));
+                } // end else if
+                break;
+            } 
+            case 65:
+            case 67:
+            {
+                if (Selection.getFocus() == null && api.kernel.OptionsManager.getOption("BannerShortcuts"))
+                {
+                    this.click({target: _btnStatsJob});
+                }
+                else
+                {
+                    this.setChatFocusWithLastKey(String.fromCharCode(Key.getAscii()));
+                } // end else if
+                break;
+            } 
+            case 71:
+            {
+                if (Selection.getFocus() == null && api.kernel.OptionsManager.getOption("BannerShortcuts"))
+                {
+                    this.click({target: _btnGuild});
+                }
+                else
+                {
+                    this.setChatFocusWithLastKey(String.fromCharCode(Key.getAscii()));
                 } // end else if
                 break;
             } 
             default:
             {
-                switch (this._msShortcuts.currentTab)
+                this.setChatFocusWithLastKey(String.fromCharCode(Key.getAscii()));
+                break;
+            } 
+        } // End of switch
+    } // End of the function
+    function click(oEvent)
+    {
+        switch (oEvent.target._name)
+        {
+            case "_btnGuild":
+            {
+                if (_oData.isMutant)
+                {
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_U_ARE_MUTANT"), "ERROR_CHAT");
+                    return;
+                } // end if
+                if (_oData.guildInfos != undefined)
+                {
+                    this.showSmileysEmotesPanel(false);
+                    gapi.loadUIAutoHideComponent("Guild", "Guild", {currentTab: "Members"});
+                }
+                else
+                {
+                    api.kernel.showMessage(undefined, api.lang.getText("UI_ONLY_FOR_GUILD"), "ERROR_CHAT");
+                } // end else if
+                break;
+            } 
+            case "_btnStatsJob":
+            {
+                if (_oData.isMutant)
+                {
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_U_ARE_MUTANT"), "ERROR_CHAT");
+                    return;
+                } // end if
+                this.showSmileysEmotesPanel(false);
+                gapi.loadUIAutoHideComponent("StatsJob", "StatsJob");
+                break;
+            } 
+            case "_btnSpells":
+            {
+                if (_oData.isMutant)
+                {
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_U_ARE_MUTANT"), "ERROR_CHAT");
+                    return;
+                } // end if
+                this.showSmileysEmotesPanel(false);
+                gapi.loadUIAutoHideComponent("Spells", "Spells");
+                break;
+            } 
+            case "_btnInventory":
+            {
+                this.showSmileysEmotesPanel(false);
+                gapi.loadUIAutoHideComponent("Inventory", "Inventory");
+                break;
+            } 
+            case "_btnMap":
+            {
+                this.showSmileysEmotesPanel(false);
+                gapi.loadUIAutoHideComponent("MapExplorer", "MapExplorer");
+                break;
+            } 
+            case "_btnFriends":
+            {
+                this.showSmileysEmotesPanel(false);
+                gapi.loadUIAutoHideComponent("Friends", "Friends");
+                break;
+            } 
+            case "_btnTabSpells":
+            {
+                this.setCurrentTab("Spells");
+                break;
+            } 
+            case "_btnTabItems":
+            {
+                this.setCurrentTab("Items");
+                break;
+            } 
+            case "_btnFights":
+            {
+                if (!api.datacenter.Game.isFight)
+                {
+                    gapi.loadUIComponent("FightsInfos", "FightsInfos");
+                } // end if
+                break;
+            } 
+            case "_btnHelp":
+            {
+                api.kernel.Console.process("/help");
+                _cChat.open(false);
+                break;
+            } 
+            case "_btnNextTurn":
+            {
+                if (api.datacenter.Game.isFight)
+                {
+                    api.network.Game.turnEnd();
+                } // end if
+                break;
+            } 
+            case "_btnGiveUp":
+            {
+                if (api.datacenter.Game.isFight)
+                {
+                    if (api.datacenter.Game.isSpectator)
+                    {
+                        api.network.Game.leave();
+                    }
+                    else
+                    {
+                        api.kernel.GameManager.giveUpGame();
+                    } // end if
+                } // end else if
+                break;
+            } 
+            case "_ctrCC":
+            {
+                if (_ctrCC._visible)
+                {
+                    if (api.kernel.TutorialManager.isTutorialMode)
+                    {
+                        api.kernel.TutorialManager.onWaitingCase({code: "CC_CONTAINER_SELECT"});
+                        break;
+                    } // end if
+                    api.kernel.GameManager.switchToSpellLaunch(_oData.Spells[0], false);
+                } // end if
+                break;
+            } 
+            case "_mcXtra":
+            {
+                var _loc5 = api.ui.createPopupMenu();
+                _loc5.addItem(api.lang.getText("BANNER_ARTWORK"), this, showCircleXtra, ["artwork", true, {bMask: true}], _sCurrentCircleXtra != "artwork");
+                _loc5.addItem(api.lang.getText("BANNER_CLOCK"), this, showCircleXtra, ["clock", true, {bMask: true}], _sCurrentCircleXtra != "clock");
+                _loc5.addItem(api.lang.getText("BANNER_COMPASS"), this, showCircleXtra, ["compass", true], _sCurrentCircleXtra != "compass");
+                _loc5.show(_root._xmouse, _root._ymouse, true);
+                break;
+            } 
+            default:
+            {
+                switch (_sCurrentTab)
                 {
                     case "Spells":
                     {
-                        this.api.sounds.events.onBannerSpellSelect();
-                        if (this.api.kernel.TutorialManager.isTutorialMode)
+                        if (api.kernel.TutorialManager.isTutorialMode)
                         {
-                            this.api.kernel.TutorialManager.onWaitingCase({code: "SPELL_CONTAINER_SELECT", params: [Number(oEvent.target._name.substr(4))]});
+                            api.kernel.TutorialManager.onWaitingCase({code: "SPELL_CONTAINER_SELECT", params: [Number(oEvent.target._name.substr(4))]});
                             break;
                         } // end if
-                        if (this.gapi.getUIComponent("Spells") != undefined)
+                        if (gapi.getUIComponent("Spells") != undefined)
                         {
                             return;
                         } // end if
@@ -1109,46 +1023,37 @@ if (!dofus.graphics.gapi.ui.Banner)
                         {
                             return;
                         } // end if
-                        this.api.kernel.GameManager.switchToSpellLaunch(_loc6, true);
+                        api.kernel.GameManager.switchToSpellLaunch(_loc6, true);
                         break;
                     } 
                     case "Items":
                     {
-                        if (this.api.kernel.TutorialManager.isTutorialMode)
+                        if (api.kernel.TutorialManager.isTutorialMode)
                         {
-                            this.api.kernel.TutorialManager.onWaitingCase({code: "OBJECT_CONTAINER_SELECT", params: [Number(oEvent.target._name.substr(4))]});
+                            api.kernel.TutorialManager.onWaitingCase({code: "OBJECT_CONTAINER_SELECT", params: [Number(oEvent.target._name.substr(4))]});
                             break;
                         } // end if
-                        if (Key.isDown(dofus.Constants.CHAT_INSERT_ITEM_KEY) && (oEvent.target.contentData != undefined && !oEvent.target.notInChat))
-                        {
-                            this.api.kernel.GameManager.insertItemInChat(oEvent.target.contentData);
-                            return;
-                        }
-                        else
-                        {
-                            oEvent.target.notInChat = false;
-                        } // end else if
-                        var _loc7 = this.gapi.getUIComponent("Inventory");
+                        var _loc7 = gapi.getUIComponent("Inventory");
                         if (_loc7 != undefined)
                         {
                             _loc7.showItemInfos(oEvent.target.contentData);
                         }
                         else
                         {
-                            var _loc8 = oEvent.target.contentData;
-                            if (_loc8 == undefined)
+                            var _loc4 = oEvent.target.contentData;
+                            if (_loc4 == undefined)
                             {
                                 return;
                             } // end if
-                            if (this.api.datacenter.Player.canUseObject)
+                            if (api.datacenter.Player.canUseObject)
                             {
-                                if (_loc8.canTarget)
+                                if (_loc4.canTarget)
                                 {
-                                    this.api.kernel.GameManager.switchToItemTarget(_loc8);
+                                    api.kernel.GameManager.switchToItemTarget(_loc4);
                                 }
-                                else if (_loc8.canUse && oEvent.keyBoard)
+                                else if (_loc4.canUse && oEvent.keyBoard)
                                 {
-                                    this.api.network.Items.use(_loc8.ID);
+                                    api.network.Items.use(_loc4.ID);
                                 } // end if
                             } // end else if
                         } // end else if
@@ -1158,219 +1063,208 @@ if (!dofus.graphics.gapi.ui.Banner)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.dblClick = function (oEvent)
+    } // End of the function
+    function dblClick(oEvent)
     {
-        if (oEvent.target == this._mcbMovableBar)
+        switch (_sCurrentTab)
         {
-            this._mcbMovableBar.size = this._mcbMovableBar.size == 0 ? (this.api.kernel.OptionsManager.getOption("MovableBarSize")) : (0);
-            return;
-        } // end if
-    };
-    _loc1.beforeFinalCountDown = function (oEvent)
+            case "Spells":
+            {
+                var _loc2;
+                switch (oEvent.target._name)
+                {
+                    case "_ctrCC":
+                    {
+                        _loc2 = _oData.Spells[0];
+                        break;
+                    } 
+                    default:
+                    {
+                        _loc2 = oEvent.target.contentData;
+                        break;
+                    } 
+                } // End of switch
+                if (_loc2 == undefined)
+                {
+                    return;
+                } // end if
+                this.showSmileysEmotesPanel(false);
+                gapi.loadUIAutoHideComponent("SpellInfos", "SpellInfos", {spell: _loc2}, {bStayIfPresent: true});
+                break;
+            } 
+            case "Items":
+            {
+                var _loc3 = oEvent.target.contentData;
+                if (_loc3 != undefined)
+                {
+                    if (!_loc3.canUse || !api.datacenter.Player.canUseObject)
+                    {
+                        return;
+                    } // end if
+                    api.network.Items.use(_loc3.ID);
+                } // end if
+                break;
+            } 
+        } // End of switch
+    } // End of the function
+    function finalCountDown(oEvent)
     {
-        this.api.kernel.TipsManager.showNewTip(dofus.managers.TipsManager.TIP_FINAL_COUNTDOWN);
-    };
-    _loc1.finalCountDown = function (oEvent)
+        _mcXtra._visible = false;
+        _lblFinalCountDown.__set__text(oEvent.value);
+    } // End of the function
+    function finish(oEvent)
     {
-        this._mcXtra._visible = false;
-        this._lblFinalCountDown.text = oEvent.value;
-    };
-    _loc1.tictac = function (oEvent)
+        _mcXtra._visible = true;
+        _lblFinalCountDown.__set__text("");
+    } // End of the function
+    function complete(oEvent)
     {
-        this.api.sounds.events.onBannerTimer();
-    };
-    _loc1.finish = function (oEvent)
+        api.colors.addSprite(_mcXtra.content, _oData.data);
+    } // End of the function
+    function over(oEvent)
     {
-        this._mcXtra._visible = true;
-        if (this._lblFinalCountDown.text != undefined)
-        {
-            this._lblFinalCountDown.text = "";
-        } // end if
-    };
-    _loc1.complete = function (oEvent)
-    {
-        var _loc3 = this.api.kernel.OptionsManager.getOption("BannerIllustrationMode");
-        if (oEvent.target.contentPath.indexOf("artworks") != -1 && _loc3 == "helper")
-        {
-            this.showCircleXtra("helper", true);
-        }
-        else
-        {
-            this.api.colors.addSprite(this._mcXtra.content, this._oData.data);
-        } // end else if
-    };
-    _loc1.over = function (oEvent)
-    {
-        if (!this.gapi.isCursorHidden())
+        if (!gapi.isCursorHidden())
         {
             return;
         } // end if
         switch (oEvent.target._name)
         {
-            case "_btnHelp":
+            case "_ctrCC":
             {
-                this.gapi.showTooltip(this.api.lang.getText("CHAT_MENU"), oEvent.target, -20, {bXLimit: false, bYLimit: false});
+                var _loc7 = _oData.Spells[0];
+                gapi.showTooltip(_loc7.name + "\n" + _loc7.descriptionVisibleEffects + " (" + _loc7.apCost + " " + api.lang.getText("AP") + ")", oEvent.target, -30, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnGiveUp":
             {
-                if (this.api.datacenter.Game.isSpectator)
+                var _loc4;
+                if (api.datacenter.Game.isSpectator)
                 {
-                    var _loc3 = this.api.lang.getText("GIVE_UP_SPECTATOR");
-                }
-                else if (this.api.datacenter.Game.fightType == dofus.managers.GameManager.FIGHT_TYPE_CHALLENGE || !this.api.datacenter.Basics.aks_current_server.isHardcore())
-                {
-                    _loc3 = this.api.lang.getText("GIVE_UP");
+                    _loc4 = api.lang.getText("GIVE_UP_SPECTATOR");
                 }
                 else
                 {
-                    _loc3 = this.api.lang.getText("SUICIDE");
+                    _loc4 = api.lang.getText("GIVE_UP");
                 } // end else if
-                this.gapi.showTooltip(_loc3, oEvent.target, -20, {bXLimit: true, bYLimit: false});
-                break;
-            } 
-            case "_btnPvP":
-            {
-                this.gapi.showTooltip(this.api.lang.getText("CONQUEST_WORD"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
-                break;
-            } 
-            case "_btnMount":
-            {
-                this.gapi.showTooltip(this.api.lang.getText("MY_MOUNT"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(_loc4, oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnGuild":
             {
-                this.gapi.showTooltip(this.api.lang.getText("YOUR_GUILD"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("YOUR_GUILD"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnStatsJob":
             {
-                this.gapi.showTooltip(this.api.lang.getText("YOUR_STATS_JOB"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("YOUR_STATS_JOB"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnSpells":
             {
-                this.gapi.showTooltip(this.api.lang.getText("YOUR_SPELLS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
-                break;
-            } 
-            case "_btnQuests":
-            {
-                this.gapi.showTooltip(this.api.lang.getText("YOUR_QUESTS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("YOUR_SPELLS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnInventory":
             {
-                this.gapi.showTooltip(this.api.lang.getText("YOUR_INVENTORY"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("YOUR_INVENTORY"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnMap":
             {
-                this.gapi.showTooltip(this.api.lang.getText("YOUR_BOOK"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("YOUR_BOOK"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnFriends":
             {
-                this.gapi.showTooltip(this.api.lang.getText("YOUR_FRIENDS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("YOUR_FRIENDS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_btnFights":
             {
-                if (this._nFightsCount != 0)
+                if (_nFightsCount != 0)
                 {
-                    this.gapi.showTooltip(ank.utils.PatternDecoder.combine(this.api.lang.getText("FIGHTS_ON_MAP", [this._nFightsCount]), "m", this._nFightsCount < 2), oEvent.target, -20, {bYLimit: false});
+                    gapi.showTooltip(ank.utils.PatternDecoder.combine(api.lang.getText("FIGHTS_ON_MAP", [_nFightsCount]), "m", _nFightsCount < 2), oEvent.target, -20, {bYLimit: false});
                 } // end if
                 break;
             } 
             case "_btnNextTurn":
             {
-                this.gapi.showTooltip(this.api.lang.getText("NEXT_TURN"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("NEXT_TURN"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_pvAP":
             {
-                this.gapi.showTooltip(this.api.lang.getText("ACTIONPOINTS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("ACTIONPOINTS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_pvMP":
             {
-                this.gapi.showTooltip(this.api.lang.getText("MOVEPOINTS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                gapi.showTooltip(api.lang.getText("MOVEPOINTS"), oEvent.target, -20, {bXLimit: true, bYLimit: false});
                 break;
             } 
             case "_mcXtra":
             {
-                switch (this._sCurrentCircleXtra)
+                switch (_sCurrentCircleXtra)
                 {
                     case "compass":
                     {
-                        var _loc4 = oEvent.target.targetCoords;
-                        if (_loc4 == undefined)
+                        var _loc5 = oEvent.target.targetCoords;
+                        if (_loc5 == undefined)
                         {
-                            this.gapi.showTooltip(this.api.lang.getText("BANNER_SET_FLAG"), oEvent.target, 0, {bXLimit: true, bYLimit: false});
+                            gapi.showTooltip(api.lang.getText("BANNER_SET_FLAG"), oEvent.target, 0, {bXLimit: true, bYLimit: false});
                         }
                         else
                         {
-                            this.gapi.showTooltip(_loc4[0] + ", " + _loc4[1], oEvent.target, 0, {bXLimit: true, bYLimit: false});
+                            gapi.showTooltip(_loc5[0] + ", " + _loc5[1], oEvent.target, 0, {bXLimit: true, bYLimit: false});
                         } // end else if
                         break;
                     } 
                     case "clock":
                     {
-                        this.gapi.showTooltip(this.api.kernel.NightManager.time + "\n" + this.api.kernel.NightManager.getCurrentDateString(), oEvent.target, 0, {bXLimit: true, bYLimit: false});
-                        break;
-                    } 
-                    case "map":
-                    {
-                        this.gapi.showTooltip(oEvent.target.tooltip, oEvent.target, 0, {bXLimit: true, bYLimit: false});
+                        gapi.showTooltip(api.kernel.NightManager.time + "\n" + api.kernel.NightManager.getCurrentDateString(), oEvent.target, 0, {bXLimit: true, bYLimit: false});
                         break;
                     } 
                 } // End of switch
                 break;
             } 
-            case "_hHeart":
-            {
-                this.gapi.showTooltip(this.api.lang.getText("HELP_LIFE"), oEvent.target, -20);
-                break;
-            } 
             default:
             {
-                switch (this._msShortcuts.currentTab)
+                switch (_sCurrentTab)
                 {
                     case "Spells":
                     {
-                        var _loc5 = oEvent.target.contentData;
-                        if (_loc5 != undefined)
+                        var _loc6 = oEvent.target.contentData;
+                        if (_loc6 != undefined)
                         {
-                            this.gapi.showTooltip(_loc5.name + " (" + _loc5.apCost + " " + this.api.lang.getText("AP") + (_loc5.actualCriticalHit > 0 ? (", " + this.api.lang.getText("ACTUAL_CRITICAL_CHANCE") + ": 1/" + _loc5.actualCriticalHit) : ("")) + ")", oEvent.target, -20, {bXLimit: true, bYLimit: false});
+                            gapi.showTooltip(_loc6.name + " (" + _loc6.apCost + " " + api.lang.getText("AP") + ")", oEvent.target, -20, {bXLimit: true, bYLimit: false});
                         } // end if
                         break;
                     } 
                     case "Items":
                     {
-                        var _loc6 = oEvent.target.contentData;
-                        if (_loc6 != undefined)
+                        var _loc3 = oEvent.target.contentData;
+                        if (_loc3 != undefined)
                         {
-                            var _loc7 = _loc6.name;
-                            if (this.gapi.getUIComponent("Inventory") == undefined)
+                            _loc4 = _loc3.name;
+                            if (gapi.getUIComponent("Inventory") == undefined)
                             {
-                                if (_loc6.canUse && _loc6.canTarget)
+                                if (_loc3.canUse && _loc3.canTarget)
                                 {
-                                    _loc7 = _loc7 + ("\n" + this.api.lang.getText("HELP_SHORTCUT_DBLCLICK_CLICK"));
+                                    _loc4 = _loc4 + ("\n" + api.lang.getText("HELP_SHORTCUT_DBLCLICK_CLICK"));
                                 }
                                 else
                                 {
-                                    if (_loc6.canUse)
+                                    if (_loc3.canUse)
                                     {
-                                        _loc7 = _loc7 + ("\n" + this.api.lang.getText("HELP_SHORTCUT_DBLCLICK"));
+                                        _loc4 = _loc4 + ("\n" + api.lang.getText("HELP_SHORTCUT_DBLCLICK"));
                                     } // end if
-                                    if (_loc6.canTarget)
+                                    if (_loc3.canTarget)
                                     {
-                                        _loc7 = _loc7 + ("\n" + this.api.lang.getText("HELP_SHORTCUT_CLICK"));
+                                        _loc4 = _loc4 + ("\n" + api.lang.getText("HELP_SHORTCUT_CLICK"));
                                     } // end if
                                 } // end if
                             } // end else if
-                            this.gapi.showTooltip(_loc7, oEvent.target, -30, {bXLimit: true, bYLimit: false});
+                            gapi.showTooltip(_loc4, oEvent.target, -30, {bXLimit: true, bYLimit: false});
                         } // end if
                         break;
                     } 
@@ -1378,23 +1272,23 @@ if (!dofus.graphics.gapi.ui.Banner)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.out = function (oEvent)
+    } // End of the function
+    function out(oEvent)
     {
-        this.gapi.hideTooltip();
-    };
-    _loc1.drag = function (oEvent)
+        gapi.hideTooltip();
+    } // End of the function
+    function drag(oEvent)
     {
-        var _loc3 = oEvent.target.contentData;
-        if (_loc3 == undefined)
+        var _loc2 = oEvent.target.contentData;
+        if (_loc2 == undefined)
         {
             return;
         } // end if
-        switch (this._msShortcuts.currentTab)
+        switch (_sCurrentTab)
         {
             case "Spells":
             {
-                if (this.gapi.getUIComponent("Spells") == undefined && !Key.isDown(Key.SHIFT))
+                if (gapi.getUIComponent("Spells") == undefined)
                 {
                     return;
                 } // end if
@@ -1402,279 +1296,181 @@ if (!dofus.graphics.gapi.ui.Banner)
             } 
             case "Items":
             {
-                if (this.gapi.getUIComponent("Inventory") == undefined && !Key.isDown(Key.SHIFT))
+                if (gapi.getUIComponent("Inventory") == undefined)
                 {
                     return;
                 } // end if
                 break;
             } 
         } // End of switch
-        this.gapi.removeCursor();
-        this.gapi.setCursor(_loc3);
-    };
-    _loc1.drop = function (oEvent)
+        gapi.removeCursor();
+        gapi.setCursor(_loc2);
+    } // End of the function
+    function drop(oEvent)
     {
-        switch (oEvent.target)
+        switch (_sCurrentTab)
         {
-            case this._mcbMovableBar:
+            case "Spells":
             {
-                this.api.kernel.OptionsManager.setOption("MovableBarCoord", {x: this._mcbMovableBar._x, y: this._mcbMovableBar._y});
-                break;
-            } 
-            default:
-            {
-                switch (this._msShortcuts.currentTab)
+                if (gapi.getUIComponent("Spells") == undefined)
                 {
-                    case "Spells":
-                    {
-                        if (this.gapi.getUIComponent("Spells") == undefined && !Key.isDown(Key.SHIFT))
-                        {
-                            return;
-                        } // end if
-                        var _loc3 = this.gapi.getCursor();
-                        if (_loc3 == undefined)
-                        {
-                            return;
-                        } // end if
-                        this.gapi.removeCursor();
-                        var _loc4 = _loc3.position;
-                        var _loc5 = oEvent.target.params.position;
-                        if (_loc4 == _loc5)
-                        {
-                            return;
-                        } // end if
-                        if (_loc4 != undefined)
-                        {
-                            this._msShortcuts.getContainer(_loc4).contentData = undefined;
-                            this._oData.SpellsUsed.removeItemAt(_loc4);
-                        } // end if
-                        var _loc6 = this._msShortcuts.getContainer(_loc5).contentData;
-                        if (_loc6 != undefined)
-                        {
-                            _loc6.position = undefined;
-                        } // end if
-                        _loc3.position = _loc5;
-                        oEvent.target.contentData = _loc3;
-                        this._oData.SpellsUsed.addItemAt(_loc5, _loc3);
-                        this.api.network.Spells.moveToUsed(_loc3.ID, _loc5);
-                        this.addToQueue({object: this._msShortcuts, method: this._msShortcuts.setSpellStateOnAllContainers});
-                        break;
-                    } 
-                    case "Items":
-                    {
-                        if (this.gapi.getUIComponent("Inventory") == undefined && !Key.isDown(Key.SHIFT))
-                        {
-                            return;
-                        } // end if
-                        var _loc7 = this.gapi.getCursor();
-                        if (_loc7 == undefined)
-                        {
-                            return;
-                        } // end if
-                        if (!_loc7.canMoveToShortut)
-                        {
-                            this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_MOVE_ITEM_HERE"), "ERROR_BOX");
-                            return;
-                        } // end if
-                        this.gapi.removeCursor();
-                        var _loc8 = oEvent.target.params.position + dofus.graphics.gapi.controls.MouseShortcuts.ITEM_OFFSET;
-                        if (_loc7.position == _loc8)
-                        {
-                            return;
-                        } // end if
-                        if (_loc7.Quantity > 1)
-                        {
-                            var _loc9 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: _loc7.Quantity, max: _loc7.Quantity, useAllStage: true, params: {type: "drop", item: _loc7, position: _loc8}}, {bAlwaysOnTop: true});
-                            _loc9.addEventListener("validate", this);
-                        }
-                        else
-                        {
-                            this.api.network.Items.movement(_loc7.ID, _loc8, 1);
-                        } // end else if
-                        break;
-                    } 
-                } // End of switch
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.filterChanged = function (oEvent)
-    {
-        this.api.network.Chat.subscribeChannels(oEvent.filter, oEvent.selected);
-    };
-    _loc1.lpChanged = function (oEvent)
-    {
-        this._hHeart.value = oEvent.value;
-    };
-    _loc1.lpmaxChanged = function (oEvent)
-    {
-        this._hHeart.max = oEvent.value;
-    };
-    _loc1.apChanged = function (oEvent)
-    {
-        this._pvAP.value = oEvent.value;
-        if (this.api.datacenter.Game.isFight)
-        {
-        } // end if
-        this._msShortcuts.setSpellStateOnAllContainers();
-    };
-    _loc1.mpChanged = function (oEvent)
-    {
-        this._pvMP.value = Math.max(0, oEvent.value);
-    };
-    _loc1.selectSmiley = function (oEvent)
-    {
-        this.api.network.Chat.useSmiley(oEvent.index);
-    };
-    _loc1.selectEmote = function (oEvent)
-    {
-        this.api.network.Emotes.useEmote(oEvent.index);
-    };
-    _loc1.spellLaunched = function (oEvent)
-    {
-        this._msShortcuts.setSpellStateOnContainer(oEvent.spell.position);
-    };
-    _loc1.nextTurn = function (oEvent)
-    {
-        this._msShortcuts.setSpellStateOnAllContainers();
-    };
-    _loc1.href = function (oEvent)
-    {
-        var _loc3 = oEvent.params.split(",");
-        switch (_loc3[0])
-        {
-            case "OpenGuildTaxCollectors":
-            {
-                this.addToQueue({object: this.gapi, method: this.gapi.loadUIAutoHideComponent, params: ["Guild", "Guild", {currentTab: "TaxCollectors"}, {bStayIfPresent: true}]});
-                break;
-            } 
-            case "OpenPayZoneDetails":
-            {
-                this.addToQueue({object: this.gapi, method: this.gapi.loadUIComponent, params: ["PayZoneDialog2", "PayZoneDialog2", {name: "El Pemy", gfx: "9059", dialogID: dofus.graphics.gapi.ui.PayZoneDialog.PAYZONE_DETAILS}, {bForceLoad: true}]});
-                break;
-            } 
-            case "ShowPlayerPopupMenu":
-            {
-                if (_loc3[2] != undefined && (String(_loc3[2]).length > 0 && _loc3[2] != ""))
+                    return;
+                } // end if
+                var _loc3 = gapi.getCursor();
+                if (_loc3 == undefined)
                 {
-                    this.addToQueue({object: this.api.kernel.GameManager, method: this.api.kernel.GameManager.showPlayerPopupMenu, params: [undefined, _loc3[1], null, null, null, _loc3[2], this.api.datacenter.Player.isAuthorized]});
+                    return;
+                } // end if
+                gapi.removeCursor();
+                var _loc4 = _loc3.position;
+                var _loc5 = oEvent.target.params.position;
+                if (_loc4 == _loc5)
+                {
+                    return;
+                } // end if
+                if (_loc4 != undefined)
+                {
+                    this["_ctr" + _loc4].contentData = undefined;
+                    _oData.SpellsUsed.removeItemAt(_loc4);
+                } // end if
+                var _loc6 = this["_ctr" + _loc5].contentData;
+                if (_loc6 != undefined)
+                {
+                    _loc6.position = undefined;
+                } // end if
+                _loc3.position = _loc5;
+                oEvent.target.contentData = _loc3;
+                _oData.SpellsUsed.addItemAt(_loc5, _loc3);
+                api.network.Spells.moveToUsed(_loc3.ID, _loc5);
+                this.addToQueue({object: this, method: setSpellStateOnAllContainers});
+                break;
+            } 
+            case "Items":
+            {
+                if (gapi.getUIComponent("Inventory") == undefined)
+                {
+                    return;
+                } // end if
+                var _loc2 = gapi.getCursor();
+                if (_loc2 == undefined)
+                {
+                    return;
+                } // end if
+                if (!_loc2.canMoveToShortut)
+                {
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_MOVE_ITEM_HERE"), "ERROR_BOX");
+                    return;
+                } // end if
+                gapi.removeCursor();
+                _loc5 = oEvent.target.params.position + 39;
+                if (_loc2.position == _loc5)
+                {
+                    return;
+                } // end if
+                if (_loc2.Quantity > 1)
+                {
+                    var _loc8 = gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: _loc2.Quantity, useAllStage: true, params: {type: "drop", item: _loc2, position: _loc5}}, {bAlwaysOnTop: true});
+                    _loc8.addEventListener("validate", this);
                 }
                 else
                 {
-                    this.addToQueue({object: this.api.kernel.GameManager, method: this.api.kernel.GameManager.showPlayerPopupMenu, params: [undefined, _loc3[1]]});
+                    api.network.Items.movement(_loc2.ID, _loc5, 1);
                 } // end else if
                 break;
             } 
-            case "ShowItemViewer":
+        } // End of switch
+    } // End of the function
+    function filterChanged(oEvent)
+    {
+        api.kernel.ChatManager.setTypes(_cChat.__get__filters());
+    } // End of the function
+    function lpChanged(oEvent)
+    {
+        _hHeart.__set__value(oEvent.value);
+    } // End of the function
+    function lpmaxChanged(oEvent)
+    {
+        _hHeart.__set__max(oEvent.value);
+    } // End of the function
+    function apChanged(oEvent)
+    {
+        _pvAP.__set__value(oEvent.value);
+        if (api.datacenter.Game.isFight)
+        {
+            this.setSpellStateOnAllContainers();
+        } // end if
+    } // End of the function
+    function mpChanged(oEvent)
+    {
+        _pvMP.__set__value(Math.max(0, oEvent.value));
+    } // End of the function
+    function selectSmiley(oEvent)
+    {
+        api.network.Chat.useSmiley(oEvent.index);
+    } // End of the function
+    function selectEmote(oEvent)
+    {
+        api.network.Emotes.useEmote(oEvent.index);
+    } // End of the function
+    function spellLaunched(oEvent)
+    {
+        this.setSpellStateOnContainer(oEvent.spell.position);
+    } // End of the function
+    function nextTurn(oEvent)
+    {
+        this.setSpellStateOnAllContainers();
+    } // End of the function
+    function href(oEvent)
+    {
+        switch (oEvent.params)
+        {
+            case "OpenGuildTaxCollectors":
             {
-                var _loc4 = this.api.kernel.ChatManager.getItemFromBuffer(Number(_loc3[1]));
-                if (_loc4 == undefined)
-                {
-                    this.addToQueue({object: this.api.kernel, method: this.api.kernel.showMessage, params: [this.api.lang.getText("ERROR_WORD"), this.api.lang.getText("ERROR_ITEM_CANT_BE_DISPLAYED"), "ERROR_BOX"]});
-                    break;
-                } // end if
-                this.addToQueue({object: this.api.ui, method: this.api.ui.loadUIComponent, params: ["ItemViewer", "ItemViewer", {item: _loc4}, {bAlwaysOnTop: true}]});
-                break;
-            } 
-            case "updateCompass":
-            {
-                this.api.kernel.GameManager.updateCompass(Number(_loc3[1]), Number(_loc3[2]));
-                break;
-            } 
-            case "ShowLinkWarning":
-            {
-                this.addToQueue({object: this.api.ui, method: this.api.ui.loadUIComponent, params: ["AskLinkWarning", "AskLinkWarning", {text: this.api.lang.getText(_loc3[1])}]});
+                this.addToQueue({object: this.__get__gapi(), method: gapi.loadUIAutoHideComponent, params: ["Guild", "Guild", {currentTab: "TaxCollectors"}, {bStayIfPresent: true}]});
                 break;
             } 
         } // End of switch
-    };
-    _loc1.validate = function (oEvent)
+    } // End of the function
+    function modelChanged(oEvent)
+    {
+        switch (oEvent.eventName)
+        {
+            case "updateOne":
+            case "updateAll":
+        } // End of switch
+        if (oEvent.target == _oData.Spells)
+        {
+            if (_sCurrentTab == "Spells")
+            {
+                this.updateSpells();
+            } // end if
+        }
+        else if (_sCurrentTab == "Items")
+        {
+            this.updateItems();
+        } // end else if
+        
+    } // End of the function
+    function validate(oEvent)
     {
         switch (oEvent.params.type)
         {
             case "drop":
             {
-                this.gapi.removeCursor();
-                if (oEvent.value > 0 && !_global.isNaN(Number(oEvent.value)))
+                gapi.removeCursor();
+                if (oEvent.value > 0 && !isNaN(Number(oEvent.value)))
                 {
-                    this.api.network.Items.movement(oEvent.params.item.ID, oEvent.params.position, Math.min(oEvent.value, oEvent.params.item.Quantity));
+                    api.network.Items.movement(oEvent.params.item.ID, oEvent.params.position, Math.min(oEvent.value, oEvent.params.item.Quantity));
                 } // end if
                 break;
             } 
         } // End of switch
-    };
-    _loc1.drawBar = function (oEvent)
-    {
-        this.linkMovableContainer();
-        this._msShortcuts.updateCurrentTabInformations();
-        if (this._msShortcuts.currentTab == dofus.graphics.gapi.controls.MouseShortcuts.TAB_SPELLS)
-        {
-            this._btnFights._visible = false;
-        }
-        else
-        {
-            this._btnFights._visible = this._nFightsCount != 0 && !this.api.datacenter.Game.isFight;
-        } // end else if
-    };
-    _loc1.onSetFocus = function ()
-    {
-        if (this.api.config.isLinux || this.api.config.isMac)
-        {
-            getURL("FSCommand:" add "trapallkeys", "false");
-        }
-        else
-        {
-            this._bIsOnFocus = true;
-        } // end else if
-    };
-    _loc1.onKillFocus = function ()
-    {
-        if (this.api.config.isLinux || this.api.config.isMac)
-        {
-            getURL("FSCommand:" add "trapallkeys", "true");
-        }
-        else
-        {
-            this._bIsOnFocus = false;
-        } // end else if
-    };
-    _loc1.addProperty("chatAutoFocus", _loc1.__get__chatAutoFocus, _loc1.__set__chatAutoFocus);
-    _loc1.addProperty("illustrationType", _loc1.__get__illustrationType, function ()
-    {
-    });
-    _loc1.addProperty("data", function ()
-    {
-    }, _loc1.__set__data);
-    _loc1.addProperty("chat", _loc1.__get__chat, function ()
-    {
-    });
-    _loc1.addProperty("illustration", _loc1.__get__illustration, function ()
-    {
-    });
-    _loc1.addProperty("fightsCount", function ()
-    {
-    }, _loc1.__set__fightsCount);
-    _loc1.addProperty("txtConsole", function ()
-    {
-    }, _loc1.__set__txtConsole);
-    _loc1.addProperty("shortcuts", _loc1.__get__shortcuts, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Banner = function ()
-    {
-        super();
-    }).CLASS_NAME = "Banner";
-    (_global.dofus.graphics.gapi.ui.Banner = function ()
-    {
-        super();
-    }).NO_TRANSFORM = {ra: 100, rb: 0, ga: 100, gb: 0, ba: 100, bb: 0};
-    (_global.dofus.graphics.gapi.ui.Banner = function ()
-    {
-        super();
-    }).INACTIVE_TRANSFORM = {ra: 50, rb: 0, ga: 50, gb: 0, ba: 50, bb: 0};
-    _loc1._nFightsCount = 0;
-    _loc1._bChatAutoFocus = true;
-    _loc1._sChatPrefix = "";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Banner";
+    static var NO_TRANSFORM = {ra: 100, rb: 0, ga: 100, gb: 0, ba: 100, bb: 0};
+    static var INACTIVE_TRANSFORM = {ra: 50, rb: 0, ga: 50, gb: 0, ba: 50, bb: 0};
+    var _sCurrentTab = "Items";
+    var _nFightsCount = 0;
+    var _bChatAutoFocus = true;
+} // End of Class
 #endinitclip

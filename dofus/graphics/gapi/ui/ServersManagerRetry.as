@@ -1,63 +1,39 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20524]
-#initclip 45
-if (!dofus.graphics.gapi.ui.ServersManagerRetry)
+// [Initial MovieClip Action of sprite 1056]
+#initclip 23
+class dofus.graphics.gapi.ui.ServersManagerRetry extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.ServersManagerRetry = function ()
+    var __get__initialized, __get__timer, api, _lblCounter, _lblCounterShadow, addToQueue, __set__timer;
+    function ServersManagerRetry()
     {
         super();
-    }).prototype;
-    _loc1.__set__timer = function (nTimer)
+    } // End of the function
+    function set timer(nTimer)
     {
-        this.addToQueue({object: this, method: function (n)
+        _nTimer = Number(nTimer);
+        if (this.__get__initialized())
         {
-            this._nTimer = Number(n);
-            if (this.initialized)
-            {
-                this.updateLabel();
-            } // end if
-        }, params: [nTimer]});
+            this.updateLabel();
+        } // end if
         //return (this.timer());
-    };
-    _loc1.updateLabel = function ()
+        null;
+    } // End of the function
+    function updateLabel()
     {
-        var _loc2 = this.api.lang.getText("SERVERS_MANAGER_RETRY", [this._nTimer]);
-        this._lblCounter.text = _loc2;
-        this._lblCounterShadow.text = _loc2;
-    };
-    _loc1.init = function ()
+        var _loc2 = api.lang.getText("SERVERS_MANAGER_RETRY", [_nTimer]);
+        _lblCounter.__set__text(_loc2);
+        _lblCounterShadow.__set__text(_loc2);
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.ServersManagerRetry.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.updateLabel});
-    };
-    _loc1.addProperty("timer", function ()
-    {
-    }, _loc1.__set__timer);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.ServersManagerRetry = function ()
-    {
-        super();
-    }).CLASS_NAME = "ServersManagerRetry";
-    _loc1._nTimer = 0;
-} // end if
+        this.addToQueue({object: this, method: updateLabel});
+    } // End of the function
+    static var CLASS_NAME = "ServersManagerRetry";
+    var _nTimer = 0;
+} // End of Class
 #endinitclip

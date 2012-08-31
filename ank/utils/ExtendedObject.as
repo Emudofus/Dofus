@@ -1,106 +1,95 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20791]
-#initclip 56
-if (!ank.utils.ExtendedObject)
+// [Initial MovieClip Action of sprite 833]
+#initclip 45
+class ank.utils.ExtendedObject extends Object
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.ExtendedObject = function ()
+    var _items, _count, dispatchEvent;
+    function ExtendedObject()
     {
         super();
         this.initialize();
-    }).prototype;
-    _loc1.initialize = function (Void)
+    } // End of the function
+    function initialize(Void)
     {
         this.clear();
         mx.events.EventDispatcher.initialize(this);
-    };
-    _loc1.clear = function (Void)
+    } // End of the function
+    function clear(Void)
     {
-        this._items = new Object();
-        this._count = 0;
+        _items = new Object();
+        _count = 0;
         this.dispatchEvent({type: "modelChanged"});
-    };
-    _loc1.addItemAt = function (key, item)
+    } // End of the function
+    function addItemAt(key, item)
     {
-        if (this._items[key] == undefined)
-        {
-            ++this._count;
-        } // end if
-        this._items[key] = item;
+        _items[key] = item;
+        ++_count;
         this.dispatchEvent({type: "modelChanged"});
-    };
-    _loc1.removeItemAt = function (key)
+    } // End of the function
+    function removeItemAt(key)
     {
-        var _loc3 = this._items[key];
-        delete this._items[key];
-        --this._count;
+        var _loc2 = _items[key];
+        delete _items[key];
+        --_count;
         this.dispatchEvent({type: "modelChanged"});
-        return (_loc3);
-    };
-    _loc1.removeAll = function (Void)
+        return (_loc2);
+    } // End of the function
+    function removeAll(Void)
     {
         this.clear();
-    };
-    _loc1.removeAllExcept = function (key)
+    } // End of the function
+    function removeAllExcept(key)
     {
-        for (var k in this._items)
+        for (var _loc3 in _items)
         {
-            if (k == key)
+            if (_loc3 == key)
             {
                 continue;
             } // end if
-            delete this._items[k];
+            delete _items[_loc3];
         } // end of for...in
-        this._count = 1;
+        _count = 1;
         this.dispatchEvent({type: "modelChanged"});
-    };
-    _loc1.replaceItemAt = function (key, item)
+    } // End of the function
+    function replaceItemAt(key, item)
     {
-        if (this._items[key] == undefined)
+        if (_items[key] == undefined)
         {
             return;
         } // end if
-        this._items[key] = item;
+        _items[key] = item;
         this.dispatchEvent({type: "modelChanged"});
-    };
-    _loc1.getLength = function (Void)
+    } // End of the function
+    function getLength(Void)
     {
-        return (this._count);
-    };
-    _loc1.getItemAt = function (key)
+        return (_count);
+    } // End of the function
+    function getItemAt(key)
     {
-        return (this._items[key]);
-    };
-    _loc1.getItems = function (Void)
+        return (_items[key]);
+    } // End of the function
+    function getItems(Void)
     {
-        return (this._items);
-    };
-    _loc1.getKeys = function ()
+        return (_items);
+    } // End of the function
+    function getKeys(Void)
     {
         var _loc2 = new Array();
-        for (var k in this._items)
+        for (var _loc3 in _items)
         {
-            _loc2.push(k);
+            _loc2.push(_loc3);
         } // end of for...in
         return (_loc2);
-    };
-    _loc1.getPropertyValues = function (sProperty)
+    } // End of the function
+    function getPropertyValues(sProperty)
     {
-        var _loc3 = new Array();
-        for (var k in this._items)
+        var _loc2 = new Array();
+        for (var _loc4 in _items)
         {
-            _loc3.push(this._items[k][sProperty]);
+            _loc2.push(_items[_loc4][sProperty]);
         } // end of for...in
-        return (_loc3);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        return (_loc2);
+    } // End of the function
+} // End of Class
 #endinitclip

@@ -1,103 +1,72 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20622]
-#initclip 143
-if (!ank.utils.CyclicTimer)
+// [Initial MovieClip Action of sprite 871]
+#initclip 83
+class ank.utils.CyclicTimer extends Object
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.CyclicTimer = function ()
+    static var __get__interval;
+    function CyclicTimer()
     {
         super();
-    }).prototype;
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).__get__interval = function ()
+    } // End of the function
+    static function get interval()
     {
         return (ank.utils.CyclicTimer._nInterval);
-    };
-    (_global.ank.utils.CyclicTimer = function ()
+    } // End of the function
+    static function addFunction(oRef, oObjFn, fFunction, aParams, oObjFnEnd, fFunctionEnd, aParamsEnd)
     {
-        super();
-    }).addFunction = function (oRef, oObjFn, fFunction, aParams, oObjFnEnd, fFunctionEnd, aParamsEnd)
-    {
-        var _loc9 = new Object();
-        _loc9.objRef = oRef;
-        _loc9.objFn = oObjFn;
-        _loc9.fn = fFunction;
-        _loc9.params = aParams;
-        _loc9.objFnEnd = oObjFnEnd;
-        _loc9.fnEnd = fFunctionEnd;
-        _loc9.paramsEnd = aParamsEnd;
-        ank.utils.CyclicTimer._aFunctions.push(_loc9);
+        var _loc1 = new Object();
+        _loc1.objRef = oRef;
+        _loc1.objFn = oObjFn;
+        _loc1.fn = fFunction;
+        _loc1.params = aParams;
+        _loc1.objFnEnd = oObjFnEnd;
+        _loc1.fnEnd = fFunctionEnd;
+        _loc1.paramsEnd = aParamsEnd;
+        ank.utils.CyclicTimer._aFunctions.push(_loc1);
         ank.utils.CyclicTimer.play();
-    };
-    (_global.ank.utils.CyclicTimer = function ()
+    } // End of the function
+    static function removeFunction(oRef)
     {
-        super();
-    }).removeFunction = function (oRef)
-    {
-        for (var _loc3 = ank.utils.CyclicTimer._aFunctions.length - 1; _loc3 >= 0; --_loc3)
+        for (var _loc1 = ank.utils.CyclicTimer._aFunctions.length - 1; _loc1 >= 0; --_loc1)
         {
-            var _loc4 = ank.utils.CyclicTimer._aFunctions[_loc3];
-            if (oRef == _loc4.objRef)
+            var _loc2 = ank.utils.CyclicTimer._aFunctions[_loc1];
+            if (oRef == _loc2.objRef)
             {
-                ank.utils.CyclicTimer._aFunctions.splice(_loc3, 1);
+                ank.utils.CyclicTimer._aFunctions.splice(_loc1, 1);
             } // end if
         } // end of for
-    };
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).clear = function ()
+    } // End of the function
+    static function clear()
     {
         ank.utils.CyclicTimer.stop();
-        ank.utils.CyclicTimer._aFunctions = new Array();
-    };
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).play = function ()
+        _aFunctions = new Array();
+    } // End of the function
+    static function play()
     {
         if (ank.utils.CyclicTimer._bPlaying)
         {
             return;
         } // end if
-        ank.utils.CyclicTimer._bPlaying = true;
+        _bPlaying = true;
         ank.utils.CyclicTimer.doCycle();
-    };
-    (_global.ank.utils.CyclicTimer = function ()
+    } // End of the function
+    static function stop()
     {
-        super();
-    }).stop = function ()
-    {
-        ank.utils.CyclicTimer._bPlaying = false;
-    };
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).getInstance = function ()
+        _bPlaying = false;
+    } // End of the function
+    static function getInstance()
     {
         return (ank.utils.CyclicTimer._oCyclicTimer);
-    };
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).doCycle = function ()
+    } // End of the function
+    static function doCycle()
     {
         for (var _loc2 = ank.utils.CyclicTimer._aFunctions.length - 1; _loc2 >= 0; --_loc2)
         {
-            var _loc3 = ank.utils.CyclicTimer._aFunctions[_loc2];
-            if (!_loc3.fn.apply(_loc3.objFn, _loc3.params))
+            var _loc1 = ank.utils.CyclicTimer._aFunctions[_loc2];
+            if (!_loc1.fn.apply(_loc1.objFn, _loc1.params))
             {
-                ank.utils.CyclicTimer.onFunctionEnd(_loc2, _loc3);
+                ank.utils.CyclicTimer.onFunctionEnd(_loc2, _loc1);
             } // end if
         } // end of for
         if (ank.utils.CyclicTimer._aFunctions.length != 0)
@@ -108,40 +77,15 @@ if (!ank.utils.CyclicTimer)
         {
             ank.utils.CyclicTimer.stop();
         } // end else if
-    };
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).onFunctionEnd = function (nIndex, oFunction)
+    } // End of the function
+    static function onFunctionEnd(nIndex, oFunction)
     {
         oFunction.fnEnd.apply(oFunction.objFnEnd, oFunction.paramsEnd);
         ank.utils.CyclicTimer._aFunctions.splice(nIndex, 1);
-    };
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).addProperty("interval", (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    }).__get__interval, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    })._aFunctions = new Array();
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    })._nInterval = 40;
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    })._bPlaying = false;
-    (_global.ank.utils.CyclicTimer = function ()
-    {
-        super();
-    })._oCyclicTimer = new ank.utils.CyclicTimer();
-} // end if
+    } // End of the function
+    static var _aFunctions = new Array();
+    static var _nInterval = 40;
+    static var _bPlaying = false;
+    static var _oCyclicTimer = new ank.utils.CyclicTimer();
+} // End of Class
 #endinitclip

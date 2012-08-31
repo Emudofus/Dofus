@@ -1,396 +1,375 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20950]
-#initclip 215
-if (!ank.gapi.controls.ScrollBar)
+// [Initial MovieClip Action of sprite 12]
+#initclip 15
+class ank.gapi.controls.ScrollBar extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.ScrollBar = function ()
+    var _nMin, __get__min, _nMax, __get__max, _nPage, __get__page, _parent, _tTarget, addEventListener, addToQueue, _sSnapTo, __get__scrollTarget, __get__snapTo, _mcHolder, __get__scrollPosition, _bHorizontal, __get__horizontal, createEmptyMovieClip, up_mc, over_mc, down_mc, interval, onRollOver, onRelease, onRollOut, _ymouse, dispatchInterval, scrollInterval, getStyle, setMovieClipColor, __height, _nSize, _rotation, _nDragOffset, _nPrevScrollPosition, dispatchEvent, _width, _x, _y, __set__height, _oListener, removeEventListener, target, parent, __set__scrollPosition, __set__horizontal, __set__max, __set__min, __set__page, __set__scrollTarget, __set__snapTo;
+    function ScrollBar()
     {
         super();
-    }).prototype;
-    _loc1.__set__min = function (nMin)
+    } // End of the function
+    function set min(nMin)
     {
-        this._nMin = nMin;
+        _nMin = nMin;
         //return (this.min());
-    };
-    _loc1.__get__min = function ()
+        null;
+    } // End of the function
+    function get min()
     {
-        return (this._nMin);
-    };
-    _loc1.__set__max = function (nMax)
+        return (_nMin);
+    } // End of the function
+    function set max(nMax)
     {
-        this._nMax = nMax;
+        _nMax = nMax;
         //return (this.max());
-    };
-    _loc1.__get__max = function ()
+        null;
+    } // End of the function
+    function get max()
     {
-        return (this._nMax);
-    };
-    _loc1.__set__page = function (nPage)
+        return (_nMax);
+    } // End of the function
+    function set page(nPage)
     {
-        this._nPage = nPage;
+        _nPage = nPage;
         //return (this.page());
-    };
-    _loc1.__get__page = function ()
+        null;
+    } // End of the function
+    function get page()
     {
-        return (this._nPage);
-    };
-    _loc1.__set__scrollTarget = function (tTarget)
+        return (_nPage);
+    } // End of the function
+    function set scrollTarget(tTarget)
     {
         if (tTarget == undefined)
         {
             return;
         } // end if
-        this._tTarget = typeof(tTarget) == "string" ? (this._parent[tTarget]) : (tTarget);
-        if (this.addEventListener != undefined)
+        _tTarget = typeof(tTarget) == "string" ? (_parent[tTarget]) : (tTarget);
+        if (addEventListener != undefined)
         {
             this.addTargetListener();
         } // end if
-        this._tTarget.removeListener(this);
-        this._tTarget.addListener(this);
-        this.addToQueue({object: this, method: this.addTargetListener});
-        if (this._sSnapTo != undefined && this._sSnapTo != "none")
+        _tTarget.removeListener(this);
+        _tTarget.addListener(this);
+        this.addToQueue({object: this, method: addTargetListener});
+        if (_sSnapTo != undefined && _sSnapTo != "none")
         {
-            this.addToQueue({object: this, method: this.snapToTextField});
+            this.addToQueue({object: this, method: snapToTextField});
         } // end if
         //return (this.scrollTarget());
-    };
-    _loc1.__get__scrollTarget = function ()
+        null;
+    } // End of the function
+    function get scrollTarget()
     {
-        return (this._tTarget);
-    };
-    _loc1.__set__snapTo = function (sSnapTo)
+        return (_tTarget);
+    } // End of the function
+    function set snapTo(sSnapTo)
     {
         if (sSnapTo == undefined)
         {
             return;
         } // end if
-        this._sSnapTo = sSnapTo;
-        if (this._tTarget != undefined)
+        _sSnapTo = sSnapTo;
+        if (_tTarget != undefined)
         {
-            if (this.addEventListener != undefined)
+            if (addEventListener != undefined)
             {
                 this.snapToTextField();
             }
             else
             {
-                this.addToQueue({object: this, method: this.snapToTextField});
+                this.addToQueue({object: this, method: snapToTextField});
             } // end if
         } // end else if
         //return (this.snapTo());
-    };
-    _loc1.__set__scrollPosition = function (nScrollPosition)
+        null;
+    } // End of the function
+    function set scrollPosition(nScrollPosition)
     {
-        if (nScrollPosition > this._nMax)
+        if (nScrollPosition > _nMax)
         {
-            nScrollPosition = this._nMax;
+            nScrollPosition = _nMax;
         } // end if
-        if (nScrollPosition < this._nMin)
+        if (nScrollPosition < _nMin)
         {
-            nScrollPosition = this._nMin;
+            nScrollPosition = _nMin;
         } // end if
-        var _loc3 = nScrollPosition * (this._mcHolder.track_mc._height - this._mcHolder.thumb_mc._height) / (this._nMax - this._nMin) + this._mcHolder.track_mc._y;
+        var _loc3 = nScrollPosition * (_mcHolder.track_mc._height - _mcHolder.thumb_mc._height) / (_nMax - _nMin) + _mcHolder.track_mc._y;
         this.moveThumb(_loc3);
         //return (this.scrollPosition());
-    };
-    _loc1.__get__scrollPosition = function ()
+        null;
+    } // End of the function
+    function get scrollPosition()
     {
-        return (Math.round((this._mcHolder.thumb_mc._y - this._mcHolder.track_mc._y) / (this._mcHolder.track_mc._height - this._mcHolder.thumb_mc._height) * (this._nMax - this._nMin)));
-    };
-    _loc1.__set__horizontal = function (bHorizontal)
+        return (Math.round((_mcHolder.thumb_mc._y - _mcHolder.track_mc._y) / (_mcHolder.track_mc._height - _mcHolder.thumb_mc._height) * (_nMax - _nMin)));
+    } // End of the function
+    function set horizontal(bHorizontal)
     {
-        this._bHorizontal = bHorizontal;
+        _bHorizontal = bHorizontal;
         this.arrange();
         //return (this.horizontal());
-    };
-    _loc1.setSize = function (nHeight)
+        null;
+    } // End of the function
+    function setSize(nHeight)
     {
         super.setSize(null, nHeight);
-    };
-    _loc1.setScrollProperties = function (nPage, nMin, nMax)
+    } // End of the function
+    function setScrollProperties(nPage, nMin, nMax)
     {
-        this._nPage = nPage;
-        this._nMin = Math.max(nMin, 0);
-        this._nMax = Math.max(nMax, 0);
+        _nPage = nPage;
+        _nMin = Math.max(nMin, 0);
+        _nMax = Math.max(nMax, 0);
         this.resizeThumb();
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.ScrollBar.CLASS_NAME);
-        if (this._nMin == undefined)
+        if (_nMin == undefined)
         {
-            this._nMin = 0;
+            _nMin = 0;
         } // end if
-        if (this._nMax == undefined)
+        if (_nMax == undefined)
         {
-            this._nMax = 100;
+            _nMax = 100;
         } // end if
-        if (this._nPage == undefined)
+        if (_nPage == undefined)
         {
-            this._nPage = 10;
+            _nPage = 10;
         } // end if
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
         this.createEmptyMovieClip("_mcHolder", 10);
-        var _loc2 = this._mcHolder.attachMovie("ScrollBarTrack", "track_mc", 10);
-        var _loc3 = this._mcHolder.attachMovie("ScrollBarUpArrow", "upArrow_mc", 20);
-        var _loc4 = this._mcHolder.attachMovie("ScrollBarDownArrow", "downArrow_mc", 30);
-        var _loc5 = this._mcHolder.attachMovie("ScrollBarThumb", "thumb_mc", 40);
+        var _loc6 = _mcHolder.attachMovie("ScrollBarTrack", "track_mc", 10);
+        var _loc3 = _mcHolder.attachMovie("ScrollBarUpArrow", "upArrow_mc", 20);
+        var _loc4 = _mcHolder.attachMovie("ScrollBarDownArrow", "downArrow_mc", 30);
+        var _loc2 = _mcHolder.attachMovie("ScrollBarThumb", "thumb_mc", 40);
         _loc3.onRollOver = _loc4.onRollOver = function ()
         {
-            this.up_mc._visible = false;
-            this.over_mc._visible = true;
-            this.down_mc._visible = false;
+            up_mc._visible = false;
+            over_mc._visible = true;
+            down_mc._visible = false;
         };
         _loc3.onRollOut = _loc4.onRollOut = function ()
         {
-            this.up_mc._visible = true;
-            this.over_mc._visible = false;
-            this.down_mc._visible = false;
+            up_mc._visible = true;
+            over_mc._visible = false;
+            down_mc._visible = false;
         };
         _loc3.onPress = function ()
         {
-            this.up_mc._visible = false;
-            this.over_mc._visible = false;
-            this.down_mc._visible = true;
-            this.interval = _global.setInterval(this._parent._parent, "addToScrollPosition", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL, -1);
+            up_mc._visible = false;
+            over_mc._visible = false;
+            down_mc._visible = true;
+            interval = setInterval(_parent._parent, "addToScrollPosition", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL, -1);
         };
         _loc4.onPress = function ()
         {
-            this.up_mc._visible = false;
-            this.over_mc._visible = false;
-            this.down_mc._visible = true;
-            this.interval = _global.setInterval(this._parent._parent, "addToScrollPosition", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL, 1);
+            up_mc._visible = false;
+            over_mc._visible = false;
+            down_mc._visible = true;
+            interval = setInterval(_parent._parent, "addToScrollPosition", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL, 1);
         };
         _loc3.onRelease = _loc4.onRelease = function ()
         {
             this.onRollOver();
-            _global.clearInterval(this.interval);
+            clearInterval(interval);
         };
         _loc3.onReleaseOutside = _loc4.onReleaseOutside = function ()
         {
             this.onRelease();
             this.onRollOut();
         };
-        _loc5.onRollOver = function ()
+        _loc2.onRollOver = function ()
         {
         };
-        _loc5.onRollOut = function ()
+        _loc2.onRollOut = function ()
         {
         };
-        _loc5.onPress = function ()
+        _loc2.onPress = function ()
         {
-            this._parent._parent._nDragOffset = -this._ymouse;
-            this.dispatchInterval = _global.setInterval(this._parent._parent, "dispatchScrollEvent", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL);
-            this.scrollInterval = _global.setInterval(this._parent._parent, "scrollThumb", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL, null, true);
+            _parent._parent._nDragOffset = -_ymouse;
+            dispatchInterval = setInterval(_parent._parent, "dispatchScrollEvent", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL);
+            scrollInterval = setInterval(_parent._parent, "scrollThumb", ank.gapi.controls.ScrollBar.SCROLL_INTERVAL, null, true);
         };
-        _loc5.onRelease = function ()
+        _loc2.onRelease = function ()
         {
-            _global.clearInterval(this.scrollInterval);
-            _global.clearInterval(this.dispatchInterval);
+            clearInterval(scrollInterval);
+            clearInterval(dispatchInterval);
         };
-        _loc5.onReleaseOutside = function ()
+        _loc2.onReleaseOutside = function ()
         {
             this.onRelease();
             this.onRollOut();
         };
-        _loc2.onPress = function ()
+        _loc6.onPress = function ()
         {
-            var _loc2 = this._parent._ymouse;
-            var _loc3 = this._parent._parent._nPage;
-            if (_loc2 < this._parent.thumb_mc._y)
+            var _loc3 = _parent._ymouse;
+            var _loc2 = _parent._parent._nPage;
+            if (_loc3 < _parent.thumb_mc._y)
             {
-                _loc3 = -_loc3;
+                _loc2 = -_loc2;
             } // end if
-            this._parent._parent.addToScrollPosition(_loc3);
+            _parent._parent.addToScrollPosition(_loc2);
         };
-    };
-    _loc1.draw = function ()
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-        var _loc3 = this._mcHolder.downArrow_mc;
+        var _loc3;
+        _loc3 = _mcHolder.downArrow_mc;
         this.setMovieClipColor(_loc3.up_mc.bg_mc, _loc2.sbarrowbgcolor);
         this.setMovieClipColor(_loc3.up_mc.arrow_mc, _loc2.sbarrowcolor);
         this.setMovieClipColor(_loc3.down_mc.bg_mc, _loc2.sbarrowbgcolor);
         this.setMovieClipColor(_loc3.down_mc.arrow_mc, _loc2.sbarrowcolor);
         this.setMovieClipColor(_loc3.over_mc.bg_mc, _loc2.sbarrowbgcolor);
         this.setMovieClipColor(_loc3.over_mc.arrow_mc, _loc2.sbarrowcolor);
-        _loc3 = this._mcHolder.upArrow_mc;
+        _loc3 = _mcHolder.upArrow_mc;
         this.setMovieClipColor(_loc3.up_mc.bg_mc, _loc2.sbarrowbgcolor);
         this.setMovieClipColor(_loc3.up_mc.arrow_mc, _loc2.sbarrowcolor);
         this.setMovieClipColor(_loc3.down_mc.bg_mc, _loc2.sbarrowbgcolor);
         this.setMovieClipColor(_loc3.down_mc.arrow_mc, _loc2.sbarrowcolor);
         this.setMovieClipColor(_loc3.over_mc.bg_mc, _loc2.sbarrowbgcolor);
         this.setMovieClipColor(_loc3.over_mc.arrow_mc, _loc2.sbarrowcolor);
-        for (var k in this._mcHolder.thumb_mc)
+        for (var _loc4 in _mcHolder.thumb_mc)
         {
-            this.setMovieClipColor(this._mcHolder.thumb_mc[k], _loc2.sbthumbcolor);
+            this.setMovieClipColor(_mcHolder.thumb_mc[_loc4], _loc2.sbthumbcolor);
         } // end of for...in
-        this.setMovieClipColor(this._mcHolder.track_mc, _loc2.sbtrackcolor);
-    };
-    _loc1.size = function ()
+        this.setMovieClipColor(_mcHolder.track_mc, _loc2.sbtrackcolor);
+    } // End of the function
+    function size()
     {
         super.size();
-        this._nSize = this.__height;
+        _nSize = __height;
         this.arrange();
-        if (this.scrollTarget != undefined)
+        if (this.__get__scrollTarget() != undefined)
         {
             this.setScrollPropertiesToTarget();
         } // end if
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        if (this._nSize == undefined)
+        if (_nSize == undefined)
         {
             return;
         } // end if
-        if (this._bHorizontal)
+        if (_bHorizontal)
         {
-            this._rotation = -90;
+            _rotation = -90;
         } // end if
-        this._mcHolder.track_mc._height = Math.max(this._nSize - this._mcHolder.upArrow_mc._height - this._mcHolder.downArrow_mc._height, 0);
-        this._mcHolder.track_mc._y = this._mcHolder.upArrow_mc._height;
-        this._mcHolder.downArrow_mc._y = this._mcHolder.track_mc._y + this._mcHolder.track_mc._height;
-        this._mcHolder.thumb_mc._y = this._mcHolder.track_mc._y;
-        this.setScrollProperties(this._nPage, this._nMin, this._nMax);
-    };
-    _loc1.resizeThumb = function ()
+        _mcHolder.track_mc._height = Math.max(_nSize - _mcHolder.upArrow_mc._height - _mcHolder.downArrow_mc._height, 0);
+        _mcHolder.track_mc._y = _mcHolder.upArrow_mc._height;
+        _mcHolder.downArrow_mc._y = _mcHolder.track_mc._y + _mcHolder.track_mc._height;
+        _mcHolder.thumb_mc._y = _mcHolder.track_mc._y;
+        this.setScrollProperties(_nPage, _nMin, _nMax);
+    } // End of the function
+    function resizeThumb()
     {
-        if (this._nMax != this._nMin && this._nPage != 0)
+        if (_nMax != _nMin)
         {
-            this._mcHolder.thumb_mc.height = Math.min(Math.abs(this._nPage / (this._nMax - this._nMin)), 1) * this._mcHolder.track_mc._height;
-            this._mcHolder.thumb_mc._y = this._mcHolder.upArrow_mc._height;
-            if (this._mcHolder.thumb_mc._height > this._mcHolder.track_mc._height)
+            _mcHolder.thumb_mc.height = Math.min(Math.abs(_nPage / (_nMax - _nMin)), 1) * _mcHolder.track_mc._height;
+            _mcHolder.thumb_mc._y = _mcHolder.upArrow_mc._height;
+            if (_mcHolder.thumb_mc._height > _mcHolder.track_mc._height)
             {
-                this._mcHolder.thumb_mc._visible = false;
+                _mcHolder.thumb_mc._visible = false;
             }
             else
             {
-                this._mcHolder.thumb_mc._visible = true;
+                _mcHolder.thumb_mc._visible = true;
             } // end else if
         }
         else
         {
-            this._mcHolder.thumb_mc._visible = false;
+            _mcHolder.thumb_mc._visible = false;
         } // end else if
-    };
-    _loc1.addToScrollPosition = function (nAmount)
+    } // End of the function
+    function addToScrollPosition(nAmount)
     {
-        this.scrollPosition = this.scrollPosition + nAmount;
-    };
-    _loc1.scrollThumb = function (nAmount, bDrag)
+        scrollPosition = scrollPosition + nAmount;
+    } // End of the function
+    function scrollThumb(nAmount, bDrag)
     {
         if (bDrag)
         {
-            this.moveThumb(this._mcHolder._ymouse + this._nDragOffset);
+            this.moveThumb(_mcHolder._ymouse + _nDragOffset);
         }
         else
         {
-            this.moveThumb(this._mcHolder.thumb_mc._y + nAmount);
+            this.moveThumb(_mcHolder.thumb_mc._y + nAmount);
         } // end else if
-        _global.updateAfterEvent();
-    };
-    _loc1.moveThumb = function (nY)
+        updateAfterEvent();
+    } // End of the function
+    function moveThumb(nY)
     {
-        this._mcHolder.thumb_mc._y = nY;
-        if (this._mcHolder.thumb_mc._y < this._mcHolder.upArrow_mc._height)
+        _mcHolder.thumb_mc._y = nY;
+        if (_mcHolder.thumb_mc._y < _mcHolder.upArrow_mc._height)
         {
-            this._mcHolder.thumb_mc._y = this._mcHolder.upArrow_mc._height;
+            _mcHolder.thumb_mc._y = _mcHolder.upArrow_mc._height;
         }
-        else if (this._mcHolder.thumb_mc._y > this._mcHolder.downArrow_mc._y - this._mcHolder.thumb_mc._height)
+        else if (_mcHolder.thumb_mc._y > _mcHolder.downArrow_mc._y - _mcHolder.thumb_mc._height)
         {
-            this._mcHolder.thumb_mc._y = this._mcHolder.downArrow_mc._y - this._mcHolder.thumb_mc._height;
+            _mcHolder.thumb_mc._y = _mcHolder.downArrow_mc._y - _mcHolder.thumb_mc._height;
         } // end else if
         this.dispatchScrollEvent();
-    };
-    _loc1.dispatchScrollEvent = function ()
+    } // End of the function
+    function dispatchScrollEvent()
     {
-        if (this._mcHolder.thumb_mc._y != this._nPrevScrollPosition)
+        if (_mcHolder.thumb_mc._y != _nPrevScrollPosition)
         {
-            this._nPrevScrollPosition = Math.max(this._mcHolder.upArrow_mc._height, this._mcHolder.thumb_mc._y);
+            _nPrevScrollPosition = _mcHolder.thumb_mc._y;
             this.dispatchEvent({type: "scroll", target: this});
         } // end if
-    };
-    _loc1.snapToTextField = function ()
+    } // End of the function
+    function snapToTextField()
     {
-        if (this._sSnapTo == "right")
+        if (_sSnapTo == "right")
         {
-            this._x = this._tTarget._x + this._tTarget._width - this._width;
-            this._y = this._tTarget._y;
-            this._tTarget._width = this._tTarget._width - this._width;
-            this.height = this._tTarget._height;
+            _x = _tTarget._x + _tTarget._width - _width;
+            _y = _tTarget._y;
+            _tTarget._width = _tTarget._width - _width;
+            this.__set__height(_tTarget._height);
             this.setScrollPropertiesToTarget();
         } // end if
-    };
-    _loc1.addTargetListener = function ()
+    } // End of the function
+    function addTargetListener()
     {
-        this.removeEventListener("scroll", this._oListener);
-        this._oListener = new Object();
-        this._oListener.target = this._tTarget;
-        this._oListener.parent = this;
-        this._oListener.scroll = function (oEvent)
+        this.removeEventListener("scroll", _oListener);
+        _oListener = new Object();
+        _oListener.target = _tTarget;
+        _oListener.parent = this;
+        _oListener.scroll = function (oEvent)
         {
-            this.target.scroll = this.target.maxscroll * (this.parent.scrollPosition / Math.abs(this.parent._nMax - this.parent._nMin));
+            target.scroll = target.maxscroll * (parent.scrollPosition / Math.abs(parent._nMax - parent._nMin));
         };
-        this.addEventListener("scroll", this._oListener);
+        this.addEventListener("scroll", _oListener);
         this.setScrollPropertiesToTarget();
-    };
-    _loc1.setScrollPropertiesToTarget = function ()
+    } // End of the function
+    function setScrollPropertiesToTarget()
     {
-        if (this._tTarget == undefined)
+        if (_tTarget == undefined)
         {
-            this.setScrollProperties(this._nPage, this._nMin, this._nMax);
+            this.setScrollProperties(_nPage, _nMin, _nMax);
         }
         else
         {
-            var _loc2 = _global.isNaN(Number(this._tTarget.maxscroll)) ? (1) : (this._tTarget.maxscroll);
-            var _loc3 = _global.isNaN(Number(this._tTarget._height)) ? (0) : (this._tTarget._height);
-            var _loc4 = _global.isNaN(Number(this._tTarget.textHeight)) ? (1) : (this._tTarget.textHeight);
-            var _loc5 = 9.000000E-001 * _loc3 / _loc4 * _loc2;
-            this.setScrollProperties(_loc5, 0, _loc2);
+            var _loc2 = isNaN(Number(_tTarget.maxscroll)) ? (1) : (_tTarget.maxscroll);
+            var _loc5 = isNaN(Number(_tTarget._height)) ? (0) : (_tTarget._height);
+            var _loc3 = isNaN(Number(_tTarget.textHeight)) ? (1) : (_tTarget.textHeight);
+            var _loc4 = 9.000000E-001 * _loc5 / _loc3 * _loc2;
+            this.setScrollProperties(_loc4, 0, _loc2);
         } // end else if
-    };
-    _loc1.onChanged = function ()
+    } // End of the function
+    function onChanged()
     {
         this.setScrollPropertiesToTarget();
-        this.scrollPosition = this._tTarget.scroll;
-    };
-    _loc1.onScroller = function ()
+        this.__set__scrollPosition(_tTarget.scroll);
+    } // End of the function
+    function onScroller()
     {
-        this.scrollPosition = this._tTarget.scroll;
-    };
-    _loc1.addProperty("scrollPosition", _loc1.__get__scrollPosition, _loc1.__set__scrollPosition);
-    _loc1.addProperty("snapTo", function ()
-    {
-    }, _loc1.__set__snapTo);
-    _loc1.addProperty("page", _loc1.__get__page, _loc1.__set__page);
-    _loc1.addProperty("horizontal", function ()
-    {
-    }, _loc1.__set__horizontal);
-    _loc1.addProperty("scrollTarget", _loc1.__get__scrollTarget, _loc1.__set__scrollTarget);
-    _loc1.addProperty("max", _loc1.__get__max, _loc1.__set__max);
-    _loc1.addProperty("min", _loc1.__get__min, _loc1.__set__min);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.ScrollBar = function ()
-    {
-        super();
-    }).CLASS_NAME = "ScrollBar";
-    (_global.ank.gapi.controls.ScrollBar = function ()
-    {
-        super();
-    }).SCROLL_INTERVAL = 40;
-} // end if
+        this.__set__scrollPosition(_tTarget.scroll);
+    } // End of the function
+    static var CLASS_NAME = "ScrollBar";
+    static var SCROLL_INTERVAL = 40;
+} // End of Class
 #endinitclip

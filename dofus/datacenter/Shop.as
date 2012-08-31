@@ -1,57 +1,52 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20548]
-#initclip 69
-if (!dofus.datacenter.Shop)
+// [Initial MovieClip Action of sprite 935]
+#initclip 147
+class dofus.datacenter.Shop extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Shop = function ()
+    var _sName, __get__name, _sGfx, __get__gfx, _eaInventory, dispatchEvent, __get__inventory, __set__gfx, __set__inventory, __set__name;
+    function Shop()
     {
         super();
+    } // End of the function
+    function Storage()
+    {
         this.initialize();
-    }).prototype;
-    _loc1.__set__name = function (sName)
+    } // End of the function
+    function set name(sName)
     {
-        this._sName = sName;
+        _sName = sName;
         //return (this.name());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this._sName);
-    };
-    _loc1.__set__gfx = function (sGfx)
+        return (_sName);
+    } // End of the function
+    function set gfx(sGfx)
     {
-        this._sGfx = sGfx;
+        _sGfx = sGfx;
         //return (this.gfx());
-    };
-    _loc1.__get__gfx = function ()
+        null;
+    } // End of the function
+    function get gfx()
     {
-        return (this._sGfx);
-    };
-    _loc1.__set__inventory = function (eaInventory)
+        return (_sGfx);
+    } // End of the function
+    function set inventory(eaInventory)
     {
-        this._eaInventory = eaInventory;
+        _eaInventory = eaInventory;
         this.dispatchEvent({type: "modelChanged"});
         //return (this.inventory());
-    };
-    _loc1.__get__inventory = function ()
+        null;
+    } // End of the function
+    function get inventory()
     {
-        return (this._eaInventory);
-    };
-    _loc1.initialize = function ()
+        return (_eaInventory);
+    } // End of the function
+    function initialize()
     {
         mx.events.EventDispatcher.initialize(this);
-    };
-    _loc1.addProperty("inventory", _loc1.__get__inventory, _loc1.__set__inventory);
-    _loc1.addProperty("gfx", _loc1.__get__gfx, _loc1.__set__gfx);
-    _loc1.addProperty("name", _loc1.__get__name, _loc1.__set__name);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

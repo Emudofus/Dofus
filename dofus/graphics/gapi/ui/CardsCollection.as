@@ -1,74 +1,57 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20811]
-#initclip 76
-if (!dofus.graphics.gapi.ui.CardsCollection)
+// [Initial MovieClip Action of sprite 1053]
+#initclip 20
+class dofus.graphics.gapi.ui.CardsCollection extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.CardsCollection = function ()
+    var gapi, unloadThis, addToQueue, _btnClose, _ctr1, _ctr2, _ctr3, _ctr4, _ctr5, _ctr6, _ctrMain;
+    function CardsCollection()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.CardsCollection.CLASS_NAME);
-    };
-    _loc1.destroy = function ()
+    } // End of the function
+    function destroy()
     {
-        this.gapi.hideTooltip();
-    };
-    _loc1.callClose = function ()
+        gapi.hideTooltip();
+    } // End of the function
+    function callClose()
     {
         this.unloadThis();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-    };
-    _loc1.initTexts = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+    } // End of the function
+    function initTexts()
     {
-    };
-    _loc1.addListeners = function ()
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        var _loc2 = 1;
-        
-        while (++_loc2, _loc2 <= 9)
+        _btnClose.addEventListener("click", this);
+        for (var _loc3 = 1; _loc3 <= 9; ++_loc3)
         {
-            var _loc3 = this["_ctr" + _loc2];
-            _loc3.addEventListener("click", this);
-            _loc3.addEventListener("over", this);
-            _loc3.addEventListener("out", this);
-        } // end while
-    };
-    _loc1.initData = function ()
+            var _loc2 = this["_ctr" + _loc3];
+            _loc2.addEventListener("click", this);
+            _loc2.addEventListener("over", this);
+            _loc2.addEventListener("out", this);
+        } // end of for
+    } // End of the function
+    function initData()
     {
-        this._ctr1.contentData = {iconFile: "Card", params: {name: "La carte", background: 0, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}};
-        this._ctr2.contentData = {iconFile: "Card", params: {name: "Une autre carte", background: 1, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}};
-        this._ctr3.contentData = {iconFile: "Card", params: {name: "Le monstre", background: 2, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}};
-        this._ctr4.contentData = {iconFile: "Card", params: {name: "Lee", background: 3, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}};
-        this._ctr5.contentData = {iconFile: "Card", params: {name: "Gross", background: 4, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}};
-        this._ctr6.contentData = {iconFile: "Card", params: {name: "Monster", background: 5, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}};
-    };
-    _loc1.click = function (oEvent)
+        _ctr1.__set__contentData({iconFile: "Card", params: {name: "La carte", background: 0, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}});
+        _ctr2.__set__contentData({iconFile: "Card", params: {name: "Une autre carte", background: 1, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}});
+        _ctr3.__set__contentData({iconFile: "Card", params: {name: "Le monstre", background: 2, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}});
+        _ctr4.__set__contentData({iconFile: "Card", params: {name: "Lee", background: 3, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}});
+        _ctr5.__set__contentData({iconFile: "Card", params: {name: "Gross", background: 4, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}});
+        _ctr6.__set__contentData({iconFile: "Card", params: {name: "Monster", background: 5, gfxFile: dofus.Constants.ARTWORKS_BIG_PATH + (random(150) + 1000) + ".swf"}});
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -87,20 +70,16 @@ if (!dofus.graphics.gapi.ui.CardsCollection)
             case "_ctr8":
             case "_ctr9":
             {
-                var _loc3 = oEvent.target.contentData;
-                if (_loc3 != undefined)
+                var _loc2 = oEvent.target.contentData;
+                if (_loc2 != undefined)
                 {
-                    this._ctrMain.forceNextLoad();
-                    this._ctrMain.contentData = _loc3;
+                    _ctrMain.forceNextLoad();
+                    _ctrMain.__set__contentData(_loc2);
                 } // end if
                 break;
             } 
         } // End of switch
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.CardsCollection = function ()
-    {
-        super();
-    }).CLASS_NAME = "CardsCollection";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "CardsCollection";
+} // End of Class
 #endinitclip

@@ -1,48 +1,33 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20861]
-#initclip 126
-if (!ank.battlefield.mc.Cell)
+// [Initial MovieClip Action of sprite 849]
+#initclip 61
+class ank.battlefield.mc.Cell extends MovieClip
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.battlefield)
-    {
-        _global.ank.battlefield = new Object();
-    } // end if
-    if (!ank.battlefield.mc)
-    {
-        _global.ank.battlefield.mc = new Object();
-    } // end if
-    var _loc1 = (_global.ank.battlefield.mc.Cell = function ()
+    var data, _mcBattlefield, __get__num;
+    function Cell()
     {
         super();
-    }).prototype;
-    _loc1.__get__num = function ()
+    } // End of the function
+    function get num()
     {
-        return (this.data.num);
-    };
-    _loc1.initialize = function (b)
+        return (data.num);
+    } // End of the function
+    function initialize(b)
     {
-        this._mcBattlefield = b;
-    };
-    _loc1._release = function (Void)
+        _mcBattlefield = b;
+    } // End of the function
+    function _release(Void)
     {
-        this._mcBattlefield.onCellRelease(this);
-    };
-    _loc1._rollOver = function (Void)
+        _mcBattlefield.onCellRelease(this);
+    } // End of the function
+    function _rollOver(Void)
     {
-        this._mcBattlefield.onCellRollOver(this);
-    };
-    _loc1._rollOut = function (Void)
+        _mcBattlefield.onCellRollOver(this);
+    } // End of the function
+    function _rollOut(Void)
     {
-        this._mcBattlefield.onCellRollOut(this);
-    };
-    _loc1.addProperty("num", _loc1.__get__num, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _mcBattlefield.onCellRollOut(this);
+    } // End of the function
+} // End of Class
 #endinitclip

@@ -1,81 +1,64 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20520]
-#initclip 41
-if (!dofus.graphics.gapi.ui.Waypoints)
+// [Initial MovieClip Action of sprite 1046]
+#initclip 13
+class dofus.graphics.gapi.ui.Waypoints extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Waypoints = function ()
+    var _eaData, __get__initialized, __get__data, api, addToQueue, _winBg, _lblCoords, _lblName, _lblCost, _lblRespawn, _lblDescription, _btnClose2, _btnClose, _lstWaypoints, __set__data;
+    function Waypoints()
     {
         super();
-    }).prototype;
-    _loc1.__set__data = function (eaData)
+    } // End of the function
+    function set data(eaData)
     {
-        this.addToQueue({object: this, method: function (d)
+        _eaData = eaData;
+        if (this.__get__initialized())
         {
-            this._eaData = d;
-            if (this.initialized)
-            {
-                this.initData();
-            } // end if
-        }, params: [eaData]});
+            this.initData();
+        } // end if
         //return (this.data());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Waypoints.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Waypoints.leave();
+        api.network.Waypoints.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-    };
-    _loc1.initTexts = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+    } // End of the function
+    function initTexts()
     {
-        this._winBg.title = this.api.lang.getText("WAYPOINT_LIST");
-        this._lblCoords.text = this.api.lang.getText("COORDINATES_SMALL");
-        this._lblName.text = this.api.lang.getText("AREA") + " (" + this.api.lang.getText("SUBAREA") + ")";
-        this._lblCost.text = this.api.lang.getText("COST");
-        this._lblRespawn.text = this.api.lang.getText("RESPAWN_SMALL");
-        this._lblDescription.text = this.api.lang.getText("CLICK_ON_WAYPOINT");
-        this._btnClose2.label = this.api.lang.getText("CLOSE");
-    };
-    _loc1.addListeners = function ()
+        _winBg.__set__title(api.lang.getText("WAYPOINT_LIST"));
+        _lblCoords.__set__text(api.lang.getText("COORDINATES_SMALL"));
+        _lblName.__set__text(api.lang.getText("AREA") + " (" + api.lang.getText("SUBAREA") + ")");
+        _lblCost.__set__text(api.lang.getText("COST"));
+        _lblRespawn.__set__text(api.lang.getText("RESPAWN_SMALL"));
+        _lblDescription.__set__text(api.lang.getText("CLICK_ON_WAYPOINT"));
+        _btnClose2.__set__label(api.lang.getText("CLOSE"));
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        this._btnClose2.addEventListener("click", this);
-        this._lstWaypoints.addEventListener("itemSelected", this);
-    };
-    _loc1.initData = function ()
+        _btnClose.addEventListener("click", this);
+        _btnClose2.addEventListener("click", this);
+        _lstWaypoints.addEventListener("itemSelected", this);
+    } // End of the function
+    function initData()
     {
-        if (this._eaData != undefined)
+        if (_eaData != undefined)
         {
-            this._eaData.sortOn("fieldToSort", Array.CASEINSENSITIVE);
-            this._lstWaypoints.dataProvider = this._eaData;
+            _eaData.sortOn("fieldToSort", Array.CASEINSENSITIVE);
+            _lstWaypoints.__set__dataProvider(_eaData);
         } // end if
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
@@ -86,35 +69,28 @@ if (!dofus.graphics.gapi.ui.Waypoints)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.itemSelected = function (oEvent)
+    } // End of the function
+    function itemSelected(oEvent)
     {
-        var _loc3 = oEvent.row.item;
-        if (_loc3.isCurrent)
+        var _loc2 = oEvent.target.item;
+        if (_loc2.isCurrent)
         {
             return;
         } // end if
-        var _loc4 = _loc3.cost;
-        if (this.api.datacenter.Player.Kama >= _loc4)
+        var _loc3 = _loc2.cost;
+        if (api.datacenter.Player.Kama >= _loc3)
         {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("DO_U_USE_WAYPOINT", [_loc3.name, _loc3.coordinates, _loc4]), "CAUTION_YESNO", {name: "Waypoint", listener: this, params: {waypointID: _loc3.id}});
+            api.kernel.showMessage(undefined, api.lang.getText("DO_U_USE_WAYPOINT", [_loc2.name, _loc2.coordinates, _loc3]), "CAUTION_YESNO", {name: "Waypoint", listener: this, params: {waypointID: _loc2.id}});
         }
         else
         {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("NOT_ENOUGH_RICH"), "ERROR_BOX");
+            api.kernel.showMessage(undefined, api.lang.getText("NOT_ENOUGH_RICH"), "ERROR_BOX");
         } // end else if
-    };
-    _loc1.yes = function (oEvent)
+    } // End of the function
+    function yes(oEvent)
     {
-        this.api.network.Waypoints.use(oEvent.target.params.waypointID);
-    };
-    _loc1.addProperty("data", function ()
-    {
-    }, _loc1.__set__data);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Waypoints = function ()
-    {
-        super();
-    }).CLASS_NAME = "Waypoints";
-} // end if
+        api.network.Waypoints.use(oEvent.target.params.waypointID);
+    } // End of the function
+    static var CLASS_NAME = "Waypoints";
+} // End of Class
 #endinitclip

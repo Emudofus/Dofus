@@ -1,61 +1,51 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20958]
-#initclip 223
-if (!dofus.aks.Storages)
+// [Initial MovieClip Action of sprite 952]
+#initclip 164
+class dofus.aks.Storages extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Storages = function (oAKS, oAPI)
+    var api;
+    function Storages(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.onList = function (sExtraData)
+    } // End of the function
+    function onList(sExtraData)
     {
-        var _loc3 = sExtraData.charAt(0) == "+";
-        var _loc4 = sExtraData.substr(1).split("|");
-        var _loc5 = 0;
-        
-        while (++_loc5, _loc5 < _loc4.length)
+        var _loc9 = sExtraData.charAt(0) == "+";
+        var _loc8 = sExtraData.substr(1).split("|");
+        for (var _loc4 = 0; _loc4 < _loc8.length; ++_loc4)
         {
-            var _loc6 = _loc4[_loc5].split(";");
-            var _loc7 = _loc6[0];
-            var _loc8 = _loc6[1] == "1";
-            var _loc9 = this.api.datacenter.Storages;
-            if (_loc3)
+            var _loc6 = _loc8[_loc4].split(";");
+            var _loc5 = _loc6[0];
+            var _loc7 = _loc6[1] == "1";
+            var _loc3 = api.datacenter.Storages;
+            if (_loc9)
             {
-                var _loc10 = _loc9.getItemAt(_loc7);
-                if (_loc10 == undefined)
+                var _loc2 = _loc3.getItemAt(_loc5);
+                if (_loc2 == undefined)
                 {
-                    _loc10 = new dofus.datacenter.Storage();
+                    _loc2 = new dofus.datacenter.Storage();
                 } // end if
-                _loc10.isLocked = _loc8;
-                _loc9.addItemAt(_loc7, _loc10);
+                _loc2.isLocked = _loc7;
+                _loc3.addItemAt(_loc5, _loc2);
                 continue;
             } // end if
-            _loc9.removeItemAt(_loc7);
-        } // end while
-    };
-    _loc1.onLockedProperty = function (sExtraData)
+            _loc3.removeItemAt(_loc5);
+        } // end of for
+    } // End of the function
+    function onLockedProperty(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        var _loc4 = _loc3[0];
-        var _loc5 = _loc3[1] == "1";
-        var _loc6 = this.api.datacenter.Storages;
-        var _loc7 = _loc6.getItemAt(_loc4);
-        if (_loc7 == undefined)
+        var _loc4 = sExtraData.split("|");
+        var _loc3 = _loc4[0];
+        var _loc6 = _loc4[1] == "1";
+        var _loc5 = api.datacenter.Storages;
+        var _loc2 = _loc5.getItemAt(_loc3);
+        if (_loc2 == undefined)
         {
-            _loc7 = new dofus.datacenter.Storage(_loc4);
-            _loc6.addItemAt(_loc4, _loc7);
+            _loc2 = new dofus.datacenter.Storage(_loc3);
+            _loc5.addItemAt(_loc3, _loc2);
         } // end if
-        _loc7.isLocked = _loc5;
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _loc2.isLocked = _loc6;
+    } // End of the function
+} // End of Class
 #endinitclip

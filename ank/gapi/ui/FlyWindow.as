@@ -1,71 +1,56 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20516]
-#initclip 37
-if (!ank.gapi.ui.FlyWindow)
+// [Initial MovieClip Action of sprite 987]
+#initclip 204
+class ank.gapi.ui.FlyWindow extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.ui)
-    {
-        _global.ank.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.ui.FlyWindow = function ()
+    var _winBackground, addToQueue, __get__title, __get__contentPath, initWindowContent, __set__contentPath, __set__title;
+    function FlyWindow()
     {
         super();
-    }).prototype;
-    _loc1.__set__title = function (sTitle)
+    } // End of the function
+    function set title(sTitle)
     {
         this.addToQueue({object: this, method: function ()
         {
-            this._winBackground.title = sTitle;
+            _winBackground.title = sTitle;
         }});
         //return (this.title());
-    };
-    _loc1.__get__title = function ()
+        null;
+    } // End of the function
+    function get title()
     {
-        return (this._winBackground.title);
-    };
-    _loc1.__set__contentPath = function (sContentPath)
+        //return (_winBackground.title());
+    } // End of the function
+    function set contentPath(sContentPath)
     {
         this.addToQueue({object: this, method: function ()
         {
-            this._winBackground.contentPath = sContentPath;
+            _winBackground.contentPath = sContentPath;
         }});
         //return (this.contentPath());
-    };
-    _loc1.__get__contentPath = function ()
+        null;
+    } // End of the function
+    function get contentPath()
     {
-        return (this._winBackground.contentPath);
-    };
-    _loc1.init = function ()
+        //return (_winBackground.contentPath());
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.ui.FlyWindow.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function addListeners()
     {
-        this._winBackground.addEventListener("complete", this);
-    };
-    _loc1.complete = function (oEvent)
+        _winBackground.addEventListener("complete", this);
+    } // End of the function
+    function complete(oEvent)
     {
-        this.addToQueue({object: this, method: this.initWindowContent});
-    };
-    _loc1.addProperty("title", _loc1.__get__title, _loc1.__set__title);
-    _loc1.addProperty("contentPath", _loc1.__get__contentPath, _loc1.__set__contentPath);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.ui.FlyWindow = function ()
-    {
-        super();
-    }).CLASS_NAME = "FlyWindow";
-} // end if
+        this.addToQueue({object: this, method: initWindowContent});
+    } // End of the function
+    static var CLASS_NAME = "FlyWindow";
+} // End of Class
 #endinitclip

@@ -1,161 +1,130 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20730]
-#initclip 251
-if (!ank.gapi.controls.ToolTip)
+// [Initial MovieClip Action of sprite 8]
+#initclip 186
+class ank.gapi.controls.ToolTip extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.ToolTip = function ()
+    var _oParams, __get__params, _sText, __get__initialized, __get__text, _nX, __get__x, _nY, __get__y, _visible, createEmptyMovieClip, createTextField, _tfText, addToQueue, gapi, __width, _x, __height, _y, getStyle, _mcBackground, drawRoundRect, _tfTextFormat, setSize, removeMovieClip, __set__params, __set__text, __set__x, __set__y;
+    function ToolTip()
     {
         super();
-    }).prototype;
-    _loc1.__set__params = function (oParams)
+    } // End of the function
+    function set params(oParams)
     {
-        this._oParams = oParams;
+        _oParams = oParams;
         //return (this.params());
-    };
-    _loc1.__set__text = function (sText)
+        null;
+    } // End of the function
+    function set text(sText)
     {
-        this._sText = sText;
-        if (this.initialized)
+        _sText = sText;
+        if (this.__get__initialized())
         {
             this.layoutContent();
         } // end if
         //return (this.text());
-    };
-    _loc1.__set__x = function (nX)
+        null;
+    } // End of the function
+    function set x(nX)
     {
-        this._nX = nX;
-        if (this.initialized)
+        _nX = nX;
+        if (this.__get__initialized())
         {
             this.placeToolTip();
         } // end if
         //return (this.x());
-    };
-    _loc1.__set__y = function (nY)
+        null;
+    } // End of the function
+    function set y(nY)
     {
-        this._nY = nY;
-        if (this.initialized)
+        _nY = nY;
+        if (this.__get__initialized())
         {
             this.placeToolTip();
         } // end if
         //return (this.y());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.ToolTip.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._visible = false;
+        _visible = false;
         this.createEmptyMovieClip("_mcBackground", 10);
         this.createTextField("_tfText", 20, 0, 0, ank.gapi.controls.ToolTip.MAX_WIDTH, 100);
-        this._tfText.wordWrap = true;
-        this._tfText.selectable = false;
-        this._tfText.autoSize = "left";
-        this._tfText.multiline = true;
-        this._tfText.html = true;
-        this.addToQueue({object: this, method: this.layoutContent});
-        this.addToQueue({object: this, method: this.placeToolTip});
+        _tfText.wordWrap = true;
+        _tfText.selectable = false;
+        _tfText.autoSize = "left";
+        _tfText.multiline = true;
+        _tfText.html = true;
+        this.addToQueue({object: this, method: layoutContent});
+        this.addToQueue({object: this, method: placeToolTip});
         Key.addListener(this);
-    };
-    _loc1.placeToolTip = function ()
+    } // End of the function
+    function placeToolTip()
     {
-        var _loc2 = this._oParams.bXLimit || this._oParams.bXLimit == undefined ? (this.gapi.screenWidth) : (Number.MAX_VALUE);
-        var _loc3 = this._oParams.bYLimit || this._oParams.bYLimit == undefined ? (this.gapi.screenHeight) : (Number.MAX_VALUE);
-        var _loc4 = !this._oParams.bRightAlign || this._oParams.bRightAlign == undefined ? (false) : (this._oParams.bRightAlign);
-        var _loc5 = !this._oParams.bTopAlign || this._oParams.bTopAlign == undefined ? (false) : (this._oParams.bTopAlign);
-        var _loc6 = _loc4 ? (this._nX - this.__width) : (this._nX);
-        var _loc7 = _loc5 ? (this._nY - this.__height) : (this._nY);
-        if (_loc6 > _loc2 - this.__width)
+        var _loc3 = _oParams.bXLimit || _oParams.bXLimit == undefined ? (gapi.screenWidth) : (Number.MAX_VALUE);
+        var _loc2 = _oParams.bYLimit || _oParams.bYLimit == undefined ? (gapi.screenHeight) : (Number.MAX_VALUE);
+        if (_nX > _loc3 - __width)
         {
-            this._x = _loc2 - this.__width;
+            _x = _loc3 - __width;
         }
-        else if (_loc6 < 0)
+        else if (_nX < 0)
         {
-            this._x = 0;
+            _x = 0;
         }
         else
         {
-            this._x = _loc6;
+            _x = _nX;
         } // end else if
-        if (_loc7 > _loc3 - this.__height)
+        if (_nY > _loc2 - __height)
         {
-            this._y = _loc3 - this.__height;
+            _y = _loc2 - __height;
         }
-        else if (_loc7 < 0)
+        else if (_nY < 0)
         {
-            this._y = 0;
+            _y = 0;
         }
         else
         {
-            this._y = _loc7;
+            _y = _nY;
         } // end else if
-        this._visible = true;
-    };
-    _loc1.draw = function ()
+        _visible = true;
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-        this.drawRoundRect(this._mcBackground, 0, 0, 1, 1, 0, _loc2.bgcolor);
-        this._mcBackground._alpha = _loc2.bgalpha;
-        this._tfTextFormat = new TextFormat();
-        this._tfTextFormat.font = _loc2.font;
-        this._tfTextFormat.size = _loc2.size;
-        this._tfTextFormat.color = _loc2.color;
-        this._tfTextFormat.bold = _loc2.bold;
-        this._tfTextFormat.italic = _loc2.italic;
-        this._tfTextFormat.size = _loc2.size;
-        this._tfTextFormat.size = _loc2.size;
-        this._tfText.embedFonts = _loc2.embedfonts;
-        this._tfText.antiAliasType = _loc2.antialiastype;
-    };
-    _loc1.layoutContent = function ()
+        this.drawRoundRect(_mcBackground, 0, 0, 1, 1, 0, _loc2.bgcolor);
+        _mcBackground._alpha = _loc2.bgalpha;
+        _tfTextFormat = new TextFormat();
+        _tfTextFormat.font = _loc2.font;
+        _tfTextFormat.size = _loc2.size;
+        _tfTextFormat.color = _loc2.color;
+        _tfTextFormat.bold = _loc2.bold;
+        _tfTextFormat.italic = _loc2.italic;
+        _tfTextFormat.size = _loc2.size;
+        _tfTextFormat.size = _loc2.size;
+        _tfText.embedFonts = _loc2.embedfonts;
+    } // End of the function
+    function layoutContent()
     {
-        this._tfText.htmlText = this._sText;
-        this._tfText.setTextFormat(this._tfTextFormat);
-        this.setSize(this._tfText.textWidth + 4, this._tfText.textHeight + 4);
-        this._mcBackground._width = this.__width;
-        this._mcBackground._height = this.__height;
-    };
-    _loc1.onKeyDown = function ()
-    {
-        this.removeMovieClip();
-    };
-    _loc1.onMouseDown = function ()
+        _tfText.htmlText = _sText;
+        _tfText.setTextFormat(_tfTextFormat);
+        this.setSize(_tfText.textWidth + 4, _tfText.textHeight + 4);
+        _mcBackground._width = __width;
+        _mcBackground._height = __height;
+    } // End of the function
+    function onKeyDown()
     {
         this.removeMovieClip();
-    };
-    _loc1.addProperty("y", function ()
+    } // End of the function
+    function onMouseDown()
     {
-    }, _loc1.__set__y);
-    _loc1.addProperty("params", function ()
-    {
-    }, _loc1.__set__params);
-    _loc1.addProperty("x", function ()
-    {
-    }, _loc1.__set__x);
-    _loc1.addProperty("text", function ()
-    {
-    }, _loc1.__set__text);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.ToolTip = function ()
-    {
-        super();
-    }).CLASS_NAME = "ToolTip";
-    (_global.ank.gapi.controls.ToolTip = function ()
-    {
-        super();
-    }).MAX_WIDTH = 250;
-} // end if
+        this.removeMovieClip();
+    } // End of the function
+    static var CLASS_NAME = "ToolTip";
+    static var MAX_WIDTH = 220;
+} // End of Class
 #endinitclip

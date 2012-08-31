@@ -1,113 +1,76 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20750]
-#initclip 15
-if (!dofus.graphics.gapi.controls.ListInventoryViewer)
+// [Initial MovieClip Action of sprite 814]
+#initclip 12
+class dofus.graphics.gapi.controls.ListInventoryViewer extends dofus.graphics.gapi.controls.InventoryViewer
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.ListInventoryViewer = function ()
+    var __get__initialized, __get__displayKamas, __get__displayPrices, attachMovie, _mcLstPlacer, _lstInventory, _oDataViewer, addToQueue, api, _lblFilter, _oKamasProvider, kamaChanged, _lblKama, _mcKamaSymbol, dispatchEvent, __set__displayKamas, __set__displayPrices;
+    function ListInventoryViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__displayKamas = function (bDisplayKama)
+    } // End of the function
+    function set displayKamas(bDisplayKama)
     {
-        this._bDisplayKama = bDisplayKama;
-        if (this.initialized)
+        _bDisplayKama = bDisplayKama;
+        if (this.__get__initialized())
         {
             this.showKamas(bDisplayKama);
         } // end if
         //return (this.displayKamas());
-    };
-    _loc1.__set__displayPrices = function (bDisplayPrices)
+        null;
+    } // End of the function
+    function set displayPrices(bDisplayPrices)
     {
-        if (this.initialized)
+        if (this.__get__initialized())
         {
             ank.utils.Logger.err("[displayPrices] impossible après init");
             return;
         } // end if
-        this._bDisplayPrices = bDisplayPrices;
+        _bDisplayPrices = bDisplayPrices;
         //return (this.displayPrices());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.ListInventoryViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        var _loc3 = this._bDisplayPrices ? ("ListInventoryViewerItem") : ("ListInventoryViewerItemNoPrice");
+        var _loc3 = _bDisplayPrices ? ("ListInventoryViewerItem") : ("ListInventoryViewerItemNoPrice");
         this.attachMovie("List", "_lstInventory", 10, {styleName: "LightBrownList", cellRenderer: _loc3, rowHeight: 20});
-        this._lstInventory.move(this._mcLstPlacer._x, this._mcLstPlacer._y);
-        this._lstInventory.setSize(this._mcLstPlacer._width, this._mcLstPlacer._height);
-        this._oDataViewer = this._lstInventory;
-        this.showKamas(this._bDisplayKama);
-        this.addToQueue({object: this, method: this.addListeners});
+        _lstInventory.move(_mcLstPlacer._x, _mcLstPlacer._y);
+        _lstInventory.setSize(_mcLstPlacer._width, _mcLstPlacer._height);
+        _oDataViewer = _lstInventory;
+        this.showKamas(_bDisplayKama);
+        this.addToQueue({object: this, method: addListeners});
         super.createChildren();
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
+    } // End of the function
+    function addListeners()
     {
         super.addListeners();
-        this._lstInventory.addEventListener("itemSelected", this);
-        this._lstInventory.addEventListener("itemdblClick", this);
-    };
-    _loc1.initTexts = function ()
+        _lstInventory.addEventListener("itemSelected", this);
+    } // End of the function
+    function initTexts()
     {
-        this._lblFilter.text = this.api.lang.getText("EQUIPEMENT");
-    };
-    _loc1.initData = function ()
+        _lblFilter.__set__text(api.lang.getText("EQUIPEMENT"));
+    } // End of the function
+    function initData()
     {
-        this.kamaChanged({value: this._oKamasProvider.Kama});
-    };
-    _loc1.showKamas = function (bShow)
+        this.kamaChanged({value: _oKamasProvider.Kama});
+    } // End of the function
+    function showKamas(bShow)
     {
-        this._lblKama._visible = bShow;
-        this._mcKamaSymbol._visible = bShow;
-    };
-    _loc1.itemSelected = function (oEvent)
+        _lblKama._visible = bShow;
+        _mcKamaSymbol._visible = bShow;
+    } // End of the function
+    function itemSelected(oEvent)
     {
-        super.itemSelected(oEvent);
-        if (oEvent.target != this._cbTypes)
-        {
-            if (Key.isDown(dofus.Constants.CHAT_INSERT_ITEM_KEY) && oEvent.row.item != undefined)
-            {
-                this.api.kernel.GameManager.insertItemInChat(oEvent.row.item);
-                return;
-            } // end if
-            this.dispatchEvent({type: "selectedItem", item: oEvent.row.item});
-        } // end if
-    };
-    _loc1.itemdblClick = function (oEvent)
-    {
-        this.dispatchEvent({type: "itemdblClick", item: oEvent.row.item});
-    };
-    _loc1.addProperty("displayPrices", function ()
-    {
-    }, _loc1.__set__displayPrices);
-    _loc1.addProperty("displayKamas", function ()
-    {
-    }, _loc1.__set__displayKamas);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.ListInventoryViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "ListInventoryViewer";
-    _loc1._bDisplayKama = true;
-    _loc1._bDisplayPrices = true;
-} // end if
+        this.dispatchEvent({type: "selectedItem", item: oEvent.target.item});
+    } // End of the function
+    static var CLASS_NAME = "ListInventoryViewer";
+    var _bDisplayKama = true;
+    var _bDisplayPrices = true;
+} // End of Class
 #endinitclip

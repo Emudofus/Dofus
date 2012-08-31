@@ -1,74 +1,49 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20603]
-#initclip 124
-if (!dofus.graphics.gapi.controls.GridInventoryViewer)
+// [Initial MovieClip Action of sprite 1075]
+#initclip 45
+class dofus.graphics.gapi.controls.GridInventoryViewer extends dofus.graphics.gapi.controls.InventoryViewer
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.GridInventoryViewer = function ()
+    var _cgGrid, _oDataViewer, addToQueue, api, _lblFilter, modelChanged, _oKamasProvider, kamaChanged, dispatchEvent, gapi;
+    function GridInventoryViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__showKamas = function (bShowKamas)
-    {
-        this._bShowKamas = bShowKamas;
-        this._btnDragKama._visible = this._lblKama._visible = this._mcKamaSymbol._visible = this._mcKamaSymbol2._visible = bShowKamas;
-        //return (this.showKamas());
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.GridInventoryViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._oDataViewer = this._cgGrid;
-        this.addToQueue({object: this, method: this.addListeners});
+        _oDataViewer = _cgGrid;
+        this.addToQueue({object: this, method: addListeners});
         super.createChildren();
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
+    } // End of the function
+    function addListeners()
     {
         super.addListeners();
-        this._cgGrid.addEventListener("dropItem", this);
-        this._cgGrid.addEventListener("dragItem", this);
-        this._cgGrid.addEventListener("selectItem", this);
-        this._cgGrid.addEventListener("overItem", this);
-        this._cgGrid.addEventListener("outItem", this);
-        this._cgGrid.addEventListener("dblClickItem", this);
-        this._btnDragKama.onRelease = function ()
-        {
-            this._parent.askKamaQuantity();
-        };
-    };
-    _loc1.initTexts = function ()
+        _cgGrid.addEventListener("dropItem", this);
+        _cgGrid.addEventListener("dragItem", this);
+        _cgGrid.addEventListener("selectItem", this);
+        _cgGrid.addEventListener("overItem", this);
+        _cgGrid.addEventListener("outItem", this);
+        _cgGrid.addEventListener("dblClickItem", this);
+    } // End of the function
+    function initTexts()
     {
-        this._lblFilter.text = this.api.lang.getText("EQUIPEMENT");
-    };
-    _loc1.initData = function ()
+        _lblFilter.__set__text(api.lang.getText("EQUIPEMENT"));
+    } // End of the function
+    function initData()
     {
         this.modelChanged();
-        this.kamaChanged({value: this._oKamasProvider.Kama});
-    };
-    _loc1.validateDrop = function (targetGrid, oItem, nQuantity)
+        this.kamaChanged({value: _oKamasProvider.Kama});
+    } // End of the function
+    function validateDrop(targetGrid, oItem, nQuantity)
     {
         nQuantity = Number(nQuantity);
-        if (nQuantity < 1 || _global.isNaN(nQuantity))
+        if (nQuantity < 1 || isNaN(nQuantity))
         {
             return;
         } // end if
@@ -77,96 +52,76 @@ if (!dofus.graphics.gapi.controls.GridInventoryViewer)
             nQuantity = oItem.Quantity;
         } // end if
         this.dispatchEvent({type: "dropItem", item: oItem, quantity: nQuantity});
-    };
-    _loc1.validateKama = function (nQuantity)
+    } // End of the function
+    function validateKama(nQuantity)
     {
         nQuantity = Number(nQuantity);
-        if (nQuantity < 1 || _global.isNaN(nQuantity))
+        if (nQuantity < 1 || isNaN(nQuantity))
         {
             return;
         } // end if
-        if (nQuantity > this._oKamasProvider.Kama)
+        if (nQuantity > _oKamasProvider.Kama)
         {
-            nQuantity = this._oKamasProvider.Kama;
+            nQuantity = _oKamasProvider.Kama;
         } // end if
         this.dispatchEvent({type: "dragKama", quantity: nQuantity});
-    };
-    _loc1.askKamaQuantity = function ()
+    } // End of the function
+    function askKamaQuantity()
     {
-        var _loc2 = this._oKamasProvider.Kama != undefined ? (Number(this._oKamasProvider.Kama)) : (0);
-        var _loc3 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: _loc2, max: _loc2, params: {targetType: "kama"}});
-        _loc3.addEventListener("validate", this);
-    };
-    _loc1.showOneItem = function (nUnicID)
-    {
-        var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < this._cgGrid.dataProvider.length)
-        {
-            if (nUnicID == this._cgGrid.dataProvider[_loc3].unicID)
-            {
-                this._cgGrid.setVPosition(_loc3 / this._cgGrid.visibleColumnCount);
-                this._cgGrid.selectedIndex = _loc3;
-                return (true);
-            } // end if
-        } // end while
-        return (false);
-    };
-    _loc1.dragItem = function (oEvent)
+        var _loc3 = _oKamasProvider.Kama != undefined ? (Number(_oKamasProvider.Kama)) : (0);
+        var _loc2 = gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: _loc3, params: {targetType: "kama"}});
+        _loc2.addEventListener("validate", this);
+    } // End of the function
+    function dragItem(oEvent)
     {
         if (oEvent.target.contentData == undefined)
         {
             return;
         } // end if
-        this.gapi.removeCursor();
-        this.gapi.setCursor(oEvent.target.contentData);
-    };
-    _loc1.dropItem = function (oEvent)
+        gapi.removeCursor();
+        gapi.setCursor(oEvent.target.contentData);
+    } // End of the function
+    function dropItem(oEvent)
     {
-        var _loc3 = this.gapi.getCursor();
+        var _loc3 = gapi.getCursor();
         if (_loc3 == undefined)
         {
             return;
         } // end if
-        this.gapi.removeCursor();
+        gapi.removeCursor();
         if (_loc3.Quantity > 1)
         {
-            var _loc4 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1, max: _loc3.Quantity, params: {targetType: "item", oItem: _loc3}});
-            _loc4.addEventListener("validate", this);
+            var _loc2 = gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1, params: {targetType: "item", oItem: _loc3}});
+            _loc2.addEventListener("validate", this);
         }
         else
         {
-            this.validateDrop(this._cgGrid, _loc3, 1);
+            this.validateDrop(_cgGrid, _loc3, 1);
         } // end else if
-    };
-    _loc1.selectItem = function (oEvent)
+    } // End of the function
+    function selectItem(oEvent)
     {
-        if (Key.isDown(dofus.Constants.CHAT_INSERT_ITEM_KEY) && oEvent.target.contentData != undefined)
-        {
-            this.api.kernel.GameManager.insertItemInChat(oEvent.target.contentData);
-            return;
-        } // end if
         this.dispatchEvent({type: "selectedItem", item: oEvent.target.contentData});
-    };
-    _loc1.overItem = function (oEvent)
+    } // End of the function
+    function overItem(oEvent)
     {
-        this.gapi.showTooltip(oEvent.target.contentData.name, oEvent.target, -20, undefined, oEvent.target.contentData.style + "ToolTip");
-    };
-    _loc1.outItem = function (oEvent)
+        gapi.showTooltip(oEvent.target.contentData.name, oEvent.target, -20, undefined, oEvent.target.contentData.style + "ToolTip");
+    } // End of the function
+    function outItem(oEvent)
     {
-        this.gapi.hideTooltip();
-    };
-    _loc1.dblClickItem = function (oEvent)
+        gapi.hideTooltip();
+    } // End of the function
+    function dblClickItem(oEvent)
     {
-        this.dispatchEvent({type: oEvent.type, item: oEvent.target.contentData, target: this, index: oEvent.target.id});
-    };
-    _loc1.validate = function (oEvent)
+        this.dispatchEvent({type: oEvent.type, item: oEvent.target.contentData, target: this});
+    } // End of the function
+    function validate(oEvent)
     {
         switch (oEvent.params.targetType)
         {
             case "item":
             {
-                this.validateDrop(this._cgGrid, oEvent.params.oItem, oEvent.value);
+                this.validateDrop(_cgGrid, oEvent.params.oItem, oEvent.value);
                 break;
             } 
             case "kama":
@@ -175,15 +130,7 @@ if (!dofus.graphics.gapi.controls.GridInventoryViewer)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.addProperty("showKamas", function ()
-    {
-    }, _loc1.__set__showKamas);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.GridInventoryViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "GridInventoryViewer";
-    _loc1._bShowKamas = true;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "GridInventoryViewer";
+} // End of Class
 #endinitclip

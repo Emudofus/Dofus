@@ -1,144 +1,120 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20973]
-#initclip 238
-if (!dofus.graphics.gapi.ui.HouseSale)
+// [Initial MovieClip Action of sprite 1018]
+#initclip 239
+class dofus.graphics.gapi.ui.HouseSale extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.HouseSale = function ()
+    var _oHouse, __get__house, api, addToQueue, _btnCancel, _txtPrice, _btnValidate, _btnClose, _txtDescription, _mcPrice, _lblPrice, _winBackground, gapi, __set__house;
+    function HouseSale()
     {
         super();
-    }).prototype;
-    _loc1.__set__house = function (oHouse)
+    } // End of the function
+    function set house(oHouse)
     {
-        this._oHouse = oHouse;
+        _oHouse = oHouse;
         //return (this.house());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.HouseSale.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Houses.leave();
+        api.network.Houses.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
-        this._btnCancel._visible = false;
-        this._txtPrice.tabIndex = 0;
-        this._txtPrice.restrict = "0-9";
-        this._txtPrice.onSetFocus = function ()
-        {
-            this._parent.onSetFocus();
-        };
-        this._txtPrice.onKillFocus = function ()
-        {
-            this._parent.onKillFocus();
-        };
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
+        _btnCancel._visible = false;
+        _txtPrice.tabIndex = 0;
+        _txtPrice.restrict = "0-9";
+    } // End of the function
+    function addListeners()
     {
-        this._btnCancel.addEventListener("click", this);
-        this._btnValidate.addEventListener("click", this);
-        this._btnClose.addEventListener("click", this);
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-    };
-    _loc1.initData = function ()
+        _btnCancel.addEventListener("click", this);
+        _btnValidate.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+        Key.addListener(this);
+    } // End of the function
+    function initData()
     {
-        if (this._oHouse == undefined)
+        if (_oHouse == undefined)
         {
             return;
         } // end if
-        this._txtDescription.text = this._oHouse.name + "\n\n" + this._oHouse.description;
-        this._txtPrice.text = this._oHouse.price;
-        if (this._oHouse.localOwner)
+        _txtDescription.__set__text(_oHouse.name + "\n\n" + _oHouse.description);
+        _txtPrice.text = _oHouse.price;
+        if (_oHouse.localOwner)
         {
-            this._btnCancel._visible = this._oHouse.price != 0;
-            this._mcPrice._visible = true;
-            Selection.setFocus(this._txtPrice);
+            _btnCancel._visible = _oHouse.price != 0;
+            _mcPrice._visible = true;
+            Selection.setFocus(_txtPrice);
         }
         else
         {
-            this._txtPrice.editable = false;
-            this._txtPrice.selectable = false;
-            this._mcPrice._visible = false;
+            _txtPrice.editable = false;
+            _txtPrice.selectable = false;
+            _mcPrice._visible = false;
         } // end else if
-    };
-    _loc1.initTexts = function ()
+    } // End of the function
+    function initTexts()
     {
-        this._lblPrice.text = this.api.lang.getText("PRICE") + " :";
-        if (this._oHouse.localOwner)
+        _lblPrice.__set__text(api.lang.getText("PRICE") + " :");
+        if (_oHouse.localOwner)
         {
-            this._winBackground.title = this.api.lang.getText("HOUSE_SALE");
-            this._btnCancel.label = this.api.lang.getText("CANCEL_THE_SALE");
-            this._btnValidate.label = this.api.lang.getText("VALIDATE");
+            _winBackground.__set__title(api.lang.getText("HOUSE_SALE"));
+            _btnCancel.__set__label(api.lang.getText("CANCEL_THE_SALE"));
+            _btnValidate.__set__label(api.lang.getText("VALIDATE"));
         }
         else
         {
-            this._winBackground.title = this.api.lang.getText("HOUSE_PURCHASE");
-            this._btnValidate.label = this.api.lang.getText("BUY");
+            _winBackground.__set__title(api.lang.getText("HOUSE_PURCHASE"));
+            _btnValidate.__set__label(api.lang.getText("BUY"));
         } // end else if
-    };
-    _loc1.onShortcut = function (sShortcut)
+    } // End of the function
+    function onKeyDown()
     {
-        if (sShortcut == "ACCEPT_CURRENT_DIALOG" && Selection.getFocus()._name == "_txtPrice")
+        if (Key.getCode() == 13 && Selection.getFocus()._name == "_txtPrice")
         {
             this.click({target: this._btnValidate});
-            return (false);
         } // end if
-        return (true);
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnCancel":
             {
-                if (this._oHouse.localOwner)
+                if (_oHouse.localOwner)
                 {
-                    this.api.network.Houses.sell(0);
+                    api.network.Houses.sell(0);
                 } // end if
                 break;
             } 
             case "_btnValidate":
             {
-                if (this._oHouse.localOwner)
+                if (_oHouse.localOwner)
                 {
-                    this.api.network.Houses.sell(Number(this._txtPrice.text));
+                    api.network.Houses.sell(_txtPrice.text);
                 }
                 else
                 {
-                    if (this._oHouse.price <= 0)
+                    if (_oHouse.price <= 0)
                     {
                         return;
                     } // end if
-                    if (this._oHouse.price > this.api.datacenter.Player.Kama)
+                    if (_oHouse.price > api.datacenter.Player.Kama)
                     {
-                        this.gapi.loadUIComponent("AskOk", "AskOkNotRich", {title: this.api.lang.getText("ERROR_WORD"), text: this.api.lang.getText("NOT_ENOUGH_RICH")});
+                        gapi.loadUIComponent("AskOk", "AskOkNotRich", {title: api.lang.getText("ERROR_WORD"), text: api.lang.getText("NOT_ENOUGH_RICH")});
                     }
                     else
                     {
-                        var _loc3 = this.gapi.loadUIComponent("AskYesNo", "AskYesNoBuy", {title: this.api.lang.getText("HOUSE_PURCHASE"), text: this.api.lang.getText("DO_U_BUY_HOUSE", [this._oHouse.name, this._oHouse.price])});
-                        _loc3.addEventListener("yes", this);
+                        var _loc2 = gapi.loadUIComponent("AskYesNo", "AskYesNoBuy", {title: api.lang.getText("HOUSE_PURCHASE"), text: api.lang.getText("DO_U_BUY_HOUSE", [_oHouse.name, _oHouse.price])});
+                        _loc2.addEventListener("yes", this);
                     } // end else if
                 } // end else if
                 break;
@@ -149,26 +125,11 @@ if (!dofus.graphics.gapi.ui.HouseSale)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.yes = function ()
+    } // End of the function
+    function yes()
     {
-        this.api.network.Houses.buy(this._oHouse.price);
-    };
-    _loc1.onSetFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "false");
-    };
-    _loc1.onKillFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "true");
-    };
-    _loc1.addProperty("house", function ()
-    {
-    }, _loc1.__set__house);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.HouseSale = function ()
-    {
-        super();
-    }).CLASS_NAME = "HouseSale";
-} // end if
+        api.network.Houses.buy(_oHouse.price);
+    } // End of the function
+    static var CLASS_NAME = "HouseSale";
+} // End of Class
 #endinitclip

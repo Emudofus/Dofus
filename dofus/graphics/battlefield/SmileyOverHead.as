@@ -1,44 +1,26 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20657]
-#initclip 178
-if (!dofus.graphics.battlefield.SmileyOverHead)
+// [Initial MovieClip Action of sprite 930]
+#initclip 142
+class dofus.graphics.battlefield.SmileyOverHead extends MovieClip
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.battlefield)
-    {
-        _global.dofus.graphics.battlefield = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.battlefield.SmileyOverHead = function (nSmileyID)
+    var attachMovie, __get__height, __get__width;
+    function SmileyOverHead(nSmileyID)
     {
         super();
         this.draw(nSmileyID);
-    }).prototype;
-    _loc1.__get__height = function ()
+    } // End of the function
+    function get height()
     {
         return (20);
-    };
-    _loc1.__get__width = function ()
+    } // End of the function
+    function get width()
     {
         return (20);
-    };
-    _loc1.draw = function (nSmileyID)
+    } // End of the function
+    function draw(nSmileyID)
     {
         this.attachMovie("Loader", "_ldrSmiley", 10, {_x: -10, _width: 20, _height: 20, scaleContent: true, contentPath: dofus.Constants.SMILEYS_ICONS_PATH + nSmileyID + ".swf"});
-    };
-    _loc1.addProperty("width", _loc1.__get__width, function ()
-    {
-    });
-    _loc1.addProperty("height", _loc1.__get__height, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

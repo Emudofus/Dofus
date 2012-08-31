@@ -1,63 +1,55 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20627]
-#initclip 148
-if (!ank.battlefield.OverHeadHandler)
+// [Initial MovieClip Action of sprite 864]
+#initclip 76
+class ank.battlefield.OverHeadHandler
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.battlefield)
-    {
-        _global.ank.battlefield = new Object();
-    } // end if
-    var _loc1 = (_global.ank.battlefield.OverHeadHandler = function (b, c)
+    var _mcBattlefield, _mcContainer;
+    function OverHeadHandler(b, c)
     {
         this.initialize(b, c);
-    }).prototype;
-    _loc1.initialize = function (b, c)
+    } // End of the function
+    function initialize(b, c)
     {
-        this._mcBattlefield = b;
-        this._mcContainer = c;
-    };
-    _loc1.clear = function ()
+        _mcBattlefield = b;
+        _mcContainer = c;
+    } // End of the function
+    function clear()
     {
-        for (var k in this._mcContainer)
+        for (var _loc2 in _mcContainer)
         {
-            if (typeof(this._mcContainer[k]) == "movieclip")
+            if (typeof(_mcContainer[_loc2]) == "movieclip")
             {
-                this._mcContainer[k].swapDepths(0);
-                this._mcContainer[k].removeMovieClip();
+                _mcContainer[_loc2].swapDepths(0);
+                _mcContainer[_loc2].removeMovieClip();
             } // end if
         } // end of for...in
-    };
-    _loc1.addOverHeadItem = function (sID, nX, nY, mcSprite, sLayerName, fClassName, aParams, nDelay)
+    } // End of the function
+    function addOverHeadItem(sID, nX, nY, mcSprite, sLayerName, fClassName, aParams, nDelay)
     {
-        var _loc10 = this._mcContainer["oh" + sID];
-        var _loc11 = this._mcBattlefield.getZoom();
-        if (_loc10 == undefined)
+        var _loc2 = _mcContainer["oh" + sID];
+        var _loc3 = _mcBattlefield.getZoom();
+        if (_loc2 == undefined)
         {
-            _loc10 = this._mcContainer.attachClassMovie(ank.battlefield.mc.OverHead, "oh" + sID, mcSprite.getDepth(), [mcSprite, _loc11, this._mcBattlefield]);
+            _loc2 = _mcContainer.attachClassMovie(ank.battlefield.mc.OverHead, "oh" + sID, _mcContainer.getNextHighestDepth(), [mcSprite, _loc3]);
         } // end if
-        _loc10._x = nX;
-        _loc10._y = nY;
-        if (_loc11 < 100)
+        _loc2._x = nX;
+        _loc2._y = nY;
+        if (_loc3 < 100)
         {
-            _loc10._xscale = _loc10._yscale = 10000 / _loc11;
+            _loc2._xscale = _loc2._yscale = 10000 / _loc3;
         } // end if
-        _loc10.addItem(sLayerName, fClassName, aParams, nDelay);
-    };
-    _loc1.removeOverHeadLayer = function (sID, sLayerName)
+        _loc2.addItem(sLayerName, fClassName, aParams, nDelay);
+    } // End of the function
+    function removeOverHeadLayer(sID, sLayerName)
     {
-        var _loc4 = this._mcContainer["oh" + sID];
-        _loc4.removeLayer(sLayerName);
-    };
-    _loc1.removeOverHead = function (sID)
+        var _loc2 = _mcContainer["oh" + sID];
+        _loc2.removeLayer(sLayerName);
+    } // End of the function
+    function removeOverHead(sID)
     {
-        var _loc3 = this._mcContainer["oh" + sID];
-        _loc3.remove();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        var _loc2 = _mcContainer["oh" + sID];
+        _loc2.remove();
+    } // End of the function
+} // End of Class
 #endinitclip

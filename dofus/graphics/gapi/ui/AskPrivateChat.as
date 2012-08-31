@@ -1,93 +1,73 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20731]
-#initclip 252
-if (!dofus.graphics.gapi.ui.AskPrivateChat)
+// [Initial MovieClip Action of sprite 988]
+#initclip 205
+class dofus.graphics.gapi.ui.AskPrivateChat extends ank.gapi.ui.FlyWindow
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.AskPrivateChat = function ()
+    var gapi, getStyle, _winBackground, api, __get__params, dispatchEvent, unloadThis;
+    function AskPrivateChat()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.AskPrivateChat.CLASS_NAME);
-        this.gapi.getUIComponent("Banner").chatAutoFocus = false;
-    };
-    _loc1.destroy = function ()
+        gapi.getUIComponent("Banner").chatAutoFocus = false;
+    } // End of the function
+    function destroy()
     {
-        this.gapi.getUIComponent("Banner").chatAutoFocus = true;
-    };
-    _loc1.draw = function ()
+        gapi.getUIComponent("Banner").chatAutoFocus = true;
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
-    };
-    _loc1.initWindowContent = function ()
+    } // End of the function
+    function initWindowContent()
     {
-        var _loc2 = this._winBackground.content;
-        _loc2._txtMessage.maxChars = dofus.Constants.MAX_MESSAGE_LENGTH;
-        _loc2._btnCancel.label = this.api.lang.getText("CANCEL_SMALL");
-        _loc2._btnAddFriend.label = this.api.lang.getText("ADD_TO_FRIENDS");
-        _loc2._btnSend.label = this.api.lang.getText("SEND");
+        var _loc2 = _winBackground.__get__content();
+        _loc2._txtMessage.maxChars = dofus.Constants.MAX_DATA_LENGTH;
+        _loc2._btnCancel.label = api.lang.getText("CANCEL_SMALL");
+        _loc2._btnAddFriend.label = api.lang.getText("ADD_TO_FRIENDS");
+        _loc2._btnSend.label = api.lang.getText("SEND");
         _loc2._btnCancel.addEventListener("click", this);
         _loc2._btnAddFriend.addEventListener("click", this);
         _loc2._btnSend.addEventListener("click", this);
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
+        Key.addListener(this);
         Selection.setFocus(_loc2._txtMessage._tText);
-    };
-    _loc1.onShortcut = function (sShortcut)
+    } // End of the function
+    function onKeyUp()
     {
-        if (sShortcut == "ACCEPT_CURRENT_DIALOG")
+        if (Key.getCode() == 13)
         {
-            this.click({target: this._winBackground.content._btnSend});
-            return (false);
+            this.click({target: _winBackground.content._btnSend});
+            Key.removeListener(this);
         } // end if
-        return (true);
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnCancel":
             {
-                this.dispatchEvent({type: "cancel", params: this.params});
+                this.dispatchEvent({type: "cancel", params: this.__get__params()});
                 this.unloadThis();
                 break;
             } 
             case "_btnSend":
             {
-                var _loc3 = this._winBackground.content._txtMessage.text;
-                _loc3 = new ank.utils.ExtendedString(_loc3).replace(String.fromCharCode(13), " ");
-                this.dispatchEvent({type: "send", message: _loc3, params: this.params});
+                var _loc2 = _winBackground.content._txtMessage.text;
+                _loc2 = _loc2.replace(String.fromCharCode(13), " ");
+                this.dispatchEvent({type: "send", message: _loc2, params: this.__get__params()});
                 this.unloadThis();
                 break;
             } 
             case "_btnAddFriend":
             {
-                this.dispatchEvent({type: "addfriend", params: this.params});
+                this.dispatchEvent({type: "addfriend", params: this.__get__params()});
                 break;
             } 
         } // End of switch
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.AskPrivateChat = function ()
-    {
-        super();
-    }).CLASS_NAME = "AskPrivateChat";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "AskPrivateChat";
+} // End of Class
 #endinitclip

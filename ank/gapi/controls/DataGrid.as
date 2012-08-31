@@ -1,265 +1,217 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20960]
-#initclip 225
-if (!ank.gapi.controls.DataGrid)
+// [Initial MovieClip Action of sprite 275]
+#initclip 198
+class ank.gapi.controls.DataGrid extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.DataGrid = function ()
+    var __get__titleHeight, _aColumnsWidths, __get__columnsWidths, _aColumnsNames, __get__columnsNames, _aColumnsProperties, __get__columnsProperties, __get__multipleSelection, __get__rowHeight, __get__cellRenderer, _lstList, __get__dataProvider, __get__enabled, attachMovie, createEmptyMovieClip, __height, __width, _mcTitle, getNextHighestDepth, getStyle, __get__initialized, drawRoundRect, dispatchEvent, __set__cellRenderer, __set__columnsNames, __set__columnsProperties, __set__columnsWidths, __set__dataProvider, __set__multipleSelection, __set__rowHeight, __set__titleHeight;
+    function DataGrid()
     {
         super();
-    }).prototype;
-    _loc1.__set__titleHeight = function (nTitleHeight)
+    } // End of the function
+    function set titleHeight(nTitleHeight)
     {
-        this._nTitleHeight = nTitleHeight;
+        _nTitleHeight = nTitleHeight;
         //return (this.titleHeight());
-    };
-    _loc1.__get__titleHeight = function ()
+        null;
+    } // End of the function
+    function get titleHeight()
     {
-        return (this._nTitleHeight);
-    };
-    _loc1.__set__columnsWidths = function (aColumnsWidths)
+        return (_nTitleHeight);
+    } // End of the function
+    function set columnsWidths(aColumnsWidths)
     {
-        this._aColumnsWidths = aColumnsWidths;
+        _aColumnsWidths = aColumnsWidths;
         //return (this.columnsWidths());
-    };
-    _loc1.__get__columnsWidths = function ()
+        null;
+    } // End of the function
+    function get columnsWidths()
     {
-        return (this._aColumnsWidths);
-    };
-    _loc1.__set__columnsNames = function (aColumnsNames)
+        return (_aColumnsWidths);
+    } // End of the function
+    function set columnsNames(aColumnsNames)
     {
-        this._aColumnsNames = aColumnsNames;
+        _aColumnsNames = aColumnsNames;
         this.setLabels();
         //return (this.columnsNames());
-    };
-    _loc1.__get__columnsNames = function ()
+        null;
+    } // End of the function
+    function get columnsNames()
     {
-        return (this._aColumnsNames);
-    };
-    _loc1.__set__columnsProperties = function (aColumnsProperties)
+        return (_aColumnsNames);
+    } // End of the function
+    function set columnsProperties(aColumnsProperties)
     {
-        this._aColumnsProperties = aColumnsProperties;
+        _aColumnsProperties = aColumnsProperties;
         //return (this.columnsProperties());
-    };
-    _loc1.__get__columnsProperties = function ()
+        null;
+    } // End of the function
+    function get columnsProperties()
     {
-        return (this._aColumnsProperties);
-    };
-    _loc1.__set__multipleSelection = function (bMultipleSelection)
+        return (_aColumnsProperties);
+    } // End of the function
+    function set multipleSelection(bMultipleSelection)
     {
-        this._bMultipleSelection = bMultipleSelection;
+        _bMultipleSelection = bMultipleSelection;
         //return (this.multipleSelection());
-    };
-    _loc1.__get__multipleSelection = function ()
+        null;
+    } // End of the function
+    function get multipleSelection()
     {
-        return (this._bMultipleSelection);
-    };
-    _loc1.__set__rowHeight = function (nRowHeight)
+        return (_bMultipleSelection);
+    } // End of the function
+    function set rowHeight(nRowHeight)
     {
         if (nRowHeight == 0)
         {
             return;
         } // end if
-        this._nRowHeight = nRowHeight;
+        _nRowHeight = nRowHeight;
         //return (this.rowHeight());
-    };
-    _loc1.__get__rowHeight = function ()
+        null;
+    } // End of the function
+    function get rowHeight()
     {
-        return (this._nRowHeight);
-    };
-    _loc1.__set__cellRenderer = function (sCellRenderer)
+        return (_nRowHeight);
+    } // End of the function
+    function set cellRenderer(sCellRenderer)
     {
-        this._sCellRenderer = sCellRenderer;
+        _sCellRenderer = sCellRenderer;
         //return (this.cellRenderer());
-    };
-    _loc1.__get__cellRenderer = function ()
+        null;
+    } // End of the function
+    function get cellRenderer()
     {
-        return (this._sCellRenderer);
-    };
-    _loc1.__set__dataProvider = function (eaDataProvider)
+        return (_sCellRenderer);
+    } // End of the function
+    function set dataProvider(eaDataProvider)
     {
-        this._lstList.dataProvider = eaDataProvider;
+        _lstList.__set__dataProvider(eaDataProvider);
         //return (this.dataProvider());
-    };
-    _loc1.__get__dataProvider = function ()
+        null;
+    } // End of the function
+    function get dataProvider()
     {
-        return (this._lstList.dataProvider);
-    };
-    _loc1.__set__selectedIndex = function (nIndex)
+        //return (_lstList.dataProvider());
+    } // End of the function
+    function addItem(oItem)
     {
-        this._lstList.selectedIndex = nIndex;
-        //return (this.selectedIndex());
-    };
-    _loc1.__get__selectedIndex = function ()
+        _lstList.addItem(oItem);
+    } // End of the function
+    function addItemAt(oItem, nIndex)
     {
-        return (this._lstList.selectedIndex);
-    };
-    _loc1.__get__selectedItem = function ()
+        _lstList.addItemAt(oItem, nIndex);
+    } // End of the function
+    function removeItemAt(oItem, nIndex)
     {
-        return (this._lstList.selectedItem);
-    };
-    _loc1.addItem = function (oItem)
+        _lstList.removeItemAt(oItem, nIndex);
+    } // End of the function
+    function removeAll()
     {
-        this._lstList.addItem(oItem);
-    };
-    _loc1.addItemAt = function (oItem, nIndex)
+        _lstList.removeAll();
+    } // End of the function
+    function setVPosition(nPosition)
     {
-        this._lstList.addItemAt(oItem, nIndex);
-    };
-    _loc1.removeItemAt = function (oItem, nIndex)
+        _lstList.setVPosition(nPosition);
+    } // End of the function
+    function sortOn(sPropName, nOption)
     {
-        this._lstList.removeItemAt(oItem, nIndex);
-    };
-    _loc1.removeAll = function ()
-    {
-        this._lstList.removeAll();
-    };
-    _loc1.setVPosition = function (nPosition)
-    {
-        this._lstList.setVPosition(nPosition);
-    };
-    _loc1.sortOn = function (sPropName, nOption)
-    {
-        this._lstList.selectedIndex = -1;
-        this._lstList.sortOn(sPropName, nOption);
-    };
-    _loc1.init = function ()
+        _lstList.sortOn(sPropName, nOption);
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.DataGrid.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.attachMovie("List", "_lstList", 10, {styleName: "none", multipleSelection: this._bMultipleSelection, rowHeight: this._nRowHeight, cellRenderer: this._sCellRenderer, enabled: this.enabled});
-        this._lstList.addEventListener("itemSelected", this);
-        this._lstList.addEventListener("itemdblClick", this);
-        this._lstList.addEventListener("itemRollOver", this);
-        this._lstList.addEventListener("itemRollOut", this);
-        this._lstList.addEventListener("itemDrag", this);
+        this.attachMovie("List", "_lstList", 10, {styleName: "none", multipleSelection: _bMultipleSelection, rowHeight: _nRowHeight, cellRenderer: _sCellRenderer, enabled: this.__get__enabled()});
+        _lstList.addEventListener("itemSelected", this);
+        _lstList.addEventListener("itemRollOver", this);
+        _lstList.addEventListener("itemRollOut", this);
+        _lstList.addEventListener("itemDragOver", this);
+        _lstList.addEventListener("itemDragOut", this);
         this.createEmptyMovieClip("_mcTitle", 20);
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function arrange()
     {
-        super.size();
-        this.arrange();
-    };
-    _loc1.arrange = function ()
-    {
-        this._lstList._y = this._nTitleHeight;
-        this._lstList.setSize(this.__width, this.__height - this._nTitleHeight);
-        this._mcTitle._width = this.__width;
-        this._mcTitle._height = this._nTitleHeight;
-        var _loc2 = 0;
+        _lstList._y = _nTitleHeight;
+        _lstList.setSize(__width, __height - _nTitleHeight);
+        _mcTitle._width = __width;
+        _mcTitle._height = _nTitleHeight;
         var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < this._aColumnsWidths.length)
+        for (var _loc2 = 0; _loc2 < _aColumnsWidths.length; ++_loc2)
         {
-            var _loc4 = _loc2 + this._aColumnsWidths[_loc3] < this.__width ? (this._aColumnsWidths[_loc3]) : (this.__width - _loc2);
-            if (this._aColumnsProperties[_loc3] != undefined)
+            var _loc4 = _loc3 + _aColumnsWidths[_loc2] < __width ? (_aColumnsWidths[_loc2]) : (__width - _loc3);
+            if (_aColumnsProperties[_loc2] != undefined)
             {
-                var _loc5 = this.attachMovie("Button", "_btnTitle" + _loc3, this.getNextHighestDepth(), {_x: _loc2, styleName: "none", label: "", backgroundDown: "ButtonTransparentUp", backgroundUp: "ButtonTransparentUp", toggle: true, params: {index: _loc3}});
-                _loc5.setSize(_loc4, this._nTitleHeight);
+                var _loc5 = this.attachMovie("Button", "_btnTitle" + _loc2, this.getNextHighestDepth(), {_x: _loc3, styleName: "none", label: "", backgroundDown: "ButtonTransparentUp", backgroundUp: "ButtonTransparentUp", toggle: true, params: {index: _loc2}});
+                _loc5.setSize(_loc4, _nTitleHeight);
                 _loc5.addEventListener("click", this);
             } // end if
-            this["_lblTitle" + _loc3].removeMovieClip();
-            var _loc6 = this.attachMovie("Label", "_lblTitle" + _loc3, this.getNextHighestDepth(), {_x: _loc2, styleName: this.getStyle().labelstyle, text: this._aColumnsNames[_loc3]});
-            _loc6.setSize(_loc4, this._nTitleHeight);
-            _loc2 = _loc2 + _loc4;
-        } // end while
-    };
-    _loc1.draw = function ()
+            var _loc6 = this.attachMovie("Label", "_lblTitle" + _loc2, this.getNextHighestDepth(), {_x: _loc3, styleName: this.getStyle().labelstyle, text: _aColumnsNames[_loc2]});
+            _loc6.setSize(_loc4, _nTitleHeight);
+            _loc3 = _loc3 + _loc4;
+        } // end of for
+    } // End of the function
+    function draw()
     {
-        var _loc2 = this.getStyle();
-        this._lstList.styleName = _loc2.liststyle;
-        if (this.initialized)
+        var _loc4 = this.getStyle();
+        _lstList.__set__styleName(_loc4.liststyle);
+        if (this.__get__initialized())
         {
             var _loc3 = this.getStyle().labelstyle;
-            var _loc4 = 0;
-            
-            while (++_loc4, _loc4 < this._aColumnsWidths.length)
+            for (var _loc2 = 0; _loc2 < _aColumnsWidths.length; ++_loc2)
             {
-                this["_lblTitle" + _loc4].styleName = _loc3;
-            } // end while
+                this["_lblTitle" + _loc2].styleName = _loc3;
+            } // end of for
         } // end if
-        this.drawRoundRect(this._mcTitle, 0, 0, 1, 1, 0, _loc2.titlebgcolor);
-        this._mcTitle._alpha = _loc2.titlebgcolor == -1 ? (0) : (100);
-    };
-    _loc1.setLabels = function ()
+        this.drawRoundRect(_mcTitle, 0, 0, 1, 1, 0, _loc4.titlebgcolor);
+    } // End of the function
+    function setLabels()
     {
-        if (this.initialized)
+        if (this.__get__initialized())
         {
-            var _loc2 = 0;
-            
-            while (++_loc2, _loc2 < this._aColumnsWidths.length)
+            for (var _loc2 = 0; _loc2 < _aColumnsWidths.length; ++_loc2)
             {
-                this["_lblTitle" + _loc2].text = this._aColumnsNames[_loc2];
-            } // end while
+                this["_lblTitle" + _loc2].text = _aColumnsNames[_loc2];
+            } // end of for
         } // end if
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
-        var _loc3 = oEvent.target.params.index;
-        var _loc4 = this._aColumnsProperties[_loc3];
-        var _loc5 = oEvent.target.selected ? (Array.CASEINSENSITIVE) : (Array.CASEINSENSITIVE | Array.DESCENDING);
-        if (!_global.isNaN(Number(this._lstList.dataProvider[0][_loc4])))
+        var _loc4 = oEvent.target.params.index;
+        var _loc2 = _aColumnsProperties[_loc4];
+        var _loc3 = oEvent.target.selected ? (Array.CASEINSENSITIVE) : (Array.CASEINSENSITIVE | Array.DESCENDING);
+        if (!isNaN(Number(_lstList.dataProvider[0][_loc2])))
         {
-            _loc5 = _loc5 | Array.NUMERIC;
+            _loc3 = _loc3 | Array.NUMERIC;
         } // end if
-        this.sortOn(_loc4, _loc5);
-    };
-    _loc1.itemSelected = function (oEvent)
-    {
-        oEvent.list = oEvent.target;
-        oEvent.target = this;
-        this.dispatchEvent(oEvent);
-    };
-    _loc1.itemRollOver = function (oEvent)
+        this.sortOn(_loc2, _loc3);
+    } // End of the function
+    function itemSelected(oEvent)
     {
         this.dispatchEvent(oEvent);
-    };
-    _loc1.itemRollOut = function (oEvent)
+    } // End of the function
+    function itemRollOver(oEvent)
     {
         this.dispatchEvent(oEvent);
-    };
-    _loc1.itemDrag = function (oEvent)
+    } // End of the function
+    function itemRollOut(oEvent)
     {
         this.dispatchEvent(oEvent);
-    };
-    _loc1.itemdblClick = function (oEvent)
+    } // End of the function
+    function itemDragOver(oEvent)
     {
         this.dispatchEvent(oEvent);
-    };
-    _loc1.addProperty("titleHeight", _loc1.__get__titleHeight, _loc1.__set__titleHeight);
-    _loc1.addProperty("columnsProperties", _loc1.__get__columnsProperties, _loc1.__set__columnsProperties);
-    _loc1.addProperty("dataProvider", _loc1.__get__dataProvider, _loc1.__set__dataProvider);
-    _loc1.addProperty("multipleSelection", _loc1.__get__multipleSelection, _loc1.__set__multipleSelection);
-    _loc1.addProperty("columnsNames", _loc1.__get__columnsNames, _loc1.__set__columnsNames);
-    _loc1.addProperty("cellRenderer", _loc1.__get__cellRenderer, _loc1.__set__cellRenderer);
-    _loc1.addProperty("columnsWidths", _loc1.__get__columnsWidths, _loc1.__set__columnsWidths);
-    _loc1.addProperty("selectedItem", _loc1.__get__selectedItem, function ()
+    } // End of the function
+    function itemDragOut(oEvent)
     {
-    });
-    _loc1.addProperty("rowHeight", _loc1.__get__rowHeight, _loc1.__set__rowHeight);
-    _loc1.addProperty("selectedIndex", _loc1.__get__selectedIndex, _loc1.__set__selectedIndex);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.DataGrid = function ()
-    {
-        super();
-    }).CLASS_NAME = "DataGrid";
-    _loc1._nRowHeight = 20;
-    _loc1._nTitleHeight = 20;
-    _loc1._sCellRenderer = "DefaultCellRenderer";
-    _loc1._bMultipleSelection = false;
-} // end if
+        this.dispatchEvent(oEvent);
+    } // End of the function
+    static var CLASS_NAME = "DataGrid";
+    var _nRowHeight = 20;
+    var _nTitleHeight = 20;
+    var _sCellRenderer = "DefaultCellRenderer";
+    var _bMultipleSelection = false;
+} // End of Class
 #endinitclip

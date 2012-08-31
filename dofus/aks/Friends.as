@@ -1,67 +1,48 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20918]
-#initclip 183
-if (!dofus.aks.Friends)
+// [Initial MovieClip Action of sprite 928]
+#initclip 140
+class dofus.aks.Friends extends dofus.aks.Handler
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.aks)
-    {
-        _global.dofus.aks = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.aks.Friends = function (oAKS, oAPI)
+    var aks, api;
+    function Friends(oAKS, oAPI)
     {
         super.initialize(oAKS, oAPI);
-    }).prototype;
-    _loc1.getFriendsList = function ()
+    } // End of the function
+    function getFriendsList()
     {
-        this.aks.send("FL", true);
-    };
-    _loc1.addFriend = function (sName)
+        aks.send("FL", false);
+    } // End of the function
+    function addFriend(sName)
     {
-        if (sName == undefined || (sName.length == 0 || sName == "*"))
+        if (sName == undefined || sName.length == 0 || sName == "*")
         {
             return;
         } // end if
-        this.aks.send("FA" + sName);
-    };
-    _loc1.removeFriend = function (sName)
+        aks.send("FA" + sName);
+    } // End of the function
+    function removeFriend(sName)
     {
-        if (sName == undefined || (sName.length == 0 || sName == "*"))
+        if (sName == undefined || sName.length == 0 || sName == "*")
         {
             return;
         } // end if
-        this.aks.send("FD" + sName);
-    };
-    _loc1.join = function (sType)
+        aks.send("FD" + sName);
+    } // End of the function
+    function join(sType)
     {
-        this.aks.send("FJ" + sType);
-    };
-    _loc1.joinFriend = function (sName)
-    {
-        this.aks.send("FJF" + sName);
-    };
-    _loc1.compass = function (bStop)
-    {
-        this.aks.send("FJC" + (bStop ? ("-") : ("+")));
-    };
-    _loc1.setNotifyWhenConnect = function (bActivity)
-    {
-        this.aks.send("FO" + (bActivity ? ("+") : ("-")));
-    };
-    _loc1.onAddFriend = function (bSuccess, sExtraData)
+        aks.send("FJ" + sType);
+    } // End of the function
+    function onAddFriend(bSuccess, sExtraData)
     {
         if (bSuccess)
         {
-            var _loc4 = this.getFriendObjectFromData(sExtraData);
-            if (_loc4 != undefined)
+            var _loc2 = this.getFriendObjectFromData(sExtraData);
+            if (_loc2 != undefined)
             {
-                this.api.datacenter.Player.Friends.push(_loc4);
+                api.datacenter.Player.Friends.push(_loc2);
             } // end if
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("ADD_TO_FRIEND_LIST", [_loc4.name]), "INFO_CHAT");
+            api.kernel.showMessage(undefined, api.lang.getText("ADD_TO_FRIEND_LIST", [_loc2.name]), "INFO_CHAT");
         }
         else
         {
@@ -69,32 +50,32 @@ if (!dofus.aks.Friends)
             {
                 case "f":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_ADD_FRIEND_NOT_FOUND"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_ADD_FRIEND_NOT_FOUND"), "ERROR_CHAT");
                     break;
                 } 
                 case "y":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_ADD_YOU"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_ADD_YOU"), "ERROR_CHAT");
                     break;
                 } 
                 case "a":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("ALREADY_YOUR_FRIEND"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("ALREADY_YOUR_FRIEND"), "ERROR_CHAT");
                     break;
                 } 
                 case "m":
                 {
-                    this.api.kernel.showMessage(this.api.lang.getText("FRIENDS"), this.api.lang.getText("FRIENDS_LIST_FULL"), "ERROR_BOX", {name: "FriendsListFull"});
+                    api.kernel.showMessage(api.lang.getText("FRIENDS"), api.lang.getText("FRIENDS_LIST_FULL"), "ERROR_BOX", {name: "FriendsListFull"});
                     break;
                 } 
             } // End of switch
         } // end else if
-    };
-    _loc1.onRemoveFriend = function (bSuccess, sExtraData)
+    } // End of the function
+    function onRemoveFriend(bSuccess, sExtraData)
     {
         if (bSuccess)
         {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("REMOVE_FRIEND_OK"), "INFO_CHAT");
+            api.kernel.showMessage(undefined, api.lang.getText("REMOVE_FRIEND_OK"), "INFO_CHAT");
             this.getFriendsList();
         }
         else
@@ -103,127 +84,106 @@ if (!dofus.aks.Friends)
             {
                 case "f":
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CANT_ADD_FRIEND_NOT_FOUND"), "ERROR_CHAT");
+                    api.kernel.showMessage(undefined, api.lang.getText("CANT_ADD_FRIEND_NOT_FOUND"), "ERROR_CHAT");
                     break;
                 } 
             } // End of switch
         } // end else if
-    };
-    _loc1.onFriendsList = function (sExtraData)
+    } // End of the function
+    function onFriendsList(sExtraData)
     {
-        var _loc3 = sExtraData.split("|");
-        this.api.datacenter.Player.Friends = new Array();
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
+        var _loc6 = sExtraData.split("|");
+        api.datacenter.Player.Friends = new Array();
+        for (var _loc2 = 0; _loc2 < _loc6.length; ++_loc2)
         {
-            var _loc5 = this.getFriendObjectFromData(_loc3[_loc4]);
-            if (_loc5 != undefined)
+            var _loc4 = this.getFriendObjectFromData(_loc6[_loc2]);
+            if (_loc4 != undefined)
             {
-                this.api.datacenter.Player.Friends.push(_loc5);
+                api.datacenter.Player.Friends.push(_loc4);
             } // end if
-        } // end while
-        var _loc6 = this.api.ui.getUIComponent("Friends");
-        var _loc7 = this.api.datacenter.Player.Friends;
-        if (_loc6 != undefined)
+        } // end of for
+        var _loc7 = api.ui.getUIComponent("Friends");
+        var _loc3 = api.datacenter.Player.Friends;
+        if (_loc7 != undefined)
         {
-            _loc6.friendsList = _loc7;
+            _loc7.friendsList = _loc3;
         }
         else
         {
-            var _loc8 = new String();
-            if (_loc7.length != 0)
+            var _loc5 = new String();
+            if (_loc3.length != 0)
             {
-                this.api.kernel.showMessage(undefined, "<b>" + this.api.lang.getText("YOUR_FRIEND_LIST") + " :</b>", "INFO_CHAT");
-                var _loc9 = 0;
-                
-                while (++_loc9, _loc9 < _loc7.length)
+                api.kernel.showMessage(undefined, "<b>" + api.lang.getText("YOUR_FRIEND_LIST") + " :</b>", "INFO_CHAT");
+                for (var _loc2 = 0; _loc2 < _loc3.length; ++_loc2)
                 {
-                    _loc8 = " - " + _loc7[_loc9].account;
-                    if (_loc7[_loc9].state != "DISCONNECT")
+                    _loc5 = " - " + _loc3[_loc2].account;
+                    if (_loc3[_loc2].state != "DISCONNECT")
                     {
-                        _loc8 = _loc8 + (" (" + _loc7[_loc9].name + ") " + this.api.lang.getText("LEVEL") + ":" + _loc7[_loc9].level + ", " + this.api.lang.getText(_loc7[_loc9].state));
+                        _loc5 = _loc5 + (" (" + _loc3[_loc2].name + ") " + api.lang.getText("LEVEL") + ":" + _loc3[_loc2].level + ", " + api.lang.getText(_loc3[_loc2].state));
                     } // end if
-                    this.api.kernel.showMessage(undefined, _loc8, "INFO_CHAT");
-                } // end while
+                    api.kernel.showMessage(undefined, _loc5, "INFO_CHAT");
+                } // end of for
             }
             else
             {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("EMPTY_FRIEND_LIST"), "INFO_CHAT");
+                api.kernel.showMessage(undefined, api.lang.getText("EMPTY_FRIEND_LIST"), "INFO_CHAT");
             } // end else if
         } // end else if
-    };
-    _loc1.onSpouse = function (sExtraData)
+    } // End of the function
+    function onSpouse(sExtraData)
     {
         var _loc3 = sExtraData.split("|");
-        var _loc4 = new Object();
-        _loc4.name = _loc3[0];
-        _loc4.gfx = _loc3[1];
-        _loc4.color1 = Number(_loc3[2]);
-        _loc4.color2 = Number(_loc3[3]);
-        _loc4.color3 = Number(_loc3[4]);
-        _loc4.mapID = Number(_loc3[5]);
-        _loc4.isConnected = !_global.isNaN(_loc4.mapID);
-        _loc4.level = Number(_loc3[6]);
-        _loc4.isInFight = _loc3[7] == "1" ? (true) : (false);
-        _loc4.sex = this.api.datacenter.Player.Sex == 0 ? ("f") : ("m");
-        _loc4.isFollow = _loc3[8] == "1" ? (true) : (false);
-        var _loc5 = this.api.ui.getUIComponent("Friends");
-        _loc5.spouse = _loc4;
-    };
-    _loc1.onNotifyChange = function (sExtraData)
+        var _loc2 = new Object();
+        _loc2.name = _loc3[0];
+        _loc2.gfx = _loc3[1];
+        _loc2.color1 = Number(_loc3[2]);
+        _loc2.color2 = Number(_loc3[3]);
+        _loc2.color3 = Number(_loc3[4]);
+        _loc2.mapID = Number(_loc3[5]);
+        _loc2.isConnected = !isNaN(_loc2.mapID);
+        _loc2.level = Number(_loc3[6]);
+        _loc2.isInFight = _loc3[7] == "1" ? (true) : (false);
+        _loc2.sex = api.datacenter.Player.Sex == 0 ? ("f") : ("m");
+        var _loc4 = api.ui.getUIComponent("Friends");
+        _loc4.spouse = _loc2;
+    } // End of the function
+    function getFriendObjectFromData(sData)
     {
-        this.api.datacenter.Basics.aks_notify_on_friend_connexion = sExtraData == "+";
-        var _loc3 = (dofus.graphics.gapi.ui.Friends)(this.api.ui.getUIComponent("Friends"));
-        if (_loc3 != null)
+        var _loc2 = sData.split(";");
+        var _loc1 = new Object();
+        _loc1.account = String(_loc2[0]);
+        if (_loc2[1] != undefined)
         {
-            _loc3.notifyStateChanged(sExtraData == "+");
-        } // end if
-    };
-    _loc1.getFriendObjectFromData = function (sData)
-    {
-        var _loc3 = sData.split(";");
-        var _loc4 = new Object();
-        _loc4.account = String(_loc3[0]);
-        if (_loc3[1] != undefined)
-        {
-            switch (_loc3[1])
+            switch (_loc2[1])
             {
                 case "1":
                 {
-                    _loc4.state = "IN_SOLO";
+                    _loc1.state = "IN_SOLO";
                     break;
                 } 
                 case "2":
                 {
-                    _loc4.state = "IN_MULTI";
+                    _loc1.state = "IN_MULTI";
                     break;
                 } 
                 case "?":
                 {
-                    _loc4.state = "IN_UNKNOW";
+                    _loc1.state = "IN_UNKNOW";
                     break;
                 } 
             } // End of switch
-            _loc4.name = _loc3[2];
-            _loc4.level = _loc3[3];
-            _loc4.sortLevel = _loc4.level == "?" ? (-1) : (Number(_loc4.level));
-            _loc4.alignement = Number(_loc3[4]);
-            _loc4.guild = _loc3[5];
-            _loc4.sex = _loc3[6];
-            _loc4.gfxID = _loc3[7];
+            _loc1.name = _loc2[2];
+            _loc1.level = _loc2[3];
+            _loc1.guild = _loc2[4];
+            _loc1.sex = _loc2[5];
+            _loc1.gfxID = _loc2[6];
         }
         else
         {
-            _loc4.name = _loc4.account;
-            _loc4.state = "DISCONNECT";
+            _loc1.name = _loc1.account;
+            _loc1.state = "DISCONNECT";
         } // end else if
-        return (_loc4.account.length != 0 ? (_loc4) : (undefined));
-    };
-    _loc1.setNotify = function (bNotify)
-    {
-        this.aks.send("FO" + (bNotify ? ("+") : ("-")), false);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        return (_loc1.account.length != 0 ? (_loc1) : (undefined));
+    } // End of the function
+} // End of Class
 #endinitclip

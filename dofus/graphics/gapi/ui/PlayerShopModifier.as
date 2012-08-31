@@ -1,188 +1,156 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20722]
-#initclip 243
-if (!dofus.graphics.gapi.ui.PlayerShopModifier)
+// [Initial MovieClip Action of sprite 812]
+#initclip 6
+class dofus.graphics.gapi.ui.PlayerShopModifier extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.PlayerShopModifier = function ()
+    var _oData, __get__data, gapi, api, addToQueue, _txtQuantity, _txtPrice, _livInventory, _livInventory2, _btnAdd, _btnRemove, _btnModify, _btnClose, _btnOffline, _lblQuantity, _lblPrice, _winInventory, _winInventory2, _itvItemViewer, _winItemViewer, _mcQuantity, _mcPrice, _oSelectedItem, _mcSellArrow, _oDefaultButton, _mcBuyArrow, __set__data;
+    function PlayerShopModifier()
     {
         super();
-    }).prototype;
-    _loc1.__set__data = function (oData)
+    } // End of the function
+    function set data(oData)
     {
-        this._oData = oData;
+        _oData = oData;
         //return (this.data());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.PlayerShopModifier.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
-        this.gapi.hideTooltip();
-        this.api.network.Exchange.leave();
+        gapi.hideTooltip();
+        api.network.Exchange.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
         this.hideItemViewer(true);
         this.setAddMode(false);
         this.setModifyMode(false);
-        this._txtQuantity.restrict = "0-9";
-        this._txtPrice.restrict = "0-9";
-        this._txtQuantity.onSetFocus = function ()
-        {
-            this._parent.onSetFocus();
-        };
-        this._txtQuantity.onKillFocus = function ()
-        {
-            this._parent.onKillFocus();
-        };
-        this._txtPrice.onSetFocus = function ()
-        {
-            this._parent.onSetFocus();
-        };
-        this._txtPrice.onKillFocus = function ()
-        {
-            this._parent.onKillFocus();
-        };
-    };
-    _loc1.addListeners = function ()
+        _txtQuantity.restrict = "0-9";
+        _txtPrice.restrict = "0-9";
+    } // End of the function
+    function addListeners()
     {
-        this._livInventory.addEventListener("selectedItem", this);
-        this._livInventory2.addEventListener("selectedItem", this);
-        this._btnAdd.addEventListener("click", this);
-        this._btnRemove.addEventListener("click", this);
-        this._btnModify.addEventListener("click", this);
-        this._btnClose.addEventListener("click", this);
-        this._btnOffline.addEventListener("click", this);
-        this._btnOffline.addEventListener("over", this);
-        this._btnOffline.addEventListener("out", this);
-        if (this._oData != undefined)
+        _livInventory.addEventListener("selectedItem", this);
+        _livInventory2.addEventListener("selectedItem", this);
+        _btnAdd.addEventListener("click", this);
+        _btnRemove.addEventListener("click", this);
+        _btnModify.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+        _btnOffline.addEventListener("click", this);
+        _btnOffline.addEventListener("over", this);
+        _btnOffline.addEventListener("out", this);
+        if (_oData != undefined)
         {
-            this._oData.addEventListener("modelChanged", this);
+            _oData.addEventListener("modelChanged", this);
         }
         else
         {
             ank.utils.Logger.err("[PlayerShop] il n\'y a pas de data");
         } // end else if
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-    };
-    _loc1.initTexts = function ()
+        Key.addListener(this);
+    } // End of the function
+    function initTexts()
     {
-        this._btnAdd.label = this.api.lang.getText("PUT_ON_SELL");
-        this._btnRemove.label = this.api.lang.getText("REMOVE");
-        this._btnModify.label = this.api.lang.getText("MODIFY");
-        this._lblQuantity.text = this.api.lang.getText("QUANTITY") + " :";
-        this._lblPrice.text = this.api.lang.getText("UNIT_PRICE") + " :";
-        this._winInventory.title = this.api.datacenter.Player.data.name;
-        this._winInventory2.title = this.api.lang.getText("SHOP_STOCK");
-    };
-    _loc1.initData = function ()
+        _btnAdd.__set__label(api.lang.getText("PUT_ON_SELL"));
+        _btnRemove.__set__label(api.lang.getText("REMOVE"));
+        _btnModify.__set__label(api.lang.getText("MODIFY"));
+        _lblQuantity.text = api.lang.getText("QUANTITY") + " :";
+        _lblPrice.text = api.lang.getText("UNIT_PRICE") + " :";
+        _winInventory.__set__title(api.datacenter.Player.data.name);
+        _winInventory2.__set__title(api.lang.getText("SHOP_STOCK"));
+    } // End of the function
+    function initData()
     {
-        this._livInventory.dataProvider = this.api.datacenter.Player.Inventory;
-        this._livInventory.kamasProvider = this.api.datacenter.Player;
+        _livInventory.__set__dataProvider(api.datacenter.Player.Inventory);
+        _livInventory.__set__kamasProvider(api.datacenter.Player);
         this.modelChanged();
-    };
-    _loc1.hideItemViewer = function (bHide)
+    } // End of the function
+    function hideItemViewer(bHide)
     {
-        this._itvItemViewer._visible = !bHide;
-        this._winItemViewer._visible = !bHide;
-        this._mcQuantity._visible = !bHide;
-        this._mcPrice._visible = !bHide;
-        this._lblQuantity._visible = !bHide;
-        this._lblPrice._visible = !bHide;
-        this._txtQuantity._visible = !bHide;
-        this._txtPrice._visible = !bHide;
+        _itvItemViewer._visible = !bHide;
+        _winItemViewer._visible = !bHide;
+        _mcQuantity._visible = !bHide;
+        _mcPrice._visible = !bHide;
+        _lblQuantity._visible = !bHide;
+        _lblPrice._visible = !bHide;
+        _txtQuantity._visible = !bHide;
+        _txtPrice._visible = !bHide;
         if (bHide)
         {
-            this._oSelectedItem = undefined;
+            _oSelectedItem = undefined;
         } // end if
-    };
-    _loc1.setAddMode = function (bActive)
+    } // End of the function
+    function setAddMode(bActive)
     {
-        this._btnAdd._visible = bActive;
-        this._mcSellArrow._visible = bActive;
-        this._mcQuantity._visible = bActive;
-        this._txtQuantity.editable = true;
-        this._txtQuantity.selectable = true;
-        this._txtPrice.tabIndex = 0;
-        this._txtQuantity.tabIndex = 1;
-        this._oDefaultButton = this._btnAdd;
-    };
-    _loc1.setModifyMode = function (bActive)
+        _btnAdd._visible = bActive;
+        _mcSellArrow._visible = bActive;
+        _mcQuantity._visible = bActive;
+        _txtQuantity.editable = true;
+        _txtQuantity.selectable = true;
+        _txtPrice.tabIndex = 0;
+        _txtQuantity.tabIndex = 1;
+        _oDefaultButton = _btnAdd;
+    } // End of the function
+    function setModifyMode(bActive)
     {
-        this._btnRemove._visible = bActive;
-        this._btnModify._visible = bActive;
-        this._mcBuyArrow._visible = bActive;
-        this._mcQuantity._visible = false;
-        this._txtQuantity.editable = false;
-        this._txtQuantity.selectable = false;
-        this._txtPrice.tabIndex = 0;
-        this._txtQuantity.tabIndex = undefined;
-        this._oDefaultButton = this._btnModify;
-    };
-    _loc1.addToShop = function (oItem, nQuantity, nPrice)
+        _btnRemove._visible = bActive;
+        _btnModify._visible = bActive;
+        _mcBuyArrow._visible = bActive;
+        _mcQuantity._visible = false;
+        _txtQuantity.editable = false;
+        _txtQuantity.selectable = false;
+        _txtPrice.tabIndex = 0;
+        _txtQuantity.tabIndex = undefined;
+        _oDefaultButton = _btnModify;
+    } // End of the function
+    function addToShop(oItem, nQuantity, nPrice)
     {
-        this.api.network.Exchange.movementItem(true, oItem.ID, nQuantity, nPrice);
-    };
-    _loc1.remove = function (oItem)
+        api.network.Exchange.movementItem(true, oItem.ID, nQuantity, nPrice);
+    } // End of the function
+    function remove(oItem)
     {
-        this.api.network.Exchange.movementItem(false, oItem.ID, oItem.Quantity);
-    };
-    _loc1.modify = function (oItem, nPrice)
+        api.network.Exchange.movementItem(false, oItem.ID, oItem.Quantity);
+    } // End of the function
+    function modify(oItem, nPrice)
     {
-        this.api.network.Exchange.movementItem(true, oItem.ID, 0, nPrice);
-    };
-    _loc1.onShortcut = function (sShortcut)
+        api.network.Exchange.movementItem(true, oItem.ID, 0, nPrice);
+    } // End of the function
+    function onKeyDown()
     {
-        if (sShortcut == "ACCEPT_CURRENT_DIALOG" && this._oSelectedItem != undefined)
+        if (Key.isDown(13) && _oSelectedItem != undefined)
         {
-            this.click({target: this._oDefaultButton});
-            return (false);
+            this.click({target: _oDefaultButton});
         } // end if
-        return (true);
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnRemove":
             {
-                this.remove(this._oSelectedItem);
+                this.remove(_oSelectedItem);
                 this.hideItemViewer(true);
                 this.setModifyMode(false);
                 break;
             } 
             case "_btnModify":
             {
-                var _loc3 = Number(this._txtPrice.text);
-                if (_global.isNaN(_loc3))
+                var _loc3 = Number(_txtPrice.text);
+                if (isNaN(_loc3))
                 {
-                    this.gapi.loadUIComponent("AskOk", "AksOkBadPrice", {title: this.api.lang.getText("ERROR_WORD"), text: this.api.lang.getText("ERROR_INVALID_PRICE")});
+                    gapi.loadUIComponent("AskOk", "AksOkBadPrice", {title: api.lang.getText("ERROR_WORD"), text: api.lang.getText("ERROR_INVALID_PRICE")});
                 }
                 else
                 {
-                    this.modify(this._oSelectedItem, _loc3);
+                    this.modify(_oSelectedItem, _loc3);
                     this.hideItemViewer(true);
                     this.setModifyMode(false);
                 } // end else if
@@ -190,20 +158,20 @@ if (!dofus.graphics.gapi.ui.PlayerShopModifier)
             } 
             case "_btnAdd":
             {
-                var _loc4 = Number(this._txtPrice.text);
-                var _loc5 = Number(this._txtQuantity.text);
-                if (_global.isNaN(_loc4))
+                _loc3 = Number(_txtPrice.text);
+                var _loc2 = Number(_txtQuantity.text);
+                if (isNaN(_loc3))
                 {
-                    this.gapi.loadUIComponent("AskOk", "AksOkBadPrice", {title: this.api.lang.getText("ERROR_WORD"), text: this.api.lang.getText("ERROR_INVALID_PRICE")});
+                    gapi.loadUIComponent("AskOk", "AksOkBadPrice", {title: api.lang.getText("ERROR_WORD"), text: api.lang.getText("ERROR_INVALID_PRICE")});
                 }
-                else if (_global.isNaN(_loc5) || _loc5 == 0)
+                else if (isNaN(_loc2) || _loc2 == 0)
                 {
-                    this.gapi.loadUIComponent("AskOk", "AksOkBadQuantity", {title: this.api.lang.getText("ERROR_WORD"), text: this.api.lang.getText("ERROR_INVALID_QUANTITY")});
+                    gapi.loadUIComponent("AskOk", "AksOkBadQuantity", {title: api.lang.getText("ERROR_WORD"), text: api.lang.getText("ERROR_INVALID_QUANTITY")});
                 }
                 else
                 {
-                    _loc5 = Math.min(this._oSelectedItem.Quantity, _loc5);
-                    this.addToShop(this._oSelectedItem, _loc5, _loc4);
+                    _loc2 = Math.min(_oSelectedItem.Quantity, _loc2);
+                    this.addToShop(_oSelectedItem, _loc2, _loc3);
                     this.hideItemViewer(true);
                     this.setAddMode(false);
                 } // end else if
@@ -217,27 +185,27 @@ if (!dofus.graphics.gapi.ui.PlayerShopModifier)
             case "_btnOffline":
             {
                 this.callClose();
-                this.api.kernel.GameManager.offlineExchange();
+                api.kernel.GameManager.offlineExchange();
                 break;
             } 
         } // End of switch
-    };
-    _loc1.over = function (oEvent)
+    } // End of the function
+    function over(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnOffline":
             {
-                this.gapi.showTooltip(this.api.lang.getText("MERCHANT_MODE"), oEvent.target, -20);
+                gapi.showTooltip(api.lang.getText("MERCHANT_MODE"), oEvent.target, -20);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.out = function (oEvent)
+    } // End of the function
+    function out(oEvent)
     {
-        this.gapi.hideTooltip();
-    };
-    _loc1.selectedItem = function (oEvent)
+        gapi.hideTooltip();
+    } // End of the function
+    function selectedItem(oEvent)
     {
         if (oEvent.item == undefined)
         {
@@ -247,52 +215,37 @@ if (!dofus.graphics.gapi.ui.PlayerShopModifier)
         }
         else
         {
-            this._oSelectedItem = oEvent.item;
+            _oSelectedItem = oEvent.item;
             this.hideItemViewer(false);
-            this._itvItemViewer.itemData = oEvent.item;
+            _itvItemViewer.__set__itemData(oEvent.item);
             switch (oEvent.target._name)
             {
                 case "_livInventory":
                 {
-                    this._txtQuantity.text = oEvent.item.Quantity;
-                    this._txtPrice.text = "";
+                    _txtQuantity.text = oEvent.item.Quantity;
+                    _txtPrice.text = "";
                     this.setModifyMode(false);
                     this.setAddMode(true);
-                    this._livInventory2.setFilter(this._livInventory.currentFilterID);
+                    _livInventory2.setFilter(_livInventory.__get__currentFilterID());
                     break;
                 } 
                 case "_livInventory2":
                 {
-                    this._txtQuantity.text = oEvent.item.Quantity;
-                    this._txtPrice.text = oEvent.item.price;
+                    _txtQuantity.text = oEvent.item.Quantity;
+                    _txtPrice.text = oEvent.item.price;
                     this.setAddMode(false);
                     this.setModifyMode(true);
-                    this._livInventory.setFilter(this._livInventory2.currentFilterID);
+                    _livInventory.setFilter(_livInventory2.__get__currentFilterID());
                     break;
                 } 
             } // End of switch
-            Selection.setFocus(this._txtPrice);
+            Selection.setFocus(_txtPrice);
         } // end else if
-    };
-    _loc1.modelChanged = function (oEvent)
+    } // End of the function
+    function modelChanged(oEvent)
     {
-        this._livInventory2.dataProvider = this._oData.inventory;
-    };
-    _loc1.onSetFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "false");
-    };
-    _loc1.onKillFocus = function ()
-    {
-        getURL("FSCommand:" add "trapallkeys", "true");
-    };
-    _loc1.addProperty("data", function ()
-    {
-    }, _loc1.__set__data);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.PlayerShopModifier = function ()
-    {
-        super();
-    }).CLASS_NAME = "PlayerShopModifier";
-} // end if
+        _livInventory2.__set__dataProvider(_oData.inventory);
+    } // End of the function
+    static var CLASS_NAME = "PlayerShopModifier";
+} // End of Class
 #endinitclip

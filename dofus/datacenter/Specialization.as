@@ -1,81 +1,56 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20883]
-#initclip 148
-if (!dofus.datacenter.Specialization)
+// [Initial MovieClip Action of sprite 910]
+#initclip 122
+class dofus.datacenter.Specialization extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Specialization = function (nIndex)
+    var api, _nIndex, __get__index, _oSpecInfos, _eaFeats, __get__alignment, __get__description, __get__feats, __set__index, __get__name, __get__order;
+    function Specialization(nIndex)
     {
         super();
-        this.api = _global.API;
+        api = _global.API;
         this.initialize(nIndex);
-    }).prototype;
-    _loc1.__get__index = function ()
+    } // End of the function
+    function get index()
     {
-        return (this._nIndex);
-    };
-    _loc1.__set__index = function (nIndex)
+        return (_nIndex);
+    } // End of the function
+    function set index(nIndex)
     {
-        this._nIndex = _global.isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
+        _nIndex = isNaN(nIndex) || nIndex == undefined ? (0) : (nIndex);
         //return (this.index());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this._oSpecInfos.n);
-    };
-    _loc1.__get__description = function ()
+        return (_oSpecInfos.n);
+    } // End of the function
+    function get description()
     {
-        return (this._oSpecInfos.d);
-    };
-    _loc1.__get__order = function ()
+        return (_oSpecInfos.d);
+    } // End of the function
+    function get order()
     {
-        return (new dofus.datacenter.Order(this._oSpecInfos.o));
-    };
-    _loc1.__get__alignment = function ()
+        return (new dofus.datacenter.Order(_oSpecInfos.o));
+    } // End of the function
+    function get alignment()
     {
-        return (new dofus.datacenter.Alignment(this.order.alignment.index, this._oSpecInfos.av));
-    };
-    _loc1.__get__feats = function ()
+        return (new dofus.datacenter.Alignment(order.alignment.index, _oSpecInfos.av));
+    } // End of the function
+    function get feats()
     {
-        return (this._eaFeats);
-    };
-    _loc1.initialize = function (nIndex)
+        return (_eaFeats);
+    } // End of the function
+    function initialize(nIndex)
     {
-        this._nIndex = nIndex;
-        this._oSpecInfos = this.api.lang.getAlignmentSpecialization(nIndex);
-        this._eaFeats = new ank.utils.ExtendedArray();
-        var _loc3 = this._oSpecInfos.f;
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
+        _nIndex = nIndex;
+        _oSpecInfos = api.lang.getAlignmentSpecialization(nIndex);
+        _eaFeats = new ank.utils.ExtendedArray();
+        var _loc3 = _oSpecInfos.f;
+        for (var _loc2 = 0; _loc2 < _loc3.length; ++_loc2)
         {
-            this._eaFeats.push(new dofus.datacenter.Feat(_loc3[_loc4][0], _loc3[_loc4][1], _loc3[_loc4][2]));
-        } // end while
-    };
-    _loc1.addProperty("index", _loc1.__get__index, _loc1.__set__index);
-    _loc1.addProperty("description", _loc1.__get__description, function ()
-    {
-    });
-    _loc1.addProperty("name", _loc1.__get__name, function ()
-    {
-    });
-    _loc1.addProperty("order", _loc1.__get__order, function ()
-    {
-    });
-    _loc1.addProperty("alignment", _loc1.__get__alignment, function ()
-    {
-    });
-    _loc1.addProperty("feats", _loc1.__get__feats, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+            _eaFeats.push(new dofus.datacenter.Feat(_loc3[_loc2][0], _loc3[_loc2][1], _loc3[_loc2][2]));
+        } // end of for
+    } // End of the function
+} // End of Class
 #endinitclip

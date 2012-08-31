@@ -1,187 +1,157 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20789]
-#initclip 54
-if (!dofus.datacenter.GuildInfos)
+// [Initial MovieClip Action of sprite 956]
+#initclip 168
+class dofus.datacenter.GuildInfos extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.GuildInfos = function (sName, nBackEmblemID, nBackEmblemColor, nUpEmblemID, nUpEmblemColor, nPlayerRights)
+    var api, _eaMembers, _eaTaxCollectors, _sName, _bValid, _nBackEmblemID, _nBackEmblemColor, _nUpEmblemID, _nUpEmblemColor, _grPlayerRights, _nLevel, _nXPMin, _nXPMax, _nXP, _nTaxCount, _nTaxCountMax, _eaTaxSpells, _nTaxLP, _nTaxBonusDamage, _nTaxHireCost, _nTaxPercentRessources, _nTaxPercentKamas, _nTaxProbDrop, _nBoostPoints, _nDefendedTaxCollectorID, __get__defendedTaxCollectorID, dispatchEvent, __get__boostPoints, __set__defendedTaxCollectorID, __get__emblem, __get__isLocalPlayerDefender, __get__isValid, __get__level, __get__members, __get__name, __get__playerRights, __get__taxBonus, __get__taxCollectors, __get__taxCount, __get__taxCountMax, __get__taxLp, __get__taxPercentKamas, __get__taxPercentRes, __get__taxProbObjects, __get__taxSpells, __get__taxcollectorHireCost, __get__xp, __get__xpmax, __get__xpmin;
+    function GuildInfos(sName, nBackEmblemID, nBackEmblemColor, nUpEmblemID, nUpEmblemColor, nPlayerRights)
     {
         super();
-        this.api = _global.API;
+        api = _global.API;
         mx.events.EventDispatcher.initialize(this);
         this.initialize(sName, nBackEmblemID, nBackEmblemColor, nUpEmblemID, nUpEmblemColor, nPlayerRights);
-        this._eaMembers = new ank.utils.ExtendedArray();
-        this._eaTaxCollectors = new ank.utils.ExtendedArray();
-        this._eaMountParks = new ank.utils.ExtendedArray();
-    }).prototype;
-    _loc1.__get__name = function ()
+        _eaMembers = new ank.utils.ExtendedArray();
+        _eaTaxCollectors = new ank.utils.ExtendedArray();
+    } // End of the function
+    function get name()
     {
-        return (this._sName);
-    };
-    _loc1.__get__isValid = function ()
+        return (_sName);
+    } // End of the function
+    function get isValid()
     {
-        return (this._bValid);
-    };
-    _loc1.__get__emblem = function ()
+        return (_bValid);
+    } // End of the function
+    function get emblem()
     {
-        return ({backID: this._nBackEmblemID, backColor: this._nBackEmblemColor, upID: this._nUpEmblemID, upColor: this._nUpEmblemColor});
-    };
-    _loc1.__get__playerRights = function ()
+        return ({backID: _nBackEmblemID, backColor: _nBackEmblemColor, upID: _nUpEmblemID, upColor: _nUpEmblemColor});
+    } // End of the function
+    function get playerRights()
     {
-        return (this._grPlayerRights);
-    };
-    _loc1.__get__level = function ()
+        return (_grPlayerRights);
+    } // End of the function
+    function get level()
     {
-        return (this._nLevel);
-    };
-    _loc1.__get__xpmin = function ()
+        return (_nLevel);
+    } // End of the function
+    function get xpmin()
     {
-        return (this._nXPMin);
-    };
-    _loc1.__get__xpmax = function ()
+        return (_nXPMin);
+    } // End of the function
+    function get xpmax()
     {
-        return (this._nXPMax);
-    };
-    _loc1.__get__xp = function ()
+        return (_nXPMax);
+    } // End of the function
+    function get xp()
     {
-        return (this._nXP);
-    };
-    _loc1.__get__members = function ()
+        return (_nXP);
+    } // End of the function
+    function get members()
     {
-        return (this._eaMembers);
-    };
-    _loc1.__get__taxCount = function ()
+        return (_eaMembers);
+    } // End of the function
+    function get taxCount()
     {
-        return (this._nTaxCount);
-    };
-    _loc1.__get__taxCountMax = function ()
+        return (_nTaxCount);
+    } // End of the function
+    function get taxCountMax()
     {
-        return (this._nTaxCountMax);
-    };
-    _loc1.__get__taxSpells = function ()
+        return (_nTaxCountMax);
+    } // End of the function
+    function get taxSpells()
     {
-        return (this._eaTaxSpells);
-    };
-    _loc1.__get__taxLp = function ()
+        return (_eaTaxSpells);
+    } // End of the function
+    function get taxLp()
     {
-        return (this._nTaxLP);
-    };
-    _loc1.__get__taxBonus = function ()
+        return (_nTaxLP);
+    } // End of the function
+    function get taxBonus()
     {
-        return (this._nTaxBonusDamage);
-    };
-    _loc1.__get__taxcollectorHireCost = function ()
+        return (_nTaxBonusDamage);
+    } // End of the function
+    function get taxcollectorHireCost()
     {
-        return (this._nTaxHireCost);
-    };
-    _loc1.__get__taxPod = function ()
+        return (_nTaxHireCost);
+    } // End of the function
+    function get taxPercentRes()
     {
-        return (this._nTaxPods);
-    };
-    _loc1.__get__taxPP = function ()
+        return (_nTaxPercentRessources);
+    } // End of the function
+    function get taxPercentKamas()
     {
-        return (this._nTaxPP);
-    };
-    _loc1.__get__taxWisdom = function ()
+        return (_nTaxPercentKamas);
+    } // End of the function
+    function get taxProbObjects()
     {
-        return (this._nTaxSagesse);
-    };
-    _loc1.__get__taxPopulation = function ()
+        return (_nTaxProbDrop);
+    } // End of the function
+    function get boostPoints()
     {
-        return (this._nTaxPercepteur);
-    };
-    _loc1.__get__boostPoints = function ()
+        return (_nBoostPoints);
+    } // End of the function
+    function get taxCollectors()
     {
-        return (this._nBoostPoints);
-    };
-    _loc1.__get__taxCollectors = function ()
+        return (_eaTaxCollectors);
+    } // End of the function
+    function set defendedTaxCollectorID(nDefendedTaxCollectorID)
     {
-        return (this._eaTaxCollectors);
-    };
-    _loc1.__get__mountParks = function ()
-    {
-        return (this._eaMountParks);
-    };
-    _loc1.__get__maxMountParks = function ()
-    {
-        return (this._nMaxMountParks);
-    };
-    _loc1.__get__houses = function ()
-    {
-        return (this._eaHouses);
-    };
-    _loc1.__set__defendedTaxCollectorID = function (nDefendedTaxCollectorID)
-    {
-        this._nDefendedTaxCollectorID = nDefendedTaxCollectorID;
+        _nDefendedTaxCollectorID = nDefendedTaxCollectorID;
         //return (this.defendedTaxCollectorID());
-    };
-    _loc1.__get__defendedTaxCollectorID = function ()
+        null;
+    } // End of the function
+    function get defendedTaxCollectorID()
     {
-        return (this._nDefendedTaxCollectorID);
-    };
-    _loc1.__get__isLocalPlayerDefender = function ()
+        return (_nDefendedTaxCollectorID);
+    } // End of the function
+    function get isLocalPlayerDefender()
     {
-        return (this._nDefendedTaxCollectorID != undefined);
-    };
-    _loc1.initialize = function (sName, nBackEmblemID, nBackEmblemColor, nUpEmblemID, nUpEmblemColor, nPlayerRights)
+        return (_nDefendedTaxCollectorID != undefined);
+    } // End of the function
+    function initialize(sName, nBackEmblemID, nBackEmblemColor, nUpEmblemID, nUpEmblemColor, nPlayerRights)
     {
-        this._sName = sName;
-        this._nBackEmblemID = nBackEmblemID;
-        this._nBackEmblemColor = nBackEmblemColor;
-        this._nUpEmblemID = nUpEmblemID;
-        this._nUpEmblemColor = nUpEmblemColor;
-        this._grPlayerRights = new dofus.datacenter.GuildRights(nPlayerRights);
-    };
-    _loc1.setGeneralInfos = function (bValid, nLevel, nXPMin, nXP, nXPMax)
+        _sName = sName;
+        _nBackEmblemID = nBackEmblemID;
+        _nBackEmblemColor = nBackEmblemColor;
+        _nUpEmblemID = nUpEmblemID;
+        _nUpEmblemColor = nUpEmblemColor;
+        _grPlayerRights = new dofus.datacenter.GuildRights(nPlayerRights);
+    } // End of the function
+    function setGeneralInfos(bValid, nLevel, nXPMin, nXP, nXPMax)
     {
-        this._bValid = bValid;
-        this._nLevel = nLevel;
-        this._nXPMin = nXPMin;
-        this._nXP = nXP;
-        this._nXPMax = nXPMax;
+        _bValid = bValid;
+        _nLevel = nLevel;
+        _nXPMin = nXPMin;
+        _nXP = nXP;
+        _nXPMax = nXPMax;
         this.dispatchEvent({type: "modelChanged", eventName: "general"});
-    };
-    _loc1.setMembers = function ()
+    } // End of the function
+    function setMembers()
     {
         this.dispatchEvent({type: "modelChanged", eventName: "members"});
-    };
-    _loc1.setMountParks = function (nMaxMountParks, eaMountParks)
+    } // End of the function
+    function setBoosts(nTaxCount, nTaxCountMax, nLP, nBonusDamage, nPercentRessources, nPercentKamas, nProbDrop, nBoostPoints, nTaxHireCost, eaSpells)
     {
-        this._nMaxMountParks = nMaxMountParks;
-        this._eaMountParks = eaMountParks;
-        this.dispatchEvent({type: "modelChanged", eventName: "mountParks"});
-    };
-    _loc1.setBoosts = function (nTaxCount, nTaxCountMax, nLP, nBonusDamage, nPods, nPP, nSagesse, nPercepteur, nBoostPoints, nTaxHireCost, eaSpells)
-    {
-        this._nTaxCount = nTaxCount;
-        this._nTaxCountMax = nTaxCountMax;
-        this._nTaxLP = nLP;
-        this._nTaxBonusDamage = nBonusDamage;
-        this._nTaxPods = nPods;
-        this._nTaxPP = nPP;
-        this._nTaxSagesse = nSagesse;
-        this._nTaxPercepteur = nPercepteur;
-        this._nBoostPoints = nBoostPoints;
-        this._nTaxHireCost = nTaxHireCost;
-        this._eaTaxSpells = eaSpells;
+        _nTaxCount = nTaxCount;
+        _nTaxCountMax = nTaxCountMax;
+        _nTaxLP = nLP;
+        _nTaxBonusDamage = nBonusDamage;
+        _nTaxPercentRessources = nPercentRessources / 10;
+        _nTaxPercentKamas = nPercentKamas / 10;
+        _nTaxProbDrop = nProbDrop / 10;
+        _nBoostPoints = nBoostPoints;
+        _nTaxHireCost = nTaxHireCost;
+        _eaTaxSpells = eaSpells;
         this.dispatchEvent({type: "modelChanged", eventName: "boosts"});
-    };
-    _loc1.setNoBoosts = function ()
+    } // End of the function
+    function setNoBoosts()
     {
         this.dispatchEvent({type: "modelChanged", eventName: "noboosts"});
-    };
-    _loc1.canBoost = function (sCharac, nParams)
+    } // End of the function
+    function canBoost(sCharac, nParams)
     {
-        var _loc4 = this.getBoostCostAndCountForCharacteristic(sCharac, nParams).cost;
-        if (this._nBoostPoints >= _loc4 && _loc4 != undefined)
+        var _loc2 = this.getBoostCostAndCountForCharacteristic(sCharac, nParams).cost;
+        if (_nBoostPoints >= _loc2 && _loc2 != undefined)
         {
             return (true);
         }
@@ -189,162 +159,68 @@ if (!dofus.datacenter.GuildInfos)
         {
             return (false);
         } // end else if
-    };
-    _loc1.getBoostCostAndCountForCharacteristic = function (sCharac, nParams)
+    } // End of the function
+    function getBoostCostAndCountForCharacteristic(sCharac, nParams)
     {
-        var _loc4 = this.api.lang.getGuildBoosts(sCharac);
-        var _loc5 = 1;
+        var _loc3 = api.lang.getGuildBoosts(sCharac);
+        var _loc7 = 1;
         var _loc6 = 1;
-        var _loc7 = 0;
+        var _loc5 = 0;
         switch (sCharac)
         {
-            case "w":
+            case "r":
             {
-                _loc7 = this._nTaxPods;
+                _loc5 = _nTaxPercentRessources;
                 break;
             } 
-            case "p":
+            case "k":
             {
-                _loc7 = this._nTaxPP;
+                _loc5 = _nTaxPercentKamas;
                 break;
             } 
-            case "c":
+            case "o":
             {
-                _loc7 = this._nTaxPercepteur;
-                break;
-            } 
-            case "x":
-            {
-                _loc7 = this._nTaxSagesse;
+                _loc5 = _nTaxProbDrop;
                 break;
             } 
             case "s":
             {
-                var _loc8 = this._eaTaxSpells.findFirstItem("ID", nParams);
+                var _loc8 = _eaTaxSpells.findFirstItem("ID", nParams);
                 if (_loc8 != -1)
                 {
-                    _loc7 = _loc8.item.level;
+                    _loc5 = _loc8.item.level;
                 } // end if
                 break;
             } 
         } // End of switch
-        var _loc9 = this.api.lang.getGuildBoostsMax(sCharac);
-        if (_loc7 < _loc9)
+        var _loc9 = api.lang.getGuildBoostsMax(sCharac);
+        if (_loc5 < _loc9)
         {
-            var _loc10 = 0;
-            
-            while (++_loc10, _loc10 < _loc4.length)
+            for (var _loc2 = 0; _loc2 < _loc3.length; ++_loc2)
             {
-                var _loc11 = _loc4[_loc10][0];
-                if (_loc7 >= _loc11)
+                var _loc4 = _loc3[_loc2][0];
+                if (_loc5 >= _loc4)
                 {
-                    _loc5 = _loc4[_loc10][1];
-                    _loc6 = _loc4[_loc10][2] == undefined ? (1) : (_loc4[_loc10][2]);
+                    _loc7 = _loc3[_loc2][1];
+                    _loc6 = _loc3[_loc2][2] == undefined ? (1) : (_loc3[_loc2][2]);
                     continue;
                 } // end if
                 break;
-            } // end while
-            return ({cost: _loc5, count: _loc6});
+            } // end of for
+            return ({cost: _loc7, count: _loc6});
         }
         else
         {
             return (null);
         } // end else if
-    };
-    _loc1.setTaxCollectors = function ()
+    } // End of the function
+    function setTaxCollectors()
     {
         this.dispatchEvent({type: "modelChanged", eventName: "taxcollectors"});
-    };
-    _loc1.setNoTaxCollectors = function ()
+    } // End of the function
+    function setNoTaxCollectors()
     {
         this.dispatchEvent({type: "modelChanged", eventName: "notaxcollectors"});
-    };
-    _loc1.setHouses = function (eaHouses)
-    {
-        this._eaHouses = eaHouses;
-        this.dispatchEvent({type: "modelChanged", eventName: "houses"});
-    };
-    _loc1.setNoHouses = function ()
-    {
-        this._eaHouses = new ank.utils.ExtendedArray();
-        this.dispatchEvent({type: "modelChanged", eventName: "nohouses"});
-    };
-    _loc1.addProperty("defendedTaxCollectorID", _loc1.__get__defendedTaxCollectorID, _loc1.__set__defendedTaxCollectorID);
-    _loc1.addProperty("taxWisdom", _loc1.__get__taxWisdom, function ()
-    {
-    });
-    _loc1.addProperty("taxPod", _loc1.__get__taxPod, function ()
-    {
-    });
-    _loc1.addProperty("isValid", _loc1.__get__isValid, function ()
-    {
-    });
-    _loc1.addProperty("isLocalPlayerDefender", _loc1.__get__isLocalPlayerDefender, function ()
-    {
-    });
-    _loc1.addProperty("taxCollectors", _loc1.__get__taxCollectors, function ()
-    {
-    });
-    _loc1.addProperty("playerRights", _loc1.__get__playerRights, function ()
-    {
-    });
-    _loc1.addProperty("boostPoints", _loc1.__get__boostPoints, function ()
-    {
-    });
-    _loc1.addProperty("taxcollectorHireCost", _loc1.__get__taxcollectorHireCost, function ()
-    {
-    });
-    _loc1.addProperty("xpmax", _loc1.__get__xpmax, function ()
-    {
-    });
-    _loc1.addProperty("maxMountParks", _loc1.__get__maxMountParks, function ()
-    {
-    });
-    _loc1.addProperty("members", _loc1.__get__members, function ()
-    {
-    });
-    _loc1.addProperty("level", _loc1.__get__level, function ()
-    {
-    });
-    _loc1.addProperty("taxCount", _loc1.__get__taxCount, function ()
-    {
-    });
-    _loc1.addProperty("taxPopulation", _loc1.__get__taxPopulation, function ()
-    {
-    });
-    _loc1.addProperty("taxPP", _loc1.__get__taxPP, function ()
-    {
-    });
-    _loc1.addProperty("xp", _loc1.__get__xp, function ()
-    {
-    });
-    _loc1.addProperty("taxCountMax", _loc1.__get__taxCountMax, function ()
-    {
-    });
-    _loc1.addProperty("taxLp", _loc1.__get__taxLp, function ()
-    {
-    });
-    _loc1.addProperty("houses", _loc1.__get__houses, function ()
-    {
-    });
-    _loc1.addProperty("mountParks", _loc1.__get__mountParks, function ()
-    {
-    });
-    _loc1.addProperty("name", _loc1.__get__name, function ()
-    {
-    });
-    _loc1.addProperty("xpmin", _loc1.__get__xpmin, function ()
-    {
-    });
-    _loc1.addProperty("taxBonus", _loc1.__get__taxBonus, function ()
-    {
-    });
-    _loc1.addProperty("taxSpells", _loc1.__get__taxSpells, function ()
-    {
-    });
-    _loc1.addProperty("emblem", _loc1.__get__emblem, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

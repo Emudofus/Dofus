@@ -1,61 +1,38 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20945]
-#initclip 210
-if (!dofus.datacenter.TutorialIf)
+// [Initial MovieClip Action of sprite 896]
+#initclip 108
+class dofus.datacenter.TutorialIf extends dofus.datacenter.TutorialBloc
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.TutorialIf = function (sID, mLeft, sOperator, mRight, mNextBlocTrueID, mNextBlocFalseID)
+    var _mLeft, _sOperator, _mRight, _mNextBlocTrueID, _mNextBlocFalseID, __get__left, __get__nextBlocFalseID, __get__nextBlocTrueID, __get__operator, __get__right;
+    function TutorialIf(sID, mLeft, sOperator, mRight, mNextBlocTrueID, mNextBlocFalseID)
     {
         super(sID, dofus.datacenter.TutorialBloc.TYPE_IF);
-        this._mLeft = mLeft;
-        this._sOperator = sOperator;
-        this._mRight = mRight;
-        this._mNextBlocTrueID = mNextBlocTrueID;
-        this._mNextBlocFalseID = mNextBlocFalseID;
-    }).prototype;
-    _loc1.__get__left = function ()
+        _mLeft = mLeft;
+        _sOperator = sOperator;
+        _mRight = mRight;
+        _mNextBlocTrueID = mNextBlocTrueID;
+        _mNextBlocFalseID = mNextBlocFalseID;
+    } // End of the function
+    function get left()
     {
-        return (this._mLeft);
-    };
-    _loc1.__get__operator = function ()
+        return (_mLeft);
+    } // End of the function
+    function get operator()
     {
-        return (this._sOperator);
-    };
-    _loc1.__get__right = function ()
+        return (_sOperator);
+    } // End of the function
+    function get right()
     {
-        return (this._mRight);
-    };
-    _loc1.__get__nextBlocTrueID = function ()
+        return (_mRight);
+    } // End of the function
+    function get nextBlocTrueID()
     {
-        return (this._mNextBlocTrueID);
-    };
-    _loc1.__get__nextBlocFalseID = function ()
+        return (_mNextBlocTrueID);
+    } // End of the function
+    function get nextBlocFalseID()
     {
-        return (this._mNextBlocFalseID);
-    };
-    _loc1.addProperty("nextBlocFalseID", _loc1.__get__nextBlocFalseID, function ()
-    {
-    });
-    _loc1.addProperty("right", _loc1.__get__right, function ()
-    {
-    });
-    _loc1.addProperty("nextBlocTrueID", _loc1.__get__nextBlocTrueID, function ()
-    {
-    });
-    _loc1.addProperty("operator", _loc1.__get__operator, function ()
-    {
-    });
-    _loc1.addProperty("left", _loc1.__get__left, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        return (_mNextBlocFalseID);
+    } // End of the function
+} // End of Class
 #endinitclip

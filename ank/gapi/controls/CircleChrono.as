@@ -1,34 +1,24 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20785]
-#initclip 50
-if (!ank.gapi.controls.CircleChrono)
+// [Initial MovieClip Action of sprite 452]
+#initclip 229
+class ank.gapi.controls.CircleChrono extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.CircleChrono = function ()
+    var __get__background, __get__finalCountDownTrigger, _nMaxTime, _nTimerValue, _nIntervalID, dispatchEvent, addToQueue, attachMovie, _mcLeft, _mcRight, __width, __height, getStyle, setMovieClipColor, __set__background, __set__finalCountDownTrigger;
+    function CircleChrono()
     {
         super();
-    }).prototype;
-    _loc1.__set__background = function (sBackground)
+    } // End of the function
+    function set background(sBackground)
     {
-        this._sBackgroundLink = sBackground;
+        _sBackgroundLink = sBackground;
         //return (this.background());
-    };
-    _loc1.__set__finalCountDownTrigger = function (nFinalCountDownTrigger)
+        null;
+    } // End of the function
+    function set finalCountDownTrigger(nFinalCountDownTrigger)
     {
         nFinalCountDownTrigger = Number(nFinalCountDownTrigger);
-        if (_global.isNaN(nFinalCountDownTrigger))
+        if (isNaN(nFinalCountDownTrigger))
         {
             return;
         } // end if
@@ -36,14 +26,14 @@ if (!ank.gapi.controls.CircleChrono)
         {
             return;
         } // end if
-        this._nFinalCountDownTrigger = nFinalCountDownTrigger;
+        _nFinalCountDownTrigger = nFinalCountDownTrigger;
         //return (this.finalCountDownTrigger());
-    };
-    _loc1.startTimer = function (nDuration)
+        null;
+    } // End of the function
+    function startTimer(nDuration)
     {
-        _global.clearInterval(this._nIntervalID);
         nDuration = Number(nDuration);
-        if (_global.isNaN(nDuration))
+        if (isNaN(nDuration))
         {
             return;
         } // end if
@@ -51,94 +41,80 @@ if (!ank.gapi.controls.CircleChrono)
         {
             return;
         } // end if
-        this._nMaxTime = nDuration;
-        this._nTimerValue = nDuration;
+        _nMaxTime = nDuration;
+        _nTimerValue = nDuration;
         this.updateTimer();
-        this._nIntervalID = _global.setInterval(this, "updateTimer", 1000);
-    };
-    _loc1.stopTimer = function ()
+        clearInterval(_nIntervalID);
+        _nIntervalID = setInterval(this, "updateTimer", 1000);
+    } // End of the function
+    function stopTimer()
     {
-        _global.clearInterval(this._nIntervalID);
+        clearInterval(_nIntervalID);
         this.dispatchEvent({type: "finish"});
-        this.addToQueue({object: this, method: this.initialize});
-    };
-    _loc1.init = function ()
+        this.addToQueue({object: this, method: initialize});
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.CircleChrono.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.attachMovie(this._sBackgroundLink, "_mcLeft", 10);
-        this.attachMovie(this._sBackgroundLink, "_mcRight", 20);
-    };
-    _loc1.arrange = function ()
+        this.attachMovie(_sBackgroundLink, "_mcLeft", 10);
+        this.attachMovie(_sBackgroundLink, "_mcRight", 20);
+    } // End of the function
+    function arrange()
     {
-        this._mcLeft._width = this._mcRight._width = this.__width;
-        this._mcLeft._height = this._mcRight._height = this.__height;
-        this._mcLeft._xscale = this._mcLeft._xscale * -1;
-        this._mcLeft._yscale = this._mcLeft._yscale * -1;
-        this._mcLeft._x = this._mcRight._x = this.__width / 2;
-        this._mcLeft._y = this._mcRight._y = this.__height / 2;
-    };
-    _loc1.draw = function ()
+        _mcLeft._width = _mcRight._width = __width;
+        _mcLeft._height = _mcRight._height = __height;
+        _mcLeft._xscale = _mcLeft._xscale * -1;
+        _mcLeft._yscale = _mcLeft._yscale * -1;
+        _mcLeft._x = _mcRight._x = __width / 2;
+        _mcLeft._y = _mcRight._y = __height / 2;
+    } // End of the function
+    function draw()
     {
         var _loc2 = this.getStyle();
         if (_loc2.bgcolor != undefined)
         {
-            this.setMovieClipColor(this._mcLeft.bg_mc, _loc2.bgcolor);
-            this.setMovieClipColor(this._mcRight.bg_mc, _loc2.bgcolor);
+            this.setMovieClipColor(_mcLeft.bg_mc, _loc2.bgcolor);
+            this.setMovieClipColor(_mcRight.bg_mc, _loc2.bgcolor);
         } // end if
-    };
-    _loc1.updateTimer = function ()
+    } // End of the function
+    function updateTimer()
     {
-        this.dispatchEvent({type: "tictac"});
-        var _loc2 = this._nTimerValue / this._nMaxTime;
-        var _loc3 = 360 * (1 - this._nTimerValue / this._nMaxTime);
-        if (_loc3 < 180)
+        var _loc4 = _nTimerValue / _nMaxTime;
+        var _loc2 = 360 * (1 - _nTimerValue / _nMaxTime);
+        if (_loc2 < 180)
         {
-            this.setRtation(this._mcRight, _loc3);
-            this.setRtation(this._mcLeft, 0);
+            this.setRtation(_mcRight, _loc2);
+            this.setRtation(_mcLeft, 0);
         }
         else
         {
-            this.setRtation(this._mcRight, 180);
-            this.setRtation(this._mcLeft, _loc3 - 180);
+            this.setRtation(_mcRight, 180);
+            this.setRtation(_mcLeft, _loc2 - 180);
         } // end else if
-        if (this._nTimerValue - 5 <= this._nFinalCountDownTrigger)
+        if (_nTimerValue <= _nFinalCountDownTrigger)
         {
-            this.dispatchEvent({type: "beforeFinalCountDown", value: Math.ceil(this._nTimerValue)});
+            this.dispatchEvent({type: "finalCountDown", value: Math.ceil(_nTimerValue)});
         } // end if
-        if (this._nTimerValue <= this._nFinalCountDownTrigger)
-        {
-            this.dispatchEvent({type: "finalCountDown", value: Math.ceil(this._nTimerValue)});
-        } // end if
-        --this._nTimerValue;
-        if (this._nTimerValue < 0)
+        --_nTimerValue;
+        if (_nTimerValue < 0)
         {
             this.stopTimer();
         } // end if
-    };
-    _loc1.initialize = function ()
+    } // End of the function
+    function initialize()
     {
-        this.setRtation(this._mcLeft, 0);
-        this.setRtation(this._mcRight, 0);
-    };
-    _loc1.setRtation = function (mc, nAngle)
+        this.setRtation(_mcLeft, 0);
+        this.setRtation(_mcRight, 0);
+    } // End of the function
+    function setRtation(mc, nAngle)
     {
         mc._mcMask._rotation = nAngle;
-    };
-    _loc1.addProperty("finalCountDownTrigger", function ()
-    {
-    }, _loc1.__set__finalCountDownTrigger);
-    _loc1.addProperty("background", function ()
-    {
-    }, _loc1.__set__background);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.CircleChrono = function ()
-    {
-        super();
-    }).CLASS_NAME = "CircleChrono";
-    _loc1._sBackgroundLink = "CircleChronoHalfDefault";
-    _loc1._nFinalCountDownTrigger = 5;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "CircleChrono";
+    var _sBackgroundLink = "CircleChronoHalfDefault";
+    var _nFinalCountDownTrigger = 5;
+} // End of Class
 #endinitclip

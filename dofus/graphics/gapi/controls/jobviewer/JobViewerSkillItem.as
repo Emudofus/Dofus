@@ -1,100 +1,78 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20718]
-#initclip 239
-if (!dofus.graphics.gapi.controls.jobviewer.JobViewerSkillItem)
+// [Initial MovieClip Action of sprite 1072]
+#initclip 42
+class dofus.graphics.gapi.controls.jobviewer.JobViewerSkillItem extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.jobviewer)
-    {
-        _global.dofus.graphics.gapi.controls.jobviewer = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.jobviewer.JobViewerSkillItem = function ()
+    var _mcList, __get__list, _mcArrow, _lblSkill, _lblSource, __height, _lblQuantity, _ctrIcon, _parent, addToQueue, __set__list;
+    function JobViewerSkillItem()
     {
         super();
-    }).prototype;
-    _loc1.__set__list = function (mcList)
+    } // End of the function
+    function set list(mcList)
     {
-        this._mcList = mcList;
+        _mcList = mcList;
         //return (this.list());
-    };
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+        null;
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
         if (bUsed)
         {
-            this._mcArrow._visible = true;
-            this._lblSkill.text = oItem.description;
-            this._lblSource.text = oItem.interactiveObject == undefined ? ("") : (oItem.interactiveObject);
-            this._lblSkill.setSize(this._lblSource.width - this._lblSource.textWidth - 15, this.__height);
+            _mcArrow._visible = true;
+            _lblSkill.__set__text(oItem.description);
+            _lblSource.__set__text(oItem.interactiveObject == undefined ? ("") : (oItem.interactiveObject));
+            _lblSkill.setSize(_lblSource.__get__width() - _lblSource.__get__textWidth() - 15, __height);
             if (oItem.item != undefined)
             {
+                var _loc4;
                 if (oItem.param1 == oItem.param2)
                 {
-                    var _loc5 = "(#4s)  #1";
+                    _loc4 = "(#4s)  #1";
                 }
                 else
                 {
-                    _loc5 = "(#4s)  #1{~2 " + this._mcList.gapi.api.lang.getText("TO_RANGE") + " }#2";
+                    _loc4 = "(#4s)  #1{~2 " + _mcList.gapi.api.lang.getText("TO") + " }#2";
                 } // end else if
-                this._lblQuantity.text = ank.utils.PatternDecoder.getDescription(_loc5, new Array(oItem.param1, oItem.param2, oItem.param3, Math.round(oItem.param4 / 100) / 10));
-                this._ctrIcon.contentData = oItem.item;
+                _lblQuantity.__set__text(ank.utils.PatternDecoder.getDescription(_loc4, new Array(oItem.param1, oItem.param2, oItem.param3, Math.round(oItem.param4 / 100) / 10)));
+                _ctrIcon.__set__contentData(oItem.item);
             }
             else
             {
-                var _loc6 = this._parent._parent._parent._parent;
-                var _loc7 = ank.utils.PatternDecoder.combine(this._mcList.gapi.api.lang.getText("SLOT"), "n", oItem.param1 < 2);
-                var _loc8 = "#1 " + _loc7 + " (#2%)";
-                this._lblQuantity.text = ank.utils.PatternDecoder.getDescription(_loc8, new Array(oItem.param1, oItem.param4));
-                this._ctrIcon.contentData = undefined;
+                var _loc5 = _parent._parent._parent._parent;
+                var _loc3 = ank.utils.PatternDecoder.combine(_mcList.gapi.api.lang.getText("SLOT"), "n", oItem.param1 < 2);
+                _loc4 = "#1 " + _loc3 + " (#2%)";
+                _lblQuantity.__set__text(ank.utils.PatternDecoder.getDescription(_loc4, new Array(oItem.param1, oItem.param4)));
+                _ctrIcon.__set__contentData(undefined);
             } // end else if
         }
-        else if (this._lblSource.text != undefined)
+        else
         {
-            this._mcArrow._visible = false;
-            this._lblSource.text = "";
-            this._lblSkill.text = "";
-            this._lblQuantity.text = "";
-            this._ctrIcon.contentData = undefined;
+            _mcArrow._visible = false;
+            _lblSource.__set__text("");
+            _lblSkill.__set__text("");
+            _lblQuantity.__set__text("");
+            _ctrIcon.__set__contentData(undefined);
         } // end else if
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false);
-        this._mcArrow._visible = false;
-        this.addToQueue({object: this, method: this.addListeners});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+    } // End of the function
+    function addListeners()
     {
-        this._ctrIcon.addEventListener("over", this);
-        this._ctrIcon.addEventListener("out", this);
-    };
-    _loc1.over = function (oEvent)
+        _ctrIcon.addEventListener("over", this);
+        _ctrIcon.addEventListener("out", this);
+    } // End of the function
+    function over(oEvent)
     {
-        var _loc3 = oEvent.target.contentData;
-        this._mcList._parent._parent.gapi.showTooltip(_loc3.name, oEvent.target, -20);
-    };
-    _loc1.out = function (oEvent)
+        var _loc2 = oEvent.target.contentData;
+        _mcList._parent._parent.gapi.showTooltip(_loc2.name, oEvent.target, -20);
+    } // End of the function
+    function out(oEvent)
     {
-        this._mcList._parent._parent.gapi.hideTooltip();
-    };
-    _loc1.addProperty("list", function ()
-    {
-    }, _loc1.__set__list);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _mcList._parent._parent.gapi.hideTooltip();
+    } // End of the function
+} // End of Class
 #endinitclip

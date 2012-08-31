@@ -1,74 +1,53 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20517]
-#initclip 38
-if (!dofus.graphics.gapi.ui.AskOk)
+// [Initial MovieClip Action of sprite 993]
+#initclip 210
+class dofus.graphics.gapi.ui.AskOk extends ank.gapi.ui.FlyWindow
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.AskOk = function ()
+    var _sText, __get__text, _winBackground, api, dispatchEvent, unloadThis, __set__text;
+    function AskOk()
     {
         super();
-    }).prototype;
-    _loc1.__set__text = function (sText)
+    } // End of the function
+    function set text(sText)
     {
-        this._sText = sText;
+        _sText = sText;
         //return (this.text());
-    };
-    _loc1.__get__text = function ()
+        null;
+    } // End of the function
+    function get text()
     {
-        return (this._sText);
-    };
-    _loc1.initWindowContent = function ()
+        return (_sText);
+    } // End of the function
+    function initWindowContent()
     {
-        var _loc2 = this._winBackground.content;
+        var _loc2 = _winBackground.__get__content();
         _loc2._btnOk.addEventListener("click", this);
         _loc2._txtText.addEventListener("change", this);
-        _loc2._txtText.text = this._sText;
-        _loc2._btnOk.label = this.api.lang.getText("OK");
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-    };
-    _loc1.click = function (oEvent)
+        _loc2._txtText.text = _sText;
+        _loc2._btnOk.label = api.lang.getText("OK");
+        Key.addListener(this);
+    } // End of the function
+    function click(oEvent)
     {
-        this.api.kernel.KeyManager.removeShortcutsListener(this);
+        Key.removeListener(this);
         this.dispatchEvent({type: "ok"});
         this.unloadThis();
-    };
-    _loc1.change = function (oEvent)
+    } // End of the function
+    function change(oEvent)
     {
-        var _loc3 = this._winBackground.content;
-        _loc3._btnOk._y = _loc3._txtText._y + _loc3._txtText.height + 20;
-        this._winBackground.setPreferedSize();
-    };
-    _loc1.onShortcut = function (sShortcut)
+        var _loc2 = _winBackground.__get__content();
+        _loc2._btnOk._y = _loc2._txtText._y + _loc2._txtText.height + 20;
+        _winBackground.setPreferedSize();
+    } // End of the function
+    function onKeyUp()
     {
-        if (sShortcut == "ACCEPT_CURRENT_DIALOG")
+        if (Key.getCode() == 13)
         {
             Selection.setFocus();
             this.click();
-            return (false);
         } // end if
-        return (true);
-    };
-    _loc1.addProperty("text", _loc1.__get__text, _loc1.__set__text);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.AskOk = function ()
-    {
-        super();
-    }).CLASS_NAME = "AskOk";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "AskOk";
+} // End of Class
 #endinitclip

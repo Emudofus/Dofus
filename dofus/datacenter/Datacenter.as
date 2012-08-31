@@ -1,56 +1,46 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20583]
-#initclip 104
-if (!dofus.datacenter.Datacenter)
+// [Initial MovieClip Action of sprite 908]
+#initclip 120
+class dofus.datacenter.Datacenter extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Datacenter = function (oAPI)
+    var _oAPI, Player, Basics, Challenges, Sprites, Houses, Storages, Game, Areas, Map, Temporary, Exchange;
+    function Datacenter(oAPI)
     {
         super();
         this.initialize(oAPI);
-    }).prototype;
-    _loc1.initialize = function (oAPI)
+    } // End of the function
+    function initialize(oAPI)
     {
-        this._oAPI = oAPI;
-        this.Player = new dofus.datacenter.LocalPlayer(oAPI);
-        this.Basics = new dofus.datacenter.Basics();
-        this.Challenges = new ank.utils.ExtendedObject();
-        this.Sprites = new ank.utils.ExtendedObject();
-        this.Houses = new ank.utils.ExtendedObject();
-        this.Storages = new ank.utils.ExtendedObject();
-        this.Game = new dofus.datacenter.Game();
-        this.Conquest = new dofus.datacenter.Conquest();
-        this.Subareas = new ank.utils.ExtendedObject();
-        this.Map = new dofus.datacenter.DofusMap();
-        this.Temporary = new Object();
-    };
-    _loc1.clear = function ()
+        _oAPI = oAPI;
+        Player = new dofus.datacenter.LocalPlayer(oAPI);
+        Basics = new dofus.datacenter.Basics();
+        Challenges = new ank.utils.ExtendedObject();
+        Sprites = new ank.utils.ExtendedObject();
+        Houses = new ank.utils.ExtendedObject();
+        Storages = new ank.utils.ExtendedObject();
+        Game = new dofus.datacenter.Game();
+        Areas = new ank.utils.ExtendedObject();
+        Map = new Object();
+        Temporary = new Object();
+    } // End of the function
+    function clear()
     {
-        this.Player = new dofus.datacenter.LocalPlayer(this._oAPI);
-        this.Basics.initialize();
-        this.Challenges = new ank.utils.ExtendedObject();
-        this.Sprites = new ank.utils.ExtendedObject();
-        this.Houses = new ank.utils.ExtendedObject();
-        this.Storages = new ank.utils.ExtendedObject();
-        this.Game = new dofus.datacenter.Game();
-        this.Conquest = new dofus.datacenter.Conquest();
-        this.Subareas = new ank.utils.ExtendedObject();
-        this.Map = new dofus.datacenter.DofusMap();
-        this.Temporary = new Object();
+        Player = new dofus.datacenter.LocalPlayer(_oAPI);
+        Basics.initialize();
+        Challenges = new ank.utils.ExtendedObject();
+        Sprites = new ank.utils.ExtendedObject();
+        Houses = new ank.utils.ExtendedObject();
+        Storages = new ank.utils.ExtendedObject();
+        Game = new dofus.datacenter.Game();
+        Areas = new ank.utils.ExtendedObject();
+        Map = new Object();
+        Temporary = new Object();
         delete this.Exchange;
-    };
-    _loc1.clearGame = function ()
+    } // End of the function
+    function clearGame()
     {
-        this.Game = new dofus.datacenter.Game();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        Game = new dofus.datacenter.Game();
+    } // End of the function
+} // End of Class
 #endinitclip

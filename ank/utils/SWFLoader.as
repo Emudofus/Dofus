@@ -1,57 +1,49 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20777]
-#initclip 42
-if (!ank.utils.SWFLoader)
+// [Initial MovieClip Action of sprite 969]
+#initclip 181
+class ank.utils.SWFLoader extends MovieClip
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.utils)
-    {
-        _global.ank.utils = new Object();
-    } // end if
-    var _loc1 = (_global.ank.utils.SWFLoader = function ()
+    var _frameStart, _aArgs, createEmptyMovieClip, swf_mc, broadcastMessage;
+    function SWFLoader()
     {
         super();
         AsBroadcaster.initialize(this);
         this.initialize(0);
-    }).prototype;
-    _loc1.initialize = function (frame, args)
+    } // End of the function
+    function initialize(frame, args)
     {
         this.clear();
-        this._frameStart = frame;
-        this._aArgs = args;
-    };
-    _loc1.clear = function ()
+        _frameStart = frame;
+        _aArgs = args;
+    } // End of the function
+    function clear()
     {
         this.createEmptyMovieClip("swf_mc", 10);
-    };
-    _loc1.remove = function ()
+    } // End of the function
+    function remove()
     {
-        this.swf_mc.__proto__ = MovieClip.prototype;
-        this.swf_mc.removeMovieClip();
-    };
-    _loc1.loadSWF = function (file, frame, args)
+        swf_mc.__proto__ = MovieClip.prototype;
+        swf_mc.removeMovieClip();
+    } // End of the function
+    function loadSWF(file, frame, args)
     {
         this.initialize(frame, args);
-        var _loc5 = new MovieClipLoader();
-        _loc5.addListener(this);
-        _loc5.loadClip(file, this.swf_mc);
-    };
-    _loc1.onLoadComplete = function (mc)
+        var _loc2 = new MovieClipLoader();
+        _loc2.addListener(this);
+        _loc2.loadClip(file, swf_mc);
+    } // End of the function
+    function onLoadComplete(mc)
     {
-        this.broadcastMessage("onLoadComplete", mc, this._aArgs);
-    };
-    _loc1.onLoadInit = function (mc)
+        this.broadcastMessage("onLoadComplete", mc, _aArgs);
+    } // End of the function
+    function onLoadInit(mc)
     {
-        if (this._frameStart != undefined)
+        if (_frameStart != undefined)
         {
-            mc.gotoAndStop(this._frameStart);
+            mc.gotoAndStop(_frameStart);
         } // end if
-        this.broadcastMessage("onLoadInit", mc, this._aArgs);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        this.broadcastMessage("onLoadInit", mc, _aArgs);
+    } // End of the function
+} // End of Class
 #endinitclip

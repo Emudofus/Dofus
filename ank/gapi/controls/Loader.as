@@ -1,299 +1,235 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20584]
-#initclip 105
-if (!ank.gapi.controls.Loader)
+// [Initial MovieClip Action of sprite 42]
+#initclip 21
+class ank.gapi.controls.Loader extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.Loader = function ()
+    var __get__enabled, __get__scaleContent, __get__autoLoad, __get__centerContent, _oParams, __get__contentParams, __get__contentPath, _nBytesLoaded, _nBytesTotal, __get__bytesLoaded, __get__bytesTotal, holder_mc, _bLoaded, _sPrevURL, _bInited, _mvlLoader, createEmptyMovieClip, __width, __height, dispatchEvent, _visible, __set__autoLoad, __set__centerContent, __get__content, __set__contentParams, __set__contentPath, __set__enabled, __get__holder, __get__loaded, __get__percentLoaded, __set__scaleContent;
+    function Loader()
     {
         super();
-    }).prototype;
-    _loc1.__set__enabled = function (bEnabled)
+    } // End of the function
+    function set enabled(bEnabled)
     {
         super.__set__enabled(bEnabled);
         //return (this.enabled());
-    };
-    _loc1.__set__scaleContent = function (bScaleContent)
+        null;
+    } // End of the function
+    function set scaleContent(bScaleContent)
     {
-        this._bScaleContent = bScaleContent;
+        _bScaleContent = bScaleContent;
         //return (this.scaleContent());
-    };
-    _loc1.__get__scaleContent = function ()
+        null;
+    } // End of the function
+    function get scaleContent()
     {
-        return (this._bScaleContent);
-    };
-    _loc1.__set__autoLoad = function (bAutoLoad)
+        return (_bScaleContent);
+    } // End of the function
+    function set autoLoad(bAutoLoad)
     {
-        this._bAutoLoad = bAutoLoad;
+        _bAutoLoad = bAutoLoad;
         //return (this.autoLoad());
-    };
-    _loc1.__get__autoLoad = function ()
+        null;
+    } // End of the function
+    function get autoLoad()
     {
-        return (this._bAutoLoad);
-    };
-    _loc1.__set__centerContent = function (bCenterContent)
+        return (_bAutoLoad);
+    } // End of the function
+    function set centerContent(bCenterContent)
     {
-        this._bCenterContent = bCenterContent;
+        _bCenterContent = bCenterContent;
         //return (this.centerContent());
-    };
-    _loc1.__get__centerContent = function ()
+        null;
+    } // End of the function
+    function get centerContent()
     {
-        return (this._bCenterContent);
-    };
-    _loc1.__set__contentParams = function (oParams)
+        return (_bCenterContent);
+    } // End of the function
+    function set contentParams(oParams)
     {
-        this._oParams = oParams;
-        if (this._oParams.frame)
-        {
-            this.frame = this._oParams.frame;
-        } // end if
+        _oParams = oParams;
         //return (this.contentParams());
-    };
-    _loc1.__get__contentParams = function ()
+        null;
+    } // End of the function
+    function get contentParams()
     {
-        return (this._oParams);
-    };
-    _loc1.__set__contentPath = function (sURL)
+        return (_oParams);
+    } // End of the function
+    function set contentPath(sURL)
     {
-        this._sURL = sURL;
-        if (this._bAutoLoad)
+        _sURL = sURL;
+        if (_bAutoLoad)
         {
             this.load();
         } // end if
         //return (this.contentPath());
-    };
-    _loc1.__get__contentPath = function ()
+        null;
+    } // End of the function
+    function get contentPath()
     {
-        return (this._sURL);
-    };
-    _loc1.__set__forceReload = function (bForce)
+        return (_sURL);
+    } // End of the function
+    function get bytesLoaded()
     {
-        this._bForceReload = bForce;
-        //return (this.forceReload());
-    };
-    _loc1.__get__forceReload = function ()
+        return (_nBytesLoaded);
+    } // End of the function
+    function get bytesTotal()
     {
-        return (this._bForceReload);
-    };
-    _loc1.__get__bytesLoaded = function ()
+        return (_nBytesTotal);
+    } // End of the function
+    function get percentLoaded()
     {
-        return (this._nBytesLoaded);
-    };
-    _loc1.__get__bytesTotal = function ()
-    {
-        return (this._nBytesTotal);
-    };
-    _loc1.__get__percentLoaded = function ()
-    {
-        var _loc2 = Math.round(this.bytesLoaded / this.bytesTotal * 100);
-        _loc2 = _global.isNaN(_loc2) ? (0) : (_loc2);
+        var _loc2 = Math.round(this.__get__bytesLoaded() / this.__get__bytesTotal() * 100);
+        _loc2 = isNaN(_loc2) ? (0) : (_loc2);
         return (_loc2);
-    };
-    _loc1.__get__content = function ()
+    } // End of the function
+    function get content()
     {
-        return (this.holder_mc.content_mc);
-    };
-    _loc1.__get__holder = function ()
+        return (holder_mc.content_mc);
+    } // End of the function
+    function get holder()
     {
-        return (this.holder_mc);
-    };
-    _loc1.__get__loaded = function ()
+        return (holder_mc);
+    } // End of the function
+    function get loaded()
     {
-        return (this._bLoaded);
-    };
-    _loc1.__set__frame = function (sFrame)
-    {
-        this._sFrame = sFrame;
-        this.content.gotoAndStop(sFrame);
-        this.size();
-        //return (this.frame());
-    };
-    _loc1.forceNextLoad = function ()
+        return (_bLoaded);
+    } // End of the function
+    function forceNextLoad()
     {
         delete this._sPrevURL;
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.Loader.CLASS_NAME);
-        if (this._bScaleContent == undefined)
+        if (_bScaleContent == undefined)
         {
-            this._bScaleContent = true;
+            _bScaleContent = true;
         } // end if
-        this._bInited = true;
-        this._nBytesLoaded = 0;
-        this._nBytesTotal = 0;
-        this._bLoaded = false;
-        this._mvlLoader = new MovieClipLoader();
-        this._mvlLoader.addListener(this);
-    };
-    _loc1.createChildren = function ()
+        _bInited = true;
+        _nBytesLoaded = 0;
+        _nBytesTotal = 0;
+        _bLoaded = false;
+        _mvlLoader = new MovieClipLoader();
+        _mvlLoader.addListener(this);
+    } // End of the function
+    function createChildren()
     {
         this.createEmptyMovieClip("holder_mc", 10);
-        if (this._bAutoLoad && this._sURL != undefined)
+        if (_bAutoLoad && _sURL != undefined)
         {
             this.load();
         } // end if
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
-        if (this.holder_mc.content_mc != undefined)
+        if (holder_mc.content_mc != undefined)
         {
-            if (this._sFrame != undefined && this._sFrame != "")
+            if (_bScaleContent)
             {
-                this.frame = this._sFrame;
-            } // end if
-            if (this._bScaleContent)
-            {
-                var _loc3 = this.holder_mc.content_mc._width;
-                var _loc4 = this.holder_mc.content_mc._height;
-                var _loc5 = _loc3 / _loc4;
-                var _loc6 = this.__width / this.__height;
-                if (_loc5 == _loc6)
+                var _loc6 = holder_mc.content_mc._width;
+                var _loc7 = holder_mc.content_mc._height;
+                var _loc3 = _loc6 / _loc7;
+                var _loc5 = __width / __height;
+                if (_loc3 == _loc5)
                 {
-                    this.holder_mc._width = this.__width;
-                    this.holder_mc._height = this.__height;
+                    holder_mc._width = __width;
+                    holder_mc._height = __height;
                 }
-                else if (_loc5 > _loc6)
+                else if (_loc3 > _loc5)
                 {
-                    this.holder_mc._width = this.__width;
-                    this.holder_mc._height = this.__width / _loc5;
+                    holder_mc._width = __width;
+                    holder_mc._height = __width / _loc3;
                 }
                 else
                 {
-                    this.holder_mc._width = this.__height * _loc5;
-                    this.holder_mc._height = this.__height;
+                    holder_mc._width = __height * _loc3;
+                    holder_mc._height = __height;
                 } // end else if
-                var _loc7 = this.holder_mc.content_mc.getBounds();
-                this.holder_mc.content_mc._x = -_loc7.xMin;
-                this.holder_mc.content_mc._y = -_loc7.yMin;
-                this.holder_mc._x = (this.__width - this.holder_mc._width) / 2;
-                this.holder_mc._y = (this.__height - this.holder_mc._height) / 2;
+                var _loc4 = holder_mc.content_mc.getBounds();
+                holder_mc.content_mc._x = -_loc4.xMin;
+                holder_mc.content_mc._y = -_loc4.yMin;
+                holder_mc._x = (__width - holder_mc._width) / 2;
+                holder_mc._y = (__height - holder_mc._height) / 2;
             } // end if
-            if (this._bCenterContent)
+            if (_bCenterContent)
             {
-                this.holder_mc._x = this.__width / 2;
-                this.holder_mc._y = this.__height / 2;
+                holder_mc._x = __width / 2;
+                holder_mc._y = __height / 2;
             } // end if
         } // end if
-    };
-    _loc1.setEnabled = function ()
+    } // End of the function
+    function setEnabled()
     {
-        if (this._bEnabled)
+        if (_bEnabled)
         {
-            this.onRelease = function ()
+            function onRelease()
             {
                 this.dispatchEvent({type: "click"});
-            };
+            } // End of the function
         }
         else
         {
             delete this.onRelease;
         } // end else if
-    };
-    _loc1.load = function ()
+    } // End of the function
+    function load()
     {
-        if (this._sPrevURL == undefined && this._sURL == "")
+        if (_sPrevURL == undefined && _sURL == "")
         {
             return;
         } // end if
-        if (!this._bForceReload && (this._sPrevURL == this._sURL || this._sURL == undefined || this.holder_mc == undefined))
+        if (_sPrevURL == _sURL || _sURL == undefined || holder_mc == undefined)
         {
             return;
         } // end if
-        this._visible = false;
-        this._bLoaded = false;
-        this._sPrevURL = this._sURL;
-        this.holder_mc.content_mc.removeMovieClip();
-        this.holder_mc.attachMovie(this._sURL, "content_mc", 1, this._oParams);
-        if (this._sURL == "")
+        _visible = false;
+        _bLoaded = false;
+        _sPrevURL = _sURL;
+        holder_mc.content_mc.removeMovieClip();
+        holder_mc.attachMovie(_sURL, "content_mc", 1, _oParams);
+        if (_sURL == "")
         {
             return;
         } // end if
-        if (this.holder_mc.content_mc == undefined)
+        if (holder_mc.content_mc == undefined)
         {
-            this.holder_mc.createEmptyMovieClip("content_mc", 1);
-            this._mvlLoader.loadClip(this._sURL, this.holder_mc.content_mc);
+            holder_mc.createEmptyMovieClip("content_mc", 1);
+            _mvlLoader.loadClip(_sURL, holder_mc.content_mc);
         }
         else
         {
-            this.onLoadComplete(this.holder_mc.content_mc);
-            this.onLoadInit(this.holder_mc.content_mc);
+            this.onLoadComplete(holder_mc.content_mc);
+            this.onLoadInit(holder_mc.content_mc);
         } // end else if
-    };
-    _loc1.onLoadError = function (mc)
+    } // End of the function
+    function onLoadError(mc)
     {
         this.dispatchEvent({type: "error", target: this, clip: mc});
-    };
-    _loc1.onLoadProgress = function (mc, bl, bt)
+    } // End of the function
+    function onLoadProgress(mc, bl, bt)
     {
-        this._nBytesLoaded = bl;
-        this._nBytesTotal = bt;
+        _nBytesLoaded = bl;
+        _nBytesTotal = bt;
         this.dispatchEvent({type: "progress", target: this, clip: mc});
-    };
-    _loc1.onLoadComplete = function (mc)
+    } // End of the function
+    function onLoadComplete(mc)
     {
-        this._bLoaded = true;
+        _bLoaded = true;
         this.dispatchEvent({type: "complete", clip: mc});
-    };
-    _loc1.onLoadInit = function (mc)
+    } // End of the function
+    function onLoadInit(mc)
     {
         this.size();
-        this._visible = true;
+        _visible = true;
         this.dispatchEvent({type: "initialization", clip: mc});
-    };
-    _loc1.addProperty("frame", function ()
-    {
-    }, _loc1.__set__frame);
-    _loc1.addProperty("scaleContent", _loc1.__get__scaleContent, _loc1.__set__scaleContent);
-    _loc1.addProperty("bytesTotal", _loc1.__get__bytesTotal, function ()
-    {
-    });
-    _loc1.addProperty("contentParams", _loc1.__get__contentParams, _loc1.__set__contentParams);
-    _loc1.addProperty("contentPath", _loc1.__get__contentPath, _loc1.__set__contentPath);
-    _loc1.addProperty("autoLoad", _loc1.__get__autoLoad, _loc1.__set__autoLoad);
-    _loc1.addProperty("holder", _loc1.__get__holder, function ()
-    {
-    });
-    _loc1.addProperty("content", _loc1.__get__content, function ()
-    {
-    });
-    _loc1.addProperty("forceReload", _loc1.__get__forceReload, _loc1.__set__forceReload);
-    _loc1.addProperty("bytesLoaded", _loc1.__get__bytesLoaded, function ()
-    {
-    });
-    _loc1.addProperty("loaded", _loc1.__get__loaded, function ()
-    {
-    });
-    _loc1.addProperty("enabled", function ()
-    {
-    }, _loc1.__set__enabled);
-    _loc1.addProperty("percentLoaded", _loc1.__get__percentLoaded, function ()
-    {
-    });
-    _loc1.addProperty("centerContent", _loc1.__get__centerContent, _loc1.__set__centerContent);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.Loader = function ()
-    {
-        super();
-    }).CLASS_NAME = "Loader";
-    _loc1._bEnabled = false;
-    _loc1._bAutoLoad = true;
-    _loc1._bScaleContent = false;
-    _loc1._bCenterContent = false;
-    _loc1._sURL = "";
-    _loc1._bForceReload = false;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Loader";
+    var _bEnabled = false;
+    var _bAutoLoad = true;
+    var _bScaleContent = false;
+    var _bCenterContent = false;
+    var _sURL = "";
+} // End of Class
 #endinitclip

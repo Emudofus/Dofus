@@ -1,53 +1,40 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20510]
-#initclip 31
-if (!dofus.managers.TutorialServersManager)
+// [Initial MovieClip Action of sprite 890]
+#initclip 102
+class dofus.managers.TutorialServersManager extends dofus.managers.ServersManager
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.managers)
-    {
-        _global.dofus.managers = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.managers.TutorialServersManager = function ()
+    var api, _aServersList, _nIndexMax, loadData, addToQueue;
+    function TutorialServersManager()
     {
         super();
-        dofus.managers.TutorialServersManager._sSelf = this;
-    }).prototype;
-    (_global.dofus.managers.TutorialServersManager = function ()
+    } // End of the function
+    function initialize(oAPI)
     {
-        super();
-        dofus.managers.TutorialServersManager._sSelf = this;
-    }).getInstance = function ()
-    {
-        return (dofus.managers.TutorialServersManager._sSelf);
-    };
-    _loc1.initialize = function (oAPI)
-    {
-        super.initialize(oAPI, "tutorials", "tutorials/");
-    };
-    _loc1.loadTutorial = function (sID)
+        super.initialize(oAPI);
+        if (api.lang == undefined)
+        {
+            ank.utils.Logger.err("[TutorialServersManager] pas de fich de langue");
+            return;
+        } // end if
+        _aServersList = api.lang.getConfigText("TUTORIALS_DATA_PATH");
+        _nIndexMax = _aServersList.length - 1;
+    } // End of the function
+    function loadTutorial(sID)
     {
         this.loadData(sID + ".swf");
-    };
-    _loc1.onComplete = function (mc)
+    } // End of the function
+    function onComplete(mc)
     {
-        var _loc3 = new dofus.datacenter.Tutorial(mc);
-        this.addToQueue({object: this.api.kernel.TutorialManager, method: this.api.kernel.TutorialManager.start, params: [_loc3]});
-    };
-    _loc1.onFailed = function ()
+        api.ui.unloadUIComponent("CenterText");
+        var _loc2 = new dofus.datacenter.Tutorial(mc);
+        this.addToQueue({object: api.kernel.TutorialManager, method: api.kernel.TutorialManager.start, params: [_loc2]});
+    } // End of the function
+    function onError()
     {
-        this.addToQueue({object: this.api.kernel, method: this.api.kernel.showMessage, params: [undefined, this.api.lang.getText("NO_TUTORIALDATA_FILE"), "ERROR_CHAT"]});
-        this.api.kernel.TutorialManager.terminate(0);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.managers.TutorialServersManager = function ()
-    {
-        super();
-        dofus.managers.TutorialServersManager._sSelf = this;
-    })._sSelf = null;
-} // end if
+        api.ui.unloadUIComponent("CenterText");
+        this.addToQueue({object: api.kernel, method: api.kernel.showMessage, params: [undefined, api.lang.getText("NO_TUTORIALDATA_FILE"), "ERROR_CHAT"]});
+        api.kernel.TutorialManager.terminate(0);
+    } // End of the function
+} // End of Class
 #endinitclip

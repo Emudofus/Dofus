@@ -1,104 +1,74 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20989]
-#initclip 254
-if (!dofus.graphics.gapi.ui.ChallengeMenu)
+// [Initial MovieClip Action of sprite 979]
+#initclip 193
+class dofus.graphics.gapi.ui.ChallengeMenu extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.ChallengeMenu = function ()
+    var _sLabelReady, __get__labelReady, _sLabelCancel, __get__labelCancel, _bCancelButton, _btnCancel, _lblCancel, _mcBackground, _btnReady, _lblReady, _mcTick, __get__cancelButton, _bReady, __get__ready, addToQueue, api, __set__ready, __set__cancelButton, __set__labelCancel, __set__labelReady;
+    function ChallengeMenu()
     {
         super();
-    }).prototype;
-    _loc1.__set__labelReady = function (sLabelReady)
+    } // End of the function
+    function set labelReady(sLabelReady)
     {
-        this._sLabelReady = sLabelReady;
+        _sLabelReady = sLabelReady;
         //return (this.labelReady());
-    };
-    _loc1.__set__labelCancel = function (sLabelCancel)
+        null;
+    } // End of the function
+    function set labelCancel(sLabelCancel)
     {
-        this._sLabelCancel = sLabelCancel;
+        _sLabelCancel = sLabelCancel;
         //return (this.labelCancel());
-    };
-    _loc1.__set__cancelButton = function (bCancelButton)
+        null;
+    } // End of the function
+    function set cancelButton(bCancelButton)
     {
-        this._bCancelButton = bCancelButton;
-        this._btnCancel._visible = bCancelButton;
-        this._lblCancel._visible = bCancelButton;
+        _bCancelButton = bCancelButton;
+        _btnCancel._visible = bCancelButton;
+        _lblCancel._visible = bCancelButton;
         if (!bCancelButton)
         {
-            this._mcBackground._x = this._mcBackground._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
-            this._btnReady._x = this._btnReady._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
-            this._lblReady._x = this._lblReady._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
-            this._mcTick._x = this._mcTick._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
+            _mcBackground._x = _mcBackground._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
+            _btnReady._x = _btnReady._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
+            _lblReady._x = _lblReady._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
+            _mcTick._x = _mcTick._x + dofus.graphics.gapi.ui.ChallengeMenu.X_OFFSET;
         } // end if
         //return (this.cancelButton());
-    };
-    _loc1.__set__ready = function (bReady)
+        null;
+    } // End of the function
+    function set ready(bReady)
     {
-        this._bReady = bReady;
-        this._mcTick._visible = bReady;
+        _bReady = bReady;
+        _mcTick._visible = bReady;
         //return (this.ready());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.ChallengeMenu.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.setLabels});
-    };
-    _loc1.setLabels = function ()
+        this.addToQueue({object: this, method: setLabels});
+    } // End of the function
+    function setLabels()
     {
-        this._lblReady.text = this._sLabelReady;
-        if (this._bCancelButton)
+        _lblReady.__set__text(_sLabelReady);
+        if (_bCancelButton)
         {
-            this._lblCancel.text = this._sLabelCancel;
+            _lblCancel.__set__text(_sLabelCancel);
         } // end if
-    };
-    _loc1.sendReadyState = function ()
+    } // End of the function
+    function sendReadyState()
     {
-        this.api.network.Game.ready(!this._bReady);
-        this.ready = !this._bReady;
-    };
-    _loc1.sendCancel = function ()
+        api.network.Game.ready(!_bReady);
+        this.__set__ready(!_bReady);
+    } // End of the function
+    function sendCancel()
     {
-        this.api.network.Game.leave();
-    };
-    _loc1.addProperty("ready", function ()
-    {
-    }, _loc1.__set__ready);
-    _loc1.addProperty("cancelButton", function ()
-    {
-    }, _loc1.__set__cancelButton);
-    _loc1.addProperty("labelCancel", function ()
-    {
-    }, _loc1.__set__labelCancel);
-    _loc1.addProperty("labelReady", function ()
-    {
-    }, _loc1.__set__labelReady);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.ChallengeMenu = function ()
-    {
-        super();
-    }).CLASS_NAME = "ChallengeMenu";
-    (_global.dofus.graphics.gapi.ui.ChallengeMenu = function ()
-    {
-        super();
-    }).X_OFFSET = 90;
-} // end if
+        api.network.Game.leave();
+    } // End of the function
+    static var CLASS_NAME = "ChallengeMenu";
+    static var X_OFFSET = 90;
+} // End of Class
 #endinitclip

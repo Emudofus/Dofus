@@ -1,153 +1,136 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20521]
-#initclip 42
-if (!ank.gapi.controls.Clock)
+// [Initial MovieClip Action of sprite 44]
+#initclip 59
+class ank.gapi.controls.Clock extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.Clock = function ()
+    var _sBackground, __get__background, _sArrowHours, __get__arrowHours, _sArrowMinutes, __get__arrowMinutes, _nHours, __get__initialized, __get__hours, _nMinutes, __get__minutes, _oUpdateFunction, __get__updateFunction, attachMovie, _ldrArrowHours, _ldrArrowMinutes, addToQueue, __height, __width, _ldrBack, dispatchEvent, __set__arrowHours, __set__arrowMinutes, __set__background, __set__hours, __set__minutes, __set__updateFunction;
+    function Clock()
     {
         super();
-    }).prototype;
-    _loc1.__set__background = function (sBackground)
+    } // End of the function
+    function set background(sBackground)
     {
-        this._sBackground = sBackground;
+        _sBackground = sBackground;
         //return (this.background());
-    };
-    _loc1.__get__background = function ()
+        null;
+    } // End of the function
+    function get background()
     {
-        return (this._sBackground);
-    };
-    _loc1.__set__arrowHours = function (sArrowHours)
+        return (_sBackground);
+    } // End of the function
+    function set arrowHours(sArrowHours)
     {
-        this._sArrowHours = sArrowHours;
+        _sArrowHours = sArrowHours;
         //return (this.arrowHours());
-    };
-    _loc1.__get__arrowHours = function ()
+        null;
+    } // End of the function
+    function get arrowHours()
     {
-        return (this._sArrowHours);
-    };
-    _loc1.__set__arrowMinutes = function (sArrowMinutes)
+        return (_sArrowHours);
+    } // End of the function
+    function set arrowMinutes(sArrowMinutes)
     {
-        this._sArrowMinutes = sArrowMinutes;
+        _sArrowMinutes = sArrowMinutes;
         //return (this.arrowMinutes());
-    };
-    _loc1.__get__arrowMinutes = function ()
+        null;
+    } // End of the function
+    function get arrowMinutes()
     {
-        return (this._sArrowMinutes);
-    };
-    _loc1.__set__hours = function (nHours)
+        return (_sArrowMinutes);
+    } // End of the function
+    function set hours(nHours)
     {
-        this._nHours = nHours % 12;
-        if (this.initialized)
+        _nHours = nHours % 12;
+        if (this.__get__initialized())
         {
             this.layoutContent();
         } // end if
         //return (this.hours());
-    };
-    _loc1.__get__hours = function ()
+        null;
+    } // End of the function
+    function get hours()
     {
-        return (this._nHours);
-    };
-    _loc1.__set__minutes = function (nMinutes)
+        return (_nHours);
+    } // End of the function
+    function set minutes(nMinutes)
     {
-        this._nMinutes = nMinutes % 59;
-        if (this.initialized)
+        _nMinutes = nMinutes % 59;
+        if (this.__get__initialized())
         {
             this.layoutContent();
         } // end if
         //return (this.minutes());
-    };
-    _loc1.__get__minutes = function ()
+        null;
+    } // End of the function
+    function get minutes()
     {
-        return (this._nMinutes);
-    };
-    _loc1.__set__updateFunction = function (oUpdateFunction)
+        return (_nMinutes);
+    } // End of the function
+    function set updateFunction(oUpdateFunction)
     {
-        this._oUpdateFunction = oUpdateFunction;
+        _oUpdateFunction = oUpdateFunction;
         //return (this.updateFunction());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.Clock.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.attachMovie("Loader", "_ldrBack", 10, {contentPath: this._sBackground, centerContent: false, scaleContent: true});
-        this.attachMovie("Loader", "_ldrArrowHours", 20, {contentPath: this._sArrowHours, centerContent: false, scaleContent: true});
-        this.attachMovie("Loader", "_ldrArrowMinutes", 30, {contentPath: this._sArrowMinutes, centerContent: false, scaleContent: true});
-        this._ldrArrowHours._visible = false;
-        this._ldrArrowMinutes._visible = false;
-        this.addToQueue({object: this, method: this.layoutContent});
-    };
-    _loc1.size = function ()
+        this.attachMovie("Loader", "_ldrBack", 10, {contentPath: _sBackground, centerContent: false, scaleContent: true});
+        this.attachMovie("Loader", "_ldrArrowHours", 20, {contentPath: _sArrowHours, centerContent: false, scaleContent: true});
+        this.attachMovie("Loader", "_ldrArrowMinutes", 30, {contentPath: _sArrowMinutes, centerContent: false, scaleContent: true});
+        _ldrArrowHours._visible = false;
+        _ldrArrowMinutes._visible = false;
+        this.addToQueue({object: this, method: layoutContent});
+    } // End of the function
+    function size()
     {
         super.size();
         this.arrange();
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        this._ldrBack.setSize(this.__width, this.__height);
-        this._ldrArrowHours.setSize(this.__width, this.__height);
-        this._ldrArrowMinutes.setSize(this.__width, this.__height);
-    };
-    _loc1.layoutContent = function ()
+        _ldrBack.setSize(__width, __height);
+        _ldrArrowHours.setSize(__width, __height);
+        _ldrArrowMinutes.setSize(__width, __height);
+    } // End of the function
+    function layoutContent()
     {
-        if (this._oUpdateFunction != undefined)
+        if (_oUpdateFunction != undefined)
         {
-            var _loc2 = this._oUpdateFunction.method.apply(this._oUpdateFunction.object);
-            ank.utils.Timer.setTimer(this, "clock", this, this.layoutContent, 30000);
-            this._nHours = _loc2[0];
-            this._nMinutes = _loc2[1];
+            var _loc2 = _oUpdateFunction.method.apply(_oUpdateFunction.object);
+            ank.utils.Timer.setTimer(this, "clock", this, layoutContent, 30000);
+            _nHours = _loc2[0];
+            _nMinutes = _loc2[1];
         } // end if
-        var _loc3 = 30 * this._nHours + 6 * this._nMinutes / 12 - 90;
-        var _loc4 = 6 * this._nMinutes - 90;
-        this._ldrArrowHours.content._rotation = _loc3;
-        this._ldrArrowMinutes.content._rotation = _loc4;
-        this._ldrArrowHours._visible = true;
-        this._ldrArrowMinutes._visible = true;
-    };
-    _loc1.onRelease = function ()
+        var _loc3 = 30 * _nHours + 6 * _nMinutes / 12 - 90;
+        var _loc4 = 6 * _nMinutes - 90;
+        _ldrArrowHours.content._rotation = _loc3;
+        _ldrArrowMinutes.content._rotation = _loc4;
+        _ldrArrowHours._visible = true;
+        _ldrArrowMinutes._visible = true;
+    } // End of the function
+    function onRelease()
     {
         this.dispatchEvent({type: "click"});
-    };
-    _loc1.onReleaseOutside = function ()
+    } // End of the function
+    function onReleaseOutside()
     {
         this.onRollOut();
-    };
-    _loc1.onRollOver = function ()
+    } // End of the function
+    function onRollOver()
     {
         this.dispatchEvent({type: "over"});
-    };
-    _loc1.onRollOut = function ()
+    } // End of the function
+    function onRollOut()
     {
         this.dispatchEvent({type: "out"});
-    };
-    _loc1.addProperty("hours", _loc1.__get__hours, _loc1.__set__hours);
-    _loc1.addProperty("minutes", _loc1.__get__minutes, _loc1.__set__minutes);
-    _loc1.addProperty("background", _loc1.__get__background, _loc1.__set__background);
-    _loc1.addProperty("arrowHours", _loc1.__get__arrowHours, _loc1.__set__arrowHours);
-    _loc1.addProperty("arrowMinutes", _loc1.__get__arrowMinutes, _loc1.__set__arrowMinutes);
-    _loc1.addProperty("updateFunction", function ()
-    {
-    }, _loc1.__set__updateFunction);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.Clock = function ()
-    {
-        super();
-    }).CLASS_NAME = "Clock";
-    _loc1._bHoursLoaded = false;
-    _loc1._bMinutesLoaded = false;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Clock";
+    var _bHoursLoaded = false;
+    var _bMinutesLoaded = false;
+} // End of Class
 #endinitclip

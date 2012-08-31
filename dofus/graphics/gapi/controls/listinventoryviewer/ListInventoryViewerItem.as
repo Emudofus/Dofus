@@ -1,78 +1,46 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20955]
-#initclip 220
-if (!dofus.graphics.gapi.controls.listinventoryviewer.ListInventoryViewerItem)
+// [Initial MovieClip Action of sprite 1063]
+#initclip 33
+class dofus.graphics.gapi.controls.listinventoryviewer.ListInventoryViewerItem extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls.listinventoryviewer)
-    {
-        _global.dofus.graphics.gapi.controls.listinventoryviewer = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.listinventoryviewer.ListInventoryViewerItem = function ()
+    var _mcList, __get__list, _lblPrice, _lblName, __height, __width, _ldrIcon, addToQueue, __set__list;
+    function ListInventoryViewerItem()
     {
         super();
-    }).prototype;
-    _loc1.__set__list = function (mcList)
+    } // End of the function
+    function set list(mcList)
     {
-        this._mcList = mcList;
+        _mcList = mcList;
         //return (this.list());
-    };
-    _loc1.setValue = function (bUsed, sSuggested, oItem)
+        null;
+    } // End of the function
+    function setValue(bUsed, sSuggested, oItem)
     {
-        if (bUsed)
-        {
-            this._lblPrice.text = bUsed ? (new ank.utils.ExtendedString(oItem.price).addMiddleChar(this._mcList.gapi.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3)) : ("");
-            var _loc5 = this._lblPrice.textWidth;
-            this._lblName.text = bUsed ? ((oItem.Quantity > 1 ? ("x" + oItem.Quantity + " ") : ("")) + oItem.name) : ("");
-            this._lblName.setSize(this.__width - _loc5 - 30, this.__height);
-            this._lblName.styleName = oItem.style == "" ? ("BrownLeftSmallLabel") : (oItem.style + "LeftSmallLabel");
-            this._ldrIcon.contentPath = bUsed ? (oItem.iconFile) : ("");
-            this._ldrIcon.contentParams = oItem.params;
-        }
-        else if (this._lblPrice.text != undefined)
-        {
-            this._lblPrice.text = "";
-            this._lblName.text = "";
-            this._ldrIcon.contentPath = "";
-        } // end else if
-    };
-    _loc1.init = function ()
+        _lblPrice.__set__text(bUsed ? (String(oItem.price).addMiddleChar(_mcList.gapi.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3)) : (""));
+        var _loc3 = _lblPrice.__get__textWidth();
+        _lblName.__set__text(bUsed ? ((oItem.Quantity > 1 ? ("x" + oItem.Quantity + " ") : ("")) + oItem.name) : (""));
+        _lblName.setSize(__width - _loc3 - 30, __height);
+        _lblName.__set__styleName(oItem.style == "" ? ("BrownLeftSmallLabel") : (oItem.style + "LeftSmallLabel"));
+        _ldrIcon.__set__contentPath(bUsed ? (oItem.iconFile) : (""));
+    } // End of the function
+    function init()
     {
         super.init(false);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
         this.arrange();
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
-        this.addToQueue({object: this, method: this.arrange});
-    };
-    _loc1.arrange = function ()
+        this.addToQueue({object: this, method: arrange});
+    } // End of the function
+    function arrange()
     {
-        this._lblName.setSize(this.__width - 50, this.__height);
-        this._lblPrice.setSize(this.__width - 20, this.__height);
-    };
-    _loc1.addProperty("list", function ()
-    {
-    }, _loc1.__set__list);
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+        _lblName.setSize(__width - 50, __height);
+        _lblPrice.setSize(__width - 20, __height);
+    } // End of the function
+} // End of Class
 #endinitclip

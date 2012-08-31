@@ -1,57 +1,40 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20728]
-#initclip 249
-if (!dofus.managers.DocumentsServersManager)
+// [Initial MovieClip Action of sprite 888]
+#initclip 100
+class dofus.managers.DocumentsServersManager extends dofus.managers.ServersManager
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.managers)
-    {
-        _global.dofus.managers = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.managers.DocumentsServersManager = function ()
+    var api, _aServersList, _nIndexMax, loadData, addToQueue;
+    function DocumentsServersManager()
     {
         super();
-        dofus.managers.DocumentsServersManager._sSelf = this;
-    }).prototype;
-    (_global.dofus.managers.DocumentsServersManager = function ()
+    } // End of the function
+    function initialize(oAPI)
     {
-        super();
-        dofus.managers.DocumentsServersManager._sSelf = this;
-    }).getInstance = function ()
-    {
-        return (dofus.managers.DocumentsServersManager._sSelf);
-    };
-    _loc1.initialize = function (oAPI)
-    {
-        super.initialize(oAPI, "docs", "docs/");
-    };
-    _loc1.loadDocument = function (sID)
+        super.initialize(oAPI);
+        if (api.lang == undefined)
+        {
+            ank.utils.Logger.err("[DocumentsServersManager] pas de fich de langue");
+            return;
+        } // end if
+        _aServersList = api.lang.getConfigText("DOCUMENTS_DATA_PATH");
+        _nIndexMax = _aServersList.length - 1;
+    } // End of the function
+    function loadDocument(sID)
     {
         this.loadData(sID + ".swf");
-    };
-    _loc1.getDocumentObject = function (mc)
+    } // End of the function
+    function onComplete(mc)
     {
-        return (new dofus.datacenter.Document(mc));
-    };
-    _loc1.onComplete = function (mc)
+        api.ui.unloadUIComponent("CenterText");
+        var _loc2 = new dofus.datacenter.Document(mc);
+        this.addToQueue({object: api.ui, method: api.ui.loadUIComponent, params: [_loc2.uiType, "Document", {document: _loc2}]});
+    } // End of the function
+    function onError()
     {
-        var _loc3 = this.getDocumentObject(mc);
-        this.addToQueue({object: this.api.ui, method: this.api.ui.loadUIComponent, params: [_loc3.uiType, "Document", {document: _loc3}]});
-    };
-    _loc1.onFailed = function ()
-    {
-        this.addToQueue({object: this.api.kernel, method: this.api.kernel.showMessage, params: [undefined, this.api.lang.getText("NO_DOCUMENTDATA_FILE"), "ERROR_BOX", {name: "NoMapData"}]});
-        this.api.network.Documents.leave();
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.managers.DocumentsServersManager = function ()
-    {
-        super();
-        dofus.managers.DocumentsServersManager._sSelf = this;
-    })._sSelf = null;
-} // end if
+        api.ui.unloadUIComponent("CenterText");
+        this.addToQueue({object: api.kernel, method: api.kernel.showMessage, params: [undefined, api.lang.getText("NO_DOCUMENTDATA_FILE"), "ERROR_BOX", {name: "NoMapData"}]});
+        api.network.Documents.leave();
+    } // End of the function
+} // End of Class
 #endinitclip

@@ -1,86 +1,55 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20491]
-#initclip 12
-if (!dofus.datacenter.Monster)
+// [Initial MovieClip Action of sprite 874]
+#initclip 86
+class dofus.datacenter.Monster extends dofus.datacenter.PlayableCharacter
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Monster = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID)
+    var initialize, _nNameID, __get__name, api, _nPowerLevel, __get__powerLevel, CharacteristicsManager, __get__Level, __get__alignment, __set__name, __set__powerLevel, __get__resistances;
+    function Monster(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super();
         this.initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID);
-    }).prototype;
-    _loc1.__set__name = function (nNameID)
+    } // End of the function
+    function set name(nNameID)
     {
-        this._nNameID = Number(nNameID);
+        _nNameID = Number(nNameID);
         //return (this.name());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this.api.lang.getMonstersText(this._nNameID).n);
-    };
-    _loc1.__get__kickable = function ()
+        return (api.lang.getMonstersText(_nNameID).n);
+    } // End of the function
+    function set powerLevel(nPowerLevel)
     {
-        return (this.api.lang.getMonstersText(this._nNameID).k);
-    };
-    _loc1.__set__powerLevel = function (nPowerLevel)
-    {
-        this._nPowerLevel = Number(nPowerLevel);
+        _nPowerLevel = Number(nPowerLevel);
         //return (this.powerLevel());
-    };
-    _loc1.__get__powerLevel = function ()
+        null;
+    } // End of the function
+    function get powerLevel()
     {
-        return (this._nPowerLevel);
-    };
-    _loc1.__get__Level = function ()
+        return (_nPowerLevel);
+    } // End of the function
+    function get Level()
     {
-        return (this.api.lang.getMonstersText(this._nNameID)["g" + this._nPowerLevel].l);
-    };
-    _loc1.__get__resistances = function ()
+        return (api.lang.getMonstersText(_nNameID)["g" + _nPowerLevel].l);
+    } // End of the function
+    function get resistances()
     {
-        var _loc2 = this.api.lang.getMonstersText(this._nNameID)["g" + this._nPowerLevel].r;
-        var _loc3 = new Array();
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc2.length)
+        var _loc3 = api.lang.getMonstersText(_nNameID)["g" + _nPowerLevel].r;
+        var _loc4 = new Array();
+        for (var _loc2 = 0; _loc2 < _loc3.length; ++_loc2)
         {
-            _loc3[_loc4] = _loc2[_loc4];
-        } // end while
-        _loc3[5] = _loc3[5] + this.CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PA_LOST_PROBABILITY);
-        _loc3[6] = _loc3[6] + this.CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PM_LOST_PROBABILITY);
-        return (_loc3);
-    };
-    _loc1.__get__alignment = function ()
+            _loc4[_loc2] = _loc3[_loc2];
+        } // end of for
+        _loc4[5] = _loc4[5] + CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PA_LOST_PROBABILITY);
+        _loc4[6] = _loc4[6] + CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PM_LOST_PROBABILITY);
+        return (_loc4);
+    } // End of the function
+    function get alignment()
     {
-        return (new dofus.datacenter.Alignment(this.api.lang.getMonstersText(this._nNameID).a, 0));
-    };
-    _loc1.alertChatText = function ()
-    {
-        var _loc2 = this.api.datacenter.Map;
-        return (this.name + " niveau " + this.Level + " en " + _loc2.x + "," + _loc2.y + ".");
-    };
-    _loc1.addProperty("powerLevel", _loc1.__get__powerLevel, _loc1.__set__powerLevel);
-    _loc1.addProperty("kickable", _loc1.__get__kickable, function ()
-    {
-    });
-    _loc1.addProperty("name", _loc1.__get__name, _loc1.__set__name);
-    _loc1.addProperty("resistances", _loc1.__get__resistances, function ()
-    {
-    });
-    _loc1.addProperty("alignment", _loc1.__get__alignment, function ()
-    {
-    });
-    _loc1.addProperty("Level", _loc1.__get__Level, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._nSpeedModerator = 1;
-} // end if
+        return (new dofus.datacenter.Alignment(api.lang.getMonstersText(_nNameID).a, 0));
+    } // End of the function
+    var _nSpeedModerator = 1.500000E+000;
+} // End of Class
 #endinitclip

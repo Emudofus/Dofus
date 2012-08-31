@@ -1,33 +1,22 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20855]
-#initclip 120
-if (!dofus.datacenter.Document)
+// [Initial MovieClip Action of sprite 889]
+#initclip 101
+class dofus.datacenter.Document extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Document = function (mcSwfData)
+    var _sType, _sTitle, _sSubTitle, _sAuthor, _aPages, api, _sCSS, _aChapters, __get__author, __get__pageCount, __get__subtitle, __get__title, __get__uiType;
+    function Document(mcSwfData)
     {
         super();
         this.initialize(mcSwfData);
-    }).prototype;
-    _loc1.__get__uiType = function ()
+    } // End of the function
+    function get uiType()
     {
-        switch (this._sType)
+        switch (_sType)
         {
             case "book":
             {
                 return ("DocumentBook");
-            } 
-            case "parchment":
-            {
-                return ("DocumentParchment");
             } 
             case "roadsignleft":
             {
@@ -38,129 +27,106 @@ if (!dofus.datacenter.Document)
                 return ("DocumentRoadSignRight");
             } 
         } // End of switch
-    };
-    _loc1.__get__title = function ()
+    } // End of the function
+    function get title()
     {
-        return (this._sTitle);
-    };
-    _loc1.__get__subtitle = function ()
+        return (_sTitle);
+    } // End of the function
+    function get subtitle()
     {
-        return (this._sSubTitle);
-    };
-    _loc1.__get__author = function ()
+        return (_sSubTitle);
+    } // End of the function
+    function get author()
     {
-        return (this._sAuthor);
-    };
-    _loc1.__get__pageCount = function ()
+        return (_sAuthor);
+    } // End of the function
+    function get pageCount()
     {
-        return (this._aPages.length);
-    };
-    _loc1.initialize = function (mcSwfData)
+        return (_aPages.length);
+    } // End of the function
+    function initialize(mcSwfData)
     {
-        this.api = _global.API;
-        this._sType = mcSwfData.type;
-        this._sTitle = mcSwfData.title;
-        this._sSubTitle = mcSwfData.subtitle;
-        this._sAuthor = mcSwfData.author;
-        this._sCSS = dofus.Constants.STYLES_PATH + mcSwfData.style + ".css";
-        this._aChapters = mcSwfData.chapters;
-        this._aPages = new ank.utils.ExtendedArray();
-        switch (this._sType)
+        api = _global.API;
+        _sType = mcSwfData.type;
+        _sTitle = mcSwfData.title;
+        _sSubTitle = mcSwfData.subtitle;
+        _sAuthor = mcSwfData.author;
+        _sCSS = dofus.Constants.STYLES_PATH + mcSwfData.style + ".css";
+        _aChapters = mcSwfData.chapters;
+        _aPages = new ank.utils.ExtendedArray();
+        switch (_sType)
         {
             case "book":
             {
-                var _loc3 = 1;
-                if (this._sTitle != undefined)
+                var _loc5 = 1;
+                if (_sTitle != undefined)
                 {
-                    this._aPages.push({type: "blank"});
-                    this._aPages.push({type: "title", num: _loc3++, title: this._sTitle, subtitle: this._sSubTitle, author: this._sAuthor});
+                    _aPages.push({type: "blank"});
+                    _aPages.push({type: "title", num: _loc5++, title: _sTitle, subtitle: _sSubTitle, author: _sAuthor});
                 } // end if
                 var _loc4 = new Object();
-                var _loc5 = this._aChapters.length;
-                if (_loc5 != 0 && this._aChapters != undefined)
+                var _loc13 = _aChapters.length;
+                if (_loc13 != 0 && _aChapters != undefined)
                 {
-                    this._aPages.push({type: "blank", num: _loc3++});
+                    _aPages.push({type: "blank", num: _loc5++});
                     var _loc6 = 0;
-                    for (var _loc7 = 0; _loc6 < _loc5; ++_loc7)
+                    for (var _loc14 = 0; _loc6 < _loc13; ++_loc14)
                     {
-                        var _loc8 = this._aChapters.slice(_loc6, _loc6 + dofus.datacenter.Document.MAX_CHAPTER_ON_PAGE);
-                        this._aPages.push({type: "index", num: _loc3++, chapters: _loc8});
+                        var _loc9 = _aChapters.slice(_loc6, _loc6 + dofus.datacenter.Document.MAX_CHAPTER_ON_PAGE);
+                        _aPages.push({type: "index", num: _loc5++, chapters: _loc9});
                         _loc6 = _loc6 + dofus.datacenter.Document.MAX_CHAPTER_ON_PAGE;
                     } // end of for
-                    if (_loc7 % 2 == 0)
+                    if (_loc14 % 2 == 0)
                     {
-                        this._aPages.push({type: "blank", num: _loc3++});
+                        _aPages.push({type: "blank", num: _loc5++});
                     } // end if
-                    for (var k in this._aChapters)
+                    for (var _loc17 in _aChapters)
                     {
-                        _loc4[this._aChapters[k][1]] = this._aChapters[k];
+                        _loc4[_aChapters[_loc17][1]] = _aChapters[_loc17];
                     } // end of for...in
                 } // end if
-                var _loc9 = mcSwfData.pages;
-                var _loc10 = _loc9.length;
-                if (_loc10 != 0)
+                var _loc8 = mcSwfData.pages;
+                var _loc15 = _loc8.length;
+                if (_loc15 != 0)
                 {
-                    this._aPages.push({type: "blank", num: _loc3++});
-                    var _loc11 = this.api.kernel.DocumentsServersManager.getCurrentServer() + "#1/#2.#1";
-                    var _loc12 = 0;
-                    
-                    while (++_loc12, _loc12 < _loc10)
+                    _aPages.push({type: "blank", num: _loc5++});
+                    var _loc19 = api.kernel.DocumentsServersManager.getCurrentServer() + "#1/#2.#1";
+                    for (var _loc3 = 0; _loc3 < _loc15; ++_loc3)
                     {
-                        var _loc13 = new String();
-                        if (_loc4[_loc12] != undefined)
+                        var _loc7 = new String();
+                        if (_loc4[_loc3] != undefined)
                         {
-                            if (_loc4[_loc12][2] && _loc3 % 2 == 0)
+                            if (_loc4[_loc3][2] && _loc5 % 2 == 0)
                             {
-                                this._aPages.push({type: "blank", num: _loc3++});
+                                _aPages.push({type: "blank", num: _loc5++});
                             } // end if
-                            _loc4[_loc12][4] = _loc3;
-                            if (_loc4[_loc12][3])
+                            _loc4[_loc3][4] = _loc5;
+                            if (_loc4[_loc3][3])
                             {
-                                _loc13 = "<br/><p class=\'chapter\'>" + _loc4[_loc12][0] + "</p><br/>";
+                                _loc7 = "<br/><p class=\'chapter\'>" + _loc4[_loc3][0] + "</p><br/>";
                             } // end if
                         } // end if
-                        _loc9[_loc12] = ank.utils.PatternDecoder.replace(_loc9[_loc12], _loc11);
-                        this._aPages.push({type: "text", num: _loc3++, text: _loc13 + _loc9[_loc12], cssFile: this._sCSS});
-                    } // end while
+                        _loc8[_loc3] = ank.utils.PatternDecoder.replace(_loc8[_loc3], _loc19);
+                        _aPages.push({type: "text", num: _loc5++, text: _loc7 + _loc8[_loc3], cssFile: _sCSS});
+                    } // end of for
                 } // end if
                 break;
             } 
-            case "parchment":
             case "roadsignleft":
             case "roadsignright":
             {
-                var _loc14 = mcSwfData.pages[0];
-                var _loc15 = this.api.kernel.DocumentsServersManager.getCurrentServer() + "#1/#2.#1";
-                _loc14 = ank.utils.PatternDecoder.replace(_loc14, _loc15);
-                this._aPages.push({text: _loc14, cssFile: this._sCSS});
+                var _loc18 = mcSwfData.pages[0];
+                _loc19 = api.kernel.DocumentsServersManager.getCurrentServer() + "#1/#2.#1";
+                _loc18 = ank.utils.PatternDecoder.replace(_loc18, _loc19);
+                _aPages.push({text: _loc18, cssFile: _sCSS});
                 break;
             } 
         } // End of switch
-    };
-    _loc1.getPage = function (nPageNum)
+    } // End of the function
+    function getPage(nPageNum)
     {
-        return (this._aPages[nPageNum]);
-    };
-    _loc1.addProperty("author", _loc1.__get__author, function ()
-    {
-    });
-    _loc1.addProperty("title", _loc1.__get__title, function ()
-    {
-    });
-    _loc1.addProperty("pageCount", _loc1.__get__pageCount, function ()
-    {
-    });
-    _loc1.addProperty("subtitle", _loc1.__get__subtitle, function ()
-    {
-    });
-    _loc1.addProperty("uiType", _loc1.__get__uiType, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.datacenter.Document = function (mcSwfData)
-    {
-        super();
-        this.initialize(mcSwfData);
-    }).MAX_CHAPTER_ON_PAGE = 13;
-} // end if
+        return (_aPages[nPageNum]);
+    } // End of the function
+    static var MAX_CHAPTER_ON_PAGE = 13;
+} // End of Class
 #endinitclip

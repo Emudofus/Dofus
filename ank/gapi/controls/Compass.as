@@ -1,206 +1,187 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20925]
-#initclip 190
-if (!ank.gapi.controls.Compass)
+// [Initial MovieClip Action of sprite 40]
+#initclip 58
+class ank.gapi.controls.Compass extends ank.gapi.core.UIBasicComponent
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    if (!ank.gapi.controls)
-    {
-        _global.ank.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.controls.Compass = function ()
+    var __get__updateOnLoad, __get__background, __get__arrow, __get__noArrow, _aCurrentCoords, __get__initialized, __get__currentCoords, _aTargetCoords, __get__targetCoords, addToQueue, __get__allCoords, attachMovie, createEmptyMovieClip, _mcArrow, __height, __width, _ldrBack, dispatchEvent, __set__allCoords, __set__arrow, __set__background, __set__currentCoords, __set__noArrow, __set__targetCoords, __set__updateOnLoad;
+    function Compass()
     {
         super();
-    }).prototype;
-    _loc1.__set__updateOnLoad = function (bUpdateOnLoad)
+    } // End of the function
+    function set updateOnLoad(bUpdateOnLoad)
     {
-        this._bUpdateOnLoad = bUpdateOnLoad;
+        _bUpdateOnLoad = bUpdateOnLoad;
         //return (this.updateOnLoad());
-    };
-    _loc1.__get__updateOnLoad = function ()
+        null;
+    } // End of the function
+    function get updateOnLoad()
     {
-        return (this._bUpdateOnLoad);
-    };
-    _loc1.__set__background = function (sBackground)
+        return (_bUpdateOnLoad);
+    } // End of the function
+    function set background(sBackground)
     {
-        this._sBackground = sBackground;
+        _sBackground = sBackground;
         //return (this.background());
-    };
-    _loc1.__get__background = function ()
+        null;
+    } // End of the function
+    function get background()
     {
-        return (this._sBackground);
-    };
-    _loc1.__set__arrow = function (sArrow)
+        return (_sBackground);
+    } // End of the function
+    function set arrow(sArrow)
     {
-        this._sArrow = sArrow;
+        _sArrow = sArrow;
         //return (this.arrow());
-    };
-    _loc1.__get__arrow = function ()
+        null;
+    } // End of the function
+    function get arrow()
     {
-        return (this._sArrow);
-    };
-    _loc1.__set__noArrow = function (sNoArrow)
+        return (_sArrow);
+    } // End of the function
+    function set noArrow(sNoArrow)
     {
-        this._sNoArrow = sNoArrow;
+        _sNoArrow = sNoArrow;
         //return (this.noArrow());
-    };
-    _loc1.__get__noArrow = function ()
+        null;
+    } // End of the function
+    function get noArrow()
     {
-        return (this._sNoArrow);
-    };
-    _loc1.__set__currentCoords = function (aCurrentCoords)
+        return (_sNoArrow);
+    } // End of the function
+    function set currentCoords(aCurrentCoords)
     {
-        this._aCurrentCoords = aCurrentCoords;
-        if (this.initialized)
+        _aCurrentCoords = aCurrentCoords;
+        if (this.__get__initialized())
         {
             this.layoutContent();
         } // end if
         //return (this.currentCoords());
-    };
-    _loc1.__set__targetCoords = function (aTargetCoords)
+        null;
+    } // End of the function
+    function set targetCoords(aTargetCoords)
     {
-        this._aTargetCoords = aTargetCoords;
-        if (this.initialized)
+        _aTargetCoords = aTargetCoords;
+        if (this.__get__initialized())
         {
             this.layoutContent();
         } // end if
         //return (this.targetCoords());
-    };
-    _loc1.__get__targetCoords = function ()
+        null;
+    } // End of the function
+    function get targetCoords()
     {
-        return (this._aTargetCoords);
-    };
-    _loc1.__set__allCoords = function (oAllCoords)
+        return (_aTargetCoords);
+    } // End of the function
+    function set allCoords(oAllCoords)
     {
-        this._aTargetCoords = oAllCoords.targetCoords;
-        this._aCurrentCoords = oAllCoords.currentCoords;
-        if (this.initialized)
+        _aTargetCoords = oAllCoords.targetCoords;
+        _aCurrentCoords = oAllCoords.currentCoords;
+        if (this.__get__initialized())
         {
-            this.addToQueue({object: this, method: this.layoutContent});
+            this.addToQueue({object: this, method: layoutContent});
         } // end if
         //return (this.allCoords());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, ank.gapi.controls.Compass.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.attachMovie("Loader", "_ldrBack", 10, {contentPath: this._sBackground, centerContent: false, scaleContent: true});
+        this.attachMovie("Loader", "_ldrBack", 10, {contentPath: _sBackground, centerContent: false, scaleContent: true});
         this.createEmptyMovieClip("_mcArrow", 20);
-        this._mcArrow.attachMovie("Loader", "_ldrArrow", 10, {contentPath: this._sNoArrow, centerContent: false, scaleContent: true});
-        if (this._bUpdateOnLoad)
+        _mcArrow.attachMovie("Loader", "_ldrArrow", 10, {contentPath: _sNoArrow, centerContent: false, scaleContent: true});
+        if (_bUpdateOnLoad)
         {
-            this.addToQueue({object: this, method: this.layoutContent});
+            this.addToQueue({object: this, method: layoutContent});
         } // end if
-    };
-    _loc1.size = function ()
+    } // End of the function
+    function size()
     {
         super.size();
         this.arrange();
-    };
-    _loc1.arrange = function ()
+    } // End of the function
+    function arrange()
     {
-        this._ldrBack.setSize(this.__width, this.__height);
-        this._mcArrow._x = this.__width / 2;
-        this._mcArrow._y = this.__height / 2;
-        this._mcArrow._ldrArrow.setSize(this.__width, this.__height);
-        this._mcArrow._ldrArrow._x = -this.__width / 2;
-        this._mcArrow._ldrArrow._y = -this.__height / 2;
-    };
-    _loc1.layoutContent = function ()
+        _ldrBack.setSize(__width, __height);
+        _mcArrow._x = __width / 2;
+        _mcArrow._y = __height / 2;
+        _mcArrow._ldrArrow.setSize(__width, __height);
+        _mcArrow._ldrArrow._x = -__width / 2;
+        _mcArrow._ldrArrow._y = -__height / 2;
+    } // End of the function
+    function layoutContent()
     {
-        if (this._aCurrentCoords == undefined)
+        if (_aCurrentCoords == undefined)
         {
             return;
         } // end if
-        if (this._aCurrentCoords.length == 0)
+        if (_aCurrentCoords.length == 0)
         {
             return;
         } // end if
-        if (this._aTargetCoords == undefined)
+        if (_aTargetCoords == undefined)
         {
             return;
         } // end if
-        if (this._aTargetCoords.length == 0)
+        if (_aTargetCoords.length == 0)
         {
             return;
         } // end if
         ank.utils.Timer.removeTimer(this, "compass");
-        var _loc2 = this._aTargetCoords[0] - this._aCurrentCoords[0];
-        var _loc3 = this._aTargetCoords[1] - this._aCurrentCoords[1];
-        if (_loc2 == 0 && _loc3 == 0)
+        var _loc4 = _aTargetCoords[0] - _aCurrentCoords[0];
+        var _loc3 = _aTargetCoords[1] - _aCurrentCoords[1];
+        if (_loc4 == 0 && _loc3 == 0)
         {
-            this._mcArrow._ldrArrow.contentPath = this._sNoArrow;
-            this._mcArrow._ldrArrow.content._rotation = this._mcArrow._rotation;
-            this._mcArrow._rotation = 0;
+            _mcArrow._ldrArrow.contentPath = _sNoArrow;
+            _mcArrow._ldrArrow.content._rotation = _mcArrow._rotation;
+            _mcArrow._rotation = 0;
             this.smoothRotation(0, 1);
         }
         else
         {
-            var _loc4 = Math.atan2(_loc3, _loc2) * (180 / Math.PI);
-            this._mcArrow._ldrArrow.contentPath = this._sArrow;
-            this._mcArrow._ldrArrow.content._rotation = this._mcArrow._rotation - _loc4;
-            this._mcArrow._rotation = _loc4;
-            this.smoothRotation(_loc4, 1);
+            var _loc2 = Math.atan2(_loc3, _loc4) * 5.729578E+001;
+            _mcArrow._ldrArrow.contentPath = _sArrow;
+            _mcArrow._ldrArrow.content._rotation = _mcArrow._rotation - _loc2;
+            _mcArrow._rotation = _loc2;
+            this.smoothRotation(_loc2, 1);
         } // end else if
-    };
-    _loc1.smoothRotation = function (nMaxAngle, nSpeed)
+    } // End of the function
+    function smoothRotation(nMaxAngle, nSpeed)
     {
-        this._mcArrow._ldrArrow.content._rotation = this._mcArrow._ldrArrow.content._rotation + nSpeed;
-        nSpeed = -this._mcArrow._ldrArrow.content._rotation * 2.000000E-001 + nSpeed * 7.000000E-001;
+        _mcArrow._ldrArrow.content._rotation = _mcArrow._ldrArrow.content._rotation + nSpeed;
+        nSpeed = -_mcArrow._ldrArrow.content._rotation * 2.000000E-001 + nSpeed * 7.000000E-001;
         if (Math.abs(nSpeed) > 1.000000E-002)
         {
-            ank.utils.Timer.setTimer(this, "compass", this, this.smoothRotation, 50, [nMaxAngle, nSpeed]);
+            ank.utils.Timer.setTimer(this, "compass", this, smoothRotation, 50, [nMaxAngle, nSpeed]);
         }
         else
         {
-            this._mcArrow._ldrArrow.content._rotation = 0;
+            _mcArrow._ldrArrow.content._rotation = 0;
         } // end else if
-    };
-    _loc1.onRelease = function ()
+    } // End of the function
+    function onRelease()
     {
         this.dispatchEvent({type: "click"});
-    };
-    _loc1.onReleaseOutside = function ()
+    } // End of the function
+    function onReleaseOutside()
     {
         this.onRollOut();
-    };
-    _loc1.onRollOver = function ()
+    } // End of the function
+    function onRollOver()
     {
         this.dispatchEvent({type: "over"});
-    };
-    _loc1.onRollOut = function ()
+    } // End of the function
+    function onRollOut()
     {
         this.dispatchEvent({type: "out"});
-    };
-    _loc1.addProperty("noArrow", _loc1.__get__noArrow, _loc1.__set__noArrow);
-    _loc1.addProperty("targetCoords", _loc1.__get__targetCoords, _loc1.__set__targetCoords);
-    _loc1.addProperty("background", _loc1.__get__background, _loc1.__set__background);
-    _loc1.addProperty("arrow", _loc1.__get__arrow, _loc1.__set__arrow);
-    _loc1.addProperty("currentCoords", function ()
-    {
-    }, _loc1.__set__currentCoords);
-    _loc1.addProperty("updateOnLoad", _loc1.__get__updateOnLoad, _loc1.__set__updateOnLoad);
-    _loc1.addProperty("allCoords", function ()
-    {
-    }, _loc1.__set__allCoords);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.controls.Compass = function ()
-    {
-        super();
-    }).CLASS_NAME = "Compass";
-    _loc1._bUpdateOnLoad = true;
-    _loc1._sBackground = "CompassNormalBackground";
-    _loc1._sArrow = "CompassNormalArrow";
-    _loc1._sNoArrow = "CompassNormalNoArrow";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Compass";
+    var _bUpdateOnLoad = true;
+    var _sBackground = "CompassNormalBackground";
+    var _sArrow = "CompassNormalArrow";
+    var _sNoArrow = "CompassNormalNoArrow";
+} // End of Class
 #endinitclip

@@ -1,293 +1,180 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20602]
-#initclip 123
-if (!dofus.graphics.gapi.controls.InventoryViewer)
+// [Initial MovieClip Action of sprite 813]
+#initclip 10
+class dofus.graphics.gapi.controls.InventoryViewer extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
+    var _eaDataProvider, __get__initialized, __get__dataProvider, _oKamasProvider, __get__kamasProvider, __get__autoFilter, __get__filterAtStart, _nCurrentFilterID, _btnFilterEquipement, _btnFilterNonEquipement, _btnFilterRessoureces, addToQueue, _aSelectedSuperTypes, _oDataViewer, _lblKama, api, _btnSelectedFilterButton, _lblFilter, __set__autoFilter, __get__currentFilterID, __set__dataProvider, __set__filterAtStart, __set__kamasProvider;
+    function InventoryViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__dataProvider = function (eaDataProvider)
+    } // End of the function
+    function set dataProvider(eaDataProvider)
     {
-        this._eaDataProvider.removeEventListener("modelChanged", this);
-        this._eaDataProvider = eaDataProvider;
-        this._eaDataProvider.addEventListener("modelChanged", this);
-        if (this.initialized)
+        _eaDataProvider.removeEventListener("modelChanged", this);
+        _eaDataProvider = eaDataProvider;
+        _eaDataProvider.addEventListener("modelChanged", this);
+        if (this.__get__initialized())
         {
             this.modelChanged();
         } // end if
         //return (this.dataProvider());
-    };
-    _loc1.__get__dataProvider = function ()
-    {
-        return (this._eaDataProvider);
-    };
-    _loc1.__set__kamasProvider = function (oKamasProvider)
+        null;
+    } // End of the function
+    function set kamasProvider(oKamasProvider)
     {
         oKamasProvider.removeEventListener("kamaChanged", this);
-        this._oKamasProvider = oKamasProvider;
+        _oKamasProvider = oKamasProvider;
         oKamasProvider.addEventListener("kamaChanged", this);
-        if (this.initialized)
+        if (this.__get__initialized())
         {
             this.kamaChanged();
         } // end if
         //return (this.kamasProvider());
-    };
-    _loc1.__set__autoFilter = function (bAutoFilter)
+        null;
+    } // End of the function
+    function set autoFilter(bAutoFilter)
     {
-        this._bAutoFilter = bAutoFilter;
+        _bAutoFilter = bAutoFilter;
         //return (this.autoFilter());
-    };
-    _loc1.__set__filterAtStart = function (bFilterAtStart)
+        null;
+    } // End of the function
+    function set filterAtStart(bFilterAtStart)
     {
-        this._bFilterAtStart = bFilterAtStart;
+        _bFilterAtStart = bFilterAtStart;
         //return (this.filterAtStart());
-    };
-    _loc1.__get__currentFilterID = function ()
+        null;
+    } // End of the function
+    function get currentFilterID()
     {
-        return (this._nCurrentFilterID);
-    };
-    _loc1.__get__customInventoryFilter = function ()
+        return (_nCurrentFilterID);
+    } // End of the function
+    function setFilter(nFilter)
     {
-        return (this._iifFilter);
-    };
-    _loc1.__set__customInventoryFilter = function (iif)
-    {
-        this._iifFilter = iif;
-        if (this.initialized)
-        {
-            this.modelChanged();
-        } // end if
-        //return (this.customInventoryFilter());
-    };
-    _loc1.__get__selectedItem = function ()
-    {
-        return (this._oDataViewer.selectedIndex);
-    };
-    _loc1.setFilter = function (nFilter)
-    {
-        if (nFilter == this._nCurrentFilterID)
+        if (nFilter == _nCurrentFilterID)
         {
             return;
         } // end if
         switch (nFilter)
         {
-            case dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_EQUIPEMENT:
+            case 0:
             {
-                this.click({target: this._btnFilterEquipement});
-                this._btnFilterEquipement.selected = true;
+                this.click({target: _btnFilterEquipement});
+                _btnFilterEquipement.__set__selected(true);
                 break;
             } 
-            case dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_NONEQUIPEMENT:
+            case 1:
             {
-                this.click({target: this._btnFilterNonEquipement});
-                this._btnFilterNonEquipement.selected = true;
+                this.click({target: _btnFilterNonEquipement});
+                _btnFilterNonEquipement.__set__selected(true);
                 break;
             } 
-            case dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_RESSOURECES:
+            case 2:
             {
-                this.click({target: this._btnFilterRessoureces});
-                this._btnFilterRessoureces.selected = true;
+                this.click({target: _btnFilterRessoureces});
+                _btnFilterRessoureces.__set__selected(true);
                 break;
             } 
         } // End of switch
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        if (this._bFilterAtStart)
+        if (_bFilterAtStart)
         {
-            if (this._bAutoFilter)
+            if (_bAutoFilter)
             {
-                this.addToQueue({object: this, method: this.setPreferedFilter});
+                this.addToQueue({object: this, method: setPreferedFilter});
             }
             else
             {
-                this.addToQueue({object: this, method: this.setFilter, params: [this.getDefaultFilter()]});
+                this.addToQueue({object: this, method: setFilter, params: [0]});
             } // end if
         } // end else if
-    };
-    _loc1.addListeners = function ()
+    } // End of the function
+    function addListeners()
     {
-        this._btnFilterEquipement.addEventListener("click", this);
-        this._btnFilterNonEquipement.addEventListener("click", this);
-        this._btnFilterRessoureces.addEventListener("click", this);
-        this._btnMoreChoice.addEventListener("click", this);
-        this._btnFilterEquipement.addEventListener("over", this);
-        this._btnFilterNonEquipement.addEventListener("over", this);
-        this._btnFilterRessoureces.addEventListener("over", this);
-        this._btnMoreChoice.addEventListener("over", this);
-        this._btnFilterEquipement.addEventListener("out", this);
-        this._btnFilterNonEquipement.addEventListener("out", this);
-        this._btnFilterRessoureces.addEventListener("out", this);
-        this._btnMoreChoice.addEventListener("out", this);
-        this._cbTypes.addEventListener("itemSelected", this);
-    };
-    _loc1.getDefaultFilter = function ()
+        _btnFilterEquipement.addEventListener("click", this);
+        _btnFilterNonEquipement.addEventListener("click", this);
+        _btnFilterRessoureces.addEventListener("click", this);
+    } // End of the function
+    function setPreferedFilter()
     {
-        return (dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_EQUIPEMENT);
-    };
-    _loc1.setPreferedFilter = function ()
-    {
-        var _loc2 = new Array({count: 0, id: dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_EQUIPEMENT}, {count: 0, id: dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_NONEQUIPEMENT}, {count: 0, id: dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_RESSOURECES});
-        for (var k in this._eaDataProvider)
+        var _loc3 = new Array({count: 0, id: 0}, {count: 0, id: 1}, {count: 0, id: 2});
+        for (var _loc4 in _eaDataProvider)
         {
-            var _loc3 = this._eaDataProvider[k].superType;
-            if (dofus.graphics.gapi.controls.InventoryViewer.FILTER_EQUIPEMENT[_loc3])
+            var _loc2 = _eaDataProvider[_loc4].superType;
+            if (dofus.graphics.gapi.controls.InventoryViewer.FILTER_EQUIPEMENT[_loc2])
             {
-                ++_loc2[0].count;
+                ++_loc3[0].count;
             } // end if
-            if (dofus.graphics.gapi.controls.InventoryViewer.FILTER_NONEQUIPEMENT[_loc3])
+            if (dofus.graphics.gapi.controls.InventoryViewer.FILTER_NONEQUIPEMENT[_loc2])
             {
-                ++_loc2[1].count;
+                ++_loc3[1].count;
             } // end if
-            if (dofus.graphics.gapi.controls.InventoryViewer.FILTER_RESSOURECES[_loc3])
+            if (dofus.graphics.gapi.controls.InventoryViewer.FILTER_RESSOURECES[_loc2])
             {
-                ++_loc2[2].count;
+                ++_loc3[2].count;
             } // end if
         } // end of for...in
-        _loc2.sortOn("count");
-        this.setFilter(_loc2[2].id);
-    };
-    _loc1.updateData = function ()
+        _loc3.sortOn("count");
+        this.setFilter(_loc3[2].id);
+    } // End of the function
+    function updateData()
     {
-        var _loc2 = this.api.datacenter.Basics[dofus.graphics.gapi.controls.InventoryViewer.CLASS_NAME + "_subfilter_" + this._btnSelectedFilterButton._name + "_" + this._name];
-        this._nSelectedTypeID = _loc2 == undefined ? (0) : (_loc2);
-        var _loc3 = new ank.utils.ExtendedArray();
         var _loc4 = new ank.utils.ExtendedArray();
-        var _loc5 = new Object();
-        for (var k in this._eaDataProvider)
+        for (var _loc5 in _eaDataProvider)
         {
-            var _loc6 = this._eaDataProvider[k];
-            var _loc7 = _loc6.position;
-            if (_loc7 == -1 && this._aSelectedSuperTypes[_loc6.superType])
+            var _loc2 = _eaDataProvider[_loc5];
+            var _loc3 = _loc2.position;
+            if (_loc3 == -1 && _aSelectedSuperTypes[_loc2.superType])
             {
-                if (_loc6.type == this._nSelectedTypeID || this._nSelectedTypeID == 0)
-                {
-                    if (this._iifFilter == null || this._iifFilter == undefined || this._iifFilter.isItemListed(_loc6))
-                    {
-                        _loc3.push(_loc6);
-                    } // end if
-                } // end if
-                var _loc8 = _loc6.type;
-                if (_loc5[_loc8] != true)
-                {
-                    _loc4.push({label: this.api.lang.getItemTypeText(_loc8).n, id: _loc8});
-                    _loc5[_loc8] = true;
-                } // end if
+                _loc4.push(_loc2);
             } // end if
         } // end of for...in
-        _loc4.sortOn("label");
-        _loc4.splice(0, 0, {label: this.api.lang.getText("WITHOUT_TYPE_FILTER"), id: 0});
-        this._cbTypes.dataProvider = _loc4;
-        this.setType(this._nSelectedTypeID);
-        this._oDataViewer.dataProvider = _loc3;
-        this.sortInventory(this._sCurrentSort);
-    };
-    _loc1.setType = function (nTypeID)
-    {
-        var _loc3 = this._cbTypes.dataProvider;
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
-        {
-            if (_loc3[_loc4].id == nTypeID)
-            {
-                this._cbTypes.selectedIndex = _loc4;
-                return;
-            } // end if
-        } // end while
-        this._nSelectedTypeID = 0;
-        this._cbTypes.selectedIndex = this._nSelectedTypeID;
-    };
-    _loc1.showSearch = function ()
-    {
-        var _loc2 = this.gapi.loadUIComponent("InventorySearch", "InventorySearch", {_oDataProvider: this._oDataViewer.dataProvider});
-        _loc2.addEventListener("selected", this);
-    };
-    _loc1.sortInventory = function (sField)
-    {
-        if (!sField)
-        {
-            return;
-        } // end if
-        this._oDataViewer.dataProvider.sortOn(sField, Array.NUMERIC);
-        this._sCurrentSort = sField;
-        this._nLastProviderLen = this._oDataViewer.dataProvider.length;
-        this._nLastFilterID = this._nCurrentFilterID;
-        this._oDataViewer.modelChanged();
-    };
-    _loc1.modelChanged = function ()
+        _oDataViewer.dataProvider = _loc4;
+    } // End of the function
+    function modelChanged()
     {
         this.updateData();
-    };
-    _loc1.kamaChanged = function (oEvent)
+    } // End of the function
+    function kamaChanged(oEvent)
     {
         if (oEvent.value == undefined)
         {
-            this._lblKama.text = "0";
+            _lblKama.__set__text("0");
         }
         else
         {
-            this._lblKama.text = new ank.utils.ExtendedString(oEvent.value).addMiddleChar(this.api.lang.getConfigText("THOUSAND_SEPARATOR"), 3);
+            _lblKama.__set__text(String(oEvent.value).addMiddleChar(api.lang.getConfigText("THOUSAND_SEPARATOR"), 3));
         } // end else if
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
-        if (oEvent.target == this._btnMoreChoice)
+        if (oEvent.target != _btnSelectedFilterButton)
         {
-            var _loc3 = this.api.ui.createPopupMenu();
-            _loc3.addItem(this.api.lang.getText("INVENTORY_SEARCH"), this, this.showSearch);
-            _loc3.addItem(this.api.lang.getText("INVENTORY_DATE_SORT"), this, this.sortInventory, ["_itemDateId"]);
-            _loc3.addItem(this.api.lang.getText("INVENTORY_NAME_SORT"), this, this.sortInventory, ["_itemName"]);
-            _loc3.addItem(this.api.lang.getText("INVENTORY_TYPE_SORT"), this, this.sortInventory, ["_itemType"]);
-            _loc3.addItem(this.api.lang.getText("INVENTORY_LEVEL_SORT"), this, this.sortInventory, ["_itemLevel"]);
-            _loc3.addItem(this.api.lang.getText("INVENTORY_POD_SORT"), this, this.sortInventory, ["_itemWeight"]);
-            _loc3.addItem(this.api.lang.getText("INVENTORY_QTY_SORT"), this, this.sortInventory, ["_nQuantity"]);
-            _loc3.show(_root._xmouse, _root._ymouse);
-            return;
-        } // end if
-        if (oEvent.target != this._btnSelectedFilterButton)
-        {
-            this._btnSelectedFilterButton.selected = false;
-            this._btnSelectedFilterButton = oEvent.target;
+            _btnSelectedFilterButton.__set__selected(false);
+            _btnSelectedFilterButton = oEvent.target;
             switch (oEvent.target._name)
             {
                 case "_btnFilterEquipement":
                 {
-                    this._aSelectedSuperTypes = dofus.graphics.gapi.controls.InventoryViewer.FILTER_EQUIPEMENT;
-                    this._lblFilter.text = this.api.lang.getText("EQUIPEMENT");
-                    this._nCurrentFilterID = dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_EQUIPEMENT;
+                    _aSelectedSuperTypes = dofus.graphics.gapi.controls.InventoryViewer.FILTER_EQUIPEMENT;
+                    _lblFilter.__set__text(api.lang.getText("EQUIPEMENT"));
+                    _nCurrentFilterID = 0;
                     break;
                 } 
                 case "_btnFilterNonEquipement":
                 {
-                    this._aSelectedSuperTypes = dofus.graphics.gapi.controls.InventoryViewer.FILTER_NONEQUIPEMENT;
-                    this._lblFilter.text = this.api.lang.getText("NONEQUIPEMENT");
-                    this._nCurrentFilterID = dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_NONEQUIPEMENT;
+                    _aSelectedSuperTypes = dofus.graphics.gapi.controls.InventoryViewer.FILTER_NONEQUIPEMENT;
+                    _lblFilter.__set__text(api.lang.getText("NONEQUIPEMENT"));
+                    _nCurrentFilterID = 1;
                     break;
                 } 
                 case "_btnFilterRessoureces":
                 {
-                    this._aSelectedSuperTypes = dofus.graphics.gapi.controls.InventoryViewer.FILTER_RESSOURECES;
-                    this._lblFilter.text = this.api.lang.getText("RESSOURECES");
-                    this._nCurrentFilterID = dofus.graphics.gapi.controls.InventoryViewer.FILTER_ID_RESSOURECES;
+                    _aSelectedSuperTypes = dofus.graphics.gapi.controls.InventoryViewer.FILTER_RESSOURECES;
+                    _lblFilter.__set__text(api.lang.getText("RESSOURECES"));
+                    _nCurrentFilterID = 2;
                     break;
                 } 
             } // End of switch
@@ -297,114 +184,11 @@ if (!dofus.graphics.gapi.controls.InventoryViewer)
         {
             oEvent.target.selected = true;
         } // end else if
-    };
-    _loc1.selected = function (oEvent)
-    {
-        var _loc3 = oEvent.value;
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < this._oDataViewer.dataProvider.length)
-        {
-            if (_loc3 == this._oDataViewer.dataProvider[_loc4].unicID)
-            {
-                this._oDataViewer.setVPosition(Math.floor(_loc4 / this._oDataViewer.visibleColumnCount));
-                this._oDataViewer.selectedIndex = _loc4;
-            } // end if
-        } // end while
-    };
-    _loc1.itemSelected = function (oEvent)
-    {
-        switch (oEvent.target._name)
-        {
-            case "_cbTypes":
-            {
-                this._nSelectedTypeID = this._cbTypes.selectedItem.id;
-                this.api.datacenter.Basics[dofus.graphics.gapi.controls.InventoryViewer.CLASS_NAME + "_subfilter_" + this._btnSelectedFilterButton._name + "_" + this._name] = this._nSelectedTypeID;
-                this.updateData();
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.over = function (oEvent)
-    {
-        switch (oEvent.target)
-        {
-            case this._btnFilterEquipement:
-            {
-                this.api.ui.showTooltip(this.api.lang.getText("EQUIPEMENT"), oEvent.target, -20);
-                break;
-            } 
-            case this._btnFilterNonEquipement:
-            {
-                this.api.ui.showTooltip(this.api.lang.getText("NONEQUIPEMENT"), oEvent.target, -20);
-                break;
-            } 
-            case this._btnFilterRessoureces:
-            {
-                this.api.ui.showTooltip(this.api.lang.getText("RESSOURECES"), oEvent.target, -20);
-                break;
-            } 
-            case this._btnMoreChoice:
-            {
-                this.api.ui.showTooltip(this.api.lang.getText("SEARCH_AND_SORT"), oEvent.target, -20);
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.out = function (oEvent)
-    {
-        this.api.ui.hideTooltip();
-    };
-    _loc1.addProperty("selectedItem", _loc1.__get__selectedItem, function ()
-    {
-    });
-    _loc1.addProperty("customInventoryFilter", _loc1.__get__customInventoryFilter, _loc1.__set__customInventoryFilter);
-    _loc1.addProperty("dataProvider", _loc1.__get__dataProvider, _loc1.__set__dataProvider);
-    _loc1.addProperty("currentFilterID", _loc1.__get__currentFilterID, function ()
-    {
-    });
-    _loc1.addProperty("kamasProvider", function ()
-    {
-    }, _loc1.__set__kamasProvider);
-    _loc1.addProperty("filterAtStart", function ()
-    {
-    }, _loc1.__set__filterAtStart);
-    _loc1.addProperty("autoFilter", function ()
-    {
-    }, _loc1.__set__autoFilter);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "InventoryViewer";
-    (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
-    {
-        super();
-    }).FILTER_ID_EQUIPEMENT = 0;
-    (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
-    {
-        super();
-    }).FILTER_EQUIPEMENT = [false, true, true, true, true, true, false, true, true, false, true, true, true, true, false];
-    (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
-    {
-        super();
-    }).FILTER_ID_NONEQUIPEMENT = 1;
-    (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
-    {
-        super();
-    }).FILTER_NONEQUIPEMENT = [false, false, false, false, false, false, true, false, false, false, false, false, false, false, false];
-    (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
-    {
-        super();
-    }).FILTER_ID_RESSOURECES = 2;
-    (_global.dofus.graphics.gapi.controls.InventoryViewer = function ()
-    {
-        super();
-    }).FILTER_RESSOURECES = [false, false, false, false, false, false, false, false, false, true, false, false, false, false, false];
-    _loc1._bAutoFilter = true;
-    _loc1._bFilterAtStart = true;
-    _loc1._nSelectedTypeID = 0;
-    _loc1._nLastProviderLen = 0;
-    _loc1._nLastFilterID = -1;
-} // end if
+    } // End of the function
+    static var FILTER_EQUIPEMENT = [false, true, true, true, true, true, false, false, false, false, true, true, true, true];
+    static var FILTER_NONEQUIPEMENT = [false, false, false, false, false, false, true, false, false, false, false, false, false, false];
+    static var FILTER_RESSOURECES = [false, false, false, false, false, false, false, false, true, true, false, false, false, false];
+    var _bAutoFilter = true;
+    var _bFilterAtStart = true;
+} // End of Class
 #endinitclip

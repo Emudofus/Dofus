@@ -1,134 +1,80 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20844]
-#initclip 109
-if (!dofus.graphics.gapi.ui.Debug)
+// [Initial MovieClip Action of sprite 1058]
+#initclip 25
+class dofus.graphics.gapi.ui.Debug extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Debug = function ()
+    var _lblPrompt, _tiCommandLine, _cLogs, api, _fps, _mcFpsPlacer, getNextHighestDepth, attachMovie, unloadThis, addToQueue, _btnClose, _btnClear, _btnCopy, _btnMinimize, _srLogsBack, _srCommandLineBack;
+    function Debug()
     {
         super();
-    }).prototype;
-    _loc1.setPrompt = function (sPrompt)
+    } // End of the function
+    function setPrompt(sPrompt)
     {
-        if (this._lblPrompt.text == undefined)
-        {
-            return;
-        } // end if
-        this._lblPrompt.text = sPrompt + " > ";
-        this._tiCommandLine._x = this._lblPrompt._x + this._lblPrompt.textWidth + 2;
-        this._lblPrompt.setPreferedSize("left");
-    };
-    _loc1.setLogsText = function (sLogs)
+        _lblPrompt.__set__text(sPrompt + " > ");
+        _tiCommandLine._x = _lblPrompt._x + _lblPrompt.__get__textWidth() + 2;
+        _lblPrompt.setPreferedSize("left");
+    } // End of the function
+    function setLogsText(sLogs)
     {
-        if (this._cLogs.text == undefined)
-        {
-            return;
-        } // end if
-        this._cLogs.text = sLogs;
-    };
-    _loc1.__set__command = function (sCommand)
+        _cLogs.__set__text(sLogs);
+    } // End of the function
+    function clear()
     {
-        this._sCommand = sCommand;
-        if (this.initialized)
-        {
-            this.initCommand();
-        } // end if
-        //return (this.command());
-    };
-    _loc1.refresh = function ()
-    {
-        this.initData();
-    };
-    _loc1.clear = function ()
-    {
-        this.api.datacenter.Basics.aks_a_logs = "";
+        api.datacenter.Basics.aks_a_logs = "";
         this.setLogsText("");
-    };
-    _loc1.showFps = function ()
+    } // End of the function
+    function showFps()
     {
-        if (this._fps == undefined)
+        if (_fps == undefined)
         {
-            this.attachMovie("Fps", "_fps", this.getNextHighestDepth(), {_x: this._mcFpsPlacer._x, _y: this._mcFpsPlacer._y, _width: this._mcFpsPlacer._width, _height: this._mcFpsPlacer._height, styleName: "DofusFps"});
+            this.attachMovie("Fps", "_fps", this.getNextHighestDepth(), {_x: _mcFpsPlacer._x, _y: _mcFpsPlacer._y, _width: _mcFpsPlacer._width, _height: _mcFpsPlacer._height, styleName: "DofusFps"});
         }
         else
         {
-            this._fps.removeMovieClip();
+            _fps.removeMovieClip();
         } // end else if
-    };
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Debug.CLASS_NAME);
-        this.gapi.getUIComponent("Banner").chatAutoFocus = false;
-    };
-    _loc1.destroy = function ()
-    {
-        this.gapi.getUIComponent("Banner").chatAutoFocus = true;
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
         this.unloadThis();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.applySizeIndex});
-        this.addToQueue({object: this, method: this.initCommand});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: applySizeIndex});
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        this._btnClear.addEventListener("click", this);
-        this._btnCopy.addEventListener("click", this);
-        this._btnMinimize.addEventListener("click", this);
-        this._cLogs.addEventListener("href", this);
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-    };
-    _loc1.initFocus = function ()
+        _btnClose.addEventListener("click", this);
+        _btnClear.addEventListener("click", this);
+        _btnCopy.addEventListener("click", this);
+        _btnMinimize.addEventListener("click", this);
+        Key.addListener(this);
+    } // End of the function
+    function initFocus()
     {
-        this._tiCommandLine.setFocus();
-        this._cLogs.selectable = true;
-    };
-    _loc1.initData = function ()
+        _tiCommandLine.setFocus();
+    } // End of the function
+    function initData()
     {
-        if (this._cLogs.text == undefined)
-        {
-            return;
-        } // end if
-        this._cLogs.text = this.api.datacenter.Basics.aks_a_logs;
-        this.setPrompt(this.api.datacenter.Basics.aks_a_prompt);
-    };
-    _loc1.initCommand = function ()
+        _cLogs.__set__text(api.datacenter.Basics.aks_a_logs);
+        this.setPrompt(api.datacenter.Basics.aks_a_prompt);
+    } // End of the function
+    function placeCursorAtTheEnd()
     {
-        this._tiCommandLine.text = this._sCommand;
-        this.initFocus();
-        this.addToQueue({objet: this, method: this.placeCursorAtTheEnd});
-    };
-    _loc1.placeCursorAtTheEnd = function ()
+        _tiCommandLine.setFocus();
+        Selection.setSelection(_tiCommandLine.text.length, 1000);
+    } // End of the function
+    function applySizeIndex()
     {
-        this._tiCommandLine.setFocus();
-        Selection.setSelection(this._tiCommandLine.text.length, 1000);
-    };
-    _loc1.applySizeIndex = function ()
-    {
-        switch (this.api.kernel.OptionsManager.getOption("DebugSizeIndex"))
+        switch (api.kernel.OptionsManager.getOption("DebugSizeIndex"))
         {
             case 0:
             {
@@ -147,137 +93,95 @@ if (!dofus.graphics.gapi.ui.Debug)
             } 
         } // End of switch
         this.initFocus();
-    };
-    _loc1.minimize = function ()
+    } // End of the function
+    function minimize()
     {
-        this._cLogs._visible = false;
-        this._srLogsBack.setSize(undefined, 20);
-        this._srCommandLineBack._y = this._tiCommandLine._y = this._lblPrompt._y = this._cLogs._y;
-    };
-    _loc1.maximize = function (nHeight)
+        _cLogs._visible = false;
+        _srLogsBack.setSize(undefined, 20);
+        _srCommandLineBack._y = _tiCommandLine._y = _lblPrompt._y = _cLogs._y;
+    } // End of the function
+    function maximize(nHeight)
     {
-        this._cLogs._visible = true;
-        this._cLogs.setSize(undefined, nHeight);
-        this._srLogsBack.setSize(undefined, nHeight + 20);
-        this._srCommandLineBack._y = this._tiCommandLine._y = this._lblPrompt._y = this._cLogs._y + nHeight;
-    };
-    _loc1.onShortcut = function (sShortcut)
+        _cLogs._visible = true;
+        _cLogs.setSize(undefined, nHeight);
+        _srLogsBack.setSize(undefined, nHeight + 20);
+        _srCommandLineBack._y = _tiCommandLine._y = _lblPrompt._y = _cLogs._y + nHeight;
+    } // End of the function
+    function onKeyUp()
     {
-        var _loc3 = true;
-        switch (sShortcut)
+        switch (Key.getCode())
         {
-            case "HISTORY_UP":
+            case 38:
             {
-                this._tiCommandLine.text = this.api.kernel.DebugConsole.getHistoryUp().value;
-                this.addToQueue({object: this, method: this.placeCursorAtTheEnd});
-                _loc3 = false;
+                _tiCommandLine.__set__text(api.kernel.DebugConsole.getHistoryUp());
+                this.placeCursorAtTheEnd();
                 break;
             } 
-            case "HISTORY_DOWN":
+            case 40:
             {
-                this._tiCommandLine.text = this.api.kernel.DebugConsole.getHistoryDown().value;
-                this.addToQueue({object: this, method: this.placeCursorAtTheEnd});
-                _loc3 = false;
+                _tiCommandLine.__set__text(api.kernel.DebugConsole.getHistoryDown());
+                this.placeCursorAtTheEnd();
                 break;
             } 
-            case "TEAM_MESSAGE":
+            case 13:
             {
-                var _loc4 = this.api.kernel.OptionsManager.getOption("DebugSizeIndex") + 1;
-                _loc4 = _loc4 % 3;
-                this.api.kernel.OptionsManager.setOption("DebugSizeIndex", _loc4);
-                this.applySizeIndex();
-                break;
-            } 
-            case "ACCEPT_CURRENT_DIALOG":
-            {
-                if (this._tiCommandLine.focused)
+                if (Key.isDown(17))
                 {
-                    var _loc5 = this._tiCommandLine.text;
-                    if (_loc5.length == 0)
+                    var _loc2 = api.kernel.OptionsManager.getOption("DebugSizeIndex") + 1;
+                    _loc2 = _loc2 % 3;
+                    api.kernel.OptionsManager.setOption("DebugSizeIndex", _loc2);
+                    this.applySizeIndex();
+                    break;
+                } // end if
+                if (_tiCommandLine.__get__focused())
+                {
+                    var _loc3 = _tiCommandLine.__get__text();
+                    if (_loc3.length == 0)
                     {
-                        return (true);
+                        return;
                     } // end if
-                    if (this._tiCommandLine.text != undefined)
-                    {
-                        this._tiCommandLine.text = "";
-                    } // end if
-                    this.api.kernel.DebugConsole.process(_loc5);
+                    _tiCommandLine.__set__text("");
+                    api.kernel.DebugConsole.process(_loc3);
                 }
                 else
                 {
-                    this._tiCommandLine.setFocus();
+                    _tiCommandLine.setFocus();
                 } // end else if
-                _loc3 = false;
                 break;
             } 
         } // End of switch
-        return (_loc3);
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target)
         {
-            case this._btnClose:
+            case _btnClose:
             {
                 this.callClose();
                 break;
             } 
-            case this._btnClear:
+            case _btnClear:
             {
                 this.clear();
                 break;
             } 
-            case this._btnCopy:
+            case _btnCopy:
             {
-                System.setClipboard(this._cLogs.text);
+                System.setClipboard(_cLogs.__get__text());
                 break;
             } 
-            case this._btnMinimize:
+            case _btnMinimize:
             {
-                var _loc3 = this.api.kernel.OptionsManager.getOption("DebugSizeIndex") + 1;
-                _loc3 = _loc3 % 3;
-                this.api.kernel.OptionsManager.setOption("DebugSizeIndex", _loc3);
+                var _loc2 = api.kernel.OptionsManager.getOption("DebugSizeIndex") + 1;
+                _loc2 = _loc2 % 3;
+                api.kernel.OptionsManager.setOption("DebugSizeIndex", _loc2);
                 this.applySizeIndex();
                 break;
             } 
         } // End of switch
-    };
-    _loc1.href = function (oEvent)
-    {
-        var _loc3 = oEvent.params.split(",");
-        switch (_loc3[0])
-        {
-            case "ShowPlayerPopupMenu":
-            {
-                this.api.kernel.GameManager.showPlayerPopupMenu(undefined, _loc3[1]);
-                break;
-            } 
-            case "ExecCmd":
-            {
-                this._tiCommandLine.text = _loc3[1].split("%2C").join(",");
-                if (_loc3[2] == "true" || _loc3[2] == true)
-                {
-                    this._tiCommandLine.setFocus();
-                    this.onShortcut("ACCEPT_CURRENT_DIALOG");
-                } // end if
-            } 
-        } // End of switch
-    };
-    _loc1.addProperty("command", function ()
-    {
-    }, _loc1.__set__command);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Debug = function ()
-    {
-        super();
-    }).CLASS_NAME = "Debug";
-    (_global.dofus.graphics.gapi.ui.Debug = function ()
-    {
-        super();
-    }).MIDDLE_SIZE = 200;
-    (_global.dofus.graphics.gapi.ui.Debug = function ()
-    {
-        super();
-    }).BIG_SIZE = 370;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Debug";
+    static var MIDDLE_SIZE = 200;
+    static var BIG_SIZE = 370;
+} // End of Class
 #endinitclip

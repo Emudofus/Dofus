@@ -1,279 +1,178 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20879]
-#initclip 144
-if (!dofus.graphics.gapi.ui.Craft)
+// [Initial MovieClip Action of sprite 984]
+#initclip 201
+class dofus.graphics.gapi.ui.Craft extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Craft = function ()
+    var _nMaxItem, __get__maxItem, _eaDataProvider, __get__dataProvider, _eaLocalDataProvider, __get__localDataProvider, _eaDistantDataProvider, __get__distantDataProvider, gapi, api, _mcPlacer, getNextHighestDepth, _winCraftViewer, addToQueue, _btnFilterRessoureces, _btnSelectedFilterButton, _cgGrid, _cgLocal, _cgDistant, _btnFilterEquipement, _btnFilterNonEquipement, _btnClose, _btnValidate, _btnCraft, _btnMemoryRecall, _lblFilter, _winInventory, _winDistant, _lblNewObject, __set__dataProvider, __set__localDataProvider, __set__distantDataProvider, _winLocal, _nMaxRight, _nDistantToLocalWin, _nLocalWinToCgLocal, _nCgLocalWinLocal, _mcArrow, _nArrowToLocalWin, _nLblNewToDistantWin, _nCgDistantToDistantWin, _itvItemViewer, _winItemViewer, attachMovie, _cvCraftViewer, _aGarbageMemory, __set__maxItem;
+    function Craft()
     {
         super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } // end if
-    }).prototype;
-    _loc1.__set__maxItem = function (nMaxItem)
+    } // End of the function
+    function set maxItem(nMaxItem)
     {
-        this._nMaxItem = Number(nMaxItem);
+        _nMaxItem = Number(nMaxItem);
         //return (this.maxItem());
-    };
-    _loc1.__set__skillId = function (nSkillId)
+        null;
+    } // End of the function
+    function set dataProvider(eaDataProvider)
     {
-        this._nSkillId = Number(nSkillId);
-        this._btnTries._visible = false;
-        this._btnApplyRunes._visible = false;
-        if (_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = true;
-        } // end if
-        this._btnCraft._visible = true;
-        this._btnMemoryRecall._visible = true;
-        this._btnValidate._visible = true;
-        //return (this.skillId());
-    };
-    _loc1.__set__dataProvider = function (eaDataProvider)
-    {
-        this._eaDataProvider.removeEventListener("modelChanged", this);
-        this._eaDataProvider = eaDataProvider;
-        this._eaDataProvider.addEventListener("modelChanged", this);
+        _eaDataProvider.removeEventListener("modelChange", this);
+        _eaDataProvider = eaDataProvider;
+        _eaDataProvider.addEventListener("modelChanged", this);
         this.modelChanged();
         //return (this.dataProvider());
-    };
-    _loc1.__set__localDataProvider = function (eaLocalDataProvider)
+        null;
+    } // End of the function
+    function set localDataProvider(eaLocalDataProvider)
     {
-        this._eaLocalDataProvider.removeEventListener("modelChanged", this);
-        this._eaLocalDataProvider = eaLocalDataProvider;
-        this._eaLocalDataProvider.addEventListener("modelChanged", this);
+        _eaLocalDataProvider.removeEventListener("modelChange", this);
+        _eaLocalDataProvider = eaLocalDataProvider;
+        _eaLocalDataProvider.addEventListener("modelChanged", this);
         this.modelChanged();
         //return (this.localDataProvider());
-    };
-    _loc1.__set__distantDataProvider = function (eaDistantDataProvider)
+        null;
+    } // End of the function
+    function set distantDataProvider(eaDistantDataProvider)
     {
-        this._eaDistantDataProvider.removeEventListener("modelChanged", this);
-        this._eaDistantDataProvider = eaDistantDataProvider;
-        this._eaDistantDataProvider.addEventListener("modelChanged", this);
+        _eaDistantDataProvider.removeEventListener("modelChange", this);
+        _eaDistantDataProvider = eaDistantDataProvider;
+        _eaDistantDataProvider.addEventListener("modelChanged", this);
         this.modelChanged();
         //return (this.distantDataProvider());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Craft.CLASS_NAME);
-    };
-    _loc1.destroy = function ()
+    } // End of the function
+    function destroy()
     {
-        this.gapi.hideTooltip();
-    };
-    _loc1.callClose = function ()
+        gapi.hideTooltip();
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Exchange.leave();
+        api.network.Exchange.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._bMakeAll = false;
-        this._mcPlacer._visible = false;
-        this.showPreview(undefined, false);
-        this._winCraftViewer.swapDepths(this.getNextHighestDepth());
+        _mcPlacer._visible = false;
+        _winCraftViewer.swapDepths(this.getNextHighestDepth());
         this.showCraftViewer(false);
         this.showBottom(false);
-        this.addToQueue({object: this, method: this.addListeners});
-        this._btnSelectedFilterButton = this._btnFilterRessoureces;
-        this.addToQueue({object: this, method: this.saveGridMaxSize});
-        this.addToQueue({object: this, method: this.initData});
+        this.addToQueue({object: this, method: addListeners});
+        _btnSelectedFilterButton = _btnFilterRessoureces;
+        this.addToQueue({object: this, method: saveGridMaxSize});
+        this.addToQueue({object: this, method: initData});
         this.hideItemViewer(true);
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.initGridWidth});
-    };
-    _loc1.addListeners = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: initGridWidth});
+    } // End of the function
+    function addListeners()
     {
-        this._cgGrid.addEventListener("dblClickItem", this);
-        this._cgGrid.addEventListener("dropItem", this);
-        this._cgGrid.addEventListener("dragItem", this);
-        this._cgGrid.addEventListener("selectItem", this);
-        this._cgLocal.addEventListener("dblClickItem", this);
-        this._cgLocal.addEventListener("dropItem", this);
-        this._cgLocal.addEventListener("dragItem", this);
-        this._cgLocal.addEventListener("selectItem", this);
-        this._cgDistant.addEventListener("selectItem", this);
-        this._btnFilterEquipement.addEventListener("click", this);
-        this._btnFilterNonEquipement.addEventListener("click", this);
-        this._btnFilterRessoureces.addEventListener("click", this);
-        this._btnFilterEquipement.addEventListener("over", this);
-        this._btnFilterNonEquipement.addEventListener("over", this);
-        this._btnFilterRessoureces.addEventListener("over", this);
-        this._btnFilterEquipement.addEventListener("out", this);
-        this._btnFilterNonEquipement.addEventListener("out", this);
-        this._btnFilterRessoureces.addEventListener("out", this);
-        this._btnClose.addEventListener("click", this);
-        this._btnQuantity.addEventListener("click", this);
-        this._btnTries.addEventListener("click", this);
-        this._btnApplyRunes.addEventListener("click", this);
-        this.api.datacenter.Exchange.addEventListener("localKamaChange", this);
-        this.api.datacenter.Exchange.addEventListener("distantKamaChange", this);
-        this._btnValidate.addEventListener("click", this);
-        this._btnCraft.addEventListener("click", this);
-        this._btnMemoryRecall.addEventListener("click", this);
-        this._ctrPreview.addEventListener("over", this);
-        this._ctrPreview.addEventListener("out", this);
-        this._cbTypes.addEventListener("itemSelected", this);
-    };
-    _loc1.initTexts = function ()
+        _cgGrid.addEventListener("dblClickItem", this);
+        _cgGrid.addEventListener("dropItem", this);
+        _cgGrid.addEventListener("dragItem", this);
+        _cgGrid.addEventListener("selectItem", this);
+        _cgLocal.addEventListener("dblClickItem", this);
+        _cgLocal.addEventListener("dropItem", this);
+        _cgLocal.addEventListener("dragItem", this);
+        _cgLocal.addEventListener("selectItem", this);
+        _cgDistant.addEventListener("selectItem", this);
+        _btnFilterEquipement.addEventListener("click", this);
+        _btnFilterNonEquipement.addEventListener("click", this);
+        _btnFilterRessoureces.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+        api.datacenter.Exchange.addEventListener("localKamaChange", this);
+        api.datacenter.Exchange.addEventListener("distantKamaChange", this);
+        _btnValidate.addEventListener("click", this);
+        _btnCraft.addEventListener("click", this);
+        _btnMemoryRecall.addEventListener("click", this);
+    } // End of the function
+    function initTexts()
     {
-        this._lblFilter.text = this.api.lang.getText("EQUIPEMENT");
-        this._winInventory.title = this.api.datacenter.Player.data.name;
-        this._winDistant.title = this.api.datacenter.Sprites.getItemAt(this.api.datacenter.Exchange.distantPlayerID).name;
-        this._btnValidate.label = this.api.lang.getText("COMBINE");
-        this._btnCraft.label = this.api.lang.getText("RECEIPTS");
-        this._btnQuantity.label = this.api.lang.getText("QUANTITY_SMALL") + ": 1";
-        this._btnApplyRunes.label = this.api.lang.getText("APPLY_ONE_RUNE");
-        this._btnTries.label = this.api.lang.getText("TRIES_WORD") + ": 1";
-        this._lblNewObject.text = this.api.lang.getText("CRAFTED_ITEM");
-        this._winCraftViewer.title = this.api.lang.getText("RECEIPTS_FROM_JOB");
-        this._lblSkill.text = this.api.lang.getText("SKILL") + " : " + this.api.lang.getSkillText(this._nSkillId).d;
-    };
-    _loc1.initData = function ()
+        _lblFilter.__set__text(api.lang.getText("EQUIPEMENT"));
+        _winInventory.__set__title(api.datacenter.Player.data.name);
+        _winDistant.__set__title(api.datacenter.Sprites.getItemAt(api.datacenter.Exchange.distantPlayerID).name);
+        _btnValidate.__set__label(api.lang.getText("COMBINE"));
+        _btnCraft.__set__label(api.lang.getText("RECEIPTS"));
+        _lblNewObject.__set__text(api.lang.getText("CRAFTED_ITEM"));
+        _winCraftViewer.__set__title(api.lang.getText("RECEIPTS_FROM_JOB"));
+    } // End of the function
+    function initData()
     {
-        this.dataProvider = this.api.datacenter.Exchange.inventory;
-        this.localDataProvider = this.api.datacenter.Exchange.localGarbage;
-        this.distantDataProvider = this.api.datacenter.Exchange.distantGarbage;
-    };
-    _loc1.saveGridMaxSize = function ()
+        this.__set__dataProvider(api.datacenter.Exchange.inventory);
+        this.__set__localDataProvider(api.datacenter.Exchange.localGarbage);
+        this.__set__distantDataProvider(api.datacenter.Exchange.distantGarbage);
+    } // End of the function
+    function saveGridMaxSize()
     {
-        this._nMaxRight = this._winLocal._x + this._winLocal.width;
-        this._nDistantToLocalWin = this._winLocal._x - this._winDistant._x;
-        this._nLocalWinToCgLocal = this._cgLocal._x - this._winLocal._x;
-        this._nCgLocalWinLocal = this._winLocal.width - this._cgLocal.width;
-        this._nArrowToLocalWin = this._winLocal._x - this._mcArrow._x;
-        this._nLblNewToDistantWin = this._lblNewObject._x - this._winDistant._x;
-        this._nCgDistantToDistantWin = this._cgDistant._x - this._winDistant._x;
-    };
-    _loc1.showBottom = function (bShow)
+        _nMaxRight = _winLocal._x + _winLocal.__get__width();
+        _nDistantToLocalWin = _winLocal._x - _winDistant._x;
+        _nLocalWinToCgLocal = _cgLocal._x - _winLocal._x;
+        _nCgLocalWinLocal = _winLocal.__get__width() - _cgLocal.__get__width();
+        _nArrowToLocalWin = _winLocal._x - _mcArrow._x;
+        _nLblNewToDistantWin = _lblNewObject._x - _winDistant._x;
+        _nCgDistantToDistantWin = _cgDistant._x - _winDistant._x;
+    } // End of the function
+    function showBottom(bShow)
     {
-        this._winLocal._visible = bShow;
-        this._mcArrow._visible = bShow;
-        this._winDistant._visible = bShow;
-        this._lblNewObject._visible = bShow;
-        this._cgDistant._visible = bShow;
-        this._cgLocal._visible = bShow;
-    };
-    _loc1.initGridWidth = function ()
+        _winLocal._visible = bShow;
+        _mcArrow._visible = bShow;
+        _winDistant._visible = bShow;
+        _lblNewObject._visible = bShow;
+        _cgDistant._visible = bShow;
+        _cgLocal._visible = bShow;
+    } // End of the function
+    function initGridWidth()
     {
-        this._cgLocal.visibleColumnCount = this._nMaxItem;
-        if (this._nMaxItem == undefined)
+        _cgLocal.__set__visibleColumnCount(_nMaxItem);
+        if (_nMaxItem == undefined)
         {
-            this._nMaxItem = 12;
+            _nMaxItem = 12;
         } // end if
-        var _loc2 = dofus.graphics.gapi.ui.Craft.GRID_CONTAINER_WIDTH * this._nMaxItem;
+        var _loc2 = dofus.graphics.gapi.ui.Craft.GRID_CONTAINER_WIDTH * _nMaxItem;
         var _loc3 = Math.max(304, _loc2);
-        this._cgLocal.setSize(_loc2);
-        this._cgLocal._x = this._nMaxRight - _loc2 - this._nCgLocalWinLocal / 2;
-        this._winLocal.setSize(_loc3 + this._nCgLocalWinLocal);
-        this._winLocal._x = this._nMaxRight - _loc3 - this._nCgLocalWinLocal;
-        this._mcArrow._x = this._winLocal._x - this._nArrowToLocalWin;
-        this._winDistant._x = this._winLocal._x - this._nDistantToLocalWin;
-        this._lblNewObject._x = this._winDistant._x + this._nLblNewToDistantWin;
-        this._cgDistant._x = this._winDistant._x + this._nCgDistantToDistantWin;
-        this._ctrPreview._x = this._cgDistant._x;
-        this._mcFiligrane._x = this._cgDistant._x;
+        _cgLocal.setSize(_loc2);
+        _cgLocal._x = _nMaxRight - _loc2 - _nCgLocalWinLocal / 2;
+        _winLocal.setSize(_loc3 + _nCgLocalWinLocal);
+        _winLocal._x = _nMaxRight - _loc3 - _nCgLocalWinLocal;
+        _mcArrow._x = _winLocal._x - _nArrowToLocalWin;
+        _winDistant._x = _winLocal._x - _nDistantToLocalWin;
+        _lblNewObject._x = _winDistant._x + _nLblNewToDistantWin;
+        _cgDistant._x = _winDistant._x + _nCgDistantToDistantWin;
         this.showBottom(true);
-    };
-    _loc1.updateData = function ()
+    } // End of the function
+    function updateData()
     {
-        if (this._bIsLooping)
-        {
-            return;
-        } // end if
-        var _loc2 = this.api.datacenter.Basics[dofus.graphics.gapi.ui.Craft.CLASS_NAME + "_subfilter_" + this._btnSelectedFilterButton._name];
-        this._nSelectedTypeID = _loc2 == undefined ? (0) : (_loc2);
-        var _loc3 = new ank.utils.ExtendedArray();
         var _loc4 = new ank.utils.ExtendedArray();
-        var _loc5 = new Object();
-        for (var k in this._eaDataProvider)
+        for (var _loc5 in _eaDataProvider)
         {
-            var _loc6 = this._eaDataProvider[k];
-            var _loc7 = _loc6.position;
-            if (_loc7 == -1 && this._aSelectedSuperTypes[_loc6.superType])
+            var _loc2 = _eaDataProvider[_loc5];
+            var _loc3 = _loc2.position;
+            if (_loc3 == -1 && _aSelectedSuperTypes[_loc2.superType])
             {
-                if (_loc6.type == this._nSelectedTypeID || this._nSelectedTypeID == 0)
-                {
-                    _loc3.push(_loc6);
-                }
-                else if (this._nSelectedTypeID == dofus.graphics.gapi.ui.Craft.FILTER_TYPE_ONLY_USEFUL && this.api.kernel.GameManager.isItemUseful(_loc6.unicID, this._nSkillId, this._nMaxItem))
-                {
-                    _loc3.push(_loc6);
-                } // end else if
-                var _loc8 = _loc6.type;
-                if (_loc5[_loc8] != true)
-                {
-                    _loc4.push({label: this.api.lang.getItemTypeText(_loc8).n, id: _loc8});
-                    _loc5[_loc8] = true;
-                } // end if
+                _loc4.push(_loc2);
             } // end if
         } // end of for...in
-        _loc4.sortOn("label");
-        _loc4.splice(0, 0, {label: this.api.lang.getText("TYPE_FILTER_ONLY_USEFUL"), id: dofus.graphics.gapi.ui.Craft.FILTER_TYPE_ONLY_USEFUL});
-        _loc4.splice(0, 0, {label: this.api.lang.getText("WITHOUT_TYPE_FILTER"), id: 0});
-        this._cbTypes.dataProvider = _loc4;
-        this.setType(this._nSelectedTypeID);
-        this._cgGrid.dataProvider = _loc3;
-    };
-    _loc1.setType = function (nTypeID)
+        _cgGrid.__set__dataProvider(_loc4);
+    } // End of the function
+    function updateLocalData()
     {
-        var _loc3 = this._cbTypes.dataProvider;
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
-        {
-            if (_loc3[_loc4].id == nTypeID)
-            {
-                this._cbTypes.selectedIndex = _loc4;
-                return;
-            } // end if
-        } // end while
-        this._nSelectedTypeID = 0;
-        this._cbTypes.selectedIndex = this._nSelectedTypeID;
-    };
-    _loc1.updateLocalData = function ()
+        _cgLocal.__set__dataProvider(_eaLocalDataProvider);
+    } // End of the function
+    function updateDistantData()
     {
-        this._cgLocal.dataProvider = this._eaLocalDataProvider;
-    };
-    _loc1.updateDistantData = function ()
+        _cgDistant.__set__dataProvider(_eaDistantDataProvider);
+        _bInvalidateDistant = true;
+    } // End of the function
+    function hideItemViewer(bHide)
     {
-        this._cgDistant.dataProvider = this._eaDistantDataProvider;
-        var _loc2 = this._cgDistant.getContainer(0).contentData;
-        if (_loc2 != undefined)
-        {
-            this.hideItemViewer(false);
-            this._itvItemViewer.itemData = _loc2;
-        } // end if
-        this._bInvalidateDistant = true;
-    };
-    _loc1.hideItemViewer = function (bHide)
-    {
-        this._itvItemViewer._visible = !bHide;
-        this._winItemViewer._visible = !bHide;
-    };
-    _loc1.validateDrop = function (sTargetGrid, oItem, nValue)
+        _itvItemViewer._visible = !bHide;
+        _winItemViewer._visible = !bHide;
+    } // End of the function
+    function validateDrop(sTargetGrid, oItem, nValue)
     {
         if (nValue < 1 || nValue == undefined)
         {
@@ -287,448 +186,173 @@ if (!dofus.graphics.gapi.ui.Craft)
         {
             case "_cgGrid":
             {
-                this.api.network.Exchange.movementItem(false, oItem.ID, nValue);
+                api.network.Exchange.movementItem(false, oItem.ID, nValue);
                 break;
             } 
             case "_cgLocal":
             {
-                this.api.network.Exchange.movementItem(true, oItem.ID, nValue);
+                api.network.Exchange.movementItem(true, oItem.ID, nValue);
                 break;
             } 
         } // End of switch
-        if (this._bInvalidateDistant)
+        if (_bInvalidateDistant)
         {
-            this.api.datacenter.Exchange.clearDistantGarbage();
-            this._bInvalidateDistant = false;
+            api.datacenter.Exchange.clearDistantGarbage();
+            _bInvalidateDistant = false;
         } // end if
-    };
-    _loc1.setReady = function ()
+    } // End of the function
+    function setReady()
     {
-        if (this.api.datacenter.Exchange.localGarbage.length == 0)
+        if (api.datacenter.Exchange.localGarbage.length == 0)
         {
             return;
         } // end if
-        this.api.network.Exchange.ready();
-    };
-    _loc1.canDropInGarbage = function (oItem)
+        api.network.Exchange.ready();
+    } // End of the function
+    function canDropInGarbage(oItem)
     {
-        var _loc3 = this.api.datacenter.Exchange.localGarbage.findFirstItem("ID", oItem.ID);
-        var _loc4 = this.api.datacenter.Exchange.localGarbage.length;
-        if (_loc3.index == -1 && _loc4 >= this._nMaxItem)
+        var _loc2 = api.datacenter.Exchange.localGarbage.findFirstItem("ID", oItem.ID);
+        var _loc3 = api.datacenter.Exchange.localGarbage.length;
+        if (_loc2.index == -1 && _loc3 >= _nMaxItem)
         {
             return (false);
         } // end if
         return (true);
-    };
-    _loc1.showCraftViewer = function (bShow)
+    } // End of the function
+    function showCraftViewer(bShow)
     {
         if (bShow)
         {
-            var _loc3 = this.attachMovie("CraftViewer", "_cvCraftViewer", this.getNextHighestDepth());
-            _loc3._x = this._mcPlacer._x;
-            _loc3._y = this._mcPlacer._y;
-            _loc3.skill = new dofus.datacenter.Skill(this._nSkillId, this._nMaxItem);
+            var _loc2 = this.attachMovie("CraftViewer", "_cvCraftViewer", this.getNextHighestDepth());
+            _loc2._x = _mcPlacer._x;
+            _loc2._y = _mcPlacer._y;
+            _loc2.job = api.datacenter.Player.currentJob;
         }
         else
         {
-            this._cvCraftViewer.removeMovieClip();
+            _cvCraftViewer.removeMovieClip();
         } // end else if
-        this._winCraftViewer._visible = bShow;
-        this._btnCraft.selected = bShow;
-    };
-    _loc1.addCraft = function (nTargetItemId)
+        _winCraftViewer._visible = bShow;
+        _btnCraft.__set__selected(bShow);
+    } // End of the function
+    function recordGarbage()
     {
-        if (this._nLastRegenerateTimer + dofus.graphics.gapi.ui.Craft.NAME_GENERATION_DELAY < getTimer())
+        _aGarbageMemory = new Array();
+        for (var _loc2 = 0; _loc2 < _eaLocalDataProvider.length; ++_loc2)
         {
-            this.api.network.Account.getRandomCharacterName();
-            this._nLastRegenerateTimer = getTimer();
-        }
-        else
+            var _loc3 = _eaLocalDataProvider[_loc2];
+            _aGarbageMemory.push({id: _loc3.ID, quantity: _loc3.Quantity});
+        } // end of for
+    } // End of the function
+    function cleanGarbage()
+    {
+        for (var _loc2 = 0; _loc2 < _eaLocalDataProvider.length; ++_loc2)
+        {
+            var _loc3 = _eaLocalDataProvider[_loc2];
+            api.network.Exchange.movementItem(false, _loc3.ID, _loc3.Quantity);
+        } // end of for
+    } // End of the function
+    function recallGarbageMemory()
+    {
+        if (_aGarbageMemory == undefined || _aGarbageMemory.length == 0)
         {
             return;
-        } // end else if
-        var _loc3 = this.api.lang.getSkillText(this._nSkillId).cl;
-        var _loc4 = 0;
-        
-        while (++_loc4, _loc4 < _loc3.length)
-        {
-            var _loc5 = _loc3[_loc4];
-            if (nTargetItemId == _loc5)
-            {
-                var _loc6 = this.api.lang.getCraftText(_loc5);
-                var _loc8 = 0;
-                var _loc9 = new Array();
-                var _loc11 = 0;
-                
-                while (++_loc11, _loc11 < _loc6.length)
-                {
-                    var _loc12 = _loc6[_loc11];
-                    var _loc13 = _loc12[0];
-                    var _loc14 = _loc12[1];
-                    var _loc7 = false;
-                    var _loc15 = 0;
-                    
-                    while (++_loc15, _loc15 < this._eaDataProvider.length)
-                    {
-                        var _loc10 = this._eaDataProvider[_loc15];
-                        if (_loc13 == _loc10.unicID)
-                        {
-                            if (_loc14 <= _loc10.Quantity && _loc10.position == -1)
-                            {
-                                ++_loc8;
-                                _loc7 = true;
-                                _loc9.push({item: _loc10, qty: _loc14});
-                                break;
-                            } // end if
-                        } // end if
-                    } // end while
-                    if (!_loc7)
-                    {
-                        break;
-                    } // end if
-                } // end while
-                if (_loc7 && _loc6.length == _loc8)
-                {
-                    var _loc17 = new Array();
-                    var _loc19 = 0;
-                    
-                    while (++_loc19, _loc19 < this._cgLocal.dataProvider.length)
-                    {
-                        var _loc16 = this._cgLocal.dataProvider[_loc19];
-                        var _loc18 = _loc16.Quantity;
-                        if (_loc18 < 1 || _loc18 == undefined)
-                        {
-                            continue;
-                        } // end if
-                        _loc17.push({Add: false, ID: _loc16.ID, Quantity: _loc18});
-                    } // end while
-                    var _loc20 = 0;
-                    
-                    while (++_loc20, _loc20 < _loc9.length)
-                    {
-                        _loc16 = _loc9[_loc20].item;
-                        _loc18 = _loc9[_loc20].qty;
-                        if (_loc18 < 1 || _loc18 == undefined)
-                        {
-                            continue;
-                        } // end if
-                        _loc17.push({Add: true, ID: _loc16.ID, Quantity: _loc18});
-                    } // end while
-                    this.api.network.Exchange.movementItems(_loc17);
-                }
-                else
-                {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("DONT_HAVE_ALL_INGREDIENT"), "ERROR_BOX");
-                } // end else if
-                break;
-            } // end if
-        } // end while
-    };
-    _loc1.recordGarbage = function ()
-    {
-        this._aGarbageMemory = new Array();
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < this._eaLocalDataProvider.length)
-        {
-            var _loc3 = this._eaLocalDataProvider[_loc2];
-            this._aGarbageMemory.push({id: _loc3.ID, quantity: _loc3.Quantity});
-        } // end while
-    };
-    _loc1.cleanGarbage = function ()
-    {
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < this._eaLocalDataProvider.length)
-        {
-            var _loc3 = this._eaLocalDataProvider[_loc2];
-            this.api.network.Exchange.movementItem(false, _loc3.ID, _loc3.Quantity);
-        } // end while
-    };
-    _loc1.recallGarbageMemory = function ()
-    {
-        if (this._aGarbageMemory == undefined || this._aGarbageMemory.length == 0)
-        {
-            return (false);
         } // end if
         this.cleanGarbage();
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < this._aGarbageMemory.length)
+        for (var _loc4 = 0; _loc4 < _aGarbageMemory.length; ++_loc4)
         {
-            var _loc3 = this._aGarbageMemory[_loc2];
-            var _loc4 = this._eaDataProvider.findFirstItem("ID", _loc3.id);
-            if (_loc4.index != -1)
+            var _loc3 = _aGarbageMemory[_loc4];
+            var _loc2 = _eaDataProvider.findFirstItem("ID", _loc3.id);
+            if (_loc2.index != -1)
             {
-                if (_loc4.item.Quantity >= _loc3.quantity)
+                if (_loc2.item.Quantity >= _loc3.quantity)
                 {
-                    this.api.network.Exchange.movementItem(true, _loc4.item.ID, _loc3.quantity);
+                    api.network.Exchange.movementItem(true, _loc2.item.ID, _loc3.quantity);
                 }
                 else
                 {
-                    this.api.kernel.showMessage(undefined, this.api.lang.getText("CRAFT_NOT_ENOUGHT", [_loc4.item.name]), "ERROR_BOX", {name: "NotEnougth"});
-                    return (false);
+                    api.kernel.showMessage(undefined, api.lang.getText("CRAFT_NOT_ENOUGHT", [_loc2.item.name]), "ERROR_BOX", {name: "NotEnougth"});
+                    return;
                 } // end else if
                 continue;
             } // end if
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("CRAFT_NO_RESOURCE"), "ERROR_BOX", {name: "NotEnougth"});
-            return (false);
-        } // end while
-        return (true);
-    };
-    _loc1.nextCraft = function ()
-    {
-        ank.utils.Timer.setTimer(this, "doNextCraft", this, this.doNextCraft, 250);
-    };
-    _loc1.doNextCraft = function ()
-    {
-        if (this.recallGarbageMemory() == false)
-        {
-            this.stopMakeAll();
-        } // end if
-    };
-    _loc1.stopMakeAll = function ()
-    {
-        ank.utils.Timer.removeTimer(this, "doNextCraft");
-        this._bMakeAll = false;
-        this._cgLocal.dataProvider = this.api.datacenter.Exchange.localGarbage;
-        this.updateData();
-        this.updateDistantData();
-    };
-    _loc1.showPreview = function (item, b)
-    {
-        if (this._ctrPreview.contentPath == undefined)
-        {
-            return;
-        } // end if
-        this._mcFiligrane._visible = b;
-        this._ctrPreview._visible = b;
-        this._ctrPreview.contentPath = b ? (item.iconFile) : ("");
-        this._mcFiligrane.itemName = item.name;
-    };
-    _loc1.modelChanged = function (oEvent)
+            api.kernel.showMessage(undefined, api.lang.getText("CRAFT_NO_RESOURCE"), "ERROR_BOX", {name: "NotEnougth"});
+        } // end of for
+    } // End of the function
+    function modelChanged(oEvent)
     {
         switch (oEvent.target)
         {
-            case this._eaLocalDataProvider:
+            case _eaLocalDataProvider:
             {
-                if (this._bMakeAll)
-                {
-                    if (this._eaLocalDataProvider.length == 0)
-                    {
-                        this.nextCraft();
-                    }
-                    else if (this._aGarbageMemory.length != undefined && this._aGarbageMemory.length == this._eaLocalDataProvider.length)
-                    {
-                        this.setReady();
-                    } // end else if
-                }
-                else
-                {
-                    this.updateLocalData();
-                    var _loc3 = this.api.kernel.GameManager.analyseReceipts(this.api.kernel.GameManager.mergeUnicItemInInventory(this._eaLocalDataProvider), this._nSkillId, this._nMaxItem);
-                    if (_loc3 != undefined)
-                    {
-                        this.showPreview(new dofus.datacenter.Item(-1, _loc3, 1, 0, "", 0), true);
-                    }
-                    else
-                    {
-                        this.showPreview(undefined, false);
-                    } // end else if
-                } // end else if
+                this.updateLocalData();
                 break;
             } 
-            case this._eaDistantDataProvider:
+            case _eaDistantDataProvider:
             {
-                if (!this._bMakeAll && !this._bIsLooping)
-                {
-                    this.updateDistantData();
-                } // end if
+                this.updateDistantData();
                 break;
             } 
-            case this._eaDataProvider:
+            case _eaDataProvider:
             {
-                if (!this._bMakeAll && !this._bIsLooping)
-                {
-                    this.updateData();
-                } // end if
+                this.updateData();
                 break;
             } 
             default:
             {
-                if (!this._bMakeAll && !this._bIsLooping)
-                {
-                    this.updateData();
-                    this.updateLocalData();
-                    this.updateDistantData();
-                } // end if
+                this.updateData();
+                this.updateLocalData();
+                this.updateDistantData();
                 break;
             } 
         } // End of switch
-    };
-    _loc1.over = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
-        switch (oEvent.target)
-        {
-            case this._btnFilterEquipement:
-            {
-                this.api.ui.showTooltip(this.api.lang.getText("EQUIPEMENT"), oEvent.target, -20);
-                break;
-            } 
-            case this._btnFilterNonEquipement:
-            {
-                this.api.ui.showTooltip(this.api.lang.getText("NONEQUIPEMENT"), oEvent.target, -20);
-                break;
-            } 
-            case this._btnFilterRessoureces:
-            {
-                this.api.ui.showTooltip(this.api.lang.getText("RESSOURECES"), oEvent.target, -20);
-                break;
-            } 
-            case this._ctrPreview:
-            {
-                if (this._mcFiligrane.itemName != undefined)
-                {
-                    this.gapi.showTooltip(this._mcFiligrane.itemName, this._ctrPreview, -22);
-                } // end if
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.out = function (oEvent)
-    {
-        this.api.ui.hideTooltip();
-    };
-    _loc1.onCraftLoopEnd = function ()
-    {
-        this._bIsLooping = false;
-        this._btnValidate.label = this.api.lang.getText("COMBINE");
-        this._nCurrentQuantity = 1;
-        this._btnQuantity.label = this.api.lang.getText("QUANTITY_SMALL") + ": 1";
-        this._btnTries.label = this.api.lang.getText("TRIES_WORD") + ": 1";
-        this._btnApplyRunes.label = this.api.lang.getText("APPLY_ONE_RUNE");
-        this.updateData();
-    };
-    _loc1.repeatCraft = function ()
-    {
-        this._bIsLooping = true;
-        this._btnValidate.label = this._btnApplyRunes.label = this.api.lang.getText("STOP_WORD");
-        this.api.network.Exchange.repeatCraft(this._nCurrentQuantity - 1);
-    };
-    _loc1.click = function (oEvent)
-    {
-        if (oEvent.target == this._btnClose)
+        if (oEvent.target == _btnClose)
         {
             this.callClose();
             return;
         } // end if
-        if (oEvent.target == this._btnQuantity)
+        if (oEvent.target == _btnValidate)
         {
-            var _loc3 = 99;
-            var _loc4 = 0;
-            var _loc5 = 10000000;
-            var _loc8 = 0;
-            
-            while (++_loc8, _loc8 < this._eaLocalDataProvider.length)
-            {
-                var _loc7 = false;
-                var _loc9 = 0;
-                
-                while (++_loc9, _loc9 < this._eaDataProvider.length)
-                {
-                    if (this._eaLocalDataProvider[_loc8].ID == this._eaDataProvider[_loc9].ID)
-                    {
-                        _loc7 = true;
-                        var _loc6 = Math.floor(this._eaDataProvider[_loc9].Quantity / this._eaLocalDataProvider[_loc8].Quantity);
-                        if (_loc6 < _loc5)
-                        {
-                            _loc5 = _loc6;
-                        } // end if
-                    } // end if
-                } // end while
-                if (!_loc7)
-                {
-                    break;
-                } // end if
-            } // end while
-            if (_loc7)
-            {
-                _loc4 = 1;
-                _loc3 = _loc5 + 1;
-                if (_loc4 > _loc5)
-                {
-                    _loc4 = _loc5;
-                } // end if
-            }
-            else
-            {
-                _loc3 = 0;
-                _loc4 = 0;
-            } // end else if
-            var _loc10 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1, max: _loc3, params: {targetType: "repeat"}});
-            _loc10.addEventListener("validate", this);
+            this.showCraftViewer(false);
+            this.recordGarbage();
+            this.setReady();
             return;
         } // end if
-        if (oEvent.target == this._btnTries)
-        {
-            var _loc11 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1, max: 99, params: {targetType: "tries"}});
-            _loc11.addEventListener("validate", this);
-            return;
-        } // end if
-        if (oEvent.target == this._btnValidate || oEvent.target == this._btnApplyRunes)
-        {
-            if (this._bIsLooping)
-            {
-                this.api.network.Exchange.stopRepeatCraft();
-                return;
-            } // end if
-            if (this._eaLocalDataProvider.length == 0)
-            {
-                return;
-            } // end if
-            var _loc12 = this.api.kernel.GameManager.analyseReceipts(this.api.kernel.GameManager.mergeUnicItemInInventory(this._eaLocalDataProvider), this._nSkillId, this._nMaxItem);
-            if (_loc12 == undefined && this.api.kernel.OptionsManager.getOption("AskForWrongCraft"))
-            {
-                this.api.kernel.showMessage(this.api.lang.getText("INFORMATIONS"), this.api.lang.getText("WRONG_CRAFT_CONFIRM"), "CAUTION_YESNO", {name: "confirmWrongCraft", listener: this});
-            }
-            else
-            {
-                this.validCraft();
-            } // end else if
-            return;
-        } // end if
-        if (oEvent.target == this._btnCraft)
+        if (oEvent.target == _btnCraft)
         {
             this.showCraftViewer(oEvent.target.selected);
             return;
         } // end if
-        if (oEvent.target == this._btnMemoryRecall)
+        if (oEvent.target == _btnMemoryRecall)
         {
-            this.api.network.Exchange.replayCraft();
+            this.recallGarbageMemory();
             return;
         } // end if
-        if (oEvent.target != this._btnSelectedFilterButton)
+        if (oEvent.target != _btnSelectedFilterButton)
         {
-            this._btnSelectedFilterButton.selected = false;
-            this._btnSelectedFilterButton = oEvent.target;
+            _btnSelectedFilterButton.__set__selected(false);
+            _btnSelectedFilterButton = oEvent.target;
             switch (oEvent.target._name)
             {
                 case "_btnFilterEquipement":
                 {
-                    this._aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_EQUIPEMENT;
-                    this._lblFilter.text = this.api.lang.getText("EQUIPEMENT");
+                    _aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_EQUIPEMENT;
+                    _lblFilter.__set__text(api.lang.getText("EQUIPEMENT"));
                     break;
                 } 
                 case "_btnFilterNonEquipement":
                 {
-                    this._aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_NONEQUIPEMENT;
-                    this._lblFilter.text = this.api.lang.getText("NONEQUIPEMENT");
+                    _aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_NONEQUIPEMENT;
+                    _lblFilter.__set__text(api.lang.getText("NONEQUIPEMENT"));
                     break;
                 } 
                 case "_btnFilterRessoureces":
                 {
-                    this._aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_RESSOURECES;
-                    this._lblFilter.text = this.api.lang.getText("RESSOURECES");
+                    _aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_RESSOURECES;
+                    _lblFilter.__set__text(api.lang.getText("RESSOURECES"));
                     break;
                 } 
             } // End of switch
@@ -738,79 +362,56 @@ if (!dofus.graphics.gapi.ui.Craft)
         {
             oEvent.target.selected = true;
         } // end else if
-    };
-    _loc1.validCraft = function ()
+    } // End of the function
+    function dblClickItem(oEvent)
     {
-        if (this._nCurrentQuantity > 1)
-        {
-            this.api.kernel.showMessage(undefined, this.api.lang.getText("CRAFT_LOOP_START", [this._nCurrentQuantity]), "INFO_CHAT");
-            this.showCraftViewer(false);
-            this.recordGarbage();
-            this.setReady();
-            this.addToQueue({object: this, method: this.repeatCraft});
-        }
-        else
-        {
-            this.showCraftViewer(false);
-            this.recordGarbage();
-            this.setReady();
-        } // end else if
-    };
-    _loc1.updateForgemagusResult = function (oItem)
-    {
-        var _loc3 = new ank.utils.ExtendedArray();
-        _loc3.push(oItem);
-        this.distantDataProvider = _loc3;
-    };
-    _loc1.dblClickItem = function (oEvent)
-    {
-        var _loc3 = oEvent.target.contentData;
-        if (_loc3 == undefined)
+        var _loc2 = oEvent.target.contentData;
+        if (_loc2 == undefined)
         {
             return;
         } // end if
-        var _loc4 = Key.isDown(Key.CONTROL) ? (_loc3.Quantity) : (1);
-        var _loc5 = oEvent.owner._name;
-        switch (_loc5)
-        {
-            case "_cgGrid":
-            {
-                if (this.canDropInGarbage(_loc3))
-                {
-                    this.validateDrop("_cgLocal", _loc3, _loc4);
-                } // end if
-                break;
-            } 
-            case "_cgLocal":
-            {
-                this.validateDrop("_cgGrid", _loc3, _loc4);
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.dragItem = function (oEvent)
-    {
-        this.gapi.removeCursor();
-        if (oEvent.target.contentData == undefined)
-        {
-            return;
-        } // end if
-        this.gapi.setCursor(oEvent.target.contentData);
-    };
-    _loc1.dropItem = function (oEvent)
-    {
-        var _loc3 = this.gapi.getCursor();
-        if (_loc3 == undefined)
-        {
-            return;
-        } // end if
-        this.gapi.removeCursor();
-        var _loc4 = oEvent.target._parent._parent._name;
+        var _loc3 = Key.isDown(17) ? (_loc2.Quantity) : (1);
+        var _loc4 = oEvent.owner._name;
         switch (_loc4)
         {
             case "_cgGrid":
             {
-                if (_loc3.position == -1)
+                if (this.canDropInGarbage(_loc2))
+                {
+                    this.validateDrop("_cgLocal", _loc2, _loc3);
+                } // end if
+                break;
+            } 
+            case "_cgLocal":
+            {
+                this.validateDrop("_cgGrid", _loc2, _loc3);
+                break;
+            } 
+        } // End of switch
+    } // End of the function
+    function dragItem(oEvent)
+    {
+        gapi.removeCursor();
+        if (oEvent.target.contentData == undefined)
+        {
+            return;
+        } // end if
+        gapi.setCursor(oEvent.target.contentData);
+    } // End of the function
+    function dropItem(oEvent)
+    {
+        var _loc4 = gapi.getCursor();
+        if (_loc4 == undefined)
+        {
+            return;
+        } // end if
+        gapi.removeCursor();
+        var _loc2 = oEvent.target._parent._parent._name;
+        switch (_loc2)
+        {
+            case "_cgGrid":
+            {
+                if (_loc4.position == -1)
                 {
                     return;
                 } // end if
@@ -818,28 +419,28 @@ if (!dofus.graphics.gapi.ui.Craft)
             } 
             case "_cgLocal":
             {
-                if (_loc3.position == -2)
+                if (_loc4.position == -2)
                 {
                     return;
                 } // end if
-                if (!this.canDropInGarbage(_loc3))
+                if (!this.canDropInGarbage(_loc4))
                 {
                     return;
                 } // end if
                 break;
             } 
         } // End of switch
-        if (_loc3.Quantity > 1)
+        if (_loc4.Quantity > 1)
         {
-            var _loc5 = this.gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1, max: _loc3.Quantity, params: {targetType: "item", oItem: _loc3, targetGrid: _loc4}});
-            _loc5.addEventListener("validate", this);
+            var _loc3 = gapi.loadUIComponent("PopupQuantity", "PopupQuantity", {value: 1, params: {targetType: "item", oItem: _loc4, targetGrid: _loc2}});
+            _loc3.addEventListener("validate", this);
         }
         else
         {
-            this.validateDrop(_loc4, _loc3, 1);
+            this.validateDrop(_loc2, _loc4, 1);
         } // end else if
-    };
-    _loc1.selectItem = function (oEvent)
+    } // End of the function
+    function selectItem(oEvent)
     {
         if (oEvent.target.contentData == undefined)
         {
@@ -847,16 +448,11 @@ if (!dofus.graphics.gapi.ui.Craft)
         }
         else
         {
-            if (Key.isDown(dofus.Constants.CHAT_INSERT_ITEM_KEY))
-            {
-                this.api.kernel.GameManager.insertItemInChat(oEvent.target.contentData);
-                return;
-            } // end if
             this.hideItemViewer(false);
-            this._itvItemViewer.itemData = oEvent.target.contentData;
+            _itvItemViewer.__set__itemData(oEvent.target.contentData);
         } // end else if
-    };
-    _loc1.validate = function (oEvent)
+    } // End of the function
+    function validate(oEvent)
     {
         switch (oEvent.params.targetType)
         {
@@ -865,140 +461,14 @@ if (!dofus.graphics.gapi.ui.Craft)
                 this.validateDrop(oEvent.params.targetGrid, oEvent.params.oItem, oEvent.value);
                 break;
             } 
-            case "repeat":
-            {
-                var _loc3 = Number(oEvent.value);
-                if (_loc3 < 1 || (_loc3 == undefined || _global.isNaN(_loc3)))
-                {
-                    _loc3 = 1;
-                } // end if
-                this._btnQuantity.label = this.api.lang.getText("QUANTITY_SMALL") + ": " + _loc3;
-                this._nCurrentQuantity = _loc3;
-                break;
-            } 
         } // End of switch
-    };
-    _loc1.itemSelected = function (oEvent)
-    {
-        switch (oEvent.target._name)
-        {
-            case "_cbTypes":
-            {
-                this._nSelectedTypeID = this._cbTypes.selectedItem.id;
-                this.api.datacenter.Basics[dofus.graphics.gapi.ui.Craft.CLASS_NAME + "_subfilter_" + this._btnSelectedFilterButton._name] = this._nSelectedTypeID;
-                this.updateData();
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.yes = function ()
-    {
-        this.validCraft();
-    };
-    _loc1.addProperty("localDataProvider", function ()
-    {
-    }, _loc1.__set__localDataProvider);
-    _loc1.addProperty("dataProvider", function ()
-    {
-    }, _loc1.__set__dataProvider);
-    _loc1.addProperty("distantDataProvider", function ()
-    {
-    }, _loc1.__set__distantDataProvider);
-    _loc1.addProperty("skillId", function ()
-    {
-    }, _loc1.__set__skillId);
-    _loc1.addProperty("maxItem", function ()
-    {
-    }, _loc1.__set__maxItem);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Craft = function ()
-    {
-        super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } } // end if
-    }).CLASS_NAME = "Craft";
-    (_global.dofus.graphics.gapi.ui.Craft = function ()
-    {
-        super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } } } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } } } // end if
-    }).FILTER_EQUIPEMENT = [false, true, true, true, true, true, false, true, true, false, true, true, true, true, false];
-    (_global.dofus.graphics.gapi.ui.Craft = function ()
-    {
-        super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } } } } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } } } } // end if
-    }).FILTER_NONEQUIPEMENT = [false, false, false, false, false, false, true, false, false, false, false, false, false, false, false];
-    (_global.dofus.graphics.gapi.ui.Craft = function ()
-    {
-        super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } } } } } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } } } } } // end if
-    }).FILTER_RESSOURECES = [false, false, false, false, false, false, false, false, false, true, false, false, false, false, false];
-    (_global.dofus.graphics.gapi.ui.Craft = function ()
-    {
-        super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } } } } } } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } } } } } } // end if
-    }).GRID_CONTAINER_WIDTH = 38;
-    (_global.dofus.graphics.gapi.ui.Craft = function ()
-    {
-        super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } } } } } } } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } } } } } } } // end if
-    }).FILTER_TYPE_ONLY_USEFUL = 10000;
-    _loc1._bInvalidateDistant = false;
-    _loc1._aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_RESSOURECES;
-    _loc1._nSelectedTypeID = 0;
-    _loc1._nCurrentQuantity = 1;
-    _loc1._nLastRegenerateTimer = 0;
-    (_global.dofus.graphics.gapi.ui.Craft = function ()
-    {
-        super();
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING"))
-        {
-            this._btnQuantity._visible = false;
-        } } } } } } } } // end if
-        if (!_global.API.lang.getConfigText("ENABLE_LOOP_CRAFTING_FM"))
-        {
-            this._btnTries._visible = false;
-        } } } } } } } } // end if
-    }).NAME_GENERATION_DELAY = 1000;
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Craft";
+    static var FILTER_EQUIPEMENT = [false, true, true, true, true, true, false, false, false, false, true, true, true, true];
+    static var FILTER_NONEQUIPEMENT = [false, false, false, false, false, false, true, false, false, false, false, false, false, false];
+    static var FILTER_RESSOURECES = [false, false, false, false, false, false, false, false, true, true, false, false, false, false];
+    static var GRID_CONTAINER_WIDTH = 38;
+    var _bInvalidateDistant = false;
+    var _aSelectedSuperTypes = dofus.graphics.gapi.ui.Craft.FILTER_RESSOURECES;
+} // End of Class
 #endinitclip

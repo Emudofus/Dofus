@@ -1,214 +1,191 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20606]
-#initclip 127
-if (!dofus.graphics.gapi.ui.KeyCode)
+// [Initial MovieClip Action of sprite 1002]
+#initclip 219
+class dofus.graphics.gapi.ui.KeyCode extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.KeyCode = function ()
+    var _winCode, addToQueue, __get__title, _nChangeType, __get__changeType, _nSlotsCount, __get__slotsCount, gapi, api, _mcSlotPlacer, _btnNoCode, _btnValidate, _btnClose, _txtDescription, _mcSlots, createEmptyMovieClip, __set__changeType, __set__slotsCount, __set__title;
+    function KeyCode()
     {
         super();
-    }).prototype;
-    _loc1.__set__title = function (sTitle)
+    } // End of the function
+    function set title(sTitle)
     {
         this.addToQueue({object: this, method: function ()
         {
-            this._winCode.title = sTitle;
+            _winCode.title = sTitle;
         }});
         //return (this.title());
-    };
-    _loc1.__set__changeType = function (nChangeType)
+        null;
+    } // End of the function
+    function set changeType(nChangeType)
     {
-        this._nChangeType = nChangeType;
+        _nChangeType = nChangeType;
         //return (this.changeType());
-    };
-    _loc1.__set__slotsCount = function (nSlotsCount)
+        null;
+    } // End of the function
+    function set slotsCount(nSlotsCount)
     {
         if (nSlotsCount > 8)
         {
             ank.utils.Logger.err("[slotsCount] doit être au max 8");
             return;
         } // end if
-        this._nSlotsCount = nSlotsCount;
-        this._aKeyCode = new Array();
-        var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < nSlotsCount)
+        _nSlotsCount = nSlotsCount;
+        _aKeyCode = new Array();
+        for (var _loc2 = 0; _loc2 < nSlotsCount; ++_loc2)
         {
-            this._aKeyCode[_loc3] = "_";
-        } // end while
+            _aKeyCode[_loc2] = "_";
+        } // end of for
         //return (this.slotsCount());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.KeyCode.CLASS_NAME);
-        this.gapi.getUIComponent("Banner").chatAutoFocus = false;
-    };
-    _loc1.destroy = function ()
+        gapi.getUIComponent("Banner").chatAutoFocus = false;
+    } // End of the function
+    function destroy()
     {
-        this.gapi.getUIComponent("Banner").chatAutoFocus = true;
-    };
-    _loc1.callClose = function ()
+        gapi.getUIComponent("Banner").chatAutoFocus = true;
+    } // End of the function
+    function callClose()
     {
-        this.api.network.Key.leave();
+        api.network.Key.leave();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
         this.drawCodeSlots();
         this.selectNextSlot();
-        this._mcSlotPlacer._visible = false;
-        this._btnNoCode._visible = false;
-    };
-    _loc1.addListeners = function ()
+        _mcSlotPlacer._visible = false;
+        _btnNoCode._visible = false;
+    } // End of the function
+    function addListeners()
     {
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < 10)
+        for (var _loc3 = 0; _loc3 < 10; ++_loc3)
         {
-            var _loc3 = this["_ctrSymbol" + _loc2];
-            _loc3.addEventListener("drag", this);
-            _loc3.addEventListener("click", this);
-            _loc3.addEventListener("dblClick", this);
-            _loc3.params = {index: _loc2};
-        } // end while
-        this.api.kernel.KeyManager.addShortcutsListener("onShortcut", this);
-        this.api.kernel.KeyManager.addKeysListener("onKeys", this);
-        this._btnValidate.addEventListener("click", this);
-        this._btnNoCode.addEventListener("click", this);
-        this._btnClose.addEventListener("click", this);
-    };
-    _loc1.initTexts = function ()
+            var _loc2 = this["_ctrSymbol" + _loc3];
+            _loc2.addEventListener("drag", this);
+            _loc2.addEventListener("click", this);
+            _loc2.addEventListener("dblClick", this);
+            _loc2.params = {index: _loc3};
+        } // end of for
+        Key.addListener(this);
+        _btnValidate.addEventListener("click", this);
+        _btnNoCode.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+    } // End of the function
+    function initTexts()
     {
-        switch (this._nChangeType)
+        switch (_nChangeType)
         {
             case 0:
             {
-                this._btnValidate.label = this.api.lang.getText("UNLOCK");
-                this._txtDescription.text = this.api.lang.getText("UNLOCK_INFOS");
+                _btnValidate.__set__label(api.lang.getText("UNLOCK"));
+                _txtDescription.__set__text(api.lang.getText("UNLOCK_INFOS"));
                 break;
             } 
             case 1:
             {
-                this._btnValidate.label = this.api.lang.getText("CHANGE");
-                this._btnNoCode.label = this.api.lang.getText("NO_CODE");
-                this._txtDescription.text = this.api.lang.getText("LOCK_INFOS");
+                _btnValidate.__set__label(api.lang.getText("CHANGE"));
+                _btnNoCode.__set__label(api.lang.getText("NO_CODE"));
+                _txtDescription.__set__text(api.lang.getText("LOCK_INFOS"));
                 break;
             } 
         } // End of switch
-    };
-    _loc1.initData = function ()
+    } // End of the function
+    function initData()
     {
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < 10)
+        for (var _loc2 = 0; _loc2 < 10; ++_loc2)
         {
             this["_ctrSymbol" + _loc2].contentData = {iconFile: "UI_KeyCodeSymbol" + _loc2, value: String(_loc2)};
-        } // end while
-        switch (this._nChangeType)
+        } // end of for
+        switch (_nChangeType)
         {
             case 0:
             {
-                this._btnNoCode._visible = false;
+                _btnNoCode._visible = false;
                 break;
             } 
             case 1:
             {
-                this._btnNoCode._visible = true;
+                _btnNoCode._visible = true;
                 break;
             } 
         } // End of switch
-    };
-    _loc1.drawCodeSlots = function ()
+    } // End of the function
+    function drawCodeSlots()
     {
-        this._mcSlots.removeMovieClip();
+        _mcSlots.removeMovieClip();
         this.createEmptyMovieClip("_mcSlots", 10);
-        var _loc2 = 0;
-        
-        while (++_loc2, _loc2 < this._nSlotsCount)
+        for (var _loc2 = 0; _loc2 < _nSlotsCount; ++_loc2)
         {
-            var _loc3 = this._mcSlots.attachMovie("Container", "_ctrCode" + _loc2, _loc2, {_x: _loc2 * dofus.graphics.gapi.ui.KeyCode.CODE_SLOT_WIDTH, backgroundRenderer: "UI_KeyCodeContainer", dragAndDrop: true, highlightRenderer: "UI_KeyCodeHighlight", styleName: "none", enabled: true, _width: 30, _height: 30});
+            var _loc3 = _mcSlots.attachMovie("Container", "_ctrCode" + _loc2, _loc2, {_x: _loc2 * dofus.graphics.gapi.ui.KeyCode.CODE_SLOT_WIDTH, backgroundRenderer: "UI_KeyCodeContainer", dragAndDrop: true, highlightRenderer: "UI_KeyCodeHighlight", styleName: "none", enabled: true, _width: 30, _height: 30});
             _loc3.addEventListener("drop", this);
             _loc3.addEventListener("drag", this);
             _loc3.params = {index: _loc2};
-        } // end while
-        this._mcSlots._x = this._mcSlotPlacer._x - this._mcSlots._width;
-        this._mcSlots._y = this._mcSlotPlacer._y;
-    };
-    _loc1.selectPreviousSlot = function ()
+        } // end of for
+        _mcSlots._x = _mcSlotPlacer._x - _mcSlots._width;
+        _mcSlots._y = _mcSlotPlacer._y;
+    } // End of the function
+    function selectPreviousSlot()
     {
-        var _loc2 = this._nCurrentSelectedSlot;
-        --this._nCurrentSelectedSlot;
-        if (this._nCurrentSelectedSlot < 0)
+        var _loc2 = _nCurrentSelectedSlot;
+        --_nCurrentSelectedSlot;
+        if (_nCurrentSelectedSlot < 0)
         {
-            this._nCurrentSelectedSlot = this._nSlotsCount - 1;
+            _nCurrentSelectedSlot = _nSlotsCount - 1;
         } // end if
-        this.selectSlot(_loc2, this._nCurrentSelectedSlot);
-    };
-    _loc1.selectNextSlot = function ()
+        this.selectSlot(_loc2, _nCurrentSelectedSlot);
+    } // End of the function
+    function selectNextSlot()
     {
-        var _loc2 = this._nCurrentSelectedSlot;
-        this._nCurrentSelectedSlot = ++this._nCurrentSelectedSlot % this._nSlotsCount;
-        this.selectSlot(_loc2, this._nCurrentSelectedSlot);
-    };
-    _loc1.selectSlot = function (nLastSlotID, nSlotID)
+        var _loc2 = _nCurrentSelectedSlot;
+        _nCurrentSelectedSlot = ++_nCurrentSelectedSlot % _nSlotsCount;
+        this.selectSlot(_loc2, _nCurrentSelectedSlot);
+    } // End of the function
+    function selectSlot(nLastSlotID, nSlotID)
     {
-        var _loc4 = this._mcSlots["_ctrCode" + nLastSlotID];
-        _loc4.selected = false;
-        this._mcSlots["_ctrCode" + nSlotID].selected = true;
-    };
-    _loc1.setKeyInCurrentSlot = function (nKey)
+        var _loc2 = _mcSlots["_ctrCode" + nLastSlotID];
+        _loc2.__set__selected(false);
+        _mcSlots["_ctrCode" + nSlotID].selected = true;
+    } // End of the function
+    function setKeyInCurrentSlot(nKey)
     {
-        var _loc3 = this._mcSlots["_ctrCode" + this._nCurrentSelectedSlot];
-        var _loc4 = this["_ctrSymbol" + nKey];
-        _loc3.contentData = _loc4.contentData;
-        this._aKeyCode[this._nCurrentSelectedSlot] = nKey;
+        var _loc3 = _mcSlots["_ctrCode" + _nCurrentSelectedSlot];
+        var _loc2 = this["_ctrSymbol" + nKey];
+        _loc3.__set__contentData(_loc2.contentData);
+        _aKeyCode[_nCurrentSelectedSlot] = nKey;
         this.selectNextSlot();
-    };
-    _loc1.validate = function ()
+    } // End of the function
+    function validate()
     {
-        var _loc2 = true;
-        var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < this._aKeyCode.length)
+        var _loc3 = true;
+        for (var _loc2 = 0; _loc2 < _aKeyCode.length; ++_loc2)
         {
-            if (this._aKeyCode[_loc3] != "_")
+            if (_aKeyCode[_loc2] != "_")
             {
-                _loc2 = false;
+                _loc3 = false;
                 continue;
             } // end if
-        } // end while
-        this.api.network.Key.sendKey(this._nChangeType, _loc2 ? ("-") : (this._aKeyCode.join("")));
-    };
-    _loc1.dblClick = function (oEvent)
+        } // end of for
+        api.network.Key.sendKey(_nChangeType, _loc3 ? ("-") : (_aKeyCode.join("")));
+    } // End of the function
+    function dblClick(oEvent)
     {
         this.click(oEvent);
-    };
-    _loc1.click = function (oEvent)
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
             case "_btnNoCode":
             {
-                this.api.network.Key.sendKey(this._nChangeType, "-");
+                api.network.Key.sendKey(_nChangeType, "-");
                 break;
             } 
             case "_btnValidate":
@@ -227,93 +204,75 @@ if (!dofus.graphics.gapi.ui.KeyCode)
                 break;
             } 
         } // End of switch
-    };
-    _loc1.drop = function (oEvent)
+    } // End of the function
+    function drop(oEvent)
     {
-        var _loc3 = this.gapi.getCursor();
-        if (_loc3 == undefined)
+        var _loc2 = gapi.getCursor();
+        var _loc4;
+        if (_loc2 == undefined)
         {
             return;
         } // end if
-        this.gapi.removeCursor();
-        oEvent.target.contentData = _loc3;
-        this._aKeyCode[oEvent.target.params.index] = _loc3.value;
-    };
-    _loc1.drag = function (oEvent)
+        gapi.removeCursor();
+        oEvent.target.contentData = _loc2;
+        _aKeyCode[oEvent.target.params.index] = _loc2.value;
+    } // End of the function
+    function drag(oEvent)
     {
-        this.gapi.removeCursor();
+        gapi.removeCursor();
         var _loc3 = oEvent.target.contentData;
         if (_loc3 == undefined)
         {
             return;
         } // end if
-        this.gapi.setCursor(_loc3);
+        gapi.setCursor(_loc3);
         if (oEvent.target._parent != this)
         {
             oEvent.target.contentData = undefined;
-            this._aKeyCode[oEvent.target.params.index] = "_";
+            _aKeyCode[oEvent.target.params.index] = "_";
         } // end if
-    };
-    _loc1.onShortcut = function (sShortcut)
+    } // End of the function
+    function onKeyUp()
     {
         if (Selection.getFocus() != null)
         {
-            return (true);
+            return;
         } // end if
-        if (sShortcut == "CODE_CLEAR")
+        if (Key.getCode() == 46)
         {
             this.setKeyInCurrentSlot();
-            return (false);
+            return;
         } // end if
-        if (sShortcut == "CODE_NEXT")
+        if (Key.getCode() == 32)
+        {
+            this.setKeyInCurrentSlot();
+            return;
+        } // end if
+        if (Key.getCode() == 39)
         {
             this.selectNextSlot();
-            return (false);
+            return;
         } // end if
-        if (sShortcut == "CODE_PREVIOUS")
+        if (Key.getCode() == 37)
         {
             this.selectPreviousSlot();
-            return (false);
+            return;
         } // end if
-        if (sShortcut == "ACCEPT_CURRENT_DIALOG")
+        if (Key.getCode() == 13)
         {
             this.validate();
-            return (false);
+            return;
         } // end if
-        return (true);
-    };
-    _loc1.onKeys = function (sKey)
-    {
-        if (Selection.getFocus() != null)
+        var _loc2 = Key.getAscii() - 48;
+        if (_loc2 < 0 || _loc2 > 9)
         {
             return;
         } // end if
-        var _loc3 = sKey.charCodeAt(0) - 48;
-        if (_loc3 < 0 || _loc3 > 9)
-        {
-            return;
-        } // end if
-        this.setKeyInCurrentSlot(_loc3);
-    };
-    _loc1.addProperty("slotsCount", function ()
-    {
-    }, _loc1.__set__slotsCount);
-    _loc1.addProperty("changeType", function ()
-    {
-    }, _loc1.__set__changeType);
-    _loc1.addProperty("title", function ()
-    {
-    }, _loc1.__set__title);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.KeyCode = function ()
-    {
-        super();
-    }).CLASS_NAME = "KeyCode";
-    (_global.dofus.graphics.gapi.ui.KeyCode = function ()
-    {
-        super();
-    }).CODE_SLOT_WIDTH = 40;
-    _loc1._aKeyCode = new Array();
-    _loc1._nCurrentSelectedSlot = -1;
-} // end if
+        this.setKeyInCurrentSlot(_loc2);
+    } // End of the function
+    static var CLASS_NAME = "KeyCode";
+    static var CODE_SLOT_WIDTH = 40;
+    var _aKeyCode = new Array();
+    var _nCurrentSelectedSlot = -1;
+} // End of Class
 #endinitclip

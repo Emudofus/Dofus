@@ -1,87 +1,64 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20842]
-#initclip 107
-if (!dofus.graphics.gapi.controls.PointsViewer)
+// [Initial MovieClip Action of sprite 1011]
+#initclip 231
+class dofus.graphics.gapi.controls.PointsViewer extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.PointsViewer = function ()
+    var _sBackgroundLink, __get__background, _nTextColor, __get__textColor, _nValue, useHandCursor, __get__value, _txtValue, attachMovie, dispatchEvent, __set__background, __set__textColor, __set__value;
+    function PointsViewer()
     {
         super();
-    }).prototype;
-    _loc1.__set__background = function (sBackground)
+    } // End of the function
+    function set background(sBackground)
     {
-        this._sBackgroundLink = sBackground;
+        _sBackgroundLink = sBackground;
         //return (this.background());
-    };
-    _loc1.__set__textColor = function (nTextColor)
+        null;
+    } // End of the function
+    function set textColor(nTextColor)
     {
-        this._nTextColor = nTextColor;
+        _nTextColor = nTextColor;
         //return (this.textColor());
-    };
-    _loc1.__set__value = function (nValue)
+        null;
+    } // End of the function
+    function set value(nValue)
     {
         nValue = Number(nValue);
-        if (_global.isNaN(nValue))
+        if (isNaN(nValue))
         {
             return;
         } // end if
-        this._nValue = nValue;
+        _nValue = nValue;
         this.applyValue();
-        this.useHandCursor = false;
+        useHandCursor = false;
         //return (this.value());
-    };
-    _loc1.__get__value = function ()
+        null;
+    } // End of the function
+    function get value()
     {
-        return (this._nValue);
-    };
-    _loc1.init = function ()
+        return (_nValue);
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.PointsViewer.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.attachMovie(this._sBackgroundLink, "_mcBg", this._txtValue.getDepth() - 1);
-        this._txtValue.textColor = this._nTextColor;
-    };
-    _loc1.applyValue = function ()
+        this.attachMovie(_sBackgroundLink, "_mcBg", _txtValue.getDepth() - 1);
+        _txtValue.textColor = _nTextColor;
+    } // End of the function
+    function applyValue()
     {
-        this._txtValue.text = String(this._nValue);
-    };
-    _loc1.onRollOver = function ()
+        _txtValue.text = String(_nValue);
+    } // End of the function
+    function onRollOver()
     {
         this.dispatchEvent({type: "over"});
-    };
-    _loc1.onRollOut = function ()
+    } // End of the function
+    function onRollOut()
     {
         this.dispatchEvent({type: "out"});
-    };
-    _loc1.addProperty("value", _loc1.__get__value, _loc1.__set__value);
-    _loc1.addProperty("textColor", function ()
-    {
-    }, _loc1.__set__textColor);
-    _loc1.addProperty("background", function ()
-    {
-    }, _loc1.__set__background);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.PointsViewer = function ()
-    {
-        super();
-    }).CLASS_NAME = "PointsViewer";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "PointsViewer";
+} // End of Class
 #endinitclip

@@ -1,246 +1,262 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20618]
-#initclip 139
-if (!dofus.graphics.gapi.ui.Spells)
+// [Initial MovieClip Action of sprite 1014]
+#initclip 235
+class dofus.graphics.gapi.ui.Spells extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Spells = function ()
+    var gapi, unloadThis, _mcSpellFullInfosPlacer, addToQueue, _btnBoost, _btnTab0, _btnTab1, _btnTab2, _btnTab3, _btnTab4, _btnClose, _cgGrid, _ctrBoost, api, _lblBonusTitle, _txtHowBoost, _nSelectedTabIndex, _lblBonus, _oSelectedSpell, _winBackground, _sivSpellInfosViewer, _sbvSpellBoostViewer, getNextHighestDepth, attachMovie, _sfivSpellFullInfosViewer, _lblCost;
+    function Spells()
     {
         super();
-    }).prototype;
-    _loc1.init = function ()
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Spells.CLASS_NAME);
-        this.gapi.getUIComponent("Banner").shortcuts.setCurrentTab("Spells");
-    };
-    _loc1.destroy = function ()
+        gapi.getUIComponent("Banner").setCurrentTab("Spells");
+    } // End of the function
+    function destroy()
     {
-        this.gapi.hideTooltip();
-    };
-    _loc1.callClose = function ()
+        gapi.hideTooltip();
+    } // End of the function
+    function callClose()
     {
         this.unloadThis();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._nSelectedSpellType = 0;
-        this._mcSpellFullInfosPlacer._visible = false;
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.initData});
-        this.addToQueue({object: this, method: this.initTexts});
+        _mcSpellFullInfosPlacer._visible = false;
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: initData});
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: selectTab, params: [0]});
+        this.hideSpellInfosViewer(true);
         this.hideSpellBoostViewer(true);
-    };
-    _loc1.addListeners = function ()
+        _btnBoost.__set__enabled(false);
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        this._dgSpells.addEventListener("itemRollOver", this);
-        this._dgSpells.addEventListener("itemRollOut", this);
-        this._dgSpells.addEventListener("itemDrag", this);
-        this._dgSpells.addEventListener("itemSelected", this);
-        this._cbType.addEventListener("itemSelected", this);
-        this.api.datacenter.Player.addEventListener("bonusSpellsChanged", this);
-        this.api.datacenter.Player.Spells.addEventListener("modelChanged", this);
-    };
-    _loc1.initData = function ()
+        _btnTab0.addEventListener("click", this);
+        _btnTab1.addEventListener("click", this);
+        _btnTab2.addEventListener("click", this);
+        _btnTab3.addEventListener("click", this);
+        _btnTab4.addEventListener("click", this);
+        _btnBoost.addEventListener("click", this);
+        _btnClose.addEventListener("click", this);
+        _cgGrid.addEventListener("dragItem", this);
+        _cgGrid.addEventListener("dropItem", this);
+        _cgGrid.addEventListener("overItem", this);
+        _cgGrid.addEventListener("outItem", this);
+        _cgGrid.addEventListener("selectItem", this);
+        _ctrBoost.addEventListener("drop", this);
+        _ctrBoost.addEventListener("click", this);
+        api.datacenter.Player.addEventListener("bonusSpellsChanged", this);
+        api.datacenter.Player.Spells.addEventListener("modelChanged", this);
+    } // End of the function
+    function initData()
     {
         this.updateBonus();
-    };
-    _loc1.initTexts = function ()
+    } // End of the function
+    function initTexts()
     {
-        this._winBackground.title = this.api.lang.getText("YOUR_SPELLS");
-        this._dgSpells.columnsNames = [this.api.lang.getText("NAME_BIG"), this.api.lang.getText("LEVEL")];
-        this._lblBonusTitle.text = this.api.lang.getText("SPELL_BOOST_POINT");
-        this._lblSpellType.text = this.api.lang.getText("SPELL_TYPE");
-        var _loc2 = new ank.utils.ExtendedArray();
-        _loc2.push({label: this.api.lang.getText("WITHOUT_TYPE_FILTER"), type: -2});
-        _loc2.push({label: this.api.lang.getText("SPELL_TAB_GUILD"), type: 0});
-        _loc2.push({label: this.api.lang.getText("SPELL_TAB_WATER"), type: 1});
-        _loc2.push({label: this.api.lang.getText("SPELL_TAB_FIRE"), type: 2});
-        _loc2.push({label: this.api.lang.getText("SPELL_TAB_EARTH"), type: 3});
-        _loc2.push({label: this.api.lang.getText("SPELL_TAB_AIR"), type: 4});
-        this._cbType.dataProvider = _loc2;
-        this._cbType.selectedIndex = 1;
-    };
-    _loc1.updateSpells = function ()
+        _btnTab0.__set__label("   " + api.lang.getText("SPELL_TAB_GUILD"));
+        _btnTab1.__set__label("   " + api.lang.getText("SPELL_TAB_WATER"));
+        _btnTab2.__set__label("   " + api.lang.getText("SPELL_TAB_FIRE"));
+        _btnTab3.__set__label("   " + api.lang.getText("SPELL_TAB_EARTH"));
+        _btnTab4.__set__label("   " + api.lang.getText("SPELL_TAB_AIR"));
+        _lblBonusTitle.__set__text(api.lang.getText("BONUS"));
+        _txtHowBoost.__set__text(api.lang.getText("PLACE_SPELL_HERE"));
+    } // End of the function
+    function updateSpells()
     {
-        var _loc2 = this.api.datacenter.Player.Spells;
-        var _loc3 = new ank.utils.ExtendedArray();
-        for (var k in _loc2)
+        var _loc3 = api.datacenter.Player.Spells;
+        var _loc4 = new ank.utils.ExtendedArray();
+        for (var _loc5 in _loc3)
         {
-            var _loc4 = _loc2[k];
-            if (_loc4.classID != -1 && (_loc4.classID == this._nSelectedSpellType || this._nSelectedSpellType == -2))
+            var _loc2 = _loc3[_loc5];
+            if (_loc2.classID == _nSelectedTabIndex)
             {
-                _loc3.push(_loc4);
+                _loc4.push(_loc2);
             } // end if
         } // end of for...in
-        if (this.api.kernel.OptionsManager.getOption("SeeAllSpell") && this.api.datacenter.Basics.canUseSeeAllSpell)
-        {
-            var _loc5 = this.api.lang.getClassText(this.api.datacenter.Player.Guild).s;
-            var _loc6 = 0;
-            
-            while (++_loc6, _loc6 < _loc5.length)
-            {
-                var _loc7 = _loc5[_loc6];
-                var _loc8 = false;
-                var _loc9 = 0;
-                
-                while (++_loc9, _loc9 < _loc3.length && !_loc8)
-                {
-                    _loc8 = _loc3[_loc9].ID == _loc7;
-                } // end while
-                var _loc10 = new dofus.datacenter.Spell(_loc7, 1);
-                if (!_loc8 && (_loc10.classID == this._nSelectedSpellType || this._nSelectedSpellType == -2))
-                {
-                    _loc3.push(_loc10);
-                } // end if
-            } // end while
-        } // end if
-        _loc3.sortOn("_minPlayerLevel", Array.NUMERIC);
-        this._dgSpells.dataProvider = _loc3;
-    };
-    _loc1.updateBonus = function (nValue)
+        _cgGrid.__set__dataProvider(_loc4);
+    } // End of the function
+    function updateBonus(nValue)
     {
-        this._lblBonus.text = nValue == undefined ? (String(this.api.datacenter.Player.BonusPointsSpell)) : (String(nValue));
+        _lblBonus.__set__text(nValue == undefined ? (api.datacenter.Player.BonusPointsSpell) : (nValue));
+    } // End of the function
+    function selectTab(nIndex)
+    {
+        delete this._oSelectedSpell;
+        this.hideSpellInfosViewer(true);
+        this.showDetails(false);
+        var _loc3 = this["_btnTab" + _nSelectedTabIndex];
+        var _loc2 = this["_btnTab" + nIndex];
+        _loc3.selected = false;
+        _loc3.enabled = true;
+        _nSelectedTabIndex = nIndex;
+        _loc2.enabled = false;
+        if (!_loc2.selected)
+        {
+            _loc2.selected = true;
+        } // end if
+        _winBackground.__set__title(api.lang.getText(dofus.graphics.gapi.ui.Spells.TAB_TITLE_LIST[nIndex]));
         this.updateSpells();
-    };
-    _loc1.hideSpellBoostViewer = function (bHide, oSpell)
+    } // End of the function
+    function hideSpellInfosViewer(bHide)
     {
-        this._sbvSpellBoostViewer._visible = !bHide;
-        if (oSpell != undefined)
-        {
-            this._sbvSpellBoostViewer.spell = oSpell;
-        } // end if
-    };
-    _loc1.showDetails = function (bShow)
+        _sivSpellInfosViewer._visible = !bHide;
+    } // End of the function
+    function hideSpellBoostViewer(bHide)
     {
-        this._sfivSpellFullInfosViewer.removeMovieClip();
+        _sbvSpellBoostViewer._visible = !bHide;
+    } // End of the function
+    function showDetails(bShow)
+    {
         if (bShow)
         {
-            this.attachMovie("SpellFullInfosViewer", "_sfivSpellFullInfosViewer", this.getNextHighestDepth(), {_x: this._mcSpellFullInfosPlacer._x, _y: this._mcSpellFullInfosPlacer._y});
-            this._sfivSpellFullInfosViewer.addEventListener("close", this);
-        } // end if
-    };
-    _loc1.boostSpell = function (oSpell)
-    {
-        this.api.sounds.events.onSpellsBoostButtonClick();
-        if (this.canBoost(oSpell) != undefined)
+            if (_oSelectedSpell != undefined)
+            {
+                this.attachMovie("SpellFullInfosViewer", "_sfivSpellFullInfosViewer", this.getNextHighestDepth(), {_x: _mcSpellFullInfosPlacer._x, _y: _mcSpellFullInfosPlacer._y, spell: _oSelectedSpell});
+            } // end if
+            _sfivSpellFullInfosViewer.addEventListener("close", this);
+        }
+        else
         {
-            var _loc3 = new dofus.datacenter.Spell(oSpell.ID, oSpell.level + 1);
-            if (this.api.datacenter.Player.Level < _loc3.minPlayerLevel)
-            {
-                this.api.kernel.showMessage(undefined, this.api.lang.getText("LEVEL_NEED_TO_BOOST", [_loc3.minPlayerLevel]), "ERROR_BOX");
-                return (false);
-            } // end if
-            this.hideSpellBoostViewer(true);
-            this.api.network.Spells.boost(oSpell.ID);
-            this._sfivSpellFullInfosViewer.spell = _loc3;
-            return (true);
-        } // end if
-        return (false);
-    };
-    _loc1.getCostForBoost = function (oSpell)
-    {
-        return (oSpell.level < oSpell.maxLevel ? (dofus.Constants.SPELL_BOOST_BONUS[oSpell.level]) : (-1));
-    };
-    _loc1.canBoost = function (oSpell)
-    {
-        if (oSpell != undefined)
-        {
-            if (this.getCostForBoost(oSpell) > this.api.datacenter.Player.BonusPointsSpell)
-            {
-                return (false);
-            } // end if
-            if (oSpell.level < oSpell.maxLevel)
-            {
-                return (true);
-            } // end if
-        } // end if
-        return (false);
-    };
-    _loc1.click = function (oEvent)
+            _sfivSpellFullInfosViewer.removeMovieClip();
+        } // end else if
+    } // End of the function
+    function click(oEvent)
     {
         switch (oEvent.target._name)
         {
+            case "_btnTab0":
+            case "_btnTab1":
+            case "_btnTab2":
+            case "_btnTab3":
+            case "_btnTab4":
+            {
+                this.selectTab(Number(oEvent.target._name.substr(7)));
+                break;
+            } 
+            case "_btnBoost":
+            {
+                var _loc2 = _ctrBoost.__get__contentData();
+                if (_loc2 != undefined)
+                {
+                    _ctrBoost.__set__contentData("");
+                    this.hideSpellBoostViewer(true);
+                    _btnBoost.__set__enabled(false);
+                    _lblCost.__set__text("");
+                    api.network.Spells.boost(_loc2.ID);
+                } // end if
+                break;
+            } 
+            case "_ctrBoost":
+            {
+                _ctrBoost.__set__contentData("");
+                this.hideSpellBoostViewer(true);
+                _btnBoost.__set__enabled(false);
+                _lblCost.__set__text("");
+                if (_oSelectedSpell != undefined)
+                {
+                    this.hideSpellInfosViewer(false);
+                } // end if
+                break;
+            } 
             case "_btnClose":
             {
                 this.callClose();
                 break;
             } 
         } // End of switch
-    };
-    _loc1.itemDrag = function (oEvent)
+    } // End of the function
+    function dragItem(oEvent)
     {
-        if (oEvent.row.item == undefined)
+        if (oEvent.target.contentData == undefined)
         {
             return;
         } // end if
-        if (this.api.datacenter.Player.Level < oEvent.row.item._minPlayerLevel)
+        gapi.removeCursor();
+        gapi.setCursor(oEvent.target.contentData);
+    } // End of the function
+    function drop(oEvent)
+    {
+        var _loc2 = gapi.getCursor();
+        if (_loc2 == undefined)
         {
             return;
         } // end if
-        this.gapi.removeCursor();
-        this.gapi.setCursor(oEvent.row.item);
-    };
-    _loc1.itemRollOver = function (oEvent)
-    {
-    };
-    _loc1.itemRollOut = function (oEvent)
-    {
-    };
-    _loc1.itemSelected = function (oEvent)
-    {
-        switch (oEvent.target)
+        gapi.removeCursor();
+        var _loc3 = dofus.Constants.SPELL_BOOST_BONUS[_loc2.level];
+        this.hideSpellBoostViewer(false);
+        if (_loc2.level < _loc2.maxLevel)
         {
-            case this._dgSpells:
+            this.hideSpellInfosViewer(true);
+            _ctrBoost.__set__contentData(_loc2);
+            _sbvSpellBoostViewer.__set__spell(_loc2);
+            _btnBoost.__set__enabled(_loc3 <= api.datacenter.Player.BonusPointsSpell);
+            _lblCost.__set__text(api.lang.getText("COST") + " : " + _loc3);
+        }
+        else
+        {
+            _ctrBoost.__set__contentData("");
+            this.hideSpellBoostViewer(true);
+            _btnBoost.__set__enabled(false);
+            _lblCost.__set__text("");
+        } // end else if
+    } // End of the function
+    function dropItem(oEvent)
+    {
+        gapi.removeCursor();
+    } // End of the function
+    function overItem(oEvent)
+    {
+        if (oEvent.target.contentData != undefined)
+        {
+            _sivSpellInfosViewer.__set__spell(oEvent.target.contentData);
+            this.hideSpellInfosViewer(false);
+            if (gapi.getCursor() == undefined)
             {
-                if (oEvent.row.item != undefined)
-                {
-                    if (this._sfivSpellFullInfosViewer.spell.ID != oEvent.row.item.ID)
-                    {
-                        this.showDetails(true);
-                        this._sfivSpellFullInfosViewer.spell = oEvent.row.item;
-                    }
-                    else
-                    {
-                        this.showDetails(false);
-                    } // end if
-                } // end else if
-                break;
-            } 
-            case this._cbType:
+                gapi.hideTooltip();
+                var _loc3 = {x: oEvent.target._x, y: oEvent.target._y - 20};
+                oEvent.target._parent.localToGlobal(_loc3);
+                var _loc5 = _loc3.x;
+                var _loc4 = _loc3.y;
+                gapi.showTooltip(oEvent.target.contentData.name, _loc5, _loc4, {bXLimit: true, bYLimit: false});
+            } // end if
+        } // end if
+    } // End of the function
+    function outItem(oEvent)
+    {
+        this.hideSpellInfosViewer(true);
+        gapi.hideTooltip();
+    } // End of the function
+    function selectItem(oEvent)
+    {
+        _oSelectedSpell = oEvent.target.contentData;
+        if (_oSelectedSpell != undefined)
+        {
+            if (_sfivSpellFullInfosViewer != undefined)
             {
-                this._nSelectedSpellType = oEvent.target.selectedItem.type;
-                this.updateSpells();
-                break;
-            } 
-        } // End of switch
-    };
-    _loc1.bonusSpellsChanged = function (oEvent)
+                _sfivSpellFullInfosViewer.__set__spell(_oSelectedSpell);
+            }
+            else
+            {
+                this.showDetails(true);
+            } // end if
+        } // end else if
+    } // End of the function
+    function bonusSpellsChanged(oEvent)
     {
         this.updateBonus(oEvent.value);
-    };
-    _loc1.close = function (oEvent)
+    } // End of the function
+    function close(oEvent)
     {
         this.showDetails(false);
-    };
-    _loc1.modelChanged = function (oEvent)
+        _cgGrid.selectedItem.selected = false;
+    } // End of the function
+    function modelChanged(oEvent)
     {
         switch (oEvent.eventName)
         {
@@ -248,21 +264,12 @@ if (!dofus.graphics.gapi.ui.Spells)
             case "updateAll":
         } // End of switch
         this.updateSpells();
+        this.hideSpellInfosViewer(true);
         this.hideSpellBoostViewer(true);
         
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Spells = function ()
-    {
-        super();
-    }).CLASS_NAME = "Spells";
-    (_global.dofus.graphics.gapi.ui.Spells = function ()
-    {
-        super();
-    }).TAB_LIST = ["Guild", "Water", "Fire", "Earth", "Air"];
-    (_global.dofus.graphics.gapi.ui.Spells = function ()
-    {
-        super();
-    }).TAB_TITLE_LIST = ["SPELL_TAB_GUILD_TITLE", "SPELL_TAB_WATER_TITLE", "SPELL_TAB_FIRE_TITLE", "SPELL_TAB_EARTH_TITLE", "SPELL_TAB_AIR_TITLE"];
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Spells";
+    static var TAB_LIST = ["Guild", "Water", "Fire", "Earth", "Air"];
+    static var TAB_TITLE_LIST = ["SPELL_TAB_GUILD_TITLE", "SPELL_TAB_WATER_TITLE", "SPELL_TAB_FIRE_TITLE", "SPELL_TAB_EARTH_TITLE", "SPELL_TAB_AIR_TITLE"];
+} // End of Class
 #endinitclip

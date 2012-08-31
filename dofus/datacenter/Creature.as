@@ -1,74 +1,50 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20868]
-#initclip 133
-if (!dofus.datacenter.Creature)
+// [Initial MovieClip Action of sprite 873]
+#initclip 85
+class dofus.datacenter.Creature extends dofus.datacenter.PlayableCharacter
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Creature = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID)
+    var initialize, _nNameID, __get__name, api, _nPowerLevel, __get__powerLevel, CharacteristicsManager, __get__Level, __get__alignment, __set__name, __set__powerLevel, __get__resistances;
+    function Creature(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super();
         this.initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID);
-    }).prototype;
-    _loc1.__set__name = function (nNameID)
+    } // End of the function
+    function set name(nNameID)
     {
-        this._nNameID = Number(nNameID);
+        _nNameID = Number(nNameID);
         //return (this.name());
-    };
-    _loc1.__get__name = function ()
+        null;
+    } // End of the function
+    function get name()
     {
-        return (this.api.lang.getMonstersText(this._nNameID).n);
-    };
-    _loc1.__set__powerLevel = function (nPowerLevel)
+        return (api.lang.getMonstersText(_nNameID).n);
+    } // End of the function
+    function set powerLevel(nPowerLevel)
     {
-        this._nPowerLevel = Number(nPowerLevel);
+        _nPowerLevel = Number(nPowerLevel);
         //return (this.powerLevel());
-    };
-    _loc1.__get__powerLevel = function ()
+        null;
+    } // End of the function
+    function get powerLevel()
     {
-        return (this._nPowerLevel);
-    };
-    _loc1.__get__Level = function ()
+        return (_nPowerLevel);
+    } // End of the function
+    function get Level()
     {
-        return (this.api.lang.getMonstersText(this._nNameID)["g" + this._nPowerLevel].l);
-    };
-    _loc1.__set__resistances = function (a)
+        return (api.lang.getMonstersText(_nNameID)["g" + _nPowerLevel].l);
+    } // End of the function
+    function get resistances()
     {
-        this._resistances = a;
-        //return (this.resistances());
-    };
-    _loc1.__get__resistances = function ()
-    {
-        if (this._resistances)
-        {
-            return (this._resistances);
-        } // end if
-        var _loc2 = this.api.lang.getMonstersText(this._nNameID)["g" + this._nPowerLevel].r;
-        _loc2[5] = _loc2[5] + this.CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PA_LOST_PROBABILITY);
-        _loc2[6] = _loc2[6] + this.CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PM_LOST_PROBABILITY);
+        var _loc2 = api.lang.getMonstersText(_nNameID)["g" + _nPowerLevel].r;
+        _loc2[5] = _loc2[5] + CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PA_LOST_PROBABILITY);
+        _loc2[6] = _loc2[6] + CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PM_LOST_PROBABILITY);
         return (_loc2);
-    };
-    _loc1.__get__alignment = function ()
+    } // End of the function
+    function get alignment()
     {
-        return (new dofus.datacenter.Alignment(this.api.lang.getMonstersText(this._nNameID).a, 0));
-    };
-    _loc1.addProperty("powerLevel", _loc1.__get__powerLevel, _loc1.__set__powerLevel);
-    _loc1.addProperty("resistances", _loc1.__get__resistances, _loc1.__set__resistances);
-    _loc1.addProperty("name", _loc1.__get__name, _loc1.__set__name);
-    _loc1.addProperty("alignment", _loc1.__get__alignment, function ()
-    {
-    });
-    _loc1.addProperty("Level", _loc1.__get__Level, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._sStartAnimation = "appear";
-} // end if
+        return (new dofus.datacenter.Alignment(api.lang.getMonstersText(_nNameID).a, 0));
+    } // End of the function
+    var _sStartAnimation = "appear";
+} // End of Class
 #endinitclip

@@ -1,144 +1,127 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20598]
-#initclip 119
-if (!ank.gapi.Gapi)
+// [Initial MovieClip Action of sprite 973]
+#initclip 185
+class ank.gapi.Gapi extends ank.utils.QueueEmbedMovieClip
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.gapi)
-    {
-        _global.ank.gapi = new Object();
-    } // end if
-    var _loc1 = (_global.ank.gapi.Gapi = function ()
+    var _oAPI, __get__api, _nScreenWidth, _nScreenHeight, createEmptyMovieClip, _oUIComponentsList, _eaUIComponentsInstances, _mcLayer_Popup, _nLastSetCursorTimer, _mcLayer_Cursor, dispatchEvent, _sLastAutoHideComponent, _mcLayer_UI_Top, _mcLayer_UI, __set__api, __get__screenHeight, __get__screenWidth;
+    function Gapi()
     {
         super();
         this.initialize();
-    }).prototype;
-    _loc1.__set__api = function (oAPI)
+    } // End of the function
+    function set api(oAPI)
     {
-        this._oAPI = oAPI;
+        _oAPI = oAPI;
         //return (this.api());
-    };
-    _loc1.__get__api = function ()
+        null;
+    } // End of the function
+    function get api()
     {
-        return (this._oAPI);
-    };
-    _loc1.__get__screenWidth = function ()
+        return (_oAPI);
+    } // End of the function
+    function get screenWidth()
     {
-        return (this._nScreenWidth == undefined ? (Stage.width) : (this._nScreenWidth));
-    };
-    _loc1.__get__screenHeight = function ()
+        return (_nScreenWidth == undefined ? (Stage.width) : (_nScreenWidth));
+    } // End of the function
+    function get screenHeight()
     {
-        return (this._nScreenHeight == undefined ? (Stage.height) : (this._nScreenHeight));
-    };
-    _loc1.clear = function ()
+        return (_nScreenHeight == undefined ? (Stage.height) : (_nScreenHeight));
+    } // End of the function
+    function clear()
     {
-        this.createEmptyMovieClip("_mcLayer_UI", 10).cacheAsBitmap = _global.CONFIG.cacheAsBitmap["GAPI/UI"];
-        this.createEmptyMovieClip("_mcLayer_UI_Top", 20).cacheAsBitmap = _global.CONFIG.cacheAsBitmap["GAPI/UITop"];
-        this.createEmptyMovieClip("_mcLayer_UI_Ultimate", 30).cacheAsBitmap = _global.CONFIG.cacheAsBitmap["GAPI/UIUltimate"];
-        this.createEmptyMovieClip("_mcLayer_Popup", 40).cacheAsBitmap = _global.CONFIG.cacheAsBitmap["GAPI/Popup"];
-        this.createEmptyMovieClip("_mcLayer_Cursor", 50).cacheAsBitmap = _global.CONFIG.cacheAsBitmap["GAPI/Cursor"];
-        this._oUIComponentsList = new Object();
-        this._eaUIComponentsInstances = new ank.utils.ExtendedArray();
-    };
-    _loc1.setScreenSize = function (nWidth, nHeight)
+        this.createEmptyMovieClip("_mcLayer_UI", 10);
+        this.createEmptyMovieClip("_mcLayer_UI_Top", 20);
+        this.createEmptyMovieClip("_mcLayer_Popup", 30);
+        this.createEmptyMovieClip("_mcLayer_Cursor", 40);
+        _oUIComponentsList = new Object();
+        _eaUIComponentsInstances = new ank.utils.ExtendedArray();
+    } // End of the function
+    function setScreenSize(nWidth, nHeight)
     {
-        this._nScreenWidth = nWidth;
-        this._nScreenHeight = nHeight;
-    };
-    _loc1.createPopupMenu = function (sStyleName)
+        _nScreenWidth = nWidth;
+        _nScreenHeight = nHeight;
+    } // End of the function
+    function createPopupMenu()
     {
-        var _loc3 = this.pmPopupMenu;
-        if (sStyleName == undefined)
+        if (_mcLayer_Popup._mcPopupMenu != undefined)
         {
-            sStyleName = "BrownPopupMenu";
+            _mcLayer_Popup._mcPopupMenu.removeMovieClip();
         } // end if
-        if (this.nPopupMenuCnt == undefined)
-        {
-            this.nPopupMenuCnt = 0;
-        } // end if
-        var _loc4 = this.nPopupMenuCnt++;
-        this.pmPopupMenu = (ank.gapi.controls.PopupMenu)(this._mcLayer_Popup.attachMovie("PopupMenu", "_mcPopupMenu" + _loc4, _loc4, {styleName: sStyleName, gapi: this}));
-        _loc3.removeMovieClip();
-        return (this.pmPopupMenu);
-    };
-    _loc1.removePopupMenu = function ()
+        (ank.gapi.controls.PopupMenu)(_mcLayer_Popup.attachMovie("PopupMenu", "_mcPopupMenu", _mcLayer_Popup.getNextHighestDepth(), {styleName: "BrownPopupMenu", gapi: this}));
+        return (_mcLayer_Popup._mcPopupMenu);
+    } // End of the function
+    function showFixedTooltip(sText, xORmc, y, oParams, sName)
     {
-        this.pmPopupMenu.removeMovieClip();
-    };
-    _loc1.showFixedTooltip = function (sText, xORmc, y, oParams, sName)
-    {
+        var _loc12;
         if (sText == undefined)
         {
             return;
         } // end if
         if (typeof(xORmc) == "movieclip")
         {
-            var _loc8 = xORmc;
-            var _loc9 = {x: _loc8._x, y: _loc8._y};
-            _loc8._parent.localToGlobal(_loc9);
-            var _loc7 = _loc9.x;
-            y = y + _loc9.y;
+            var _loc3 = xORmc;
+            var _loc4 = {x: _loc3._x, y: _loc3._y};
+            _loc3._parent.localToGlobal(_loc4);
+            _loc12 = _loc4.x;
+            y = y + _loc4.y;
         }
         else
         {
-            _loc7 = Number(xORmc);
+            _loc12 = Number(xORmc);
         } // end else if
-        if (this._mcLayer_Popup["_mcToolTip" + sName] != undefined)
+        if (_mcLayer_Popup["_mcToolTip" + sName] != undefined)
         {
-            var _loc10 = this._mcLayer_Popup["_mcToolTip" + sName];
-            _loc10.params = oParams;
-            _loc10.x = _loc7;
-            _loc10.y = y;
-            _loc10.text = sText;
+            var _loc2 = _mcLayer_Popup["_mcToolTip" + sName];
+            _loc2.params = oParams;
+            _loc2.x = _loc12;
+            _loc2.y = y;
+            _loc2.text = sText;
         }
         else
         {
-            this._mcLayer_Popup.attachMovie("ToolTip", "_mcToolTip" + sName, this._mcLayer_Popup.getNextHighestDepth(), {text: sText, x: _loc7, y: y, params: oParams, gapi: this});
+            _mcLayer_Popup.attachMovie("ToolTip", "_mcToolTip" + sName, _mcLayer_Popup.getNextHighestDepth(), {text: sText, x: _loc12, y: y, params: oParams, gapi: this});
         } // end else if
-    };
-    _loc1.showTooltip = function (sText, xORmc, y, oParams, sStyleName)
+    } // End of the function
+    function showTooltip(sText, xORmc, y, oParams, sStyleName)
     {
+        var _loc12;
         if (sText == undefined)
         {
             return;
         } // end if
         if (typeof(xORmc) == "movieclip")
         {
-            var _loc8 = xORmc;
-            var _loc9 = {x: _loc8._x, y: _loc8._y};
-            _loc8._parent.localToGlobal(_loc9);
-            this.globalToLocal(_loc9);
-            var _loc7 = _loc9.x;
-            y = y + _loc9.y;
+            var _loc3 = xORmc;
+            var _loc4 = {x: _loc3._x, y: _loc3._y};
+            _loc3._parent.localToGlobal(_loc4);
+            _loc12 = _loc4.x;
+            y = y + _loc4.y;
         }
         else
         {
-            _loc7 = Number(xORmc);
+            _loc12 = Number(xORmc);
         } // end else if
-        if (this._mcLayer_Popup._mcToolTip != undefined)
+        if (_mcLayer_Popup._mcToolTip != undefined)
         {
-            var _loc10 = this._mcLayer_Popup._mcToolTip;
-            _loc10.params = oParams;
-            _loc10.x = _loc7;
-            _loc10.y = y;
-            _loc10.text = sText;
+            var _loc2 = _mcLayer_Popup._mcToolTip;
+            _loc2.params = oParams;
+            _loc2.x = _loc12;
+            _loc2.y = y;
+            _loc2.text = sText;
         }
         else
         {
-            this._mcLayer_Popup.attachMovie("ToolTip", "_mcToolTip", this._mcLayer_Popup.getNextHighestDepth(), {text: sText, x: _loc7, y: y, params: oParams, gapi: this, styleName: sStyleName});
+            _mcLayer_Popup.attachMovie("ToolTip", "_mcToolTip", _mcLayer_Popup.getNextHighestDepth(), {text: sText, x: _loc12, y: y, params: oParams, gapi: this, styleName: sStyleName});
         } // end else if
-    };
-    _loc1.hideTooltip = function ()
+    } // End of the function
+    function hideTooltip()
     {
-        this._mcLayer_Popup._mcToolTip.removeMovieClip();
-    };
-    _loc1.setCursor = function (oData, oAlignment)
+        _mcLayer_Popup._mcToolTip.removeMovieClip();
+    } // End of the function
+    function setCursor(oData, oAlignment)
     {
-        this._nLastSetCursorTimer = getTimer();
+        _nLastSetCursorTimer = getTimer();
         this.removeCursor();
         if (oAlignment == undefined)
         {
@@ -148,15 +131,15 @@ if (!ank.gapi.Gapi)
         oAlignment.height = oAlignment.height != undefined ? (oAlignment.height) : (ank.gapi.Gapi.CURSOR_MAX_SIZE);
         oAlignment.x = oAlignment.x != undefined ? (oAlignment.x) : (ank.gapi.Gapi.CURSOR_CENTER[0]);
         oAlignment.y = oAlignment.y != undefined ? (oAlignment.y) : (ank.gapi.Gapi.CURSOR_CENTER[1]);
-        var _loc4 = (ank.gapi.controls.Container)(this._mcLayer_Cursor.attachMovie("Container", "cursor1", 10));
-        _loc4.setSize(oAlignment.width, oAlignment.height);
-        _loc4.move(oAlignment.x, oAlignment.y);
-        _loc4.contentData = oData;
-        this._oCursorAligment = oAlignment;
-        this._oCursorData = oData;
-        this._mcLayer_Cursor.startDrag(true);
-    };
-    _loc1.setCursorForbidden = function (bForbidden, sCursorFile)
+        var _loc3 = (ank.gapi.controls.Container)(_mcLayer_Cursor.attachMovie("Container", "cursor1", 10));
+        _loc3.setSize(oAlignment.width, oAlignment.height);
+        _loc3.move(oAlignment.x, oAlignment.y);
+        _loc3.__set__contentData(oData);
+        _oCursorAligment = oAlignment;
+        _oCursorData = oData;
+        _mcLayer_Cursor.startDrag(true);
+    } // End of the function
+    function setCursorForbidden(bForbidden, sCursorFile)
     {
         if (this.isCursorHidden())
         {
@@ -168,111 +151,106 @@ if (!ank.gapi.Gapi)
         } // end if
         if (bForbidden)
         {
-            if (this._mcLayer_Cursor.mcForbidden == undefined)
+            if (_mcLayer_Cursor.mcForbidden == undefined)
             {
-                var _loc4 = this._mcLayer_Cursor.attachMovie("Loader", "mcForbidden", 20, {scaleContent: true});
-                _loc4.setSize(this._oCursorAligment.width, this._oCursorAligment.height);
-                _loc4.move(this._oCursorAligment.x, this._oCursorAligment.y);
-                _loc4.contentPath = sCursorFile;
+                var _loc2 = _mcLayer_Cursor.attachMovie("Loader", "mcForbidden", 20, {scaleContent: true});
+                _loc2.setSize(_oCursorAligment.width, _oCursorAligment.height);
+                _loc2.move(_oCursorAligment.x, _oCursorAligment.y);
+                _loc2.contentPath = sCursorFile;
             } // end if
         }
         else
         {
-            this._mcLayer_Cursor.mcForbidden.removeMovieClip();
+            _mcLayer_Cursor.mcForbidden.removeMovieClip();
         } // end else if
-    };
-    _loc1.getCursor = function ()
+    } // End of the function
+    function getCursor()
     {
-        return (this._oCursorData);
-    };
-    _loc1.isCursorHidden = function ()
+        return (_oCursorData);
+    } // End of the function
+    function isCursorHidden()
     {
-        return (this._mcLayer_Cursor.cursor1 == undefined);
-    };
-    _loc1.removeCursor = function (bDispatchEvent)
+        return (_mcLayer_Cursor.cursor1 == undefined);
+    } // End of the function
+    function removeCursor(bDispatchEvent)
     {
         this.hideCursor(bDispatchEvent);
-        if (this._oCursorData == undefined)
+        if (_oCursorData == undefined)
         {
             return (false);
         } // end if
         delete this._oCursorData;
         return (true);
-    };
-    _loc1.hideCursor = function (bDispatchEvent)
+    } // End of the function
+    function hideCursor(bDispatchEvent)
     {
         this.setCursorForbidden(false);
-        this._mcLayer_Cursor.stopDrag();
-        this._mcLayer_Cursor.cursor1.removeMovieClip();
+        _mcLayer_Cursor.stopDrag();
+        _mcLayer_Cursor.cursor1.removeMovieClip();
         if (bDispatchEvent == true)
         {
             this.dispatchEvent({type: "removeCursor"});
         } // end if
-    };
-    _loc1.unloadLastUIAutoHideComponent = function ()
+    } // End of the function
+    function unloadLastUIAutoHideComponent()
     {
-        return (this.unloadUIComponent(this._sLastAutoHideComponent));
-    };
-    _loc1.loadUIAutoHideComponent = function (sLink, sInstanceName, oComponentParams, oUIParams)
+        return (this.unloadUIComponent(_sLastAutoHideComponent));
+    } // End of the function
+    function loadUIAutoHideComponent(sLink, sInstanceName, oComponentParams, oUIParams)
     {
-        if (this._sLastAutoHideComponent != sLink)
+        if (_sLastAutoHideComponent != sLink)
         {
-            this.unloadUIComponent(this._sLastAutoHideComponent);
+            this.unloadUIComponent(_sLastAutoHideComponent);
         } // end if
-        this._sLastAutoHideComponent = sLink;
+        _sLastAutoHideComponent = sLink;
         return (this.loadUIComponent(sLink, sInstanceName, oComponentParams, oUIParams));
-    };
-    _loc1.loadUIComponent = function (sLink, sInstanceName, oComponentParams, oUIParams)
+    } // End of the function
+    function loadUIComponent(sLink, sInstanceName, oComponentParams, oUIParams)
     {
+        var _loc10;
+        var _loc9;
+        var _loc6;
         if (oUIParams.bForceLoad == undefined)
         {
-            var _loc6 = false;
+            _loc10 = false;
         }
         else
         {
-            _loc6 = oUIParams.bForceLoad;
+            _loc10 = oUIParams.bForceLoad;
         } // end else if
         if (oUIParams.bStayIfPresent == undefined)
         {
-            var _loc7 = false;
+            _loc9 = false;
         }
         else
         {
-            _loc7 = oUIParams.bStayIfPresent;
+            _loc9 = oUIParams.bStayIfPresent;
         } // end else if
         if (oUIParams.bAlwaysOnTop == undefined)
         {
-            var _loc8 = false;
+            _loc6 = false;
         }
         else
         {
-            _loc8 = oUIParams.bAlwaysOnTop;
-        } // end else if
-        if (oUIParams.bUltimateOnTop == undefined)
-        {
-            var _loc9 = false;
-        }
-        else
-        {
-            _loc9 = oUIParams.bUltimateOnTop;
+            _loc6 = oUIParams.bAlwaysOnTop;
         } // end else if
         if (sLink.substring(0, 3) == "Ask")
         {
-            _loc9 = true;
+            _loc6 = true;
         } // end if
-        if (this._oUIComponentsList[sInstanceName] != undefined)
+        if (_oUIComponentsList[sInstanceName] != undefined)
         {
-            if (_loc7)
+            if (_loc9)
             {
-                var _loc10 = this._oUIComponentsList[sInstanceName];
-                for (var k in oComponentParams)
+                var _loc8 = _oUIComponentsList[sInstanceName];
+                for (var _loc5 in oComponentParams)
                 {
-                    _loc10[k] = oComponentParams[k];
+                    _loc8[_loc5] = oComponentParams[_loc5];
                 } // end of for...in
                 return (null);
             } // end if
             this.unloadUIComponent(sInstanceName);
-            if (!_loc6)
+            if (!_loc10)
             {
                 return (null);
             } // end if
@@ -281,78 +259,61 @@ if (!ank.gapi.Gapi)
         {
             oComponentParams = new Object();
         } // end if
-        oComponentParams.api = this._oAPI;
+        oComponentParams.api = _oAPI;
         oComponentParams.gapi = this;
         oComponentParams.instanceName = sInstanceName;
-        if (_loc8)
+        var _loc7;
+        if (_loc6)
         {
-            var _loc11 = this._mcLayer_UI_Top;
-        }
-        else if (_loc9)
-        {
-            _loc11 = this._mcLayer_UI_Ultimate;
+            _loc7 = _mcLayer_UI_Top;
         }
         else
         {
-            _loc11 = this._mcLayer_UI;
+            _loc7 = _mcLayer_UI;
         } // end else if
-        var _loc12 = _loc11.attachMovie("UI_" + sLink, sInstanceName, _loc11.getNextHighestDepth(), oComponentParams);
-        this._oUIComponentsList[sInstanceName] = _loc12;
-        this._eaUIComponentsInstances.push({name: sInstanceName});
-        return (_loc12);
-    };
-    _loc1.unloadUIComponent = function (sInstanceName)
+        _loc8 = _loc7.attachMovie("UI_" + sLink, sInstanceName, _loc7.getNextHighestDepth(), oComponentParams);
+        _oUIComponentsList[sInstanceName] = _loc8;
+        _eaUIComponentsInstances.push({name: sInstanceName});
+        return (_loc8);
+    } // End of the function
+    function unloadUIComponent(sInstanceName)
     {
-        var _loc3 = this.getUIComponent(sInstanceName);
-        delete this._oUIComponentsList[sInstanceName];
-        var _loc4 = this._eaUIComponentsInstances.findFirstItem("name", sInstanceName);
-        if (_loc4.index != -1)
+        var _loc2 = this.getUIComponent(sInstanceName);
+        delete _oUIComponentsList[sInstanceName];
+        var _loc3 = _eaUIComponentsInstances.findFirstItem("name", sInstanceName);
+        if (_loc3.index != -1)
         {
-            this._eaUIComponentsInstances.removeItems(_loc4.index, 1);
+            _eaUIComponentsInstances.removeItems(_loc3.index, 1);
         } // end if
-        if (_loc3 == undefined)
+        if (_loc2 == undefined)
         {
             return (false);
         } // end if
-        _loc3.destroy();
-        Key.removeListener(_loc3);
-        this.api.kernel.KeyManager.removeShortcutsListener(_loc3);
-        this.api.kernel.KeyManager.removeKeysListener(_loc3);
-        _loc3.removeMovieClip();
+        _loc2.destroy();
+        Key.removeListener(_loc2);
+        _loc2.removeMovieClip();
         return (true);
-    };
-    _loc1.getUIComponent = function (sInstanceName)
+    } // End of the function
+    function getUIComponent(sInstanceName)
     {
-        var _loc3 = this._mcLayer_UI[sInstanceName];
-        if (_loc3 == undefined)
-        {
-            _loc3 = this._mcLayer_UI_Top[sInstanceName];
-        } // end if
-        if (_loc3 == undefined)
-        {
-            _loc3 = this._mcLayer_UI_Ultimate[sInstanceName];
-        } // end if
-        if (_loc3 == undefined)
-        {
-            return (null);
-        } // end if
-        return (_loc3);
-    };
-    _loc1.callCloseOnLastUI = function (nIndex)
+        var _loc2 = _mcLayer_UI[sInstanceName];
+        return (_loc2 == undefined ? (_mcLayer_UI_Top[sInstanceName]) : (_loc2));
+    } // End of the function
+    function callCloseOnLastUI(nIndex)
     {
         if (nIndex == undefined)
         {
-            nIndex = this._eaUIComponentsInstances.length - 1;
+            nIndex = _eaUIComponentsInstances.length - 1;
         } // end if
         if (nIndex < 0)
         {
             return (false);
         } // end if
-        if (_global.isNaN(nIndex))
+        if (isNaN(nIndex))
         {
             return (false);
         } // end if
-        var _loc3 = this.getUIComponent(this._eaUIComponentsInstances[nIndex].name);
+        var _loc3 = this.getUIComponent(_eaUIComponentsInstances[nIndex].name);
         if (_loc3.callClose() == true)
         {
             return (true);
@@ -361,27 +322,27 @@ if (!ank.gapi.Gapi)
         {
             return (this.callCloseOnLastUI(nIndex - 1));
         } // end else if
-    };
-    _loc1.initialize = function ()
+    } // End of the function
+    function initialize()
     {
         this.clear();
         ank.gapi.styles.StylesManager.loadStylePackage(ank.gapi.styles.DefaultStylePackage);
         mx.events.EventDispatcher.initialize(this);
-    };
-    _loc1.addDragClip = function ()
+    } // End of the function
+    function addDragClip()
     {
-    };
-    _loc1.removeDragClip = function ()
+    } // End of the function
+    function removeDragClip()
     {
-    };
-    _loc1.onMouseUp = function ()
+    } // End of the function
+    function onMouseUp()
     {
-        if (this._oCursorData == undefined)
+        if (_oCursorData == undefined)
         {
             return;
         } // end if
-        var _loc2 = getTimer() - this._nLastSetCursorTimer;
-        if (_global.isNaN(_loc2))
+        var _loc2 = getTimer() - _nLastSetCursorTimer;
+        if (isNaN(_loc2))
         {
             return;
         } // end if
@@ -390,37 +351,12 @@ if (!ank.gapi.Gapi)
             return;
         } // end if
         this.hideCursor(true);
-    };
-    _loc1.addProperty("screenHeight", _loc1.__get__screenHeight, function ()
-    {
-    });
-    _loc1.addProperty("api", _loc1.__get__api, _loc1.__set__api);
-    _loc1.addProperty("screenWidth", _loc1.__get__screenWidth, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.ank.gapi.Gapi = function ()
-    {
-        super();
-        this.initialize();
-    }).MAX_DELAY_CURSOR = 250;
-    (_global.ank.gapi.Gapi = function ()
-    {
-        super();
-        this.initialize();
-    }).CURSOR_MAX_SIZE = 40;
-    (_global.ank.gapi.Gapi = function ()
-    {
-        super();
-        this.initialize();
-    }).CURSOR_CENTER = [-20, -20];
-    (_global.ank.gapi.Gapi = function ()
-    {
-        super();
-        this.initialize();
-    }).DBLCLICK_DELAY = 250;
-    _loc1._oDragClipsList = null;
-    _loc1._oCursorData = null;
-    _loc1._oCursorAligment = null;
-} // end if
+    } // End of the function
+    static var MAX_DELAY_CURSOR = 400;
+    static var CURSOR_MAX_SIZE = 40;
+    static var CURSOR_CENTER = [-20, -20];
+    var _oDragClipsList = null;
+    var _oCursorData = null;
+    var _oCursorAligment = null;
+} // End of Class
 #endinitclip

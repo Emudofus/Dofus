@@ -1,231 +1,160 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20807]
-#initclip 72
-if (!dofus.datacenter.Character)
+// [Initial MovieClip Action of sprite 839]
+#initclip 51
+class dofus.datacenter.Character extends dofus.datacenter.PlayableCharacter
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Character = function (sID, clipClass, sGfxFile, cellNum, dir, gfxID, title)
+    var initialize, __get__isSlow, _nSpeedModerator, _nGuild, __get__Guild, _nSex, __get__Sex, _nAura, __get__Aura, _oAlignment, __get__alignment, _bMerchant, __get__Merchant, _nServerID, __get__serverID, _bDied, __get__Died, _sGuildName, __get__guildName, _oEmblem, __get__emblem, _nRestrictions, __get__restrictions, _aResistances, __get__resistances, CharacteristicsManager, __set__Aura, __set__Died, __set__Guild, __set__Merchant, __set__Sex, __set__alignment, __get__canBeAssault, __get__canBeAttack, __get__canBeChallenge, __get__canExchange, __get__canSwitchInCreaturesMode, __set__emblem, __get__forceWalk, __set__guildName, __set__resistances, __set__restrictions, __set__serverID, __get__speedModerator;
+    function Character(sID, clipClass, sGfxFile, cellNum, dir, gfxID)
     {
         super();
-        this._title = title;
         this.initialize(sID, clipClass, sGfxFile, cellNum, dir, gfxID);
-    }).prototype;
-    _loc1.__get__speedModerator = function ()
+    } // End of the function
+    function get speedModerator()
     {
-        return (this.isSlow ? (5.000000E-001) : (this._nSpeedModerator));
-    };
-    _loc1.__get__Guild = function ()
+        //return (this.isSlow() ? (5.000000E-001) : (_nSpeedModerator));
+    } // End of the function
+    function get Guild()
     {
-        return (this._nGuild);
-    };
-    _loc1.__set__Guild = function (value)
+        return (_nGuild);
+    } // End of the function
+    function set Guild(value)
     {
-        this._nGuild = Number(value);
+        _nGuild = Number(value);
         //return (this.Guild());
-    };
-    _loc1.__get__Sex = function ()
+        null;
+    } // End of the function
+    function get Sex()
     {
-        return (this._nSex);
-    };
-    _loc1.__set__Sex = function (value)
+        return (_nSex);
+    } // End of the function
+    function set Sex(value)
     {
-        this._nSex = Number(value);
+        _nSex = Number(value);
         //return (this.Sex());
-    };
-    _loc1.__get__Aura = function ()
+        null;
+    } // End of the function
+    function get Aura()
     {
-        return (this._nAura);
-    };
-    _loc1.__set__Aura = function (value)
+        return (_nAura);
+    } // End of the function
+    function set Aura(value)
     {
-        this._nAura = Number(value);
+        _nAura = Number(value);
         //return (this.Aura());
-    };
-    _loc1.__get__alignment = function ()
+        null;
+    } // End of the function
+    function get alignment()
     {
-        return (this._oAlignment);
-    };
-    _loc1.__set__alignment = function (value)
+        return (_oAlignment);
+    } // End of the function
+    function set alignment(value)
     {
-        this._oAlignment = value;
+        _oAlignment = value;
         //return (this.alignment());
-    };
-    _loc1.__get__Merchant = function ()
+        null;
+    } // End of the function
+    function get Merchant()
     {
-        return (this._bMerchant);
-    };
-    _loc1.__set__Merchant = function (value)
+        return (_bMerchant);
+    } // End of the function
+    function set Merchant(value)
     {
-        this._bMerchant = value;
+        _bMerchant = value;
         //return (this.Merchant());
-    };
-    _loc1.__get__serverID = function ()
+        null;
+    } // End of the function
+    function get serverID()
     {
-        return (this._nServerID);
-    };
-    _loc1.__set__serverID = function (value)
+        return (_nServerID);
+    } // End of the function
+    function set serverID(value)
     {
-        this._nServerID = value;
+        _nServerID = value;
         //return (this.serverID());
-    };
-    _loc1.__get__Died = function ()
+        null;
+    } // End of the function
+    function get Died()
     {
-        return (this._bDied);
-    };
-    _loc1.__set__Died = function (value)
+        return (_bDied);
+    } // End of the function
+    function set Died(value)
     {
-        this._bDied = value;
+        _bDied = value;
         //return (this.Died());
-    };
-    _loc1.__get__rank = function ()
+        null;
+    } // End of the function
+    function set guildName(sGuildName)
     {
-        return (this._oRank);
-    };
-    _loc1.__set__rank = function (value)
-    {
-        this._oRank = value;
-        //return (this.rank());
-    };
-    _loc1.__get__multiCraftSkillsID = function ()
-    {
-        return (this._aMultiCraftSkillsID);
-    };
-    _loc1.__set__multiCraftSkillsID = function (value)
-    {
-        this._aMultiCraftSkillsID = value;
-        //return (this.multiCraftSkillsID());
-    };
-    _loc1.__set__guildName = function (sGuildName)
-    {
-        this._sGuildName = sGuildName;
+        _sGuildName = sGuildName;
         //return (this.guildName());
-    };
-    _loc1.__get__guildName = function ()
+        null;
+    } // End of the function
+    function get guildName()
     {
-        return (this._sGuildName);
-    };
-    _loc1.__get__title = function ()
+        return (_sGuildName);
+    } // End of the function
+    function set emblem(oEmblem)
     {
-        return (this._title);
-    };
-    _loc1.__set__emblem = function (oEmblem)
-    {
-        this._oEmblem = oEmblem;
+        _oEmblem = oEmblem;
         //return (this.emblem());
-    };
-    _loc1.__get__emblem = function ()
+        null;
+    } // End of the function
+    function get emblem()
     {
-        return (this._oEmblem);
-    };
-    _loc1.__set__restrictions = function (nRestrictions)
+        return (_oEmblem);
+    } // End of the function
+    function set restrictions(nRestrictions)
     {
-        this._nRestrictions = Number(nRestrictions);
+        _nRestrictions = Number(nRestrictions);
         //return (this.restrictions());
-    };
-    _loc1.__get__canBeAssault = function ()
+        null;
+    } // End of the function
+    function get canBeAssault()
     {
-        return ((this._nRestrictions & 1) != 1);
-    };
-    _loc1.__get__canBeChallenge = function ()
+        return ((_nRestrictions & 1) != 1);
+    } // End of the function
+    function get canBeChallenge()
     {
-        return ((this._nRestrictions & 2) != 2);
-    };
-    _loc1.__get__canExchange = function ()
+        return ((_nRestrictions & 2) != 2);
+    } // End of the function
+    function get canExchange()
     {
-        return ((this._nRestrictions & 4) != 4);
-    };
-    _loc1.__get__canBeAttack = function ()
+        return ((_nRestrictions & 4) != 4);
+    } // End of the function
+    function get canBeAttack()
     {
-        return ((this._nRestrictions & 8) != 8);
-    };
-    _loc1.__get__forceWalk = function ()
+        return ((_nRestrictions & 8) != 8);
+    } // End of the function
+    function get forceWalk()
     {
-        return ((this._nRestrictions & 16) == 16);
-    };
-    _loc1.__get__isSlow = function ()
+        return ((_nRestrictions & 16) == 16);
+    } // End of the function
+    function get isSlow()
     {
-        return ((this._nRestrictions & 32) == 32);
-    };
-    _loc1.__get__canSwitchInCreaturesMode = function ()
+        return ((_nRestrictions & 32) == 32);
+    } // End of the function
+    function get canSwitchInCreaturesMode()
     {
-        return ((this._nRestrictions & 64) != 64);
-    };
-    _loc1.__get__isTomb = function ()
+        return ((_nRestrictions & 64) != 64);
+    } // End of the function
+    function set resistances(aResistances)
     {
-        return ((this._nRestrictions & 128) == 128);
-    };
-    _loc1.__set__resistances = function (aResistances)
-    {
-        this._aResistances = aResistances;
+        _aResistances = aResistances;
         //return (this.resistances());
-    };
-    _loc1.__get__resistances = function ()
+        null;
+    } // End of the function
+    function get resistances()
     {
-        var _loc2 = new Array();
-        var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < this._aResistances.length)
+        var _loc3 = new Array();
+        for (var _loc2 = 0; _loc2 < _aResistances.length; ++_loc2)
         {
-            _loc2[_loc3] = this._aResistances[_loc3];
-        } // end while
-        _loc2[5] = _loc2[5] + this.CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PA_LOST_PROBABILITY);
-        _loc2[6] = _loc2[6] + this.CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PM_LOST_PROBABILITY);
-        return (_loc2);
-    };
-    _loc1.addProperty("alignment", _loc1.__get__alignment, _loc1.__set__alignment);
-    _loc1.addProperty("Aura", _loc1.__get__Aura, _loc1.__set__Aura);
-    _loc1.addProperty("isTomb", _loc1.__get__isTomb, function ()
-    {
-    });
-    _loc1.addProperty("emblem", _loc1.__get__emblem, _loc1.__set__emblem);
-    _loc1.addProperty("resistances", _loc1.__get__resistances, _loc1.__set__resistances);
-    _loc1.addProperty("canBeChallenge", _loc1.__get__canBeChallenge, function ()
-    {
-    });
-    _loc1.addProperty("Died", _loc1.__get__Died, _loc1.__set__Died);
-    _loc1.addProperty("canBeAttack", _loc1.__get__canBeAttack, function ()
-    {
-    });
-    _loc1.addProperty("title", _loc1.__get__title, function ()
-    {
-    });
-    _loc1.addProperty("serverID", _loc1.__get__serverID, _loc1.__set__serverID);
-    _loc1.addProperty("guildName", _loc1.__get__guildName, _loc1.__set__guildName);
-    _loc1.addProperty("canExchange", _loc1.__get__canExchange, function ()
-    {
-    });
-    _loc1.addProperty("canBeAssault", _loc1.__get__canBeAssault, function ()
-    {
-    });
-    _loc1.addProperty("forceWalk", _loc1.__get__forceWalk, function ()
-    {
-    });
-    _loc1.addProperty("Sex", _loc1.__get__Sex, _loc1.__set__Sex);
-    _loc1.addProperty("Guild", _loc1.__get__Guild, _loc1.__set__Guild);
-    _loc1.addProperty("multiCraftSkillsID", _loc1.__get__multiCraftSkillsID, _loc1.__set__multiCraftSkillsID);
-    _loc1.addProperty("Merchant", _loc1.__get__Merchant, _loc1.__set__Merchant);
-    _loc1.addProperty("rank", _loc1.__get__rank, _loc1.__set__rank);
-    _loc1.addProperty("speedModerator", _loc1.__get__speedModerator, function ()
-    {
-    });
-    _loc1.addProperty("canSwitchInCreaturesMode", _loc1.__get__canSwitchInCreaturesMode, function ()
-    {
-    });
-    _loc1.addProperty("restrictions", function ()
-    {
-    }, _loc1.__set__restrictions);
-    _loc1.addProperty("isSlow", _loc1.__get__isSlow, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1.xtraClipTopAnimations = {staticF: true};
-} // end if
+            _loc3[_loc2] = _aResistances[_loc2];
+        } // end of for
+        _loc3[5] = _loc3[5] + CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PA_LOST_PROBABILITY);
+        _loc3[6] = _loc3[6] + CharacteristicsManager.getModeratorValue(dofus.managers.CharacteristicsManager.DODGE_PM_LOST_PROBABILITY);
+        return (_loc3);
+    } // End of the function
+    var xtraClipTopAnimations = {staticF: true};
+} // End of Class
 #endinitclip

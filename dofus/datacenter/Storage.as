@@ -1,71 +1,63 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20803]
-#initclip 68
-if (!dofus.datacenter.Storage)
+// [Initial MovieClip Action of sprite 936]
+#initclip 148
+class dofus.datacenter.Storage extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Storage = function ()
+    var __get__localOwner, dispatchEvent, __get__isLocked, _eaInventory, __get__inventory, _nKamas, __get__Kama, __set__Kama, __set__inventory, __set__isLocked, __set__localOwner;
+    function Storage()
     {
         super();
         this.initialize();
-    }).prototype;
-    _loc1.__set__localOwner = function (bLocalOwner)
+    } // End of the function
+    function set localOwner(bLocalOwner)
     {
-        this._bLocalOwner = bLocalOwner;
+        _bLocalOwner = bLocalOwner;
         //return (this.localOwner());
-    };
-    _loc1.__get__localOwner = function ()
+        null;
+    } // End of the function
+    function get localOwner()
     {
-        return (this._bLocalOwner);
-    };
-    _loc1.__set__isLocked = function (bLocked)
+        return (_bLocalOwner);
+    } // End of the function
+    function set isLocked(bLocked)
     {
-        this._bLocked = bLocked;
+        _bLocked = bLocked;
         this.dispatchEvent({type: "locked", value: bLocked});
         //return (this.isLocked());
-    };
-    _loc1.__get__isLocked = function ()
+        null;
+    } // End of the function
+    function get isLocked()
     {
-        return (this._bLocked);
-    };
-    _loc1.__set__inventory = function (eaInventory)
+        return (_bLocked);
+    } // End of the function
+    function set inventory(eaInventory)
     {
-        this._eaInventory = eaInventory;
+        _eaInventory = eaInventory;
         this.dispatchEvent({type: "modelChanged"});
         //return (this.inventory());
-    };
-    _loc1.__get__inventory = function ()
+        null;
+    } // End of the function
+    function get inventory()
     {
-        return (this._eaInventory);
-    };
-    _loc1.__set__Kama = function (nKamas)
+        return (_eaInventory);
+    } // End of the function
+    function set Kama(nKamas)
     {
-        this._nKamas = nKamas;
+        _nKamas = nKamas;
         this.dispatchEvent({type: "kamaChanged", value: nKamas});
         //return (this.Kama());
-    };
-    _loc1.__get__Kama = function ()
+        null;
+    } // End of the function
+    function get Kama()
     {
-        return (this._nKamas);
-    };
-    _loc1.initialize = function ()
+        return (_nKamas);
+    } // End of the function
+    function initialize()
     {
         mx.events.EventDispatcher.initialize(this);
-    };
-    _loc1.addProperty("Kama", _loc1.__get__Kama, _loc1.__set__Kama);
-    _loc1.addProperty("localOwner", _loc1.__get__localOwner, _loc1.__set__localOwner);
-    _loc1.addProperty("isLocked", _loc1.__get__isLocked, _loc1.__set__isLocked);
-    _loc1.addProperty("inventory", _loc1.__get__inventory, _loc1.__set__inventory);
-    ASSetPropFlags(_loc1, null, 1);
-    _loc1._bLocalOwner = false;
-    _loc1._bLocked = false;
-} // end if
+    } // End of the function
+    var _bLocalOwner = false;
+    var _bLocked = false;
+} // End of Class
 #endinitclip

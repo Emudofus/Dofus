@@ -1,60 +1,52 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20667]
-#initclip 188
-if (!ank.battlefield.PointsHandler)
+// [Initial MovieClip Action of sprite 868]
+#initclip 80
+class ank.battlefield.PointsHandler
 {
-    if (!ank)
-    {
-        _global.ank = new Object();
-    } // end if
-    if (!ank.battlefield)
-    {
-        _global.ank.battlefield = new Object();
-    } // end if
-    var _loc1 = (_global.ank.battlefield.PointsHandler = function (b, c, d)
+    var _mcBattlefield, _mcContainer, _oDatacenter, _oList;
+    function PointsHandler(b, c, d)
     {
         this.initialize(b, c, d);
-    }).prototype;
-    _loc1.initialize = function (b, c, d)
+    } // End of the function
+    function initialize(b, c, d)
     {
-        this._mcBattlefield = b;
-        this._mcContainer = c;
-        this._oDatacenter = d;
-        this._oList = new Object();
-    };
-    _loc1.clear = function ()
+        _mcBattlefield = b;
+        _mcContainer = c;
+        _oDatacenter = d;
+        _oList = new Object();
+    } // End of the function
+    function clear()
     {
-        for (var k in this._mcContainer)
+        for (var _loc2 in _mcContainer)
         {
-            this._mcContainer[k].removeMovieClip();
+            _mcContainer[_loc2].removeMovieClip();
         } // end of for...in
-    };
-    _loc1.addPoints = function (sID, nX, nY, sValue, nColor)
+    } // End of the function
+    function addPoints(sID, nX, nY, sValue, nColor)
     {
-        var _loc7 = this._mcContainer.getNextHighestDepth();
-        var _loc8 = this._mcContainer.attachClassMovie(ank.battlefield.mc.Points, "points" + _loc7, _loc7, [this, sID, nY, sValue, nColor]);
-        _loc8._x = nX;
-        _loc8._y = nY;
-        if (this._oList[sID] == undefined)
+        var _loc4 = _mcContainer.getNextHighestDepth();
+        var _loc2 = _mcContainer.attachClassMovie(ank.battlefield.mc.Points, "points" + _loc4, _loc4, [this, sID, nY, sValue, nColor]);
+        _loc2._x = nX;
+        _loc2._y = nY;
+        if (_oList[sID] == undefined)
         {
-            this._oList[sID] = new Array();
+            _oList[sID] = new Array();
         } // end if
-        this._oList[sID].push(_loc8);
-        if (this._oList[sID].length == 1)
+        _oList[sID].push(_loc2);
+        if (_oList[sID].length == 1)
         {
-            _loc8.animate();
+            _loc2.animate();
         } // end if
-    };
-    _loc1.onAnimateFinished = function (sID)
+    } // End of the function
+    function onAnimateFinished(sID)
     {
-        var _loc3 = this._oList[sID];
-        _loc3.shift();
-        if (_loc3.length != 0)
+        var _loc2 = _oList[sID];
+        _loc2.shift();
+        if (_loc2.length != 0)
         {
-            _loc3[0].animate();
+            _loc2[0].animate();
         } // end if
-    };
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+    } // End of the function
+} // End of Class
 #endinitclip

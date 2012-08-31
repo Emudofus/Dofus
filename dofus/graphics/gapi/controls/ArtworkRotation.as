@@ -1,125 +1,104 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20684]
-#initclip 205
-if (!dofus.graphics.gapi.controls.ArtworkRotation)
+// [Initial MovieClip Action of sprite 1020]
+#initclip 241
+class dofus.graphics.gapi.controls.ArtworkRotation extends ank.gapi.core.UIBasicComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.controls)
-    {
-        _global.dofus.graphics.gapi.controls = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.controls.ArtworkRotation = function ()
+    var _ariMan, _ariWoman, __get__classID, _i, _nCurrentSex, _di, __set__classID;
+    function ArtworkRotation()
     {
         super();
-    }).prototype;
-    _loc1.__set__classID = function (nClassID)
+    } // End of the function
+    function set classID(nClassID)
     {
-        this._ariMan.loadArtwork(nClassID);
-        this._ariWoman.loadArtwork(nClassID);
+        _ariMan.loadArtwork(nClassID);
+        _ariWoman.loadArtwork(nClassID);
         //return (this.classID());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.controls.ArtworkRotation.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this._i = 2.020000E+000;
-    };
-    _loc1.setPosition = function (nSex)
+        _i = 2.020000E+000;
+    } // End of the function
+    function setPosition(nSex)
     {
-        if (this._nCurrentSex == nSex)
+        if (_nCurrentSex == nSex)
         {
             return;
         } // end if
-        this._nCurrentSex = nSex;
-        var _loc3 = nSex == 0;
-        this._ariWoman.colorize(_loc3);
-        this._ariMan.colorize(!_loc3);
-        if (!_loc3)
+        _nCurrentSex = nSex;
+        var _loc2 = nSex == 0;
+        _ariWoman.colorize(_loc2);
+        _ariMan.colorize(!_loc2);
+        if (!_loc2)
         {
-            this._ariMan.swapDepths(this._ariWoman);
+            _ariMan.swapDepths(_ariWoman);
         } // end if
-        this._i = _loc3 ? (2) : (5.130000E+000);
-        var _loc4 = -3.040000E+001 * (_loc3 ? (-1) : (1));
-        var _loc5 = 2.870000E+001 * (_loc3 ? (-1) : (1));
-        var _loc6 = -4.560000E+001 * (_loc3 ? (-1) : (1));
-        this._ariMan._x = _loc5;
-        this._ariMan._y = _loc6;
-        this._ariWoman._x = -_loc5;
-        this._ariWoman._y = -_loc6;
-        this._ariMan._xscale = 100 + _loc4;
-        this._ariMan._yscale = 100 + _loc4;
-        this._ariWoman._xscale = 100 - _loc4;
-        this._ariWoman._yscale = 100 - _loc4;
-    };
-    _loc1.rotate = function (nSex)
+        _i = _loc2 ? (2) : (5.130000E+000);
+        var _loc3 = -3.040000E+001 * (_loc2 ? (-1) : (1));
+        var _loc5 = 2.870000E+001 * (_loc2 ? (-1) : (1));
+        var _loc4 = -4.560000E+001 * (_loc2 ? (-1) : (1));
+        _ariMan._x = _loc5;
+        _ariMan._y = _loc4;
+        _ariWoman._x = -_loc5;
+        _ariWoman._y = -_loc4;
+        _ariMan._xscale = 100 + _loc3;
+        _ariMan._yscale = 100 + _loc3;
+        _ariWoman._xscale = 100 - _loc3;
+        _ariWoman._yscale = 100 - _loc3;
+    } // End of the function
+    function rotate(nSex)
     {
-        if (this._nCurrentSex == nSex)
+        if (_nCurrentSex == nSex)
         {
             return;
         } // end if
-        this._nCurrentSex = nSex;
+        _nCurrentSex = nSex;
         var piy = 0;
         var px = 0;
         var py = 0;
         var t = 0;
         var bSwaped = false;
-        var _loc3 = nSex == 0;
-        this._ariWoman.colorize(_loc3);
-        this._ariMan.colorize(!_loc3);
-        this._di = _loc3 ? (2) : (2 + Math.PI);
-        this.onEnterFrame = function ()
+        var _loc2 = nSex == 0;
+        _ariWoman.colorize(_loc2);
+        _ariMan.colorize(!_loc2);
+        _di = _loc2 ? (2) : (5.141593E+000);
+        function onEnterFrame()
         {
-            if (Math.abs(this._i - this._di) > 1.000000E-002)
+            if (Math.abs(_i - _di) > 1.000000E-002)
             {
-                this._i = this._i - (this._i - this._di) / 3;
+                _i = _i - (_i - _di) / 3;
                 piy = py;
-                px = 70 * Math.cos(this._i);
-                py = 50 * Math.sin(this._i);
+                px = 70 * Math.cos(_i);
+                py = 50 * Math.sin(_i);
                 if (piy < 0 && py >= 0 || piy >= 0 && py < 0)
                 {
                     if (!bSwaped)
                     {
-                        this._ariMan.swapDepths(this._ariWoman);
+                        _ariMan.swapDepths(_ariWoman);
                         bSwaped = true;
                     } // end if
                 } // end if
                 t = py / 1.500000E+000;
-                this._ariMan._x = px;
-                this._ariMan._y = py;
-                this._ariWoman._x = -px;
-                this._ariWoman._y = -py;
-                this._ariMan._xscale = 100 + t;
-                this._ariMan._yscale = 100 + t;
-                this._ariWoman._xscale = 100 - t;
-                this._ariWoman._yscale = 100 - t;
+                _ariMan._x = px;
+                _ariMan._y = py;
+                _ariWoman._x = -px;
+                _ariWoman._y = -py;
+                _ariMan._xscale = 100 + t;
+                _ariMan._yscale = 100 + t;
+                _ariWoman._xscale = 100 - t;
+                _ariWoman._yscale = 100 - t;
             }
             else
             {
                 delete this.onEnterFrame;
             } // end else if
-        };
-    };
-    _loc1.addProperty("classID", function ()
-    {
-    }, _loc1.__set__classID);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.controls.ArtworkRotation = function ()
-    {
-        super();
-    }).CLASS_NAME = "ArtworkRotationItem";
-} // end if
+        } // End of the function
+    } // End of the function
+    static var CLASS_NAME = "ArtworkRotationItem";
+} // End of Class
 #endinitclip

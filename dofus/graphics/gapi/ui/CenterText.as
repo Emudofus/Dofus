@@ -1,97 +1,56 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20486]
-#initclip 7
-if (!dofus.graphics.gapi.ui.CenterText)
+// [Initial MovieClip Action of sprite 989]
+#initclip 206
+class dofus.graphics.gapi.ui.CenterText extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.CenterText = function ()
+    var __get__text, __get__background, __get__timer, addToQueue, _mcBackground, unloadThis, _lblBlackBR, _lblBlackBL, _lblBlackTR, _lblBlackTL, _lblWhite, __set__background, __set__text, __set__timer;
+    function CenterText()
     {
         super();
-    }).prototype;
-    _loc1.__set__text = function (sText)
+    } // End of the function
+    function set text(sText)
     {
-        this._sText = sText;
+        _sText = sText;
         //return (this.text());
-    };
-    _loc1.__set__background = function (bBackground)
+        null;
+    } // End of the function
+    function set background(bBackground)
     {
-        this._bBackground = bBackground;
+        _bBackground = bBackground;
         //return (this.background());
-    };
-    _loc1.__set__timer = function (nTimer)
+        null;
+    } // End of the function
+    function set timer(nTimer)
     {
-        this._nTimer = nTimer;
+        _nTimer = nTimer;
         //return (this.timer());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.CenterText.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        if (this._sText.length == 0)
+        if (_sText.length == 0)
         {
             return;
         } // end if
-        this.addToQueue({object: this, method: this.initText});
-        this._mcBackground._visible = false;
-        this._prgbGfxLoad._visible = false;
-        if (this._nTimer != 0)
+        this.addToQueue({object: this, method: initText});
+        _mcBackground._visible = _bBackground;
+        if (_nTimer != 0)
         {
-            ank.utils.Timer.setTimer(this, "centertext", this, this.unloadThis, this._nTimer);
+            ank.utils.Timer.setTimer(this, "centertext", this, unloadThis, _nTimer);
         } // end if
-    };
-    _loc1.initText = function ()
+    } // End of the function
+    function initText()
     {
-        this._lblWhite.text = this._lblBlackTL.text = this._lblBlackTR.text = this._lblBlackBL.text = this._lblBlackBR.text = this._sText;
-        var _loc2 = this._lblWhite.textHeight;
-        this._mcBackground._visible = this._bBackground;
-        this._mcBackground._height = _loc2 + 2.500000E+000 * (this._lblWhite._y - this._mcBackground._y);
-    };
-    _loc1.updateProgressBar = function (sLabel, nCurrentVal, nMaxVal)
-    {
-        var _loc5 = Math.floor(nCurrentVal / nMaxVal * 100);
-        if (_global.isNaN(_loc5))
-        {
-            _loc5 = 0;
-        } // end if
-        this._prgbGfxLoad._visible = true;
-        this._prgbGfxLoad.txtInfo.text = sLabel;
-        this._prgbGfxLoad.txtPercent.text = _loc5 + "%";
-        this._prgbGfxLoad.mcProgressBar._width = _loc5;
-    };
-    _loc1.addProperty("timer", function ()
-    {
-    }, _loc1.__set__timer);
-    _loc1.addProperty("background", function ()
-    {
-    }, _loc1.__set__background);
-    _loc1.addProperty("text", function ()
-    {
-    }, _loc1.__set__text);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.CenterText = function ()
-    {
-        super();
-    }).CLASS_NAME = "CenterText";
-    _loc1._sText = "";
-    _loc1._bBackground = false;
-    _loc1._nTimer = 0;
-} // end if
+        _lblWhite.__set__text(_lblBlackTL.__set__text(_lblBlackTR.__set__text(_lblBlackBL.__set__text(_lblBlackBR.__set__text(_sText)))));
+    } // End of the function
+    static var CLASS_NAME = "CenterText";
+    var _sText = "";
+    var _bBackground = false;
+    var _nTimer = 0;
+} // End of Class
 #endinitclip

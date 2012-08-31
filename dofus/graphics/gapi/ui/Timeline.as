@@ -1,71 +1,41 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20988]
-#initclip 253
-if (!dofus.graphics.gapi.ui.Timeline)
+// [Initial MovieClip Action of sprite 978]
+#initclip 192
+class dofus.graphics.gapi.ui.Timeline extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.Timeline = function ()
+    var _tl;
+    function Timeline()
     {
         super();
-    }).prototype;
-    _loc1.update = function ()
+    } // End of the function
+    function update()
     {
-        this._tl.update();
-    };
-    _loc1.nextTurn = function (id, bWithoutTween)
+        _tl.update();
+    } // End of the function
+    function nextTurn(id, bWithoutTween)
     {
-        this._tl.nextTurn(id, bWithoutTween);
-    };
-    _loc1.__get__timelineControl = function ()
+        _tl.nextTurn(id, bWithoutTween);
+    } // End of the function
+    function hideItem(id)
     {
-        return (this._tl);
-    };
-    _loc1.hideItem = function (id)
+        _tl.hideItem(id);
+    } // End of the function
+    function startChrono(nDuration)
     {
-        this._tl.hideItem(id);
-    };
-    _loc1.showItem = function (id)
+        _tl.startChrono(nDuration);
+    } // End of the function
+    function stopChrono()
     {
-        this._tl.showItem(id);
-    };
-    _loc1.startChrono = function (nDuration)
-    {
-        this._tl.startChrono(nDuration);
-    };
-    _loc1.stopChrono = function ()
-    {
-        this._tl.stopChrono();
-    };
-    _loc1.init = function ()
+        _tl.stopChrono();
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.Timeline.CLASS_NAME);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-    };
-    _loc1.addProperty("timelineControl", _loc1.__get__timelineControl, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.Timeline = function ()
-    {
-        super();
-    }).CLASS_NAME = "Timeline";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "Timeline";
+} // End of Class
 #endinitclip

@@ -1,43 +1,37 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20494]
-#initclip 15
-if (!dofus.utils.ApiElement)
+// [Initial MovieClip Action of sprite 829]
+#initclip 41
+class dofus.utils.ApiElement extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.utils)
-    {
-        _global.dofus.utils = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.utils.ApiElement = function ()
+    var _oAPI, __get__api, __set__api;
+    function ApiElement()
     {
         super();
-    }).prototype;
-    _loc1.__get__api = function ()
+    } // End of the function
+    function get api()
     {
-        return (_global.API);
-    };
-    _loc1.__set__api = function (oApi)
+        return (_oAPI);
+    } // End of the function
+    function set api(oApi)
     {
-        this._oAPI = oApi;
+        _oAPI = oApi;
         //return (this.api());
-    };
-    _loc1.initialize = function (oAPI)
+        null;
+    } // End of the function
+    function initialize(oAPI)
     {
-        this._oAPI = oAPI;
-    };
-    _loc1.addToQueue = function (oCall)
+        _oAPI = oAPI;
+    } // End of the function
+    function addToQueue(oCall)
     {
         dofus.utils.ApiElement._aQueue.push(oCall);
         if (_root.onEnterFrame == undefined)
         {
-            _root.onEnterFrame = this.runQueue;
+            _root.onEnterFrame = runQueue;
         } // end if
-    };
-    _loc1.runQueue = function ()
+    } // End of the function
+    function runQueue()
     {
         var _loc2 = dofus.utils.ApiElement._aQueue.shift();
         _loc2.method.apply(_loc2.object, _loc2.params);
@@ -45,12 +39,7 @@ if (!dofus.utils.ApiElement)
         {
             delete _root.onEnterFrame;
         } // end if
-    };
-    _loc1.addProperty("api", _loc1.__get__api, _loc1.__set__api);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.utils.ApiElement = function ()
-    {
-        super();
-    })._aQueue = new Array();
-} // end if
+    } // End of the function
+    static var _aQueue = new Array();
+} // End of Class
 #endinitclip

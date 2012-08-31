@@ -1,112 +1,83 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20831]
-#initclip 96
-if (!dofus.datacenter.Tutorial)
+// [Initial MovieClip Action of sprite 891]
+#initclip 103
+class dofus.datacenter.Tutorial extends Object
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.Tutorial = function (mcData)
+    var _oBlocs, _sRootBlocID, _sRootExitBlocID, _bCanCancel, __get__canCancel;
+    function Tutorial(mcData)
     {
         super();
-        this._oBlocs = new Object();
+        _oBlocs = new Object();
         this.setData(mcData.actions);
-        this._sRootBlocID = mcData.rootBlocID;
-        this._sRootExitBlocID = mcData.rootExitBlocID;
-        this._bCanCancel = mcData.canCancel == undefined ? (true) : (mcData.canCancel);
-    }).prototype;
-    _loc1.__get__canCancel = function ()
+        _sRootBlocID = mcData.rootBlocID;
+        _sRootExitBlocID = mcData.rootExitBlocID;
+        _bCanCancel = mcData.canCancel == undefined ? (true) : (mcData.canCancel);
+    } // End of the function
+    function get canCancel()
     {
-        return (this._bCanCancel);
-    };
-    _loc1.addBloc = function (oBloc)
+        return (_bCanCancel);
+    } // End of the function
+    function addBloc(oBloc)
     {
-        this._oBlocs[oBloc.id] = oBloc;
-    };
-    _loc1.setData = function (aBlocs)
+        _oBlocs[oBloc.id] = oBloc;
+    } // End of the function
+    function setData(aBlocs)
     {
-        var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < aBlocs.length)
+        for (var _loc3 = 0; _loc3 < aBlocs.length; ++_loc3)
         {
-            var _loc4 = aBlocs[_loc3];
-            var _loc5 = Number(_loc4[0]);
+            var _loc2 = aBlocs[_loc3];
+            var _loc5 = Number(_loc2[0]);
             switch (_loc5)
             {
                 case dofus.datacenter.TutorialBloc.TYPE_ACTION:
                 {
-                    var _loc6 = _loc4[1];
-                    var _loc7 = _loc4[2];
-                    var _loc8 = _loc4[3];
-                    var _loc9 = _loc4[4];
-                    var _loc10 = _loc4[5];
-                    var _loc11 = new dofus.datacenter.TutorialAction(_loc6, _loc7, _loc8, _loc9, _loc10);
-                    this.addBloc(_loc11);
+                    var _loc12 = _loc2[1];
+                    var _loc14 = _loc2[2];
+                    var _loc8 = _loc2[3];
+                    var _loc6 = _loc2[4];
+                    var _loc15 = _loc2[5];
+                    var _loc16 = new dofus.datacenter.TutorialAction(_loc12, _loc14, _loc8, _loc6, _loc15);
+                    this.addBloc(_loc16);
                     break;
                 } 
                 case dofus.datacenter.TutorialBloc.TYPE_WAITING:
                 {
-                    var _loc12 = _loc4[1];
-                    var _loc13 = Number(_loc4[2]);
-                    var _loc14 = _loc4[3];
-                    var _loc15 = new dofus.datacenter.TutorialWaiting(_loc12, _loc13, _loc14);
-                    this.addBloc(_loc15);
+                    _loc12 = _loc2[1];
+                    var _loc11 = Number(_loc2[2]);
+                    var _loc13 = _loc2[3];
+                    _loc16 = new dofus.datacenter.TutorialWaiting(_loc12, _loc11, _loc13);
+                    this.addBloc(_loc16);
                     break;
                 } 
                 case dofus.datacenter.TutorialBloc.TYPE_IF:
                 {
-                    var _loc16 = _loc4[1];
-                    var _loc17 = _loc4[2];
-                    var _loc18 = _loc4[3];
-                    var _loc19 = _loc4[4];
-                    var _loc20 = _loc4[5];
-                    var _loc21 = _loc4[6];
-                    var _loc22 = new dofus.datacenter.TutorialIf(_loc16, _loc17, _loc18, _loc19, _loc20, _loc21);
-                    this.addBloc(_loc22);
+                    _loc12 = _loc2[1];
+                    var _loc4 = _loc2[2];
+                    var _loc17 = _loc2[3];
+                    var _loc9 = _loc2[4];
+                    var _loc7 = _loc2[5];
+                    var _loc10 = _loc2[6];
+                    _loc16 = new dofus.datacenter.TutorialIf(_loc12, _loc4, _loc17, _loc9, _loc7, _loc10);
+                    this.addBloc(_loc16);
                     break;
                 } 
             } // End of switch
-        } // end while
-    };
-    _loc1.getRootBloc = function ()
+        } // end of for
+    } // End of the function
+    function getRootBloc()
     {
-        return (this._oBlocs[this._sRootBlocID]);
-    };
-    _loc1.getRootExitBloc = function ()
+        return (_oBlocs[_sRootBlocID]);
+    } // End of the function
+    function getRootExitBloc()
     {
-        return (this._oBlocs[this._sRootExitBlocID]);
-    };
-    _loc1.getBloc = function (sBlocID)
+        return (_oBlocs[_sRootExitBlocID]);
+    } // End of the function
+    function getBloc(sBlocID)
     {
-        return (this._oBlocs[sBlocID]);
-    };
-    _loc1.addProperty("canCancel", _loc1.__get__canCancel, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.datacenter.Tutorial = function (mcData)
-    {
-        super();
-        this._oBlocs = new Object();
-        this.setData(mcData.actions);
-        this._sRootBlocID = mcData.rootBlocID;
-        this._sRootExitBlocID = mcData.rootExitBlocID;
-        this._bCanCancel = mcData.canCancel == undefined ? (true) : (mcData.canCancel);
-    }).NORMAL_BLOC = 0;
-    (_global.dofus.datacenter.Tutorial = function (mcData)
-    {
-        super();
-        this._oBlocs = new Object();
-        this.setData(mcData.actions);
-        this._sRootBlocID = mcData.rootBlocID;
-        this._sRootExitBlocID = mcData.rootExitBlocID;
-        this._bCanCancel = mcData.canCancel == undefined ? (true) : (mcData.canCancel);
-    }).EXIT_BLOC = 1;
-} // end if
+        return (_oBlocs[sBlocID]);
+    } // End of the function
+    static var NORMAL_BLOC = 0;
+    static var EXIT_BLOC = 1;
+} // End of Class
 #endinitclip

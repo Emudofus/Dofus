@@ -1,80 +1,69 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20959]
-#initclip 224
-if (!mx.events.EventDispatcher)
+// [Initial MovieClip Action of sprite 10]
+#initclip 3
+class mx.events.EventDispatcher
 {
-    if (!mx)
+    var _loc3;
+    function EventDispatcher()
     {
-        _global.mx = new Object();
-    } // end if
-    if (!mx.events)
-    {
-        _global.mx.events = new Object();
-    } // end if
-    var _loc1 = (_global.mx.events.EventDispatcher = function ()
-    {
-    }).prototype;
-    (_global.mx.events.EventDispatcher = function ()
-    {
-    })._removeEventListener = function (queue, event, handler)
+    } // End of the function
+    static function _removeEventListener(queue, event, handler)
     {
         if (queue != undefined)
         {
-            var _loc5 = queue.length;
-            var _loc6 = 0;
-            
-            while (++_loc6, _loc6 < _loc5)
+            var _loc4 = queue.length;
+            var _loc1;
+            for (var _loc1 = 0; _loc1 < _loc4; ++_loc1)
             {
-                var _loc7 = queue[_loc6];
-                if (_loc7 == handler)
+                var _loc2 = queue[_loc1];
+                if (_loc2 == handler)
                 {
-                    queue.splice(_loc6, 1);
+                    queue.splice(_loc1, 1);
                     return;
                 } // end if
-            } // end while
+            } // end of for
         } // end if
-    };
-    (_global.mx.events.EventDispatcher = function ()
-    {
-    }).initialize = function (object)
+    } // End of the function
+    static function initialize(object)
     {
         if (mx.events.EventDispatcher._fEventDispatcher == undefined)
         {
-            mx.events.EventDispatcher._fEventDispatcher = new mx.events.EventDispatcher();
+            _fEventDispatcher = new mx.events.EventDispatcher();
         } // end if
         object.__proto__.addEventListener = mx.events.EventDispatcher._fEventDispatcher.addEventListener;
         object.__proto__.removeEventListener = mx.events.EventDispatcher._fEventDispatcher.removeEventListener;
         object.__proto__.dispatchEvent = mx.events.EventDispatcher._fEventDispatcher.dispatchEvent;
         object.__proto__.dispatchQueue = mx.events.EventDispatcher._fEventDispatcher.dispatchQueue;
-    };
-    _loc1.dispatchQueue = function (queueObj, eventObj)
+    } // End of the function
+    function dispatchQueue(queueObj, eventObj)
     {
-        var _loc4 = "__q_" + eventObj.type;
-        var _loc5 = queueObj[_loc4];
-        if (_loc5 != undefined)
+        var _loc7 = "__q_" + eventObj.type;
+        var _loc4 = queueObj[_loc7];
+        if (_loc4 != undefined)
         {
-            for (var _loc6 in _loc5)
+            var _loc5;
+            for (var _loc5 in _loc4)
             {
-                var _loc7 = _loc5[_loc6];
-                var _loc8 = typeof(_loc7);
-                if (_loc8 == "object" || _loc8 == "movieclip")
+                var _loc1 = _loc4[_loc5];
+                var _loc3 = typeof(_loc1);
+                if (_loc3 == "object" || _loc3 == "movieclip")
                 {
-                    if (_loc7.handleEvent == undefined)
+                    if (_loc1.handleEvent == undefined)
                     {
-                        _loc7[eventObj.type](eventObj);
+                        _loc1[eventObj.type](eventObj);
                     }
                     else
                     {
-                        _loc7.handleEvent(eventObj);
+                        _loc1.handleEvent(eventObj);
                     } // end else if
                     continue;
                 } // end if
-                _loc7.apply(queueObj, [eventObj]);
+                _loc1.apply(queueObj, [eventObj]);
             } // end of for...in
         } // end if
-    };
-    _loc1.dispatchEvent = function (eventObj)
+    } // End of the function
+    function dispatchEvent(eventObj)
     {
         if (eventObj.target == undefined)
         {
@@ -82,26 +71,23 @@ if (!mx.events.EventDispatcher)
         } // end if
         this[eventObj.type + "Handler"](eventObj);
         this.dispatchQueue(this, eventObj);
-    };
-    _loc1.addEventListener = function (event, handler)
+    } // End of the function
+    function addEventListener(event, handler)
     {
-        var _loc4 = "__q_" + event;
-        if (this[_loc4] == undefined)
+        var _loc3 = "__q_" + event;
+        if (this[_loc3] == undefined)
         {
-            this[_loc4] = new Array();
+            this[_loc3] = new Array();
         } // end if
-        _global.ASSetPropFlags(this, _loc4, 1);
-        mx.events.EventDispatcher._removeEventListener(this[_loc4], event, handler);
-        this[_loc4].push(handler);
-    };
-    _loc1.removeEventListener = function (event, handler)
+        _global.ASSetPropFlags(this, _loc3, 1);
+        mx.events.EventDispatcher._removeEventListener(this[_loc3], event, handler);
+        this[_loc3].push(handler);
+    } // End of the function
+    function removeEventListener(event, handler)
     {
-        var _loc4 = "__q_" + event;
-        mx.events.EventDispatcher._removeEventListener(this[_loc4], event, handler);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.mx.events.EventDispatcher = function ()
-    {
-    })._fEventDispatcher = undefined;
-} // end if
+        var _loc2 = "__q_" + event;
+        mx.events.EventDispatcher._removeEventListener(this[_loc2], event, handler);
+    } // End of the function
+    static var _fEventDispatcher = undefined;
+} // End of Class
 #endinitclip

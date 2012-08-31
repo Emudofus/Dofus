@@ -1,52 +1,36 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20590]
-#initclip 111
-if (!dofus.datacenter.TutorialWaiting)
+// [Initial MovieClip Action of sprite 894]
+#initclip 106
+class dofus.datacenter.TutorialWaiting extends dofus.datacenter.TutorialBloc
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.datacenter)
-    {
-        _global.dofus.datacenter = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.datacenter.TutorialWaiting = function (sID, nTimeout, aCases)
+    var _nTimeout, _oCases, __get__cases, __get__timeout;
+    function TutorialWaiting(sID, nTimeout, aCases)
     {
         super(sID, dofus.datacenter.TutorialBloc.TYPE_WAITING);
-        this._nTimeout = nTimeout;
+        _nTimeout = nTimeout;
         this.setCases(aCases);
-    }).prototype;
-    _loc1.__get__timeout = function ()
+    } // End of the function
+    function get timeout()
     {
-        return (this._nTimeout == undefined ? (0) : (this._nTimeout));
-    };
-    _loc1.__get__cases = function ()
+        return (_nTimeout == undefined ? (0) : (_nTimeout));
+    } // End of the function
+    function get cases()
     {
-        return (this._oCases);
-    };
-    _loc1.setCases = function (aCases)
+        return (_oCases);
+    } // End of the function
+    function setCases(aCases)
     {
-        this._oCases = new Object();
-        var _loc3 = 0;
-        
-        while (++_loc3, _loc3 < aCases.length)
+        _oCases = new Object();
+        for (var _loc2 = 0; _loc2 < aCases.length; ++_loc2)
         {
-            var _loc4 = aCases[_loc3];
-            var _loc5 = _loc4[0];
-            var _loc6 = _loc4[1];
-            var _loc7 = _loc4[2];
-            var _loc8 = new dofus.datacenter.TutorialWaitingCase(_loc5, _loc6, _loc7);
-            this._oCases[_loc5] = _loc8;
-        } // end while
-    };
-    _loc1.addProperty("cases", _loc1.__get__cases, function ()
-    {
-    });
-    _loc1.addProperty("timeout", _loc1.__get__timeout, function ()
-    {
-    });
-    ASSetPropFlags(_loc1, null, 1);
-} // end if
+            var _loc3 = aCases[_loc2];
+            var _loc4 = _loc3[0];
+            var _loc6 = _loc3[1];
+            var _loc5 = _loc3[2];
+            var _loc7 = new dofus.datacenter.TutorialWaitingCase(_loc4, _loc6, _loc5);
+            _oCases[_loc4] = _loc7;
+        } // end of for
+    } // End of the function
+} // End of Class
 #endinitclip

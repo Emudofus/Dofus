@@ -1,65 +1,58 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20792]
-#initclip 57
-if (!dofus.managers.InteractionsManager)
+// [Initial MovieClip Action of sprite 915]
+#initclip 127
+class dofus.managers.InteractionsManager extends dofus.utils.ApiElement
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.managers)
-    {
-        _global.dofus.managers = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.managers.InteractionsManager = function (playerManager, oAPI)
+    var _playerManager, _state, api;
+    function InteractionsManager(playerManager, oAPI)
     {
         super();
         this.initialize(playerManager, oAPI);
-    }).prototype;
-    _loc1.initialize = function (playerManager, oAPI)
+    } // End of the function
+    function initialize(playerManager, oAPI)
     {
         super.initialize(oAPI);
-        this._playerManager = playerManager;
-    };
-    _loc1.setState = function (bFight)
+        _playerManager = playerManager;
+    } // End of the function
+    function setState(bFight)
     {
         if (bFight)
         {
-            this._state = dofus.managers.InteractionsManager.STATE_SELECT;
-            this._playerManager.lastClickedCell = null;
+            _state = dofus.managers.InteractionsManager.STATE_SELECT;
+            _playerManager.lastClickedCell = null;
         }
         else
         {
-            this._state = dofus.managers.InteractionsManager.STATE_MOVE_SINGLE;
+            _state = dofus.managers.InteractionsManager.STATE_MOVE_SINGLE;
         } // end else if
-    };
-    _loc1.calculatePath = function (mapHandler, cell, bRelease, bIsFight, bIgnoreSprites, bAllDir)
+    } // End of the function
+    function calculatePath(mapHandler, cell, bRelease, bIsFight, bIgnoreSprites)
     {
-        if (cell == this._playerManager.data.cellNum)
+        if (cell == _playerManager.data.cellNum)
         {
             return (false);
         } // end if
-        var _loc8 = mapHandler.getCellData(cell);
-        var _loc9 = bIgnoreSprites ? (false) : (_loc8.spriteOnID == undefined ? (false) : (true));
-        if (_loc9)
+        var _loc2 = mapHandler.getCellData(cell);
+        var _loc5 = bIgnoreSprites ? (false) : (_loc2.spriteOnID == undefined ? (false) : (true));
+        if (_loc5)
         {
             return (false);
         } // end if
-        if (_loc8.movement == 0)
+        if (_loc2.movement == 0)
         {
             return (false);
         } // end if
-        if (_loc8.movement == 1 && bIsFight)
+        if (_loc2.movement == 1 && bIsFight)
         {
             return (false);
         } // end if
-        switch (this._state)
+        switch (_state)
         {
             case dofus.managers.InteractionsManager.STATE_MOVE_SINGLE:
             {
-                this.api.datacenter.Basics.interactionsManager_path = ank.battlefield.utils.Pathfinding.pathFind(mapHandler, this._playerManager.data.cellNum, cell, {bAllDirections: bAllDir, bIgnoreSprites: bIgnoreSprites});
-                if (this.api.datacenter.Basics.interactionsManager_path != null)
+                api.datacenter.Basics.interactionsManager_path = ank.battlefield.utils.Pathfinding.pathFind(mapHandler, _playerManager.data.cellNum, cell, {bAllDirections: true, bIgnoreSprites: bIgnoreSprites});
+                if (api.datacenter.Basics.interactionsManager_path != null)
                 {
                     return (true);
                 } // end if
@@ -70,39 +63,30 @@ if (!dofus.managers.InteractionsManager)
             {
                 if (bRelease)
                 {
-                    this.api.gfx.select(this.convertToSimplePath(this.api.datacenter.Basics.interactionsManager_path), dofus.Constants.CELL_PATH_SELECT_COLOR);
-                    return (this.api.datacenter.Basics.interactionsManager_path != null);
+                    api.gfx.select(this.convertToSimplePath(api.datacenter.Basics.interactionsManager_path), dofus.Constants.CELL_PATH_SELECT_COLOR);
+                    return (api.datacenter.Basics.interactionsManager_path != null);
                 }
                 else
                 {
-                    this.api.datacenter.Basics.interactionsManager_path = ank.battlefield.utils.Pathfinding.pathFind(mapHandler, this._playerManager.data.cellNum, cell, {bAllDirections: false, nMaxLength: bIsFight ? (this._playerManager.data.MP) : (500)});
-                    this.api.gfx.unSelect(true);
-                    this.api.gfx.select(this.convertToSimplePath(this.api.datacenter.Basics.interactionsManager_path), dofus.Constants.CELL_PATH_OVER_COLOR);
+                    api.datacenter.Basics.interactionsManager_path = ank.battlefield.utils.Pathfinding.pathFind(mapHandler, _playerManager.data.cellNum, cell, {bAllDirections: false, nMaxLength: bIsFight ? (_playerManager.data.MP) : (500)});
+                    api.gfx.unSelect(true);
+                    api.gfx.select(this.convertToSimplePath(api.datacenter.Basics.interactionsManager_path), dofus.Constants.CELL_PATH_OVER_COLOR);
                 } // end else if
                 break;
             } 
         } // End of switch
         return (false);
-    };
-    _loc1.convertToSimplePath = function (aFullPath)
+    } // End of the function
+    function convertToSimplePath(aFullPath)
     {
-        var _loc3 = new Array();
-        for (var k in aFullPath)
+        var _loc2 = new Array();
+        for (var _loc3 in aFullPath)
         {
-            _loc3.push(aFullPath[k].num);
+            _loc2.push(aFullPath[_loc3].num);
         } // end of for...in
-        return (_loc3);
-    };
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.managers.InteractionsManager = function (playerManager, oAPI)
-    {
-        super();
-        this.initialize(playerManager, oAPI);
-    }).STATE_MOVE_SINGLE = 0;
-    (_global.dofus.managers.InteractionsManager = function (playerManager, oAPI)
-    {
-        super();
-        this.initialize(playerManager, oAPI);
-    }).STATE_SELECT = 1;
-} // end if
+        return (_loc2);
+    } // End of the function
+    static var STATE_MOVE_SINGLE = 0;
+    static var STATE_SELECT = 1;
+} // End of Class
 #endinitclip

@@ -1,77 +1,56 @@
 // Action script...
 
-// [Initial MovieClip Action of sprite 20493]
-#initclip 14
-if (!dofus.graphics.gapi.ui.BuffInfos)
+// [Initial MovieClip Action of sprite 1049]
+#initclip 16
+class dofus.graphics.gapi.ui.BuffInfos extends ank.gapi.core.UIAdvancedComponent
 {
-    if (!dofus)
-    {
-        _global.dofus = new Object();
-    } // end if
-    if (!dofus.graphics)
-    {
-        _global.dofus.graphics = new Object();
-    } // end if
-    if (!dofus.graphics.gapi)
-    {
-        _global.dofus.graphics.gapi = new Object();
-    } // end if
-    if (!dofus.graphics.gapi.ui)
-    {
-        _global.dofus.graphics.gapi.ui = new Object();
-    } // end if
-    var _loc1 = (_global.dofus.graphics.gapi.ui.BuffInfos = function ()
+    var _oData, __get__initialized, __get__data, unloadThis, addToQueue, api, _btnClose2, _btnClose, _bvBuffViewer, __set__data;
+    function BuffInfos()
     {
         super();
-    }).prototype;
-    _loc1.__set__data = function (oData)
+    } // End of the function
+    function set data(oData)
     {
-        this._oData = oData;
-        if (this.initialized)
+        _oData = oData;
+        if (this.__get__initialized())
         {
             this.updateData();
         } // end if
         //return (this.data());
-    };
-    _loc1.init = function ()
+        null;
+    } // End of the function
+    function init()
     {
         super.init(false, dofus.graphics.gapi.ui.BuffInfos.CLASS_NAME);
-    };
-    _loc1.callClose = function ()
+    } // End of the function
+    function callClose()
     {
         this.unloadThis();
         return (true);
-    };
-    _loc1.createChildren = function ()
+    } // End of the function
+    function createChildren()
     {
-        this.addToQueue({object: this, method: this.initTexts});
-        this.addToQueue({object: this, method: this.addListeners});
-        this.addToQueue({object: this, method: this.updateData});
-    };
-    _loc1.initTexts = function ()
+        this.addToQueue({object: this, method: initTexts});
+        this.addToQueue({object: this, method: addListeners});
+        this.addToQueue({object: this, method: updateData});
+    } // End of the function
+    function initTexts()
     {
-        this._btnClose2.label = this.api.lang.getText("CLOSE");
-    };
-    _loc1.addListeners = function ()
+        _btnClose2.__set__label(api.lang.getText("CLOSE"));
+    } // End of the function
+    function addListeners()
     {
-        this._btnClose.addEventListener("click", this);
-        this._btnClose2.addEventListener("click", this);
-    };
-    _loc1.updateData = function ()
+        _btnClose.addEventListener("click", this);
+        _btnClose2.addEventListener("click", this);
+    } // End of the function
+    function updateData()
     {
-        this._bvBuffViewer.itemData = this._oData;
-    };
-    _loc1.click = function (oEvent)
+        _bvBuffViewer.__set__itemData(_oData);
+    } // End of the function
+    function click(oEvent)
     {
         this.callClose();
-    };
-    _loc1.addProperty("data", function ()
-    {
-    }, _loc1.__set__data);
-    ASSetPropFlags(_loc1, null, 1);
-    (_global.dofus.graphics.gapi.ui.BuffInfos = function ()
-    {
-        super();
-    }).CLASS_NAME = "BuffInfos";
-} // end if
+    } // End of the function
+    static var CLASS_NAME = "BuffInfos";
+} // End of Class
 #endinitclip
