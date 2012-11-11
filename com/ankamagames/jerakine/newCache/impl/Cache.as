@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.newCache.impl
+﻿package com.ankamagames.jerakine.newCache.impl
 {
     import com.ankamagames.jerakine.newCache.*;
 
@@ -52,7 +52,7 @@ package com.ankamagames.jerakine.newCache.impl
 
         public static function create(param1:uint, param2:ICacheGarbageCollector, param3:String) : Cache
         {
-            var _loc_4:Cache = null;
+            var _loc_4:* = null;
             if (param3 && _namedCacheIndex[param3])
             {
                 return _namedCacheIndex[param3];

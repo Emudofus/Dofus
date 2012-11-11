@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.friend
+﻿package com.ankamagames.dofus.network.messages.game.friend
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -65,7 +65,7 @@ package com.ankamagames.dofus.network.messages.game.friend
         public function serializeAs_IgnoredListMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.ignoredList.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.ignoredList.length)
             {
                 
@@ -84,10 +84,10 @@ package com.ankamagames.dofus.network.messages.game.friend
 
         public function deserializeAs_IgnoredListMessage(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:IgnoredInformations = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

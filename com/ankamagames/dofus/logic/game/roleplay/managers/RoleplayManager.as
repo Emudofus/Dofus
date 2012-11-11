@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.managers
+﻿package com.ankamagames.dofus.logic.game.roleplay.managers
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.berilia.factories.*;
@@ -54,7 +54,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         public function displayContextualMenu(param1:GameContextActorInformations, param2:IInteractive) : Boolean
         {
-            var _loc_3:ContextMenuData = null;
+            var _loc_3:* = null;
             var _loc_4:* = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
             switch(true)
             {

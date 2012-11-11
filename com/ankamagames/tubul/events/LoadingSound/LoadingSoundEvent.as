@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.events.LoadingSound
+﻿package com.ankamagames.tubul.events.LoadingSound
 {
     import flash.events.*;
 

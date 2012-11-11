@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.parser
+﻿package com.ankamagames.jerakine.utils.parser
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.types.*;
@@ -24,25 +24,25 @@ package com.ankamagames.jerakine.utils.parser
 
         public static function parseSoundLabel(param1:String) : Array
         {
-            var _loc_7:uint = 0;
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:uint = 0;
-            var _loc_16:String = null;
-            var _loc_17:RegExp = null;
-            var _loc_18:String = null;
-            var _loc_19:Array = null;
-            var _loc_20:String = null;
-            var _loc_21:uint = 0;
-            var _loc_22:SoundEventParamWrapper = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = 0;
+            var _loc_22:* = null;
             var _loc_2:* = new Array();
             var _loc_3:* = param1.split(BALISE_PARAM_DELIMITER);
             var _loc_4:* = _loc_3.length;
             var _loc_5:* = new Vector.<String>;
             var _loc_6:* = new Vector.<uint>;
-            var _loc_12:Boolean = false;
-            var _loc_13:uint = 0;
+            var _loc_12:* = false;
+            var _loc_13:* = 0;
             while (_loc_13 < _loc_4)
             {
                 
@@ -121,7 +121,7 @@ package com.ankamagames.jerakine.utils.parser
             {
                 throw new Error("The number of sound id and volume are differents");
             }
-            var _loc_15:uint = 0;
+            var _loc_15:* = 0;
             while (_loc_15 < _loc_14)
             {
                 
@@ -139,8 +139,8 @@ package com.ankamagames.jerakine.utils.parser
 
         public static function buildSoundLabel(param1:Vector.<SoundEventParamWrapper>) : String
         {
-            var _loc_4:SoundEventParamWrapper = null;
-            var _loc_5:String = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_2:* = new Vector.<String>;
             var _loc_3:* = new Vector.<uint>;
             if (!param1 || param1.length == 0)

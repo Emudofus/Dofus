@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.misc
+﻿package com.ankamagames.dofus.datacenter.misc
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -17,7 +17,7 @@ package com.ankamagames.dofus.datacenter.misc
 
         public static function getTypeActionById(param1:int) : TypeAction
         {
-            return GameData.getObject(MODULE, param1) as ;
+            return GameData.getObject(MODULE, param1) as TypeAction;
         }// end function
 
         public static function getAllTypeAction() : Array

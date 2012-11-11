@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.resources.adapters
+﻿package com.ankamagames.atouin.resources.adapters
 {
     import com.ankamagames.atouin.resources.*;
     import com.ankamagames.jerakine.resources.*;

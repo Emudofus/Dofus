@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.api
+﻿package com.ankamagames.berilia.api
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -41,7 +41,7 @@ package com.ankamagames.berilia.api
 
         public function get simplyfiedQualifiedClassName() : String
         {
-            var _loc_1:Array = null;
+            var _loc_1:* = null;
             if (this._simplyfiedQualifiedClassName == null)
             {
                 _loc_1 = this._getQualifiedClassName.split("::");

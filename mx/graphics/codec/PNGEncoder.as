@@ -1,4 +1,4 @@
-package mx.graphics.codec
+﻿package mx.graphics.codec
 {
     import flash.display.*;
     import flash.utils.*;
@@ -33,10 +33,10 @@ package mx.graphics.codec
 
         private function initializeCRCTable() : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             this.crcTable = [];
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             while (_loc_1 < 256)
             {
                 
@@ -63,8 +63,8 @@ package mx.graphics.codec
 
         private function internalEncode(param1:Object, param2:int, param3:int, param4:Boolean = true) : ByteArray
         {
-            var _loc_11:int = 0;
-            var _loc_12:uint = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
             var _loc_5:* = param1 as BitmapData;
             var _loc_6:* = param1 as ByteArray;
             if (param1 as ByteArray)
@@ -84,7 +84,7 @@ package mx.graphics.codec
             _loc_8.writeByte(0);
             this.writeChunk(_loc_7, 1229472850, _loc_8);
             var _loc_9:* = new ByteArray();
-            var _loc_10:int = 0;
+            var _loc_10:* = 0;
             while (_loc_10 < param3)
             {
                 
@@ -136,7 +136,7 @@ package mx.graphics.codec
 
         private function writeChunk(param1:ByteArray, param2:uint, param3:ByteArray) : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             if (param3)
             {
                 _loc_4 = param3.length;
@@ -150,7 +150,7 @@ package mx.graphics.codec
             }
             var _loc_6:* = param1.position;
             param1.position = _loc_5;
-            var _loc_7:uint = 4294967295;
+            var _loc_7:* = 4294967295;
             var _loc_8:* = _loc_5;
             while (_loc_8 < _loc_6)
             {

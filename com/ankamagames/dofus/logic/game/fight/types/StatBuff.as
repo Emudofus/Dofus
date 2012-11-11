@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+ï»¿package com.ankamagames.dofus.logic.game.fight.types
 {
     import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.dofus.datacenter.effects.instances.*;
@@ -50,8 +50,8 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         override public function onApplyed() : void
         {
-            var _loc_1:int = 0;
-            var _loc_3:int = 0;
+            var _loc_1:* = 0;
+            var _loc_3:* = 0;
             if (PlayedCharacterManager.getInstance().id == targetId)
             {
                 if (PlayedCharacterManager.getInstance().characteristics.hasOwnProperty(this._statName))
@@ -193,7 +193,7 @@ package com.ankamagames.dofus.logic.game.fight.types
                     }
                     else
                     {
-                        _log.fatal("ATTENTION, le serveur essaye de buffer une entité qui n\'existe plus ! id=" + targetId);
+                        _log.fatal("ATTENTION, le serveur essaye de buffer une entitÃ© qui n\'existe plus ! id=" + targetId);
                     }
                     break;
                     break;
@@ -205,7 +205,7 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         override public function onRemoved() : void
         {
-            var _loc_1:Effect = null;
+            var _loc_1:* = null;
             if (!_removed)
             {
                 _loc_1 = Effect.getEffectById(actionId);
@@ -220,7 +220,7 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         override public function onDisabled() : void
         {
-            var _loc_1:Effect = null;
+            var _loc_1:* = null;
             if (!_disabled)
             {
                 _loc_1 = Effect.getEffectById(actionId);
@@ -235,8 +235,8 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         private function decrementStats() : void
         {
-            var _loc_1:int = 0;
-            var _loc_3:int = 0;
+            var _loc_1:* = 0;
+            var _loc_3:* = 0;
             if (PlayedCharacterManager.getInstance().id == targetId)
             {
                 if (PlayedCharacterManager.getInstance().characteristics.hasOwnProperty(this._statName))
@@ -374,7 +374,7 @@ package com.ankamagames.dofus.logic.game.fight.types
                     }
                     else
                     {
-                        _log.fatal("ATTENTION, Le serveur essaye de buffer une entité qui n\'existe plus ! id=" + targetId);
+                        _log.fatal("ATTENTION, Le serveur essaye de buffer une entitÃ© qui n\'existe plus ! id=" + targetId);
                     }
                     break;
                     break;

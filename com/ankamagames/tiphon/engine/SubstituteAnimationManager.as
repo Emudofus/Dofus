@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.engine
+﻿package com.ankamagames.tiphon.engine
 {
     import __AS3__.vec.*;
 
@@ -29,7 +29,7 @@ package com.ankamagames.tiphon.engine
 
         public static function getDefaultAnimation(param1:String) : String
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             for each (_loc_2 in _like)
             {
                 

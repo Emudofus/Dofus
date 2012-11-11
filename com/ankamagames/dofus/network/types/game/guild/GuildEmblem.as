@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.guild
+﻿package com.ankamagames.dofus.network.types.game.guild
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

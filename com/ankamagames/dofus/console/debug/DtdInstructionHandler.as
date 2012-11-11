@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.logger.*;
@@ -54,7 +54,7 @@ package com.ankamagames.dofus.console.debug
                     xmlKernelEvents = describeType(getDefinitionByName("com.ankamagames.dofus.utils.KernelEventList"));
                     sBuffer;
                     aElement = new Array();
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = xmlKernelEvents..constant;
                     while (_loc_6 in _loc_5)
                     {
@@ -93,7 +93,7 @@ package com.ankamagames.dofus.console.debug
                 {
                     xmlCpt = describeType(getDefinitionByName("com.ankamagames.berilia.utils.ComponentList"));
                     args = new Array();
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = xmlCpt..constant;
                     while (_loc_6 in _loc_5)
                     {
@@ -125,7 +125,7 @@ package com.ankamagames.dofus.console.debug
                             className = sClass.split(".")[(sClass.split(".").length - 1)];
                             xmlDef = describeType(getDefinitionByName(sClass));
                             aElement = new Array();
-                            var _loc_5:int = 0;
+                            var _loc_5:* = 0;
                             var _loc_6:* = xmlDef..accessor;
                             do
                             {
@@ -182,7 +182,7 @@ package com.ankamagames.dofus.console.debug
                         j = (j + 1);
                     }
                     sSubBuffer;
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = aCommonElements;
                     while (_loc_6 in _loc_5)
                     {
@@ -197,7 +197,7 @@ package com.ankamagames.dofus.console.debug
                     {
                         sBuffer = sBuffer + ("\n\n&lt;!--======================= Common Elements =======================--&gt;\n\n" + sSubBuffer);
                     }
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = aElements;
                     while (_loc_6 in _loc_5)
                     {
@@ -205,7 +205,7 @@ package com.ankamagames.dofus.console.debug
                         sIter = _loc_6[_loc_5];
                         sBuffer = sBuffer + ("\n\n&lt;!--======================= " + sIter + " Elements =======================--&gt;\n\n");
                         aElement = new Array();
-                        var _loc_7:int = 0;
+                        var _loc_7:* = 0;
                         var _loc_8:* = aElements[sIter];
                         while (_loc_8 in _loc_7)
                         {
@@ -272,9 +272,9 @@ package com.ankamagames.dofus.console.debug
 
         private function parseShortcutXml(param1:String) : void
         {
-            var _loc_5:XML = null;
+            var _loc_5:* = null;
             var _loc_2:* = XML(param1);
-            var _loc_3:String = "";
+            var _loc_3:* = "";
             var _loc_4:* = new Array();
             for each (_loc_5 in _loc_2..bind)
             {

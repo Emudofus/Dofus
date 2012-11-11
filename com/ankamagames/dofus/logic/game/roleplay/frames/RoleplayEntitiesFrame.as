@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+ï»¿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
     import com.ankamagames.dofus.logic.game.roleplay.types.*;
     import com.ankamagames.dofus.misc.*;
     import com.ankamagames.dofus.misc.lists.*;
+    import com.ankamagames.dofus.misc.utils.*;
     import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.atlas.*;
     import com.ankamagames.dofus.network.messages.game.context.*;
     import com.ankamagames.dofus.network.messages.game.context.fight.*;
     import com.ankamagames.dofus.network.messages.game.context.mount.*;
@@ -91,21 +91,17 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
         private var _currentEmoticon:uint = 0;
         private var _bRequestingAura:Boolean = false;
         private var _playersId:Array;
-        private var _npcList:Array;
+        private var _npcList:Dictionary;
         private var _housesList:Dictionary;
         private var _emoteTimesBySprite:Dictionary;
         private var _waitForMap:Boolean;
-        private static const QUEST_CLIP:Class = RoleplayEntitiesFrame_QUEST_CLIP;
-        private static const QUEST_REPEATABLE_CLIP:Class = RoleplayEntitiesFrame_QUEST_REPEATABLE_CLIP;
-        private static const QUEST_OBJECTIVE_CLIP:Class = RoleplayEntitiesFrame_QUEST_OBJECTIVE_CLIP;
-        private static const QUEST_REPEATABLE_OBJECTIVE_CLIP:Class = RoleplayEntitiesFrame_QUEST_REPEATABLE_OBJECTIVE_CLIP;
 
         public function RoleplayEntitiesFrame()
         {
             this._paddockItem = new Dictionary();
             this._groundObjectCache = new Cache(20, new LruGarbageCollector());
             this._usableEmotes = new Array();
-            this._npcList = new Array();
+            this._npcList = new Dictionary(true);
             return;
         }// end function
 
@@ -162,7 +158,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         override public function pushed() : Boolean
         {
-            var _loc_1:MapInformationsRequestMessage = null;
+            var _loc_1:* = null;
             this.initNewMap();
             this._playersId = new Array();
             this._emoteTimesBySprite = new Dictionary();
@@ -187,150 +183,137 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_2:AtlasPointInformationsMessage = null;
-            var _loc_3:MapComplementaryInformationsDataMessage = null;
-            var _loc_4:SubArea = null;
-            var _loc_5:Boolean = false;
-            var _loc_6:Boolean = false;
-            var _loc_7:InteractiveMapUpdateMessage = null;
-            var _loc_8:StatedMapUpdateMessage = null;
-            var _loc_9:HouseInformations = null;
-            var _loc_10:GameRolePlayShowActorMessage = null;
-            var _loc_11:GameContextRefreshEntityLookMessage = null;
-            var _loc_12:GameMapChangeOrientationMessage = null;
-            var _loc_13:GameMapChangeOrientationsMessage = null;
-            var _loc_14:int = 0;
-            var _loc_15:GameRolePlaySetAnimationMessage = null;
-            var _loc_16:AnimatedCharacter = null;
-            var _loc_17:CharacterMovementStoppedMessage = null;
-            var _loc_18:AnimatedCharacter = null;
-            var _loc_19:GameRolePlayShowChallengeMessage = null;
-            var _loc_20:GameFightOptionStateUpdateMessage = null;
-            var _loc_21:GameFightUpdateTeamMessage = null;
-            var _loc_22:GameFightRemoveTeamMemberMessage = null;
-            var _loc_23:GameRolePlayRemoveChallengeMessage = null;
-            var _loc_24:GameContextRemoveElementMessage = null;
-            var _loc_25:uint = 0;
-            var _loc_26:MapFightCountMessage = null;
-            var _loc_27:ObjectGroundAddedMessage = null;
-            var _loc_28:ObjectGroundRemovedMessage = null;
-            var _loc_29:ObjectGroundListAddedMessage = null;
-            var _loc_30:uint = 0;
-            var _loc_31:PaddockRemoveItemRequestAction = null;
-            var _loc_32:PaddockRemoveItemRequestMessage = null;
-            var _loc_33:PaddockMoveItemRequestAction = null;
-            var _loc_34:Texture = null;
-            var _loc_35:ItemWrapper = null;
-            var _loc_36:GameDataPaddockObjectRemoveMessage = null;
-            var _loc_37:RoleplayContextFrame = null;
-            var _loc_38:GameDataPaddockObjectAddMessage = null;
-            var _loc_39:GameDataPaddockObjectListAddMessage = null;
-            var _loc_40:GameDataPlayFarmObjectAnimationMessage = null;
-            var _loc_41:MapNpcsQuestStatusUpdateMessage = null;
-            var _loc_42:ShowCellMessage = null;
-            var _loc_43:RoleplayContextFrame = null;
-            var _loc_44:String = null;
-            var _loc_45:String = null;
-            var _loc_46:StartZoomAction = null;
-            var _loc_47:DisplayObject = null;
-            var _loc_48:SwitchCreatureModeAction = null;
-            var _loc_49:MapInformationsRequestMessage = null;
-            var _loc_50:MapCoordinatesExtended = null;
-            var _loc_51:MapComplementaryInformationsWithCoordsMessage = null;
-            var _loc_52:MapComplementaryInformationsDataInHouseMessage = null;
-            var _loc_53:Boolean = false;
-            var _loc_54:GameRolePlayActorInformations = null;
-            var _loc_55:GameRolePlayActorInformations = null;
-            var _loc_56:AnimatedCharacter = null;
-            var _loc_57:GameRolePlayCharacterInformations = null;
-            var _loc_58:Emoticon = null;
-            var _loc_59:Boolean = false;
-            var _loc_60:Date = null;
-            var _loc_61:TiphonEntityLook = null;
-            var _loc_62:FightCommonInformations = null;
-            var _loc_63:HouseInformations = null;
-            var _loc_64:HouseWrapper = null;
-            var _loc_65:int = 0;
-            var _loc_66:int = 0;
-            var _loc_67:HousePropertiesMessage = null;
-            var _loc_68:MapObstacle = null;
-            var _loc_69:GameRolePlayCharacterInformations = null;
-            var _loc_70:int = 0;
-            var _loc_71:ActorOrientation = null;
-            var _loc_72:Emoticon = null;
-            var _loc_73:RoleplayEmoticonFrame = null;
-            var _loc_74:uint = 0;
-            var _loc_75:Emoticon = null;
-            var _loc_76:EmotePlayRequestMessage = null;
-            var _loc_77:uint = 0;
-            var _loc_78:uint = 0;
-            var _loc_79:PaddockItem = null;
-            var _loc_80:uint = 0;
-            var _loc_81:TiphonSprite = null;
-            var _loc_82:Sprite = null;
-            var _loc_83:int = 0;
-            var _loc_84:int = 0;
-            var _loc_85:int = 0;
-            var _loc_86:Quest = null;
-            var _loc_87:Rectangle = null;
-            var _loc_88:* = undefined;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = false;
+            var _loc_5:* = false;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = 0;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = 0;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
+            var _loc_39:* = null;
+            var _loc_40:* = null;
+            var _loc_41:* = null;
+            var _loc_42:* = null;
+            var _loc_43:* = null;
+            var _loc_44:* = null;
+            var _loc_45:* = null;
+            var _loc_46:* = null;
+            var _loc_47:* = null;
+            var _loc_48:* = null;
+            var _loc_49:* = null;
+            var _loc_50:* = null;
+            var _loc_51:* = false;
+            var _loc_52:* = null;
+            var _loc_53:* = null;
+            var _loc_54:* = null;
+            var _loc_55:* = null;
+            var _loc_56:* = null;
+            var _loc_57:* = false;
+            var _loc_58:* = null;
+            var _loc_59:* = null;
+            var _loc_60:* = null;
+            var _loc_61:* = null;
+            var _loc_62:* = null;
+            var _loc_63:* = 0;
+            var _loc_64:* = 0;
+            var _loc_65:* = null;
+            var _loc_66:* = null;
+            var _loc_67:* = null;
+            var _loc_68:* = 0;
+            var _loc_69:* = null;
+            var _loc_70:* = null;
+            var _loc_71:* = null;
+            var _loc_72:* = 0;
+            var _loc_73:* = null;
+            var _loc_74:* = null;
+            var _loc_75:* = 0;
+            var _loc_76:* = 0;
+            var _loc_77:* = null;
+            var _loc_78:* = 0;
+            var _loc_79:* = null;
+            var _loc_80:* = null;
+            var _loc_81:* = 0;
+            var _loc_82:* = 0;
+            var _loc_83:* = null;
+            var _loc_84:* = null;
+            var _loc_85:* = undefined;
             switch(true)
             {
                 case param1 is MapLoadedMessage:
                 {
                     if (this._waitForMap)
                     {
-                        _loc_49 = new MapInformationsRequestMessage();
-                        _loc_49.initMapInformationsRequestMessage(MapDisplayManager.getInstance().currentMapPoint.mapId);
-                        ConnectionsHandler.getConnection().send(_loc_49);
+                        _loc_48 = new MapInformationsRequestMessage();
+                        _loc_48.initMapInformationsRequestMessage(MapDisplayManager.getInstance().currentMapPoint.mapId);
+                        ConnectionsHandler.getConnection().send(_loc_48);
                         this._waitForMap = false;
                     }
                     return false;
                 }
-                case param1 is AtlasPointInformationsMessage:
-                {
-                    _loc_2 = param1 as AtlasPointInformationsMessage;
-                    for each (_loc_50 in _loc_2.type.coords)
-                    {
-                        
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, "(MESSAGE TEMPORAIRE) Un phénix se trouve sur la map " + _loc_50.worldX + "," + _loc_50.worldY + "(TED)", ChatActivableChannelsEnum.CHANNEL_GLOBAL, TimeManager.getInstance().getTimestamp());
-                    }
-                    return true;
-                }
                 case param1 is MapComplementaryInformationsDataMessage:
                 {
-                    _loc_3 = param1 as MapComplementaryInformationsDataMessage;
+                    _loc_2 = param1 as MapComplementaryInformationsDataMessage;
                     this.initNewMap();
-                    _interactiveElements = _loc_3.interactiveElements;
-                    this._fightNumber = _loc_3.fights.length;
+                    _interactiveElements = _loc_2.interactiveElements;
+                    this._fightNumber = _loc_2.fights.length;
                     if (param1 is MapComplementaryInformationsWithCoordsMessage)
                     {
-                        _loc_51 = param1 as MapComplementaryInformationsWithCoordsMessage;
+                        _loc_49 = param1 as MapComplementaryInformationsWithCoordsMessage;
                         if (PlayedCharacterManager.getInstance().isInHouse)
                         {
                             KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
                         }
                         PlayedCharacterManager.getInstance().isInHouse = false;
                         PlayedCharacterManager.getInstance().isInHisHouse = false;
-                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_51.worldX, _loc_51.worldY);
-                        _worldPoint = new WorldPointWrapper(_loc_51.mapId, true, _loc_51.worldX, _loc_51.worldY);
+                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_49.worldX, _loc_49.worldY);
+                        _worldPoint = new WorldPointWrapper(_loc_49.mapId, true, _loc_49.worldX, _loc_49.worldY);
                     }
                     else if (param1 is MapComplementaryInformationsDataInHouseMessage)
                     {
-                        _loc_52 = param1 as MapComplementaryInformationsDataInHouseMessage;
-                        _loc_53 = PlayerManager.getInstance().nickname == _loc_52.currentHouse.ownerName;
+                        _loc_50 = param1 as MapComplementaryInformationsDataInHouseMessage;
+                        _loc_51 = PlayerManager.getInstance().nickname == _loc_50.currentHouse.ownerName;
                         PlayedCharacterManager.getInstance().isInHouse = true;
-                        if (_loc_53)
+                        if (_loc_51)
                         {
                             PlayedCharacterManager.getInstance().isInHisHouse = true;
                         }
-                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_52.currentHouse.worldX, _loc_52.currentHouse.worldY);
-                        KernelEventsManager.getInstance().processCallback(HookList.HouseEntered, _loc_53, _loc_52.currentHouse.ownerId, _loc_52.currentHouse.ownerName, _loc_52.currentHouse.price, _loc_52.currentHouse.isLocked, _loc_52.currentHouse.worldX, _loc_52.currentHouse.worldY, HouseWrapper.manualCreate(_loc_52.currentHouse.modelId, -1, _loc_52.currentHouse.ownerName, _loc_52.currentHouse.price != 0));
-                        _worldPoint = new WorldPointWrapper(_loc_52.mapId, true, _loc_52.currentHouse.worldX, _loc_52.currentHouse.worldY);
+                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_50.currentHouse.worldX, _loc_50.currentHouse.worldY);
+                        KernelEventsManager.getInstance().processCallback(HookList.HouseEntered, _loc_51, _loc_50.currentHouse.ownerId, _loc_50.currentHouse.ownerName, _loc_50.currentHouse.price, _loc_50.currentHouse.isLocked, _loc_50.currentHouse.worldX, _loc_50.currentHouse.worldY, HouseWrapper.manualCreate(_loc_50.currentHouse.modelId, -1, _loc_50.currentHouse.ownerName, _loc_50.currentHouse.price != 0));
+                        _worldPoint = new WorldPointWrapper(_loc_50.mapId, true, _loc_50.currentHouse.worldX, _loc_50.currentHouse.worldY);
                     }
                     else
                     {
-                        _worldPoint = new WorldPointWrapper(_loc_3.mapId);
+                        _worldPoint = new WorldPointWrapper(_loc_2.mapId);
                         if (PlayedCharacterManager.getInstance().isInHouse)
                         {
                             KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
@@ -338,142 +321,142 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         PlayedCharacterManager.getInstance().isInHouse = false;
                         PlayedCharacterManager.getInstance().isInHisHouse = false;
                     }
-                    _currentSubAreaId = _loc_3.subAreaId;
-                    _currentSubAreaSide = _loc_3.subareaAlignmentSide;
-                    _loc_4 = SubArea.getSubAreaById(_currentSubAreaId);
+                    _currentSubAreaId = _loc_2.subAreaId;
+                    _currentSubAreaSide = _loc_2.subareaAlignmentSide;
+                    _loc_3 = SubArea.getSubAreaById(_currentSubAreaId);
                     PlayedCharacterManager.getInstance().currentMap = _worldPoint;
-                    PlayedCharacterManager.getInstance().currentSubArea = _loc_4;
+                    PlayedCharacterManager.getInstance().currentSubArea = _loc_3;
                     TooltipManager.hide();
                     updateCreaturesLimit();
-                    _loc_5 = false;
-                    for each (_loc_54 in _loc_3.actors)
+                    _loc_4 = false;
+                    for each (_loc_52 in _loc_2.actors)
                     {
                         
-                        var _loc_92:* = _humanNumber + 1;
-                        _humanNumber = _loc_92;
+                        var _loc_89:* = _humanNumber + 1;
+                        _humanNumber = _loc_89;
                         if (_creaturesLimit < 50 && _humanNumber >= _creaturesLimit)
                         {
                             _creaturesMode = true;
                         }
-                        if (_loc_54.contextualId > 0 && this._playersId && this._playersId.indexOf(_loc_54.contextualId) == -1)
+                        if (_loc_52.contextualId > 0 && this._playersId && this._playersId.indexOf(_loc_52.contextualId) == -1)
                         {
-                            this._playersId.push(_loc_54.contextualId);
+                            this._playersId.push(_loc_52.contextualId);
                         }
                     }
-                    _loc_6 = true;
-                    for each (_loc_55 in _loc_3.actors)
+                    _loc_5 = true;
+                    for each (_loc_53 in _loc_2.actors)
                     {
                         
-                        _loc_56 = this.addOrUpdateActor(_loc_55) as AnimatedCharacter;
-                        if (_loc_56)
+                        _loc_54 = this.addOrUpdateActor(_loc_53) as AnimatedCharacter;
+                        if (_loc_54)
                         {
-                            _loc_57 = _loc_55 as GameRolePlayCharacterInformations;
-                            if (_loc_57 && _loc_57.humanoidInfo.emoteId > 0)
+                            _loc_55 = _loc_53 as GameRolePlayCharacterInformations;
+                            if (_loc_55 && _loc_55.humanoidInfo.emoteId > 0)
                             {
-                                _loc_58 = Emoticon.getEmoticonById(_loc_57.humanoidInfo.emoteId);
-                                if (_loc_58.persistancy)
+                                _loc_56 = Emoticon.getEmoticonById(_loc_55.humanoidInfo.emoteId);
+                                if (_loc_56.persistancy)
                                 {
-                                    this._currentEmoticon = _loc_58.id;
-                                    if (!_loc_58.aura)
+                                    this._currentEmoticon = _loc_56.id;
+                                    if (!_loc_56.aura)
                                     {
-                                        _loc_59 = false;
-                                        _loc_60 = new Date();
-                                        if (_loc_60.getTime() - _loc_57.humanoidInfo.emoteStartTime >= _loc_58.duration)
+                                        _loc_57 = false;
+                                        _loc_58 = new Date();
+                                        if (_loc_58.getTime() - _loc_55.humanoidInfo.emoteStartTime >= _loc_56.duration)
                                         {
-                                            _loc_59 = true;
+                                            _loc_57 = true;
                                         }
-                                        _loc_61 = EntityLookAdapter.fromNetwork(_loc_57.look);
-                                        this.process(new GameRolePlaySetAnimationMessage(_loc_55, _loc_58.getAnimName(_loc_61), _loc_57.humanoidInfo.emoteStartTime, !_loc_58.persistancy, _loc_58.eight_directions, _loc_59));
+                                        _loc_59 = EntityLookAdapter.fromNetwork(_loc_55.look);
+                                        this.process(new GameRolePlaySetAnimationMessage(_loc_53, _loc_56.getAnimName(_loc_59), _loc_55.humanoidInfo.emoteStartTime, !_loc_56.persistancy, _loc_56.eight_directions, _loc_57));
                                     }
                                 }
                             }
                         }
-                        if (_loc_6)
+                        if (_loc_5)
                         {
-                            if (_loc_55 is GameRolePlayGroupMonsterInformations)
+                            if (_loc_53 is GameRolePlayGroupMonsterInformations)
                             {
-                                _loc_6 = false;
+                                _loc_5 = false;
                                 KernelEventsManager.getInstance().processCallback(TriggerHookList.MapWithMonsters);
                             }
                         }
-                        if (_loc_55 is GameRolePlayCharacterInformations)
+                        if (_loc_53 is GameRolePlayCharacterInformations)
                         {
-                            ChatAutocompleteNameManager.getInstance().addEntry((_loc_55 as GameRolePlayCharacterInformations).name, 0);
+                            ChatAutocompleteNameManager.getInstance().addEntry((_loc_53 as GameRolePlayCharacterInformations).name, 0);
                         }
                     }
-                    for each (_loc_62 in _loc_3.fights)
+                    for each (_loc_60 in _loc_2.fights)
                     {
                         
-                        this.addFight(_loc_62);
+                        this.addFight(_loc_60);
                     }
                     this._housesList = new Dictionary();
-                    for each (_loc_63 in _loc_3.houses)
+                    for each (_loc_61 in _loc_2.houses)
                     {
                         
-                        _loc_64 = HouseWrapper.create(_loc_63);
-                        _loc_65 = _loc_63.doorsOnMap.length;
-                        _loc_66 = 0;
-                        while (_loc_66 < _loc_65)
+                        _loc_62 = HouseWrapper.create(_loc_61);
+                        _loc_63 = _loc_61.doorsOnMap.length;
+                        _loc_64 = 0;
+                        while (_loc_64 < _loc_63)
                         {
                             
-                            this._housesList[_loc_63.doorsOnMap[_loc_66]] = _loc_64;
-                            _loc_66++;
+                            this._housesList[_loc_61.doorsOnMap[_loc_64]] = _loc_62;
+                            _loc_64++;
                         }
-                        _loc_67 = new HousePropertiesMessage();
-                        _loc_67.initHousePropertiesMessage(_loc_63);
-                        Kernel.getWorker().process(_loc_67);
+                        _loc_65 = new HousePropertiesMessage();
+                        _loc_65.initHousePropertiesMessage(_loc_61);
+                        Kernel.getWorker().process(_loc_65);
                     }
-                    for each (_loc_68 in _loc_3.obstacles)
+                    for each (_loc_66 in _loc_2.obstacles)
                     {
                         
-                        InteractiveCellManager.getInstance().updateCell(_loc_68.obstacleCellId, _loc_68.state == MapObstacleStateEnum.OBSTACLE_OPENED);
+                        InteractiveCellManager.getInstance().updateCell(_loc_66.obstacleCellId, _loc_66.state == MapObstacleStateEnum.OBSTACLE_OPENED);
                     }
-                    _loc_7 = new InteractiveMapUpdateMessage();
-                    _loc_7.initInteractiveMapUpdateMessage(_loc_3.interactiveElements);
+                    _loc_6 = new InteractiveMapUpdateMessage();
+                    _loc_6.initInteractiveMapUpdateMessage(_loc_2.interactiveElements);
+                    Kernel.getWorker().process(_loc_6);
+                    _loc_7 = new StatedMapUpdateMessage();
+                    _loc_7.initStatedMapUpdateMessage(_loc_2.statedElements);
                     Kernel.getWorker().process(_loc_7);
-                    _loc_8 = new StatedMapUpdateMessage();
-                    _loc_8.initStatedMapUpdateMessage(_loc_3.statedElements);
-                    Kernel.getWorker().process(_loc_8);
                     KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData, PlayedCharacterManager.getInstance().currentMap, _currentSubAreaId, Dofus.getInstance().options.mapCoordinates, _currentSubAreaSide);
                     KernelEventsManager.getInstance().processCallback(HookList.MapFightCount, 0);
-                    AnimFunManager.getInstance().initializeByMap(_loc_3.mapId);
+                    AnimFunManager.getInstance().initializeByMap(_loc_2.mapId);
                     this.switchPokemonMode();
                     return true;
                 }
                 case param1 is HousePropertiesMessage:
                 {
-                    _loc_9 = (param1 as HousePropertiesMessage).properties;
-                    _loc_64 = HouseWrapper.create(_loc_9);
-                    _loc_65 = _loc_9.doorsOnMap.length;
-                    _loc_66 = 0;
-                    while (_loc_66 < _loc_65)
+                    _loc_8 = (param1 as HousePropertiesMessage).properties;
+                    _loc_62 = HouseWrapper.create(_loc_8);
+                    _loc_63 = _loc_8.doorsOnMap.length;
+                    _loc_64 = 0;
+                    while (_loc_64 < _loc_63)
                     {
                         
-                        this._housesList[_loc_9.doorsOnMap[_loc_66]] = _loc_64;
-                        _loc_66++;
+                        this._housesList[_loc_8.doorsOnMap[_loc_64]] = _loc_62;
+                        _loc_64++;
                     }
-                    KernelEventsManager.getInstance().processCallback(HookList.HouseProperties, _loc_9.houseId, _loc_9.doorsOnMap, _loc_9.ownerName, _loc_9.isOnSale, _loc_9.modelId);
+                    KernelEventsManager.getInstance().processCallback(HookList.HouseProperties, _loc_8.houseId, _loc_8.doorsOnMap, _loc_8.ownerName, _loc_8.isOnSale, _loc_8.modelId);
                     return true;
                 }
                 case param1 is GameRolePlayShowActorMessage:
                 {
-                    _loc_10 = param1 as GameRolePlayShowActorMessage;
+                    _loc_9 = param1 as GameRolePlayShowActorMessage;
                     updateCreaturesLimit();
-                    var _loc_90:* = _humanNumber + 1;
-                    _humanNumber = _loc_90;
-                    this.addOrUpdateActor(_loc_10.informations);
+                    var _loc_87:* = _humanNumber + 1;
+                    _humanNumber = _loc_87;
+                    this.addOrUpdateActor(_loc_9.informations);
                     if (this.switchPokemonMode())
                     {
                         return true;
                     }
-                    if (_loc_10.informations is GameRolePlayCharacterInformations)
+                    if (_loc_9.informations is GameRolePlayCharacterInformations)
                     {
-                        ChatAutocompleteNameManager.getInstance().addEntry((_loc_10.informations as GameRolePlayCharacterInformations).name, 0);
+                        ChatAutocompleteNameManager.getInstance().addEntry((_loc_9.informations as GameRolePlayCharacterInformations).name, 0);
                     }
-                    if (_loc_10.informations is GameRolePlayCharacterInformations && PlayedCharacterManager.getInstance().characteristics.alignmentInfos.pvpEnabled)
+                    if (_loc_9.informations is GameRolePlayCharacterInformations && PlayedCharacterManager.getInstance().characteristics.alignmentInfos.pvpEnabled)
                     {
-                        _loc_69 = _loc_10.informations as GameRolePlayCharacterInformations;
-                        switch(PlayedCharacterManager.getInstance().levelDiff(_loc_69.alignmentInfos.characterPower - _loc_10.informations.contextualId))
+                        _loc_67 = _loc_9.informations as GameRolePlayCharacterInformations;
+                        switch(PlayedCharacterManager.getInstance().levelDiff(_loc_67.alignmentInfos.characterPower - _loc_9.informations.contextualId))
                         {
                             case -1:
                             {
@@ -497,319 +480,311 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                 }
                 case param1 is GameContextRefreshEntityLookMessage:
                 {
-                    _loc_11 = param1 as GameContextRefreshEntityLookMessage;
-                    updateActorLook(_loc_11.id, _loc_11.look, true);
+                    _loc_10 = param1 as GameContextRefreshEntityLookMessage;
+                    updateActorLook(_loc_10.id, _loc_10.look, true);
                     return true;
                 }
                 case param1 is GameMapChangeOrientationMessage:
                 {
-                    _loc_12 = param1 as GameMapChangeOrientationMessage;
-                    updateActorOrientation(_loc_12.orientation.id, _loc_12.orientation.direction);
+                    _loc_11 = param1 as GameMapChangeOrientationMessage;
+                    updateActorOrientation(_loc_11.orientation.id, _loc_11.orientation.direction);
                     return true;
                 }
                 case param1 is GameMapChangeOrientationsMessage:
                 {
-                    _loc_13 = param1 as GameMapChangeOrientationsMessage;
-                    _loc_14 = _loc_13.orientations.length;
-                    _loc_70 = 0;
-                    while (_loc_70 < _loc_14)
+                    _loc_12 = param1 as GameMapChangeOrientationsMessage;
+                    _loc_13 = _loc_12.orientations.length;
+                    _loc_68 = 0;
+                    while (_loc_68 < _loc_13)
                     {
                         
-                        _loc_71 = _loc_13.orientations[_loc_70];
-                        updateActorOrientation(_loc_71.id, _loc_71.direction);
-                        _loc_70++;
+                        _loc_69 = _loc_12.orientations[_loc_68];
+                        updateActorOrientation(_loc_69.id, _loc_69.direction);
+                        _loc_68++;
                     }
                     return true;
                 }
                 case param1 is GameRolePlaySetAnimationMessage:
                 {
-                    _loc_15 = param1 as GameRolePlaySetAnimationMessage;
-                    _loc_16 = DofusEntities.getEntity(_loc_15.informations.contextualId) as AnimatedCharacter;
-                    if (_loc_15.animation == AnimationEnum.ANIM_STATIQUE)
+                    _loc_14 = param1 as GameRolePlaySetAnimationMessage;
+                    _loc_15 = DofusEntities.getEntity(_loc_14.informations.contextualId) as AnimatedCharacter;
+                    if (_loc_14.animation == AnimationEnum.ANIM_STATIQUE)
                     {
                         this._currentEmoticon = 0;
-                        _loc_16.setAnimation(_loc_15.animation);
-                        this._emoteTimesBySprite[_loc_16.name] = 0;
+                        _loc_15.setAnimation(_loc_14.animation);
+                        this._emoteTimesBySprite[_loc_15.name] = 0;
                     }
                     else if (!_creaturesMode)
                     {
-                        this._emoteTimesBySprite[_loc_16.name] = _loc_15.duration;
-                        if (!_loc_15.directions8)
+                        this._emoteTimesBySprite[_loc_15.name] = _loc_14.duration;
+                        if (!_loc_14.directions8)
                         {
-                            if (_loc_16.getDirection() % 2 == 0)
+                            if (_loc_15.getDirection() % 2 == 0)
                             {
-                                _loc_16.setDirection((_loc_16.getDirection() + 1));
+                                _loc_15.setDirection((_loc_15.getDirection() + 1));
                             }
                         }
-                        _loc_16.addEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
-                        _loc_16.setAnimation(_loc_15.animation);
-                        if (_loc_15.playStaticOnly)
+                        _loc_15.addEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
+                        _loc_15.setAnimation(_loc_14.animation);
+                        if (_loc_14.playStaticOnly)
                         {
-                            if (_loc_16.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET) && _loc_16.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length)
+                            if (_loc_15.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET) && _loc_15.look.getSubEntitiesFromCategory(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET).length)
                             {
-                                _loc_16.setSubEntityBehaviour(1, new AnimStatiqueSubEntityBehavior());
+                                _loc_15.setSubEntityBehaviour(1, new AnimStatiqueSubEntityBehavior());
                             }
-                            _loc_16.stopAnimationAtLastFrame();
+                            _loc_15.stopAnimationAtLastFrame();
                         }
                     }
                     return true;
                 }
                 case param1 is CharacterMovementStoppedMessage:
                 {
-                    _loc_17 = param1 as CharacterMovementStoppedMessage;
-                    _loc_18 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().infos.id) as AnimatedCharacter;
-                    if (OptionManager.getOptionManager("tiphon").alwaysShowAuraOnFront && _loc_18.getDirection() == DirectionsEnum.DOWN && _loc_18.getAnimation().indexOf(AnimationEnum.ANIM_STATIQUE) != -1 && PlayedCharacterManager.getInstance().state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
+                    _loc_16 = param1 as CharacterMovementStoppedMessage;
+                    _loc_17 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().infos.id) as AnimatedCharacter;
+                    if (OptionManager.getOptionManager("tiphon").alwaysShowAuraOnFront && _loc_17.getDirection() == DirectionsEnum.DOWN && _loc_17.getAnimation().indexOf(AnimationEnum.ANIM_STATIQUE) != -1 && PlayedCharacterManager.getInstance().state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING)
                     {
-                        _loc_73 = Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame;
-                        for each (_loc_74 in _loc_73.emotes)
+                        _loc_71 = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
+                        for each (_loc_72 in _loc_71.emotes)
                         {
                             
-                            _loc_75 = Emoticon.getEmoticonById(_loc_74);
-                            if (_loc_75.aura)
+                            _loc_73 = Emoticon.getEmoticonById(_loc_72);
+                            if (_loc_73.aura)
                             {
-                                if (!_loc_72 || _loc_75.weight > _loc_72.weight)
+                                if (!_loc_70 || _loc_73.weight > _loc_70.weight)
                                 {
-                                    _loc_72 = _loc_75;
+                                    _loc_70 = _loc_73;
                                 }
                             }
                         }
-                        if (_loc_72)
+                        if (_loc_70)
                         {
-                            _loc_76 = new EmotePlayRequestMessage();
-                            _loc_76.initEmotePlayRequestMessage(_loc_72.id);
-                            ConnectionsHandler.getConnection().send(_loc_76);
+                            _loc_74 = new EmotePlayRequestMessage();
+                            _loc_74.initEmotePlayRequestMessage(_loc_70.id);
+                            ConnectionsHandler.getConnection().send(_loc_74);
                         }
                     }
                     return true;
                 }
                 case param1 is GameRolePlayShowChallengeMessage:
                 {
-                    _loc_19 = param1 as GameRolePlayShowChallengeMessage;
-                    this.addFight(_loc_19.commonsInfos);
+                    _loc_18 = param1 as GameRolePlayShowChallengeMessage;
+                    this.addFight(_loc_18.commonsInfos);
                     return true;
                 }
                 case param1 is GameFightOptionStateUpdateMessage:
                 {
-                    _loc_20 = param1 as GameFightOptionStateUpdateMessage;
-                    this.updateSwordOptions(_loc_20.fightId, _loc_20.teamId, _loc_20.option, _loc_20.state);
-                    KernelEventsManager.getInstance().processCallback(HookList.GameFightOptionStateUpdate, _loc_20.fightId, _loc_20.teamId, _loc_20.option, _loc_20.state);
+                    _loc_19 = param1 as GameFightOptionStateUpdateMessage;
+                    this.updateSwordOptions(_loc_19.fightId, _loc_19.teamId, _loc_19.option, _loc_19.state);
+                    KernelEventsManager.getInstance().processCallback(HookList.GameFightOptionStateUpdate, _loc_19.fightId, _loc_19.teamId, _loc_19.option, _loc_19.state);
                     return true;
                 }
                 case param1 is GameFightUpdateTeamMessage:
                 {
-                    _loc_21 = param1 as GameFightUpdateTeamMessage;
-                    this.updateFight(_loc_21.fightId, _loc_21.team);
+                    _loc_20 = param1 as GameFightUpdateTeamMessage;
+                    this.updateFight(_loc_20.fightId, _loc_20.team);
                     return true;
                 }
                 case param1 is GameFightRemoveTeamMemberMessage:
                 {
-                    _loc_22 = param1 as GameFightRemoveTeamMemberMessage;
-                    this.removeFighter(_loc_22.fightId, _loc_22.teamId, _loc_22.charId);
+                    _loc_21 = param1 as GameFightRemoveTeamMemberMessage;
+                    this.removeFighter(_loc_21.fightId, _loc_21.teamId, _loc_21.charId);
                     return true;
                 }
                 case param1 is GameRolePlayRemoveChallengeMessage:
                 {
-                    _loc_23 = param1 as GameRolePlayRemoveChallengeMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.GameRolePlayRemoveFight, _loc_23.fightId);
-                    this.removeFight(_loc_23.fightId);
+                    _loc_22 = param1 as GameRolePlayRemoveChallengeMessage;
+                    KernelEventsManager.getInstance().processCallback(HookList.GameRolePlayRemoveFight, _loc_22.fightId);
+                    this.removeFight(_loc_22.fightId);
                     return true;
                 }
                 case param1 is GameContextRemoveElementMessage:
                 {
-                    _loc_24 = param1 as GameContextRemoveElementMessage;
-                    _loc_25 = 0;
-                    for each (_loc_77 in this._playersId)
+                    _loc_23 = param1 as GameContextRemoveElementMessage;
+                    _loc_24 = 0;
+                    for each (_loc_75 in this._playersId)
                     {
                         
-                        if (_loc_77 == _loc_24.id)
+                        if (_loc_75 == _loc_23.id)
                         {
-                            this._playersId.splice(_loc_25, 1);
+                            this._playersId.splice(_loc_24, 1);
                             continue;
                         }
-                        _loc_25 = _loc_25 + 1;
+                        _loc_24 = _loc_24 + 1;
                     }
-                    removeActor(_loc_24.id);
+                    removeActor(_loc_23.id);
                     return true;
                 }
                 case param1 is MapFightCountMessage:
                 {
-                    _loc_26 = param1 as MapFightCountMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.MapFightCount, _loc_26.fightCount);
+                    _loc_25 = param1 as MapFightCountMessage;
+                    KernelEventsManager.getInstance().processCallback(HookList.MapFightCount, _loc_25.fightCount);
                     return true;
                 }
                 case param1 is ObjectGroundAddedMessage:
                 {
-                    _loc_27 = param1 as ObjectGroundAddedMessage;
-                    this.addObject(_loc_27.objectGID, _loc_27.cellId);
+                    _loc_26 = param1 as ObjectGroundAddedMessage;
+                    this.addObject(_loc_26.objectGID, _loc_26.cellId);
                     return true;
                 }
                 case param1 is ObjectGroundRemovedMessage:
                 {
-                    _loc_28 = param1 as ObjectGroundRemovedMessage;
-                    this.removeObject(_loc_28.cell);
+                    _loc_27 = param1 as ObjectGroundRemovedMessage;
+                    this.removeObject(_loc_27.cell);
                     return true;
                 }
                 case param1 is ObjectGroundListAddedMessage:
                 {
-                    _loc_29 = param1 as ObjectGroundListAddedMessage;
-                    _loc_30 = 0;
-                    for each (_loc_78 in _loc_29.referenceIds)
+                    _loc_28 = param1 as ObjectGroundListAddedMessage;
+                    _loc_29 = 0;
+                    for each (_loc_76 in _loc_28.referenceIds)
                     {
                         
-                        this.addObject(_loc_78, _loc_29.cells[_loc_30]);
-                        _loc_30 = _loc_30 + 1;
+                        this.addObject(_loc_76, _loc_28.cells[_loc_29]);
+                        _loc_29 = _loc_29 + 1;
                     }
                     return true;
                 }
                 case param1 is PaddockRemoveItemRequestAction:
                 {
-                    _loc_31 = param1 as PaddockRemoveItemRequestAction;
-                    _loc_32 = new PaddockRemoveItemRequestMessage();
-                    _loc_32.initPaddockRemoveItemRequestMessage(_loc_31.cellId);
-                    ConnectionsHandler.getConnection().send(_loc_32);
+                    _loc_30 = param1 as PaddockRemoveItemRequestAction;
+                    _loc_31 = new PaddockRemoveItemRequestMessage();
+                    _loc_31.initPaddockRemoveItemRequestMessage(_loc_30.cellId);
+                    ConnectionsHandler.getConnection().send(_loc_31);
                     return true;
                 }
                 case param1 is PaddockMoveItemRequestAction:
                 {
-                    _loc_33 = param1 as PaddockMoveItemRequestAction;
-                    this._currentPaddockItemCellId = _loc_33.object.disposition.cellId;
-                    _loc_34 = new Texture();
-                    _loc_35 = ItemWrapper.create(0, 0, _loc_33.object.item.id, 0, null, false);
-                    _loc_34.uri = _loc_35.iconUri;
-                    _loc_34.finalize();
-                    Kernel.getWorker().addFrame(new RoleplayPointCellFrame(this.onCellPointed, _loc_34, true, this.paddockCellValidator, true));
+                    _loc_32 = param1 as PaddockMoveItemRequestAction;
+                    this._currentPaddockItemCellId = _loc_32.object.disposition.cellId;
+                    _loc_33 = new Texture();
+                    _loc_34 = ItemWrapper.create(0, 0, _loc_32.object.item.id, 0, null, false);
+                    _loc_33.uri = _loc_34.iconUri;
+                    _loc_33.finalize();
+                    Kernel.getWorker().addFrame(new RoleplayPointCellFrame(this.onCellPointed, _loc_33, true, this.paddockCellValidator, true));
                     return true;
                 }
                 case param1 is GameDataPaddockObjectRemoveMessage:
                 {
-                    _loc_36 = param1 as GameDataPaddockObjectRemoveMessage;
-                    _loc_37 = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-                    this.removePaddockItem(_loc_36.cellId);
+                    _loc_35 = param1 as GameDataPaddockObjectRemoveMessage;
+                    _loc_36 = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+                    this.removePaddockItem(_loc_35.cellId);
                     return true;
                 }
                 case param1 is GameDataPaddockObjectAddMessage:
                 {
-                    _loc_38 = param1 as GameDataPaddockObjectAddMessage;
-                    this.addPaddockItem(_loc_38.paddockItemDescription);
+                    _loc_37 = param1 as GameDataPaddockObjectAddMessage;
+                    this.addPaddockItem(_loc_37.paddockItemDescription);
                     return true;
                 }
                 case param1 is GameDataPaddockObjectListAddMessage:
                 {
-                    _loc_39 = param1 as GameDataPaddockObjectListAddMessage;
-                    for each (_loc_79 in _loc_39.paddockItemDescription)
+                    _loc_38 = param1 as GameDataPaddockObjectListAddMessage;
+                    for each (_loc_77 in _loc_38.paddockItemDescription)
                     {
                         
-                        this.addPaddockItem(_loc_79);
+                        this.addPaddockItem(_loc_77);
                     }
                     return true;
                 }
                 case param1 is GameDataPlayFarmObjectAnimationMessage:
                 {
-                    _loc_40 = param1 as GameDataPlayFarmObjectAnimationMessage;
-                    for each (_loc_80 in _loc_40.cellId)
+                    _loc_39 = param1 as GameDataPlayFarmObjectAnimationMessage;
+                    for each (_loc_78 in _loc_39.cellId)
                     {
                         
-                        this.activatePaddockItem(_loc_80);
+                        this.activatePaddockItem(_loc_78);
                     }
                     return true;
                 }
                 case param1 is MapNpcsQuestStatusUpdateMessage:
                 {
-                    _loc_41 = param1 as MapNpcsQuestStatusUpdateMessage;
-                    if (MapDisplayManager.getInstance().currentMapPoint.mapId == _loc_41.mapId)
+                    _loc_40 = param1 as MapNpcsQuestStatusUpdateMessage;
+                    if (MapDisplayManager.getInstance().currentMapPoint.mapId == _loc_40.mapId)
                     {
-                        _loc_84 = _loc_41.npcsIdsWithQuest.length;
-                        _loc_83 = 0;
-                        while (_loc_83 < _loc_84)
+                        for each (_loc_79 in this._npcList)
                         {
                             
-                            _loc_81 = this._npcList[_loc_41.npcsIdsWithQuest[_loc_83]];
-                            if (_loc_81)
+                            this.removeBackground(_loc_79);
+                        }
+                        _loc_82 = _loc_40.npcsIdsWithQuest.length;
+                        _loc_81 = 0;
+                        while (_loc_81 < _loc_82)
+                        {
+                            
+                            _loc_79 = this._npcList[_loc_40.npcsIdsWithQuest[_loc_81]];
+                            if (_loc_79)
                             {
-                                _loc_86 = Quest.getFirstValidQuest(_loc_41.questFlags[_loc_66]);
-                                this.removeBackground(_loc_81);
-                                if (_loc_86 != null)
+                                _loc_83 = Quest.getFirstValidQuest(_loc_40.questFlags[_loc_64]);
+                                if (_loc_83 != null)
                                 {
-                                    if (_loc_41.questFlags[_loc_66].questsToStartId.indexOf(_loc_86.id) != -1)
+                                    if (_loc_40.questFlags[_loc_64].questsToStartId.indexOf(_loc_83.id) != -1)
                                     {
-                                        if (_loc_86.repeatType == 0)
+                                        if (_loc_83.repeatType == 0)
                                         {
-                                            _loc_82 = new QUEST_CLIP() as Sprite;
-                                            _loc_81.addBackground("questClip", _loc_82, true);
+                                            _loc_80 = EmbedAssets.getSprite("QUEST_CLIP");
+                                            _loc_79.addBackground("questClip", _loc_80, true);
                                         }
                                         else
                                         {
-                                            _loc_82 = new QUEST_REPEATABLE_CLIP() as Sprite;
-                                            _loc_81.addBackground("questRepeatableClip", _loc_82, true);
+                                            _loc_80 = EmbedAssets.getSprite("QUEST_REPEATABLE_CLIP");
+                                            _loc_79.addBackground("questRepeatableClip", _loc_80, true);
                                         }
                                     }
-                                    else if (_loc_86.repeatType == 0)
+                                    else if (_loc_83.repeatType == 0)
                                     {
-                                        _loc_82 = new QUEST_OBJECTIVE_CLIP() as Sprite;
-                                        _loc_81.addBackground("questObjectiveClip", _loc_82, true);
+                                        _loc_80 = EmbedAssets.getSprite("QUEST_OBJECTIVE_CLIP");
+                                        _loc_79.addBackground("questObjectiveClip", _loc_80, true);
                                     }
                                     else
                                     {
-                                        _loc_82 = new QUEST_REPEATABLE_OBJECTIVE_CLIP() as Sprite;
-                                        _loc_81.addBackground("questRepeatableObjectiveClip", _loc_82, true);
+                                        _loc_80 = EmbedAssets.getSprite("QUEST_REPEATABLE_OBJECTIVE_CLIP");
+                                        _loc_79.addBackground("questRepeatableObjectiveClip", _loc_80, true);
                                     }
                                 }
                             }
-                            _loc_83++;
-                        }
-                        _loc_85 = _loc_41.npcsIdsWithoutQuest.length;
-                        _loc_83 = 0;
-                        while (_loc_83 < _loc_85)
-                        {
-                            
-                            _loc_81 = this._npcList[_loc_41.npcsIdsWithoutQuest[_loc_83]];
-                            if (_loc_81)
-                            {
-                                this.removeBackground(_loc_81);
-                            }
-                            _loc_83++;
+                            _loc_81++;
                         }
                     }
                     return true;
                 }
                 case param1 is ShowCellMessage:
                 {
-                    _loc_42 = param1 as ShowCellMessage;
-                    HyperlinkShowCellManager.showCell(_loc_42.cellId);
-                    _loc_43 = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-                    _loc_44 = _loc_43.getActorName(_loc_42.sourceId);
-                    _loc_45 = I18n.getUiText("ui.fight.showCell", [_loc_44, "{cell," + _loc_42.cellId + "::" + _loc_42.cellId + "}"]);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_45, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                    _loc_41 = param1 as ShowCellMessage;
+                    HyperlinkShowCellManager.showCell(_loc_41.cellId);
+                    _loc_42 = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+                    _loc_43 = _loc_42.getActorName(_loc_41.sourceId);
+                    _loc_44 = I18n.getUiText("ui.fight.showCell", [_loc_43, "{cell," + _loc_41.cellId + "::" + _loc_41.cellId + "}"]);
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_44, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     return true;
                 }
                 case param1 is StartZoomAction:
                 {
-                    _loc_46 = param1 as StartZoomAction;
+                    _loc_45 = param1 as StartZoomAction;
                     if (Atouin.getInstance().currentZoom != 1)
                     {
                         Atouin.getInstance().cancelZoom();
                         KernelEventsManager.getInstance().processCallback(HookList.StartZoom, false);
                         return true;
                     }
-                    _loc_47 = DofusEntities.getEntity(_loc_46.playerId) as DisplayObject;
-                    if (_loc_47 && _loc_47.stage)
+                    _loc_46 = DofusEntities.getEntity(_loc_45.playerId) as DisplayObject;
+                    if (_loc_46 && _loc_46.stage)
                     {
-                        _loc_87 = _loc_47.getRect(Atouin.getInstance().worldContainer);
-                        Atouin.getInstance().zoom(_loc_46.value, _loc_87.x + _loc_87.width / 2, _loc_87.y + _loc_87.height / 2);
+                        _loc_84 = _loc_46.getRect(Atouin.getInstance().worldContainer);
+                        Atouin.getInstance().zoom(_loc_45.value, _loc_84.x + _loc_84.width / 2, _loc_84.y + _loc_84.height / 2);
                         KernelEventsManager.getInstance().processCallback(HookList.StartZoom, true);
                     }
                     return true;
                 }
                 case param1 is SwitchCreatureModeAction:
                 {
-                    _loc_48 = param1 as SwitchCreatureModeAction;
-                    if (_creaturesMode != _loc_48.isActivated)
+                    _loc_47 = param1 as SwitchCreatureModeAction;
+                    if (_creaturesMode != _loc_47.isActivated)
                     {
-                        _creaturesMode = _loc_48.isActivated;
-                        for (_loc_88 in _entities)
+                        _creaturesMode = _loc_47.isActivated;
+                        for (_loc_85 in _entities)
                         {
                             
-                            updateActorLook(_loc_88, (_entities[_loc_88] as GameContextActorInformations).look);
+                            updateActorLook(_loc_85, (_entities[_loc_85] as GameContextActorInformations).look);
                         }
                     }
                     return true;
@@ -824,7 +799,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function initNewMap() : void
         {
-            this._npcList = new Array();
+            this._npcList = new Dictionary();
             this._fights = new Dictionary();
             this._objects = new Dictionary();
             this._uri = new Dictionary();
@@ -845,8 +820,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         override public function pulled() : Boolean
         {
-            var _loc_1:Fight = null;
-            var _loc_2:FightTeam = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for each (_loc_1 in this._fights)
             {
                 
@@ -902,12 +877,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         override public function addOrUpdateActor(param1:GameContextActorInformations, param2:IAnimationModifier = null) : AnimatedCharacter
         {
-            var _loc_4:Sprite = null;
-            var _loc_5:Quest = null;
-            var _loc_6:GameRolePlayGroupMonsterInformations = null;
-            var _loc_7:Vector.<EntityLook> = null;
-            var _loc_8:uint = 0;
-            var _loc_9:MonsterInGroupInformations = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
             var _loc_3:* = super.addOrUpdateActor(param1);
             switch(true)
             {
@@ -922,23 +897,23 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         {
                             if (_loc_5.repeatType == 0)
                             {
-                                _loc_4 = new QUEST_CLIP() as Sprite;
+                                _loc_4 = EmbedAssets.getSprite("QUEST_CLIP");
                                 _loc_3.addBackground("questClip", _loc_4, true);
                             }
                             else
                             {
-                                _loc_4 = new QUEST_REPEATABLE_CLIP() as Sprite;
+                                _loc_4 = EmbedAssets.getSprite("QUEST_REPEATABLE_CLIP");
                                 _loc_3.addBackground("questRepeatableClip", _loc_4, true);
                             }
                         }
                         else if (_loc_5.repeatType == 0)
                         {
-                            _loc_4 = new QUEST_OBJECTIVE_CLIP() as Sprite;
+                            _loc_4 = EmbedAssets.getSprite("QUEST_OBJECTIVE_CLIP");
                             _loc_3.addBackground("questObjectiveClip", _loc_4, true);
                         }
                         else
                         {
-                            _loc_4 = new QUEST_REPEATABLE_OBJECTIVE_CLIP() as Sprite;
+                            _loc_4 = EmbedAssets.getSprite("QUEST_REPEATABLE_OBJECTIVE_CLIP");
                             _loc_3.addBackground("questRepeatableObjectiveClip", _loc_4, true);
                         }
                     }
@@ -957,9 +932,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                     if (Dofus.getInstance().options.showEveryMonsters)
                     {
                         _loc_6 = param1 as GameRolePlayGroupMonsterInformations;
-                        _loc_7 = new Vector.<EntityLook>(_loc_6.underlings.length, true);
+                        _loc_7 = new Vector.<EntityLook>(_loc_6.staticInfos.underlings.length, true);
                         _loc_8 = 0;
-                        for each (_loc_9 in _loc_6.underlings)
+                        for each (_loc_9 in _loc_6.staticInfos.underlings)
                         {
                             
                             _loc_7[++_loc_8] = _loc_9.look;
@@ -1023,12 +998,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function manageFollowers(param1:AnimatedCharacter, param2:Vector.<EntityLook>) : void
         {
-            var _loc_5:EntityLook = null;
-            var _loc_6:TiphonEntityLook = null;
-            var _loc_7:AnimatedCharacter = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             param1.removeAllFollowers();
             var _loc_3:* = param2.length;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 
@@ -1043,12 +1018,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function addFight(param1:FightCommonInformations) : void
         {
-            var _loc_5:FightTeamInformations = null;
-            var _loc_6:IEntity = null;
-            var _loc_7:FightTeam = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_2:* = new Vector.<FightTeam>(0, false);
             var _loc_3:* = new Fight(param1.fightId, _loc_2);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             for each (_loc_5 in param1.fightTeams)
             {
                 
@@ -1090,22 +1065,34 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function removeObject(param1:uint) : void
         {
-            (this._uri[param1] as IDisplayable).remove();
-            delete this._objects[this._uri[param1]];
-            delete _entities[this._uri[param1].id];
-            delete this._uri[param1];
+            if (this._uri[param1] != null)
+            {
+                (this._uri[param1] as IDisplayable).remove();
+            }
+            if (this._objects[this._uri[param1]] != null)
+            {
+                delete this._objects[this._uri[param1]];
+            }
+            if (_entities[this._uri[param1].id] != null)
+            {
+                delete _entities[this._uri[param1].id];
+            }
+            if (this._uri[param1] != null)
+            {
+                delete this._uri[param1];
+            }
             return;
         }// end function
 
         private function updateFight(param1:uint, param2:FightTeamInformations) : void
         {
-            var _loc_6:FightTeamMemberInformations = null;
-            var _loc_7:Boolean = false;
-            var _loc_8:Boolean = false;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:Boolean = false;
-            var _loc_12:FightTeamMemberInformations = null;
+            var _loc_6:* = null;
+            var _loc_7:* = false;
+            var _loc_8:* = false;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = false;
+            var _loc_12:* = null;
             var _loc_3:* = this._fights[param1];
             if (_loc_3 == null)
             {
@@ -1159,27 +1146,33 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function removeFighter(param1:uint, param2:uint, param3:int) : void
         {
-            var _loc_8:FightTeamMemberInformations = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_4:* = this._fights[param1];
-            var _loc_5:* = this._fights[param1].teams[param2];
-            var _loc_6:* = this._fights[param1].teams[param2].teamInfos;
-            var _loc_7:* = new Vector.<FightTeamMemberInformations>(0, false);
-            for each (_loc_8 in _loc_6.teamMembers)
+            if (this._fights[param1])
             {
-                
-                if (_loc_8.id != param3)
+                _loc_5 = _loc_4.teams[param2];
+                _loc_6 = _loc_5.teamInfos;
+                _loc_7 = new Vector.<FightTeamMemberInformations>(0, false);
+                for each (_loc_8 in _loc_6.teamMembers)
                 {
-                    _loc_7.push(_loc_8);
+                    
+                    if (_loc_8.id != param3)
+                    {
+                        _loc_7.push(_loc_8);
+                    }
                 }
+                _loc_6.teamMembers = _loc_7;
             }
-            _loc_6.teamMembers = _loc_7;
             return;
         }// end function
 
         private function removeFight(param1:uint) : void
         {
-            var _loc_3:FightTeam = null;
-            var _loc_4:Object = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = this._fights[param1];
             if (_loc_2 == null)
             {
@@ -1200,7 +1193,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function addPaddockItem(param1:PaddockItem) : void
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_2:* = Item.getItemById(param1.objectGID);
             if (this._paddockItem[param1.cellId])
             {
@@ -1230,7 +1223,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function activatePaddockItem(param1:uint) : void
         {
-            var _loc_3:SerialSequencer = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._paddockItem[param1];
             if (_loc_2)
             {
@@ -1274,7 +1267,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function paddockCellValidator(param1:int) : Boolean
         {
-            var _loc_3:GameContextActorInformations = null;
+            var _loc_3:* = null;
             var _loc_2:* = EntitiesManager.getInstance().getEntityOnCell(param1);
             if (_loc_2)
             {
@@ -1330,8 +1323,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function onAnimationEnd(event:TiphonEvent) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = event.currentTarget as TiphonSprite;
             _loc_2.removeEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
             var _loc_5:* = _loc_2.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);
@@ -1355,7 +1348,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             {
                 _loc_3 = _loc_4;
             }
-            if (_loc_2.hasAnimation(_loc_3, _loc_2.getDirection()))
+            if (_loc_2.hasAnimation(_loc_3, _loc_2.getDirection()) || _loc_5 && _loc_5 is TiphonSprite && TiphonSprite(_loc_5).hasAnimation(_loc_3, TiphonSprite(_loc_5).getDirection()))
             {
                 _loc_2.setAnimation(_loc_3);
             }
@@ -1369,7 +1362,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function onCellPointed(param1:Boolean, param2:uint, param3:int) : void
         {
-            var _loc_4:PaddockMoveItemRequestMessage = null;
+            var _loc_4:* = null;
             if (param1)
             {
                 _loc_4 = new PaddockMoveItemRequestMessage();

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.newCache.impl
+﻿package com.ankamagames.jerakine.newCache.impl
 {
     import com.ankamagames.jerakine.newCache.*;
     import com.ankamagames.jerakine.resources.*;
@@ -27,7 +27,7 @@ package com.ankamagames.jerakine.newCache.impl
 
         public function contains(param1) : Boolean
         {
-            var _loc_3:CacheableResource = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._cache[param1];
             for each (_loc_3 in _loc_2)
             {
@@ -47,7 +47,7 @@ package com.ankamagames.jerakine.newCache.impl
 
         public function peek(param1)
         {
-            var _loc_3:CacheableResource = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._cache[param1];
             for each (_loc_3 in _loc_2)
             {
@@ -70,7 +70,7 @@ package com.ankamagames.jerakine.newCache.impl
             {
                 this._cache[param1] = new Array();
                 this._useCount[param1] = 0;
-                var _loc_3:String = this;
+                var _loc_3:* = this;
                 var _loc_4:* = this._size + 1;
                 _loc_3._size = _loc_4;
                 if (this._size > this._bounds)
@@ -98,11 +98,11 @@ package com.ankamagames.jerakine.newCache.impl
         private function garbage() : void
         {
             var _loc_2:* = undefined;
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:Array = null;
-            var _loc_6:Boolean = false;
-            var _loc_7:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = false;
+            var _loc_7:* = 0;
             var _loc_8:* = undefined;
             var _loc_1:* = new Array();
             for (_loc_2 in this._cache)
@@ -135,7 +135,7 @@ package com.ankamagames.jerakine.newCache.impl
                 {
                     delete this._cache[_loc_1[_loc_7].ref];
                     delete this._useCount[_loc_1[_loc_7].ref];
-                    var _loc_9:String = this;
+                    var _loc_9:* = this;
                     var _loc_10:* = this._size - 1;
                     _loc_9._size = _loc_10;
                 }

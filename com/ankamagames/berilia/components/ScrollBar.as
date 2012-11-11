@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.enums.*;
@@ -289,9 +289,9 @@ package com.ankamagames.berilia.components
 
         private function scrollBarInit() : void
         {
-            var _loc_1:Array = null;
-            var _loc_2:Array = null;
-            var _loc_3:Array = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!this._gcMin)
             {
                 this._gcMin = new ButtonContainer();
@@ -579,9 +579,9 @@ package com.ankamagames.berilia.components
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_4:Number = NaN;
-            var _loc_5:IInterfaceListener = null;
-            var _loc_6:IInterfaceListener = null;
+            var _loc_4:* = NaN;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = this.value;
             var _loc_3:* = PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle;
             switch(true)
@@ -748,12 +748,12 @@ package com.ankamagames.berilia.components
 
         private function onDragRunning(event:Event) : void
         {
-            var _loc_2:int = 0;
-            var _loc_4:int = 0;
+            var _loc_2:* = 0;
+            var _loc_4:* = 0;
             var _loc_3:* = this.value;
             if (this._bVertical)
             {
-                _loc_2 = this.approximate(int(this._gcBox.y));
+                _loc_2 = int(this._gcBox.y);
                 if (_loc_3 != this.valueOfPos(_loc_2))
                 {
                     this._nCurrentPos = _loc_2;
@@ -796,14 +796,14 @@ package com.ankamagames.berilia.components
                 {
                     this._nCurrentPos = this._nBoxPosMin;
                 }
-                this._nDecelerateScroll = this._nAcelerateScroll < this._nMaxDecelerateFactor ? (var _loc_4:String = this, _loc_4._nAcelerateScroll = this._nAcelerateScroll + 1, this._nAcelerateScroll++) : ((this._nMaxDecelerateFactor - 1));
+                this._nDecelerateScroll = this._nAcelerateScroll < this._nMaxDecelerateFactor ? (var _loc_4:* = this, _loc_4._nAcelerateScroll = this._nAcelerateScroll + 1, this._nAcelerateScroll++) : ((this._nMaxDecelerateFactor - 1));
                 if (_loc_3 != this.valueOfPos(this._nCurrentPos))
                 {
                     this.updateDisplayFromCurrentPos();
                     dispatchEvent(new Event(Event.CHANGE));
                 }
             }
-            var _loc_4:String = this;
+            var _loc_4:* = this;
             var _loc_5:* = this._nDecelerateScroll + 1;
             _loc_4._nDecelerateScroll = _loc_5;
             return;
@@ -824,14 +824,14 @@ package com.ankamagames.berilia.components
                 {
                     this._nCurrentPos = this._nBoxPosMax;
                 }
-                this._nDecelerateScroll = this._nAcelerateScroll < this._nMaxDecelerateFactor ? (var _loc_5:String = this, _loc_5._nAcelerateScroll = this._nAcelerateScroll + 1, this._nAcelerateScroll++) : ((this._nMaxDecelerateFactor - 1));
+                this._nDecelerateScroll = this._nAcelerateScroll < this._nMaxDecelerateFactor ? (var _loc_5:* = this, _loc_5._nAcelerateScroll = this._nAcelerateScroll + 1, this._nAcelerateScroll++) : ((this._nMaxDecelerateFactor - 1));
                 if (_loc_4 != this._nCurrentPos)
                 {
                     this.updateDisplayFromCurrentPos();
                     dispatchEvent(new Event(Event.CHANGE));
                 }
             }
-            var _loc_5:String = this;
+            var _loc_5:* = this;
             var _loc_6:* = this._nDecelerateScroll + 1;
             _loc_5._nDecelerateScroll = _loc_6;
             return;
@@ -860,8 +860,8 @@ package com.ankamagames.berilia.components
 
         private function onCssLoaded() : void
         {
-            var _loc_1:ExtendedStyleSheet = null;
-            var _loc_2:Object = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (!this._gcMin)
             {
                 _loc_1 = CssManager.getInstance().getCss(this._sCss.uri);

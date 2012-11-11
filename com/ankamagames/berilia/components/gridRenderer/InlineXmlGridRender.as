@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components.gridRenderer
+﻿package com.ankamagames.berilia.components.gridRenderer
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
@@ -58,7 +58,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
         {
-            var _loc_8:String = null;
+            var _loc_8:* = null;
             var _loc_5:* = this._grid.getUi();
             var _loc_6:* = this._nameReferences.shift() as String;
             var _loc_7:* = new Object();
@@ -105,9 +105,9 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function destroy() : void
         {
-            var _loc_1:Object = null;
-            var _loc_2:Object = null;
-            var _loc_3:Object = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             for each (_loc_1 in this._componentReferences)
             {
                 
@@ -130,14 +130,14 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function renderModificator(param1:Array) : Array
         {
-            var _loc_4:Object = null;
-            var _loc_5:BasicElement = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (param1.length != 1)
             {
                 throw new BeriliaError("Grid declaration cannot handle more than one container and support Container tag only.");
             }
             var _loc_2:* = new Array();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this._grid.slotByCol * this._grid.slotByRow)
             {
                 
@@ -170,14 +170,14 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function copyElement(param1:BasicElement, param2:Object) : BasicElement
         {
-            var _loc_4:Array = null;
-            var _loc_5:BasicElement = null;
-            var _loc_6:StateContainerElement = null;
-            var _loc_7:StateContainerElement = null;
-            var _loc_8:Array = null;
-            var _loc_9:uint = 0;
-            var _loc_10:String = null;
-            var _loc_11:String = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             var _loc_3:* = new (getDefinitionByName(getQualifiedClassName(param1)) as Class)();
             param1.copy(_loc_3);
             if (_loc_3.name)

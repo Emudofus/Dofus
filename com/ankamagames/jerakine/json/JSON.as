@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.json
+﻿package com.ankamagames.jerakine.json
 {
 
     public class JSON extends Object
@@ -9,9 +9,9 @@ package com.ankamagames.jerakine.json
             return;
         }// end function
 
-        public static function encode(param1:Object) : String
+        public static function encode(param1:Object, param2:uint = 0, param3:Boolean = false) : String
         {
-            return new JSONEncoder(param1).getString();
+            return new JSONEncoder(param1, param2, param3).getString();
         }// end function
 
         public static function decode(param1:String, param2:Boolean = true)

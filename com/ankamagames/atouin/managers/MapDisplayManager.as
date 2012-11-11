@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.managers
+﻿package com.ankamagames.atouin.managers
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.*;
@@ -22,9 +22,11 @@ package com.ankamagames.atouin.managers
     import com.ankamagames.jerakine.types.positions.*;
     import com.ankamagames.jerakine.utils.display.*;
     import com.ankamagames.jerakine.utils.errors.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import com.ankamagames.tiphon.display.*;
     import flash.display.*;
     import flash.events.*;
+    import flash.filters.*;
     import flash.geom.*;
     import flash.utils.*;
 
@@ -32,6 +34,7 @@ package com.ankamagames.atouin.managers
     {
         private var _currentMap:WorldPoint;
         private var _currentRenderId:uint;
+        private var _isDefaultMap:Boolean;
         private var _lastMap:WorldPoint;
         private var _loader:IResourceLoader;
         private var _currentDataMap:DataMapContainer;
@@ -48,6 +51,7 @@ package com.ankamagames.atouin.managers
         private var _nGfxLoadEnd:uint;
         private var _nRenderMapStart:uint;
         private var _nRenderMapEnd:uint;
+        private var matrix:Matrix;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         static const _log:Logger = Log.getLogger(getQualifiedClassName(MapDisplayManager));
         private static var _self:MapDisplayManager;
@@ -55,12 +59,18 @@ package com.ankamagames.atouin.managers
         public function MapDisplayManager()
         {
             this._mapFileCache = new Cache(20, new LruGarbageCollector());
+            this.matrix = new Matrix();
             if (_self)
             {
                 throw new SingletonError();
             }
             this.init();
             return;
+        }// end function
+
+        public function get isDefaultMap() : Boolean
+        {
+            return this._isDefaultMap;
         }// end function
 
         public function get renderer() : MapRenderer
@@ -110,7 +120,7 @@ package com.ankamagames.atouin.managers
         {
             var _loc_2:* = MapRenderer.cachedAsBitmapElement;
             var _loc_3:* = _loc_2.length;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 
@@ -137,7 +147,7 @@ package com.ankamagames.atouin.managers
 
         public function activeIdentifiedElements(param1:Boolean) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._renderer.identifiedElements;
             for each (_loc_3 in _loc_2)
             {
@@ -155,18 +165,25 @@ package com.ankamagames.atouin.managers
 
         public function capture() : void
         {
-            if (Atouin.getInstance().options.tweentInterMap)
+            var _loc_1:* = null;
+            if (Atouin.getInstance().options.tweentInterMap || Atouin.getInstance().options.hideInterMap)
             {
-                if (!this._screenshotData)
+                if (this._screenshotData == null)
                 {
                     this._screenshotData = new BitmapData(StageShareManager.startWidth, StageShareManager.startHeight, true, 0);
                     this._screenshot = new Bitmap(this._screenshotData);
                     this._screenshot.smoothing = true;
                 }
-                this._screenshotData.fillRect(new Rectangle(0, 0, this._screenshotData.width, this._screenshotData.height), 4278190080);
-                this._screenshotData.draw(Atouin.getInstance().rootContainer);
-                this._screenshot.alpha = 1;
-                Atouin.getInstance().rootContainer.addChild(this._screenshot);
+                _loc_1 = Atouin.getInstance().rootContainer;
+                this.matrix.identity();
+                this.matrix.scale(_loc_1.scaleX, _loc_1.scaleY);
+                this.matrix.translate(_loc_1.x, _loc_1.y);
+                this._screenshotData.draw(_loc_1, this.matrix, null, null, null, true);
+                if (AirScanner.isStreamingVersion())
+                {
+                    this._screenshot.filters = [new BlurFilter()];
+                }
+                _loc_1.addChild(this._screenshot);
             }
             return;
         }// end function
@@ -222,6 +239,7 @@ package com.ankamagames.atouin.managers
             this._renderer.addEventListener(RenderMapEvent.GFX_LOADING_END, this.logGfxLoadTime, false, 0, true);
             this._renderer.addEventListener(RenderMapEvent.MAP_RENDER_START, this.mapRendered, false, 0, true);
             this._renderer.addEventListener(RenderMapEvent.MAP_RENDER_END, this.mapRendered, false, 0, true);
+            this._renderer.addEventListener(ProgressEvent.PROGRESS, this.mapRenderProgress, false, 0, true);
             AdapterFactory.addAdapter("dlm", MapsAdapter);
             this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
             this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onMapLoaded, false, 0, true);
@@ -243,7 +261,7 @@ package com.ankamagames.atouin.managers
 
         private function checkForRender() : void
         {
-            var _loc_5:MapsLoadingCompleteMessage = null;
+            var _loc_5:* = null;
             if (!this._currentMapRendered)
             {
                 return;
@@ -298,10 +316,11 @@ package com.ankamagames.atouin.managers
                 }
                 catch (e:Error)
                 {
-                    _log.fatal("Erreur durant le parsing de la map\n" + e.getStackTrace());
+                    _log.fatal("Exception sur le parsing du fichier de map :\n" + e.getStackTrace());
                     map = new DefaultMap();
                 }
             }
+            this._isDefaultMap = map is DefaultMap;
             this.unloadMap();
             DataMapProvider.getInstance().resetUpdatedCell();
             DataMapProvider.getInstance().resetSpecialEffects();
@@ -344,18 +363,27 @@ package com.ankamagames.atouin.managers
             if (this._screenshot.alpha < 0.01)
             {
                 Atouin.getInstance().worldContainer.cacheAsBitmap = false;
-                Atouin.getInstance().rootContainer.removeChild(this._screenshot);
+                this.removeScreenShot();
                 EnterFrameDispatcher.removeEventListener(this.tweenInterMap);
             }
             return;
         }// end function
 
+        private function mapRenderProgress(event:ProgressEvent) : void
+        {
+            var _loc_2:* = new MapRenderProgressMessage(event.bytesLoaded / event.bytesTotal * 100);
+            _loc_2.id = this._currentMap.mapId;
+            _loc_2.renderRequestId = this._currentRenderId;
+            Atouin.getInstance().handler.process(_loc_2);
+            return;
+        }// end function
+
         private function mapRendered(event:RenderMapEvent) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:uint = 0;
-            var _loc_4:int = 0;
-            var _loc_5:MapLoadedMessage = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             if (event.type == RenderMapEvent.MAP_RENDER_START)
             {
                 this._nRenderMapStart = getTimer();
@@ -372,15 +400,29 @@ package com.ankamagames.atouin.managers
                 _loc_5.gfxLoadingTime = _loc_4;
                 _loc_5.renderingTime = this._nRenderMapEnd - this._nRenderMapStart;
                 _loc_5.globalRenderingTime = _loc_2;
-                _log.info("map rendered [total : " + _loc_2 + "ms, " + (_loc_2 < 100 ? (" " + (_loc_2 < 10 ? (" ") : (""))) : ("")) + "map load : " + _loc_3 + "ms, " + (_loc_3 < 100 ? (" " + (_loc_3 < 10 ? (" ") : (""))) : ("")) + "gfx load : " + _loc_4 + "ms, " + (_loc_4 < 100 ? (" " + (_loc_4 < 10 ? (" ") : (""))) : ("")) + "render : " + (this._nRenderMapEnd - this._nRenderMapStart) + "ms] file : " + (this._currentMap ? (this._currentMap.mapId) : ("???")) + ".dlm / renderRequestID #" + this._currentRenderId);
+                _log.info("map rendered [total : " + _loc_2 + "ms, " + (_loc_2 < 100 ? (" " + (_loc_2 < 10 ? (" ") : (""))) : ("")) + "map load : " + _loc_3 + "ms, " + (_loc_3 < 100 ? (" " + (_loc_3 < 10 ? (" ") : (""))) : ("")) + "gfx load : " + _loc_4 + "ms, " + (_loc_4 < 100 ? (" " + (_loc_4 < 10 ? (" ") : (""))) : ("")) + "render : " + (this._nRenderMapEnd - this._nRenderMapStart) + "ms] file : " + (this._currentMap ? (this._currentMap.mapId.toString()) : ("???")) + ".dlm" + (this._isDefaultMap ? (" (/!\\ DEFAULT MAP) ") : ("")) + " / renderRequestID #" + this._currentRenderId);
                 if (this._screenshot && this._screenshot.parent)
                 {
-                    Atouin.getInstance().worldContainer.cacheAsBitmap = true;
-                    EnterFrameDispatcher.addEventListener(this.tweenInterMap, "tweentInterMap");
+                    if (Atouin.getInstance().options.tweentInterMap)
+                    {
+                        Atouin.getInstance().worldContainer.cacheAsBitmap = true;
+                        EnterFrameDispatcher.addEventListener(this.tweenInterMap, "tweentInterMap");
+                    }
+                    else
+                    {
+                        this.removeScreenShot();
+                    }
                 }
                 _loc_5.id = this._currentMap.mapId;
                 Atouin.getInstance().handler.process(_loc_5);
             }
+            return;
+        }// end function
+
+        private function removeScreenShot() : void
+        {
+            this._screenshot.parent.removeChild(this._screenshot);
+            this._screenshotData.fillRect(new Rectangle(0, 0, this._screenshotData.width, this._screenshotData.height), 4278190080);
             return;
         }// end function
 
@@ -395,6 +437,64 @@ package com.ankamagames.atouin.managers
 
     }
 }
+
+import com.ankamagames.atouin.*;
+
+import com.ankamagames.atouin.data.*;
+
+import com.ankamagames.atouin.data.elements.*;
+
+import com.ankamagames.atouin.data.map.*;
+
+import com.ankamagames.atouin.messages.*;
+
+import com.ankamagames.atouin.renderers.*;
+
+import com.ankamagames.atouin.resources.adapters.*;
+
+import com.ankamagames.atouin.types.*;
+
+import com.ankamagames.atouin.types.events.*;
+
+import com.ankamagames.atouin.utils.*;
+
+import com.ankamagames.atouin.utils.map.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.newCache.*;
+
+import com.ankamagames.jerakine.newCache.garbage.*;
+
+import com.ankamagames.jerakine.newCache.impl.*;
+
+import com.ankamagames.jerakine.resources.adapters.*;
+
+import com.ankamagames.jerakine.resources.events.*;
+
+import com.ankamagames.jerakine.resources.loaders.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.types.positions.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import com.ankamagames.jerakine.utils.errors.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
+import com.ankamagames.tiphon.display.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.filters.*;
+
+import flash.geom.*;
+
+import flash.utils.*;
 
 class RenderRequest extends Object
 {

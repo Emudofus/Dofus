@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types.zones
+﻿package com.ankamagames.jerakine.types.zones
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;

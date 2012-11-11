@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.json
+﻿package com.ankamagames.jerakine.json
 {
 
     public class JSONDecoder extends Object
@@ -78,7 +78,7 @@ package com.ankamagames.jerakine.json
 
         private function parseObject() : Object
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Object();
             this.nextToken();
             if (this.token.type == JSONTokenType.RIGHT_BRACE)

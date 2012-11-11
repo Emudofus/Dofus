@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.job
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.job
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
             }
             param1.writeInt(this.playerId);
             param1.writeShort(this.skills.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.skills.length)
             {
                 
@@ -96,7 +96,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
 
         public function deserializeAs_JobMultiCraftAvailableSkillsMessage(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             super.deserialize(param1);
             this.playerId = param1.readInt();
             if (this.playerId < 0)
@@ -104,7 +104,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.job
                 throw new Error("Forbidden value (" + this.playerId + ") on element of JobMultiCraftAvailableSkillsMessage.playerId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

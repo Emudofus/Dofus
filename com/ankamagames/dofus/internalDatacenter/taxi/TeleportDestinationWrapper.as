@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.taxi
+﻿package com.ankamagames.dofus.internalDatacenter.taxi
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.world.*;
@@ -51,7 +51,7 @@ package com.ankamagames.dofus.internalDatacenter.taxi
 
         public static function getHintsFromMapId(param1:uint) : Vector.<Hint>
         {
-            var _loc_2:Vector.<Hint> = null;
+            var _loc_2:* = null;
             generateHintsDictionary();
             if (_hintsRealMap.hasOwnProperty(param1))
             {
@@ -70,8 +70,8 @@ package com.ankamagames.dofus.internalDatacenter.taxi
 
         private static function generateHintsDictionary() : void
         {
-            var _loc_1:Array = null;
-            var _loc_2:Hint = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (!_hints)
             {
                 _loc_1 = Hint.getHints();

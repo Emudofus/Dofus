@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;

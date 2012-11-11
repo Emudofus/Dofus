@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -33,8 +33,8 @@ package com.ankamagames.jerakine.utils.display
 
         private static function onGarbageTimer(event:Event) : void
         {
-            var _loc_3:MovieClip = null;
-            var _loc_2:int = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < _clipList.length)
             {
                 
@@ -61,11 +61,11 @@ package com.ankamagames.jerakine.utils.display
 
         public static function uncontrolFps(param1:DisplayObjectContainer, param2:Boolean = true) : void
         {
-            var _loc_4:int = 0;
-            var _loc_5:Vector.<MovieClip> = null;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:MovieClip = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
             if (!param1)
             {
                 return;
@@ -110,9 +110,9 @@ package com.ankamagames.jerakine.utils.display
 
         private static function controlSingleClip(param1:DisplayObjectContainer, param2:int, param3:uint, param4:Boolean = false, param5:Boolean = false) : void
         {
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
-            var _loc_10:DisplayObjectContainer = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
             if (param1 && !param4)
             {
                 _loc_8 = -1;
@@ -151,11 +151,11 @@ package com.ankamagames.jerakine.utils.display
 
         public static function nextFrame() : void
         {
-            var _loc_3:MovieClip = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             var _loc_1:* = _clipList.length;
-            var _loc_2:int = -1;
+            var _loc_2:* = -1;
             while (++_loc_2 < _loc_1)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
     import com.ankamagames.tiphon.display.*;
     import com.ankamagames.tiphon.types.look.*;
@@ -14,7 +14,7 @@ package com.ankamagames.tiphon.types
 
         public static function getLookWithoutMount(param1:TiphonEntityLook) : TiphonEntityLook
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_2:* = param1.getSubEntity(2, 0);
             if (_loc_2)
             {

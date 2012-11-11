@@ -1,4 +1,4 @@
-package mx.utils
+﻿package mx.utils
 {
     import flash.utils.*;
 
@@ -14,23 +14,23 @@ package mx.utils
 
         public static function computeDigest(param1:ByteArray) : String
         {
-            var _loc_7:int = 0;
-            var _loc_17:int = 0;
-            var _loc_18:int = 0;
-            var _loc_19:int = 0;
-            var _loc_20:int = 0;
-            var _loc_21:int = 0;
-            var _loc_22:int = 0;
-            var _loc_23:int = 0;
-            var _loc_24:int = 0;
-            var _loc_29:uint = 0;
-            var _loc_30:int = 0;
-            var _loc_31:int = 0;
-            var _loc_32:uint = 0;
-            var _loc_33:uint = 0;
-            var _loc_34:int = 0;
-            var _loc_35:int = 0;
-            var _loc_36:int = 0;
+            var _loc_7:* = 0;
+            var _loc_17:* = 0;
+            var _loc_18:* = 0;
+            var _loc_19:* = 0;
+            var _loc_20:* = 0;
+            var _loc_21:* = 0;
+            var _loc_22:* = 0;
+            var _loc_23:* = 0;
+            var _loc_24:* = 0;
+            var _loc_29:* = 0;
+            var _loc_30:* = 0;
+            var _loc_31:* = 0;
+            var _loc_32:* = 0;
+            var _loc_33:* = 0;
+            var _loc_34:* = 0;
+            var _loc_35:* = 0;
+            var _loc_36:* = 0;
             var _loc_2:* = param1.position;
             param1.position = 0;
             var _loc_3:* = param1.length % 64;
@@ -58,18 +58,18 @@ package mx.utils
                 _loc_4[_loc_8 - _loc_7] = _loc_6 >> (_loc_7 << 3) & 255;
                 _loc_7++;
             }
-            var _loc_9:int = 1779033703;
-            var _loc_10:int = 3144134277;
-            var _loc_11:int = 1013904242;
-            var _loc_12:int = 2773480762;
-            var _loc_13:int = 1359893119;
-            var _loc_14:int = 2600822924;
-            var _loc_15:int = 528734635;
-            var _loc_16:int = 1541459225;
+            var _loc_9:* = 1779033703;
+            var _loc_10:* = 3144134277;
+            var _loc_11:* = 1013904242;
+            var _loc_12:* = 2773480762;
+            var _loc_13:* = 1359893119;
+            var _loc_14:* = 2600822924;
+            var _loc_15:* = 528734635;
+            var _loc_16:* = 1541459225;
             var _loc_25:* = new ByteArray();
             var _loc_26:* = new Array(64);
-            var _loc_27:uint = 0;
-            var _loc_28:uint = 0;
+            var _loc_27:* = 0;
+            var _loc_28:* = 0;
             _loc_7 = 0;
             while (_loc_7 < _loc_5)
             {
@@ -171,9 +171,9 @@ package mx.utils
 
         private static function toHex(param1:uint) : String
         {
-            var _loc_3:String = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             var _loc_2:* = param1.toString(16);
             if (_loc_2.length < 8)
             {

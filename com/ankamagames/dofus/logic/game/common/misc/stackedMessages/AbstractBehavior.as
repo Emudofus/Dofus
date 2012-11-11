@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
+﻿package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.types.enums.*;
@@ -112,7 +112,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 
         public static function createFake(param1:String, param2:Array = null) : AbstractBehavior
         {
-            var _loc_3:AbstractBehavior = null;
+            var _loc_3:* = null;
             switch(param1)
             {
                 case StackActionEnum.MOVE:

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.moduleLogger
+﻿package com.ankamagames.dofus.console.moduleLogger
 {
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.berilia.types.shortcut.*;
@@ -24,7 +24,7 @@ package com.ankamagames.dofus.console.moduleLogger
         public static const TYPE_MODULE_LOG:int = 4;
         public static const LOG:int = 5;
         public static const LOG_CHAT:int = 17;
-        public static const TAB:String = "                  ";
+        public static const TAB:String = "                  • ";
 
         public function TypeMessage(... args)
         {
@@ -86,9 +86,9 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function displayInteractionMessage(param1:Message, param2:DisplayObject) : void
         {
-            var _loc_6:Array = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
             this.type = TYPE_UI;
             var _loc_3:* = getQualifiedClassName(param1);
             if (_loc_3.indexOf("::") != -1)
@@ -116,14 +116,14 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function displayHookInformations(param1:Hook, param2:Array) : void
         {
-            var _loc_6:Object = null;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             this.type = TYPE_HOOK;
             this.name = param1.name;
             var _loc_3:* = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'blue\'> HOOK   : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
             var _loc_4:* = param2.length;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -152,7 +152,7 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function displayLog(param1:String, param2:int) : void
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             this.name = param1;
             if (param2 == LogLevel.DEBUG)
             {
@@ -194,10 +194,10 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function displayActionInformations(param1:Action) : void
         {
-            var _loc_6:XML = null;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             this.type = TYPE_ACTION;
             var _loc_2:* = getQualifiedClassName(param1).split("::")[1];
             this.name = _loc_2;

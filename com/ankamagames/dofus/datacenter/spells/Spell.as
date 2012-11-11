@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.spells
+﻿package com.ankamagames.dofus.datacenter.spells
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;
@@ -76,9 +76,9 @@ package com.ankamagames.dofus.datacenter.spells
 
         public function getParamByName(param1:String, param2:Boolean = false)
         {
-            var _loc_3:Array = null;
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (param2 && this.scriptParamsCritical && this.scriptParamsCritical != "null")
             {
                 if (!this._indexedCriticalParam || !this.useParamCache)

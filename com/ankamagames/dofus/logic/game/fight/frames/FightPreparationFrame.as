@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.frames
+﻿package com.ankamagames.dofus.logic.game.fight.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -15,6 +15,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
     import com.ankamagames.dofus.kernel.net.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.fight.actions.*;
+    import com.ankamagames.dofus.logic.game.fight.managers.*;
     import com.ankamagames.dofus.misc.lists.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.game.context.*;
@@ -41,8 +42,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
         static const _log:Logger = Log.getLogger(getQualifiedClassName(FightPreparationFrame));
         private static const COLOR_CHALLENGER:Color = new Color(14492160);
         private static const COLOR_DEFENDER:Color = new Color(8925);
-        private static const SELECTION_CHALLENGER:String = "FightPlacementChallengerTeam";
-        private static const SELECTION_DEFENDER:String = "FightPlacementDefenderTeam";
+        public static const SELECTION_CHALLENGER:String = "FightPlacementChallengerTeam";
+        public static const SELECTION_DEFENDER:String = "FightPlacementDefenderTeam";
 
         public function FightPreparationFrame(param1:FightContextFrame)
         {
@@ -67,29 +68,29 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:GameFightLeaveMessage = null;
-            var _loc_3:GameFightPlacementPossiblePositionsMessage = null;
-            var _loc_4:CellClickMessage = null;
-            var _loc_5:AnimatedCharacter = null;
-            var _loc_6:GameFightReadyAction = null;
-            var _loc_7:GameFightReadyMessage = null;
-            var _loc_8:EntityClickMessage = null;
-            var _loc_9:Object = null;
-            var _loc_10:Object = null;
-            var _loc_11:ContextMenuData = null;
-            var _loc_12:GameContextKickAction = null;
-            var _loc_13:uint = 0;
-            var _loc_14:GameContextKickMessage = null;
-            var _loc_15:GameFightUpdateTeamMessage = null;
-            var _loc_16:GameFightRemoveTeamMemberMessage = null;
-            var _loc_17:GameFightEndMessage = null;
-            var _loc_18:FightContextFrame = null;
-            var _loc_19:GameFightEndMessage = null;
-            var _loc_20:IEntity = null;
-            var _loc_21:String = null;
-            var _loc_22:FightEntitiesFrame = null;
-            var _loc_23:GameFightCharacterInformations = null;
-            var _loc_24:GameFightPlacementPositionRequestMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
             switch(true)
             {
                 case param1 is GameFightLeaveMessage:
@@ -189,10 +190,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
                 case param1 is GameFightUpdateTeamMessage:
                 {
                     _loc_15 = param1 as GameFightUpdateTeamMessage;
-                    this._fightContextFrame.isFightLeader = _loc_15.team.leaderId == PlayedCharacterManager.getInstance().infos.id;
                     if (_loc_15.team.teamMembers.indexOf(PlayedCharacterManager.getInstance().id) != -1 || _loc_15.team.teamMembers.length >= 1 && _loc_15.team.teamMembers[0].id == PlayedCharacterManager.getInstance().id)
                     {
                         PlayedCharacterManager.getInstance().teamId = _loc_15.team.teamId;
+                        this._fightContextFrame.isFightLeader = _loc_15.team.leaderId == PlayedCharacterManager.getInstance().infos.id;
                     }
                     return true;
                 }
@@ -217,6 +218,21 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     }
                     return true;
                 }
+                case param1 is ShowTacticModeAction:
+                {
+                    this.removeSelections();
+                    if (!TacticModeManager.getInstance().tacticModeActivated)
+                    {
+                        TacticModeManager.getInstance().show(PlayedCharacterManager.getInstance().currentMap);
+                    }
+                    else
+                    {
+                        TacticModeManager.getInstance().hide();
+                    }
+                    this.displayZone(SELECTION_CHALLENGER, this._challengerPositions, COLOR_CHALLENGER);
+                    this.displayZone(SELECTION_DEFENDER, this._defenderPositions, COLOR_DEFENDER);
+                    return true;
+                }
                 default:
                 {
                     break;
@@ -228,6 +244,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
         public function pulled() : Boolean
         {
             DataMapProvider.getInstance().isInFight = false;
+            this.removeSelections();
+            this._fightContextFrame.entitiesFrame.untargetableEntities = Dofus.getInstance().options.cellSelectionOnly;
+            return true;
+        }// end function
+
+        private function removeSelections() : void
+        {
             var _loc_1:* = SelectionManager.getInstance().getSelection(SELECTION_CHALLENGER);
             if (_loc_1)
             {
@@ -238,8 +261,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
             {
                 _loc_2.remove();
             }
-            this._fightContextFrame.entitiesFrame.untargetableEntities = Dofus.getInstance().options.cellSelectionOnly;
-            return true;
+            return;
         }// end function
 
         private function displayZone(param1:String, param2:Vector.<uint>, param3:Color) : void
@@ -255,7 +277,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function isValidPlacementCell(param1:uint, param2:uint) : Boolean
         {
-            var _loc_4:Vector.<uint> = null;
+            var _loc_4:* = null;
             var _loc_3:* = MapPoint.fromCellId(param1);
             if (!DataMapProvider.getInstance().pointMov(_loc_3.x, _loc_3.y, false))
             {
@@ -282,7 +304,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     break;
                 }
             }
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4.length)
             {
                 

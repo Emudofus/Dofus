@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
 
     public class TiphonEventInfo extends Object
@@ -62,7 +62,7 @@ package com.ankamagames.tiphon.types
             var _loc_2:* = param1.split("_");
             var _loc_3:* = _loc_2.length;
             this._animationType = "";
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < (_loc_3 - 1))
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -17,6 +17,7 @@ package com.ankamagames.dofus.uiApi
     public class StorageApi extends Object implements IApi
     {
         private static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageApi));
+        private static var _lastItemPosition:Array = new Array();
         public static const ITEM_TYPE_TO_SERVER_POSITION:Array = [[], [0], [1], [2, 4], [3], [5], [], [15], [1], [], [6], [7], [8], [9, 10, 11, 12, 13, 14]];
 
         public function StorageApi()
@@ -31,11 +32,11 @@ package com.ankamagames.dofus.uiApi
 
         public static function getLivingObjectFood(param1:int) : Vector.<ItemWrapper>
         {
-            var _loc_6:ItemWrapper = null;
+            var _loc_6:* = null;
             var _loc_2:* = new Vector.<ItemWrapper>;
             var _loc_3:* = InventoryManager.getInstance().inventory.getView("storage").content;
             var _loc_4:* = _loc_3.length;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -51,12 +52,12 @@ package com.ankamagames.dofus.uiApi
 
         public static function getPetFood(param1:int) : Vector.<ItemWrapper>
         {
-            var _loc_4:Vector.<ItemWrapper> = null;
-            var _loc_5:Vector.<int> = null;
-            var _loc_6:Vector.<int> = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:ItemWrapper = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
             var _loc_2:* = new Vector.<ItemWrapper>;
             var _loc_3:* = Pet.getPetById(param1);
             if (_loc_3)
@@ -82,9 +83,9 @@ package com.ankamagames.dofus.uiApi
 
         public static function getRideFoods() : Array
         {
-            var _loc_6:RideFood = null;
-            var _loc_7:ItemWrapper = null;
-            var _loc_8:Item = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_1:* = new Array();
             var _loc_2:* = InventoryManager.getInstance().inventory.getView("storage").content;
             var _loc_3:* = RideFood.getRideFoods();
@@ -146,6 +147,60 @@ package com.ankamagames.dofus.uiApi
             return null;
         }// end function
 
+        public static function getBestEquipablePosition(param1:Object) : int
+        {
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_2:* = itemSuperTypeToServerPosition(param1.type.superTypeId);
+            if (_loc_2 && _loc_2.length)
+            {
+                _loc_3 = getViewContent("equipment");
+                _loc_4 = -1;
+                for each (_loc_5 in _loc_2)
+                {
+                    
+                    _loc_6 = param1.typeId;
+                    if (_loc_3[_loc_5] && _loc_3[_loc_5].objectGID == param1.objectGID && (param1.typeId != 9 || param1.belongsToSet))
+                    {
+                        _loc_4 = _loc_5;
+                        break;
+                    }
+                }
+                if (_loc_4 == -1)
+                {
+                    for each (_loc_5 in _loc_2)
+                    {
+                        
+                        if (!_loc_3[_loc_5])
+                        {
+                            _loc_4 = _loc_5;
+                            break;
+                        }
+                    }
+                }
+                if (_loc_4 == -1)
+                {
+                    if (!_lastItemPosition[param1.type.superTypeId])
+                    {
+                        _lastItemPosition[param1.type.superTypeId] = 0;
+                    }
+                    var _loc_8:* = _lastItemPosition;
+                    var _loc_9:* = param1.type.superTypeId;
+                    _loc_8[_loc_9] = _lastItemPosition[param1.type.superTypeId] + 1;
+                    if (++_lastItemPosition[param1.type.superTypeId] >= _loc_2.length)
+                    {
+                        ++_lastItemPosition[param1.type.superTypeId] = 0;
+                    }
+                    ++_lastItemPosition[param1.type.superTypeId];
+                    _loc_4 = _loc_2[_loc_7];
+                }
+            }
+            return _loc_4;
+        }// end function
+
         public static function addItemMask(param1:int, param2:String, param3:int) : void
         {
             InventoryManager.getInstance().inventory.addItemMask(param1, param2, param3);
@@ -178,7 +233,7 @@ package com.ankamagames.dofus.uiApi
 
         public static function getStorageTypes(param1:int) : Array
         {
-            var _loc_4:Object = null;
+            var _loc_4:* = null;
             var _loc_2:* = new Array();
             var _loc_3:* = StorageOptionManager.getInstance().getCategoryTypes(param1);
             if (!_loc_3)
@@ -201,7 +256,7 @@ package com.ankamagames.dofus.uiApi
 
         public static function getBankStorageTypes(param1:int) : Array
         {
-            var _loc_4:Object = null;
+            var _loc_4:* = null;
             var _loc_2:* = new Array();
             var _loc_3:* = StorageOptionManager.getInstance().getBankCategoryTypes(param1);
             if (!_loc_3)
@@ -311,7 +366,7 @@ package com.ankamagames.dofus.uiApi
 
         public static function enableBidHouseFilter(param1:Object, param2:uint) : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             var _loc_3:* = new Vector.<uint>;
             for each (_loc_4 in param1)
             {

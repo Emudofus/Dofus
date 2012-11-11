@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger
+﻿package com.ankamagames.jerakine.logger
 {
     import com.ankamagames.jerakine.logger.targets.*;
     import flash.events.*;
@@ -90,7 +90,7 @@ package com.ankamagames.jerakine.logger
             var targetInstance:LoggingTarget;
             var config:* = param1;
             var filters:* = new Array();
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = config..filter;
             while (_loc_4 in _loc_3)
             {
@@ -112,7 +112,7 @@ package com.ankamagames.jerakine.logger
                 ltf = new LogTargetFilter(filter.@value, allow);
                 filters.push(ltf);
             }
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = config..target;
             do
             {
@@ -121,7 +121,7 @@ package com.ankamagames.jerakine.logger
                 try
                 {
                     moduleClass = getDefinitionByName(target.@module);
-                    targetInstance = new moduleClass;
+                    targetInstance = new (moduleClass as Class)();
                     targetInstance.filters = filters;
                     if (target.hasComplexContent() && targetInstance is ConfigurableLoggingTarget)
                     {
@@ -156,7 +156,7 @@ package com.ankamagames.jerakine.logger
 
         private static function flushBuffer() : void
         {
-            var _loc_2:LogEvent = null;
+            var _loc_2:* = null;
             var _loc_1:* = _tempTarget.getBuffer();
             removeTarget(_tempTarget);
             for each (_loc_2 in _loc_1)
@@ -184,7 +184,7 @@ package com.ankamagames.jerakine.logger
             }
             catch (e:Error)
             {
-                trace("Erreure de formatage du fichier log4as.xml");
+                trace("Erreur de formatage du fichier log4as.xml");
             }
             flushBuffer();
             return;

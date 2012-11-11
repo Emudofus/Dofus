@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.interactive.zaap
+﻿package com.ankamagames.dofus.network.messages.game.interactive.zaap
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

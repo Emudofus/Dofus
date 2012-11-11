@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.display
+﻿package com.ankamagames.tiphon.display
 {
     import flash.display.*;
     import flash.geom.*;
@@ -11,14 +11,14 @@ package com.ankamagames.tiphon.display
 
         public function RasterizedFrame(param1:MovieClip, param2:int)
         {
-            var _loc_4:BitmapData = null;
-            var _loc_5:Matrix = null;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Number = NaN;
-            var _loc_9:Number = NaN;
-            var _loc_10:Number = NaN;
-            var _loc_11:Number = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_10:* = NaN;
+            var _loc_11:* = NaN;
             param1.gotoAndStop((param2 + 1));
             var _loc_3:* = param1.getBounds(param1);
             if (_loc_3.width + _loc_3.height)

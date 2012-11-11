@@ -1,13 +1,15 @@
-package com.ankamagames.berilia.managers
+ï»¿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.berilia.types.messages.*;
+    import com.ankamagames.berilia.utils.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.resources.events.*;
     import com.ankamagames.jerakine.resources.loaders.*;
+    import com.ankamagames.jerakine.resources.protocols.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.filesystem.*;
@@ -35,6 +37,7 @@ package com.ankamagames.berilia.managers
             this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
             this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onLoadError, false, 0, true);
             this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onLoad, false, 0, true);
+            ProtocolFactory.addProtocol("theme", ThemeProtocol);
             return;
         }// end function
 
@@ -50,11 +53,11 @@ package com.ankamagames.berilia.managers
 
         public function init() : void
         {
-            var _loc_2:Uri = null;
-            var _loc_3:File = null;
-            var _loc_4:File = null;
-            var _loc_5:int = 0;
-            var _loc_6:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
             this._themes = new Array();
             this._themeNames = new Array();
             this._themeCount = 0;
@@ -73,7 +76,7 @@ package com.ankamagames.berilia.managers
                     _loc_4 = this.searchDtFile(_loc_3);
                     if (_loc_4)
                     {
-                        var _loc_9:String = this;
+                        var _loc_9:* = this;
                         var _loc_10:* = this._dtFileToLoad + 1;
                         _loc_9._dtFileToLoad = _loc_10;
                         if (_loc_4.url.indexOf("app:/") == 0)
@@ -90,13 +93,13 @@ package com.ankamagames.berilia.managers
                         this._loader.load(_loc_2);
                         continue;
                     }
-                    ErrorManager.addError("Impossible de trouver le fichier de description de thème dans le dossier " + _loc_3.nativePath);
+                    ErrorManager.addError("Impossible de trouver le fichier de description de thÃ¨me dans le dossier " + _loc_3.nativePath);
                     Berilia.getInstance().handler.process(new ThemeLoadErrorMessage(_loc_3.name));
                 }
             }
             else
             {
-                ErrorManager.addError("Le dossier des thèmes est introuvable (url:" + LangManager.getInstance().getEntry("config.ui.common.themes") + ")");
+                ErrorManager.addError("Le dossier des thÃ¨mes est introuvable (url:" + LangManager.getInstance().getEntry("config.ui.common.themes") + ")");
             }
             return;
         }// end function
@@ -167,10 +170,10 @@ package com.ankamagames.berilia.managers
 
         private function onDTLoad(event:ResourceLoadedEvent) : void
         {
-            var _loc_6:String = null;
-            var _loc_7:String = null;
-            var _loc_8:Theme = null;
-            var _loc_9:String = this;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = this;
             var _loc_10:* = this._themeCount + 1;
             _loc_9._themeCount = _loc_10;
             var _loc_2:* = event.resource as XML;
@@ -199,8 +202,8 @@ package com.ankamagames.berilia.managers
 
         private function searchDtFile(param1:File) : File
         {
-            var _loc_3:File = null;
-            var _loc_4:File = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (param1.nativePath.indexOf(".svn") != -1)
             {
                 return null;

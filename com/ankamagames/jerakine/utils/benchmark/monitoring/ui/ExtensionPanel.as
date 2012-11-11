@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
     import flash.display.*;
@@ -20,6 +20,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
             return;
         }// end function
 
+        public function get lastGc() : int
+        {
+            return this._memoryState.lastGc;
+        }// end function
+
         public function changeState() : void
         {
             switch(this._currentState)
@@ -30,14 +35,14 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
                     this._memoryState.initMemGraph();
                     this._memoryState.y = 5;
                     addChild(this._memoryState);
-                    var _loc_1:String = this;
+                    var _loc_1:* = this;
                     var _loc_2:* = this._currentState + 1;
                     _loc_1._currentState = _loc_2;
                     break;
                 }
                 case 1:
                 {
-                    var _loc_1:String = this;
+                    var _loc_1:* = this;
                     var _loc_2:* = this._currentState + 1;
                     _loc_1._currentState = _loc_2;
                     this._leakState.y = this._memoryState.y + FpsManagerConst.BOX_HEIGHT + 5;

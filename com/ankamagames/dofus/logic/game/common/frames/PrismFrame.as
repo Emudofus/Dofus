@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -126,9 +126,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function _pickup_fighter(param1:Array, param2:uint) : PrismFightersWrapper
         {
-            var _loc_5:PrismFightersWrapper = null;
-            var _loc_3:uint = 0;
-            var _loc_4:Boolean = false;
+            var _loc_5:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = false;
             for each (_loc_5 in param1)
             {
                 
@@ -150,50 +150,50 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:PrismFightJoinLeaveRequestAction = null;
-            var _loc_3:PrismFightJoinLeaveRequestMessage = null;
-            var _loc_4:PrismFightSwapRequestAction = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:PrismFightSwapRequestMessage = null;
-            var _loc_8:PrismInfoJoinLeaveRequestAction = null;
-            var _loc_9:PrismInfoJoinLeaveRequestMessage = null;
-            var _loc_10:PrismWorldInformationRequestAction = null;
-            var _loc_11:PrismWorldInformationRequestMessage = null;
-            var _loc_12:PrismBalanceRequestAction = null;
-            var _loc_13:PrismBalanceRequestMessage = null;
-            var _loc_14:PrismCurrentBonusRequestAction = null;
-            var _loc_15:PrismCurrentBonusRequestMessage = null;
-            var _loc_16:PrismAttackRequestAction = null;
-            var _loc_17:PrismAttackRequestMessage = null;
-            var _loc_18:PrismUseRequestAction = null;
-            var _loc_19:PrismUseRequestMessage = null;
-            var _loc_20:PrismBalanceResultMessage = null;
-            var _loc_21:PrismAlignmentBonusResultMessage = null;
-            var _loc_22:PrismFightDefendersStateMessage = null;
-            var _loc_23:PrismFightDefenderAddMessage = null;
-            var _loc_24:Boolean = false;
-            var _loc_25:Boolean = false;
-            var _loc_26:PrismFightDefenderLeaveMessage = null;
-            var _loc_27:PrismFightDefendersSwapMessage = null;
-            var _loc_28:PrismFightersWrapper = null;
-            var _loc_29:PrismFightersWrapper = null;
-            var _loc_30:PrismFightAttackedMessage = null;
-            var _loc_31:SubArea = null;
-            var _loc_32:String = null;
-            var _loc_33:PrismFightAttackerAddMessage = null;
-            var _loc_34:PrismFightAttackerRemoveMessage = null;
-            var _loc_35:PrismWorldInformationMessage = null;
-            var _loc_36:AlignmentSubAreaUpdateExtendedMessage = null;
-            var _loc_37:PrismInfoCloseMessage = null;
-            var _loc_38:PrismInfoValidMessage = null;
-            var _loc_39:PrismInfoInValidMessage = null;
-            var _loc_40:PrismFightStateUpdateMessage = null;
-            var _loc_41:PrismFightersWrapper = null;
-            var _loc_42:CharacterMinimalPlusLookAndGradeInformations = null;
-            var _loc_43:CharacterMinimalPlusLookAndGradeInformations = null;
-            var _loc_44:String = null;
-            var _loc_45:CharacterMinimalPlusLookAndGradeInformations = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = false;
+            var _loc_25:* = false;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
+            var _loc_39:* = null;
+            var _loc_40:* = null;
+            var _loc_41:* = null;
+            var _loc_42:* = null;
+            var _loc_43:* = null;
+            var _loc_44:* = null;
+            var _loc_45:* = null;
             switch(true)
             {
                 case param1 is PrismFightJoinLeaveRequestAction:

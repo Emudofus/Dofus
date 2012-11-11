@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.types.data.*;
@@ -52,11 +52,11 @@ package com.ankamagames.berilia.managers
 
         private function onUiRenderAsk(event:UiRenderAskEvent) : void
         {
-            var _loc_3:UiGroup = null;
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
-            var _loc_6:Boolean = false;
-            var _loc_7:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = false;
+            var _loc_7:* = null;
             if (!event.uiData.uiGroupName || !this._registeredGroup[event.uiData.uiGroupName])
             {
                 return;

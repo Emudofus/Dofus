@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.utils.errors
+﻿package com.ankamagames.atouin.utils.errors
 {
 
     public class AtouinError extends Error

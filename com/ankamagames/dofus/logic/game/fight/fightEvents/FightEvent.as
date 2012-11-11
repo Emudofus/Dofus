@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.fightEvents
+﻿package com.ankamagames.dofus.logic.game.fight.fightEvents
 {
 
     public class FightEvent extends Object

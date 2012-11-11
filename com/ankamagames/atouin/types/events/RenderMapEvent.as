@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types.events
+﻿package com.ankamagames.atouin.types.events
 {
     import flash.events.*;
 

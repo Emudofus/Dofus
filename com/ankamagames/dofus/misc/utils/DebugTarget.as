@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.logger.targets.*;
@@ -33,7 +33,7 @@ package com.ankamagames.dofus.misc.utils
 
         public function configure(param1:XML) : void
         {
-            var _loc_2:XML = null;
+            var _loc_2:* = null;
             for each (_loc_2 in param1..level)
             {
                 

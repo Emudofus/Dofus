@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.managers.*;
@@ -121,7 +121,7 @@ package com.ankamagames.dofus.uiApi
 
         public function addHook(param1:Class, param2:Function) : void
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_4:* = getQualifiedClassName(param1).split("::");
             _loc_3 = getQualifiedClassName(param1).split("::")[(getQualifiedClassName(param1).split("::").length - 1)];
             var _loc_5:* = Hook.getHookByName(_loc_3);
@@ -175,11 +175,11 @@ package com.ankamagames.dofus.uiApi
 
         public function sendAction(param1:Object) : uint
         {
-            var _loc_2:DofusApiAction = null;
-            var _loc_4:Array = null;
-            var _loc_5:uint = 0;
-            var _loc_6:Array = null;
-            var _loc_7:Object = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             if (param1.hasOwnProperty("parameters"))
             {
                 _loc_4 = getQualifiedClassName(param1).split("::");
@@ -347,7 +347,7 @@ package com.ankamagames.dofus.uiApi
 
         public function setData(param1:String, param2, param3:Boolean = false) : Boolean
         {
-            var _loc_4:DataStoreType = null;
+            var _loc_4:* = null;
             if (param3)
             {
                 if (!this._accountDataStore)
@@ -369,7 +369,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getSetData(param1:String, param2, param3:Boolean = false)
         {
-            var _loc_4:DataStoreType = null;
+            var _loc_4:* = null;
             if (param3)
             {
                 if (!this._accountDataStore)
@@ -392,6 +392,11 @@ package com.ankamagames.dofus.uiApi
         public function setQualityIsEnable() : Boolean
         {
             return StageShareManager.setQualityIsEnable;
+        }// end function
+
+        public function hasAir() : Boolean
+        {
+            return AirScanner.hasAir();
         }// end function
 
         public function getAirVersion() : uint
@@ -469,7 +474,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getData(param1:String, param2:Boolean = false)
         {
-            var _loc_3:DataStoreType = null;
+            var _loc_3:* = null;
             if (param2)
             {
                 if (!this._accountDataStore)
@@ -575,7 +580,7 @@ package com.ankamagames.dofus.uiApi
 
         private function onEnterFrame(event:Event) : void
         {
-            var _loc_2:Function = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._listener)
             {
                 
@@ -589,7 +594,7 @@ package com.ankamagames.dofus.uiApi
 
         public function addEventListener(param1:Function, param2:String, param3:uint = 25) : void
         {
-            var _loc_4:String = this;
+            var _loc_4:* = this;
             var _loc_5:* = this._listenerCount + 1;
             _loc_4._listenerCount = _loc_5;
             this._listener[param2] = param1;
@@ -603,14 +608,14 @@ package com.ankamagames.dofus.uiApi
 
         public function removeEventListener(param1:Function) : void
         {
-            var _loc_3:String = null;
-            var _loc_2:Array = [];
+            var _loc_3:* = null;
+            var _loc_2:* = [];
             for (_loc_3 in this._listener)
             {
                 
                 if (param1 == this._listener[_loc_3])
                 {
-                    var _loc_6:String = this;
+                    var _loc_6:* = this;
                     var _loc_7:* = this._listenerCount - 1;
                     _loc_6._listenerCount = _loc_7;
                     _loc_2.push(_loc_3);
@@ -641,6 +646,12 @@ package com.ankamagames.dofus.uiApi
         {
             _wordInterfactionEnable = true;
             Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
+            return;
+        }// end function
+
+        public function setFrameRate(param1:uint) : void
+        {
+            StageShareManager.stage.frameRate = param1;
             return;
         }// end function
 
@@ -725,7 +736,7 @@ package com.ankamagames.dofus.uiApi
 
         public function goToThirdPartyLogin(param1:WebBrowser) : void
         {
-            var _loc_2:URLRequest = null;
+            var _loc_2:* = null;
             _loc_2 = new URLRequest(I18n.getUiText("ui.link.thirdparty.login"));
             this.ComponentInternalAccessor.access(param1, "load")(_loc_2);
             return;
@@ -733,7 +744,7 @@ package com.ankamagames.dofus.uiApi
 
         public function goToOgrinePortal(param1:WebBrowser) : void
         {
-            var _loc_2:URLRequest = null;
+            var _loc_2:* = null;
             if (BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
             {
                 _loc_2 = new URLRequest(I18n.getUiText("ui.link.ogrinePortal"));
@@ -750,7 +761,7 @@ package com.ankamagames.dofus.uiApi
 
         public function goToAnkaBoxPortal(param1:WebBrowser) : void
         {
-            var _loc_2:URLRequest = null;
+            var _loc_2:* = null;
             if (BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
             {
                 _loc_2 = new URLRequest(I18n.getUiText("ui.link.ankaboxPortal"));
@@ -769,7 +780,7 @@ package com.ankamagames.dofus.uiApi
 
         public function goToAnkaBoxLastMessage(param1:WebBrowser) : void
         {
-            var _loc_2:URLRequest = null;
+            var _loc_2:* = null;
             if (BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
             {
                 _loc_2 = new URLRequest(I18n.getUiText("ui.link.ankaboxLastMessage"));
@@ -788,7 +799,7 @@ package com.ankamagames.dofus.uiApi
 
         public function goToAnkaBoxSend(param1:WebBrowser, param2:int) : void
         {
-            var _loc_3:URLRequest = null;
+            var _loc_3:* = null;
             if (BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA)
             {
                 _loc_3 = new URLRequest(I18n.getUiText("ui.link.ankaboxSend"));
@@ -820,7 +831,7 @@ package com.ankamagames.dofus.uiApi
 
         public function goToCheckLink(param1:String, param2:uint, param3:String) : void
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             if (BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA || BuildInfos.BUILD_TYPE == BuildTypeEnum.TESTING)
             {
                 _loc_4 = I18n.getUiText("ui.link.checklink");
@@ -838,7 +849,7 @@ package com.ankamagames.dofus.uiApi
             var _loc_6:* = PlayedCharacterManager.getInstance().infos.name;
             var _loc_7:* = param2;
             var _loc_8:* = param3;
-            var _loc_9:int = 1;
+            var _loc_9:* = 1;
             var _loc_10:* = PlayerManager.getInstance().server.id;
             this._log.debug("goToCheckLink : " + param1 + " " + _loc_5 + " " + _loc_7 + " " + _loc_9 + " " + _loc_10);
             var _loc_11:* = param1 + _loc_5 + "" + _loc_7 + "" + _loc_6 + param3 + _loc_9.toString() + _loc_10.toString();
@@ -847,7 +858,7 @@ package com.ankamagames.dofus.uiApi
             var _loc_14:* = new ByteArray();
             new ByteArray().writeUTFBytes(_loc_13);
             _loc_14.position = 0;
-            var _loc_15:String = "";
+            var _loc_15:* = "";
             _loc_14.position = 0;
             while (_loc_14.bytesAvailable)
             {
@@ -866,7 +877,7 @@ package com.ankamagames.dofus.uiApi
 
         public function refreshUrl(param1:WebBrowser, param2:uint = 0) : void
         {
-            var _loc_4:URLVariables = null;
+            var _loc_4:* = null;
             var _loc_3:* = new URLRequest(param1.location);
             if (param2 == 0)
             {
@@ -961,10 +972,10 @@ package com.ankamagames.dofus.uiApi
 
         public function getDirectoryContent(param1:String = ".") : Array
         {
-            var _loc_2:uint = 0;
-            var _loc_4:Array = null;
-            var _loc_5:Array = null;
-            var _loc_6:File = null;
+            var _loc_2:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             do
             {
                 
@@ -1033,6 +1044,11 @@ package com.ankamagames.dofus.uiApi
         public function isStatisticReported(param1:String) : Boolean
         {
             return StatisticReportingManager.getInstance().isReported(param1);
+        }// end function
+
+        public function getNickname() : String
+        {
+            return PlayerManager.getInstance().nickname;
         }// end function
 
         private function getAnkamaPortalUrlParams() : URLVariables

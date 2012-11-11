@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.spells.*;
@@ -36,8 +36,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_4:GameActionMarkedCell = null;
-            var _loc_5:AddGlyphGfxStep = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_1:* = Spell.getSpellById(this._markSpellId);
             MarkedCellsManager.getInstance().addMark(this._markId, this._markType, _loc_1, this._cells);
             if (this._markType == GameActionMarkTypeEnum.WALL)

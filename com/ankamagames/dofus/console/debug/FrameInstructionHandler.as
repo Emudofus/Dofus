@@ -1,10 +1,10 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
-    import avmplus.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
+    import flash.utils.*;
 
     public class FrameInstructionHandler extends Object implements ConsoleInstructionHandler
     {
@@ -27,7 +27,7 @@ package com.ankamagames.dofus.console.debug
             {
                 case "framelist":
                 {
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = Kernel.getWorker().framesList;
                     while (_loc_6 in _loc_5)
                     {
@@ -52,7 +52,7 @@ package com.ankamagames.dofus.console.debug
                         console.output(args[1] + " : invalid priority (available priority are LOG, ULTIMATE_HIGHEST_DEPTH_OF_DOOM, HIGHEST, HIGH, NORMAL, LOW and LOWEST");
                         return;
                     }
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = Kernel.getWorker().framesList;
                     while (_loc_6 in _loc_5)
                     {

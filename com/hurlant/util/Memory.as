@@ -1,4 +1,4 @@
-package com.hurlant.util
+﻿package com.hurlant.util
 {
     import flash.net.*;
     import flash.system.*;

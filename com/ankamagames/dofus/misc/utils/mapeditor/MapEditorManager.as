@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils.mapeditor
+ï»¿package com.ankamagames.dofus.misc.utils.mapeditor
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.data.map.*;
@@ -112,34 +112,34 @@ package com.ankamagames.dofus.misc.utils.mapeditor
 
         private function onNewData(event:MapEditorDataEvent) : void
         {
-            var _loc_2:MapsAdapter = null;
-            var _loc_3:ElementsAdapter = null;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
-            var _loc_6:Vector.<GameRolePlayActorInformations> = null;
-            var _loc_7:MapComplementaryInformationsDataMessage = null;
-            var _loc_8:SubArea = null;
-            var _loc_9:uint = 0;
-            var _loc_10:GameRolePlayNpcInformations = null;
-            var _loc_11:int = 0;
-            var _loc_12:int = 0;
-            var _loc_13:int = 0;
-            var _loc_14:EntityDispositionInformations = null;
-            this.displayPopup("Données provenant de l\'éditeur " + event.data.type, COLOR_CONNECTED);
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            this.displayPopup("DonnÃ©es provenant de l\'Ã©diteur " + event.data.type, COLOR_CONNECTED);
             switch(event.data.type)
             {
                 case MapEditorMessage.MESSAGE_TYPE_DLM:
                 {
-                    this.displayPopup("Rendu d\'une map provenant de l\'éditeur", COLOR_CONNECTED);
-                    _log.info("Rendu d\'une map provenant de l\'éditeur");
+                    this.displayPopup("Rendu d\'une map provenant de l\'Ã©diteur", COLOR_CONNECTED);
+                    _log.info("Rendu d\'une map provenant de l\'Ã©diteur");
                     _loc_2 = new MapsAdapter();
                     _loc_2.loadFromData(new Uri(), event.data.data, new ResourceObserverWrapper(this.onDmlLoaded), false);
                     break;
                 }
                 case MapEditorMessage.MESSAGE_TYPE_ELE:
                 {
-                    this.displayPopup("Donnée sur les éléments", COLOR_CONNECTED);
-                    _log.info("Parsing du fichier .ele provenant de l\'éditeur");
+                    this.displayPopup("DonnÃ©e sur les Ã©lÃ©ments", COLOR_CONNECTED);
+                    _log.info("Parsing du fichier .ele provenant de l\'Ã©diteur");
                     _loc_3 = new ElementsAdapter();
                     _loc_3.loadFromData(new Uri(), event.data.data, new ResourceObserverWrapper(), false);
                     break;
@@ -213,23 +213,23 @@ package com.ankamagames.dofus.misc.utils.mapeditor
 
         private function onConnect(event:Event) : void
         {
-            this.displayPopup("Connecté à l\'éditeur", COLOR_CONNECTED);
-            _log.info("Connecté à l\'éditeur de map");
+            this.displayPopup("ConnectÃ© Ã  l\'Ã©diteur", COLOR_CONNECTED);
+            _log.info("ConnectÃ© Ã  l\'Ã©diteur de map");
             MapDisplayManager.getInstance().renderer.addEventListener(RenderMapEvent.MAP_RENDER_END, this.onMapRenderEnd);
             return;
         }// end function
 
         private function onDataProgress(event:Event) : void
         {
-            this.displayPopup("Réception de données", COLOR_CONNECTED);
-            _log.info("Réception de données");
+            this.displayPopup("RÃ©ception de donnÃ©es", COLOR_CONNECTED);
+            _log.info("RÃ©ception de donnÃ©es");
             return;
         }// end function
 
         private function onClose(event:Event) : void
         {
-            this.displayPopup("Connexion à l\'éditeur de map perdue", COLOR_CLOSE);
-            _log.info("Connexion à l\'éditeur de map perdue");
+            this.displayPopup("Connexion Ã  l\'Ã©diteur de map perdue", COLOR_CLOSE);
+            _log.info("Connexion Ã  l\'Ã©diteur de map perdue");
             return;
         }// end function
 

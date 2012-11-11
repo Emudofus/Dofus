@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.enums.*;
@@ -226,12 +226,12 @@ package com.ankamagames.berilia.components
 
         override public function remove() : void
         {
-            var _loc_1:GraphicContainer = null;
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:ISubEntityBehavior = null;
-            var _loc_5:TiphonEntity = null;
-            var _loc_6:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
             if (!__removed)
             {
                 for each (_loc_1 in this._aMountainsCtr)
@@ -315,8 +315,8 @@ package com.ankamagames.berilia.components
 
         public function equipCharacter(param1:Array, param2:int = 0) : void
         {
-            var _loc_6:Array = null;
-            var _loc_7:int = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             var _loc_3:* = this._aSprites[this._nSelectedChara];
             var _loc_4:* = _loc_3.look.toString().split("|");
             if (param1.length)
@@ -348,22 +348,22 @@ package com.ankamagames.berilia.components
 
         private function charactersDisplay() : void
         {
-            var _loc_3:GraphicContainer = null;
-            var _loc_4:TiphonEntity = null;
-            var _loc_5:uint = 0;
-            var _loc_6:int = 0;
-            var _loc_7:Number = NaN;
-            var _loc_8:int = 0;
-            var _loc_9:Number = NaN;
-            var _loc_10:Number = NaN;
-            var _loc_11:GraphicContainer = null;
-            var _loc_12:CBI = null;
-            var _loc_13:TiphonEntity = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = NaN;
+            var _loc_8:* = 0;
+            var _loc_9:* = NaN;
+            var _loc_10:* = NaN;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
             var _loc_14:* = undefined;
-            var _loc_15:Texture = null;
-            var _loc_16:InstanceEvent = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
             var _loc_1:* = this._aSprites.length;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < _loc_1)
             {
                 
@@ -496,8 +496,8 @@ package com.ankamagames.berilia.components
 
         private function rotateMountains(param1:int) : void
         {
-            var _loc_3:IInterfaceListener = null;
-            var _loc_4:IInterfaceListener = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             this._nSelectedChara = this._nSelectedChara - param1;
             if (this._nSelectedChara >= this._aCharactersList.length)
             {
@@ -586,9 +586,9 @@ package com.ankamagames.berilia.components
 
         private function onRotateMountains(event:Event) : void
         {
-            var _loc_4:GraphicContainer = null;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
             this._bMovingMountains = true;
             if (this._nRotationStep == 0)
             {
@@ -603,7 +603,7 @@ package com.ankamagames.berilia.components
                 this._nRotation = this._nRotation + (this._nRotationPieceTrg - this._nRotation) / 3;
             }
             var _loc_2:* = new Array();
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             for each (_loc_4 in this._aMountainsCtr)
             {
                 
@@ -642,6 +642,7 @@ package com.ankamagames.berilia.components
                 _loc_2[_loc_3].ctr.parent.addChildAt(_loc_2[_loc_3].ctr, this._ctrDepth[_loc_3]);
                 _loc_3++;
             }
+            this._charaSelCtr.setChildIndex(this._frontZCtr, (this._charaSelCtr.numChildren - 1));
             if (this._nRotationPieceTrg == this._nRotation)
             {
                 this.endRotationMountains();
@@ -657,6 +658,46 @@ package com.ankamagames.berilia.components
 
     }
 }
+
+import com.ankamagames.berilia.*;
+
+import com.ankamagames.berilia.enums.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.event.*;
+
+import com.ankamagames.berilia.types.graphic.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.interfaces.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.sequencer.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import com.ankamagames.tiphon.display.*;
+
+import com.ankamagames.tiphon.sequence.*;
+
+import com.ankamagames.tiphon.types.*;
+
+import com.ankamagames.tiphon.types.look.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.geom.*;
+
+import flash.utils.*;
 
 class CBI extends Object
 {
@@ -677,6 +718,46 @@ class CBI extends Object
 
 }
 
+
+import com.ankamagames.berilia.*;
+
+import com.ankamagames.berilia.enums.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.event.*;
+
+import com.ankamagames.berilia.types.graphic.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.interfaces.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.sequencer.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import com.ankamagames.tiphon.display.*;
+
+import com.ankamagames.tiphon.sequence.*;
+
+import com.ankamagames.tiphon.types.*;
+
+import com.ankamagames.tiphon.types.look.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.geom.*;
+
+import flash.utils.*;
 
 class TiphonEntity extends TiphonSprite implements IEntity
 {

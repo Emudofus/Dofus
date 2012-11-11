@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -35,12 +35,12 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         override public function onApplyed() : void
         {
-            var _loc_1:Boolean = false;
-            var _loc_2:CharacterSpellModification = null;
-            var _loc_3:Array = null;
-            var _loc_4:SpellWrapper = null;
-            var _loc_5:CharacterBaseCharacteristic = null;
-            var _loc_6:CharacterSpellModification = null;
+            var _loc_1:* = false;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)
             {
                 if (actionId == ActionIdConverter.ACTION_BOOST_SPELL_RANGEABLE)
@@ -142,9 +142,9 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         override public function onRemoved() : void
         {
-            var _loc_1:CharacterSpellModification = null;
-            var _loc_2:Array = null;
-            var _loc_3:SpellWrapper = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!_removed)
             {
                 if (targetId == CurrentPlayedFighterManager.getInstance().currentFighterId)

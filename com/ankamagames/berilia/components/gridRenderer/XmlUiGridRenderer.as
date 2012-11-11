@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components.gridRenderer
+﻿package com.ankamagames.berilia.components.gridRenderer
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
@@ -32,7 +32,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function XmlUiGridRenderer(param1:String)
         {
-            var _loc_4:Array = null;
+            var _loc_4:* = null;
             this._log = Log.getLogger(getQualifiedClassName(XmlUiGridRenderer));
             this._berilia = Berilia.getInstance();
             this._shapeIndex = new Dictionary(true);
@@ -157,7 +157,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function onItemUiLoaded(event:UiRenderEvent) : void
         {
-            var _loc_2:WaitingUpdate = null;
+            var _loc_2:* = null;
             if (this._dWaitingUpdate[event.uiTarget])
             {
                 _loc_2 = this._dWaitingUpdate[event.uiTarget];
@@ -169,8 +169,8 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function updateBackground(param1:UiRootContainer, param2:uint) : void
         {
-            var _loc_3:ColorTransform = null;
-            var _loc_4:Shape = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this._bgColor1 || this._bgColor2)
             {
                 if (!this._shapeIndex[param1])
@@ -193,6 +193,36 @@ package com.ankamagames.berilia.components.gridRenderer
 
     }
 }
+
+import com.ankamagames.berilia.*;
+
+import com.ankamagames.berilia.components.*;
+
+import com.ankamagames.berilia.components.params.*;
+
+import com.ankamagames.berilia.interfaces.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import com.ankamagames.berilia.types.event.*;
+
+import com.ankamagames.berilia.types.graphic.*;
+
+import com.ankamagames.berilia.utils.errors.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import flash.display.*;
+
+import flash.geom.*;
+
+import flash.utils.*;
 
 class WaitingUpdate extends Object
 {

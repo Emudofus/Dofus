@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.pathfinding
+﻿package com.ankamagames.jerakine.pathfinding
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.map.*;
@@ -39,7 +39,7 @@ package com.ankamagames.jerakine.pathfinding
         private var _nowX:int;
         private var _currentTime:int;
         private var _maxTime:int = 30;
-        private var _findAnotherEndInLine:Boolean;
+        private var _previousCellId:int;
         private static var _minX:int;
         private static var _maxX:int;
         private static var _minY:int;
@@ -91,14 +91,15 @@ package com.ankamagames.jerakine.pathfinding
 
         private function nearerSquare() : uint
         {
-            var _loc_3:Number = NaN;
-            var _loc_1:Number = 9999999;
-            var _loc_2:uint = 0;
-            var _loc_4:int = -1;
+            var _loc_3:* = NaN;
+            var _loc_1:* = 9999999;
+            var _loc_2:* = 0;
+            var _loc_4:* = -1;
             var _loc_5:* = this._openList.length;
             while (++_loc_4 < _loc_5)
             {
                 
+                _loc_3 = this._mapStatus[this._openList[_loc_4][0]][this._openList[_loc_4][1]].heuristic + this._mapStatus[this._openList[_loc_4][0]][this._openList[_loc_4][1]].movementCost;
                 _loc_3 = this._mapStatus[this._openList[_loc_4][0]][this._openList[_loc_4][1]].heuristic + this._mapStatus[this._openList[_loc_4][0]][this._openList[_loc_4][1]].movementCost;
                 if (_loc_3 <= _loc_1)
                 {
@@ -112,7 +113,7 @@ package com.ankamagames.jerakine.pathfinding
         private function closeSquare(param1:int, param2:int) : void
         {
             var _loc_3:* = this._openList.length;
-            var _loc_4:int = -1;
+            var _loc_4:* = -1;
             while (++_loc_4 < _loc_3)
             {
                 
@@ -133,8 +134,8 @@ package com.ankamagames.jerakine.pathfinding
 
         private function openSquare(param1:int, param2:int, param3:Array, param4:uint, param5:Number, param6:Boolean) : void
         {
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
             if (!param6)
             {
                 _loc_8 = this._openList.length;
@@ -162,8 +163,8 @@ package com.ankamagames.jerakine.pathfinding
 
         private function movementPathFromArray(param1:Array) : void
         {
-            var _loc_3:PathElement = null;
-            var _loc_2:uint = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < (param1.length - 1))
             {
                 
@@ -201,19 +202,19 @@ package com.ankamagames.jerakine.pathfinding
 
         private function pathFrame(event:Event) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:Number = NaN;
-            var _loc_7:int = 0;
-            var _loc_8:Boolean = false;
-            var _loc_9:Boolean = false;
-            var _loc_10:Boolean = false;
-            var _loc_11:Boolean = false;
-            var _loc_12:MapPoint = null;
-            var _loc_13:int = 0;
-            var _loc_14:Number = NaN;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = NaN;
+            var _loc_7:* = 0;
+            var _loc_8:* = false;
+            var _loc_9:* = false;
+            var _loc_10:* = false;
+            var _loc_11:* = false;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = NaN;
             if (this._currentTime == 0)
             {
                 this._currentTime = getTimer();
@@ -223,6 +224,7 @@ package com.ankamagames.jerakine.pathfinding
                 _loc_2 = this.nearerSquare();
                 this._nowY = this._openList[_loc_2][0];
                 this._nowX = this._openList[_loc_2][1];
+                this._previousCellId = MapPoint.fromCoords(this._nowX, this._nowY).cellId;
                 this.closeSquare(this._nowY, this._nowX);
                 _loc_3 = this._nowY - 1;
                 while (_loc_3 < this._nowY + 2)
@@ -232,12 +234,12 @@ package com.ankamagames.jerakine.pathfinding
                     while (_loc_5 < this._nowX + 2)
                     {
                         
-                        if (_loc_3 >= _minY && _loc_3 < _maxY && _loc_5 >= _minX && _loc_5 < _maxX && !(_loc_3 == this._nowY && _loc_5 == this._nowX) && (this._allowDiag || _loc_3 == this._nowY || _loc_5 == this._nowX && (this._bAllowDiagCornering || _loc_3 == this._nowY || _loc_5 == this._nowX || (this._map.pointMov(this._nowX, _loc_3, this._bAllowTroughEntity) || this._map.pointMov(_loc_5, this._nowY, this._bAllowTroughEntity)))))
+                        if (_loc_3 >= _minY && _loc_3 < _maxY && _loc_5 >= _minX && _loc_5 < _maxX && !(_loc_3 == this._nowY && _loc_5 == this._nowX) && (this._allowDiag || _loc_3 == this._nowY || _loc_5 == this._nowX && (this._bAllowDiagCornering || _loc_3 == this._nowY || _loc_5 == this._nowX || (this._map.pointMov(this._nowX, _loc_3, this._bAllowTroughEntity, this._previousCellId) || this._map.pointMov(_loc_5, this._nowY, this._bAllowTroughEntity, this._previousCellId)))))
                         {
-                            if (!this._map.pointMov(this._nowX, _loc_3, this._bAllowTroughEntity) && (!this._map.pointMov(_loc_5, this._nowY, this._bAllowTroughEntity) && !this._bIsFighting && this._allowDiag))
+                            if (!this._map.pointMov(this._nowX, _loc_3, this._bAllowTroughEntity, this._previousCellId) && !this._map.pointMov(_loc_5, this._nowY, this._bAllowTroughEntity, this._previousCellId) && !this._bIsFighting && this._allowDiag)
                             {
                             }
-                            else if (this._map.pointMov(_loc_5, _loc_3, this._bAllowTroughEntity))
+                            else if (this._map.pointMov(_loc_5, _loc_3, this._bAllowTroughEntity, this._previousCellId))
                             {
                                 if (!this.isClosed(_loc_3, _loc_5))
                                 {
@@ -281,14 +283,7 @@ package com.ankamagames.jerakine.pathfinding
                                         _loc_13 = _loc_12.distanceToCell(this._endPoint);
                                         if (_loc_13 < this._distanceToEnd)
                                         {
-                                            if (_loc_5 == this._endX || _loc_3 == this._endY)
-                                            {
-                                                this._endPointAux = _loc_12;
-                                                this._endAuxX = _loc_5;
-                                                this._endAuxY = _loc_3;
-                                                this._distanceToEnd = _loc_13;
-                                            }
-                                            else if (!this._findAnotherEndInLine && (_loc_5 + _loc_3 == this._endX + this._endY || _loc_5 - _loc_3 == this._endX - this._endY))
+                                            if (_loc_5 == this._endX || _loc_3 == this._endY || _loc_5 + _loc_3 == this._endX + this._endY || _loc_5 - _loc_3 == this._endX - this._endY)
                                             {
                                                 this._endPointAux = _loc_12;
                                                 this._endAuxX = _loc_5;
@@ -335,17 +330,18 @@ package com.ankamagames.jerakine.pathfinding
 
         private function endPathFrame() : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:Array = null;
-            var _loc_6:uint = 0;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:int = 0;
-            var _loc_12:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
             this._enterFrameIsActive = false;
             EnterFrameDispatcher.removeEventListener(this.pathFrame);
             var _loc_1:* = this.isClosed(this._endY, this._endX);
@@ -357,6 +353,7 @@ package com.ankamagames.jerakine.pathfinding
                 _loc_1 = true;
                 this._movPath.replaceEnd(this._endPoint);
             }
+            this._previousCellId = -1;
             if (_loc_1)
             {
                 _loc_2 = new Array();
@@ -374,60 +371,67 @@ package com.ankamagames.jerakine.pathfinding
                 _loc_2.push(this._startPoint);
                 if (this._allowDiag)
                 {
-                    _loc_5 = new Array();
-                    _loc_6 = 0;
-                    while (_loc_6 < _loc_2.length)
+                    _loc_6 = new Array();
+                    _loc_7 = 0;
+                    while (_loc_7 < _loc_2.length)
                     {
                         
-                        _loc_5.push(_loc_2[_loc_6]);
-                        if (_loc_2[_loc_6 + 2] && MapPoint(_loc_2[_loc_6]).distanceToCell(_loc_2[_loc_6 + 2]) == 1)
+                        _loc_6.push(_loc_2[_loc_7]);
+                        this._previousCellId = _loc_2[_loc_7].cellId;
+                        if (_loc_2[_loc_7 + 2] && MapPoint(_loc_2[_loc_7]).distanceToCell(_loc_2[_loc_7 + 2]) == 1 && !this._map.isChangeZone(_loc_2[_loc_7].cellId, _loc_2[(_loc_7 + 1)].cellId) && !this._map.isChangeZone(_loc_2[(_loc_7 + 1)].cellId, _loc_2[_loc_7 + 2].cellId))
                         {
-                            _loc_6 = _loc_6 + 1;
+                            _loc_7 = _loc_7 + 1;
                         }
-                        else if (_loc_2[_loc_6 + 3] && MapPoint(_loc_2[_loc_6]).distanceToCell(_loc_2[_loc_6 + 3]) == 2)
+                        else if (_loc_2[_loc_7 + 3] && MapPoint(_loc_2[_loc_7]).distanceToCell(_loc_2[_loc_7 + 3]) == 2)
                         {
-                            _loc_7 = _loc_2[_loc_6].x;
-                            _loc_8 = _loc_2[_loc_6].y;
-                            _loc_9 = _loc_2[_loc_6 + 3].x;
-                            _loc_10 = _loc_2[_loc_6 + 3].y;
-                            _loc_11 = _loc_7 + Math.round((_loc_9 - _loc_7) / 2);
+                            _loc_8 = _loc_2[_loc_7].x;
+                            _loc_9 = _loc_2[_loc_7].y;
+                            _loc_10 = _loc_2[_loc_7 + 3].x;
+                            _loc_11 = _loc_2[_loc_7 + 3].y;
                             _loc_12 = _loc_8 + Math.round((_loc_10 - _loc_8) / 2);
-                            if (this._map.pointMov(_loc_11, _loc_12, true) && this._map.pointWeight(_loc_11, _loc_12) < 2 && this._map.pointMov(_loc_11, _loc_12, this._bAllowTroughEntity))
+                            _loc_13 = _loc_9 + Math.round((_loc_11 - _loc_9) / 2);
+                            if (this._map.pointMov(_loc_12, _loc_13, true, this._previousCellId) && this._map.pointWeight(_loc_12, _loc_13) < 2)
                             {
-                                _loc_5.push(MapPoint.fromCoords(_loc_11, _loc_12));
-                                ++_loc_6 = ++_loc_6 + 1;
+                                _loc_5 = MapPoint.fromCoords(_loc_12, _loc_13);
+                                _loc_6.push(_loc_5);
+                                this._previousCellId = _loc_5.cellId;
+                                ++_loc_7 = ++_loc_7 + 1;
                             }
                         }
-                        else if (_loc_2[++_loc_6 + 2] && MapPoint(_loc_2[_loc_6]).distanceToCell(_loc_2[_loc_6 + 2]) == 2)
+                        else if (_loc_2[++_loc_7 + 2] && MapPoint(_loc_2[_loc_7]).distanceToCell(_loc_2[_loc_7 + 2]) == 2)
                         {
-                            _loc_7 = _loc_2[_loc_6].x;
-                            _loc_8 = _loc_2[_loc_6].y;
-                            _loc_9 = _loc_2[_loc_6 + 2].x;
-                            _loc_10 = _loc_2[_loc_6 + 2].y;
-                            _loc_11 = _loc_2[(_loc_6 + 1)].x;
-                            _loc_12 = _loc_2[(_loc_6 + 1)].y;
-                            if (_loc_7 + _loc_8 == _loc_9 + _loc_10 && _loc_7 - _loc_8 != _loc_11 - _loc_12)
+                            _loc_8 = _loc_2[_loc_7].x;
+                            _loc_9 = _loc_2[_loc_7].y;
+                            _loc_10 = _loc_2[_loc_7 + 2].x;
+                            _loc_11 = _loc_2[_loc_7 + 2].y;
+                            _loc_12 = _loc_2[(_loc_7 + 1)].x;
+                            _loc_13 = _loc_2[(_loc_7 + 1)].y;
+                            if (_loc_8 + _loc_9 == _loc_10 + _loc_11 && _loc_8 - _loc_9 != _loc_12 - _loc_13 && !this._map.isChangeZone(MapPoint.fromCoords(_loc_8, _loc_9).cellId, MapPoint.fromCoords(_loc_12, _loc_13).cellId) && !this._map.isChangeZone(MapPoint.fromCoords(_loc_12, _loc_13).cellId, MapPoint.fromCoords(_loc_10, _loc_11).cellId))
                             {
-                                _loc_6 = _loc_6 + 1;
+                                _loc_7 = _loc_7 + 1;
                             }
-                            else if (_loc_7 - _loc_8 == _loc_9 - _loc_10 && _loc_7 - _loc_8 != _loc_11 - _loc_12)
+                            else if (_loc_8 - _loc_9 == _loc_10 - _loc_11 && _loc_8 - _loc_9 != _loc_12 - _loc_13 && !this._map.isChangeZone(MapPoint.fromCoords(_loc_8, _loc_9).cellId, MapPoint.fromCoords(_loc_12, _loc_13).cellId) && !this._map.isChangeZone(MapPoint.fromCoords(_loc_12, _loc_13).cellId, MapPoint.fromCoords(_loc_10, _loc_11).cellId))
                             {
-                                _loc_6 = _loc_6 + 1;
+                                _loc_7 = _loc_7 + 1;
                             }
-                            else if (_loc_7 == _loc_9 && _loc_7 != _loc_11 && this._map.pointWeight(_loc_7, _loc_12) < 2 && this._map.pointMov(_loc_7, _loc_12, this._bAllowTroughEntity))
+                            else if (_loc_8 == _loc_10 && _loc_8 != _loc_12 && this._map.pointWeight(_loc_8, _loc_13) < 2 && this._map.pointMov(_loc_8, _loc_13, this._bAllowTroughEntity, this._previousCellId))
                             {
-                                _loc_5.push(MapPoint.fromCoords(_loc_7, _loc_12));
-                                _loc_6 = _loc_6 + 1;
+                                _loc_5 = MapPoint.fromCoords(_loc_8, _loc_13);
+                                _loc_6.push(_loc_5);
+                                this._previousCellId = _loc_5.cellId;
+                                _loc_7 = _loc_7 + 1;
                             }
-                            else if (_loc_8 == _loc_10 && _loc_8 != _loc_12 && this._map.pointWeight(_loc_11, _loc_8) < 2 && this._map.pointMov(_loc_11, _loc_8, this._bAllowTroughEntity))
+                            else if (_loc_9 == _loc_11 && _loc_9 != _loc_13 && this._map.pointWeight(_loc_12, _loc_9) < 2 && this._map.pointMov(_loc_12, _loc_9, this._bAllowTroughEntity, this._previousCellId))
                             {
-                                _loc_5.push(MapPoint.fromCoords(_loc_11, _loc_8));
-                                _loc_6 = _loc_6 + 1;
+                                _loc_5 = MapPoint.fromCoords(_loc_12, _loc_9);
+                                _loc_6.push(_loc_5);
+                                this._previousCellId = _loc_5.cellId;
+                                _loc_7 = _loc_7 + 1;
                             }
                         }
-                        _loc_6 = _loc_6 + 1;
+                        _loc_7 = _loc_7 + 1;
                     }
-                    _loc_2 = _loc_5;
+                    _loc_2 = _loc_6;
                 }
                 if (_loc_2.length == 1)
                 {
@@ -452,8 +456,7 @@ package com.ankamagames.jerakine.pathfinding
 
         private function findPathInternal(param1:IDataMapProvider, param2:MapPoint, param3:MapPoint, param4:Boolean) : void
         {
-            var _loc_6:uint = 0;
-            this._findAnotherEndInLine = !param1.pointMov(param3.x, param3.y, true);
+            var _loc_6:* = 0;
             this._map = param1;
             this._start = param2;
             this._end = param3;
@@ -491,9 +494,9 @@ package com.ankamagames.jerakine.pathfinding
 
         private function tracePath(param1:Array) : void
         {
-            var _loc_3:MapPoint = null;
+            var _loc_3:* = null;
             var _loc_2:* = new String("");
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < param1.length)
             {
                 
@@ -501,15 +504,14 @@ package com.ankamagames.jerakine.pathfinding
                 _loc_2 = _loc_2.concat(" " + _loc_3.cellId);
                 _loc_4 = _loc_4 + 1;
             }
-            trace(_loc_2);
             return;
         }// end function
 
         private function nearObstacle(param1:int, param2:int, param3:IDataMapProvider) : int
         {
-            var _loc_7:int = 0;
-            var _loc_4:int = 2;
-            var _loc_5:int = 42;
+            var _loc_7:* = 0;
+            var _loc_4:* = 2;
+            var _loc_5:* = 42;
             var _loc_6:* = -_loc_4;
             while (_loc_6 < _loc_4)
             {
@@ -518,7 +520,7 @@ package com.ankamagames.jerakine.pathfinding
                 while (_loc_7 < _loc_4)
                 {
                     
-                    if (!param3.pointMov(param1 + _loc_6, param2 + _loc_7, true))
+                    if (!param3.pointMov(param1 + _loc_6, param2 + _loc_7, true, this._previousCellId))
                     {
                         _loc_5 = Math.min(_loc_5, MapPoint(MapPoint.fromCoords(param1, param2)).distanceToCell(MapPoint.fromCoords(param1 + _loc_6, param2 + _loc_7)));
                     }

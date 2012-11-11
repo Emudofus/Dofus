@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+﻿package com.ankamagames.jerakine.utils.misc
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
@@ -93,12 +93,12 @@ package com.ankamagames.jerakine.utils.misc
 
         private function initQuantTables(param1:int) : void
         {
-            var _loc_2:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_3:int = 64;
-            var _loc_4:int = 8;
+            var _loc_2:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_3:* = 64;
+            var _loc_4:* = 8;
             _loc_2 = 0;
             while (_loc_2 < _loc_3)
             {
@@ -132,7 +132,7 @@ package com.ankamagames.jerakine.utils.misc
                 _loc_2++;
             }
             _loc_2 = 0;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -152,12 +152,12 @@ package com.ankamagames.jerakine.utils.misc
 
         private function computeHuffmanTbl(param1:Vector.<int>, param2:Vector.<int>) : Vector.<BitString>
         {
-            var _loc_6:BitString = null;
-            var _loc_8:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_6:* = null;
+            var _loc_8:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = new Vector.<BitString>(251, true);
-            var _loc_7:int = 1;
+            var _loc_7:* = 1;
             while (_loc_7 <= 16)
             {
                 
@@ -191,14 +191,14 @@ package com.ankamagames.jerakine.utils.misc
 
         private function initCategoryNumber() : void
         {
-            var _loc_3:BitString = null;
-            var _loc_5:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_1:int = 1;
-            var _loc_2:int = 2;
-            var _loc_4:int = 15;
-            var _loc_6:int = 1;
+            var _loc_3:* = null;
+            var _loc_5:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_1:* = 1;
+            var _loc_2:* = 2;
+            var _loc_4:* = 15;
+            var _loc_6:* = 1;
             while (_loc_6 <= _loc_4)
             {
                 
@@ -247,7 +247,7 @@ package com.ankamagames.jerakine.utils.misc
                     this.bytenew = this.bytenew | uint(1 << this.bytepos);
                 }
                 _loc_3 = _loc_3 - 1;
-                var _loc_4:String = this;
+                var _loc_4:* = this;
                 var _loc_5:* = this.bytepos - 1;
                 _loc_4.bytepos = _loc_5;
                 if (this.bytepos < 0)
@@ -270,57 +270,57 @@ package com.ankamagames.jerakine.utils.misc
 
         private function fDCTQuant(param1:Vector.<Number>, param2:Vector.<Number>) : Vector.<int>
         {
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Number = NaN;
-            var _loc_9:Number = NaN;
-            var _loc_10:Number = NaN;
-            var _loc_11:Number = NaN;
-            var _loc_12:int = 0;
-            var _loc_15:Number = NaN;
-            var _loc_16:Number = NaN;
-            var _loc_17:Number = NaN;
-            var _loc_18:Number = NaN;
-            var _loc_19:Number = NaN;
-            var _loc_20:Number = NaN;
-            var _loc_21:Number = NaN;
-            var _loc_22:Number = NaN;
-            var _loc_23:Number = NaN;
-            var _loc_24:Number = NaN;
-            var _loc_25:Number = NaN;
-            var _loc_26:Number = NaN;
-            var _loc_27:Number = NaN;
-            var _loc_28:Number = NaN;
-            var _loc_29:Number = NaN;
-            var _loc_30:Number = NaN;
-            var _loc_31:Number = NaN;
-            var _loc_32:Number = NaN;
-            var _loc_33:Number = NaN;
-            var _loc_34:Number = NaN;
-            var _loc_35:Number = NaN;
-            var _loc_36:Number = NaN;
-            var _loc_37:Number = NaN;
-            var _loc_38:Number = NaN;
-            var _loc_39:Number = NaN;
-            var _loc_40:Number = NaN;
-            var _loc_41:Number = NaN;
-            var _loc_42:Number = NaN;
-            var _loc_43:Number = NaN;
-            var _loc_44:Number = NaN;
-            var _loc_45:Number = NaN;
-            var _loc_46:Number = NaN;
-            var _loc_47:Number = NaN;
-            var _loc_48:Number = NaN;
-            var _loc_49:Number = NaN;
-            var _loc_50:Number = NaN;
-            var _loc_51:Number = NaN;
-            var _loc_52:Number = NaN;
-            var _loc_53:Number = NaN;
-            var _loc_3:int = 0;
-            var _loc_13:int = 8;
-            var _loc_14:int = 64;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_10:* = NaN;
+            var _loc_11:* = NaN;
+            var _loc_12:* = 0;
+            var _loc_15:* = NaN;
+            var _loc_16:* = NaN;
+            var _loc_17:* = NaN;
+            var _loc_18:* = NaN;
+            var _loc_19:* = NaN;
+            var _loc_20:* = NaN;
+            var _loc_21:* = NaN;
+            var _loc_22:* = NaN;
+            var _loc_23:* = NaN;
+            var _loc_24:* = NaN;
+            var _loc_25:* = NaN;
+            var _loc_26:* = NaN;
+            var _loc_27:* = NaN;
+            var _loc_28:* = NaN;
+            var _loc_29:* = NaN;
+            var _loc_30:* = NaN;
+            var _loc_31:* = NaN;
+            var _loc_32:* = NaN;
+            var _loc_33:* = NaN;
+            var _loc_34:* = NaN;
+            var _loc_35:* = NaN;
+            var _loc_36:* = NaN;
+            var _loc_37:* = NaN;
+            var _loc_38:* = NaN;
+            var _loc_39:* = NaN;
+            var _loc_40:* = NaN;
+            var _loc_41:* = NaN;
+            var _loc_42:* = NaN;
+            var _loc_43:* = NaN;
+            var _loc_44:* = NaN;
+            var _loc_45:* = NaN;
+            var _loc_46:* = NaN;
+            var _loc_47:* = NaN;
+            var _loc_48:* = NaN;
+            var _loc_49:* = NaN;
+            var _loc_50:* = NaN;
+            var _loc_51:* = NaN;
+            var _loc_52:* = NaN;
+            var _loc_53:* = NaN;
+            var _loc_3:* = 0;
+            var _loc_13:* = 8;
+            var _loc_14:* = 64;
             _loc_12 = 0;
             while (_loc_12 < _loc_13)
             {
@@ -464,11 +464,11 @@ package com.ankamagames.jerakine.utils.misc
 
         private function writeDQT() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.byteout.writeShort(65499);
             this.byteout.writeShort(132);
             this.byteout.writeByte(0);
-            var _loc_2:int = 64;
+            var _loc_2:* = 64;
             _loc_1 = 0;
             while (_loc_1 < _loc_2)
             {
@@ -489,13 +489,13 @@ package com.ankamagames.jerakine.utils.misc
 
         private function writeDHT() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.byteout.writeShort(65476);
             this.byteout.writeShort(418);
             this.byteout.writeByte(0);
-            var _loc_2:int = 11;
-            var _loc_3:int = 16;
-            var _loc_4:int = 161;
+            var _loc_2:* = 11;
+            var _loc_3:* = 16;
+            var _loc_4:* = 161;
             _loc_1 = 0;
             while (_loc_1 < _loc_3)
             {
@@ -577,18 +577,18 @@ package com.ankamagames.jerakine.utils.misc
 
         private function processDU(param1:Vector.<Number>, param2:Vector.<Number>, param3:Number, param4:Vector.<BitString>, param5:Vector.<BitString>) : Number
         {
-            var _loc_8:int = 0;
-            var _loc_17:int = 0;
-            var _loc_18:int = 0;
-            var _loc_19:int = 0;
-            var _loc_20:int = 0;
+            var _loc_8:* = 0;
+            var _loc_17:* = 0;
+            var _loc_18:* = 0;
+            var _loc_19:* = 0;
+            var _loc_20:* = 0;
             var _loc_6:* = param5[0];
             var _loc_7:* = param5[240];
-            var _loc_9:int = 16;
-            var _loc_10:int = 63;
-            var _loc_11:int = 64;
+            var _loc_9:* = 16;
+            var _loc_10:* = 63;
+            var _loc_11:* = 64;
             var _loc_12:* = this.fDCTQuant(param1, param2);
-            var _loc_13:int = 0;
+            var _loc_13:* = 0;
             while (_loc_13 < _loc_11)
             {
                 
@@ -607,7 +607,7 @@ package com.ankamagames.jerakine.utils.misc
                 this.writeBits(param4[this.category[_loc_8]]);
                 this.writeBits(this.bitcode[_loc_8]);
             }
-            var _loc_15:int = 63;
+            var _loc_15:* = 63;
             while (_loc_15 > 0 && this.DU[_loc_15] == 0)
             {
                 
@@ -618,7 +618,7 @@ package com.ankamagames.jerakine.utils.misc
                 this.writeBits(_loc_6);
                 return param3;
             }
-            var _loc_16:int = 1;
+            var _loc_16:* = 1;
             while (_loc_16 <= _loc_15)
             {
                 
@@ -655,14 +655,14 @@ package com.ankamagames.jerakine.utils.misc
 
         private function RGB2YUV(param1:BitmapData, param2:int, param3:int) : void
         {
-            var _loc_7:int = 0;
-            var _loc_8:uint = 0;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 8;
-            var _loc_6:int = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 8;
+            var _loc_6:* = 0;
             while (_loc_6 < _loc_5)
             {
                 
@@ -745,7 +745,7 @@ package com.ankamagames.jerakine.utils.misc
             }
             else
             {
-                var _loc_4:String = this;
+                var _loc_4:* = this;
                 var _loc_5:* = this._maxTime + 1;
                 _loc_4._maxTime = _loc_5;
             }
@@ -783,7 +783,7 @@ package com.ankamagames.jerakine.utils.misc
 
         private function endProcess() : void
         {
-            var _loc_1:BitString = null;
+            var _loc_1:* = null;
             if (this.bytepos >= 0)
             {
                 _loc_1 = new BitString();
@@ -799,7 +799,19 @@ package com.ankamagames.jerakine.utils.misc
     }
 }
 
-class BitString extends Object
+import __AS3__.vec.*;
+
+import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.utils.*;
+
+final class BitString extends Object
 {
     public var len:int = 0;
     public var val:int = 0;

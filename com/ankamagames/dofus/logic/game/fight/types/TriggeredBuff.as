@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
     import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.dofus.network.types.game.actions.fight.*;
@@ -20,8 +20,8 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         override public function initParam(param1:int, param2:int, param3:int) : void
         {
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             super.initParam(param1, param2, param3);
             if (Effect.getEffectById(actionId).forceMinMax)
             {
@@ -30,7 +30,7 @@ package com.ankamagames.dofus.logic.game.fight.types
                 if (_loc_4 == _loc_5)
                 {
                     param1 = _loc_4;
-                    var _loc_6:int = 0;
+                    var _loc_6:* = 0;
                     param3 = 0;
                     param2 = _loc_6;
                 }
@@ -85,7 +85,7 @@ package com.ankamagames.dofus.logic.game.fight.types
             {
                 if (this.delay + param1 >= 0)
                 {
-                    var _loc_3:String = this;
+                    var _loc_3:* = this;
                     var _loc_4:* = this.delay - 1;
                     _loc_3.delay = _loc_4;
                     var _loc_3:* = effects;

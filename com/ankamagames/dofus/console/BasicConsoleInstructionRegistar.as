@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console
+﻿package com.ankamagames.dofus.console
 {
     import com.ankamagames.dofus.console.debug.*;
     import com.ankamagames.jerakine.console.*;

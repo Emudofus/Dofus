@@ -1,4 +1,4 @@
-package com.hurlant.crypto.rsa
+﻿package com.hurlant.crypto.rsa
 {
     import com.hurlant.crypto.prng.*;
     import com.hurlant.crypto.tls.*;
@@ -74,8 +74,8 @@ package com.hurlant.crypto.rsa
 
         private function _encrypt(param1:Function, param2:ByteArray, param3:ByteArray, param4:uint, param5:Function, param6:int) : void
         {
-            var _loc_9:BigInteger = null;
-            var _loc_10:BigInteger = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             if (param5 == null)
             {
                 param5 = this.pkcs1pad;
@@ -98,9 +98,9 @@ package com.hurlant.crypto.rsa
 
         private function _decrypt(param1:Function, param2:ByteArray, param3:ByteArray, param4:uint, param5:Function, param6:int) : void
         {
-            var _loc_9:BigInteger = null;
-            var _loc_10:BigInteger = null;
-            var _loc_11:ByteArray = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             if (param5 == null)
             {
                 param5 = this.pkcs1unpad;
@@ -128,8 +128,8 @@ package com.hurlant.crypto.rsa
 
         private function pkcs1pad(param1:ByteArray, param2:int, param3:uint, param4:uint = 2) : ByteArray
         {
-            var _loc_8:Random = null;
-            var _loc_9:int = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
             var _loc_5:* = new ByteArray();
             var _loc_6:* = param1.position;
             param2 = Math.min(param2, param1.length, _loc_6 + param3 - 11);
@@ -178,7 +178,7 @@ package com.hurlant.crypto.rsa
             var _loc_4:* = param1.toByteArray();
             var _loc_5:* = new ByteArray();
             _loc_4.position = 0;
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < _loc_4.length && _loc_4[_loc_6] == 0)
             {
                 
@@ -295,10 +295,10 @@ package com.hurlant.crypto.rsa
 
         public static function generate(param1:uint, param2:String) : RSAKey
         {
-            var _loc_7:BigInteger = null;
-            var _loc_8:BigInteger = null;
-            var _loc_9:BigInteger = null;
-            var _loc_10:BigInteger = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_3:* = new Random();
             var _loc_4:* = param1 >> 1;
             var _loc_5:* = new RSAKey(null, 0, null);

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.approach.frames
+﻿package com.ankamagames.dofus.logic.game.approach.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.*;
@@ -8,6 +8,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
     import com.ankamagames.dofus.console.moduleLogger.*;
     import com.ankamagames.dofus.datacenter.misc.*;
     import com.ankamagames.dofus.datacenter.world.*;
+    import com.ankamagames.dofus.externalnotification.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -19,7 +20,6 @@ package com.ankamagames.dofus.logic.game.approach.frames
     import com.ankamagames.dofus.logic.game.approach.managers.*;
     import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
     import com.ankamagames.dofus.misc.*;
     import com.ankamagames.dofus.misc.interClient.*;
     import com.ankamagames.dofus.misc.lists.*;
@@ -67,6 +67,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
         private var _requestedCharacterId:uint;
         private var _lc:LoaderContext;
         private var commonMod:Object;
+        private var _reconnectMsgSend:Boolean = false;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(GameServerApproachFrame));
         private static var _changeLogLoader:Loader = new Loader();
 
@@ -109,10 +110,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
 
         public function pushed() : Boolean
         {
-            if (AirScanner.hasAir())
-            {
-                this._lc["allowLoadBytesCodeExecution"] = true;
-            }
+            AirScanner.allowByteCodeExecution(this._lc, true);
             Kernel.getWorker().addFrame(new MiscFrame());
             return true;
         }// end function
@@ -160,7 +158,6 @@ package com.ankamagames.dofus.logic.game.approach.frames
             var date:Date;
             var salm:StartupActionsListMessage;
             var cclMsg:ConsoleCommandsListMessage;
-            var atwcpmsg:AuthenticationTicketWithClientPacksMessage;
             var atmsg:AuthenticationTicketMessage;
             var clwrmsg:CharactersListWithModificationsMessage;
             var ctri:CharacterToRecolorInformation;
@@ -206,22 +203,9 @@ package com.ankamagames.dofus.logic.game.approach.frames
                 {
                     ConnectionsHandler.confirmGameServerConnection();
                     parts = PartManager.getInstance().getServerPartList();
-                    if (parts != null && parts.length > 0)
-                    {
-                        if (!Kernel.getWorker().getFrame(UpdaterDialogFrame))
-                        {
-                            Kernel.getWorker().addFrame(new UpdaterDialogFrame());
-                        }
-                        atwcpmsg = new AuthenticationTicketWithClientPacksMessage();
-                        atwcpmsg.initAuthenticationTicketWithClientPacksMessage(LangManager.getInstance().getEntry("config.lang.current"), AuthentificationManager.getInstance().gameServerTicket, parts);
-                        ConnectionsHandler.getConnection().send(atwcpmsg);
-                    }
-                    else
-                    {
-                        atmsg = new AuthenticationTicketMessage();
-                        atmsg.initAuthenticationTicketMessage(LangManager.getInstance().getEntry("config.lang.current"), AuthentificationManager.getInstance().gameServerTicket);
-                        ConnectionsHandler.getConnection().send(atmsg);
-                    }
+                    atmsg = new AuthenticationTicketMessage();
+                    atmsg.initAuthenticationTicketMessage(LangManager.getInstance().getEntry("config.lang.current"), AuthentificationManager.getInstance().gameServerTicket);
+                    ConnectionsHandler.getConnection().send(atmsg);
                     InactivityManager.getInstance().start();
                     this._kernel.processCallback(HookList.AuthenticationTicket);
                     return true;
@@ -263,7 +247,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     if (msg is CharactersListWithModificationsMessage)
                     {
                         clwrmsg = msg as CharactersListWithModificationsMessage;
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = clwrmsg.charactersToRecolor;
                         while (_loc_4 in _loc_3)
                         {
@@ -286,7 +270,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                             }
                             this._charactersToRecolorList[ctri.id] = {id:ctri.id, colors:charColors};
                         }
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = clwrmsg.charactersToRename;
                         while (_loc_4 in _loc_3)
                         {
@@ -294,7 +278,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                             ctrid = _loc_4[_loc_3];
                             this._charactersToRenameList.push(ctrid);
                         }
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = clwrmsg.unusableCharacters;
                         while (_loc_4 in _loc_3)
                         {
@@ -306,7 +290,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     this._charactersList = new Array();
                     if (PlayerManager.getInstance().server.gameTypeId == 1)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = clmsg.characters;
                         while (_loc_4 in _loc_3)
                         {
@@ -328,7 +312,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     }
                     else
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = clmsg.characters;
                         while (_loc_4 in _loc_3)
                         {
@@ -336,7 +320,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                             cbi = _loc_4[_loc_3];
                             o;
                             bonusXp;
-                            var _loc_5:int = 0;
+                            var _loc_5:* = 0;
                             var _loc_6:* = clmsg.characters;
                             while (_loc_6 in _loc_5)
                             {
@@ -404,7 +388,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     cca = msg as CharacterCreationAction;
                     ccmsg = new CharacterCreationRequestMessage();
                     colors = new Vector.<int>;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = cca.colors;
                     while (_loc_4 in _loc_3)
                     {
@@ -476,16 +460,20 @@ package com.ankamagames.dofus.logic.game.approach.frames
                 }
                 case msg is CharacterSelectedForceMessage:
                 {
-                    Kernel.beingInReconection = true;
-                    characterId = CharacterSelectedForceMessage(msg).id;
-                    ConnectionsHandler.getConnection().send(new CharacterSelectedForceReadyMessage());
+                    if (!this._reconnectMsgSend)
+                    {
+                        Kernel.beingInReconection = true;
+                        characterId = CharacterSelectedForceMessage(msg).id;
+                        this._reconnectMsgSend = true;
+                        ConnectionsHandler.getConnection().send(new CharacterSelectedForceReadyMessage());
+                    }
                     return true;
                 }
                 case msg is CharacterRecolorSelectionAction:
                 {
                     if (PlayerManager.getInstance().server.gameTypeId == 1)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._charactersList;
                         while (_loc_4 in _loc_3)
                         {
@@ -515,7 +503,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     characterId = (msg as CharacterRecolorSelectionAction).characterId;
                     characterColors = (msg as CharacterRecolorSelectionAction).characterColors;
                     recolors = new Vector.<int>;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = characterColors;
                     while (_loc_4 in _loc_3)
                     {
@@ -546,7 +534,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                 {
                     if (PlayerManager.getInstance().server.gameTypeId == 1)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._charactersList;
                         while (_loc_4 in _loc_3)
                         {
@@ -617,7 +605,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     this._requestedCharacterId = characterId;
                     if (this._charactersToRecolorList[characterId])
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._charactersList;
                         while (_loc_4 in _loc_3)
                         {
@@ -632,7 +620,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     }
                     else if (this._charactersToRenameList.indexOf(characterId) != -1)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._charactersList;
                         while (_loc_4 in _loc_3)
                         {
@@ -692,11 +680,14 @@ package com.ankamagames.dofus.logic.game.approach.frames
                         UiModuleManager.getInstance().init(Constants.PRE_GAME_MODULE.concat(Constants.ADMIN_MODULE), false);
                     }
                     Dofus.getInstance().renameApp(cssmsg.infos.name);
+                    if (AirScanner.hasAir())
+                    {
+                        ExternalNotificationManager.getInstance().init();
+                    }
                     return true;
                 }
                 case msg is AllModulesLoadedMessage:
                 {
-                    Kernel.getWorker().removeFrame(this._gmaf);
                     this._gmaf = null;
                     try
                     {
@@ -724,16 +715,18 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     Kernel.getWorker().addFrame(new JobsFrame());
                     Kernel.getWorker().addFrame(new MountFrame());
                     Kernel.getWorker().addFrame(new HouseFrame());
-                    Kernel.getWorker().addFrame(new RoleplayEmoticonFrame());
+                    Kernel.getWorker().addFrame(new EmoticonFrame());
                     Kernel.getWorker().addFrame(new QuestFrame());
                     Kernel.getWorker().addFrame(new PartyManagementFrame());
                     Kernel.getWorker().addFrame(new ProtectPishingFrame());
                     Kernel.getWorker().addFrame(new StackManagementFrame());
+                    Kernel.getWorker().addFrame(new ExternalGameFrame());
                     Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(GameStartingFrame));
                     Kernel.getWorker().resume();
                     ConnectionsHandler.resume();
-                    if (Kernel.beingInReconection)
+                    if (Kernel.beingInReconection && !this._reconnectMsgSend)
                     {
+                        this._reconnectMsgSend = true;
                         ConnectionsHandler.getConnection().send(new CharacterSelectedForceReadyMessage());
                     }
                     flashKeyMsg = new ClientKeyMessage();
@@ -800,14 +793,14 @@ package com.ankamagames.dofus.logic.game.approach.frames
                 case msg is StartupActionsListMessage:
                 {
                     salm = msg as StartupActionsListMessage;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = salm.actions;
                     while (_loc_4 in _loc_3)
                     {
                         
                         gift = _loc_4[_loc_3];
                         _items = new Array();
-                        var _loc_5:int = 0;
+                        var _loc_5:* = 0;
                         var _loc_6:* = gift.items;
                         while (_loc_6 in _loc_5)
                         {
@@ -822,7 +815,7 @@ package com.ankamagames.dofus.logic.game.approach.frames
                     if (this._giftList.length)
                     {
                         charaListMinusDeadPeople = new Array();
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._charactersList;
                         while (_loc_4 in _loc_3)
                         {
@@ -919,7 +912,10 @@ package com.ankamagames.dofus.logic.game.approach.frames
         private function requestCharactersList() : void
         {
             var _loc_1:* = new CharactersListRequestMessage();
-            ConnectionsHandler.getConnection().send(_loc_1);
+            if (ConnectionsHandler && ConnectionsHandler.getConnection())
+            {
+                ConnectionsHandler.getConnection().send(_loc_1);
+            }
             return;
         }// end function
 

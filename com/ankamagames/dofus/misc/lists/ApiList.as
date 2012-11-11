@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.dofus.scripts.api.*;
     import com.ankamagames.jerakine.script.api.*;

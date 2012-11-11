@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.adapters
+﻿package com.ankamagames.jerakine.resources.adapters
 {
     import com.ankamagames.jerakine.resources.*;
     import com.ankamagames.jerakine.resources.adapters.impl.*;
@@ -32,6 +32,7 @@ package com.ankamagames.jerakine.resources.adapters
                 case "gif":
                 case "jpg":
                 case "jpeg":
+                case "wdp":
                 {
                     return new BitmapAdapter();
                 }

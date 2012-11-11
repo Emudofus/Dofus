@@ -1,4 +1,4 @@
-package mx.graphics.codec
+﻿package mx.graphics.codec
 {
     import flash.display.*;
     import flash.utils.*;

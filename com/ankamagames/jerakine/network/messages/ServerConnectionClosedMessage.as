@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.network.messages
+﻿package com.ankamagames.jerakine.network.messages
 {
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.network.*;

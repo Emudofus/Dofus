@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.basic
+﻿package com.ankamagames.dofus.network.messages.game.basic
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -64,7 +64,7 @@ package com.ankamagames.dofus.network.messages.game.basic
 
         public function serializeAs_BasicSetAwayModeRequestMessage(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.enable);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.invisible);
             param1.writeByte(_loc_2);

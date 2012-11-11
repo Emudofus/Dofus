@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
 {
     import com.ankamagames.dofus.network.*;
     import com.ankamagames.dofus.network.types.game.paddock.*;

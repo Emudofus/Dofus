@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.utils
+﻿package com.ankamagames.berilia.utils
 {
     import com.ankamagames.berilia.components.*;
 
@@ -20,6 +20,7 @@ package com.ankamagames.berilia.utils
         public static const tree:Tree = null;
         public static const videoPlayer:VideoPlayer = null;
         public static const webBrowser:WebBrowser = null;
+        public static const chatComponent:ChatComponent = null;
 
         public function ComponentList()
         {

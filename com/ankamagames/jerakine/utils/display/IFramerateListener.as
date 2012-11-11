@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
 
     public interface IFramerateListener

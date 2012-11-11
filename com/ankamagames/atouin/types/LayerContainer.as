@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.display.*;
@@ -24,8 +24,8 @@ package com.ankamagames.atouin.types
 
         public function addCell(param1:CellContainer) : void
         {
-            var _loc_2:CellContainer = null;
-            var _loc_3:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
             var _loc_4:* = _loc_3;
             while (_loc_4 < numChildren)
             {

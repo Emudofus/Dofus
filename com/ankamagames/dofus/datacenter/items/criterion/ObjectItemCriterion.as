@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -17,7 +17,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get isRespected() : Boolean
         {
-            var _loc_1:ItemWrapper = null;
+            var _loc_1:* = null;
             for each (_loc_1 in InventoryManager.getInstance().realInventory)
             {
                 
@@ -40,7 +40,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
         override public function get text() : String
         {
             var _loc_1:* = Item.getItemById(_criterionValue).name;
-            var _loc_2:String = "";
+            var _loc_2:* = "";
             switch(_operator.text)
             {
                 case ItemCriterionOperator.DIFFERENT:

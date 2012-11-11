@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
             }
             param1.writeShort(this.dungeonId);
             param1.writeShort(this.addedPlayers.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.addedPlayers.length)
             {
                 
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.removedPlayersIds.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.removedPlayersIds.length)
             {
                 
@@ -106,15 +106,15 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 
         public function deserializeAs_DungeonPartyFinderRoomContentUpdateMessage(param1:IDataInput) : void
         {
-            var _loc_6:DungeonPartyFinderPlayer = null;
-            var _loc_7:uint = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             this.dungeonId = param1.readShort();
             if (this.dungeonId < 0)
             {
                 throw new Error("Forbidden value (" + this.dungeonId + ") on element of DungeonPartyFinderRoomContentUpdateMessage.dungeonId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -124,7 +124,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

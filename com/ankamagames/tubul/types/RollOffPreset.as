@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types
+﻿package com.ankamagames.tubul.types
 {
 
     public class RollOffPreset extends Object

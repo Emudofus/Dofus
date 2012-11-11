@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types
+﻿package com.ankamagames.tubul.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.BalanceManager.*;
@@ -55,7 +55,7 @@ package com.ankamagames.tubul.types
 
         public function get playingSoundIndex() : int
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             if (this._isPlaying)
             {
                 _loc_1 = this._sounds.indexOf(this._playingSound);
@@ -98,8 +98,8 @@ package com.ankamagames.tubul.types
 
         public function removeSoundBySoundId(param1:String, param2:Boolean = true) : uint
         {
-            var _loc_3:ISound = null;
-            var _loc_4:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             for each (_loc_3 in this._sounds)
             {
                 
@@ -144,7 +144,7 @@ package com.ankamagames.tubul.types
 
         public function nextSound(param1:VolumeFadeEffect = null, param2:Boolean = false) : void
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             if (param2 && this._playingSound)
             {
                 this._playingSound.stop(param1);
@@ -249,7 +249,7 @@ package com.ankamagames.tubul.types
             {
                 if (param2 == null && this._silence == null)
                 {
-                    _log.error("Aucun silence � jouer !");
+                    _log.error("Aucun silence à jouer !");
                     this._playSilence = false;
                     return;
                 }
@@ -268,7 +268,7 @@ package com.ankamagames.tubul.types
 
         private function init() : void
         {
-            var _loc_1:ISound = null;
+            var _loc_1:* = null;
             if (this._silence)
             {
                 this._silence.clean();
@@ -290,10 +290,10 @@ package com.ankamagames.tubul.types
 
         private function playSound(param1:ISound) : void
         {
-            var _loc_3:Boolean = false;
-            var _loc_4:VolumeFadeEffect = null;
-            var _loc_5:VolumeFadeEffect = null;
-            var _loc_6:PlaylistEvent = null;
+            var _loc_3:* = false;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             this._playingSound = param1;
             this._playingSound.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE, this.onSoundComplete, false, EventListenerPriority.NORMAL);
             var _loc_2:* = this._playingSound.bus;

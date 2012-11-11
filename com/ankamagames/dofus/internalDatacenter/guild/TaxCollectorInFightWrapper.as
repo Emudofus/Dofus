@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.guild
+﻿package com.ankamagames.dofus.internalDatacenter.guild
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.kernel.*;
@@ -19,8 +19,8 @@ package com.ankamagames.dofus.internalDatacenter.guild
 
         public function update(param1:int, param2:Vector.<CharacterMinimalPlusLookInformations>, param3:Vector.<CharacterMinimalPlusLookInformations>) : void
         {
-            var _loc_4:CharacterMinimalPlusLookInformations = null;
-            var _loc_5:CharacterMinimalPlusLookInformations = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             this.uniqueId = param1;
             this.allyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
             this.enemyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
@@ -39,7 +39,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
 
         public function addPonyFighter(param1:TaxCollectorWrapper) : void
         {
-            var _loc_2:CharacterMinimalPlusLookInformations = null;
+            var _loc_2:* = null;
             if (this.allyCharactersInformations == null)
             {
                 this.allyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
@@ -65,9 +65,9 @@ package com.ankamagames.dofus.internalDatacenter.guild
 
         public static function create(param1:int, param2:Vector.<CharacterMinimalPlusLookInformations> = null, param3:Vector.<CharacterMinimalPlusLookInformations> = null) : TaxCollectorInFightWrapper
         {
-            var _loc_4:TaxCollectorInFightWrapper = null;
-            var _loc_5:CharacterMinimalPlusLookInformations = null;
-            var _loc_6:CharacterMinimalPlusLookInformations = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             _loc_4 = new TaxCollectorInFightWrapper;
             _loc_4.allyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
             _loc_4.enemyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;

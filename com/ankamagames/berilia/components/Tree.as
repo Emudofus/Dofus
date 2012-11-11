@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.*;
@@ -44,7 +44,7 @@ package com.ankamagames.berilia.components
 
         private function makeDataProvider(param1:Vector.<TreeData>, param2:Vector.<TreeData> = null) : Vector.<TreeData>
         {
-            var _loc_3:TreeData = null;
+            var _loc_3:* = null;
             if (!param2)
             {
                 param2 = new Vector.<TreeData>;

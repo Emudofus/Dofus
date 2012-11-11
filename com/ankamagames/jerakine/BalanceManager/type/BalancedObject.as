@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.BalanceManager.type
+﻿package com.ankamagames.jerakine.BalanceManager.type
 {
     import com.ankamagames.jerakine.BalanceManager.events.*;
     import flash.events.*;

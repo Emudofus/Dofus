@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.utils
+﻿package com.ankamagames.berilia.utils
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.newCache.*;
@@ -23,7 +23,7 @@ package com.ankamagames.berilia.utils
 
         public static function getCacheFromUri(param1:Uri) : ICache
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_2:* = param1.normalizedUri;
             for (_loc_3 in _aCache)
             {

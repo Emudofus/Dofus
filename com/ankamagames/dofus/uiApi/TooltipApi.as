@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.factories.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -66,7 +66,7 @@ package com.ankamagames.dofus.uiApi
 
         public function createTooltip(param1:String, param2:String, param3:String = null) : Tooltip
         {
-            var _loc_4:Tooltip = null;
+            var _loc_4:* = null;
             if (param1.substr(-4, 4) != ".txt")
             {
                 throw new ApiError("ChunkData support only [.txt] file, found " + param1);
@@ -166,6 +166,11 @@ package com.ankamagames.dofus.uiApi
             var _loc_2:* = PlayedCharacterUpdatesFrame.SPELL_TOOLTIP_CACHE_NUM + 1;
             _loc_1.SPELL_TOOLTIP_CACHE_NUM = _loc_2;
             return;
+        }// end function
+
+        public function createTooltipRectangle(param1:Number = 0, param2:Number = 0, param3:Number = 0, param4:Number = 0) : TooltipRectangle
+        {
+            return new TooltipRectangle(param1, param2, param3, param4);
         }// end function
 
         public function createSpellSettings() : SpellTooltipSettings

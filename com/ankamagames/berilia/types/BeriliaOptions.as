@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types
+﻿package com.ankamagames.berilia.types
 {
     import com.ankamagames.jerakine.managers.*;
 

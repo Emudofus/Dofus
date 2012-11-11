@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.house
+﻿package com.ankamagames.dofus.internalDatacenter.house
 {
     import com.ankamagames.dofus.datacenter.houses.*;
     import com.ankamagames.dofus.internalDatacenter.guild.*;
@@ -24,7 +24,7 @@ package com.ankamagames.dofus.internalDatacenter.house
 
         public static function create(param1:HouseInformations) : HouseWrapper
         {
-            var _loc_4:HouseInformationsExtended = null;
+            var _loc_4:* = null;
             var _loc_2:* = new HouseWrapper;
             var _loc_3:* = House.getGuildHouseById(param1.modelId);
             _loc_2.houseId = param1.houseId;
@@ -38,7 +38,7 @@ package com.ankamagames.dofus.internalDatacenter.house
             if (param1 is HouseInformationsExtended)
             {
                 _loc_4 = param1 as HouseInformationsExtended;
-                _loc_2.guildIdentity = GuildWrapper.create(_loc_4.guildInfo.guildId, _loc_4.guildInfo.guildName, _loc_4.guildInfo.guildEmblem, 0);
+                _loc_2.guildIdentity = GuildWrapper.create(_loc_4.guildInfo.guildId, _loc_4.guildInfo.guildName, _loc_4.guildInfo.guildEmblem, 0, true);
             }
             return _loc_2;
         }// end function

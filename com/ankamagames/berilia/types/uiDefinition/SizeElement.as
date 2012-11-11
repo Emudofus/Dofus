@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.uiDefinition
+﻿package com.ankamagames.berilia.types.uiDefinition
 {
     import com.ankamagames.berilia.types.graphic.*;
     import com.ankamagames.jerakine.logger.*;

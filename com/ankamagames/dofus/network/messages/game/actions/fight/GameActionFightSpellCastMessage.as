@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.actions.fight
+﻿package com.ankamagames.dofus.network.messages.game.actions.fight
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
@@ -25,11 +25,11 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
             return 1010;
         }// end function
 
-        public function initGameActionFightSpellCastMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 1, param5:Boolean = false, param6:uint = 0, param7:uint = 0) : GameActionFightSpellCastMessage
+        public function initGameActionFightSpellCastMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:int = 0, param5:uint = 1, param6:Boolean = false, param7:uint = 0, param8:uint = 0) : GameActionFightSpellCastMessage
         {
-            super.initAbstractGameActionFightTargetedAbilityMessage(param1, param2, param3, param4, param5);
-            this.spellId = param6;
-            this.spellLevel = param7;
+            super.initAbstractGameActionFightTargetedAbilityMessage(param1, param2, param3, param4, param5, param6);
+            this.spellId = param7;
+            this.spellLevel = param8;
             this._isInitialized = true;
             return this;
         }// end function

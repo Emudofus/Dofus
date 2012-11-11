@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import com.ankamagames.berilia.types.uiDefinition.*;
     import flash.geom.*;

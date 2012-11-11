@@ -1,6 +1,7 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
+    import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.effects.*;
@@ -40,6 +41,7 @@ package com.ankamagames.dofus.logic.game.common.frames
         private var _currentPointUseUIDObject:uint;
         private var _movingObjectUID:int;
         private var _movingObjectPreviousPosition:int;
+        private var _objectPositionModification:Boolean;
         private var _soundApi:SoundApi;
         private var _roleplayPointCellFrame:WeakReference;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(InventoryManagementFrame));
@@ -107,7 +109,6 @@ package com.ankamagames.dofus.logic.game.common.frames
             var presetItem:ItemWrapper;
             var ospa:ObjectSetPositionAction;
             var itw:ItemWrapper;
-            var ospmsg2:ObjectSetPositionMessage;
             var omdmsg:ObjectModifiedMessage;
             var odmsg:ObjectDeletedMessage;
             var osdmsg:ObjectsDeletedMessage;
@@ -126,6 +127,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             var objectName:String;
             var ouocmsg:ObjectUseOnCellMessage;
             var ouoca:ObjectUseOnCellAction;
+            var oemsg:ObjectErrorMessage;
             var ipudmsg:InventoryPresetUpdateMessage;
             var newPW:PresetWrapper;
             var ipiumsg:InventoryPresetItemUpdateMessage;
@@ -147,6 +149,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             var shortcutQty:ShortcutWrapper;
             var objoqm:ObjectItemQuantity;
             var shortcutsQty:ShortcutWrapper;
+            var itwm:ItemWrapper;
             var shorto:Shortcut;
             var shorts:Shortcut;
             var shortcuti:ShortcutObjectItem;
@@ -157,6 +160,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             var realitem:ItemWrapper;
             var effect:EffectInstance;
             var ospmsg:ObjectSetPositionMessage;
+            var ospmsg2:ObjectSetPositionMessage;
             var osdit:uint;
             var t:ItemWrapper;
             var odropmsg:ObjectDropMessage;
@@ -182,7 +186,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         PlayedCharacterManager.getInstance().isPetsMounting = true;
                     }
                     presetWrappers = new Array(8);
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = icapmsg.presets;
                     while (_loc_4 in _loc_3)
                     {
@@ -223,7 +227,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is ObjectsAddedMessage:
                 {
                     osam = msg as ObjectsAddedMessage;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = osam.object;
                     while (_loc_4 in _loc_3)
                     {
@@ -242,7 +246,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         this._objectUIDToDrop = -1;
                     }
                     InventoryManager.getInstance().inventory.modifyItemQuantity(oqm.objectUID, oqm.quantity);
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = InventoryManager.getInstance().shortcutBarItems;
                     while (_loc_4 in _loc_3)
                     {
@@ -259,14 +263,14 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is ObjectsQuantityMessage:
                 {
                     osqm = msg as ObjectsQuantityMessage;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = osqm.objectsUIDAndQty;
                     while (_loc_4 in _loc_3)
                     {
                         
                         objoqm = _loc_4[_loc_3];
                         InventoryManager.getInstance().inventory.modifyItemQuantity(objoqm.objectUID, objoqm.quantity);
-                        var _loc_5:int = 0;
+                        var _loc_5:* = 0;
                         var _loc_6:* = InventoryManager.getInstance().shortcutBarItems;
                         while (_loc_6 in _loc_5)
                         {
@@ -301,6 +305,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     ommsg = msg as ObjectMovementMessage;
                     InventoryManager.getInstance().inventory.modifyItemPosition(ommsg.objectUID, ommsg.position);
+                    if (this._objectPositionModification && ommsg.position <= 16 && ommsg.position >= 0 && !Berilia.getInstance().getUi("storage"))
+                    {
+                        itwm = InventoryManager.getInstance().inventory.getItem(ommsg.objectUID);
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, I18n.getUiText("ui.item.inUse", [itwm.name]), ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                        this._objectPositionModification = false;
+                    }
                     return true;
                 }
                 case msg is ShortcutBarContentMessage:
@@ -309,7 +319,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     if (sbcmsg.barType == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
                     {
                         InventoryManager.getInstance().shortcutBarItems = new Array();
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = sbcmsg.shortcuts;
                         while (_loc_4 in _loc_3)
                         {
@@ -322,7 +332,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     else if (sbcmsg.barType == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
                     {
                         InventoryManager.getInstance().shortcutBarSpells = new Array();
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = sbcmsg.shortcuts;
                         while (_loc_4 in _loc_3)
                         {
@@ -450,7 +460,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     pspa = msg as PresetSetPositionAction;
                     hiddenObjects = new Vector.<ItemWrapper>;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = InventoryManager.getInstance().inventory.getView("real").content;
                     while (_loc_4 in _loc_3)
                     {
@@ -461,7 +471,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             hiddenObjects.push(realitem);
                             if (realitem.effects && realitem.effects.length)
                             {
-                                var _loc_5:int = 0;
+                                var _loc_5:* = 0;
                                 var _loc_6:* = realitem.effects;
                                 while (_loc_6 in _loc_5)
                                 {
@@ -493,18 +503,22 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     ospa = msg as ObjectSetPositionAction;
                     itw = InventoryManager.getInstance().inventory.getItem(ospa.objectUID);
-                    this._movingObjectUID = ospa.objectUID;
-                    if (!itw)
+                    if (itw.position != ospa.position)
                     {
-                        this._movingObjectPreviousPosition = 8;
+                        this._movingObjectUID = ospa.objectUID;
+                        if (!itw)
+                        {
+                            this._movingObjectPreviousPosition = 8;
+                        }
+                        else
+                        {
+                            this._movingObjectPreviousPosition = itw.position;
+                        }
+                        this._objectPositionModification = true;
+                        ospmsg2 = new ObjectSetPositionMessage();
+                        ospmsg2.initObjectSetPositionMessage(ospa.objectUID, ospa.position, ospa.quantity);
+                        ConnectionsHandler.getConnection().send(ospmsg2);
                     }
-                    else
-                    {
-                        this._movingObjectPreviousPosition = itw.position;
-                    }
-                    ospmsg2 = new ObjectSetPositionMessage();
-                    ospmsg2.initObjectSetPositionMessage(ospa.objectUID, ospa.position, ospa.quantity);
-                    ConnectionsHandler.getConnection().send(ospmsg2);
                     return true;
                 }
                 case msg is ObjectModifiedMessage:
@@ -528,7 +542,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     osdmsg = msg as ObjectsDeletedMessage;
                     positions = new Array();
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = osdmsg.objectUID;
                     while (_loc_4 in _loc_3)
                     {
@@ -570,7 +584,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     nbFood;
                     nbBonus;
                     view = InventoryManager.getInstance().inventory.getView("roleplayBuff");
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = view.content;
                     while (_loc_4 in _loc_3)
                     {
@@ -619,11 +633,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                     {
                         return true;
                     }
+                    itemItem = Item.getItemById(oda.objectGID);
+                    if (itemItem.type.superTypeId == 14)
+                    {
+                        return true;
+                    }
                     this._objectUIDToDrop = oda.objectUID;
                     this._objectGIDToDrop = oda.objectGID;
                     this._quantityToDrop = oda.quantity;
                     commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                    itemItem = Item.getItemById(oda.objectGID);
                     objectName = itemItem.name;
                     if (Dofus.getInstance().options.confirmItemDrop)
                     {
@@ -645,12 +663,18 @@ package com.ankamagames.dofus.logic.game.common.frames
                     ConnectionsHandler.getConnection().send(ouocmsg);
                     break;
                 }
+                case msg is ObjectErrorMessage:
+                {
+                    oemsg = msg as ObjectErrorMessage;
+                    this._objectPositionModification = false;
+                    return false;
+                }
                 case msg is InventoryPresetUpdateMessage:
                 {
                     ipudmsg = msg as InventoryPresetUpdateMessage;
                     newPW = PresetWrapper.create(ipudmsg.preset.presetId, ipudmsg.preset.symbolId, ipudmsg.preset.objects, ipudmsg.preset.mount);
                     InventoryManager.getInstance().presets[ipudmsg.preset.presetId] = newPW;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = InventoryManager.getInstance().shortcutBarItems;
                     while (_loc_4 in _loc_3)
                     {
@@ -750,36 +774,31 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is InventoryPresetUseResultMessage:
                 {
                     ipurmsg = msg as InventoryPresetUseResultMessage;
-                    if (ipurmsg.code != PresetUseResultEnum.PRESET_USE_OK)
+                    switch(ipurmsg.code)
                     {
-                        switch(ipurmsg.code)
+                        case PresetUseResultEnum.PRESET_USE_ERR_UNKNOWN:
                         {
-                            case PresetUseResultEnum.PRESET_USE_ERR_UNKNOWN:
-                            {
-                                reason3;
-                                break;
-                            }
-                            case PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID:
-                            {
-                                reason3;
-                                break;
-                            }
-                            case PresetUseResultEnum.PRESET_USE_ERR_CRITERION:
-                            {
-                                reason3;
-                                break;
-                            }
-                            case PresetUseResultEnum.PRESET_USE_OK_PARTIAL:
-                            {
-                                reason3;
-                                break;
-                            }
-                            default:
-                            {
-                                break;
-                            }
+                            break;
                         }
-                        KernelEventsManager.getInstance().processCallback(InventoryHookList.PresetError, reason3);
+                        case PresetUseResultEnum.PRESET_USE_ERR_BAD_PRESET_ID:
+                        {
+                            break;
+                        }
+                        case PresetUseResultEnum.PRESET_USE_ERR_CRITERION:
+                        {
+                            break;
+                        }
+                        case PresetUseResultEnum.PRESET_USE_OK_PARTIAL:
+                        {
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    if (!Berilia.getInstance().getUi("storage"))
+                    {
                     }
                     return true;
                 }
@@ -855,8 +874,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function onCellPointed(param1:Boolean, param2:uint, param3:int) : void
         {
-            var _loc_4:ObjectUseOnCellMessage = null;
-            var _loc_5:ObjectUseOnCharacterMessage = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (param1)
             {
                 if (param3 < 0)
@@ -878,9 +897,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function useItem(param1:ObjectUseAction, param2:ItemWrapper) : void
         {
-            var _loc_3:Texture = null;
-            var _loc_4:ObjectUseMultipleMessage = null;
-            var _loc_5:ObjectUseMessage = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (this._roleplayPointCellFrame && this._roleplayPointCellFrame.object && param1.objectUID == this._currentPointUseUIDObject)
             {
                 Kernel.getWorker().removeFrame(this._roleplayPointCellFrame.object as RoleplayPointCellFrame);
@@ -924,9 +943,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function getShortcutWrapperPropFromShortcut(param1:Object) : Object
         {
-            var _loc_2:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 0;
+            var _loc_4:* = 0;
+            var _loc_3:* = 0;
             if (param1 is ShortcutObjectItem)
             {
                 _loc_2 = (param1 as ShortcutObjectItem).itemUID;

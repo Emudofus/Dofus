@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.utils
+﻿package com.ankamagames.atouin.utils
 {
     import com.ankamagames.atouin.*;
     import flash.geom.*;
@@ -15,12 +15,12 @@ package com.ankamagames.atouin.utils
 
         private static function init() : void
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             _bInit = true;
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_5:int = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < AtouinConstants.MAP_HEIGHT)
             {
                 

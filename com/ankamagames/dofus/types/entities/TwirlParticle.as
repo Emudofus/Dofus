@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.entities
+﻿package com.ankamagames.dofus.types.entities
 {
     import flash.display.*;
 
@@ -24,7 +24,7 @@ package com.ankamagames.dofus.types.entities
         {
             this.halfg = this.g / 2;
             super(param1, param2, param3, param4);
-            var _loc_7:Number = 0.1;
+            var _loc_7:* = 0.1;
             this.speed = _loc_7 * 3 / 4 + _loc_7 * Math.random() / 2;
             var _loc_9:* = Math.random() * 0.5 + 0.5;
             _sprite.scaleY = Math.random() * 0.5 + 0.5;

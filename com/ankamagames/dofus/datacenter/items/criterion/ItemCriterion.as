@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.items.criterion.*;
@@ -45,7 +45,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         public function get text() : String
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             switch(this._criterionRef)
             {
                 case "CM":
@@ -101,7 +101,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         protected function getInfos() : void
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             for each (_loc_1 in ItemCriterionOperator.OPERATORS_LIST)
             {
                 
@@ -118,7 +118,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         protected function getCriterion() : int
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             var _loc_2:* = PlayedCharacterManager.getInstance();
             switch(this._criterionRef)
             {

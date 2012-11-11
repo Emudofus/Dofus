@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.tasking
+﻿package com.ankamagames.jerakine.tasking
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -47,9 +47,9 @@ package com.ankamagames.jerakine.tasking
 
         private function onEnterFrame(event:Event) : void
         {
-            var _loc_3:Boolean = false;
+            var _loc_3:* = false;
             var _loc_2:* = this._queue[0] as SplittedTask;
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             do
             {
                 

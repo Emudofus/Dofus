@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.types.data.*;
@@ -75,14 +75,14 @@ package com.ankamagames.dofus.uiApi
 
         public function playSound(param1:uint) : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:String = null;
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
-            var _loc_6:Array = null;
-            var _loc_7:String = null;
-            var _loc_8:Array = null;
-            var _loc_9:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             switch(param1)
             {
                 case SoundTypeEnum.OK_BUTTON:

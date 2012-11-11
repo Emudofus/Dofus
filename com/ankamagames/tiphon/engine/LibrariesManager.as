@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.engine
+﻿package com.ankamagames.tiphon.engine
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -51,7 +51,7 @@ package com.ankamagames.tiphon.engine
 
         public function addResource(param1:uint, param2:Uri) : void
         {
-            var _loc_3:GraphicLibrary = null;
+            var _loc_3:* = null;
             if (param2 == null)
             {
                 param2 = new Uri(TiphonConstants.SWF_SKULL_PATH + "666.swl");
@@ -74,7 +74,11 @@ package com.ankamagames.tiphon.engine
             }
             if (!_loc_3.hasSwl(param2))
             {
-                param2.tag = param1;
+                if (param2.tag == null)
+                {
+                    param2.tag = new Object();
+                }
+                param2.tag.id = param1;
                 _log.info("[" + this.name + "] Load " + param2);
                 _loc_3.updateSwfState(param2);
                 this._waitingResources.push(param2);
@@ -84,12 +88,12 @@ package com.ankamagames.tiphon.engine
 
         public function askResource(param1:uint, param2:String, param3:Callback, param4:Callback = null) : void
         {
-            var _loc_5:GraphicLibrary = null;
-            var _loc_6:Array = null;
-            var _loc_7:Boolean = false;
-            var _loc_8:Callback = null;
-            var _loc_9:Boolean = false;
-            var _loc_10:uint = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = false;
+            var _loc_8:* = null;
+            var _loc_9:* = false;
+            var _loc_10:* = 0;
             if (!this.hasResource(param1, param2))
             {
                 _log.error("Tiphon cache does not contains ressource " + param1);
@@ -184,7 +188,7 @@ package com.ankamagames.tiphon.engine
 
         public function getResourceById(param1:uint, param2:String = null, param3:Boolean = false) : Swl
         {
-            var _loc_5:Swl = null;
+            var _loc_5:* = null;
             var _loc_4:* = this._aResources[param1];
             if (this._aResources[param1].isSingleFile && !param3)
             {
@@ -207,15 +211,15 @@ package com.ankamagames.tiphon.engine
 
         public function hasAnim(param1:int, param2:String, param3:int = -1) : Boolean
         {
-            var _loc_5:Boolean = false;
-            var _loc_6:String = null;
+            var _loc_5:* = false;
+            var _loc_6:* = null;
             var _loc_4:* = this._aResources[param1];
             if (this._aResources[param1].isSingleFile)
             {
                 _loc_5 = false;
                 if (!_loc_4.getSwl())
                 {
-                    _log.warn("/!\\ Attention, on test si une librairie contient une anim sans l\'avoir en m�moire. (bones: " + param1 + ", anim:" + param2 + ")");
+                    _log.warn("/!\\ Attention, on test si une librairie contient une anim sans l\'avoir en mémoire. (bones: " + param1 + ", anim:" + param2 + ")");
                     return false;
                 }
                 for each (_loc_6 in _loc_4.getSwl().getDefinitions())
@@ -236,46 +240,50 @@ package com.ankamagames.tiphon.engine
 
         private function onLoadResource(event:ResourceLoadedEvent) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:uint = 0;
-            GraphicLibrary(this._aResources[event.uri.tag]).addSwl(event.resource, event.uri.uri);
-            if (this._aWaiting[event.uri.tag] && this._aWaiting[event.uri.tag]["ok"])
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_2:* = event.uri.tag.id == null ? (event.uri.tag) : (event.uri.tag.id);
+            _log.info("Loaded " + event.uri);
+            trace(this._aResources[_loc_2]);
+            GraphicLibrary(this._aResources[_loc_2]).addSwl(event.resource, event.uri.uri);
+            if (this._aWaiting[_loc_2] && this._aWaiting[_loc_2]["ok"])
             {
-                _loc_2 = this._aWaiting[event.uri.tag]["ok"].length;
-                _loc_3 = 0;
-                while (_loc_3 < _loc_2)
+                _loc_3 = this._aWaiting[_loc_2]["ok"].length;
+                _loc_4 = 0;
+                while (_loc_4 < _loc_3)
                 {
                     
-                    Callback(this._aWaiting[event.uri.tag]["ok"][_loc_3]).exec();
-                    _loc_3 = _loc_3 + 1;
+                    Callback(this._aWaiting[_loc_2]["ok"][_loc_4]).exec();
+                    _loc_4 = _loc_4 + 1;
                 }
-                delete this._aWaiting[event.uri.tag];
+                delete this._aWaiting[_loc_2];
             }
             return;
         }// end function
 
         private function onLoadFailedResource(event:ResourceErrorEvent) : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_2:* = event.uri.tag;
             _log.error("Unable to load " + event.uri + " (" + event.errorMsg + ")");
-            delete this._aResources[event.uri.tag];
-            this.addResource(event.uri.tag, _uri);
-            if (this._aWaiting[event.uri.tag])
+            delete this._aResources[_loc_2];
+            this.addResource(_loc_2, _uri);
+            if (this._aWaiting[_loc_2])
             {
-                _loc_2 = this._aWaiting[event.uri.tag]["ko"];
-                if (_loc_2)
+                _loc_3 = this._aWaiting[_loc_2]["ko"];
+                if (_loc_3)
                 {
-                    _loc_3 = _loc_2.length;
-                    _loc_4 = 0;
-                    while (_loc_4 < _loc_3)
+                    _loc_4 = _loc_3.length;
+                    _loc_5 = 0;
+                    while (_loc_5 < _loc_4)
                     {
                         
-                        (_loc_2[_loc_4] as Callback).exec();
-                        _loc_4++;
+                        (_loc_3[_loc_5] as Callback).exec();
+                        _loc_5++;
                     }
-                    delete this._aWaiting[event.uri.tag];
+                    delete this._aWaiting[_loc_2];
                 }
             }
             return;

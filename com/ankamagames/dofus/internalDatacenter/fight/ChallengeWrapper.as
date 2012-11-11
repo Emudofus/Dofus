@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.fight
+﻿package com.ankamagames.dofus.internalDatacenter.fight
 {
     import com.ankamagames.dofus.datacenter.challenges.*;
     import com.ankamagames.dofus.kernel.*;

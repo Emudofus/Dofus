@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types.effects
+﻿package com.ankamagames.tubul.types.effects
 {
     import com.ankamagames.tubul.interfaces.*;
 
@@ -85,14 +85,14 @@ package com.ankamagames.tubul.types.effects
 
         public function process(param1:Number) : Number
         {
-            var _loc_2:Number = NaN;
-            var _loc_3:Number = NaN;
-            var _loc_4:Number = NaN;
+            var _loc_2:* = NaN;
+            var _loc_3:* = NaN;
+            var _loc_4:* = NaN;
             _loc_2 = this._lfoPhase < 0.5 ? (this._lfoPhase * 2) : (2 - this._lfoPhase * 2);
             this._lfoPhase = this._lfoPhase + this._lfoAdd;
             if (this._lfoPhase >= 1)
             {
-                var _loc_5:String = this;
+                var _loc_5:* = this;
                 var _loc_6:* = this._lfoPhase - 1;
                 _loc_5._lfoPhase = _loc_6;
             }

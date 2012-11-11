@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
 
     public class AnimationModifierPriority extends Object

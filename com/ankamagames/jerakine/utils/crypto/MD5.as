@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.crypto
+﻿package com.ankamagames.jerakine.utils.crypto
 {
 
     public class MD5 extends Object
@@ -74,7 +74,7 @@ package com.ankamagames.jerakine.utils.crypto
             }
             var _loc_4:* = new Array(16);
             var _loc_5:* = new Array(16);
-            var _loc_6:Number = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < 16)
             {
                 
@@ -88,10 +88,10 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function rstr2hex(param1:String) : String
         {
-            var _loc_4:Number = NaN;
+            var _loc_4:* = NaN;
             var _loc_2:* = hexcase ? ("0123456789ABCDEF") : ("0123456789abcdef");
-            var _loc_3:String = "";
-            var _loc_5:Number = 0;
+            var _loc_3:* = "";
+            var _loc_5:* = 0;
             while (_loc_5 < param1.length)
             {
                 
@@ -104,12 +104,12 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function rstr2b64(param1:String) : String
         {
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_2:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-            var _loc_3:String = "";
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_2:* = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            var _loc_3:* = "";
             var _loc_4:* = param1.length;
-            var _loc_5:Number = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -135,12 +135,12 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function rstr2any(param1:String, param2:String) : String
         {
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Array = null;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = null;
             var _loc_3:* = param2.length;
-            var _loc_4:Array = [];
+            var _loc_4:* = [];
             var _loc_9:* = new Array(param1.length / 2);
             _loc_5 = 0;
             while (_loc_5 < _loc_9.length)
@@ -170,7 +170,7 @@ package com.ankamagames.jerakine.utils.crypto
                 _loc_4[_loc_4.length] = _loc_7;
                 _loc_9 = _loc_8;
             }
-            var _loc_10:String = "";
+            var _loc_10:* = "";
             _loc_5 = _loc_4.length - 1;
             while (_loc_5 >= 0)
             {
@@ -183,10 +183,10 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function str2rstr_utf8(param1:String) : String
         {
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
-            var _loc_2:String = "";
-            var _loc_3:Number = -1;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
+            var _loc_2:* = "";
+            var _loc_3:* = -1;
             while (++_loc_3 < param1.length)
             {
                 
@@ -222,8 +222,8 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function str2rstr_utf16le(param1:String) : String
         {
-            var _loc_2:String = "";
-            var _loc_3:Number = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 
@@ -235,8 +235,8 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function str2rstr_utf16be(param1:String) : String
         {
-            var _loc_2:String = "";
-            var _loc_3:Number = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 
@@ -248,7 +248,7 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function rstr2binl(param1:String) : Array
         {
-            var _loc_2:Number = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = new Array(param1.length >> 2);
             _loc_2 = 0;
             while (_loc_2 < _loc_3.length)
@@ -269,8 +269,8 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function binl2rstr(param1:Array) : String
         {
-            var _loc_2:String = "";
-            var _loc_3:Number = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length * 32)
             {
                 
@@ -282,17 +282,17 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function binl_md5(param1:Array, param2:Number) : Array
         {
-            var _loc_8:Number = NaN;
-            var _loc_9:Number = NaN;
-            var _loc_10:Number = NaN;
-            var _loc_11:Number = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_10:* = NaN;
+            var _loc_11:* = NaN;
             param1[param2 >> 5] = param1[param2 >> 5] | 128 << param2 % 32;
             param1[(param2 + 64 >>> 9 << 4) + 14] = param2;
-            var _loc_3:Number = 1732584193;
-            var _loc_4:Number = -271733879;
-            var _loc_5:Number = -1732584194;
-            var _loc_6:Number = 271733878;
-            var _loc_7:Number = 0;
+            var _loc_3:* = 1732584193;
+            var _loc_4:* = -271733879;
+            var _loc_5:* = -1732584194;
+            var _loc_6:* = 271733878;
+            var _loc_7:* = 0;
             while (_loc_7 < param1.length)
             {
                 

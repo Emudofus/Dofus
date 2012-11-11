@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.crypto
+﻿package com.ankamagames.jerakine.utils.crypto
 {
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.utils.*;
@@ -20,10 +20,10 @@ package com.ankamagames.jerakine.utils.crypto
 
         public function sign(param1:IDataInput) : ByteArray
         {
-            var _loc_2:ByteArray = null;
+            var _loc_2:* = null;
             if (!this._key.canSign)
             {
-                throw new Error("La clef fournit ne permet pas de signer des donn�es");
+                throw new Error("La clef fournit ne permet pas de signer des données");
             }
             if (param1 is ByteArray)
             {
@@ -43,7 +43,7 @@ package com.ankamagames.jerakine.utils.crypto
             var _loc_6:* = getTimer();
             _loc_4.writeUTFBytes(MD5.hash(_loc_2.readUTFBytes(_loc_2.bytesAvailable)));
             trace("Temps de hash pour signature : " + (getTimer() - _loc_6) + " ms");
-            var _loc_7:uint = 2;
+            var _loc_7:* = 2;
             while (_loc_7 < _loc_4.length)
             {
                 
@@ -125,8 +125,8 @@ package com.ankamagames.jerakine.utils.crypto
 
         private function traceData(param1:ByteArray) : void
         {
-            var _loc_2:Array = [];
-            var _loc_3:uint = 0;
+            var _loc_2:* = [];
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 

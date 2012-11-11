@@ -1,4 +1,4 @@
-package nochump.util.zip
+﻿package nochump.util.zip
 {
     import flash.events.*;
     import flash.utils.*;
@@ -36,8 +36,8 @@ package nochump.util.zip
 
         public function getInput(param1:ZipEntry, param2:Function = null) : ByteArray
         {
-            var _loc_5:ByteArray = null;
-            var _loc_6:Inflater = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             this.buf.position = this.locOffsetTable[param1.name] + ZipConstants.LOCHDR - 2;
             var _loc_3:* = this.buf.readShort();
             this.buf.position = this.buf.position + (param1.name.length + _loc_3);
@@ -81,13 +81,13 @@ package nochump.util.zip
 
         private function readEntries() : void
         {
-            var _loc_2:ByteArray = null;
-            var _loc_3:uint = 0;
-            var _loc_4:ZipEntry = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
             this.readEND();
             this.entryTable = new Dictionary();
             this.locOffsetTable = new Dictionary();
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             while (_loc_1 < this.entryList.length)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.actions.fight
+﻿package com.ankamagames.dofus.network.types.game.actions.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -61,7 +61,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
             param1.writeShort(this.markId);
             param1.writeByte(this.markType);
             param1.writeShort(this.cells.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.cells.length)
             {
                 
@@ -79,7 +79,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
 
         public function deserializeAs_GameActionMark(param1:IDataInput) : void
         {
-            var _loc_4:GameActionMarkedCell = null;
+            var _loc_4:* = null;
             this.markAuthorId = param1.readInt();
             this.markSpellId = param1.readInt();
             if (this.markSpellId < 0)
@@ -89,7 +89,7 @@ package com.ankamagames.dofus.network.types.game.actions.fight
             this.markId = param1.readShort();
             this.markType = param1.readByte();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

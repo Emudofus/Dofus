@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger
+﻿package com.ankamagames.jerakine.logger
 {
 
     final public class LogLevel extends Object

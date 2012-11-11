@@ -1,5 +1,6 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+﻿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
+    import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.berilia.factories.*;
@@ -181,7 +182,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                 {
                     imumsg = msg as InteractiveMapUpdateMessage;
                     this.clear();
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = imumsg.interactiveElements;
                     while (_loc_4 in _loc_3)
                     {
@@ -322,7 +323,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                 case msg is StatedMapUpdateMessage:
                 {
                     smumsg = msg as StatedMapUpdateMessage;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = smumsg.statedElements;
                     while (_loc_4 in _loc_3)
                     {
@@ -341,7 +342,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                 case msg is MapObstacleUpdateMessage:
                 {
                     moumsg = msg as MapObstacleUpdateMessage;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = moumsg.obstacles;
                     while (_loc_4 in _loc_3)
                     {
@@ -381,7 +382,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
         public function pulled() : Boolean
         {
             var _loc_1:* = undefined;
-            var _loc_2:TiphonSprite = null;
+            var _loc_2:* = null;
             for (_loc_1 in this._collectableSpritesToBeStopped)
             {
                 
@@ -410,8 +411,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function clear() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:Object = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = null;
             for each (_loc_1 in this._currentUsages)
             {
                 
@@ -425,11 +426,26 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             return;
         }// end function
 
+        public function getInteractiveElementsCells() : Vector.<uint>
+        {
+            var _loc_2:* = null;
+            var _loc_1:* = new Vector.<uint>;
+            for each (_loc_2 in this._ie)
+            {
+                
+                if (_loc_2 != null)
+                {
+                    _loc_1.push(_loc_2.position.cellId);
+                }
+            }
+            return _loc_1;
+        }// end function
+
         private function registerInteractive(param1:InteractiveElement, param2:int) : void
         {
-            var _loc_6:Boolean = false;
-            var _loc_7:String = null;
-            var _loc_8:InteractiveElement = null;
+            var _loc_6:* = false;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_3:* = Atouin.getInstance().getIdentifiedElement(param1.elementId);
             if (!_loc_3)
             {
@@ -487,7 +503,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function updateStatedElement(param1:StatedElement) : void
         {
-            var _loc_4:Interactive = null;
+            var _loc_4:* = null;
             var _loc_2:* = Atouin.getInstance().getIdentifiedElement(param1.elementId);
             if (!_loc_2)
             {
@@ -522,7 +538,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function findTiphonSprite(param1:DisplayObjectContainer) : TiphonSprite
         {
-            var _loc_3:DisplayObject = null;
+            var _loc_3:* = null;
             if (param1 is TiphonSprite)
             {
                 return param1 as TiphonSprite;
@@ -531,7 +547,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
             {
                 return null;
             }
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < param1.numChildren)
             {
                 
@@ -551,7 +567,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function highlightInteractiveApparence(param1:Sprite, param2:int, param3:Boolean = true) : void
         {
-            var _loc_5:LinkedCursorData = null;
+            var _loc_5:* = null;
             var _loc_4:* = this._ie[param1];
             if (!this._ie[param1])
             {
@@ -640,34 +656,34 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function click(event:MouseEvent) : void
         {
-            var _loc_5:String = null;
-            var _loc_6:InteractiveElementSkill = null;
-            var _loc_7:JobsApi = null;
-            var _loc_8:Skill = null;
-            var _loc_9:Array = null;
-            var _loc_10:InteractiveElementSkill = null;
-            var _loc_11:int = 0;
-            var _loc_12:int = 0;
-            var _loc_13:Object = null;
-            var _loc_14:Object = null;
-            var _loc_15:KnownJob = null;
-            var _loc_16:int = 0;
-            var _loc_17:WeaponWrapper = null;
-            var _loc_18:Job = null;
-            var _loc_19:Boolean = false;
-            var _loc_20:Object = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = 0;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = false;
+            var _loc_20:* = null;
             if (!this.roleplayWorldFrame || !this.roleplayContextFrame.hasWorldInteraction)
             {
                 return;
             }
             TooltipManager.hide();
             var _loc_2:* = this._ie[event.target as Sprite];
-            var _loc_3:Interactive = null;
+            var _loc_3:* = null;
             if (_loc_2.element.elementTypeId > 0)
             {
                 _loc_3 = Interactive.getInteractiveById(_loc_2.element.elementTypeId);
             }
-            var _loc_4:Array = [];
+            var _loc_4:* = [];
             for each (_loc_6 in _loc_2.element.enabledSkills)
             {
                 
@@ -751,7 +767,6 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                         _loc_9.push(_loc_14);
                     }
                 }
-                _log.debug("  Disabled skill : " + _loc_5 + " (UID: " + _loc_10.skillInstanceUid + ")");
                 _loc_4.push({id:_loc_10.skillId, instanceId:_loc_10.skillInstanceUid, name:_loc_5, enabled:false});
             }
             _loc_11 = 0;
@@ -783,18 +798,18 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function showInteractiveElementNotification(param1:Array) : void
         {
-            var _loc_2:String = null;
-            var _loc_3:Boolean = false;
-            var _loc_4:Object = null;
-            var _loc_5:String = null;
-            var _loc_6:Array = null;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
-            var _loc_9:Npc = null;
-            var _loc_10:Point = null;
-            var _loc_11:MapApi = null;
-            var _loc_12:String = null;
-            var _loc_13:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = false;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
             if (param1.length > 0)
             {
                 _loc_2 = "";
@@ -871,7 +886,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function getJobKnown(param1:Array) : Array
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             var _loc_2:* = new Array();
             for each (_loc_3 in param1)
             {
@@ -917,7 +932,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function interactiveUsageFinished(param1:int, param2:uint, param3:uint) : void
         {
-            var _loc_4:InteractiveElementActivationMessage = null;
+            var _loc_4:* = null;
             if (param1 == PlayedCharacterManager.getInstance().id)
             {
                 Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
@@ -938,9 +953,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public static function getCursor(param1:int, param2:Boolean = true, param3:Boolean = true) : Sprite
         {
-            var _loc_4:Sprite = null;
-            var _loc_5:Sprite = null;
-            var _loc_6:Class = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (!param2)
             {
                 if (cursorList[11])

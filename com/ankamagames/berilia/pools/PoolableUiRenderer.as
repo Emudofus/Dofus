@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.pools
+﻿package com.ankamagames.berilia.pools
 {
     import com.ankamagames.berilia.uiRender.*;
     import com.ankamagames.jerakine.pools.*;

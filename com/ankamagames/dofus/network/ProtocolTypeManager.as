@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network
+﻿package com.ankamagames.dofus.network
 {
     import com.ankamagames.dofus.network.types.game.achievement.*;
     import com.ankamagames.dofus.network.types.game.actions.fight.*;
@@ -47,6 +47,8 @@ package com.ankamagames.dofus.network
         public static function register() : void
         {
             StoreDataManager.getInstance().registerClass(new CharacterBaseInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new PartyMemberInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterHardcoreInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyInvitationMemberInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new EntityDispositionInformations(), true, true);
@@ -156,6 +158,8 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new HumanWithGuildInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new TaxCollectorInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new TaxCollectorInformationsInWaitForHelpState(), true, true);
+            StoreDataManager.getInstance().registerClass(new GroupMonsterStaticInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new GroupMonsterStaticInformationsWithAlternatives(), true, true);
             StoreDataManager.getInstance().registerClass(new QuestActiveInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new QuestActiveDetailedInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new QuestObjectiveInformations(), true, true);
@@ -172,6 +176,8 @@ package com.ankamagames.dofus.network
         }// end function
 
         _typesTypes[45] = CharacterBaseInformations;
+        _typesTypes[90] = PartyMemberInformations;
+        _typesTypes[391] = PartyMemberArenaInformations;
         _typesTypes[86] = CharacterHardcoreInformations;
         _typesTypes[376] = PartyInvitationMemberInformations;
         _typesTypes[60] = EntityDispositionInformations;
@@ -281,6 +287,8 @@ package com.ankamagames.dofus.network
         _typesTypes[153] = HumanWithGuildInformations;
         _typesTypes[167] = TaxCollectorInformations;
         _typesTypes[166] = TaxCollectorInformationsInWaitForHelpState;
+        _typesTypes[140] = GroupMonsterStaticInformations;
+        _typesTypes[396] = GroupMonsterStaticInformationsWithAlternatives;
         _typesTypes[381] = QuestActiveInformations;
         _typesTypes[382] = QuestActiveDetailedInformations;
         _typesTypes[385] = QuestObjectiveInformations;

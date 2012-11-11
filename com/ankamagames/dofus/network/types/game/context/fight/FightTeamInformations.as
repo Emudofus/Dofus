@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -45,7 +45,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
         {
             super.serializeAs_AbstractFightTeamInformations(param1);
             param1.writeShort(this.teamMembers.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.teamMembers.length)
             {
                 
@@ -64,11 +64,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
 
         public function deserializeAs_FightTeamInformations(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:FightTeamMemberInformations = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             super.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.utils.*;
@@ -34,7 +34,7 @@ package com.ankamagames.berilia.types.graphic
 
         public static function getGraphicElement(param1:GraphicContainer, param2:Array, param3:String = null) : GraphicElement
         {
-            var _loc_4:GraphicElement = null;
+            var _loc_4:* = null;
             if (param3 == null || _aGEIndex[param3] == null)
             {
                 _loc_4 = new GraphicElement(param1, param2, param3);

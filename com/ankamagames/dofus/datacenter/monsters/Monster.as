@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.monsters
+﻿package com.ankamagames.dofus.datacenter.monsters
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;

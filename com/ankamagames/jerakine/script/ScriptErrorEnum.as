@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.script
+﻿package com.ankamagames.jerakine.script
 {
 
     public class ScriptErrorEnum extends Object

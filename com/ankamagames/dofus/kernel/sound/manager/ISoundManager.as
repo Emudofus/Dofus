@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.manager
+﻿package com.ankamagames.dofus.kernel.sound.manager
 {
     import com.ankamagames.atouin.data.map.*;
     import com.ankamagames.jerakine.interfaces.*;

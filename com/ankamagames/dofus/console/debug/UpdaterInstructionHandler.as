@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.dofus.console.debug.frames.*;
     import com.ankamagames.dofus.kernel.*;
@@ -126,7 +126,7 @@ package com.ankamagames.dofus.console.debug
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
         {
-            var _loc_4:Array = [];
+            var _loc_4:* = [];
             switch(param1)
             {
                 default:

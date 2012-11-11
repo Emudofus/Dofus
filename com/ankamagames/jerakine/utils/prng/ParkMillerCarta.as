@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.prng
+﻿package com.ankamagames.jerakine.utils.prng
 {
     import com.ankamagames.jerakine.utils.prng.*;
 

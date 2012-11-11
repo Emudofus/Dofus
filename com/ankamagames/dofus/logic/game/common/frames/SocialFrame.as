@@ -1,8 +1,9 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.npcs.*;
+    import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.internalDatacenter.guild.*;
     import com.ankamagames.dofus.internalDatacenter.people.*;
     import com.ankamagames.dofus.internalDatacenter.world.*;
@@ -19,7 +20,6 @@ package com.ankamagames.dofus.logic.game.common.frames
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.game.chat.report.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.*;
     import com.ankamagames.dofus.network.messages.game.friend.*;
     import com.ankamagames.dofus.network.messages.game.guild.*;
     import com.ankamagames.dofus.network.messages.game.guild.tax.*;
@@ -34,6 +34,7 @@ package com.ankamagames.dofus.logic.game.common.frames
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import d2network.*;
     import flash.utils.*;
 
@@ -156,173 +157,171 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:GuildMembershipMessage = null;
-            var _loc_3:FriendsListMessage = null;
-            var _loc_4:FriendsListWithSpouseMessage = null;
-            var _loc_5:SpouseWrapper = null;
-            var _loc_6:IgnoredListMessage = null;
-            var _loc_7:OpenSocialAction = null;
-            var _loc_8:FriendsListRequestAction = null;
-            var _loc_9:EnemiesListRequestAction = null;
-            var _loc_10:SpouseRequestAction = null;
-            var _loc_11:AddFriendAction = null;
-            var _loc_12:FriendAddedMessage = null;
-            var _loc_13:FriendWrapper = null;
-            var _loc_14:FriendAddFailureMessage = null;
-            var _loc_15:String = null;
-            var _loc_16:AddEnemyAction = null;
-            var _loc_17:IgnoredAddedMessage = null;
-            var _loc_18:IgnoredAddFailureMessage = null;
-            var _loc_19:String = null;
-            var _loc_20:RemoveFriendAction = null;
-            var _loc_21:FriendDeleteRequestMessage = null;
-            var _loc_22:FriendDeleteResultMessage = null;
-            var _loc_23:String = null;
-            var _loc_24:FriendUpdateMessage = null;
-            var _loc_25:FriendWrapper = null;
-            var _loc_26:RemoveEnemyAction = null;
-            var _loc_27:IgnoredDeleteRequestMessage = null;
-            var _loc_28:IgnoredDeleteResultMessage = null;
-            var _loc_29:AddIgnoredAction = null;
-            var _loc_30:RemoveIgnoredAction = null;
-            var _loc_31:IgnoredDeleteRequestMessage = null;
-            var _loc_32:JoinFriendAction = null;
-            var _loc_33:FriendJoinRequestMessage = null;
-            var _loc_34:JoinSpouseAction = null;
-            var _loc_35:FriendSpouseFollowAction = null;
-            var _loc_36:FriendSpouseFollowWithCompassRequestMessage = null;
-            var _loc_37:FriendWarningSetAction = null;
-            var _loc_38:FriendSetWarnOnConnectionMessage = null;
-            var _loc_39:MemberWarningSetAction = null;
-            var _loc_40:GuildMemberSetWarnOnConnectionMessage = null;
-            var _loc_41:FriendOrGuildMemberLevelUpWarningSetAction = null;
-            var _loc_42:FriendSetWarnOnLevelGainMessage = null;
-            var _loc_43:SpouseStatusMessage = null;
-            var _loc_44:FriendWarnOnConnectionStateMessage = null;
-            var _loc_45:GuildMemberWarnOnConnectionStateMessage = null;
-            var _loc_46:FriendWarnOnLevelGainStateMessage = null;
-            var _loc_47:PartyFollowStatusUpdateMessage = null;
-            var _loc_48:GuildInformationsMembersMessage = null;
-            var _loc_49:GuildHousesInformationMessage = null;
-            var _loc_50:GuildCreationResultMessage = null;
-            var _loc_51:String = null;
-            var _loc_52:GuildInvitedMessage = null;
-            var _loc_53:GuildInvitationStateRecruterMessage = null;
-            var _loc_54:GuildInvitationStateRecrutedMessage = null;
-            var _loc_55:GuildJoinedMessage = null;
-            var _loc_56:String = null;
-            var _loc_57:GuildUIOpenedMessage = null;
-            var _loc_58:GuildInformationsGeneralMessage = null;
-            var _loc_59:GuildInformationsMemberUpdateMessage = null;
-            var _loc_60:GuildMember = null;
-            var _loc_61:GuildMemberLeavingMessage = null;
-            var _loc_62:uint = 0;
-            var _loc_63:GuildInfosUpgradeMessage = null;
-            var _loc_64:GuildFightPlayersHelpersJoinMessage = null;
-            var _loc_65:GuildFightPlayersHelpersLeaveMessage = null;
-            var _loc_66:GuildFightPlayersEnemiesListMessage = null;
-            var _loc_67:GuildFightPlayersEnemyRemoveMessage = null;
-            var _loc_68:TaxCollectorMovementMessage = null;
-            var _loc_69:String = null;
-            var _loc_70:String = null;
-            var _loc_71:WorldPointWrapper = null;
-            var _loc_72:String = null;
-            var _loc_73:String = null;
-            var _loc_74:String = null;
-            var _loc_75:TaxCollectorAttackedMessage = null;
-            var _loc_76:String = null;
-            var _loc_77:String = null;
-            var _loc_78:TaxCollectorAttackedResultMessage = null;
-            var _loc_79:String = null;
-            var _loc_80:String = null;
-            var _loc_81:WorldPointWrapper = null;
-            var _loc_82:int = 0;
-            var _loc_83:int = 0;
-            var _loc_84:TaxCollectorErrorMessage = null;
-            var _loc_85:String = null;
-            var _loc_86:TaxCollectorListMessage = null;
-            var _loc_87:TaxCollectorMovementAddMessage = null;
-            var _loc_88:Boolean = false;
-            var _loc_89:TaxCollectorMovementRemoveMessage = null;
-            var _loc_90:GuildInformationsPaddocksMessage = null;
-            var _loc_91:GuildPaddockBoughtMessage = null;
-            var _loc_92:GuildPaddockRemovedMessage = null;
-            var _loc_93:TaxCollectorDialogQuestionExtendedMessage = null;
-            var _loc_94:TaxCollectorDialogQuestionBasicMessage = null;
-            var _loc_95:GuildWrapper = null;
-            var _loc_96:ContactLookMessage = null;
-            var _loc_97:GuildGetInformationsAction = null;
-            var _loc_98:Boolean = false;
-            var _loc_99:GuildInvitationAction = null;
-            var _loc_100:GuildInvitationMessage = null;
-            var _loc_101:GuildInvitationByNameAction = null;
-            var _loc_102:GuildInvitationByNameMessage = null;
-            var _loc_103:GuildKickRequestAction = null;
-            var _loc_104:GuildKickRequestMessage = null;
-            var _loc_105:GuildChangeMemberParametersAction = null;
-            var _loc_106:Number = NaN;
-            var _loc_107:GuildChangeMemberParametersMessage = null;
-            var _loc_108:GuildSpellUpgradeRequestAction = null;
-            var _loc_109:GuildSpellUpgradeRequestMessage = null;
-            var _loc_110:GuildCharacsUpgradeRequestAction = null;
-            var _loc_111:GuildCharacsUpgradeRequestMessage = null;
-            var _loc_112:GuildFarmTeleportRequestAction = null;
-            var _loc_113:GuildPaddockTeleportRequestMessage = null;
-            var _loc_114:GuildHouseTeleportRequestAction = null;
-            var _loc_115:GuildHouseTeleportRequestMessage = null;
-            var _loc_116:GuildFightJoinRequestAction = null;
-            var _loc_117:GuildFightJoinRequestMessage = null;
-            var _loc_118:GuildFightTakePlaceRequestAction = null;
-            var _loc_119:GuildFightTakePlaceRequestMessage = null;
-            var _loc_120:GuildFightLeaveRequestAction = null;
-            var _loc_121:GuildFightLeaveRequestMessage = null;
-            var _loc_122:TaxCollectorHireRequestAction = null;
-            var _loc_123:TaxCollectorFireRequestAction = null;
-            var _loc_124:TaxCollectorFireRequestMessage = null;
-            var _loc_125:CharacterReportAction = null;
-            var _loc_126:CharacterReportMessage = null;
-            var _loc_127:ChatReportAction = null;
-            var _loc_128:ChatMessageReportMessage = null;
-            var _loc_129:ChatFrame = null;
-            var _loc_130:uint = 0;
-            var _loc_131:FriendInformations = null;
-            var _loc_132:FriendWrapper = null;
-            var _loc_133:FriendOnlineInformations = null;
-            var _loc_134:FriendInformations = null;
-            var _loc_135:FriendWrapper = null;
-            var _loc_136:* = undefined;
-            var _loc_137:EnemyWrapper = null;
-            var _loc_138:IgnoredOnlineInformations = null;
-            var _loc_139:FriendAddRequestMessage = null;
-            var _loc_140:IgnoredAddRequestMessage = null;
-            var _loc_141:EnemyWrapper = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
+            var _loc_39:* = null;
+            var _loc_40:* = null;
+            var _loc_41:* = null;
+            var _loc_42:* = null;
+            var _loc_43:* = null;
+            var _loc_44:* = null;
+            var _loc_45:* = null;
+            var _loc_46:* = null;
+            var _loc_47:* = null;
+            var _loc_48:* = null;
+            var _loc_49:* = null;
+            var _loc_50:* = null;
+            var _loc_51:* = null;
+            var _loc_52:* = null;
+            var _loc_53:* = null;
+            var _loc_54:* = null;
+            var _loc_55:* = null;
+            var _loc_56:* = null;
+            var _loc_57:* = null;
+            var _loc_58:* = null;
+            var _loc_59:* = null;
+            var _loc_60:* = null;
+            var _loc_61:* = null;
+            var _loc_62:* = 0;
+            var _loc_63:* = null;
+            var _loc_64:* = null;
+            var _loc_65:* = null;
+            var _loc_66:* = null;
+            var _loc_67:* = null;
+            var _loc_68:* = null;
+            var _loc_69:* = null;
+            var _loc_70:* = null;
+            var _loc_71:* = null;
+            var _loc_72:* = null;
+            var _loc_73:* = null;
+            var _loc_74:* = null;
+            var _loc_75:* = null;
+            var _loc_76:* = null;
+            var _loc_77:* = null;
+            var _loc_78:* = null;
+            var _loc_79:* = null;
+            var _loc_80:* = null;
+            var _loc_81:* = null;
+            var _loc_82:* = 0;
+            var _loc_83:* = 0;
+            var _loc_84:* = null;
+            var _loc_85:* = null;
+            var _loc_86:* = null;
+            var _loc_87:* = null;
+            var _loc_88:* = false;
+            var _loc_89:* = null;
+            var _loc_90:* = null;
+            var _loc_91:* = null;
+            var _loc_92:* = null;
+            var _loc_93:* = null;
+            var _loc_94:* = null;
+            var _loc_95:* = null;
+            var _loc_96:* = null;
+            var _loc_97:* = null;
+            var _loc_98:* = false;
+            var _loc_99:* = null;
+            var _loc_100:* = null;
+            var _loc_101:* = null;
+            var _loc_102:* = null;
+            var _loc_103:* = null;
+            var _loc_104:* = null;
+            var _loc_105:* = null;
+            var _loc_106:* = NaN;
+            var _loc_107:* = null;
+            var _loc_108:* = null;
+            var _loc_109:* = null;
+            var _loc_110:* = null;
+            var _loc_111:* = null;
+            var _loc_112:* = null;
+            var _loc_113:* = null;
+            var _loc_114:* = null;
+            var _loc_115:* = null;
+            var _loc_116:* = null;
+            var _loc_117:* = null;
+            var _loc_118:* = null;
+            var _loc_119:* = null;
+            var _loc_120:* = null;
+            var _loc_121:* = null;
+            var _loc_122:* = null;
+            var _loc_123:* = null;
+            var _loc_124:* = null;
+            var _loc_125:* = null;
+            var _loc_126:* = null;
+            var _loc_127:* = null;
+            var _loc_128:* = 0;
+            var _loc_129:* = null;
+            var _loc_130:* = null;
+            var _loc_131:* = null;
+            var _loc_132:* = null;
+            var _loc_133:* = null;
+            var _loc_134:* = undefined;
+            var _loc_135:* = null;
+            var _loc_136:* = null;
+            var _loc_137:* = null;
+            var _loc_138:* = null;
+            var _loc_139:* = null;
+            var _loc_140:* = undefined;
+            var _loc_141:* = undefined;
             var _loc_142:* = undefined;
             var _loc_143:* = undefined;
             var _loc_144:* = undefined;
             var _loc_145:* = undefined;
-            var _loc_146:* = undefined;
-            var _loc_147:* = undefined;
-            var _loc_148:IgnoredAddRequestMessage = null;
-            var _loc_149:GuildMember = null;
-            var _loc_150:HouseInformationsForGuild = null;
-            var _loc_151:GuildHouseWrapper = null;
-            var _loc_152:int = 0;
-            var _loc_153:int = 0;
-            var _loc_154:GuildMember = null;
-            var _loc_155:String = null;
-            var _loc_156:CharacterMinimalPlusLookInformations = null;
-            var _loc_157:GuildGetInformationsMessage = null;
-            var _loc_158:TaxCollectorWrapper = null;
-            var _loc_159:TaxCollectorInFightWrapper = null;
-            var _loc_160:TaxCollectorFightersWrapper = null;
-            var _loc_161:TaxCollectorHireRequestMessage = null;
-            var _loc_162:GuildHouseUpdateInformationMessage = null;
-            var _loc_163:Boolean = false;
-            var _loc_164:GuildHouseWrapper = null;
-            var _loc_165:GuildHouseWrapper = null;
-            var _loc_166:GuildHouseRemoveMessage = null;
-            var _loc_167:Boolean = false;
-            var _loc_168:int = 0;
+            var _loc_146:* = null;
+            var _loc_147:* = null;
+            var _loc_148:* = null;
+            var _loc_149:* = null;
+            var _loc_150:* = 0;
+            var _loc_151:* = 0;
+            var _loc_152:* = null;
+            var _loc_153:* = null;
+            var _loc_154:* = null;
+            var _loc_155:* = null;
+            var _loc_156:* = null;
+            var _loc_157:* = null;
+            var _loc_158:* = null;
+            var _loc_159:* = null;
+            var _loc_160:* = null;
+            var _loc_161:* = false;
+            var _loc_162:* = null;
+            var _loc_163:* = null;
+            var _loc_164:* = null;
+            var _loc_165:* = false;
+            var _loc_166:* = 0;
             switch(true)
             {
                 case param1 is GuildMembershipMessage:
@@ -330,11 +329,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_2 = param1 as GuildMembershipMessage;
                     if (this._guild != null)
                     {
-                        this._guild.update(_loc_2.guildInfo.guildId, _loc_2.guildInfo.guildName, _loc_2.guildInfo.guildEmblem, _loc_2.memberRights);
+                        this._guild.update(_loc_2.guildInfo.guildId, _loc_2.guildInfo.guildName, _loc_2.guildInfo.guildEmblem, _loc_2.memberRights, _loc_2.enabled);
                     }
                     else
                     {
-                        this._guild = GuildWrapper.create(_loc_2.guildInfo.guildId, _loc_2.guildInfo.guildName, _loc_2.guildInfo.guildEmblem, _loc_2.memberRights);
+                        this._guild = GuildWrapper.create(_loc_2.guildInfo.guildId, _loc_2.guildInfo.guildName, _loc_2.guildInfo.guildEmblem, _loc_2.memberRights, _loc_2.enabled);
                     }
                     this._hasGuild = true;
                     KernelEventsManager.getInstance().processCallback(SocialHookList.GuildMembership);
@@ -345,17 +344,17 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_3 = param1 as FriendsListMessage;
                     this._friendsList = new Array();
-                    for each (_loc_131 in _loc_3.friendsList)
+                    for each (_loc_129 in _loc_3.friendsList)
                     {
                         
-                        if (_loc_131 is FriendOnlineInformations)
+                        if (_loc_129 is FriendOnlineInformations)
                         {
-                            _loc_133 = _loc_131 as FriendOnlineInformations;
-                            AccountManager.getInstance().setAccount(_loc_133.playerName, _loc_133.accountId, _loc_133.accountName);
-                            ChatAutocompleteNameManager.getInstance().addEntry((_loc_131 as FriendOnlineInformations).playerName, 2);
+                            _loc_131 = _loc_129 as FriendOnlineInformations;
+                            AccountManager.getInstance().setAccount(_loc_131.playerName, _loc_131.accountId, _loc_131.accountName);
+                            ChatAutocompleteNameManager.getInstance().addEntry((_loc_129 as FriendOnlineInformations).playerName, 2);
                         }
-                        _loc_132 = new FriendWrapper(_loc_131);
-                        this._friendsList.push(_loc_132);
+                        _loc_130 = new FriendWrapper(_loc_129);
+                        this._friendsList.push(_loc_130);
                     }
                     if (this._spouse)
                     {
@@ -371,15 +370,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_4 = param1 as FriendsListWithSpouseMessage;
                     _loc_5 = new SpouseWrapper(_loc_4.spouse);
                     this._spouse = _loc_5;
-                    for each (_loc_134 in _loc_4.friendsList)
+                    for each (_loc_132 in _loc_4.friendsList)
                     {
                         
-                        if (_loc_134 is FriendOnlineInformations)
+                        if (_loc_132 is FriendOnlineInformations)
                         {
-                            ChatAutocompleteNameManager.getInstance().addEntry((_loc_134 as FriendOnlineInformations).playerName, 2);
+                            ChatAutocompleteNameManager.getInstance().addEntry((_loc_132 as FriendOnlineInformations).playerName, 2);
                         }
-                        _loc_135 = new FriendWrapper(_loc_134);
-                        this._friendsList.push(_loc_135);
+                        _loc_133 = new FriendWrapper(_loc_132);
+                        this._friendsList.push(_loc_133);
                     }
                     KernelEventsManager.getInstance().processCallback(SocialHookList.FriendsListUpdated);
                     KernelEventsManager.getInstance().processCallback(SocialHookList.SpouseUpdated);
@@ -389,16 +388,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     this._enemiesList = new Array();
                     _loc_6 = param1 as IgnoredListMessage;
-                    for each (_loc_136 in _loc_6.ignoredList)
+                    for each (_loc_134 in _loc_6.ignoredList)
                     {
                         
-                        if (_loc_136 is IgnoredOnlineInformations)
+                        if (_loc_134 is IgnoredOnlineInformations)
                         {
-                            _loc_138 = _loc_131 as IgnoredOnlineInformations;
-                            AccountManager.getInstance().setAccount(_loc_138.playerName, _loc_138.accountId, _loc_138.accountName);
+                            _loc_136 = _loc_129 as IgnoredOnlineInformations;
+                            AccountManager.getInstance().setAccount(_loc_136.playerName, _loc_136.accountId, _loc_136.accountName);
                         }
-                        _loc_137 = new EnemyWrapper(_loc_136);
-                        this._enemiesList.push(_loc_137);
+                        _loc_135 = new EnemyWrapper(_loc_134);
+                        this._enemiesList.push(_loc_135);
                     }
                     KernelEventsManager.getInstance().processCallback(SocialHookList.EnemiesListUpdated);
                     return true;
@@ -437,9 +436,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     else if (_loc_11.name != PlayedCharacterManager.getInstance().infos.name)
                     {
-                        _loc_139 = new FriendAddRequestMessage();
-                        _loc_139.initFriendAddRequestMessage(_loc_11.name);
-                        ConnectionsHandler.getConnection().send(_loc_139);
+                        _loc_137 = new FriendAddRequestMessage();
+                        _loc_137.initFriendAddRequestMessage(_loc_11.name);
+                        ConnectionsHandler.getConnection().send(_loc_137);
                     }
                     else
                     {
@@ -453,8 +452,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_12 = param1 as FriendAddedMessage;
                     if (_loc_12.friendAdded is FriendOnlineInformations)
                     {
-                        _loc_133 = _loc_12.friendAdded as FriendOnlineInformations;
-                        AccountManager.getInstance().setAccount(_loc_133.playerName, _loc_133.accountId, _loc_133.accountName);
+                        _loc_131 = _loc_12.friendAdded as FriendOnlineInformations;
+                        AccountManager.getInstance().setAccount(_loc_131.playerName, _loc_131.accountId, _loc_131.accountName);
                         ChatAutocompleteNameManager.getInstance().addEntry((_loc_12.friendAdded as FriendInformations).accountName, 2);
                     }
                     KernelEventsManager.getInstance().processCallback(SocialHookList.FriendAdded, true);
@@ -511,9 +510,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     else if (_loc_16.name != PlayedCharacterManager.getInstance().infos.name)
                     {
-                        _loc_140 = new IgnoredAddRequestMessage();
-                        _loc_140.initIgnoredAddRequestMessage(_loc_16.name);
-                        ConnectionsHandler.getConnection().send(_loc_140);
+                        _loc_138 = new IgnoredAddRequestMessage();
+                        _loc_138.initIgnoredAddRequestMessage(_loc_16.name);
+                        ConnectionsHandler.getConnection().send(_loc_138);
                     }
                     else
                     {
@@ -527,22 +526,22 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_17 = param1 as IgnoredAddedMessage;
                     if (_loc_17.ignoreAdded is IgnoredOnlineInformations)
                     {
-                        _loc_138 = _loc_17.ignoreAdded as IgnoredOnlineInformations;
-                        AccountManager.getInstance().setAccount(_loc_138.playerName, _loc_138.accountId, _loc_138.accountName);
+                        _loc_136 = _loc_17.ignoreAdded as IgnoredOnlineInformations;
+                        AccountManager.getInstance().setAccount(_loc_136.playerName, _loc_136.accountId, _loc_136.accountName);
                     }
                     if (!_loc_17.session)
                     {
                         KernelEventsManager.getInstance().processCallback(SocialHookList.EnemyAdded, true);
-                        _loc_141 = new EnemyWrapper(_loc_17.ignoreAdded);
-                        this._enemiesList.push(_loc_141);
+                        _loc_139 = new EnemyWrapper(_loc_17.ignoreAdded);
+                        this._enemiesList.push(_loc_139);
                         KernelEventsManager.getInstance().processCallback(SocialHookList.EnemiesListUpdated);
                     }
                     else
                     {
-                        for each (_loc_142 in this._ignoredList)
+                        for each (_loc_140 in this._ignoredList)
                         {
                             
-                            if (_loc_142.name == _loc_17.ignoreAdded.accountName)
+                            if (_loc_140.name == _loc_17.ignoreAdded.accountName)
                             {
                                 return true;
                             }
@@ -605,12 +604,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                     KernelEventsManager.getInstance().processCallback(SocialHookList.FriendRemoved, _loc_22.success);
                     if (_loc_22.success)
                     {
-                        for (_loc_143 in this._friendsList)
+                        for (_loc_141 in this._friendsList)
                         {
                             
-                            if (this._friendsList[_loc_143].name == _loc_22.name)
+                            if (this._friendsList[_loc_141].name == _loc_22.name)
                             {
-                                this._friendsList.splice(_loc_143, 1);
+                                this._friendsList.splice(_loc_141, 1);
                             }
                         }
                         KernelEventsManager.getInstance().processCallback(SocialHookList.FriendsListUpdated);
@@ -622,15 +621,20 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_24 = param1 as FriendUpdateMessage;
                     _loc_25 = new FriendWrapper(_loc_24.friendUpdated);
-                    for each (_loc_144 in this._friendsList)
+                    for each (_loc_142 in this._friendsList)
                     {
                         
-                        if (_loc_144.name == _loc_25.name)
+                        if (_loc_142.name == _loc_25.name)
                         {
-                            _loc_144 = _loc_25;
+                            _loc_142 = _loc_25;
+                            break;
                         }
                     }
                     KernelEventsManager.getInstance().processCallback(SocialHookList.FriendsListUpdated);
+                    if (AirScanner.hasAir() && _loc_25.online && this._warnOnFrienConnec)
+                    {
+                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.FRIEND_CONNECTION, [_loc_25.name, _loc_25.playerName]);
+                    }
                     return true;
                 }
                 case param1 is RemoveEnemyAction:
@@ -649,12 +653,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                         KernelEventsManager.getInstance().processCallback(SocialHookList.EnemyRemoved, _loc_28.success);
                         if (_loc_28.success)
                         {
-                            for (_loc_145 in this._enemiesList)
+                            for (_loc_143 in this._enemiesList)
                             {
                                 
-                                if (this._enemiesList[_loc_145].name == _loc_28.name)
+                                if (this._enemiesList[_loc_143].name == _loc_28.name)
                                 {
-                                    this._enemiesList.splice(_loc_145, 1);
+                                    this._enemiesList.splice(_loc_143, 1);
                                 }
                             }
                         }
@@ -662,12 +666,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     else if (_loc_28.success)
                     {
-                        for (_loc_146 in this._ignoredList)
+                        for (_loc_144 in this._ignoredList)
                         {
                             
-                            if (this._ignoredList[_loc_146].name == _loc_28.name)
+                            if (this._ignoredList[_loc_144].name == _loc_28.name)
                             {
-                                this._ignoredList.splice(_loc_146, 1);
+                                this._ignoredList.splice(_loc_144, 1);
                             }
                         }
                         KernelEventsManager.getInstance().processCallback(SocialHookList.IgnoredRemoved);
@@ -684,18 +688,18 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     else if (_loc_29.name != PlayedCharacterManager.getInstance().infos.name)
                     {
-                        for each (_loc_147 in this._ignoredList)
+                        for each (_loc_145 in this._ignoredList)
                         {
                             
-                            _log.debug(" " + _loc_147.playerName + " == " + _loc_29.name);
-                            if (_loc_147.playerName == _loc_29.name)
+                            _log.debug(" " + _loc_145.playerName + " == " + _loc_29.name);
+                            if (_loc_145.playerName == _loc_29.name)
                             {
                                 return true;
                             }
                         }
-                        _loc_148 = new IgnoredAddRequestMessage();
-                        _loc_148.initIgnoredAddRequestMessage(_loc_29.name, true);
-                        ConnectionsHandler.getConnection().send(_loc_148);
+                        _loc_146 = new IgnoredAddRequestMessage();
+                        _loc_146.initIgnoredAddRequestMessage(_loc_29.name, true);
+                        ConnectionsHandler.getConnection().send(_loc_146);
                     }
                     else
                     {
@@ -768,6 +772,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                     if (!this._hasSpouse)
                     {
                         this._spouse = null;
+                        KernelEventsManager.getInstance().processCallback(SocialHookList.SpouseFollowStatusUpdated, false);
+                        KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_SPOUSE);
                     }
                     KernelEventsManager.getInstance().processCallback(SocialHookList.SpouseUpdated);
                     return true;
@@ -793,44 +799,27 @@ package com.ankamagames.dofus.logic.game.common.frames
                     KernelEventsManager.getInstance().processCallback(SocialHookList.FriendOrGuildMemberLevelUpWarningState, _loc_46.enable);
                     return true;
                 }
-                case param1 is PartyFollowStatusUpdateMessage:
-                {
-                    _loc_47 = param1 as PartyFollowStatusUpdateMessage;
-                    if (_loc_47.success)
-                    {
-                        if (_loc_47.followedId == 0)
-                        {
-                            KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_PARTY + "_" + PlayedCharacterManager.getInstance().followingPlayerId);
-                            PlayedCharacterManager.getInstance().followingPlayerId = -1;
-                        }
-                        else
-                        {
-                            PlayedCharacterManager.getInstance().followingPlayerId = _loc_47.followedId;
-                        }
-                    }
-                    return true;
-                }
                 case param1 is GuildInformationsMembersMessage:
                 {
-                    _loc_48 = param1 as GuildInformationsMembersMessage;
-                    for each (_loc_149 in _loc_48.members)
+                    _loc_47 = param1 as GuildInformationsMembersMessage;
+                    for each (_loc_147 in _loc_47.members)
                     {
                         
-                        ChatAutocompleteNameManager.getInstance().addEntry(_loc_149.name, 2);
+                        ChatAutocompleteNameManager.getInstance().addEntry(_loc_147.name, 2);
                     }
-                    this._guildMembers = _loc_48.members;
+                    this._guildMembers = _loc_47.members;
                     KernelEventsManager.getInstance().processCallback(SocialHookList.GuildInformationsMembers, this._guildMembers);
                     return true;
                 }
                 case param1 is GuildHousesInformationMessage:
                 {
-                    _loc_49 = param1 as GuildHousesInformationMessage;
+                    _loc_48 = param1 as GuildHousesInformationMessage;
                     this._guildHouses = new Vector.<GuildHouseWrapper>;
-                    for each (_loc_150 in _loc_49.housesInformations)
+                    for each (_loc_148 in _loc_48.housesInformations)
                     {
                         
-                        _loc_151 = GuildHouseWrapper.create(_loc_150);
-                        this._guildHouses.push(_loc_151);
+                        _loc_149 = GuildHouseWrapper.create(_loc_148);
+                        this._guildHouses.push(_loc_149);
                     }
                     this._guildHousesList = true;
                     this._guildHousesListUpdate = true;
@@ -840,7 +829,14 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is GuildCreationStartedMessage:
                 {
                     Kernel.getWorker().addFrame(this._guildDialogFrame);
-                    KernelEventsManager.getInstance().processCallback(SocialHookList.GuildCreationStarted);
+                    KernelEventsManager.getInstance().processCallback(SocialHookList.GuildCreationStarted, false, false);
+                    return true;
+                }
+                case param1 is GuildModificationStartedMessage:
+                {
+                    _loc_49 = param1 as GuildModificationStartedMessage;
+                    Kernel.getWorker().addFrame(this._guildDialogFrame);
+                    KernelEventsManager.getInstance().processCallback(SocialHookList.GuildCreationStarted, _loc_49.canChangeName, _loc_49.canChangeEmblem);
                     return true;
                 }
                 case param1 is GuildCreationResultMessage:
@@ -883,6 +879,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         }
                         case GuildCreationResultEnum.GUILD_CREATE_OK:
                         {
+                            Kernel.getWorker().removeFrame(this._guildDialogFrame);
                             this._hasGuild = true;
                             break;
                         }
@@ -909,7 +906,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_53 = param1 as GuildInvitationStateRecruterMessage;
                     KernelEventsManager.getInstance().processCallback(SocialHookList.GuildInvitationStateRecruter, _loc_53.invitationState, _loc_53.recrutedName);
-                    Kernel.getWorker().addFrame(this._guildDialogFrame);
+                    if (_loc_53.invitationState == 2 || _loc_53.invitationState == 3)
+                    {
+                        Kernel.getWorker().removeFrame(this._guildDialogFrame);
+                    }
                     return true;
                 }
                 case param1 is GuildInvitationStateRecrutedMessage:
@@ -922,7 +922,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_55 = param1 as GuildJoinedMessage;
                     this._hasGuild = true;
-                    this._guild = GuildWrapper.create(_loc_55.guildInfo.guildId, _loc_55.guildInfo.guildName, _loc_55.guildInfo.guildEmblem, _loc_55.memberRights);
+                    this._guild = GuildWrapper.create(_loc_55.guildInfo.guildId, _loc_55.guildInfo.guildName, _loc_55.guildInfo.guildEmblem, _loc_55.memberRights, _loc_55.enabled);
                     KernelEventsManager.getInstance().processCallback(SocialHookList.GuildJoined, _loc_55.guildInfo.guildEmblem, _loc_55.guildInfo.guildName, _loc_55.memberRights);
                     KernelEventsManager.getInstance().processCallback(SocialHookList.GuildMembershipUpdated, true);
                     _loc_56 = I18n.getUiText("ui.guild.JoinGuildMessage", [_loc_55.guildInfo.guildName]);
@@ -941,11 +941,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is GuildInformationsGeneralMessage:
                 {
                     _loc_58 = param1 as GuildInformationsGeneralMessage;
-                    KernelEventsManager.getInstance().processCallback(SocialHookList.GuildInformationsGeneral, _loc_58.enabled, _loc_58.expLevelFloor, _loc_58.experience, _loc_58.expNextLevelFloor, _loc_58.level, _loc_58.abandonnedPaddock);
+                    KernelEventsManager.getInstance().processCallback(SocialHookList.GuildInformationsGeneral, _loc_58.enabled, _loc_58.expLevelFloor, _loc_58.experience, _loc_58.expNextLevelFloor, _loc_58.level, _loc_58.creationDate, _loc_58.abandonnedPaddock);
                     this._guild.level = _loc_58.level;
                     this._guild.experience = _loc_58.experience;
                     this._guild.expLevelFloor = _loc_58.expLevelFloor;
                     this._guild.expNextLevelFloor = _loc_58.expNextLevelFloor;
+                    this._guild.creationDate = _loc_58.creationDate;
                     return true;
                 }
                 case param1 is GuildInformationsMemberUpdateMessage:
@@ -953,22 +954,22 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_59 = param1 as GuildInformationsMemberUpdateMessage;
                     if (this._guildMembers != null)
                     {
-                        _loc_152 = this._guildMembers.length;
-                        _loc_153 = 0;
-                        while (_loc_153 < _loc_152)
+                        _loc_150 = this._guildMembers.length;
+                        _loc_151 = 0;
+                        while (_loc_151 < _loc_150)
                         {
                             
-                            _loc_60 = this._guildMembers[_loc_153];
+                            _loc_60 = this._guildMembers[_loc_151];
                             if (_loc_60.id == _loc_59.member.id)
                             {
-                                this._guildMembers[_loc_153] = _loc_59.member;
+                                this._guildMembers[_loc_151] = _loc_59.member;
                                 if (_loc_60.id == PlayedCharacterManager.getInstance().id)
                                 {
                                     this.guild.memberRightsNumber = _loc_59.member.rights;
                                 }
                                 break;
                             }
-                            _loc_153++;
+                            _loc_151++;
                         }
                     }
                     else
@@ -989,10 +990,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_61 = param1 as GuildMemberLeavingMessage;
                     _loc_62 = 0;
-                    for each (_loc_154 in this._guildMembers)
+                    for each (_loc_152 in this._guildMembers)
                     {
                         
-                        if (_loc_61.memberId == _loc_154.id)
+                        if (_loc_61.memberId == _loc_152.id)
                         {
                             this._guildMembers.splice(_loc_62, 1);
                         }
@@ -1029,8 +1030,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_65 = param1 as GuildFightPlayersHelpersLeaveMessage;
                     if (this._autoLeaveHelpers)
                     {
-                        _loc_155 = I18n.getUiText("ui.social.guild.autoFightLeave");
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_155, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                        _loc_153 = I18n.getUiText("ui.social.guild.autoFightLeave");
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_153, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     }
                     TaxCollectorsManager.getInstance().removeFighter(_loc_65.fightId, _loc_65.playerId, true);
                     return true;
@@ -1038,10 +1039,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is GuildFightPlayersEnemiesListMessage:
                 {
                     _loc_66 = param1 as GuildFightPlayersEnemiesListMessage;
-                    for each (_loc_156 in _loc_66.playerInfo)
+                    for each (_loc_154 in _loc_66.playerInfo)
                     {
                         
-                        TaxCollectorsManager.getInstance().addFighter(_loc_66.fightId, _loc_156, false, false);
+                        TaxCollectorsManager.getInstance().addFighter(_loc_66.fightId, _loc_154, false, false);
                     }
                     KernelEventsManager.getInstance().processCallback(SocialHookList.GuildFightEnnemiesListUpdate, _loc_66.fightId);
                     KernelEventsManager.getInstance().processCallback(SocialHookList.TaxCollectorUpdate, _loc_66.fightId);
@@ -1087,7 +1088,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_75 = param1 as TaxCollectorAttackedMessage;
                     _loc_76 = TaxCollectorFirstname.getTaxCollectorFirstnameById(_loc_75.firstNameId).firstname + " " + TaxCollectorName.getTaxCollectorNameById(_loc_75.lastNameId).name;
                     _loc_77 = I18n.getUiText("ui.social.TaxCollectorAttacked", [_loc_76, _loc_75.worldX + "," + _loc_75.worldY]);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, "{hook,OpenSocial,1,2::" + _loc_77 + "}", ChatActivableChannelsEnum.CHANNEL_GUILD, TimeManager.getInstance().getTimestamp());
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, "{openSocial,1,2::" + _loc_77 + "}", ChatActivableChannelsEnum.CHANNEL_GUILD, TimeManager.getInstance().getTimestamp());
+                    if (AirScanner.hasAir())
+                    {
+                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.TAXCOLLECTOR_ATTACK, [_loc_76, _loc_75.worldX, _loc_75.worldY]);
+                    }
                     return true;
                 }
                 case param1 is TaxCollectorAttackedResultMessage:
@@ -1228,7 +1233,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is TaxCollectorDialogQuestionBasicMessage:
                 {
                     _loc_94 = param1 as TaxCollectorDialogQuestionBasicMessage;
-                    _loc_95 = GuildWrapper.create(0, _loc_94.guildInfo.guildName, null, 0);
+                    _loc_95 = GuildWrapper.create(0, _loc_94.guildInfo.guildName, null, 0, true);
                     KernelEventsManager.getInstance().processCallback(SocialHookList.TaxCollectorDialogQuestionBasic, _loc_95.guildName);
                     return true;
                 }
@@ -1272,15 +1277,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     if (_loc_98)
                     {
-                        _loc_157 = new GuildGetInformationsMessage();
-                        _loc_157.initGuildGetInformationsMessage(_loc_97.infoType);
-                        ConnectionsHandler.getConnection().send(_loc_157);
+                        _loc_155 = new GuildGetInformationsMessage();
+                        _loc_155.initGuildGetInformationsMessage(_loc_97.infoType);
+                        ConnectionsHandler.getConnection().send(_loc_155);
                     }
                     return true;
                 }
                 case param1 is GuildInvitationAction:
                 {
                     _loc_99 = param1 as GuildInvitationAction;
+                    Kernel.getWorker().addFrame(this._guildDialogFrame);
                     _loc_100 = new GuildInvitationMessage();
                     _loc_100.initGuildInvitationMessage(_loc_99.targetId);
                     ConnectionsHandler.getConnection().send(_loc_100);
@@ -1289,6 +1295,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is GuildInvitationByNameAction:
                 {
                     _loc_101 = param1 as GuildInvitationByNameAction;
+                    Kernel.getWorker().addFrame(this._guildDialogFrame);
                     _loc_102 = new GuildInvitationByNameMessage();
                     _loc_102.initGuildInvitationByNameMessage(_loc_101.target);
                     ConnectionsHandler.getConnection().send(_loc_102);
@@ -1365,20 +1372,20 @@ package com.ankamagames.dofus.logic.game.common.frames
                     this._autoLeaveHelpers = false;
                     if (_loc_120.warning)
                     {
-                        for each (_loc_158 in TaxCollectorsManager.getInstance().taxCollectors)
+                        for each (_loc_156 in TaxCollectorsManager.getInstance().taxCollectors)
                         {
                             
-                            if (_loc_158.state == 1)
+                            if (_loc_156.state == 1)
                             {
-                                _loc_159 = TaxCollectorsManager.getInstance().taxCollectorsFighters[_loc_158.uniqueId];
-                                for each (_loc_160 in _loc_159.allyCharactersInformations)
+                                _loc_157 = TaxCollectorsManager.getInstance().taxCollectorsFighters[_loc_156.uniqueId];
+                                for each (_loc_158 in _loc_157.allyCharactersInformations)
                                 {
                                     
-                                    if (_loc_160.playerCharactersInformations.id == _loc_120.characterId)
+                                    if (_loc_158.playerCharactersInformations.id == _loc_120.characterId)
                                     {
                                         this._autoLeaveHelpers = true;
                                         _loc_121 = new GuildFightLeaveRequestMessage();
-                                        _loc_121.initGuildFightLeaveRequestMessage(_loc_158.uniqueId, _loc_120.characterId);
+                                        _loc_121.initGuildFightLeaveRequestMessage(_loc_156.uniqueId, _loc_120.characterId);
                                         ConnectionsHandler.getConnection().send(_loc_121);
                                     }
                                 }
@@ -1398,9 +1405,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_122 = param1 as TaxCollectorHireRequestAction;
                     if (TaxCollectorsManager.getInstance().taxCollectorHireCost <= PlayedCharacterManager.getInstance().characteristics.kamas)
                     {
-                        _loc_161 = new TaxCollectorHireRequestMessage();
-                        _loc_161.initTaxCollectorHireRequestMessage();
-                        ConnectionsHandler.getConnection().send(_loc_161);
+                        _loc_159 = new TaxCollectorHireRequestMessage();
+                        _loc_159.initTaxCollectorHireRequestMessage();
+                        ConnectionsHandler.getConnection().send(_loc_159);
                     }
                     else
                     {
@@ -1408,35 +1415,27 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     return true;
                 }
-                case param1 is TaxCollectorFireRequestAction:
-                {
-                    _loc_123 = param1 as TaxCollectorFireRequestAction;
-                    _loc_124 = new TaxCollectorFireRequestMessage();
-                    _loc_124.initTaxCollectorFireRequestMessage(_loc_123.taxCollectorId);
-                    ConnectionsHandler.getConnection().send(_loc_124);
-                    return true;
-                }
                 case param1 is GuildHouseUpdateInformationMessage:
                 {
                     if (this._guildHousesList)
                     {
-                        _loc_162 = param1 as GuildHouseUpdateInformationMessage;
-                        _loc_163 = false;
-                        for each (_loc_164 in this._guildHouses)
+                        _loc_160 = param1 as GuildHouseUpdateInformationMessage;
+                        _loc_161 = false;
+                        for each (_loc_162 in this._guildHouses)
                         {
                             
-                            if (_loc_164.houseId == _loc_162.housesInformations.houseId)
+                            if (_loc_162.houseId == _loc_160.housesInformations.houseId)
                             {
-                                _loc_164.update(_loc_162.housesInformations);
-                                _loc_163 = true;
+                                _loc_162.update(_loc_160.housesInformations);
+                                _loc_161 = true;
                             }
                             KernelEventsManager.getInstance().processCallback(SocialHookList.GuildHousesUpdate);
                         }
-                        if (!_loc_163)
+                        if (!_loc_161)
                         {
-                            _loc_165 = GuildHouseWrapper.create(_loc_162.housesInformations);
-                            this._guildHouses.push(_loc_165);
-                            KernelEventsManager.getInstance().processCallback(SocialHookList.GuildHouseAdd, _loc_165);
+                            _loc_163 = GuildHouseWrapper.create(_loc_160.housesInformations);
+                            this._guildHouses.push(_loc_163);
+                            KernelEventsManager.getInstance().processCallback(SocialHookList.GuildHouseAdd, _loc_163);
                         }
                         this._guildHousesListUpdate = true;
                     }
@@ -1446,40 +1445,40 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     if (this._guildHousesList)
                     {
-                        _loc_166 = param1 as GuildHouseRemoveMessage;
-                        _loc_167 = false;
-                        _loc_168 = 0;
-                        while (_loc_168 < this._guildHouses.length)
+                        _loc_164 = param1 as GuildHouseRemoveMessage;
+                        _loc_165 = false;
+                        _loc_166 = 0;
+                        while (_loc_166 < this._guildHouses.length)
                         {
                             
-                            if (this._guildHouses[_loc_168].houseId == _loc_166.houseId)
+                            if (this._guildHouses[_loc_166].houseId == _loc_164.houseId)
                             {
-                                this._guildHouses.splice(_loc_168, 1);
+                                this._guildHouses.splice(_loc_166, 1);
                                 break;
                             }
-                            _loc_168++;
+                            _loc_166++;
                         }
                         this._guildHousesListUpdate = true;
-                        KernelEventsManager.getInstance().processCallback(SocialHookList.GuildHouseRemoved, _loc_166.houseId);
+                        KernelEventsManager.getInstance().processCallback(SocialHookList.GuildHouseRemoved, _loc_164.houseId);
                     }
                     return true;
                 }
                 case param1 is CharacterReportAction:
                 {
-                    _loc_125 = param1 as CharacterReportAction;
-                    _loc_126 = new CharacterReportMessage();
-                    _loc_126.initCharacterReportMessage(_loc_125.reportedId, _loc_125.reason);
-                    ConnectionsHandler.getConnection().send(_loc_126);
+                    _loc_123 = param1 as CharacterReportAction;
+                    _loc_124 = new CharacterReportMessage();
+                    _loc_124.initCharacterReportMessage(_loc_123.reportedId, _loc_123.reason);
+                    ConnectionsHandler.getConnection().send(_loc_124);
                     return true;
                 }
                 case param1 is ChatReportAction:
                 {
-                    _loc_127 = param1 as ChatReportAction;
-                    _loc_128 = new ChatMessageReportMessage();
-                    _loc_129 = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
-                    _loc_130 = _loc_129.getTimestampServerByRealTimestamp(_loc_127.timestamp);
-                    _loc_128.initChatMessageReportMessage(_loc_127.name, _loc_127.message, _loc_130, _loc_127.channel, _loc_127.fingerprint, _loc_127.reason);
-                    ConnectionsHandler.getConnection().send(_loc_128);
+                    _loc_125 = param1 as ChatReportAction;
+                    _loc_126 = new ChatMessageReportMessage();
+                    _loc_127 = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
+                    _loc_128 = _loc_127.getTimestampServerByRealTimestamp(_loc_125.timestamp);
+                    _loc_126.initChatMessageReportMessage(_loc_125.name, _loc_125.message, _loc_128, _loc_125.channel, _loc_125.fingerprint, _loc_125.reason);
+                    ConnectionsHandler.getConnection().send(_loc_126);
                     return true;
                 }
                 default:
@@ -1498,7 +1497,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function isIgnored(param1:String, param2:int = 0) : Boolean
         {
-            var _loc_4:IgnoredWrapper = null;
+            var _loc_4:* = null;
             var _loc_3:* = AccountManager.getInstance().getAccountName(param1);
             for each (_loc_4 in this._ignoredList)
             {
@@ -1513,9 +1512,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function isFriend(param1:String) : Boolean
         {
-            var _loc_4:FriendWrapper = null;
+            var _loc_4:* = null;
             var _loc_2:* = this._friendsList.length;
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -1531,9 +1530,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function isEnemy(param1:String) : Boolean
         {
-            var _loc_4:EnemyWrapper = null;
+            var _loc_4:* = null;
             var _loc_2:* = this._enemiesList.length;
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

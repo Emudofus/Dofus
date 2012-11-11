@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import com.ankamagames.jerakine.utils.system.*;
     import flash.display.*;
@@ -13,8 +13,6 @@ package com.ankamagames.jerakine.utils.display
         private static var _rootContainer:DisplayObjectContainer;
         private static var _customMouseX:int = -77777;
         private static var _customMouseY:int = -77777;
-        private static var _lastStageX:Number;
-        private static var _lastStageY:Number;
         private static var _setQualityIsEnable:Boolean;
 
         public function StageShareManager()
@@ -38,6 +36,11 @@ package com.ankamagames.jerakine.utils.display
             return _stage;
         }// end function
 
+        public static function get windowScale() : Number
+        {
+            return Math.min(stage.stageWidth / startWidth, stage.stageHeight / startHeight);
+        }// end function
+
         public static function set stage(param1:Stage) : void
         {
             _stage = param1;
@@ -56,6 +59,33 @@ package com.ankamagames.jerakine.utils.display
             _stage.quality = StageQuality.MEDIUM;
             _setQualityIsEnable = _stage.quality.toLowerCase() == StageQuality.MEDIUM;
             _stage.quality = _loc_1;
+            return;
+        }// end function
+
+        public static function setFullScreen(param1:Boolean, param2:Boolean = false) : void
+        {
+            if (AirScanner.hasAir())
+            {
+                if (param1)
+                {
+                    if (!param2)
+                    {
+                        StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
+                    }
+                    else
+                    {
+                        StageShareManager.stage["nativeWindow"].maximize();
+                    }
+                }
+                else if (!param2)
+                {
+                    StageShareManager.stage.displayState = StageDisplayState.NORMAL;
+                }
+                else
+                {
+                    StageShareManager.stage["nativeWindow"].minimize();
+                }
+            }
             return;
         }// end function
 
@@ -126,7 +156,7 @@ package com.ankamagames.jerakine.utils.display
 
         private static function displayStateChangeHandler(event:NativeWindowDisplayStateEvent) : void
         {
-            var _loc_2:NativeWindow = null;
+            var _loc_2:* = null;
             if (event.beforeDisplayState == NativeWindowDisplayState.MINIMIZED)
             {
                 if (AirScanner.hasAir())

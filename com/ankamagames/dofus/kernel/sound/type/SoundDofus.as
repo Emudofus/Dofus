@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.type
+ï»¿package com.ankamagames.dofus.kernel.sound.type
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.kernel.sound.manager.*;
@@ -59,31 +59,31 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function get duration() : Number
         {
-            _log.warn("Cette propriété (\'duration\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'duration\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return 0;
         }// end function
 
         public function get stereo() : Boolean
         {
-            _log.warn("Cette propriété (\'stereo\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'stereo\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return false;
         }// end function
 
         public function get totalLoops() : int
         {
-            _log.warn("Cette propriété (\'totalLoops\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'totalLoops\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return -1;
         }// end function
 
         public function get currentLoop() : uint
         {
-            _log.warn("Cette propriété (\'currentLoop\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'currentLoop\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return 0;
         }// end function
 
         public function get pan() : Number
         {
-            _log.warn("Cette propriété (\'pan\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'pan\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return this._pan;
         }// end function
 
@@ -208,7 +208,7 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function get effectiveVolume() : Number
         {
-            _log.warn("Cette propriété (\'effectiveVolume\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'effectiveVolume\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return 0;
         }// end function
 
@@ -219,13 +219,13 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function get eventDispatcher() : EventDispatcher
         {
-            _log.warn("Cette propriété (\'eventDispatcher\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'eventDispatcher\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return null;
         }// end function
 
         public function get sound() : Sound
         {
-            _log.warn("Cette propriété (\'sound\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'sound\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return null;
         }// end function
 
@@ -246,7 +246,7 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function get bus() : IAudioBus
         {
-            _log.warn("Cette propriété (\'bus\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'bus\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return Tubul.getInstance().getBus(this.busId);
         }// end function
 
@@ -257,7 +257,7 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function get noCutSilence() : Boolean
         {
-            _log.warn("Cette propriété (\'noCutSilence\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'noCutSilence\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return this._noCutSilence;
         }// end function
 
@@ -272,7 +272,7 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function get isPlaying() : Boolean
         {
-            _log.warn("Cette propriété (\'isPlaying\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
+            _log.warn("Cette propriÃ©tÃ© (\'isPlaying\') ne renvoie pas une valeur correcte ! La classe SoundDofus sert juste de passerelle entre DOFUS et REG !");
             return true;
         }// end function
 
@@ -309,12 +309,12 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function play(param1:Boolean = false, param2:int = 0, param3:VolumeFadeEffect = null, param4:VolumeFadeEffect = null) : void
         {
-            var _loc_5:Number = -1;
-            var _loc_6:Number = -1;
-            var _loc_7:Number = -1;
-            var _loc_8:Number = -1;
-            var _loc_9:Number = -1;
-            var _loc_10:Number = -1;
+            var _loc_5:* = -1;
+            var _loc_6:* = -1;
+            var _loc_7:* = -1;
+            var _loc_8:* = -1;
+            var _loc_9:* = -1;
+            var _loc_10:* = -1;
             if (param3)
             {
                 _loc_5 = param3.beginningValue;
@@ -333,9 +333,9 @@ package com.ankamagames.dofus.kernel.sound.type
 
         public function stop(param1:VolumeFadeEffect = null) : void
         {
-            var _loc_2:Number = -1;
-            var _loc_3:Number = -1;
-            var _loc_4:Number = -1;
+            var _loc_2:* = -1;
+            var _loc_3:* = -1;
+            var _loc_4:* = -1;
             if (param1 != null)
             {
                 _loc_2 = param1.beginningValue;

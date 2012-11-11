@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.dofus.datacenter.monsters.*;
     import com.ankamagames.dofus.datacenter.npcs.*;
@@ -23,8 +23,8 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:AdminQuietCommandMessage = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             switch(param2)
             {
                 case "additem":
@@ -81,9 +81,9 @@ package com.ankamagames.dofus.console.debug
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
         {
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(param1)
             {
                 case "looklike":
@@ -114,8 +114,8 @@ package com.ankamagames.dofus.console.debug
 
         private function parseMonster() : void
         {
-            var _loc_2:Monster = null;
-            var _loc_3:Npc = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             _monsters = new Dictionary();
             _monsterNameList = [];
             var _loc_1:* = Monster.getMonsters();

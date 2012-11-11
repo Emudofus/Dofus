@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.dofus.datacenter.monsters.*;
@@ -21,10 +21,10 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showMonster(param1:int, param2:int = 0) : Sprite
         {
-            var _loc_4:DisplayObject = null;
-            var _loc_5:Rectangle = null;
-            var _loc_6:Dictionary = null;
-            var _loc_7:Object = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_3:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             if (_loc_3)
             {
@@ -32,7 +32,7 @@ package com.ankamagames.dofus.logic.common.managers
                 for each (_loc_7 in _loc_6)
                 {
                     
-                    if (_loc_7 is GameRolePlayGroupMonsterInformations && (_loc_7.mainCreatureGenericId == param1 || param1 == -1))
+                    if (_loc_7 is GameRolePlayGroupMonsterInformations && (_loc_7.staticInfos.mainCreatureLightInfos.creatureGenericId == param1 || param1 == -1))
                     {
                         _loc_4 = DofusEntities.getEntity(GameRolePlayGroupMonsterInformations(_loc_7).contextualId) as DisplayObject;
                         if (_loc_4 && _loc_4.stage)

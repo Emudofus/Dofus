@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.jerakine.network.*;

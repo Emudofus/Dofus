@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel
+﻿package com.ankamagames.dofus.kernel
 {
 
     final public class PanicMessages extends Object

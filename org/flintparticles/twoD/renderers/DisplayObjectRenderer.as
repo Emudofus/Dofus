@@ -1,4 +1,4 @@
-package org.flintparticles.twoD.renderers
+﻿package org.flintparticles.twoD.renderers
 {
     import flash.display.*;
     import org.flintparticles.common.particles.*;
@@ -15,10 +15,10 @@ package org.flintparticles.twoD.renderers
 
         override protected function renderParticles(param1:Array) : void
         {
-            var _loc_2:Particle2D = null;
-            var _loc_3:DisplayObject = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_4:* = param1.length;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

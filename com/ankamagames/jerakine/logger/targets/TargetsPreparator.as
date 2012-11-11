@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger.targets
+﻿package com.ankamagames.jerakine.logger.targets
 {
 
     public class TargetsPreparator extends Object

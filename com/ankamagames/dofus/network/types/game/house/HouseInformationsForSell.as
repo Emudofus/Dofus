@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.house
+﻿package com.ankamagames.dofus.network.types.game.house
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -95,7 +95,7 @@ package com.ankamagames.dofus.network.types.game.house
             param1.writeByte(this.nbRoom);
             param1.writeByte(this.nbChest);
             param1.writeShort(this.skillListIds.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.skillListIds.length)
             {
                 
@@ -119,7 +119,7 @@ package com.ankamagames.dofus.network.types.game.house
 
         public function deserializeAs_HouseInformationsForSell(param1:IDataInput) : void
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             this.modelId = param1.readInt();
             if (this.modelId < 0)
             {
@@ -145,7 +145,7 @@ package com.ankamagames.dofus.network.types.game.house
             this.nbRoom = param1.readByte();
             this.nbChest = param1.readByte();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

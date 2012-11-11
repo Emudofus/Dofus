@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.protocols.impl
+﻿package com.ankamagames.jerakine.resources.protocols.impl
 {
     import com.ankamagames.jerakine.newCache.*;
     import com.ankamagames.jerakine.resources.*;
@@ -100,7 +100,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
 
         private function onComplete(event:Event) : void
         {
-            var _loc_2:ZipProtocol = null;
+            var _loc_2:* = null;
             for each (_loc_2 in _loadingZips[this._uri.path])
             {
                 
@@ -122,7 +122,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
 
         private function onError(event:ErrorEvent) : void
         {
-            var _loc_2:ZipProtocol = null;
+            var _loc_2:* = null;
             for each (_loc_2 in _loadingZips[this._uri.path])
             {
                 
@@ -135,7 +135,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
 
         private function onProgress(event:ProgressEvent) : void
         {
-            var _loc_2:ZipProtocol = null;
+            var _loc_2:* = null;
             for each (_loc_2 in _loadingZips[this._uri.path])
             {
                 

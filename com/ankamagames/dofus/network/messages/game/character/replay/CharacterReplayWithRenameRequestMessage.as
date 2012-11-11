@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.character.replay
+﻿package com.ankamagames.dofus.network.messages.game.character.replay
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

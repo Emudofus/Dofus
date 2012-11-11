@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.interfaces
+﻿package com.ankamagames.jerakine.interfaces
 {
     import com.ankamagames.jerakine.types.*;
 

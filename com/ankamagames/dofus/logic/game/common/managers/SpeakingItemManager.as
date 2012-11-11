@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.managers
+﻿package com.ankamagames.dofus.logic.game.common.managers
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.livingObjects.*;
@@ -73,15 +73,15 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function triggerEvent(param1:int) : void
         {
-            var _loc_4:ItemWrapper = null;
-            var _loc_8:String = null;
-            var _loc_9:int = 0;
-            var _loc_10:Number = NaN;
-            var _loc_11:Boolean = false;
-            var _loc_12:Number = NaN;
-            var _loc_13:SpeakingItemText = null;
-            var _loc_14:Array = null;
-            var _loc_15:LivingObjectMessageRequestMessage = null;
+            var _loc_4:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = NaN;
+            var _loc_11:* = false;
+            var _loc_12:* = NaN;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
             if (!Kernel.getWorker().getFrame(ChatFrame))
             {
                 return;
@@ -104,7 +104,7 @@ package com.ankamagames.dofus.logic.game.common.managers
             {
                 return;
             }
-            var _loc_16:String = this;
+            var _loc_16:* = this;
             var _loc_17:* = this._nextMessageCount - 1;
             _loc_16._nextMessageCount = _loc_17;
             this._nextMessageCount = this._nextMessageCount - (_loc_3.length - 1) / 4;

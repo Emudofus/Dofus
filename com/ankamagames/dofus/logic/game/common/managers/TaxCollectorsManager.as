@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.managers
+﻿package com.ankamagames.dofus.logic.game.common.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -57,7 +57,7 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function setTaxCollectors(param1:Vector.<TaxCollectorInformations>) : void
         {
-            var _loc_2:TaxCollectorInformations = null;
+            var _loc_2:* = null;
             for each (_loc_2 in param1)
             {
                 
@@ -73,7 +73,7 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function setTaxCollectorsFighters(param1:Vector.<TaxCollectorFightersInformation>) : void
         {
-            var _loc_2:TaxCollectorFightersInformation = null;
+            var _loc_2:* = null;
             for each (_loc_2 in param1)
             {
                 
@@ -104,7 +104,7 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function addTaxCollector(param1:TaxCollectorInformations) : Boolean
         {
-            var _loc_2:Boolean = false;
+            var _loc_2:* = false;
             if (this._taxCollectors[param1.uniqueId])
             {
                 this._taxCollectors[param1.uniqueId].update(param1);
@@ -170,14 +170,14 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function removeFighter(param1:int, param2:int, param3:Boolean, param4:Boolean = true) : void
         {
-            var _loc_7:TaxCollectorFightersWrapper = null;
-            var _loc_8:TaxCollectorFightersWrapper = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_5:* = this._taxCollectorsInFight[param1];
             if (!this._taxCollectorsInFight[param1])
             {
                 _log.error("Error ! Fighter " + param2 + " cannot be removed from unknown fight " + param1 + ".");
             }
-            var _loc_6:uint = 0;
+            var _loc_6:* = 0;
             switch(param3)
             {
                 case true:

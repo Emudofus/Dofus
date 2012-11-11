@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.connection
+﻿package com.ankamagames.dofus.network.messages.connection
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.version.*;
@@ -9,7 +9,7 @@ package com.ankamagames.dofus.network.messages.connection
     public class IdentificationMessage extends NetworkMessage implements INetworkMessage
     {
         private var _isInitialized:Boolean = false;
-        public var version:Version;
+        public var version:VersionExtended;
         public var lang:String = "";
         public var login:String = "";
         public var credentials:Vector.<int>;
@@ -21,7 +21,7 @@ package com.ankamagames.dofus.network.messages.connection
 
         public function IdentificationMessage()
         {
-            this.version = new Version();
+            this.version = new VersionExtended();
             this.credentials = new Vector.<int>;
             return;
         }// end function
@@ -36,7 +36,7 @@ package com.ankamagames.dofus.network.messages.connection
             return 4;
         }// end function
 
-        public function initIdentificationMessage(param1:Version = null, param2:String = "", param3:String = "", param4:Vector.<int> = null, param5:int = 0, param6:Boolean = false, param7:Boolean = false, param8:Boolean = false) : IdentificationMessage
+        public function initIdentificationMessage(param1:VersionExtended = null, param2:String = "", param3:String = "", param4:Vector.<int> = null, param5:int = 0, param6:Boolean = false, param7:Boolean = false, param8:Boolean = false) : IdentificationMessage
         {
             this.version = param1;
             this.lang = param2;
@@ -52,7 +52,7 @@ package com.ankamagames.dofus.network.messages.connection
 
         override public function reset() : void
         {
-            this.version = new Version();
+            this.version = new VersionExtended();
             this.login = "";
             this.credentials = new Vector.<int>;
             this.serverId = 0;
@@ -85,16 +85,16 @@ package com.ankamagames.dofus.network.messages.connection
 
         public function serializeAs_IdentificationMessage(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.autoconnect);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.useCertificate);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.useLoginToken);
             param1.writeByte(_loc_2);
-            this.version.serializeAs_Version(param1);
+            this.version.serializeAs_VersionExtended(param1);
             param1.writeUTF(this.lang);
             param1.writeUTF(this.login);
             param1.writeShort(this.credentials.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.credentials.length)
             {
                 
@@ -113,17 +113,17 @@ package com.ankamagames.dofus.network.messages.connection
 
         public function deserializeAs_IdentificationMessage(param1:IDataInput) : void
         {
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             var _loc_2:* = param1.readByte();
             this.autoconnect = BooleanByteWrapper.getFlag(_loc_2, 0);
             this.useCertificate = BooleanByteWrapper.getFlag(_loc_2, 1);
             this.useLoginToken = BooleanByteWrapper.getFlag(_loc_2, 2);
-            this.version = new Version();
+            this.version = new VersionExtended();
             this.version.deserialize(param1);
             this.lang = param1.readUTF();
             this.login = param1.readUTF();
             var _loc_3:* = param1.readUnsignedShort();
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types.sounds
+ï»¿package com.ankamagames.tubul.types.sounds
 {
     import __AS3__.vec.*;
     import com.*;
@@ -72,7 +72,7 @@ package com.ankamagames.tubul.types.sounds
             {
                 return this._soundWrapper.duration;
             }
-            _log.warn("La valeur de la propriété duration est fausse, attention !");
+            _log.warn("La valeur de la propriÃ©tÃ© duration est fausse, attention !");
             return 0;
         }// end function
 
@@ -251,8 +251,8 @@ package com.ankamagames.tubul.types.sounds
 
         public function removeEffect(param1:IEffect) : void
         {
-            var _loc_3:IEffect = null;
-            var _loc_2:uint = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             for each (_loc_3 in this._effects)
             {
                 
@@ -267,7 +267,7 @@ package com.ankamagames.tubul.types.sounds
 
         public function play(param1:Boolean = false, param2:int = 1, param3:VolumeFadeEffect = null, param4:VolumeFadeEffect = null) : void
         {
-            var _loc_6:Callback = null;
+            var _loc_6:* = null;
             if (this.bus == null)
             {
                 return;
@@ -302,7 +302,7 @@ package com.ankamagames.tubul.types.sounds
             this._soundWrapper.addEventListener(Event.SOUND_COMPLETE, this.onSoundComplete);
             this._soundWrapper.addEventListener(LoopEvent.SOUND_LOOP, this.onSoundLoop);
             this.applyParam();
-            var _loc_5:* = "Play / file : " + this._uri.fileName + " / id : " + this._id + " / vol. réel : " + Math.round(this.effectiveVolume * 1000) / 1000 + " / vol. : " + Math.round(this._volume * 1000) / 1000;
+            var _loc_5:* = "Play / file : " + this._uri.fileName + " / id : " + this._id + " / vol. rÃ©el : " + Math.round(this.effectiveVolume * 1000) / 1000 + " / vol. : " + Math.round(this._volume * 1000) / 1000;
             if (this is LocalizedSound)
             {
                 _loc_5 = _loc_5 + " / vol. max : " + (this as LocalizedSound).volumeMax;
@@ -385,8 +385,8 @@ package com.ankamagames.tubul.types.sounds
 
         public function clone() : ISound
         {
-            var _loc_1:ISound = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             if (this is LocalizedSound)
             {
                 _loc_2 = EnumSoundType.LOCALIZED_SOUND;
@@ -464,7 +464,7 @@ package com.ankamagames.tubul.types.sounds
 
         private function processQueueFunction() : void
         {
-            var _loc_2:Callback = null;
+            var _loc_2:* = null;
             var _loc_1:* = this._onLoadingComplete.length;
             if (_loc_1 > 0)
             {

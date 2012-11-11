@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.factories
+﻿package com.ankamagames.berilia.factories
 {
     import com.ankamagames.berilia.frames.*;
     import com.ankamagames.berilia.managers.*;
@@ -46,7 +46,7 @@ package com.ankamagames.berilia.factories
             return PROTOCOL_BOLD[param1] ? (true) : (false);
         }// end function
 
-        public static function createHyperlink(param1:TextField, param2:Boolean = false) : void
+        public static function createHyperlink(param1, param2:Boolean = false) : void
         {
             var _loc_3:* = decode(param1.htmlText, true, param2 ? (param1) : (null));
             param1.htmlText = _loc_3;
@@ -63,19 +63,19 @@ package com.ankamagames.berilia.factories
 
         public static function decode(param1:String, param2:Boolean = true, param3:TextField = null) : String
         {
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
-            var _loc_10:Array = null;
-            var _loc_11:String = null;
-            var _loc_12:Array = null;
-            var _loc_13:String = null;
-            var _loc_14:Function = null;
-            var _loc_15:String = null;
-            var _loc_16:String = null;
-            var _loc_17:String = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
             var _loc_4:* = param1;
             while (true)
             {
@@ -158,8 +158,8 @@ package com.ankamagames.berilia.factories
 
         public static function process(event:TextEvent) : void
         {
-            var _loc_3:Function = null;
-            var _loc_4:Function = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             lastClickEventFrame = FrameIdManager.frameId;
             StageShareManager.stage.focus = StageShareManager.stage;
             var _loc_2:* = event.text.split(",");

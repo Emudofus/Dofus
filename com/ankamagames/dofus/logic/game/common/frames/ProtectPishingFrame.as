@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.adobe.crypto.*;
     import com.ankamagames.berilia.components.*;
@@ -52,8 +52,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:Input = null;
-            var _loc_3:Object = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             switch(true)
             {
                 case param1 is ChangeMessage:
@@ -91,7 +91,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function onTextInput(event:TextEvent) : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             this._globalBuffer = this._globalBuffer + event.text;
             if (!(event.target is TextField && TextField(event.target).parent is Input && Input(TextField(event.target).parent).getUi() && !Input(TextField(event.target).parent).getUi().uiModule.trusted))
             {
@@ -146,7 +146,7 @@ package com.ankamagames.dofus.logic.game.common.frames
         private function detectHash(param1:String, param2:String, param3:uint) : Boolean
         {
             var _loc_4:* = param1.length - param3 + 1;
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -161,9 +161,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         protected function onChange(event:Event) : void
         {
-            var _loc_5:uint = 0;
-            var _loc_6:String = null;
-            var _loc_7:uint = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             var _loc_2:* = getTimer();
             var _loc_3:* = event.target as TextField;
             if (!_loc_3)

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
@@ -20,8 +20,8 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         public function Graph(param1:String, param2:uint = 16777215)
         {
-            var _loc_3:TextFormat = null;
-            var _loc_4:TextField = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             this.indice = param1;
             this.color = param2;
             this.points = new Vector.<int>;

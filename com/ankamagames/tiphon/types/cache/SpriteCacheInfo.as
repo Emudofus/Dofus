@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types.cache
+﻿package com.ankamagames.tiphon.types.cache
 {
     import com.ankamagames.tiphon.display.*;
     import com.ankamagames.tiphon.types.look.*;

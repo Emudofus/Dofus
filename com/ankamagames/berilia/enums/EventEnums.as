@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.enums
+﻿package com.ankamagames.berilia.enums
 {
 
     public class EventEnums extends Object

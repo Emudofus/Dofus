@@ -1,4 +1,4 @@
-package gs
+﻿package gs
 {
 
     public class OverwriteManager extends Object
@@ -30,10 +30,10 @@ package gs
 
         public static function manageOverwrites(param1:TweenLite, param2:Array) : void
         {
-            var _loc_7:int = 0;
-            var _loc_8:TweenLite = null;
-            var _loc_9:Object = null;
-            var _loc_10:String = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_3:* = param1.vars;
             var _loc_4:* = _loc_3.overwrite == undefined ? (mode) : (int(_loc_3.overwrite));
             if ((_loc_3.overwrite == undefined ? (mode) : (int(_loc_3.overwrite))) < 2 || param2 == null)
@@ -41,7 +41,7 @@ package gs
                 return;
             }
             var _loc_5:* = param1.startTime;
-            var _loc_6:Array = [];
+            var _loc_6:* = [];
             _loc_7 = param2.length - 1;
             while (_loc_7 > -1)
             {
@@ -111,8 +111,8 @@ package gs
 
         public static function killVars(param1:Object, param2:Object, param3:Array, param4:Array, param5:Array) : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:String = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
             _loc_6 = param4.length - 1;
             while (_loc_6 > -1)
             {

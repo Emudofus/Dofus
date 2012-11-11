@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.enum
+﻿package com.ankamagames.tubul.enum
 {
 
     public class EventListenerPriority extends Object

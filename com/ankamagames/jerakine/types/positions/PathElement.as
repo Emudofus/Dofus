@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types.positions
+﻿package com.ankamagames.jerakine.types.positions
 {
 
     public class PathElement extends Object
@@ -42,9 +42,14 @@ package com.ankamagames.jerakine.types.positions
             return;
         }// end function
 
+        public function get cellId() : uint
+        {
+            return this._oStep.cellId;
+        }// end function
+
         public function toString() : String
         {
-            return "[PathElement(x:" + this._oStep.x + ", y:" + this._oStep.y + ", orientation:" + this._nOrientation + ")]";
+            return "[PathElement(cellId:" + this.cellId + ", x:" + this._oStep.x + ", y:" + this._oStep.y + ", orientation:" + this._nOrientation + ")]";
         }// end function
 
     }

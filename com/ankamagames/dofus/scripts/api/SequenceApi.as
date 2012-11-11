@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.scripts.api
+﻿package com.ankamagames.dofus.scripts.api
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.types.sequences.*;
@@ -62,7 +62,7 @@ package com.ankamagames.dofus.scripts.api
 
         public static function CreateParableGfxMovementStep(param1:FxRunner, param2:IMovable, param3:MapPoint, param4:Number = 100, param5:Number = 0.5, param6:int = 0, param7:Boolean = true) : ParableGfxMovementStep
         {
-            var _loc_8:int = 0;
+            var _loc_8:* = 0;
             var _loc_9:* = TiphonSprite(param1.caster).parent;
             while (_loc_9)
             {
@@ -78,12 +78,12 @@ package com.ankamagames.dofus.scripts.api
 
         public static function CreateAddGfxInLineStep(param1:SpellFxRunner, param2:uint, param3:MapPoint, param4:MapPoint, param5:Number = 0, param6:uint = 0, param7:Number = 0, param8:Number = 0, param9:Boolean = false, param10:Boolean = false, param11:Boolean = false, param12:Boolean = false, param13:Boolean = false) : AddGfxInLineStep
         {
-            var _loc_16:Vector.<uint> = null;
-            var _loc_17:uint = 0;
-            var _loc_18:uint = 0;
-            var _loc_19:EffectInstance = null;
-            var _loc_20:IZone = null;
-            var _loc_21:Cross = null;
+            var _loc_16:* = null;
+            var _loc_17:* = 0;
+            var _loc_18:* = 0;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
             var _loc_14:* = param1.castingSpell.spell.spellLevels.indexOf(param1.castingSpell.spellRank.id);
             var _loc_15:* = 1 + (param7 + (param8 - param7) * _loc_14 / 6) / 10;
             if (param12)

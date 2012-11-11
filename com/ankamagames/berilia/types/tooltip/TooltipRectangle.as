@@ -1,9 +1,10 @@
-package com.ankamagames.berilia.types.tooltip
+﻿package com.ankamagames.berilia.types.tooltip
 {
+    import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.jerakine.interfaces.*;
     import flash.geom.*;
 
-    public class TooltipRectangle extends Object implements IRectangle
+    public class TooltipRectangle extends Object implements IRectangle, IModuleUtil
     {
         private var _x:Number;
         private var _y:Number;

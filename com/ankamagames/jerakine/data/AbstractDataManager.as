@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.logger.*;
@@ -27,7 +27,7 @@ package com.ankamagames.jerakine.data
         {
             var _loc_5:* = undefined;
             var _loc_6:* = undefined;
-            var _loc_7:CustomSharedObject = null;
+            var _loc_7:* = null;
             var _loc_2:* = this._soPrefix + param1;
             if (this._cacheKey.contains(_loc_2))
             {
@@ -55,9 +55,9 @@ package com.ankamagames.jerakine.data
 
         public function getObjects() : Array
         {
-            var _loc_3:String = null;
-            var _loc_4:uint = 0;
-            var _loc_5:CustomSharedObject = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_1:* = StoreDataManager.getInstance().getData(JerakineConstants.DATASTORE_FILES_INFO, this._soPrefix + "_filelist");
             if (!_loc_1)
             {

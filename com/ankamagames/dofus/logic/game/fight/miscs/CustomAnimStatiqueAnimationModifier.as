@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.miscs
+﻿package com.ankamagames.dofus.logic.game.fight.miscs
 {
     import com.ankamagames.dofus.types.enums.*;
     import com.ankamagames.jerakine.logger.*;
@@ -25,12 +25,12 @@ package com.ankamagames.dofus.logic.game.fight.miscs
 
         public function getModifiedAnimation(param1:String, param2:TiphonEntityLook) : String
         {
-            var _loc_3:Swl = null;
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
             switch(param1)
             {
                 case AnimationEnum.ANIM_STATIQUE:
@@ -46,7 +46,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                                 for each (_loc_5 in _loc_3.getDefinitions())
                                 {
                                     
-                                    if (_loc_5.indexOf(AnimationEnum.ANIM_STATIQUE + param2.skins[0].toString()) == 0)
+                                    if (_loc_5.indexOf(AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString()) == 0)
                                     {
                                         _loc_6 = _loc_5.split("_")[0];
                                         if (_loc_4.indexOf(_loc_6) == -1)
@@ -58,7 +58,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                             }
                             else
                             {
-                                _loc_4.push(AnimationEnum.ANIM_STATIQUE + param2.skins[0].toString());
+                                _loc_4.push(AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString());
                             }
                             if (_loc_4.length > 1)
                             {
@@ -69,12 +69,12 @@ package com.ankamagames.dofus.logic.game.fight.miscs
                         }
                         else
                         {
-                            _loc_8 = param2.skins[0];
+                            _loc_8 = param2.firstSkin;
                             if (_loc_8 == 1114 || _loc_8 == 1115 || _loc_8 == 1402 || _loc_8 == 1463)
                             {
                                 return AnimationEnum.ANIM_STATIQUE;
                             }
-                            return AnimationEnum.ANIM_STATIQUE + param2.skins[0].toString();
+                            return AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString();
                         }
                     }
                     else

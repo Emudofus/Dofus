@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import __AS3__.vec.*;
     import flash.utils.*;
@@ -17,7 +17,7 @@ package com.ankamagames.jerakine.data
 
         public function read(param1:String, param2:IDataInput)
         {
-            var _loc_4:GameDataField = null;
+            var _loc_4:* = null;
             var _loc_3:* = new this._class();
             for each (_loc_4 in this._fields)
             {

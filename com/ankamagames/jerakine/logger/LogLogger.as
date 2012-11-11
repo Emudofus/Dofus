@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger
+﻿package com.ankamagames.jerakine.logger
 {
     import com.ankamagames.jerakine.logger.*;
 
@@ -66,8 +66,8 @@ package com.ankamagames.jerakine.logger
 
         public function log(param1:uint, param2:Object) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (_enabled)
             {
                 _loc_3 = param2.toString();
@@ -89,8 +89,8 @@ package com.ankamagames.jerakine.logger
             }
             var _loc_2:* = this._category.split("::");
             var _loc_3:* = "[" + _loc_2[(_loc_2.length - 1)] + "] ";
-            var _loc_4:String = "";
-            var _loc_5:uint = 0;
+            var _loc_4:* = "";
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_3.length)
             {
                 

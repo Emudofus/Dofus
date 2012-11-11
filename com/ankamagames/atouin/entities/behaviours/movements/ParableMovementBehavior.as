@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.entities.behaviours.movements
+﻿package com.ankamagames.atouin.entities.behaviours.movements
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.atouin.types.*;
@@ -70,7 +70,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
 
         override protected function processMovement(param1:TweenEntityData, param2:uint) : void
         {
-            var _loc_8:Number = NaN;
+            var _loc_8:* = NaN;
             param1.barycentre = _velocity * (param2 - param1.start);
             if (param1.barycentre > 1)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types.look
+﻿package com.ankamagames.tiphon.types.look
 {
     import __AS3__.vec.*;
 
@@ -14,26 +14,26 @@ package com.ankamagames.tiphon.types.look
 
         public static function fromString(param1:String, param2:uint = 0, param3:uint = 10) : TiphonEntityLook
         {
-            var _loc_8:String = null;
-            var _loc_9:Array = null;
-            var _loc_10:Array = null;
-            var _loc_11:String = null;
-            var _loc_12:Array = null;
-            var _loc_13:String = null;
-            var _loc_14:Array = null;
-            var _loc_15:uint = 0;
-            var _loc_16:uint = 0;
-            var _loc_17:Array = null;
-            var _loc_18:Number = NaN;
-            var _loc_19:String = null;
-            var _loc_20:uint = 0;
-            var _loc_21:Array = null;
-            var _loc_22:String = null;
-            var _loc_23:String = null;
-            var _loc_24:String = null;
-            var _loc_25:Array = null;
-            var _loc_26:uint = 0;
-            var _loc_27:uint = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = 0;
+            var _loc_17:* = null;
+            var _loc_18:* = NaN;
+            var _loc_19:* = null;
+            var _loc_20:* = 0;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = 0;
+            var _loc_27:* = 0;
             var _loc_4:* = new TiphonEntityLook();
             new TiphonEntityLook().lock();
             var _loc_5:* = CURRENT_FORMAT_VERSION;
@@ -151,52 +151,58 @@ package com.ankamagames.tiphon.types.look
 
         public static function toString(param1:TiphonEntityLook) : String
         {
-            var _loc_8:Boolean = false;
-            var _loc_9:uint = 0;
-            var _loc_10:Boolean = false;
-            var _loc_11:String = null;
-            var _loc_12:Boolean = false;
-            var _loc_13:String = null;
-            var _loc_14:String = null;
-            var _loc_15:TiphonEntityLook = null;
-            var _loc_2:String = "{";
+            var _loc_8:* = 0;
+            var _loc_9:* = false;
+            var _loc_10:* = 0;
+            var _loc_11:* = false;
+            var _loc_12:* = null;
+            var _loc_13:* = false;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_2:* = "{";
             _loc_2 = _loc_2 + param1.getBone().toString(DEFAULT_NUMBER_BASE);
             _loc_2 = _loc_2 + "|";
             var _loc_3:* = param1.getSkins(true);
             if (_loc_3 != null)
             {
-                _loc_8 = true;
-                for each (_loc_9 in _loc_3)
+                _loc_8 = 0;
+                _loc_9 = true;
+                for each (_loc_10 in _loc_3)
                 {
                     
-                    if (_loc_8)
+                    if (_loc_8++ == 0 && param1.defaultSkin != -1)
                     {
-                        _loc_8 = false;
+                        continue;
+                    }
+                    if (_loc_9)
+                    {
+                        _loc_9 = false;
                     }
                     else
                     {
                         _loc_2 = _loc_2 + ",";
                     }
-                    _loc_2 = _loc_2 + _loc_9.toString(DEFAULT_NUMBER_BASE);
+                    _loc_2 = _loc_2 + _loc_10.toString(DEFAULT_NUMBER_BASE);
                 }
             }
             _loc_2 = _loc_2 + "|";
             var _loc_4:* = param1.getColors(true);
             if (param1.getColors(true) != null)
             {
-                _loc_10 = true;
-                for (_loc_11 in _loc_4)
+                _loc_11 = true;
+                for (_loc_12 in _loc_4)
                 {
                     
-                    if (_loc_10)
+                    if (_loc_11)
                     {
-                        _loc_10 = false;
+                        _loc_11 = false;
                     }
                     else
                     {
                         _loc_2 = _loc_2 + ",";
                     }
-                    _loc_2 = _loc_2 + (uint(_loc_11).toString(DEFAULT_NUMBER_BASE) + "=" + uint(_loc_4[_loc_11]).toString(DEFAULT_NUMBER_BASE));
+                    _loc_2 = _loc_2 + (uint(_loc_12).toString(DEFAULT_NUMBER_BASE) + "=" + uint(_loc_4[_loc_12]).toString(DEFAULT_NUMBER_BASE));
                 }
             }
             _loc_2 = _loc_2 + "|";
@@ -214,23 +220,23 @@ package com.ankamagames.tiphon.types.look
             var _loc_7:* = param1.getSubEntities(true);
             if (param1.getSubEntities(true) != null)
             {
-                _loc_12 = true;
-                for (_loc_13 in _loc_7)
+                _loc_13 = true;
+                for (_loc_14 in _loc_7)
                 {
                     
-                    for (_loc_14 in _loc_7[_loc_13])
+                    for (_loc_15 in _loc_7[_loc_14])
                     {
                         
-                        _loc_15 = _loc_7[_loc_13][_loc_14];
-                        if (_loc_12)
+                        _loc_16 = _loc_7[_loc_14][_loc_15];
+                        if (_loc_13)
                         {
-                            _loc_12 = false;
+                            _loc_13 = false;
                         }
                         else
                         {
                             _loc_2 = _loc_2 + ",";
                         }
-                        _loc_2 = _loc_2 + (uint(_loc_13).toString(DEFAULT_NUMBER_BASE) + "@" + uint(_loc_14).toString(DEFAULT_NUMBER_BASE) + "=" + _loc_15.toString());
+                        _loc_2 = _loc_2 + (uint(_loc_14).toString(DEFAULT_NUMBER_BASE) + "@" + uint(_loc_15).toString(DEFAULT_NUMBER_BASE) + "=" + _loc_16.toString());
                     }
                 }
             }

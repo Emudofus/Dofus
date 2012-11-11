@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.fightEvents
+﻿package com.ankamagames.dofus.logic.game.fight.fightEvents
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -26,10 +26,18 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
             return;
         }// end function
 
+        public static function reset() : void
+        {
+            _fightEvents = new Vector.<FightEvent>;
+            _events = new Vector.<Vector.<FightEvent>>;
+            _joinedEvents = new Vector.<FightEvent>;
+            return;
+        }// end function
+
         public static function sendFightEvent(param1:String, param2:Array, param3:int, param4:int, param5:Boolean = false, param6:int = 0) : void
         {
-            var _loc_8:FightEvent = null;
-            var _loc_9:FightEvent = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_7:* = new FightEvent(param1, param2, param3, param6, param4);
             if (param1)
             {
@@ -87,10 +95,10 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
 
         private static function addFightText(event:FightEvent) : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:Vector.<FightEvent> = null;
-            var _loc_5:Vector.<FightEvent> = null;
-            var _loc_6:FightEvent = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = _events.length;
             _loc_3 = 0;
             while (_loc_3 < _loc_2)
@@ -129,171 +137,141 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
 
         private static function sendEvents(event:Event) : void
         {
-            var _loc_2:FightEvent = null;
-            var _loc_10:Vector.<FightEvent> = null;
-            var _loc_11:Array = null;
-            var _loc_12:Array = null;
-            var _loc_13:Boolean = false;
-            var _loc_14:Array = null;
-            var _loc_15:FightEvent = null;
-            var _loc_16:int = 0;
-            var _loc_17:Array = null;
-            var _loc_18:FightEvent = null;
-            var _loc_19:SystemApi = null;
-            var _loc_20:Boolean = false;
+            var _loc_2:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = false;
+            var _loc_13:* = null;
+            var _loc_14:* = 0;
+            var _loc_15:* = null;
             sendFightEvent(null, null, 0, -1);
-            _fightEvents = sendAllFightEvents();
+            sendAllFightEvents();
             var _loc_3:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             var _loc_4:* = _loc_3 ? (_loc_3.getEntitiesDictionnary()) : (new Dictionary());
             var _loc_5:* = PlayedCharacterManager.getInstance().teamId;
             StageShareManager.stage.removeEventListener(Event.ENTER_FRAME, sendEvents);
             var _loc_6:* = getTargetsWhoDiesAfterALifeLoss();
             var _loc_7:* = new Dictionary();
-            var _loc_8:* = new Dictionary();
-            var _loc_9:* = new Dictionary();
-            for each (_loc_10 in _events)
+            while (_events.length > 0)
             {
                 
-                _loc_11 = new Array();
-                for each (_loc_2 in _loc_10)
+                _loc_8 = _events[0];
+                if (_loc_8 == null || _loc_8.length == 0)
                 {
-                    
-                    if (_loc_2.targetId == 0 || _loc_10.length == 1)
-                    {
-                        if (_loc_2.name == FightEventEnum.FIGHTER_LIFE_LOSS)
-                        {
-                            sendFightLogToChat(_loc_2, null, true, _loc_6.indexOf(_loc_2.targetId) != -1);
-                        }
-                        else if (_loc_2.name == FightEventEnum.FIGHTER_LIFE_GAIN)
-                        {
-                            sendFightLogToChat(_loc_2, null, true, false);
-                        }
-                        else if (_loc_2.name == FightEventEnum.FIGHTER_SHIELD_LOSS)
-                        {
-                            sendFightLogToChat(_loc_2, null, true, false);
-                        }
-                        else if (_loc_2.name == FightEventEnum.FIGHTER_DEATH && _loc_6.indexOf(_loc_2.targetId) != -1)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            sendFightLogToChat(_loc_2);
-                        }
-                        continue;
-                    }
-                    _loc_13 = false;
-                    for each (_loc_14 in _loc_11)
-                    {
-                        
-                        _loc_15 = _loc_14[0];
-                        _loc_16 = getNumberOfParametersToCheck(_loc_15);
-                        if (needToGroupFightEventsData(_loc_16, _loc_2, _loc_15))
-                        {
-                            _loc_14.push(_loc_2);
-                            _loc_13 = true;
-                            break;
-                        }
-                    }
-                    if (!_loc_13)
-                    {
-                        _loc_11.push(new Array(_loc_2));
-                    }
+                    _events.splice(0, 1);
+                    continue;
                 }
-                for each (_loc_12 in _loc_11)
+                _loc_9 = _loc_8[0];
+                _loc_10 = extractTargetsId(_loc_8);
+                if ((_loc_9.name == FightEventEnum.FIGHTER_LIFE_LOSS || _loc_9.name == FightEventEnum.FIGHTER_LIFE_GAIN) && groupByTeam(_loc_5, _loc_10, _loc_8, _loc_4))
+                {
+                    _events.splice(_events.indexOf(_loc_8), 1);
+                    continue;
+                }
+                _loc_7 = groupFightEventsByTarget(_loc_8);
+                _loc_11 = new SystemApi();
+                _loc_12 = _loc_11.getOption("showLogPvDetails", "dofus");
+                for (_loc_13 in _loc_7)
                 {
                     
-                    _loc_17 = new Array();
-                    for each (_loc_18 in _loc_12)
+                    _loc_9 = _loc_7[_loc_13][0];
+                    if (_loc_7[_loc_13].length > 1 && (_loc_9.name == FightEventEnum.FIGHTER_LIFE_LOSS || _loc_9.name == FightEventEnum.FIGHTER_LIFE_GAIN || _loc_9.name == FightEventEnum.FIGHTER_SHIELD_LOSS))
+                    {
+                        switch(_loc_9.name)
+                        {
+                            case FightEventEnum.FIGHTER_LIFE_LOSS:
+                            case FightEventEnum.FIGHTER_SHIELD_LOSS:
+                            {
+                                _loc_14 = -1;
+                                break;
+                            }
+                            case FightEventEnum.FIGHTER_LIFE_GAIN:
+                            {
+                                _loc_14 = 1;
+                                break;
+                            }
+                            default:
+                            {
+                                break;
+                            }
+                        }
+                        groupByElements(_loc_7[_loc_13], _loc_14, _loc_12, _loc_6.indexOf(_loc_9.targetId) != -1, _loc_9.castingSpellId);
+                        for each (_loc_15 in _loc_7[_loc_13])
+                        {
+                            
+                            _loc_8.splice(_loc_8.indexOf(_loc_15), 1);
+                        }
+                        continue;
+                    }
+                    for each (_loc_9 in _loc_7[_loc_13])
                     {
                         
-                        if (_loc_17.indexOf(_loc_18.targetId) == -1)
+                        if (!(_loc_9.name == FightEventEnum.FIGHTER_DEATH && _loc_6.indexOf(_loc_9.targetId) != -1))
                         {
-                            _loc_17.push(_loc_18.targetId);
+                            sendFightLogToChat(_loc_9, null, _loc_12, _loc_9.name == FightEventEnum.FIGHTER_LIFE_LOSS && _loc_6.indexOf(_loc_9.targetId) != -1);
                         }
-                        if (_loc_18.name == FightEventEnum.FIGHTER_LIFE_LOSS)
-                        {
-                            if (_loc_7[_loc_18.targetId.toString()] == null)
-                            {
-                                _loc_7[_loc_18.targetId.toString()] = new Array();
-                            }
-                            _loc_7[_loc_18.targetId.toString()].push(_loc_18);
-                            continue;
-                        }
-                        if (_loc_18.name == FightEventEnum.FIGHTER_LIFE_GAIN)
-                        {
-                            if (_loc_8[_loc_18.targetId.toString()] == null)
-                            {
-                                _loc_8[_loc_18.targetId.toString()] = new Array();
-                            }
-                            _loc_8[_loc_18.targetId.toString()].push(_loc_18);
-                            continue;
-                        }
-                        if (_loc_18.name == FightEventEnum.FIGHTER_SHIELD_LOSS)
-                        {
-                            if (_loc_9[_loc_18.targetId.toString()] == null)
-                            {
-                                _loc_9[_loc_18.targetId.toString()] = new Array();
-                            }
-                            _loc_9[_loc_18.targetId.toString()].push(_loc_18);
-                        }
+                        _loc_8.splice(_loc_8.indexOf(_loc_9), 1);
                     }
-                    if (_loc_18.name == FightEventEnum.FIGHTER_DEATH && _loc_6.indexOf(_loc_18.targetId) != -1)
-                    {
-                        continue;
-                    }
-                    _loc_19 = new SystemApi();
-                    _loc_20 = _loc_19.getOption("showLogPvDetails", "dofus");
-                    if (_loc_18.name == FightEventEnum.FIGHTER_LIFE_LOSS && _loc_7[_loc_18.targetId.toString()] != null && _loc_7[_loc_18.targetId.toString()].length > 1)
-                    {
-                        groupByElements(_loc_7, -1, _loc_20, _loc_6.indexOf(_loc_18.targetId) != -1, _loc_18.castingSpellId);
-                        continue;
-                    }
-                    if (_loc_18.name == FightEventEnum.FIGHTER_LIFE_GAIN && _loc_8[_loc_18.targetId.toString()] != null && _loc_8[_loc_18.targetId.toString()].length > 1)
-                    {
-                        groupByElements(_loc_8, 1, _loc_20, false, _loc_18.castingSpellId);
-                        continue;
-                    }
-                    if (_loc_18.name == FightEventEnum.FIGHTER_SHIELD_LOSS && _loc_9[_loc_18.targetId.toString()] != null && _loc_9[_loc_18.targetId.toString()].length > 1)
-                    {
-                        groupByElements(_loc_9, -1, _loc_20, false, _loc_18.castingSpellId);
-                        continue;
-                    }
-                    if (_loc_3 && _loc_17.length > 1)
-                    {
-                        if (_loc_18.name == FightEventEnum.FIGHTER_LIFE_LOSS || !groupByTeam(_loc_5, _loc_17, _loc_18, _loc_4))
-                        {
-                            if (_loc_18.name == FightEventEnum.FIGHTER_LIFE_LOSS)
-                            {
-                                for each (_loc_18 in _loc_12)
-                                {
-                                    
-                                    sendFightLogToChat(_loc_18, null, _loc_20, _loc_6.indexOf(_loc_18.targetId) != -1);
-                                }
-                            }
-                            else
-                            {
-                                sendFightLogToChat(_loc_18, _loc_17, _loc_20);
-                            }
-                        }
-                        continue;
-                    }
-                    if (_loc_18.name == FightEventEnum.FIGHTER_LIFE_LOSS)
-                    {
-                        sendFightLogToChat(_loc_18, null, _loc_20, _loc_6.indexOf(_loc_18.targetId) != -1);
-                        continue;
-                    }
-                    sendFightLogToChat(_loc_18, null, _loc_20);
                 }
             }
-            _events = new Vector.<Vector.<FightEvent>>;
             return;
         }// end function
 
-        private static function getTargetsWhoDiesAfterALifeLoss() : Vector.<int>
+        public static function extractTargetsId(param1:Vector.<FightEvent>) : Array
         {
-            var _loc_3:FightEvent = null;
-            var _loc_4:Vector.<FightEvent> = null;
+            var _loc_3:* = null;
+            var _loc_2:* = new Array();
+            for each (_loc_3 in param1)
+            {
+                
+                if (_loc_2.indexOf(_loc_3.targetId) == -1)
+                {
+                    _loc_2.push(_loc_3.targetId);
+                }
+            }
+            return _loc_2;
+        }// end function
+
+        public static function groupFightEventsByTarget(param1:Vector.<FightEvent>) : Dictionary
+        {
+            var _loc_3:* = null;
+            var _loc_2:* = new Dictionary();
+            for each (_loc_3 in param1)
+            {
+                
+                if (_loc_2[_loc_3.targetId.toString()] == null)
+                {
+                    _loc_2[_loc_3.targetId.toString()] = new Array();
+                }
+                _loc_2[_loc_3.targetId.toString()].push(_loc_3);
+            }
+            return _loc_2;
+        }// end function
+
+        public static function groupSameFightEvents(param1:Array, param2:FightEvent) : void
+        {
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            for each (_loc_3 in param1)
+            {
+                
+                _loc_4 = _loc_3[0];
+                if (needToGroupFightEventsData(getNumberOfParametersToCheck(_loc_4), param2, _loc_4))
+                {
+                    _loc_3.push(param2);
+                    return;
+                }
+            }
+            param1.push(new Array(param2));
+            return;
+        }// end function
+
+        public static function getTargetsWhoDiesAfterALifeLoss() : Vector.<int>
+        {
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_1:* = new Vector.<int>;
             var _loc_2:* = new Vector.<int>;
             var _loc_5:* = _events.concat();
@@ -317,66 +295,67 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
             return _loc_2;
         }// end function
 
-        private static function groupByElements(param1:Dictionary, param2:int, param3:Boolean = true, param4:Boolean = false, param5:int = -1) : void
+        private static function groupByElements(param1:Array, param2:int, param3:Boolean = true, param4:Boolean = false, param5:int = -1) : void
         {
-            var _loc_6:Array = null;
-            var _loc_7:String = null;
-            var _loc_8:int = 0;
-            var _loc_9:Boolean = false;
-            var _loc_10:int = 0;
-            var _loc_11:FightEvent = null;
-            var _loc_12:String = null;
-            var _loc_13:Array = null;
-            var _loc_14:String = null;
-            for each (_loc_6 in param1)
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_13:* = null;
+            var _loc_6:* = "";
+            var _loc_7:* = 0;
+            var _loc_8:* = true;
+            for each (_loc_10 in param1)
             {
                 
-                _loc_7 = "";
-                _loc_8 = 0;
-                _loc_9 = true;
-                for each (_loc_11 in _loc_6)
+                if (param5 != -1 && param5 != _loc_10.castingSpellId)
                 {
-                    
-                    if (param5 != -1 && param5 != _loc_11.castingSpellId)
-                    {
-                        continue;
-                    }
-                    if (_loc_10 && _loc_11.params[2] != _loc_10)
-                    {
-                        _loc_9 = false;
-                    }
-                    _loc_10 = _loc_11.params[2];
-                    _loc_8 = _loc_8 + _loc_11.params[1];
-                    if (param2 == -1)
-                    {
-                        _loc_7 = _loc_7 + (formateColorsForFightDamages(_loc_11.params[1], _loc_11.params[2]) + " + ");
-                        continue;
-                    }
-                    _loc_7 = _loc_7 + (_loc_11.params[1] + " + ");
+                    continue;
                 }
-                _loc_12 = param4 ? ("fightLifeLossAndDeath") : (_loc_6[0].name);
-                _loc_13 = new Array();
-                _loc_13[0] = _loc_6[0].params[0];
+                if (_loc_9 && _loc_10.params[2] != _loc_9)
+                {
+                    _loc_8 = false;
+                }
+                _loc_9 = _loc_10.params[2];
+                _loc_7 = _loc_7 + _loc_10.params[1];
                 if (param2 == -1)
                 {
-                    _loc_14 = formateColorsForFightDamages("-" + _loc_8.toString(), _loc_9 ? (_loc_10) : (-1));
+                    _loc_6 = _loc_6 + (formateColorsForFightDamages(_loc_10.params[1], _loc_10.params[2]) + " + ");
+                    continue;
                 }
-                else
-                {
-                    _loc_14 = _loc_8.toString();
-                }
-                if (param3 && _loc_6.length > 1)
-                {
-                    _loc_14 = _loc_14 + ("</b> (" + _loc_7.substr(0, _loc_7.length - 3) + ")<b>");
-                }
-                _loc_13[1] = _loc_14;
-                KernelEventsManager.getInstance().processCallback(HookList.FightText, _loc_12, _loc_13, [_loc_13[0]]);
+                _loc_6 = _loc_6 + (_loc_10.params[1] + " + ");
             }
+            _loc_11 = param4 ? ("fightLifeLossAndDeath") : (param1[0].name);
+            var _loc_12:* = new Array();
+            new Array()[0] = param1[0].params[0];
+            if (param2 == -1)
+            {
+                _loc_13 = formateColorsForFightDamages("-" + _loc_7.toString(), _loc_8 ? (_loc_9) : (-1));
+            }
+            else
+            {
+                _loc_13 = _loc_7.toString();
+            }
+            if (param3 && param1.length > 1)
+            {
+                _loc_13 = _loc_13 + ("</b> (" + _loc_6.substr(0, _loc_6.length - 3) + ")<b>");
+            }
+            _loc_12[1] = _loc_13;
+            KernelEventsManager.getInstance().processCallback(HookList.FightText, _loc_11, _loc_12, [_loc_12[0]]);
             return;
         }// end function
 
-        private static function groupByTeam(param1:int, param2:Array, param3:FightEvent, param4:Dictionary) : Boolean
+        private static function groupByTeam(param1:int, param2:Array, param3:Vector.<FightEvent>, param4:Dictionary) : Boolean
         {
+            var _loc_6:* = null;
+            var _loc_5:* = param3[0];
+            for each (_loc_6 in param3)
+            {
+                
+                if (!needToGroupFightEventsData(getNumberOfParametersToCheck(_loc_5), _loc_6, _loc_5))
+                {
+                    return false;
+                }
+            }
             switch(groupEntitiesByTeam(param1, param2, param4))
             {
                 case "all":
@@ -403,17 +382,17 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
                     break;
                 }
             }
-            sendFightLogToChat(param3, param2);
+            sendFightLogToChat(_loc_5, param2);
             return true;
         }// end function
 
-        private static function groupEntitiesByTeam(param1:int, param2:Array, param3:Dictionary) : String
+        public static function groupEntitiesByTeam(param1:int, param2:Array, param3:Dictionary) : String
         {
-            var _loc_8:GameFightFighterInformations = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_8:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             for each (_loc_8 in param3)
             {
                 
@@ -462,7 +441,7 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
 
         private static function needToGroupFightEventsData(param1:int, param2:FightEvent, param3:FightEvent) : Boolean
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             _loc_4 = 1;
             while (_loc_4 < param1)
             {
@@ -476,15 +455,22 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
             return true;
         }// end function
 
-        private static function sendAllFightEvents() : Vector.<FightEvent>
+        private static function sendAllFightEvents() : void
         {
-            var _loc_1:FightEvent = null;
+            var _loc_1:* = null;
             for each (_loc_1 in _fightEvents)
             {
                 
                 KernelEventsManager.getInstance().processCallback(HookList.FightEvent, _loc_1.name, _loc_1.params, [_loc_1.targetId]);
             }
-            return new Vector.<FightEvent>;
+            clearData();
+            return;
+        }// end function
+
+        public static function clearData() : void
+        {
+            _fightEvents = new Vector.<FightEvent>;
+            return;
         }// end function
 
         private static function sendFightLogToChat(event:FightEvent, param2:Array = null, param3:Boolean = true, param4:Boolean = false) : void
@@ -504,8 +490,8 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
 
         private static function formateColorsForFightDamages(param1:String, param2:int) : String
         {
-            var _loc_3:String = null;
-            var _loc_4:String = "";
+            var _loc_3:* = null;
+            var _loc_4:* = "";
             var _loc_5:* = TypeAction.getTypeActionById(param2);
             var _loc_6:* = TypeAction.getTypeActionById(param2) == null ? (-1) : (_loc_5.elementId);
             switch(_loc_6)
@@ -559,6 +545,21 @@ package com.ankamagames.dofus.logic.game.fight.fightEvents
                 _loc_3 = param1;
             }
             return _loc_3;
+        }// end function
+
+        public static function get fightEvents() : Vector.<FightEvent>
+        {
+            return _fightEvents;
+        }// end function
+
+        public static function get events() : Vector.<Vector.<FightEvent>>
+        {
+            return _events;
+        }// end function
+
+        public static function get joinedEvents() : Vector.<FightEvent>
+        {
+            return _joinedEvents;
         }// end function
 
     }

@@ -1,4 +1,4 @@
-package com.ankamagames.atouin
+﻿package com.ankamagames.atouin
 {
     import com.ankamagames.atouin.data.elements.*;
     import com.ankamagames.atouin.managers.*;
@@ -28,7 +28,7 @@ package com.ankamagames.atouin
         private var _spMapContainer:Sprite;
         private var _spGfxontainer:Sprite;
         private var _spChgMapContainer:Sprite;
-        private var _worldMask:Shape;
+        private var _worldMask:Sprite;
         private var _currentZoom:Number = 1;
         private var _zoomPosX:int;
         private var _zoomPosY:int;
@@ -143,7 +143,7 @@ package com.ankamagames.atouin
             this._aoOptions = param1;
             this._worldContainer = param1.container;
             this._handler = param1.handler;
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._worldContainer.numChildren)
             {
                 
@@ -171,7 +171,7 @@ package com.ankamagames.atouin
             this._worldContainer.addChild(this._spGfxontainer);
             this._worldContainer.addChild(this._overlayContainer);
             FrustumManager.getInstance().init(this._spChgMapContainer);
-            this._worldMask = new Shape();
+            this._worldMask = new Sprite();
             this._worldMask.graphics.beginFill(0);
             var _loc_3:* = StageShareManager.startWidth;
             var _loc_4:* = StageShareManager.startHeight;
@@ -341,9 +341,9 @@ package com.ankamagames.atouin
 
         public function zoom(param1:Number, param2:int = 0, param3:int = 0) : void
         {
-            var _loc_4:Number = NaN;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
+            var _loc_4:* = NaN;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             if (param1 == 1)
             {
                 this._worldContainer.scaleX = 1;
@@ -436,7 +436,7 @@ package com.ankamagames.atouin
 
         private function init() : void
         {
-            var _loc_1:IResourceLoader = null;
+            var _loc_1:* = null;
             this._aSprites = new Array();
             if (!Elements.getInstance().parsed)
             {

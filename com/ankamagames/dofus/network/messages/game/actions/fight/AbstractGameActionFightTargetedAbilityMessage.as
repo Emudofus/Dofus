@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.actions.fight
+﻿package com.ankamagames.dofus.network.messages.game.actions.fight
 {
     import com.ankamagames.dofus.network.messages.game.actions.*;
     import com.ankamagames.jerakine.network.*;
@@ -7,6 +7,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
     public class AbstractGameActionFightTargetedAbilityMessage extends AbstractGameActionMessage implements INetworkMessage
     {
         private var _isInitialized:Boolean = false;
+        public var targetId:int = 0;
         public var destinationCellId:int = 0;
         public var critical:uint = 1;
         public var silentCast:Boolean = false;
@@ -27,12 +28,13 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
             return 6118;
         }// end function
 
-        public function initAbstractGameActionFightTargetedAbilityMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 1, param5:Boolean = false) : AbstractGameActionFightTargetedAbilityMessage
+        public function initAbstractGameActionFightTargetedAbilityMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:int = 0, param5:uint = 1, param6:Boolean = false) : AbstractGameActionFightTargetedAbilityMessage
         {
             super.initAbstractGameActionMessage(param1, param2);
-            this.destinationCellId = param3;
-            this.critical = param4;
-            this.silentCast = param5;
+            this.targetId = param3;
+            this.destinationCellId = param4;
+            this.critical = param5;
+            this.silentCast = param6;
             this._isInitialized = true;
             return this;
         }// end function
@@ -40,6 +42,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
         override public function reset() : void
         {
             super.reset();
+            this.targetId = 0;
             this.destinationCellId = 0;
             this.critical = 1;
             this.silentCast = false;
@@ -70,6 +73,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
         public function serializeAs_AbstractGameActionFightTargetedAbilityMessage(param1:IDataOutput) : void
         {
             super.serializeAs_AbstractGameActionMessage(param1);
+            param1.writeInt(this.targetId);
             if (this.destinationCellId < -1 || this.destinationCellId > 559)
             {
                 throw new Error("Forbidden value (" + this.destinationCellId + ") on element destinationCellId.");
@@ -89,6 +93,7 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
         public function deserializeAs_AbstractGameActionFightTargetedAbilityMessage(param1:IDataInput) : void
         {
             super.deserialize(param1);
+            this.targetId = param1.readInt();
             this.destinationCellId = param1.readShort();
             if (this.destinationCellId < -1 || this.destinationCellId > 559)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.net
+﻿package com.ankamagames.dofus.kernel.net
 {
 
     final public class ConnectionType extends Object

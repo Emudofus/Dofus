@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.conquest
+﻿package com.ankamagames.dofus.internalDatacenter.conquest
 {
     import com.ankamagames.jerakine.interfaces.*;
 
@@ -37,7 +37,7 @@ package com.ankamagames.dofus.internalDatacenter.conquest
 
         public static function create(param1:uint, param2:uint, param3:Boolean, param4:Boolean, param5:Boolean = false) : PrismConquestWrapper
         {
-            var _loc_6:PrismConquestWrapper = null;
+            var _loc_6:* = null;
             if (!_cache[param1] || !param5)
             {
                 _loc_6 = new PrismConquestWrapper;

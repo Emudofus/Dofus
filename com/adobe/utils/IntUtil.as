@@ -1,4 +1,4 @@
-package com.adobe.utils
+﻿package com.adobe.utils
 {
 
     public class IntUtil extends Object
@@ -12,9 +12,9 @@ package com.adobe.utils
 
         public static function toHex(param1:int, param2:Boolean = false) : String
         {
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_3:String = "";
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_3:* = "";
             if (param2)
             {
                 _loc_4 = 0;

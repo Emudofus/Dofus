@@ -1,9 +1,11 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.items.criterion.*;
     import com.ankamagames.jerakine.interfaces.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.misc.*;
+    import flash.utils.*;
 
     public class GroupItemCriterion extends Object implements IItemCriterion, IDataCenter
     {
@@ -13,18 +15,33 @@ package com.ankamagames.dofus.datacenter.items.criterion
         private var _cleanCriterionTextForm:String;
         private var _malformated:Boolean = false;
         private var _singleOperatorType:Boolean = false;
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(GroupItemCriterion));
 
         public function GroupItemCriterion(param1:String)
         {
+            var _loc_4:* = null;
             this._criterionTextForm = param1;
             this._cleanCriterionTextForm = this._criterionTextForm;
-            this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm, " ", "");
             if (!param1)
             {
                 return;
             }
-            var _loc_2:* = StringUtils.getDelimitedText(this._cleanCriterionTextForm, "(", ")", true);
-            if (_loc_2.length > 0 && _loc_2[0] == this._cleanCriterionTextForm)
+            this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm, " ", "");
+            this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm, "(", "");
+            this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm, ")", "");
+            var _loc_2:* = this._cleanCriterionTextForm.indexOf("PX");
+            if (_loc_2 == 0)
+            {
+                this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(_loc_2 + 4);
+            }
+            else if (_loc_2 > 1)
+            {
+                _loc_4 = this._cleanCriterionTextForm.slice(0, (_loc_2 - 1));
+                _loc_4 = _loc_4 + this._cleanCriterionTextForm.slice(_loc_2 + 4);
+                this._cleanCriterionTextForm = _loc_4;
+            }
+            var _loc_3:* = StringUtils.getDelimitedText(this._cleanCriterionTextForm, "(", ")", true);
+            if (_loc_3.length > 0 && _loc_3[0] == this._cleanCriterionTextForm)
             {
                 this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(1);
                 this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(0, (this._cleanCriterionTextForm.length - 1));
@@ -41,7 +58,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         public function get inlineCriteria() : Vector.<IItemCriterion>
         {
-            var _loc_2:IItemCriterion = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Vector.<IItemCriterion>;
             for each (_loc_2 in this._criteria)
             {
@@ -53,7 +70,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         public function get isRespected() : Boolean
         {
-            var _loc_1:IItemCriterion = null;
+            var _loc_1:* = null;
             if (!this._criteria || this._criteria.length == 0)
             {
                 return true;
@@ -91,15 +108,15 @@ package com.ankamagames.dofus.datacenter.items.criterion
         public function get text() : String
         {
             var _loc_6:* = undefined;
-            var _loc_1:String = "";
+            var _loc_1:* = "";
             if (this._criteria == null)
             {
                 return _loc_1;
             }
             var _loc_2:* = this._criteria.length + this._operators.length;
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_2)
             {
                 
@@ -130,14 +147,14 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         private function createNewGroups() : void
         {
-            var _loc_3:IItemCriterion = null;
-            var _loc_4:String = null;
-            var _loc_5:int = 0;
-            var _loc_6:Boolean = false;
-            var _loc_7:Vector.<IItemCriterion> = null;
-            var _loc_8:Vector.<String> = null;
-            var _loc_9:GroupItemCriterion = null;
-            if (this._malformated || this._criteria.length <= 2 || this._singleOperatorType)
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = false;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            if (this._malformated || !this._criteria || this._criteria.length <= 2 || this._singleOperatorType)
             {
                 return;
             }
@@ -169,7 +186,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
                     _loc_7.push(_loc_1[_loc_5]);
                     _loc_7.push(_loc_1[(_loc_5 + 1)]);
                     _loc_8 = this.Vector.<String>([_loc_2[_loc_5]]);
-                    _loc_9 = create(_loc_7, _loc_8);
+                    _loc_9 = GroupItemCriterion.create(_loc_7, _loc_8);
                     _loc_1.splice(_loc_5, 2, _loc_9);
                     _loc_2.splice(_loc_5, 1);
                     _loc_5 = _loc_5 - 1;
@@ -188,22 +205,22 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         private function split() : void
         {
-            var _loc_8:IItemCriterion = null;
-            var _loc_9:int = 0;
-            var _loc_10:String = null;
-            var _loc_11:IItemCriterion = null;
-            var _loc_12:int = 0;
-            var _loc_13:String = null;
-            var _loc_14:String = null;
-            var _loc_15:String = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = 0;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
             if (!this._cleanCriterionTextForm)
             {
                 return;
             }
-            var _loc_1:uint = 0;
-            var _loc_2:uint = 1;
+            var _loc_1:* = 0;
+            var _loc_2:* = 1;
             var _loc_3:* = _loc_1;
-            var _loc_4:Boolean = false;
+            var _loc_4:* = false;
             var _loc_5:* = this._cleanCriterionTextForm;
             this._criteria = new Vector.<IItemCriterion>;
             this._operators = new Vector.<String>;
@@ -280,7 +297,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         private function checkSingleOperatorType(param1:Vector.<String>) : Boolean
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             if (param1.length > 0)
             {
                 for each (_loc_2 in param1)
@@ -297,10 +314,10 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         private function getFirstCriterion(param1:String) : IItemCriterion
         {
-            var _loc_2:IItemCriterion = null;
-            var _loc_3:Vector.<String> = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             if (!param1)
             {
                 return null;
@@ -335,10 +352,10 @@ package com.ankamagames.dofus.datacenter.items.criterion
         {
             var _loc_9:* = undefined;
             var _loc_3:* = param1.length + param2.length;
-            var _loc_4:String = "";
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
+            var _loc_4:* = "";
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_3)
             {
                 

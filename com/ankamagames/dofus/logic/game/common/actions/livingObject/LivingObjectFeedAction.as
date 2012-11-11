@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.livingObject
+﻿package com.ankamagames.dofus.logic.game.common.actions.livingObject
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.sequences
+﻿package com.ankamagames.dofus.types.sequences
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.enums.*;
@@ -46,11 +46,11 @@ package com.ankamagames.dofus.types.sequences
 
         override public function start() : void
         {
-            var _loc_1:Array = null;
-            var _loc_2:Point = null;
-            var _loc_3:uint = 0;
-            var _loc_4:Boolean = false;
-            var _loc_5:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = false;
+            var _loc_5:* = 0;
             if (!this._useOnlyAddedCells)
             {
                 _loc_1 = Dofus1Line.getLine(this._startCell.x, this._startCell.y, 0, this._endCell.x, this._endCell.y, 0);
@@ -111,7 +111,7 @@ package com.ankamagames.dofus.types.sequences
                 executeCallbacks();
                 return;
             }
-            var _loc_1:int = -10000;
+            var _loc_1:* = -10000;
             while (DofusEntities.getEntity(_loc_1))
             {
                 
@@ -138,10 +138,10 @@ package com.ankamagames.dofus.types.sequences
 
         private function startDisplay(event:TiphonEvent) : void
         {
-            var _loc_2:Projectile = null;
-            var _loc_3:Array = null;
-            var _loc_4:Array = null;
-            var _loc_5:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             _loc_2 = Projectile(event.sprite);
             switch(this._mode)
             {

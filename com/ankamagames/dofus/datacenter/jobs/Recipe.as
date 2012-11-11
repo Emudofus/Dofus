@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.jobs
+﻿package com.ankamagames.dofus.datacenter.jobs
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -32,8 +32,8 @@ package com.ankamagames.dofus.datacenter.jobs
 
         public function get ingredients() : Vector.<ItemWrapper>
         {
-            var _loc_1:uint = 0;
-            var _loc_2:uint = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             if (!this._ingredients)
             {
                 _loc_1 = this.ingredientIds.length;
@@ -56,9 +56,9 @@ package com.ankamagames.dofus.datacenter.jobs
 
         public static function getAllRecipesForSkillId(param1:uint, param2:uint) : Array
         {
-            var _loc_5:int = 0;
-            var _loc_6:Recipe = null;
-            var _loc_7:uint = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             var _loc_3:* = new Array();
             var _loc_4:* = Skill.getSkillById(param1).craftableItemIds;
             for each (_loc_5 in _loc_4)

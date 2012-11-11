@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.factories
+﻿package com.ankamagames.berilia.factories
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -37,9 +37,9 @@ package com.ankamagames.berilia.factories
 
         public static function create(param1, param2:String = null, param3:Object = null) : ContextMenuData
         {
-            var _loc_4:MenuData = null;
+            var _loc_4:* = null;
             var _loc_5:* = undefined;
-            var _loc_6:Array = null;
+            var _loc_6:* = null;
             if (!param2)
             {
                 param2 = _makerAssoc[getQualifiedClassName(param1)];
@@ -73,6 +73,12 @@ package com.ankamagames.berilia.factories
 
     }
 }
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import flash.utils.*;
 
 class MenuData extends Object
 {

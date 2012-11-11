@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.house.*;
@@ -64,7 +64,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
         public function serializeAs_AccountHouseMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.houses.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.houses.length)
             {
                 
@@ -82,9 +82,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 
         public function deserializeAs_AccountHouseMessage(param1:IDataInput) : void
         {
-            var _loc_4:AccountHouseInformations = null;
+            var _loc_4:* = null;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

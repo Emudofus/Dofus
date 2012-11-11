@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.sequencer
+﻿package com.ankamagames.jerakine.sequencer
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.sequencer.*;
@@ -23,7 +23,7 @@ package com.ankamagames.jerakine.sequencer
 
         override public function start() : void
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             while (_loc_1 < this._aSequence.length)
             {
                 
@@ -47,7 +47,7 @@ package com.ankamagames.jerakine.sequencer
         private function onSequenceEnd(event:SequencerEvent) : void
         {
             event.sequencer.removeEventListener(SequencerEvent.SEQUENCE_END, this.onSequenceEnd);
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._sequenceEndCount + 1;
             _loc_2._sequenceEndCount = _loc_3;
             _log.debug("onSequenceEnd");

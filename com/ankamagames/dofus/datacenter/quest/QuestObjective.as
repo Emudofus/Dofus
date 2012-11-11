@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.quest
+﻿package com.ankamagames.dofus.datacenter.quest
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.npcs.*;

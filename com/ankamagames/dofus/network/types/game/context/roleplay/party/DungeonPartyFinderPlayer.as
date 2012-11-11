@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.jerakine.network.*;
@@ -82,7 +82,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
             }
             this.playerName = param1.readUTF();
             this.breed = param1.readByte();
-            if (this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Zobal)
+            if (this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Steamer)
             {
                 throw new Error("Forbidden value (" + this.breed + ") on element of DungeonPartyFinderPlayer.breed.");
             }

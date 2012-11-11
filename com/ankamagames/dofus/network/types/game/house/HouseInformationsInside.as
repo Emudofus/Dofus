@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.house
+﻿package com.ankamagames.dofus.network.types.game.house
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

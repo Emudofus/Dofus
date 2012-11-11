@@ -1,7 +1,8 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
+    import com.ankamagames.berilia.interfaces.*;
 
-    public class UiGroup extends Object
+    public class UiGroup extends Object implements IModuleUtil
     {
         private var _name:String;
         private var _exclusive:Boolean;

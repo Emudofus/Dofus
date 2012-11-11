@@ -1,4 +1,4 @@
-package org.flintparticles.common.renderers
+﻿package org.flintparticles.common.renderers
 {
     import flash.display.*;
     import flash.events.*;
@@ -22,7 +22,7 @@ package org.flintparticles.common.renderers
 
         public function addEmitter(param1:Emitter) : void
         {
-            var _loc_2:Particle = null;
+            var _loc_2:* = null;
             this._emitters.push(param1);
             if (stage)
             {
@@ -46,8 +46,8 @@ package org.flintparticles.common.renderers
 
         public function removeEmitter(param1:Emitter) : void
         {
-            var _loc_3:Particle = null;
-            var _loc_2:int = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < this._emitters.length)
             {
                 
@@ -120,7 +120,7 @@ package org.flintparticles.common.renderers
         private function updateParticles(event:Event) : void
         {
             var _loc_2:* = new Array();
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this._emitters.length)
             {
                 

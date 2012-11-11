@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.jerakine.data.*;
@@ -22,7 +22,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
         override public function get isRespected() : Boolean
         {
             var _loc_1:* = PlayedCharacterManager.getInstance().infos.name;
-            var _loc_2:Boolean = false;
+            var _loc_2:* = false;
             var _loc_3:* = _criterionValue.toString();
             switch(_operator.text)
             {
@@ -90,7 +90,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         private function getReadableOperator() : String
         {
-            var _loc_1:String = "";
+            var _loc_1:* = "";
             _log.debug("operator : " + _operator);
             switch(_operator.text)
             {

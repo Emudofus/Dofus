@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.look
+﻿package com.ankamagames.dofus.network.types.game.look
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -61,7 +61,7 @@ package com.ankamagames.dofus.network.types.game.look
             }
             param1.writeShort(this.bonesId);
             param1.writeShort(this.skins.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.skins.length)
             {
                 
@@ -73,7 +73,7 @@ package com.ankamagames.dofus.network.types.game.look
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.indexedColors.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.indexedColors.length)
             {
                 
@@ -81,7 +81,7 @@ package com.ankamagames.dofus.network.types.game.look
                 _loc_3 = _loc_3 + 1;
             }
             param1.writeShort(this.scales.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.scales.length)
             {
                 
@@ -89,7 +89,7 @@ package com.ankamagames.dofus.network.types.game.look
                 _loc_4 = _loc_4 + 1;
             }
             param1.writeShort(this.subentities.length);
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < this.subentities.length)
             {
                 
@@ -107,17 +107,17 @@ package com.ankamagames.dofus.network.types.game.look
 
         public function deserializeAs_EntityLook(param1:IDataInput) : void
         {
-            var _loc_10:uint = 0;
-            var _loc_11:int = 0;
-            var _loc_12:int = 0;
-            var _loc_13:SubEntity = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = null;
             this.bonesId = param1.readShort();
             if (this.bonesId < 0)
             {
                 throw new Error("Forbidden value (" + this.bonesId + ") on element of EntityLook.bonesId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -130,7 +130,7 @@ package com.ankamagames.dofus.network.types.game.look
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -139,7 +139,7 @@ package com.ankamagames.dofus.network.types.game.look
                 _loc_5 = _loc_5 + 1;
             }
             var _loc_6:* = param1.readUnsignedShort();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 
@@ -148,7 +148,7 @@ package com.ankamagames.dofus.network.types.game.look
                 _loc_7 = _loc_7 + 1;
             }
             var _loc_8:* = param1.readUnsignedShort();
-            var _loc_9:uint = 0;
+            var _loc_9:* = 0;
             while (_loc_9 < _loc_8)
             {
                 

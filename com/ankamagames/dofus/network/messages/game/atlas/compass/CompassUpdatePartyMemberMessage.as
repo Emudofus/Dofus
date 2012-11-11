@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.atlas.compass
+﻿package com.ankamagames.dofus.network.messages.game.atlas.compass
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

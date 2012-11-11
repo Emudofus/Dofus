@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.data.elements
+﻿package com.ankamagames.atouin.data.elements
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.errors.*;

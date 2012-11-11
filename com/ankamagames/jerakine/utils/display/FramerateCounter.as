@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import flash.events.*;
     import flash.utils.*;
@@ -73,7 +73,7 @@ package com.ankamagames.jerakine.utils.display
 
         private static function dispatchFps() : void
         {
-            var _loc_1:IFramerateListener = null;
+            var _loc_1:* = null;
             for each (_loc_1 in _listeners)
             {
                 

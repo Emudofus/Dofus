@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.atouin.types.sequences.*;
     import com.ankamagames.dofus.logic.game.fight.miscs.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.alignments
+﻿package com.ankamagames.dofus.datacenter.alignments
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

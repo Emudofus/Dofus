@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -42,34 +42,33 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:QuestListRequestMessage = null;
-            var _loc_3:QuestListMessage = null;
-            var _loc_4:QuestInfosRequestAction = null;
-            var _loc_5:QuestStepInfoRequestMessage = null;
-            var _loc_6:QuestStepInfoMessage = null;
-            var _loc_7:QuestStartRequestAction = null;
-            var _loc_8:QuestStartRequestMessage = null;
-            var _loc_9:QuestObjectiveValidationAction = null;
-            var _loc_10:QuestObjectiveValidationMessage = null;
-            var _loc_11:GuidedModeReturnRequestMessage = null;
-            var _loc_12:GuidedModeQuitRequestMessage = null;
-            var _loc_13:QuestStartedMessage = null;
-            var _loc_14:QuestValidatedMessage = null;
-            var _loc_15:Quest = null;
-            var _loc_16:QuestObjectiveValidatedMessage = null;
-            var _loc_17:QuestStepValidatedMessage = null;
-            var _loc_18:Object = null;
-            var _loc_19:QuestStepStartedMessage = null;
-            var _loc_20:NotificationUpdateFlagAction = null;
-            var _loc_21:NotificationUpdateFlagMessage = null;
-            var _loc_22:NotificationResetAction = null;
-            var _loc_23:NotificationResetMessage = null;
-            var _loc_24:QuestActiveDetailedInformations = null;
-            var _loc_25:QuestObjectiveInformations = null;
-            var _loc_26:Object = null;
-            var _loc_27:QuestStep = null;
-            var _loc_28:int = 0;
-            var _loc_29:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = 0;
+            var _loc_28:* = 0;
             switch(true)
             {
                 case param1 is QuestListRequestAction:
@@ -100,23 +99,23 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_6 = param1 as QuestStepInfoMessage;
                     if (_loc_6.infos is QuestActiveDetailedInformations)
                     {
-                        _loc_24 = _loc_6.infos as QuestActiveDetailedInformations;
-                        this._questsInformations[_loc_24.questId] = {questId:_loc_24.questId, stepId:_loc_24.stepId};
-                        this._questsInformations[_loc_24.questId].objectives = new Array();
-                        this._questsInformations[_loc_24.questId].objectivesData = new Array();
-                        for each (_loc_25 in _loc_24.objectives)
+                        _loc_23 = _loc_6.infos as QuestActiveDetailedInformations;
+                        this._questsInformations[_loc_23.questId] = {questId:_loc_23.questId, stepId:_loc_23.stepId};
+                        this._questsInformations[_loc_23.questId].objectives = new Array();
+                        this._questsInformations[_loc_23.questId].objectivesData = new Array();
+                        for each (_loc_24 in _loc_23.objectives)
                         {
                             
-                            this._questsInformations[_loc_24.questId].objectives[_loc_25.objectiveId] = _loc_25.objectiveStatus;
-                            if (_loc_25 is QuestObjectiveInformationsWithCompletion)
+                            this._questsInformations[_loc_23.questId].objectives[_loc_24.objectiveId] = _loc_24.objectiveStatus;
+                            if (_loc_24 is QuestObjectiveInformationsWithCompletion)
                             {
-                                _loc_26 = new Object();
-                                _loc_26.current = (_loc_25 as QuestObjectiveInformationsWithCompletion).curCompletion;
-                                _loc_26.max = (_loc_25 as QuestObjectiveInformationsWithCompletion).maxCompletion;
-                                this._questsInformations[_loc_24.questId].objectivesData[_loc_25.objectiveId] = _loc_26;
+                                _loc_25 = new Object();
+                                _loc_25.current = (_loc_24 as QuestObjectiveInformationsWithCompletion).curCompletion;
+                                _loc_25.max = (_loc_24 as QuestObjectiveInformationsWithCompletion).maxCompletion;
+                                this._questsInformations[_loc_23.questId].objectivesData[_loc_24.objectiveId] = _loc_25;
                             }
                         }
-                        KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated, _loc_24.questId, true);
+                        KernelEventsManager.getInstance().processCallback(QuestHookList.QuestInfosUpdated, _loc_23.questId, true);
                     }
                     else if (_loc_6.infos is QuestActiveInformations)
                     {
@@ -165,13 +164,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_14 = param1 as QuestValidatedMessage;
                     KernelEventsManager.getInstance().processCallback(QuestHookList.QuestValidated, _loc_14.questId);
                     _loc_15 = Quest.getQuestById(_loc_14.questId);
-                    for each (_loc_27 in _loc_15.steps)
+                    for each (_loc_26 in _loc_15.steps)
                     {
                         
-                        for each (_loc_28 in _loc_27.objectiveIds)
+                        for each (_loc_27 in _loc_26.objectiveIds)
                         {
                             
-                            KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + _loc_14.questId + "_" + _loc_28);
+                            KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + _loc_14.questId + "_" + _loc_27);
                         }
                     }
                     return true;
@@ -191,10 +190,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                         this._questsInformations[_loc_17.questId].stepId = _loc_17.stepId;
                     }
                     _loc_18 = QuestStep.getQuestStepById(_loc_17.stepId).objectiveIds;
-                    for each (_loc_29 in _loc_18)
+                    for each (_loc_28 in _loc_18)
                     {
                         
-                        KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + _loc_17.questId + "_" + _loc_29);
+                        KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_QUEST + "_" + _loc_17.questId + "_" + _loc_28);
                     }
                     KernelEventsManager.getInstance().processCallback(QuestHookList.QuestStepValidated, _loc_17.questId, _loc_17.stepId);
                     return true;
@@ -219,11 +218,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
                 case param1 is NotificationResetAction:
                 {
-                    _loc_22 = param1 as NotificationResetAction;
                     notificationList = new Array();
-                    _loc_23 = new NotificationResetMessage();
-                    _loc_23.initNotificationResetMessage();
-                    ConnectionsHandler.getConnection().send(_loc_23);
+                    _loc_22 = new NotificationResetMessage();
+                    _loc_22.initNotificationResetMessage();
+                    ConnectionsHandler.getConnection().send(_loc_22);
                     KernelEventsManager.getInstance().processCallback(HookList.NotificationReset);
                     return true;
                 }

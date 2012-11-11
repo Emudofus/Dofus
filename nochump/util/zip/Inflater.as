@@ -1,4 +1,4 @@
-package nochump.util.zip
+﻿package nochump.util.zip
 {
     import flash.events.*;
     import flash.utils.*;
@@ -36,20 +36,19 @@ package nochump.util.zip
 
         public function inflate(param1:ByteArray, param2:Function) : uint
         {
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
             if (!this._running)
             {
-                var _loc_9:int = 0;
+                var _loc_9:* = 0;
                 this.bitcnt = 0;
-                var _loc_9:* = _loc_9;
                 this.bitbuf = _loc_9;
                 this.incnt = _loc_9;
             }
             this._running = true;
             var _loc_3:* = param2 != null;
             var _loc_4:* = getTimer();
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             var _loc_6:* = param1.length;
             do
             {
@@ -111,7 +110,7 @@ package nochump.util.zip
                 {
                     throw new Error("available inflate data did not terminate", 2);
                 }
-                var _loc_3:String = this;
+                var _loc_3:* = this;
                 _loc_3.incnt = this.incnt + 1;
                 _loc_2 = _loc_2 | this.inbuf[this.incnt++] << this.bitcnt;
                 this.bitcnt = this.bitcnt + 8;
@@ -123,15 +122,15 @@ package nochump.util.zip
 
         private function construct(param1:Object, param2:Array, param3:int) : int
         {
-            var _loc_4:Array = [];
-            var _loc_5:int = 0;
+            var _loc_4:* = [];
+            var _loc_5:* = 0;
             while (_loc_5 <= MAXBITS)
             {
                 
                 param1.count[_loc_5] = 0;
                 _loc_5++;
             }
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < param3)
             {
                 
@@ -145,7 +144,7 @@ package nochump.util.zip
             {
                 return 0;
             }
-            var _loc_7:int = 1;
+            var _loc_7:* = 1;
             _loc_5 = 1;
             while (_loc_5 <= MAXBITS)
             {
@@ -184,11 +183,11 @@ package nochump.util.zip
 
         private function decode(param1:Object) : int
         {
-            var _loc_6:int = 0;
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 1;
+            var _loc_6:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 1;
             while (_loc_5 <= MAXBITS)
             {
                 
@@ -209,9 +208,9 @@ package nochump.util.zip
 
         private function codes(param1:ByteArray) : int
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:uint = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             do
             {
                 
@@ -261,15 +260,15 @@ package nochump.util.zip
             {
                 throw new Error("available inflate data did not terminate", 2);
             }
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             _loc_3.incnt = this.incnt + 1;
             var _loc_2:* = this.inbuf[this.incnt++];
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             _loc_3.incnt = this.incnt + 1;
             _loc_2 = _loc_2 | this.inbuf[this.incnt++] << 8;
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             _loc_3.incnt = this.incnt + 1;
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             _loc_3.incnt = this.incnt + 1;
             if (this.inbuf[this.incnt++] != (~_loc_2 & 255) || this.inbuf[this.incnt++] != (~_loc_2 >> 8 & 255))
             {
@@ -282,7 +281,7 @@ package nochump.util.zip
             while (_loc_2--)
             {
                 
-                var _loc_3:String = this;
+                var _loc_3:* = this;
                 _loc_3.incnt = this.incnt + 1;
                 param1[param1.length] = this.inbuf[this.incnt++];
             }
@@ -291,8 +290,8 @@ package nochump.util.zip
 
         private function constructFixedTables() : void
         {
-            var _loc_1:Array = [];
-            var _loc_2:int = 0;
+            var _loc_1:* = [];
+            var _loc_2:* = 0;
             while (_loc_2 < 144)
             {
                 
@@ -331,10 +330,10 @@ package nochump.util.zip
 
         private function constructDynamicTables() : int
         {
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
-            var _loc_1:Array = [];
-            var _loc_2:Array = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_1:* = [];
+            var _loc_2:* = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
             var _loc_3:* = this.bits(5) + 257;
             var _loc_4:* = this.bits(5) + 1;
             var _loc_5:* = this.bits(4) + 4;
@@ -342,7 +341,7 @@ package nochump.util.zip
             {
                 throw new Error("dynamic block code description: too many length or distance codes", -3);
             }
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < _loc_5)
             {
                 

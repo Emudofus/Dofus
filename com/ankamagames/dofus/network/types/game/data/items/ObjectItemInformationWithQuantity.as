@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.data.items
+﻿package com.ankamagames.dofus.network.types.game.data.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;

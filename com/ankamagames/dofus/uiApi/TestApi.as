@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -34,9 +34,9 @@ package com.ankamagames.dofus.uiApi
 
         public function getTestInventory(param1:uint) : Vector.<ItemWrapper>
         {
-            var _loc_4:Item = null;
+            var _loc_4:* = null;
             var _loc_2:* = new Vector.<ItemWrapper>;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param1)
             {
                 

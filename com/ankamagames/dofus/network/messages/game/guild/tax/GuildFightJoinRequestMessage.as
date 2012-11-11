@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.guild.tax
+﻿package com.ankamagames.dofus.network.messages.game.guild.tax
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

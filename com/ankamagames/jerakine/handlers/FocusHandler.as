@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.handlers
+﻿package com.ankamagames.jerakine.handlers
 {
     import com.ankamagames.jerakine.utils.display.*;
     import com.ankamagames.jerakine.utils.errors.*;

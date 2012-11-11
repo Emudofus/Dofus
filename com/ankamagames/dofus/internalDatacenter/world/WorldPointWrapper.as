@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.world
+﻿package com.ankamagames.dofus.internalDatacenter.world
 {
     import com.ankamagames.dofus.datacenter.world.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -12,7 +12,7 @@ package com.ankamagames.dofus.internalDatacenter.world
 
         public function WorldPointWrapper(param1:uint, param2:Boolean = false, param3:int = 0, param4:int = 0)
         {
-            var _loc_5:Object = null;
+            var _loc_5:* = null;
             mapId = param1;
             setFromMapId();
             if (param2)

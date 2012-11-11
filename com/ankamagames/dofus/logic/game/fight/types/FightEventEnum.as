@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
 
     public class FightEventEnum extends Object
@@ -6,6 +6,7 @@ package com.ankamagames.dofus.logic.game.fight.types
         public static const UNKNOWN_FIGHT_EVENT:String = "unknown";
         public static const FIGHTER_LIFE_GAIN:String = "fighterLifeGain";
         public static const FIGHTER_LIFE_LOSS:String = "fighterLifeLoss";
+        public static const FIGHTER_LIFE_LOSS_AND_DEATH:String = "fightLifeLossAndDeath";
         public static const FIGHTER_NO_CHANGE:String = "fighterNoChange";
         public static const FIGHTER_DEATH:String = "fighterDeath";
         public static const FIGHT_END:String = "fightEnd";

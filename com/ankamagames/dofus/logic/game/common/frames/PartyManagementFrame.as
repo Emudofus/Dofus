@@ -1,9 +1,10 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.factories.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.world.*;
+    import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.internalDatacenter.people.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -23,11 +24,13 @@ package com.ankamagames.dofus.logic.game.common.frames
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
     import com.ankamagames.dofus.types.enums.*;
     import com.ankamagames.dofus.uiApi.*;
+    import com.ankamagames.dofusModuleLibrary.enum.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.utils.pattern.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import flash.events.*;
     import flash.utils.*;
 
@@ -181,6 +184,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             var pidmsgNid:uint;
             var pimsg:PartyInvitationMessage;
             var textInvitationKey:String;
+            var extNotifType:int;
             var pimsgNid:uint;
             var pcjenmsg:PartyCannotJoinErrorMessage;
             var reasonText:String;
@@ -239,6 +243,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             var pplra:PartyPledgeLoyaltyRequestAction;
             var pplrmsg:PartyPledgeLoyaltyRequestMessage;
             var plsmsg:PartyLoyaltyStatusMessage;
+            var pfsumsg:PartyFollowStatusUpdateMessage;
             var pfma:PartyFollowMemberAction;
             var pfmrmsg:PartyFollowMemberRequestMessage;
             var psfma:PartyStopFollowingMemberAction;
@@ -358,10 +363,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                     if (pimsg.partyType == PartyTypeEnum.PARTY_TYPE_ARENA)
                     {
                         textInvitationKey;
+                        extNotifType = ExternalNotificationTypeEnum.KOLO_INVITATION;
                     }
-                    else
+                    else if (pimsg.partyType == PartyTypeEnum.PARTY_TYPE_CLASSICAL)
                     {
                         textInvitationKey;
+                        extNotifType = ExternalNotificationTypeEnum.GROUP_INVITATION;
+                    }
+                    if (AirScanner.hasAir())
+                    {
+                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, extNotifType, [pimsg.fromName]);
                     }
                     pimsgNid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"), I18n.getUiText(textInvitationKey, [pimsg.fromName]), NotificationTypeEnum.INVITATION, "partyInvit_" + pimsg.partyId);
                     NotificationManager.getInstance().addButtonToNotification(pimsgNid, I18n.getUiText("ui.common.details"), "PartyInvitationDetailsRequest", [pimsg.partyId]);
@@ -436,10 +447,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     pngmsg = msg as PartyNewGuestMessage;
                     newGuest = new PartyMemberWrapper(pngmsg.guest.guestId, pngmsg.guest.name, false, false, 0, pngmsg.guest.guestLook);
+                    newGuest.breed = pngmsg.guest.breed;
                     newGuest.hostId = pngmsg.guest.hostId;
                     if (pngmsg.partyId == this._arenaPartyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._arenaPartyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -454,7 +466,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     else if (pngmsg.partyId == this._partyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._partyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -489,13 +501,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is PartyInvitationDungeonDetailsMessage:
                 {
                     piddmsg = msg as PartyInvitationDungeonDetailsMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation, piddmsg.partyId, piddmsg.fromName, piddmsg.leaderId, piddmsg.partyType, piddmsg.members, piddmsg.dungeonId, piddmsg.playersDungeonReady);
+                    KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation, piddmsg.partyId, piddmsg.fromName, piddmsg.leaderId, piddmsg.partyType, piddmsg.members, piddmsg.guests, piddmsg.dungeonId, piddmsg.playersDungeonReady);
                     return true;
                 }
                 case msg is PartyInvitationDetailsMessage:
                 {
                     pidemsg = msg as PartyInvitationDetailsMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation, pidemsg.partyId, pidemsg.fromName, pidemsg.leaderId, pidemsg.partyType, pidemsg.members, 0, null);
+                    KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation, pidemsg.partyId, pidemsg.fromName, pidemsg.leaderId, pidemsg.partyType, pidemsg.members, pidemsg.guests, 0, null);
                     return true;
                 }
                 case msg is PartyAcceptInvitationAction:
@@ -515,7 +527,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     existingMember;
                     if (pumsg.partyId == this._arenaPartyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._arenaPartyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -531,22 +543,25 @@ package com.ankamagames.dofus.logic.game.common.frames
                                 member.maxLifePoints = pumsg.memberInformations.maxLifePoints;
                                 member.maxInitiative = pumsg.memberInformations.initiative;
                                 member.rank = (pumsg.memberInformations as PartyMemberArenaInformations).rank;
-                                member.prospecting = 0;
                                 member.pvpEnabled = pumsg.memberInformations.pvpEnabled;
                                 member.alignmentSide = pumsg.memberInformations.alignmentSide;
                                 member.regenRate = pumsg.memberInformations.regenRate;
+                                member.worldX = pumsg.memberInformations.worldX;
+                                member.worldY = pumsg.memberInformations.worldY;
+                                member.mapId = pumsg.memberInformations.mapId;
+                                member.subAreaId = pumsg.memberInformations.subAreaId;
                                 existingMember;
                             }
                         }
                         if (!existingMember)
                         {
-                            newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, 0, pumsg.memberInformations.pvpEnabled, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, (pumsg.memberInformations as PartyMemberArenaInformations).rank);
+                            newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, 0, pumsg.memberInformations.pvpEnabled, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, (pumsg.memberInformations as PartyMemberArenaInformations).rank, pumsg.memberInformations.worldX, pumsg.memberInformations.worldY, pumsg.memberInformations.mapId, pumsg.memberInformations.subAreaId);
                             this._arenaPartyMembers.push(newMember);
                         }
                     }
                     else if (pumsg.partyId == this._partyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._partyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -565,12 +580,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                                 member.pvpEnabled = pumsg.memberInformations.pvpEnabled;
                                 member.alignmentSide = pumsg.memberInformations.alignmentSide;
                                 member.regenRate = pumsg.memberInformations.regenRate;
+                                member.worldX = pumsg.memberInformations.worldX;
+                                member.worldY = pumsg.memberInformations.worldY;
+                                member.mapId = pumsg.memberInformations.mapId;
+                                member.subAreaId = pumsg.memberInformations.subAreaId;
                                 existingMember;
                             }
                         }
                         if (!existingMember)
                         {
-                            newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, pumsg.memberInformations.prospecting, pumsg.memberInformations.pvpEnabled, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate);
+                            newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, pumsg.memberInformations.prospecting, pumsg.memberInformations.pvpEnabled, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, pumsg.memberInformations.worldX, pumsg.memberInformations.worldY, pumsg.memberInformations.mapId, pumsg.memberInformations.subAreaId);
                             this._partyMembers.push(newMember);
                         }
                     }
@@ -591,7 +610,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     {
                         this._arenaPartyMembers = new Vector.<PartyMemberWrapper>;
                         this._arenaPartyId = pjmsg.partyId;
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = pjmsg.members;
                         while (_loc_4 in _loc_3)
                         {
@@ -605,7 +624,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             }
                             this._arenaPartyMembers.push(partyMember);
                         }
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = pjmsg.guests;
                         while (_loc_4 in _loc_3)
                         {
@@ -613,7 +632,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             guest = _loc_4[_loc_3];
                             partyGuest = new PartyMemberWrapper(guest.guestId, guest.name, false, false, 0, guest.guestLook);
                             partyGuest.hostId = guest.hostId;
-                            var _loc_5:int = 0;
+                            var _loc_5:* = 0;
                             var _loc_6:* = this._arenaPartyMembers;
                             while (_loc_6 in _loc_5)
                             {
@@ -631,7 +650,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     {
                         this._partyMembers = new Vector.<PartyMemberWrapper>;
                         this._partyId = pjmsg.partyId;
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = pjmsg.members;
                         while (_loc_4 in _loc_3)
                         {
@@ -644,7 +663,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             }
                             this._partyMembers.push(partyMember);
                         }
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = pjmsg.guests;
                         while (_loc_4 in _loc_3)
                         {
@@ -652,7 +671,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             guest = _loc_4[_loc_3];
                             partyGuest = new PartyMemberWrapper(guest.guestId, guest.name, false, false, 0, guest.guestLook);
                             partyGuest.hostId = guest.hostId;
-                            var _loc_5:int = 0;
+                            var _loc_5:* = 0;
                             var _loc_6:* = this._partyMembers;
                             while (_loc_6 in _loc_5)
                             {
@@ -892,7 +911,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     plulmsg = msg as PartyLeaderUpdateMessage;
                     if (plulmsg.partyId == this._arenaPartyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._arenaPartyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -910,7 +929,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     else if (plulmsg.partyId == this._partyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._partyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -941,7 +960,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     pulmsg = msg as PartyUpdateLightMessage;
                     if (pulmsg.partyId == this._arenaPartyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._arenaPartyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -970,7 +989,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     else if (pulmsg.partyId == this._partyId)
                     {
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = this._partyMembers;
                         while (_loc_4 in _loc_3)
                         {
@@ -1021,6 +1040,25 @@ package com.ankamagames.dofus.logic.game.common.frames
                     plsmsg = msg as PartyLoyaltyStatusMessage;
                     this._partyLoyalty = plsmsg.loyal;
                     KernelEventsManager.getInstance().processCallback(HookList.PartyLoyaltyStatus, plsmsg.partyId, plsmsg.loyal);
+                    return true;
+                }
+                case msg is PartyFollowStatusUpdateMessage:
+                {
+                    pfsumsg = msg as PartyFollowStatusUpdateMessage;
+                    if (pfsumsg.success)
+                    {
+                        if (pfsumsg.followedId == 0)
+                        {
+                            KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_PARTY + "_" + PlayedCharacterManager.getInstance().followingPlayerId);
+                            KernelEventsManager.getInstance().processCallback(HookList.PartyMemberFollowUpdate, pfsumsg.partyId, PlayedCharacterManager.getInstance().followingPlayerId, false);
+                            PlayedCharacterManager.getInstance().followingPlayerId = -1;
+                        }
+                        else
+                        {
+                            KernelEventsManager.getInstance().processCallback(HookList.PartyMemberFollowUpdate, pfsumsg.partyId, pfsumsg.followedId, true);
+                            PlayedCharacterManager.getInstance().followingPlayerId = pfsumsg.followedId;
+                        }
+                    }
                     return true;
                 }
                 case msg is PartyFollowMemberAction:
@@ -1082,7 +1120,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     tbrmsg = msg as TeleportBuddiesRequestedMessage;
                     poorBuddiesNames;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = this._partyMembers;
                     while (_loc_4 in _loc_3)
                     {
@@ -1106,12 +1144,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                         prinText = prinText + (" " + PatternDecoder.combine(I18n.getUiText("ui.party.teleportCriterionFallenAngels", [poorBuddiesNames]), "n", poorBuddiesNames.split(", ").length == 1));
                     }
                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, prinText, ChatActivableChannelsEnum.CHANNEL_PARTY, TimeManager.getInstance().getTimestamp());
+                    if (Kernel.getWorker().contains(TeleportBuddiesDialogFrame))
+                    {
+                        Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(TeleportBuddiesDialogFrame) as TeleportBuddiesDialogFrame);
+                    }
                     return true;
                 }
                 case msg is TeleportToBuddyOfferMessage:
                 {
                     ttbomsg = msg as TeleportToBuddyOfferMessage;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = this._partyMembers;
                     while (_loc_4 in _loc_3)
                     {
@@ -1180,7 +1222,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     dpfrcmsg = msg as DungeonPartyFinderRoomContentMessage;
                     this._dungeonFighters = new Vector.<DungeonPartyFinderPlayer>;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = dpfrcmsg.players;
                     while (_loc_4 in _loc_3)
                     {
@@ -1200,7 +1242,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     {
                         
                         currentfighterDungeon = tempDjFighters[iFD];
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = dpfrcumsg.removedPlayersIds;
                         while (_loc_4 in _loc_3)
                         {
@@ -1213,7 +1255,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         }
                         iFD = (iFD - 1);
                     }
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = dpfrcumsg.addedPlayers;
                     while (_loc_4 in _loc_3)
                     {
@@ -1228,7 +1270,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     dpfra = msg as DungeonPartyFinderRegisterAction;
                     dungeons = new Vector.<uint>;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = dpfra.dungeons;
                     while (_loc_4 in _loc_3)
                     {
@@ -1247,7 +1289,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     if (dpfrsmsg.dungeonIds.length > 0)
                     {
                         paramDonjons;
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = dpfrsmsg.dungeonIds;
                         while (_loc_4 in _loc_3)
                         {
@@ -1314,7 +1356,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT;
                     KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaFightProposition, grpafpmsg.alliesId);
                     this._arenaAlliesIds = new Array();
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = grpafpmsg.alliesId;
                     while (_loc_4 in _loc_3)
                     {
@@ -1323,11 +1365,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                         this._arenaAlliesIds.push(allyId);
                     }
                     grpafpmsgNid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.koliseum"), I18n.getUiText("ui.party.fightFound"), NotificationTypeEnum.PRIORITY_INVITATION, "fightProposition_" + grpafpmsg.fightId);
-                    NotificationManager.getInstance().addTimerToNotification(grpafpmsgNid, grpafpmsg.duration);
+                    NotificationManager.getInstance().addTimerToNotification(grpafpmsgNid, grpafpmsg.duration, false);
                     NotificationManager.getInstance().addButtonToNotification(grpafpmsgNid, I18n.getUiText("ui.common.refuse"), "ArenaFightAnswer", [grpafpmsg.fightId, false], true, 130);
                     NotificationManager.getInstance().addButtonToNotification(grpafpmsgNid, I18n.getUiText("ui.common.accept"), "ArenaFightAnswer", [grpafpmsg.fightId, true], true, 130);
                     NotificationManager.getInstance().addCallbackToNotification(grpafpmsgNid, "ArenaFightAnswer", [grpafpmsg.fightId, false]);
                     NotificationManager.getInstance().sendNotification(grpafpmsgNid);
+                    if (AirScanner.hasAir())
+                    {
+                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.KOLO_FIGHT);
+                    }
                     return true;
                 }
                 case msg is ArenaFightAnswerAction:
@@ -1351,8 +1397,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                         else
                         {
                             this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_REGISTRED;
-                            NotificationManager.getInstance().closeNotification("fightProposition_" + grpafsmsg.fightId);
                         }
+                        NotificationManager.getInstance().closeNotification("fightProposition_" + grpafsmsg.fightId, true);
                         this._arenaReadyPartyMemberIds = new Array();
                         this._arenaAlliesIds = new Array();
                         KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate, this._isArenaRegistered, this._arenaCurrentStatus);
@@ -1433,7 +1479,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function getGroupMemberById(param1:int) : PartyMemberWrapper
         {
-            var _loc_2:PartyMemberWrapper = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._partyMembers)
             {
                 
@@ -1447,7 +1493,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function deleteParty(param1:int) : void
         {
-            var _loc_2:Boolean = false;
+            var _loc_2:* = false;
             if (param1 == this._arenaPartyId)
             {
                 _loc_2 = true;
@@ -1472,12 +1518,12 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function createPartyPlayerContextMenu(param1:uint, param2:int) : Object
         {
-            var _loc_6:ActorAlignmentInformations = null;
-            var _loc_7:PartyMemberWrapper = null;
-            var _loc_8:int = 0;
-            var _loc_3:String = "";
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_3:* = "";
             var _loc_4:* = new SocialApi();
-            var _loc_5:Boolean = false;
+            var _loc_5:* = false;
             if (param2 == this._arenaPartyId)
             {
                 for each (_loc_7 in this._arenaPartyMembers)
@@ -1515,9 +1561,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         if (this.roleplayEntitiesFrame.getEntityInfos(_loc_8) is GameRolePlayCharacterInformations)
                         {
                             _loc_6 = (this.roleplayEntitiesFrame.getEntityInfos(_loc_8) as GameRolePlayCharacterInformations).alignmentInfos;
-                            continue;
                         }
-                        return null;
                     }
                 }
             }
@@ -1526,15 +1570,15 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function onTimerTick(event:TimerEvent) : void
         {
-            var _loc_2:PartyMemberWrapper = null;
-            var _loc_3:LifePointTickManager = null;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
-            var _loc_6:LifePointTickManager = null;
-            var _loc_7:LifePointTickManager = null;
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:LifePointTickManager = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
             for each (_loc_2 in this._partyMembers)
             {
                 
@@ -1610,6 +1654,72 @@ package com.ankamagames.dofus.logic.game.common.frames
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.berilia.factories.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.datacenter.world.*;
+
+import com.ankamagames.dofus.externalnotification.enums.*;
+
+import com.ankamagames.dofus.internalDatacenter.people.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.kernel.net.*;
+
+import com.ankamagames.dofus.logic.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.party.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.messages.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.messages.game.context.fight.*;
+
+import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.*;
+
+import com.ankamagames.dofus.network.messages.game.context.roleplay.party.*;
+
+import com.ankamagames.dofus.network.messages.game.interactive.meeting.*;
+
+import com.ankamagames.dofus.network.types.game.character.alignment.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
+
+import com.ankamagames.dofus.types.enums.*;
+
+import com.ankamagames.dofus.uiApi.*;
+
+import com.ankamagames.dofusModuleLibrary.enum.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.enums.*;
+
+import com.ankamagames.jerakine.utils.pattern.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
+import flash.events.*;
+
+import flash.utils.*;
 
 class LifePointTickManager extends Object
 {

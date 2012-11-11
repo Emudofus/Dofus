@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.internalDatacenter.house.*;
@@ -40,39 +40,39 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:LeaveDialogAction = null;
-            var _loc_5:LeaveDialogRequestMessage = null;
-            var _loc_6:HouseBuyAction = null;
-            var _loc_7:HouseBuyRequestMessage = null;
-            var _loc_8:HouseSellAction = null;
-            var _loc_9:HouseSellRequestMessage = null;
-            var _loc_10:HouseSellFromInsideAction = null;
-            var _loc_11:HouseSellFromInsideRequestMessage = null;
-            var _loc_12:PurchasableDialogMessage = null;
-            var _loc_13:int = 0;
-            var _loc_14:String = null;
-            var _loc_15:uint = 0;
-            var _loc_16:HouseWrapper = null;
-            var _loc_17:HouseGuildRightsMessage = null;
-            var _loc_18:HouseSoldMessage = null;
-            var _loc_19:HouseBuyResultMessage = null;
-            var _loc_20:HouseGuildRightsViewAction = null;
-            var _loc_21:HouseGuildRightsViewMessage = null;
-            var _loc_22:HouseGuildShareAction = null;
-            var _loc_23:HouseGuildShareRequestMessage = null;
-            var _loc_24:HouseKickAction = null;
-            var _loc_25:HouseKickRequestMessage = null;
-            var _loc_26:HouseKickIndoorMerchantAction = null;
-            var _loc_27:HouseKickIndoorMerchantRequestMessage = null;
-            var _loc_28:LockableStateUpdateHouseDoorMessage = null;
-            var _loc_29:LockableShowCodeDialogMessage = null;
-            var _loc_30:LockableChangeCodeAction = null;
-            var _loc_31:LockableChangeCodeMessage = null;
-            var _loc_32:HouseLockFromInsideAction = null;
-            var _loc_33:HouseLockFromInsideRequestMessage = null;
-            var _loc_34:LockableCodeResultMessage = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = null;
             switch(true)
             {
                 case param1 is LeaveDialogAction:
@@ -228,7 +228,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function getHouseInformations(param1:uint) : HouseWrapper
         {
-            var _loc_3:HouseWrapper = null;
+            var _loc_3:* = null;
             var _loc_2:* = (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).housesInformations;
             for each (_loc_3 in _loc_2)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.misc.lists.*;
@@ -29,8 +29,8 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:LoginQueueStatusMessage = null;
-            var _loc_3:QueueStatusMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             switch(true)
             {
                 case param1 is LoginQueueStatusMessage:

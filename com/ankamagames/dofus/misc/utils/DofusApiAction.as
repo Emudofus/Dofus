@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.types.data.*;
@@ -26,8 +26,8 @@ package com.ankamagames.dofus.misc.utils
 
         public static function updateInfo() : void
         {
-            var _loc_1:DofusApiAction = null;
-            var _loc_2:ActionDescription = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for each (_loc_1 in _actionList)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.event.*;
@@ -7,6 +7,7 @@ package com.ankamagames.berilia.types.data
     import com.ankamagames.jerakine.types.*;
     import flash.text.*;
     import flash.utils.*;
+    import flashx.textLayout.formats.*;
 
     public class ExtendedStyleSheet extends StyleSheet
     {
@@ -42,11 +43,11 @@ package com.ankamagames.berilia.types.data
 
         override public function parseCSS(param1:String) : void
         {
-            var _loc_3:Object = null;
-            var _loc_4:RegExp = null;
-            var _loc_5:Array = null;
-            var _loc_6:String = null;
-            var _loc_7:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             super.parseCSS(param1);
             var _loc_2:* = styleNames.indexOf(CSS_INHERITANCE_KEYWORD);
             if (_loc_2 != -1)
@@ -85,10 +86,10 @@ package com.ankamagames.berilia.types.data
 
         public function merge(param1:ExtendedStyleSheet, param2:Boolean = false) : void
         {
-            var _loc_3:Object = null;
-            var _loc_4:Object = null;
-            var _loc_6:String = null;
-            var _loc_5:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_6:* = null;
+            var _loc_5:* = 0;
             while (_loc_5 < param1.styleNames.length)
             {
                 
@@ -120,11 +121,11 @@ package com.ankamagames.berilia.types.data
 
         override public function toString() : String
         {
-            var _loc_2:Object = null;
-            var _loc_4:String = null;
-            var _loc_1:String = "";
+            var _loc_2:* = null;
+            var _loc_4:* = null;
+            var _loc_1:* = "";
             _loc_1 = _loc_1 + ("File " + this.url + " :\n");
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < styleNames.length)
             {
                 
@@ -140,10 +141,48 @@ package com.ankamagames.berilia.types.data
             return _loc_1;
         }// end function
 
+        public function TLFTransform(param1:Object) : TextLayoutFormat
+        {
+            var _loc_2:* = new TextLayoutFormat();
+            if (param1["color"])
+            {
+                _loc_2.color = param1["color"];
+            }
+            if (param1["fontFamily"])
+            {
+                _loc_2.fontFamily = param1["fontFamily"];
+            }
+            if (param1["fontSize"])
+            {
+                _loc_2.fontSize = param1["fontSize"];
+            }
+            if (param1["paddingLeft"])
+            {
+                _loc_2.paddingLeft = param1["paddingLeft"];
+            }
+            if (param1["paddingRight"])
+            {
+                _loc_2.paddingRight = param1["paddingRight"];
+            }
+            if (param1["paddingBottom"])
+            {
+                _loc_2.paddingBottom = param1["paddingBottom"];
+            }
+            if (param1["paddingTop"])
+            {
+                _loc_2.paddingTop = param1["paddingTop"];
+            }
+            if (param1["textIndent"])
+            {
+                _loc_2.textIndent = param1["textIndent"];
+            }
+            return _loc_2;
+        }// end function
+
         private function makeMerge(param1:String) : void
         {
             this.merge(CssManager.getInstance().getCss(param1));
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._inherited + 1;
             _loc_2._inherited = _loc_3;
             if (this.ready)

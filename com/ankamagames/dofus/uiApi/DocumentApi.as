@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.types.data.*;

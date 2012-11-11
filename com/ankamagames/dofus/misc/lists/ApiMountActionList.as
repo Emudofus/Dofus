@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.dofus.logic.game.common.actions.mount.*;
     import com.ankamagames.dofus.misc.utils.*;

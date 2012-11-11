@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.types
+﻿package com.ankamagames.dofus.logic.game.roleplay.types
 {
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;

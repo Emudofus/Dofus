@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -14,13 +14,15 @@ package com.ankamagames.berilia.components
 
     public class Input extends Label implements UIComponent
     {
-        private var _nMaxChars:uint;
+        private var _nMaxChars:int;
+        private var _nNumberMax:uint;
         private var _bPassword:Boolean = false;
         private var _sRestrictChars:String;
         private var _lastTextOnInput:String;
         public var imeActive:Boolean;
         public var focusEventHandlerPriority:Boolean = true;
         private static const _strReplace:String = "NoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLog";
+        private static var regSpace:RegExp = /\s""\s/g;
 
         public function Input()
         {
@@ -49,6 +51,12 @@ package com.ankamagames.berilia.components
         {
             this._nMaxChars = param1;
             _tText.maxChars = this._nMaxChars;
+            return;
+        }// end function
+
+        public function set numberMax(param1:uint) : void
+        {
+            this._nNumberMax = param1;
             return;
         }// end function
 
@@ -107,15 +115,15 @@ package com.ankamagames.berilia.components
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             if (param1 is MouseClickMessage && MouseClickMessage(param1).target == this)
             {
                 this.focus();
             }
-            var _loc_2:* = parseInt(text.split(" ").join("").split("").join(""));
-            if (param1 is MouseWheelMessage && !disabled && _loc_2.toString(10) == text.split(" ").join("").split("").join(""))
+            var _loc_2:* = parseInt(text.split(" ").join("").split(" ").join(""));
+            if (param1 is MouseWheelMessage && !disabled && _loc_2.toString(10) == text.split(" ").join("").split(" ").join(""))
             {
                 _loc_3 = (param1 as MouseWheelMessage).mouseEvent.delta > 0 ? (1) : (-1);
                 _loc_4 = Math.abs(_loc_2) > 99 ? (Math.pow(10, (_loc_2 + _loc_3).toString(10).length - 2)) : (1);
@@ -125,6 +133,10 @@ package com.ankamagames.berilia.components
                 }
                 _loc_5 = _loc_2 + _loc_3 * _loc_4;
                 _loc_5 = _loc_5 < 0 ? (0) : (_loc_5);
+                if (this._nNumberMax > 0 && _loc_5 > this._nNumberMax)
+                {
+                    _loc_5 = this._nNumberMax;
+                }
                 this.text = StringUtils.formateIntToString(_loc_5);
             }
             return super.process(param1);
@@ -138,6 +150,22 @@ package com.ankamagames.berilia.components
 
         private function onTextChange(event:Event) : void
         {
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = NaN;
+            if (this._nNumberMax > 0)
+            {
+                _loc_2 = /[0-9 ]+""[0-9 ]+/g;
+                _loc_3 = this.removeSpace(_tText.text);
+                _loc_4 = parseFloat(_loc_3);
+                if (!isNaN(_loc_4) && _loc_2.test(_tText.text))
+                {
+                    if (_loc_4 > this._nNumberMax)
+                    {
+                        _tText.text = this._nNumberMax + "";
+                    }
+                }
+            }
             if (this._lastTextOnInput != _tText.text)
             {
                 LogFrame.log(LogTypeEnum.KEYBOARD_INPUT, new KeyboardInput(customUnicName, _strReplace.substr(0, _tText.text.length)));
@@ -145,6 +173,13 @@ package com.ankamagames.berilia.components
             this._lastTextOnInput = _tText.text;
             Berilia.getInstance().handler.process(new ChangeMessage(InteractiveObject(this)));
             return;
+        }// end function
+
+        public function removeSpace(param1:String) : String
+        {
+            var _loc_2:* = new RegExp(regSpace);
+            var _loc_3:* = param1.replace(_loc_2, "");
+            return _loc_3;
         }// end function
 
     }

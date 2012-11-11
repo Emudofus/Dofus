@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.updater.parts
+﻿package com.ankamagames.dofus.network.messages.updater.parts
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

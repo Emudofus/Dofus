@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.manager
+﻿package com.ankamagames.dofus.kernel.sound.manager
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -147,10 +147,10 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function setSubArea(param1:Map = null) : void
         {
-            var _loc_4:IAudioBus = null;
-            var _loc_5:IAudioBus = null;
-            var _loc_6:IAudioBus = null;
-            var _loc_7:IAudioBus = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_2:* = MapPosition.getMapPositionById(param1.id);
             if (this.soundIsActivate && false)
             {
@@ -246,12 +246,12 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function handleFLAEvent(param1:String, param2:String, param3:String, param4:Object = null) : void
         {
-            var _loc_12:uint = 0;
-            var _loc_13:uint = 0;
-            var _loc_14:RollOffPreset = null;
-            var _loc_15:String = null;
-            var _loc_19:VolumeFadeEffect = null;
-            var _loc_20:VolumeFadeEffect = null;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
             if (!this.checkIfAvailable())
             {
                 return;
@@ -333,8 +333,8 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function setSoundSourcePosition(param1:int, param2:Point) : void
         {
-            var _loc_3:Vector.<ISound> = null;
-            var _loc_4:ISound = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (!this.checkIfAvailable())
             {
                 return;
@@ -376,13 +376,13 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function removeSoundEntity(param1:ISound) : void
         {
-            var _loc_4:ISound = null;
+            var _loc_4:* = null;
             var _loc_2:* = this._reverseEntitySounds[param1];
             if (!this._entitySounds[_loc_2])
             {
                 return;
             }
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             for each (_loc_4 in this._entitySounds[_loc_2])
             {
                 
@@ -403,8 +403,8 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function removeEntitySound(param1:IEntity) : void
         {
-            var _loc_2:ISound = null;
-            var _loc_3:VolumeFadeEffect = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (this._entityDictionary[param1] == null)
             {
                 return;
@@ -456,10 +456,10 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function playIntroMusic(param1:Boolean = true) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:uint = 0;
-            var _loc_5:String = null;
-            var _loc_6:Uri = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (!this.checkIfAvailable())
             {
                 return;
@@ -489,8 +489,8 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function switchIntroMusic(param1:Boolean) : void
         {
-            var _loc_2:VolumeFadeEffect = null;
-            var _loc_3:VolumeFadeEffect = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!this.checkIfAvailable())
             {
                 return;
@@ -521,8 +521,8 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function stopIntroMusic(param1:Boolean = false) : void
         {
-            var _loc_2:VolumeFadeEffect = null;
-            var _loc_3:VolumeFadeEffect = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!this.checkIfAvailable())
             {
                 return;
@@ -560,7 +560,7 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function removeAllSounds(param1:Number = 0, param2:Number = 0) : void
         {
-            var _loc_3:IAudioBus = null;
+            var _loc_3:* = null;
             if (this._introHarmonicOne)
             {
                 this._introHarmonicOne.eventDispatcher.removeEventListener(LoadingSoundEvent.LOADED, this.onIntroMusicHarmonicOneLoaded);
@@ -595,8 +595,8 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         private function findXmlSoundsInDirectory(param1:File) : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:File = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (param1.exists)
             {
                 _loc_2 = param1.getDirectoryListing();
@@ -780,7 +780,7 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function fadeBusVolume(param1:int, param2:Number, param3:Number) : void
         {
-            var _loc_5:VolumeFadeEffect = null;
+            var _loc_5:* = null;
             var _loc_4:* = Tubul.getInstance().getBus(param1);
             if (Tubul.getInstance().getBus(param1) != null)
             {
@@ -793,8 +793,8 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         private function onXMLPresetsRollOffLoaded(event:ResourceLoadedEvent) : void
         {
-            var _loc_3:XML = null;
-            var _loc_4:RollOffPreset = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = (event.resource as XML).elements();
             for each (_loc_3 in _loc_2)
             {

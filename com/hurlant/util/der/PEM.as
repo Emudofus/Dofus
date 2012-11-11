@@ -1,4 +1,4 @@
-package com.hurlant.util.der
+﻿package com.hurlant.util.der
 {
     import com.hurlant.crypto.rsa.*;
     import com.hurlant.util.*;
@@ -20,7 +20,7 @@ package com.hurlant.util.der
 
         public static function readRSAPrivateKey(param1:String) : RSAKey
         {
-            var _loc_4:Array = null;
+            var _loc_4:* = null;
             var _loc_2:* = extractBinary(RSA_PRIVATE_KEY_HEADER, RSA_PRIVATE_KEY_FOOTER, param1);
             if (_loc_2 == null)
             {
@@ -37,7 +37,7 @@ package com.hurlant.util.der
 
         public static function readRSAPublicKey(param1:String) : RSAKey
         {
-            var _loc_4:Array = null;
+            var _loc_4:* = null;
             var _loc_2:* = extractBinary(RSA_PUBLIC_KEY_HEADER, RSA_PUBLIC_KEY_FOOTER, param1);
             if (_loc_2 == null)
             {

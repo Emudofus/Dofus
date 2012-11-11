@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.taxCollector
+﻿package com.ankamagames.dofus.logic.game.common.actions.taxCollector
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

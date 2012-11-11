@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -145,7 +145,7 @@ package com.ankamagames.berilia.types.graphic
 
         override public function set width(param1:Number) : void
         {
-            var _loc_3:GraphicElement = null;
+            var _loc_3:* = null;
             if (param1 < 1)
             {
                 this.__width = 1;
@@ -174,7 +174,7 @@ package com.ankamagames.berilia.types.graphic
 
         override public function set height(param1:Number) : void
         {
-            var _loc_3:GraphicElement = null;
+            var _loc_3:* = null;
             if (param1 < 1)
             {
                 this.__height = 1;
@@ -231,7 +231,7 @@ package com.ankamagames.berilia.types.graphic
 
         override public function set x(param1:Number) : void
         {
-            var _loc_3:GraphicElement = null;
+            var _loc_3:* = null;
             super.x = param1;
             var _loc_2:* = this.getUi();
             if (_loc_2)
@@ -248,7 +248,7 @@ package com.ankamagames.berilia.types.graphic
 
         override public function set y(param1:Number) : void
         {
-            var _loc_3:GraphicElement = null;
+            var _loc_3:* = null;
             super.y = param1;
             var _loc_2:* = this.getUi();
             if (_loc_2)
@@ -265,7 +265,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function get anchorY() : Number
         {
-            var _loc_2:GraphicElement = null;
+            var _loc_2:* = null;
             var _loc_1:* = this.getUi();
             if (_loc_1)
             {
@@ -280,7 +280,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function get anchorX() : Number
         {
-            var _loc_2:GraphicElement = null;
+            var _loc_2:* = null;
             var _loc_1:* = this.getUi();
             if (_loc_1)
             {
@@ -422,8 +422,8 @@ package com.ankamagames.berilia.types.graphic
 
         public function getStrata(param1:uint) : Sprite
         {
-            var _loc_2:uint = 0;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             if (this._aStrata[param1] != null)
             {
                 return this._aStrata[param1];
@@ -532,7 +532,7 @@ package com.ankamagames.berilia.types.graphic
         public function get depths() : Array
         {
             var _loc_1:* = new Array();
-            var _loc_2:GraphicContainer = this;
+            var _loc_2:* = this;
             while (_loc_2.getParent() != null)
             {
                 
@@ -551,7 +551,7 @@ package com.ankamagames.berilia.types.graphic
 
         override public function set mouseEnabled(param1:Boolean) : void
         {
-            var _loc_2:DisplayObjectContainer = null;
+            var _loc_2:* = null;
             super.mouseEnabled = param1;
             for each (_loc_2 in this._aStrata)
             {
@@ -563,8 +563,8 @@ package com.ankamagames.berilia.types.graphic
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:UiRootContainer = null;
-            var _loc_3:MouseClickMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!this.canProcessMessage(param1))
             {
                 return true;
@@ -724,7 +724,7 @@ package com.ankamagames.berilia.types.graphic
 
         private function defaultDropValidatorFunction(param1, param2, param3) : Boolean
         {
-            var _loc_4:DisplayObject = this;
+            var _loc_4:* = this;
             do
             {
                 
@@ -739,7 +739,7 @@ package com.ankamagames.berilia.types.graphic
 
         private function defaultProcessDropFunction(param1, param2, param3) : void
         {
-            var _loc_4:DisplayObject = this;
+            var _loc_4:* = this;
             do
             {
                 
@@ -754,7 +754,7 @@ package com.ankamagames.berilia.types.graphic
 
         private function defaultRemoveDropSourceFunction(param1) : void
         {
-            var _loc_2:DisplayObject = this;
+            var _loc_2:* = this;
             do
             {
                 
@@ -769,7 +769,7 @@ package com.ankamagames.berilia.types.graphic
 
         override public function localToGlobal(param1:Point) : Point
         {
-            var _loc_2:DisplayObject = this;
+            var _loc_2:* = this;
             var _loc_3:* = param1;
             while (_loc_2 && _loc_2.parent)
             {
@@ -783,12 +783,12 @@ package com.ankamagames.berilia.types.graphic
 
         protected function destroy(param1:DisplayObjectContainer) : void
         {
-            var _loc_2:DisplayObject = null;
+            var _loc_2:* = null;
             if (!param1 || param1 is MovieClip && MovieClip(param1).totalFrames > 1)
             {
                 return;
             }
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = param1.numChildren;
             while (param1.numChildren)
             {

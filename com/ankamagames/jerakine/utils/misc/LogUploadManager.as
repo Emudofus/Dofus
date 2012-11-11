@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+ï»¿package com.ankamagames.jerakine.utils.misc
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.crypto.*;
@@ -44,7 +44,7 @@ package com.ankamagames.jerakine.utils.misc
                 uui = new SystemPopupUI("uploadLogFile");
                 uui.modal = true;
                 uui.title = "Analyse des performances";
-                uui.content = "Nous avons détécté un fichier de log contenant une longue session de jeu (" + Math.floor(targetFile.size / mega * 10 / 4) / 10 + " Mo).\n" + "Voulez-vous transmettre ce fichier à l\'équipe Dofus 2.0 pour participter à l\'amélioration de Dofus 2.0 ?\n" + "\n" + "Note : Le fichier de log contiens des données nominatives mais les mots de passes ainsi que les conversations ne sont pas enregistrés;
+                uui.content = "Nous avons dÃ©tÃ©ctÃ© un fichier de log contenant une longue session de jeu (" + Math.floor(targetFile.size / mega * 10 / 4) / 10 + " Mo).\n" + "Voulez-vous transmettre ce fichier Ã  l\'Ã©quipe Dofus 2.0 pour participter Ã  l\'amÃ©lioration de Dofus 2.0 ?\n" + "\n" + "Note : Le fichier de log contiens des donnÃ©es nominatives mais les mots de passes ainsi que les conversations ne sont pas enregistrÃ©s";
                 uui.buttons = [{label:"Envoyer", callback:new Callback(this.onSendLog, targetFile)}, {label:"Ne plus demander", callback:function () : void
             {
                 _so.data.disabled = true;
@@ -82,7 +82,7 @@ package com.ankamagames.jerakine.utils.misc
             new SystemPopupUI("uploadLogFileProgress").modal = true;
             _loc_6.title = "Envoi du fichier de log";
             _loc_6.content = "Encodage & compression en cours ...";
-            _loc_6.buttons = [{label:"Masquer cette fenêtre"}];
+            _loc_6.buttons = [{label:"Masquer cette fenÃªtre"}];
             _loc_6.show();
             return;
         }// end function
@@ -107,8 +107,7 @@ package com.ankamagames.jerakine.utils.misc
             this._so.flush();
             if (SystemPopupUI.get("uploadLogFileProgress"))
             {
-                SystemPopupUI.get("uploadLogFileProgress").content = "Envoi terminé.
-Merci pour votre participation.";
+                SystemPopupUI.get("uploadLogFileProgress").content = "Envoi terminÃ©.\nMerci pour votre participation.";
                 SystemPopupUI.get("uploadLogFileProgress").buttons = [{label:"Ok"}];
             }
             return;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.dofus.logic.game.common.actions.bid.*;
     import com.ankamagames.dofus.logic.game.common.actions.craft.*;
@@ -14,8 +14,10 @@ package com.ankamagames.dofus.misc.lists
         public static const ExchangeObjectMoveKama:DofusApiAction = new DofusApiAction("ExchangeObjectMoveKama", ExchangeObjectMoveKamaAction);
         public static const ExchangeObjectTransfertAllToInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertAllToInv", ExchangeObjectTransfertAllToInvAction);
         public static const ExchangeObjectTransfertListToInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertListToInv", ExchangeObjectTransfertListToInvAction);
+        public static const ExchangeObjectTransfertExistingToInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertExistingToInv", ExchangeObjectTransfertExistingToInvAction);
         public static const ExchangeObjectTransfertAllFromInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertAllFromInv", ExchangeObjectTransfertAllFromInvAction);
         public static const ExchangeObjectTransfertListFromInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertListFromInv", ExchangeObjectTransfertListFromInvAction);
+        public static const ExchangeObjectTransfertExistingFromInv:DofusApiAction = new DofusApiAction("ExchangeObjectTransfertExistingFromInv", ExchangeObjectTransfertExistingFromInvAction);
         public static const ExchangeReady:DofusApiAction = new DofusApiAction("ExchangeReady", ExchangeReadyAction);
         public static const ExchangePlayerRequest:DofusApiAction = new DofusApiAction("ExchangePlayerRequest", ExchangePlayerRequestAction);
         public static const ExchangeOnHumanVendorRequest:DofusApiAction = new DofusApiAction("ExchangeOnHumanVendorRequest", ExchangeOnHumanVendorRequestAction);

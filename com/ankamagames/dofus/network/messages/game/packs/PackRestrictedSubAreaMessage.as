@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.packs
+﻿package com.ankamagames.dofus.network.messages.game.packs
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.moduleLogger
+﻿package com.ankamagames.dofus.console.moduleLogger
 {
     import flash.display.*;
     import flash.events.*;
@@ -32,8 +32,8 @@ package com.ankamagames.dofus.console.moduleLogger
 
         public function isFiltered(param1:String) : Boolean
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             param1 = param1.toLocaleLowerCase();
             if (this.excludeMode)
             {
@@ -100,8 +100,8 @@ package com.ankamagames.dofus.console.moduleLogger
 
         public function resize() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             if (this._filterList && this._title)
             {
                 this._filterList.width = this._filterList.textWidth + 10;

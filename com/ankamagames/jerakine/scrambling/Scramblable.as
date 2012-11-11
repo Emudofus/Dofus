@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.scrambling
+﻿package com.ankamagames.jerakine.scrambling
 {
     import flash.utils.*;
 

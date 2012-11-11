@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types.sequences
+﻿package com.ankamagames.atouin.types.sequences
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.jerakine.entities.interfaces.*;

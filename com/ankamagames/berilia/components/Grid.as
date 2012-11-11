@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.gridRenderer.*;
@@ -271,7 +271,7 @@ package com.ankamagames.berilia.components
 
         public function get pagesCount() : uint
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             if (this._verticalScroll)
             {
                 _loc_1 = this._totalSlotByCol - this._slotByCol;
@@ -306,8 +306,8 @@ package com.ankamagames.berilia.components
 
         public function set selectedItem(param1) : void
         {
-            var _loc_2:Boolean = false;
-            var _loc_3:uint = 0;
+            var _loc_2:* = false;
+            var _loc_3:* = 0;
             var _loc_4:* = undefined;
             if (this._dataProvider)
             {
@@ -438,7 +438,7 @@ package com.ankamagames.berilia.components
 
         public function renderModificator(param1:Array, param2:Object) : Array
         {
-            var _loc_3:Class = null;
+            var _loc_3:* = null;
             if (param2 != SecureCenter.ACCESS_KEY)
             {
                 throw new IllegalOperationError();
@@ -471,7 +471,7 @@ package com.ankamagames.berilia.components
 
         public function finalize() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.configVar();
             if (this._slotByRow < this._totalSlotByRow && this._displayScrollbar != "never")
             {
@@ -574,7 +574,7 @@ package com.ankamagames.berilia.components
 
         public function updateItem(param1:uint) : void
         {
-            var _loc_2:GridItem = null;
+            var _loc_2:* = null;
             _loc_2 = this._items[param1];
             if (!_loc_2)
             {
@@ -595,8 +595,8 @@ package com.ankamagames.berilia.components
 
         public function updateItems() : void
         {
-            var _loc_1:GridItem = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < this._items.length)
             {
                 
@@ -624,12 +624,12 @@ package com.ankamagames.berilia.components
 
         public function get selectedSlot() : DisplayObject
         {
-            var _loc_1:GridItem = null;
+            var _loc_1:* = null;
             if (this._items == null || this._nSelectedIndex < 0 || this._nSelectedIndex >= this.dataProvider.length)
             {
                 return null;
             }
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._items.length)
             {
                 
@@ -643,10 +643,30 @@ package com.ankamagames.berilia.components
             return null;
         }// end function
 
+        public function get slots() : Array
+        {
+            if (this._items == null || this.dataProvider.length == 0)
+            {
+                return new Array();
+            }
+            var _loc_1:* = new Array();
+            var _loc_2:* = 0;
+            while (_loc_2 < this._items.length)
+            {
+                
+                if (this._items[_loc_2])
+                {
+                    _loc_1.push(this._items[_loc_2].container);
+                }
+                _loc_2 = _loc_2 + 1;
+            }
+            return _loc_1;
+        }// end function
+
         override public function remove() : void
         {
-            var _loc_1:GridItem = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             if (!__removed)
             {
                 _loc_2 = 0;
@@ -733,7 +753,7 @@ package com.ankamagames.berilia.components
 
         public function getItemIndex(param1) : int
         {
-            var _loc_2:DisplayObject = null;
+            var _loc_2:* = null;
             _loc_2 = SecureCenter.unsecure(param1);
             var _loc_3:* = this.getGridItem(_loc_2);
             if (_loc_3)
@@ -758,12 +778,12 @@ package com.ankamagames.berilia.components
 
         private function initSlot() : void
         {
-            var _loc_1:DisplayObject = null;
-            var _loc_4:GridItem = null;
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
-            var _loc_8:Boolean = false;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_4:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = false;
+            var _loc_2:* = 0;
             if (this._dataProvider.length && !this._autoPosition)
             {
                 _loc_6 = this._slotByCol * this._slotByRow;
@@ -778,7 +798,7 @@ package com.ankamagames.berilia.components
                         {
                             break;
                         }
-                        var _loc_9:String = this;
+                        var _loc_9:* = this;
                         var _loc_10:* = this._pageXOffset - 1;
                         _loc_9._pageXOffset = _loc_10;
                     }
@@ -787,7 +807,7 @@ package com.ankamagames.berilia.components
                         break;
                     }
                     this._pageXOffset = 0;
-                    var _loc_9:String = this;
+                    var _loc_9:* = this;
                     var _loc_10:* = this._pageYOffset - 1;
                     _loc_9._pageYOffset = _loc_10;
                 }
@@ -808,8 +828,8 @@ package com.ankamagames.berilia.components
                     this._scrollBarV.value = this._pageYOffset;
                 }
             }
-            var _loc_3:uint = 0;
-            var _loc_5:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < this._slotByCol)
             {
                 
@@ -887,11 +907,11 @@ package com.ankamagames.berilia.components
 
         private function updateFromIndex(param1:uint) : void
         {
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:GridItem = null;
-            var _loc_9:uint = 0;
-            var _loc_10:int = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
             var _loc_2:* = param1 - (this._verticalScroll ? (this._pageYOffset) : (this._pageXOffset));
             if (!_loc_2)
             {
@@ -907,7 +927,7 @@ package com.ankamagames.berilia.components
             }
             var _loc_6:* = new Array();
             var _loc_7:* = new Array();
-            var _loc_8:uint = 0;
+            var _loc_8:* = 0;
             _loc_3 = 0;
             while (_loc_3 < this._items.length)
             {
@@ -973,8 +993,8 @@ package com.ankamagames.berilia.components
 
         function setSelectedIndex(param1:int, param2:uint) : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:GridItem = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
             var _loc_5:* = undefined;
             if (param2 != SelectMethodEnum.MANUAL && param1 < 0 || param1 >= this._dataProvider.length)
             {
@@ -1039,13 +1059,13 @@ package com.ankamagames.berilia.components
 
         private function configVar() : void
         {
-            var _loc_2:Boolean = false;
+            var _loc_2:* = false;
             if (this._autoPosition)
             {
                 this._pageXOffset = 0;
                 this._pageYOffset = 0;
             }
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             while (_loc_1 < 2)
             {
                 
@@ -1096,7 +1116,7 @@ package com.ankamagames.berilia.components
 
         private function getGridItem(param1:DisplayObject) : GridItem
         {
-            var _loc_2:GridItem = null;
+            var _loc_2:* = null;
             if (!this._items)
             {
                 return null;
@@ -1107,7 +1127,7 @@ package com.ankamagames.berilia.components
                 
                 _loc_3 = _loc_3.parent;
             }
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this._items.length)
             {
                 
@@ -1123,20 +1143,20 @@ package com.ankamagames.berilia.components
 
         private function getNearestSlot(event:MouseEvent) : Slot
         {
-            var _loc_5:int = 0;
-            var _loc_7:Slot = null;
-            var _loc_9:Number = NaN;
-            var _loc_11:Number = NaN;
-            var _loc_15:int = 0;
+            var _loc_5:* = 0;
+            var _loc_7:* = null;
+            var _loc_9:* = NaN;
+            var _loc_11:* = NaN;
+            var _loc_15:* = 0;
             var _loc_2:* = event.localX;
             var _loc_3:* = event.localY;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_6:* = Slot(GridItem(this._items[0]).container);
             var _loc_8:* = Math.abs(_loc_2 - (_loc_6.x + this.slotWidth));
             var _loc_10:* = Math.abs(_loc_3 - (_loc_6.y + this.slotHeight));
             var _loc_12:* = Math.max(1, (this.slotByRow - 1));
             var _loc_13:* = Math.max(1, (this.slotByCol - 1));
-            var _loc_14:int = 1;
+            var _loc_14:* = 1;
             while (_loc_14 <= _loc_12)
             {
                 
@@ -1155,7 +1175,7 @@ package com.ankamagames.berilia.components
                 }
                 _loc_14 = _loc_14 + 1;
             }
-            var _loc_16:int = 1;
+            var _loc_16:* = 1;
             while (_loc_16 <= _loc_13)
             {
                 
@@ -1182,7 +1202,7 @@ package com.ankamagames.berilia.components
 
         private function onScroll(event:Event) : void
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             if (this._scrollBarV && this._scrollBarV.visible)
             {
                 _loc_2 = this._scrollBarV.value;
@@ -1224,14 +1244,14 @@ package com.ankamagames.berilia.components
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_2:GridItem = null;
-            var _loc_3:MouseRightClickMessage = null;
-            var _loc_4:MouseOverMessage = null;
-            var _loc_5:MouseOutMessage = null;
-            var _loc_6:MouseMessage = null;
-            var _loc_7:MouseUpMessage = null;
-            var _loc_8:KeyboardKeyDownMessage = null;
-            var _loc_9:Boolean = false;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = false;
             switch(true)
             {
                 case param1 is MouseRightClickMessage:

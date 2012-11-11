@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network
+﻿package com.ankamagames.dofus.network
 {
     import com.ankamagames.dofus.network.messages.authorized.*;
     import com.ankamagames.dofus.network.messages.common.*;
@@ -11,6 +11,7 @@ package com.ankamagames.dofus.network
     import com.ankamagames.dofus.network.messages.game.actions.*;
     import com.ankamagames.dofus.network.messages.game.actions.fight.*;
     import com.ankamagames.dofus.network.messages.game.actions.sequence.*;
+    import com.ankamagames.dofus.network.messages.game.almanach.*;
     import com.ankamagames.dofus.network.messages.game.approach.*;
     import com.ankamagames.dofus.network.messages.game.atlas.*;
     import com.ankamagames.dofus.network.messages.game.atlas.compass.*;
@@ -80,6 +81,7 @@ package com.ankamagames.dofus.network
     import com.ankamagames.dofus.network.messages.server.basic.*;
     import com.ankamagames.dofus.network.messages.updater.parts.*;
     import com.ankamagames.dofus.network.messages.web.ankabox.*;
+    import com.ankamagames.dofus.network.messages.web.krosmaster.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.network.*;
@@ -137,6 +139,7 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new AuthenticationTicketRefusedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AlreadyConnectedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AccountLoggingKickedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ServerSettingsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ServerOptionalFeaturesMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AccountCapabilitiesMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TrustStatusMessage(), true, true);
@@ -158,12 +161,14 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new PopupWarningMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicDateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicTimeMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AlmanachCalendarDateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicNoOperationMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new SystemMessageDisplayMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TextInformationMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new OnConnectionEventMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new SetCharacterRestrictionsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ServerExperienceModificatorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new CharacterCapabilitiesMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameContextCreateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameContextCreateErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameContextDestroyMessage(), true, true);
@@ -202,6 +207,7 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new MapComplementaryInformationsWithCoordsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayShowActorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterStatsListMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new FighterStatsListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterLevelUpMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterExperienceGainMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CharacterLevelUpInformationMessage(), true, true);
@@ -383,6 +389,7 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new PartyRestrictedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyDeletedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyLoyaltyStatusMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new PartyMemberInFightMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonPartyFinderAvailableDungeonsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonPartyFinderListenErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonPartyFinderRoomContentMessage(), true, true);
@@ -403,6 +410,7 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new IgnoredAddedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new IgnoredDeleteResultMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GuildCreationStartedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new GuildModificationStartedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GuildCreationResultMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GuildInvitedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new GuildInvitationStateRecruterMessage(), true, true);
@@ -544,6 +552,7 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new ExchangeBidHouseGenericItemAddedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeBidHouseGenericItemRemovedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeBidHouseInListAddedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ExchangeBidHouseInListUpdatedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeBidHouseInListRemovedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeIsReadyMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeErrorMessage(), true, true);
@@ -601,6 +610,8 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new ExchangeRemovedPaymentForCraftMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ExchangeClearPaymentForCraftMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new UpdateMountBoostMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ObjectAveragePricesErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new ObjectAveragePricesMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PurchasableDialogMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AccountHouseMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new HousePropertiesMessage(), true, true);
@@ -637,6 +648,11 @@ package com.ankamagames.dofus.network
             StoreDataManager.getInstance().registerClass(new ContactLookErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MailStatusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new NewMailMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new KrosmasterAuthTokenMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new KrosmasterAuthTokenErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new KrosmasterInventoryMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new KrosmasterInventoryErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new KrosmasterTransferMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PackRestrictedSubAreaMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartsListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new PartInfoMessage(), true, true);
@@ -672,6 +688,7 @@ package com.ankamagames.dofus.network
         _messagesTypes[112] = AuthenticationTicketRefusedMessage;
         _messagesTypes[109] = AlreadyConnectedMessage;
         _messagesTypes[6029] = AccountLoggingKickedMessage;
+        _messagesTypes[6340] = ServerSettingsMessage;
         _messagesTypes[6305] = ServerOptionalFeaturesMessage;
         _messagesTypes[6216] = AccountCapabilitiesMessage;
         _messagesTypes[6267] = TrustStatusMessage;
@@ -693,12 +710,14 @@ package com.ankamagames.dofus.network
         _messagesTypes[6134] = PopupWarningMessage;
         _messagesTypes[177] = BasicDateMessage;
         _messagesTypes[175] = BasicTimeMessage;
+        _messagesTypes[6341] = AlmanachCalendarDateMessage;
         _messagesTypes[176] = BasicNoOperationMessage;
         _messagesTypes[189] = SystemMessageDisplayMessage;
         _messagesTypes[780] = TextInformationMessage;
         _messagesTypes[5726] = OnConnectionEventMessage;
         _messagesTypes[170] = SetCharacterRestrictionsMessage;
         _messagesTypes[6237] = ServerExperienceModificatorMessage;
+        _messagesTypes[6339] = CharacterCapabilitiesMessage;
         _messagesTypes[200] = GameContextCreateMessage;
         _messagesTypes[6024] = GameContextCreateErrorMessage;
         _messagesTypes[201] = GameContextDestroyMessage;
@@ -737,6 +756,7 @@ package com.ankamagames.dofus.network
         _messagesTypes[6268] = MapComplementaryInformationsWithCoordsMessage;
         _messagesTypes[5632] = GameRolePlayShowActorMessage;
         _messagesTypes[500] = CharacterStatsListMessage;
+        _messagesTypes[6322] = FighterStatsListMessage;
         _messagesTypes[5670] = CharacterLevelUpMessage;
         _messagesTypes[6321] = CharacterExperienceGainMessage;
         _messagesTypes[6076] = CharacterLevelUpInformationMessage;
@@ -918,6 +938,7 @@ package com.ankamagames.dofus.network
         _messagesTypes[6175] = PartyRestrictedMessage;
         _messagesTypes[6261] = PartyDeletedMessage;
         _messagesTypes[6270] = PartyLoyaltyStatusMessage;
+        _messagesTypes[6342] = PartyMemberInFightMessage;
         _messagesTypes[6242] = DungeonPartyFinderAvailableDungeonsMessage;
         _messagesTypes[6248] = DungeonPartyFinderListenErrorMessage;
         _messagesTypes[6247] = DungeonPartyFinderRoomContentMessage;
@@ -938,6 +959,7 @@ package com.ankamagames.dofus.network
         _messagesTypes[5678] = IgnoredAddedMessage;
         _messagesTypes[5677] = IgnoredDeleteResultMessage;
         _messagesTypes[5920] = GuildCreationStartedMessage;
+        _messagesTypes[6324] = GuildModificationStartedMessage;
         _messagesTypes[5554] = GuildCreationResultMessage;
         _messagesTypes[5552] = GuildInvitedMessage;
         _messagesTypes[5563] = GuildInvitationStateRecruterMessage;
@@ -1079,6 +1101,7 @@ package com.ankamagames.dofus.network
         _messagesTypes[5947] = ExchangeBidHouseGenericItemAddedMessage;
         _messagesTypes[5948] = ExchangeBidHouseGenericItemRemovedMessage;
         _messagesTypes[5949] = ExchangeBidHouseInListAddedMessage;
+        _messagesTypes[6337] = ExchangeBidHouseInListUpdatedMessage;
         _messagesTypes[5950] = ExchangeBidHouseInListRemovedMessage;
         _messagesTypes[5509] = ExchangeIsReadyMessage;
         _messagesTypes[5513] = ExchangeErrorMessage;
@@ -1136,6 +1159,8 @@ package com.ankamagames.dofus.network
         _messagesTypes[6031] = ExchangeRemovedPaymentForCraftMessage;
         _messagesTypes[6145] = ExchangeClearPaymentForCraftMessage;
         _messagesTypes[6179] = UpdateMountBoostMessage;
+        _messagesTypes[6336] = ObjectAveragePricesErrorMessage;
+        _messagesTypes[6335] = ObjectAveragePricesMessage;
         _messagesTypes[5739] = PurchasableDialogMessage;
         _messagesTypes[6315] = AccountHouseMessage;
         _messagesTypes[5734] = HousePropertiesMessage;
@@ -1172,6 +1197,11 @@ package com.ankamagames.dofus.network
         _messagesTypes[6045] = ContactLookErrorMessage;
         _messagesTypes[6275] = MailStatusMessage;
         _messagesTypes[6292] = NewMailMessage;
+        _messagesTypes[6351] = KrosmasterAuthTokenMessage;
+        _messagesTypes[6345] = KrosmasterAuthTokenErrorMessage;
+        _messagesTypes[6350] = KrosmasterInventoryMessage;
+        _messagesTypes[6343] = KrosmasterInventoryErrorMessage;
+        _messagesTypes[6348] = KrosmasterTransferMessage;
         _messagesTypes[6186] = PackRestrictedSubAreaMessage;
         _messagesTypes[1502] = PartsListMessage;
         _messagesTypes[1508] = PartInfoMessage;

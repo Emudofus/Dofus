@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.jerakine.network.*;

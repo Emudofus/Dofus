@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+﻿package com.ankamagames.jerakine.utils.misc
 {
     import flash.system.*;
 

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types
+﻿package com.ankamagames.jerakine.types
 {
     import com.ankamagames.jerakine.utils.files.*;
 
@@ -18,7 +18,7 @@ package com.ankamagames.jerakine.types
 
         public function addFile(param1:String, param2:String) : void
         {
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             var _loc_4:* = this._nFileCount + 1;
             _loc_3._nFileCount = _loc_4;
             this.clearFile[param1] = param2;
@@ -32,10 +32,10 @@ package com.ankamagames.jerakine.types
 
         public static function fromXml(param1:String, param2:String, param3:Function) : LangMetaData
         {
-            var _loc_7:XML = null;
+            var _loc_7:* = null;
             var _loc_4:* = new XML(param1);
             var _loc_5:* = new LangMetaData;
-            var _loc_6:Boolean = false;
+            var _loc_6:* = false;
             if (_loc_4..filesActions..clearOnlyNotUpToDate.toString() == "true")
             {
                 _loc_5.clearOnlyNotUpToDate = true;

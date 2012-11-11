@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
 
     public class ColorUtils extends Object
@@ -11,15 +11,15 @@ package com.ankamagames.jerakine.utils.display
 
         public static function rgb2hsl(param1:uint) : Object
         {
-            var _loc_2:Number = NaN;
-            var _loc_3:Number = NaN;
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_11:Number = NaN;
-            var _loc_12:Number = NaN;
-            var _loc_13:Number = NaN;
+            var _loc_2:* = NaN;
+            var _loc_3:* = NaN;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_11:* = NaN;
+            var _loc_12:* = NaN;
+            var _loc_13:* = NaN;
             _loc_2 = (param1 & 16711680) >> 16;
             _loc_3 = (param1 & 65280) >> 8;
             _loc_4 = param1 & 255;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.character.replay
+﻿package com.ankamagames.dofus.network.messages.game.character.replay
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -66,7 +66,7 @@ package com.ankamagames.dofus.network.messages.game.character.replay
         {
             super.serializeAs_CharacterReplayRequestMessage(param1);
             param1.writeShort(this.indexedColor.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.indexedColor.length)
             {
                 
@@ -84,10 +84,10 @@ package com.ankamagames.dofus.network.messages.game.character.replay
 
         public function deserializeAs_CharacterReplayWithRecolorRequestMessage(param1:IDataInput) : void
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             super.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

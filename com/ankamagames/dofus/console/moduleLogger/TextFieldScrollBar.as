@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.moduleLogger
+﻿package com.ankamagames.dofus.console.moduleLogger
 {
     import __AS3__.vec.*;
     import flash.display.*;

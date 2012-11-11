@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.misc.interClient.*;
@@ -54,9 +54,9 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function updateFocusList(param1:Array, param2:String) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:Number = NaN;
-            var _loc_8:Number = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = NaN;
+            var _loc_8:* = NaN;
             var _loc_3:* = NativeApplication.nativeApplication.openedWindows[0];
             if (AirScanner.hasAir())
             {
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.logic.common.managers
                 }
             }
             var _loc_6:* = param1.length;
-            var _loc_7:int = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         private static function onEnterFrame(event:Event) : void
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_2:* = getTimer();
             _elapsedTime = _elapsedTime + (_loc_2 - _lastTime);
             var _loc_6:* = _frame + 1;

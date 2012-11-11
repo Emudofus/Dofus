@@ -1,4 +1,4 @@
-package com.hurlant.util.der
+﻿package com.hurlant.util.der
 {
     import com.hurlant.util.der.*;
     import flash.net.*;
@@ -37,12 +37,12 @@ package com.hurlant.util.der
 
         private function parse(param1:ByteArray) : void
         {
-            var _loc_5:Boolean = false;
+            var _loc_5:* = false;
             var _loc_2:* = param1.readUnsignedByte();
-            var _loc_3:Array = [];
+            var _loc_3:* = [];
             _loc_3.push(uint(_loc_2 / 40));
             _loc_3.push(uint(_loc_2 % 40));
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (param1.bytesAvailable > 0)
             {
                 
@@ -72,10 +72,10 @@ package com.hurlant.util.der
 
         public function toDER() : ByteArray
         {
-            var _loc_4:int = 0;
-            var _loc_1:Array = [];
+            var _loc_4:* = 0;
+            var _loc_1:* = [];
             _loc_1[0] = this.oid[0] * 40 + this.oid[1];
-            var _loc_2:int = 2;
+            var _loc_2:* = 2;
             while (_loc_2 < this.oid.length)
             {
                 

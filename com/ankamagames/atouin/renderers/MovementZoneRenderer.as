@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.renderers
+﻿package com.ankamagames.atouin.renderers
 {
     import com.ankamagames.atouin.enums.*;
 

@@ -1,8 +1,10 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.enums.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.misc.*;
+    import flash.utils.*;
 
     public class StateContainer extends GraphicContainer implements UIComponent
     {
@@ -12,6 +14,7 @@ package com.ankamagames.berilia.types.graphic
         protected var _lockedProperties:Array;
         protected var _lockedPropertiesStr:String;
         private var _changingStateData:Array;
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(StateContainer));
 
         public function StateContainer()
         {
@@ -78,8 +81,8 @@ package com.ankamagames.berilia.types.graphic
 
         public function set lockedProperties(param1:String) : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             this._lockedPropertiesStr = param1;
             this._lockedProperties = [];
             if (this._lockedPropertiesStr)
@@ -96,11 +99,11 @@ package com.ankamagames.berilia.types.graphic
 
         protected function changeState(param1) : void
         {
-            var _loc_2:GraphicContainer = null;
-            var _loc_3:Array = null;
-            var _loc_4:UiRootContainer = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (!this._snapshot)
             {
                 return;
@@ -142,13 +145,17 @@ package com.ankamagames.berilia.types.graphic
                     }
                 }
             }
+            else
+            {
+                _log.warn(name + " : No data for state \'" + param1 + "\' (" + this.changingStateData.length + " states)");
+            }
             return;
         }// end function
 
         protected function makeSnapshot(param1, param2:GraphicContainer) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:XML = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (!this._snapshot[param1])
             {
                 this._snapshot[param1] = new Object();
@@ -196,10 +203,10 @@ package com.ankamagames.berilia.types.graphic
 
         protected function restoreSnapshot(param1) : void
         {
-            var _loc_2:GraphicContainer = null;
-            var _loc_3:UiRootContainer = null;
-            var _loc_4:String = null;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (!this._snapshot)
             {
                 return;
@@ -228,8 +235,8 @@ package com.ankamagames.berilia.types.graphic
                             {
                                 continue;
                             }
+                            _loc_2[_loc_5] = this._snapshot[param1][_loc_4][_loc_5];
                         }
-                        _loc_2[_loc_5] = this._snapshot[param1][_loc_4][_loc_5];
                     }
                 }
             }

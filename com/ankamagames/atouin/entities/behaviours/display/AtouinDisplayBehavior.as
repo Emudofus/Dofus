@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.entities.behaviours.display
+﻿package com.ankamagames.atouin.entities.behaviours.display
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.jerakine.entities.behaviours.*;

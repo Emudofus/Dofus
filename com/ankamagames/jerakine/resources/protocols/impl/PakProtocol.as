@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.protocols.impl
+﻿package com.ankamagames.jerakine.resources.protocols.impl
 {
     import com.ankamagames.jerakine.newCache.*;
     import com.ankamagames.jerakine.resources.*;
@@ -93,9 +93,9 @@ package com.ankamagames.jerakine.resources.protocols.impl
 
         private function initStream(param1:Uri) : FileStream
         {
-            var _loc_6:String = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
             var _loc_2:* = param1.toFile();
             if (!_loc_2.exists)
             {

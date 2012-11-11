@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.dofus.logic.common.actions.*;
     import com.ankamagames.dofus.logic.connection.actions.*;
@@ -6,6 +6,7 @@ package com.ankamagames.dofus.misc.lists
     import com.ankamagames.dofus.logic.game.common.actions.*;
     import com.ankamagames.dofus.logic.game.common.actions.alignment.*;
     import com.ankamagames.dofus.logic.game.common.actions.chat.*;
+    import com.ankamagames.dofus.logic.game.common.actions.externalGame.*;
     import com.ankamagames.dofus.logic.game.common.actions.party.*;
     import com.ankamagames.dofus.logic.game.common.actions.prism.*;
     import com.ankamagames.dofus.logic.game.common.actions.quest.*;
@@ -18,6 +19,7 @@ package com.ankamagames.dofus.misc.lists
 
     public class ApiActionList extends Object
     {
+        public static const OpenPopup:DofusApiAction = new DofusApiAction("OpenPopup", OpenPopupAction);
         public static const BasicSwitchMode:DofusApiAction = new DofusApiAction("BasicSwitchMode", BasicSwitchModeAction);
         public static const ChatCommand:DofusApiAction = new DofusApiAction("ChatCommand", ChatCommandAction);
         public static const ChatLoaded:DofusApiAction = new DofusApiAction("ChatLoaded", ChatLoadedAction);
@@ -155,6 +157,10 @@ package com.ankamagames.dofus.misc.lists
         public static const ShortcutBarAddRequest:DofusApiAction = new DofusApiAction("ShortcutBarAddRequest", ShortcutBarAddRequestAction);
         public static const ShortcutBarRemoveRequest:DofusApiAction = new DofusApiAction("ShortcutBarRemoveRequest", ShortcutBarRemoveRequestAction);
         public static const ShortcutBarSwapRequest:DofusApiAction = new DofusApiAction("ShortcutBarSwapRequest", ShortcutBarSwapRequestAction);
+        public static const KrosmasterTokenRequest:DofusApiAction = new DofusApiAction("KrosmasterTokenRequest", KrosmasterTokenRequestAction);
+        public static const KrosmasterInventoryRequest:DofusApiAction = new DofusApiAction("KrosmasterInventoryRequest", KrosmasterInventoryRequestAction);
+        public static const KrosmasterTransferRequest:DofusApiAction = new DofusApiAction("KrosmasterTransferRequest", KrosmasterTransferRequestAction);
+        public static const KrosmasterPlayingStatus:DofusApiAction = new DofusApiAction("KrosmasterPlayingStatus", KrosmasterPlayingStatusAction);
 
         public function ApiActionList()
         {

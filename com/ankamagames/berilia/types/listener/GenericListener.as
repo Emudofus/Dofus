@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.listener
+﻿package com.ankamagames.berilia.types.listener
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.memory.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.connection.frames
+﻿package com.ankamagames.dofus.logic.connection.frames
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.managers.*;
@@ -6,7 +6,6 @@ package com.ankamagames.dofus.logic.connection.frames
     import com.ankamagames.dofus.internalDatacenter.connection.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.common.actions.*;
     import com.ankamagames.dofus.logic.common.frames.*;
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.dofus.logic.connection.actions.*;
@@ -15,6 +14,7 @@ package com.ankamagames.dofus.logic.connection.frames
     import com.ankamagames.dofus.logic.game.approach.managers.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.misc.lists.*;
+    import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.connection.*;
     import com.ankamagames.dofus.network.messages.connection.register.*;
     import com.ankamagames.jerakine.data.*;
@@ -28,6 +28,8 @@ package com.ankamagames.dofus.logic.connection.frames
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.utils.crypto.*;
+    import com.ankamagames.jerakine.utils.system.*;
+    import flash.events.*;
     import flash.system.*;
     import flash.utils.*;
 
@@ -38,6 +40,8 @@ package com.ankamagames.dofus.logic.connection.frames
         private var _dispatchModuleHook:Boolean;
         private var _connexionSequence:Array;
         private var commonMod:Object;
+        private var _lva:LoginValidationAction;
+        private var _streamingBetaAccess:Boolean = false;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(AuthentificationFrame));
         private static var _lastTicket:String;
 
@@ -60,11 +64,11 @@ package com.ankamagames.dofus.logic.connection.frames
 
         public function pushed() : Boolean
         {
-            var _loc_1:String = null;
-            var _loc_2:String = null;
-            var _loc_3:String = null;
-            var _loc_4:String = null;
-            var _loc_5:Array = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             this.processInvokeArgs();
             if (this._dispatchModuleHook)
             {
@@ -90,93 +94,120 @@ package com.ankamagames.dofus.logic.connection.frames
             return true;
         }// end function
 
+        private function onStreamingBetaAuthentification(event:Event) : void
+        {
+            var _loc_2:* = null;
+            if (StreamingBetaAuthentification(event.target).haveAccess)
+            {
+                this._streamingBetaAccess = true;
+                this.process(this._lva);
+            }
+            else
+            {
+                _log.fatal("Pas de droits, pas de chocolat");
+                this._streamingBetaAccess = false;
+                KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, 0);
+                _loc_2 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+                _loc_2.openPopup(I18n.getUiText("ui.popup.information"), "You are trying to access to a private beta but your account is not allowed.If you wish have an access, please contact Ankama.", [I18n.getUiText("ui.common.ok")]);
+            }
+            return;
+        }// end function
+
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:LoginValidationAction = null;
-            var _loc_3:Array = null;
-            var _loc_4:String = null;
-            var _loc_5:Array = null;
-            var _loc_6:Array = null;
-            var _loc_7:DataStoreType = null;
-            var _loc_8:uint = 0;
-            var _loc_9:Array = null;
-            var _loc_10:Object = null;
-            var _loc_11:ServerConnectionFailedMessage = null;
-            var _loc_12:HelloConnectMessage = null;
-            var _loc_13:IdentificationSuccessMessage = null;
-            var _loc_14:IdentificationFailedForBadVersionMessage = null;
-            var _loc_15:IdentificationFailedBannedMessage = null;
-            var _loc_16:IdentificationFailedMessage = null;
-            var _loc_17:NicknameRegistrationMessage = null;
-            var _loc_18:NicknameRefusedMessage = null;
-            var _loc_19:NicknameAcceptedMessage = null;
-            var _loc_20:NicknameChoiceRequestAction = null;
-            var _loc_21:NicknameChoiceRequestMessage = null;
-            var _loc_22:AgreementAgreedAction = null;
-            var _loc_23:String = null;
-            var _loc_24:SubscribersGiftListRequestAction = null;
-            var _loc_25:Uri = null;
-            var _loc_26:String = null;
-            var _loc_27:NewsLoginRequestAction = null;
-            var _loc_28:Uri = null;
-            var _loc_29:String = null;
-            var _loc_30:String = null;
-            var _loc_31:String = null;
-            var _loc_32:Object = null;
-            var _loc_33:String = null;
-            var _loc_34:uint = 0;
-            var _loc_35:String = null;
-            var _loc_36:Array = null;
-            var _loc_37:Array = null;
-            var _loc_38:String = null;
-            var _loc_39:Array = null;
-            var _loc_40:uint = 0;
-            var _loc_41:Object = null;
+            var _loc_2:* = null;
+            var _loc_3:* = undefined;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = 0;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
+            var _loc_39:* = null;
+            var _loc_40:* = 0;
+            var _loc_41:* = null;
             switch(true)
             {
                 case param1 is LoginValidationAction:
                 {
                     _loc_2 = LoginValidationAction(param1);
-                    _loc_3 = new Array();
-                    _loc_4 = XmlConfig.getInstance().getEntry("config.connection.port");
-                    for each (_loc_30 in _loc_4.split(","))
+                    _loc_3 = BuildInfos.BUILD_TYPE;
+                    if (BuildInfos.BUILD_TYPE < BuildTypeEnum.TESTING && AirScanner.isStreamingVersion() && !this._streamingBetaAccess)
+                    {
+                        this._lva = _loc_2;
+                        _loc_29 = new StreamingBetaAuthentification(_loc_2.username);
+                        _loc_29.addEventListener(Event.INIT, this.onStreamingBetaAuthentification);
+                        return true;
+                    }
+                    _loc_4 = new Array();
+                    _loc_5 = XmlConfig.getInstance().getEntry("config.connection.port");
+                    for each (_loc_30 in _loc_5.split(","))
                     {
                         
-                        _loc_3.push(int(_loc_30));
+                        _loc_4.push(int(_loc_30));
                     }
-                    _loc_5 = XmlConfig.getInstance().getEntry("config.connection.host").split(",");
+                    _loc_6 = XmlConfig.getInstance().getEntry("config.connection.host").split(",");
+                    _loc_7 = [];
+                    for each (_loc_31 in _loc_6)
+                    {
+                        
+                        _loc_7.push({host:_loc_31, random:Math.random()});
+                    }
+                    _loc_7.sortOn("random", Array.NUMERIC);
                     _loc_6 = [];
-                    for each (_loc_31 in _loc_5)
+                    for each (_loc_32 in _loc_7)
                     {
                         
-                        _loc_6.push({host:_loc_31, random:Math.random()});
+                        _loc_6.push(_loc_32.host);
                     }
-                    _loc_6.sortOn("random", Array.NUMERIC);
-                    _loc_5 = [];
-                    for each (_loc_32 in _loc_6)
-                    {
-                        
-                        _loc_5.push(_loc_32.host);
-                    }
-                    _loc_7 = new DataStoreType("Dofus_ComputerOptions", true, DataStoreEnum.LOCATION_LOCAL, DataStoreEnum.BIND_ACCOUNT);
-                    _loc_8 = uint(StoreDataManager.getInstance().getData(_loc_7, "connectionPortDefault"));
+                    _loc_8 = new DataStoreType("Dofus_ComputerOptions", true, DataStoreEnum.LOCATION_LOCAL, DataStoreEnum.BIND_ACCOUNT);
+                    _loc_9 = uint(StoreDataManager.getInstance().getData(_loc_8, "connectionPortDefault"));
                     this._connexionSequence = [];
-                    _loc_9 = [];
-                    for each (_loc_33 in _loc_5)
+                    _loc_10 = [];
+                    for each (_loc_33 in _loc_6)
                     {
                         
-                        for each (_loc_34 in _loc_3)
+                        for each (_loc_34 in _loc_4)
                         {
                             
-                            if (_loc_8 == _loc_34)
+                            if (_loc_9 == _loc_34)
                             {
-                                _loc_9.push({host:_loc_33, port:_loc_34});
+                                _loc_10.push({host:_loc_33, port:_loc_34});
                                 continue;
                             }
                             this._connexionSequence.push({host:_loc_33, port:_loc_34});
                         }
                     }
-                    this._connexionSequence = _loc_9.concat(this._connexionSequence);
+                    this._connexionSequence = _loc_10.concat(this._connexionSequence);
                     if (Constants.EVENT_MODE)
                     {
                         _loc_35 = Constants.EVENT_MODE_PARAM;
@@ -202,18 +233,18 @@ package com.ankamagames.dofus.logic.connection.frames
                         }
                     }
                     AuthentificationManager.getInstance().setValidationAction(_loc_2);
-                    _loc_10 = this._connexionSequence.shift();
-                    ConnectionsHandler.connectToLoginServer(_loc_10.host, _loc_10.port);
+                    _loc_11 = this._connexionSequence.shift();
+                    ConnectionsHandler.connectToLoginServer(_loc_11.host, _loc_11.port);
                     return true;
                 }
                 case param1 is ServerConnectionFailedMessage:
                 {
-                    _loc_11 = ServerConnectionFailedMessage(param1);
-                    if (_loc_11.failedConnection == ConnectionsHandler.getConnection())
+                    _loc_12 = ServerConnectionFailedMessage(param1);
+                    if (_loc_12.failedConnection == ConnectionsHandler.getConnection())
                     {
                         PlayerManager.getInstance().destroy();
                         (ConnectionsHandler.getConnection() as ServerConnection).stopConnectionTimeout();
-                        _loc_40 = _loc_11.failedConnection.port;
+                        _loc_40 = _loc_12.failedConnection.port;
                         if (this._connexionSequence)
                         {
                             _loc_41 = this._connexionSequence.shift();
@@ -231,9 +262,9 @@ package com.ankamagames.dofus.logic.connection.frames
                 }
                 case param1 is HelloConnectMessage:
                 {
-                    _loc_12 = HelloConnectMessage(param1);
-                    AuthentificationManager.getInstance().setPublicKey(_loc_12.key);
-                    AuthentificationManager.getInstance().setSalt(_loc_12.salt);
+                    _loc_13 = HelloConnectMessage(param1);
+                    AuthentificationManager.getInstance().setPublicKey(_loc_13.key);
+                    AuthentificationManager.getInstance().setSalt(_loc_13.salt);
                     ConnectionsHandler.getConnection().send(AuthentificationManager.getInstance().getIdentificationMessage());
                     KernelEventsManager.getInstance().processCallback(HookList.ConnectionTimerStart);
                     TimeManager.getInstance().reset();
@@ -241,23 +272,23 @@ package com.ankamagames.dofus.logic.connection.frames
                 }
                 case param1 is IdentificationSuccessMessage:
                 {
-                    _loc_13 = IdentificationSuccessMessage(param1);
-                    if (_loc_13 is IdentificationSuccessWithLoginTokenMessage)
+                    _loc_14 = IdentificationSuccessMessage(param1);
+                    if (_loc_14 is IdentificationSuccessWithLoginTokenMessage)
                     {
-                        AuthentificationManager.getInstance().nextToken = IdentificationSuccessWithLoginTokenMessage(_loc_13).loginToken;
+                        AuthentificationManager.getInstance().nextToken = IdentificationSuccessWithLoginTokenMessage(_loc_14).loginToken;
                     }
-                    if (_loc_13.login)
+                    if (_loc_14.login)
                     {
-                        AuthentificationManager.getInstance().username = _loc_13.login;
+                        AuthentificationManager.getInstance().username = _loc_14.login;
                     }
-                    PlayerManager.getInstance().accountId = _loc_13.accountId;
-                    PlayerManager.getInstance().communityId = _loc_13.communityId;
-                    PlayerManager.getInstance().hasRights = _loc_13.hasRights;
-                    PlayerManager.getInstance().nickname = _loc_13.nickname;
-                    PlayerManager.getInstance().subscriptionEndDate = _loc_13.subscriptionEndDate;
-                    PlayerManager.getInstance().secretQuestion = _loc_13.secretQuestion;
-                    PlayerManager.getInstance().accountCreation = _loc_13.accountCreation;
-                    AuthorizedFrame(Kernel.getWorker().getFrame(AuthorizedFrame)).hasRights = _loc_13.hasRights;
+                    PlayerManager.getInstance().accountId = _loc_14.accountId;
+                    PlayerManager.getInstance().communityId = _loc_14.communityId;
+                    PlayerManager.getInstance().hasRights = _loc_14.hasRights;
+                    PlayerManager.getInstance().nickname = _loc_14.nickname;
+                    PlayerManager.getInstance().subscriptionEndDate = _loc_14.subscriptionEndDate;
+                    PlayerManager.getInstance().secretQuestion = _loc_14.secretQuestion;
+                    PlayerManager.getInstance().accountCreation = _loc_14.accountCreation;
+                    AuthorizedFrame(Kernel.getWorker().getFrame(AuthorizedFrame)).hasRights = _loc_14.hasRights;
                     if (PlayerManager.getInstance().subscriptionEndDate > 0 || PlayerManager.getInstance().hasRights)
                     {
                         PartManager.getInstance().checkAndDownload("all");
@@ -276,10 +307,10 @@ package com.ankamagames.dofus.logic.connection.frames
                 }
                 case param1 is IdentificationFailedForBadVersionMessage:
                 {
-                    _loc_14 = IdentificationFailedForBadVersionMessage(param1);
+                    _loc_15 = IdentificationFailedForBadVersionMessage(param1);
                     PlayerManager.getInstance().destroy();
                     ConnectionsHandler.closeConnection();
-                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailedForBadVersion, _loc_14.reason, _loc_14.requiredVersion);
+                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailedForBadVersion, _loc_15.reason, _loc_15.requiredVersion);
                     if (!this._dispatchModuleHook)
                     {
                         this._dispatchModuleHook = true;
@@ -289,10 +320,10 @@ package com.ankamagames.dofus.logic.connection.frames
                 }
                 case param1 is IdentificationFailedBannedMessage:
                 {
-                    _loc_15 = IdentificationFailedBannedMessage(param1);
+                    _loc_16 = IdentificationFailedBannedMessage(param1);
                     PlayerManager.getInstance().destroy();
                     ConnectionsHandler.closeConnection();
-                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailedWithDuration, _loc_15.reason, _loc_15.banEndDate);
+                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailedWithDuration, _loc_16.reason, _loc_16.banEndDate);
                     if (!this._dispatchModuleHook)
                     {
                         this._dispatchModuleHook = true;
@@ -302,10 +333,10 @@ package com.ankamagames.dofus.logic.connection.frames
                 }
                 case param1 is IdentificationFailedMessage:
                 {
-                    _loc_16 = IdentificationFailedMessage(param1);
+                    _loc_17 = IdentificationFailedMessage(param1);
                     PlayerManager.getInstance().destroy();
                     ConnectionsHandler.closeConnection();
-                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, _loc_16.reason);
+                    KernelEventsManager.getInstance().processCallback(HookList.IdentificationFailed, _loc_17.reason);
                     if (!this._dispatchModuleHook)
                     {
                         this._dispatchModuleHook = true;
@@ -315,75 +346,60 @@ package com.ankamagames.dofus.logic.connection.frames
                 }
                 case param1 is NicknameRegistrationMessage:
                 {
-                    _loc_17 = NicknameRegistrationMessage(param1);
+                    _loc_18 = NicknameRegistrationMessage(param1);
                     KernelEventsManager.getInstance().processCallback(HookList.NicknameRegistration);
                     return true;
                 }
                 case param1 is NicknameRefusedMessage:
                 {
-                    _loc_18 = NicknameRefusedMessage(param1);
-                    KernelEventsManager.getInstance().processCallback(HookList.NicknameRefused, _loc_18.reason);
+                    _loc_19 = NicknameRefusedMessage(param1);
+                    KernelEventsManager.getInstance().processCallback(HookList.NicknameRefused, _loc_19.reason);
                     return true;
                 }
                 case param1 is NicknameAcceptedMessage:
                 {
-                    _loc_19 = NicknameAcceptedMessage(param1);
+                    _loc_20 = NicknameAcceptedMessage(param1);
                     KernelEventsManager.getInstance().processCallback(HookList.NicknameAccepted);
                     return true;
                 }
                 case param1 is NicknameChoiceRequestAction:
                 {
-                    _loc_20 = NicknameChoiceRequestAction(param1);
-                    _loc_21 = new NicknameChoiceRequestMessage();
-                    _loc_21.initNicknameChoiceRequestMessage(_loc_20.nickname);
-                    ConnectionsHandler.getConnection().send(_loc_21);
-                    return true;
-                }
-                case param1 is AgreementAgreedAction:
-                {
-                    _loc_22 = AgreementAgreedAction(param1);
-                    if (_loc_22.fileName == "eula")
-                    {
-                        _loc_23 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal." + _loc_22.fileName).length;
-                        OptionManager.getOptionManager("dofus")["legalAgreementEula"] = _loc_23;
-                    }
-                    if (_loc_22.fileName == "tou")
-                    {
-                        _loc_23 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
-                        OptionManager.getOptionManager("dofus")["legalAgreementTou"] = _loc_23;
-                    }
+                    _loc_21 = NicknameChoiceRequestAction(param1);
+                    _loc_22 = new NicknameChoiceRequestMessage();
+                    _loc_22.initNicknameChoiceRequestMessage(_loc_21.nickname);
+                    ConnectionsHandler.getConnection().send(_loc_22);
                     return true;
                 }
                 case param1 is SubscribersGiftListRequestAction:
                 {
-                    _loc_24 = SubscribersGiftListRequestAction(param1);
-                    _loc_26 = XmlConfig.getInstance().getEntry("config.lang.current");
-                    if (_loc_26 == "de" || _loc_26 == "en" || _loc_26 == "es" || _loc_26 == "pt" || _loc_26 == "fr" || _loc_26 == "uk" || _loc_26 == "ru")
+                    _loc_23 = SubscribersGiftListRequestAction(param1);
+                    _loc_25 = XmlConfig.getInstance().getEntry("config.lang.current");
+                    if (_loc_25 == "de" || _loc_25 == "en" || _loc_25 == "es" || _loc_25 == "pt" || _loc_25 == "fr" || _loc_25 == "uk" || _loc_25 == "ru")
                     {
-                        _loc_25 = new Uri(XmlConfig.getInstance().getEntry("config.subscribersGift") + "subscriberGifts_" + _loc_26 + ".xml");
+                        _loc_24 = new Uri(XmlConfig.getInstance().getEntry("config.subscribersGift") + "subscriberGifts_" + _loc_25 + ".xml");
                     }
                     else
                     {
-                        _loc_25 = new Uri(XmlConfig.getInstance().getEntry("config.subscribersGift") + "subscriberGifts_en.xml");
+                        _loc_24 = new Uri(XmlConfig.getInstance().getEntry("config.subscribersGift") + "subscriberGifts_en.xml");
                     }
-                    _loc_25.loaderContext = this._contextLoader;
-                    this._loader.load(_loc_25);
+                    _loc_24.loaderContext = this._contextLoader;
+                    this._loader.load(_loc_24);
                     return true;
                 }
                 case param1 is NewsLoginRequestAction:
                 {
-                    _loc_27 = NewsLoginRequestAction(param1);
-                    _loc_29 = XmlConfig.getInstance().getEntry("config.lang.current");
-                    if (_loc_29 == "de" || _loc_29 == "en" || _loc_29 == "es" || _loc_29 == "pt" || _loc_29 == "fr" || _loc_29 == "uk" || _loc_29 == "it" || _loc_29 == "ru")
+                    _loc_26 = NewsLoginRequestAction(param1);
+                    _loc_28 = XmlConfig.getInstance().getEntry("config.lang.current");
+                    if (_loc_28 == "de" || _loc_28 == "en" || _loc_28 == "es" || _loc_28 == "pt" || _loc_28 == "fr" || _loc_28 == "uk" || _loc_28 == "it" || _loc_28 == "ru")
                     {
-                        _loc_28 = new Uri(XmlConfig.getInstance().getEntry("config.loginNews") + "news_" + _loc_29 + ".xml");
+                        _loc_27 = new Uri(XmlConfig.getInstance().getEntry("config.loginNews") + "news_" + _loc_28 + ".xml");
                     }
                     else
                     {
-                        _loc_28 = new Uri(XmlConfig.getInstance().getEntry("config.loginNews") + "news_en.xml");
+                        _loc_27 = new Uri(XmlConfig.getInstance().getEntry("config.loginNews") + "news_en.xml");
                     }
-                    _loc_28.loaderContext = this._contextLoader;
-                    this._loader.load(_loc_28);
+                    _loc_27.loaderContext = this._contextLoader;
+                    this._loader.load(_loc_27);
                     return true;
                 }
                 default:
@@ -404,10 +420,10 @@ package com.ankamagames.dofus.logic.connection.frames
 
         private function processInvokeArgs() : void
         {
-            var _loc_1:String = null;
-            var _loc_2:int = 0;
-            var _loc_3:String = null;
-            var _loc_4:LoginValidationWithTicketAction = null;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             _log.error("Parse launch param\'s");
             for each (_loc_3 in Dofus.getInstance().invokeArgs)
             {
@@ -451,13 +467,13 @@ package com.ankamagames.dofus.logic.connection.frames
 
         private function onLoad(event:ResourceLoadedEvent) : void
         {
-            var _loc_5:int = 0;
-            var _loc_6:XML = null;
-            var _loc_7:SubscriberGift = null;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
-            var _loc_10:uint = 0;
-            var _loc_11:XML = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
             var _loc_2:* = new Array();
             var _loc_3:* = event.resource;
             var _loc_4:* = _loc_3.toXMLString();

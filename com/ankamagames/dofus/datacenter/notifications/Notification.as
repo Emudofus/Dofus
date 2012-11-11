@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.notifications
+﻿package com.ankamagames.dofus.datacenter.notifications
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

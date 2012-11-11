@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc
+﻿package com.ankamagames.dofus.misc
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.entities.behaviours.movements.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.misc
 
         public static function getRandomCell() : MapPoint
         {
-            var _loc_1:uint = 40;
+            var _loc_1:* = 40;
             var _loc_2:* = MapPoint.fromCellId(Math.floor(Math.random() * AtouinConstants.MAP_CELLS_COUNT));
             while (!MapPoint.isInMap(_loc_2.x, _loc_2.y) && --_loc_1)
             {
@@ -88,11 +88,11 @@ package com.ankamagames.dofus.misc
 
         public static function getRandomPath(param1:IMovable) : MovementPath
         {
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             var _loc_2:* = new MovementPath();
             _loc_2.start = param1.position;
             var _loc_3:* = new Array();
-            var _loc_4:int = -1;
+            var _loc_4:* = -1;
             while (_loc_4 < 2)
             {
                 

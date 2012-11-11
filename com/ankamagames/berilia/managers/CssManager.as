@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.types.data.*;
@@ -42,8 +42,8 @@ package com.ankamagames.berilia.managers
 
         public function load(param1) : void
         {
-            var _loc_2:Uri = null;
-            var _loc_4:uint = 0;
+            var _loc_2:* = null;
+            var _loc_4:* = 0;
             var _loc_3:* = new Array();
             if (param1 is String)
             {
@@ -89,8 +89,8 @@ package com.ankamagames.berilia.managers
 
         public function askCss(param1:String, param2:Callback) : void
         {
-            var _loc_3:Uri = null;
-            var _loc_4:Array = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this.exists(param1))
             {
                 param2.exec();
@@ -134,8 +134,8 @@ package com.ankamagames.berilia.managers
 
         public function merge(param1:Array) : ExtendedStyleSheet
         {
-            var _loc_2:String = "";
-            var _loc_3:uint = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 
@@ -160,8 +160,8 @@ package com.ankamagames.berilia.managers
 
         protected function init() : void
         {
-            var _loc_1:Array = null;
-            var _loc_2:String = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (_useCache)
             {
                 _loc_1 = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_UI_CSS, CSS_ARRAY_KEY, new Array());
@@ -186,12 +186,12 @@ package com.ankamagames.berilia.managers
 
         private function updateWaitingMultiUrl(param1:String) : void
         {
-            var _loc_2:Boolean = false;
-            var _loc_3:String = null;
-            var _loc_4:uint = 0;
-            var _loc_5:Array = null;
-            var _loc_6:Array = null;
-            var _loc_7:uint = 0;
+            var _loc_2:* = false;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             for (_loc_3 in this._aMultiWaiting)
             {
                 
@@ -231,7 +231,7 @@ package com.ankamagames.berilia.managers
 
         private function dispatchWaitingCallbabk(param1:String) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             if (this._aWaiting[param1])
             {
                 _loc_2 = 0;
@@ -248,7 +248,7 @@ package com.ankamagames.berilia.managers
 
         protected function complete(event:ResourceLoadedEvent) : void
         {
-            var _loc_2:Array = null;
+            var _loc_2:* = null;
             if (_useCache)
             {
                 _loc_2 = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_UI_CSS, CSS_ARRAY_KEY, new Array());

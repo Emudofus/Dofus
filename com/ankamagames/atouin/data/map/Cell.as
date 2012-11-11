@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.data.map
+﻿package com.ankamagames.atouin.data.map
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.elements.*;
@@ -14,6 +14,7 @@ package com.ankamagames.atouin.data.map
         public var elements:Array;
         private var _layer:Layer;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(Cell));
+        private static var _cellCoords:Point;
 
         public function Cell(param1:Layer)
         {
@@ -78,7 +79,13 @@ package com.ankamagames.atouin.data.map
 
         public static function cellCoords(param1:uint) : Point
         {
-            return new Point(param1 % AtouinConstants.MAP_WIDTH, Math.floor(param1 / AtouinConstants.MAP_WIDTH));
+            if (_cellCoords == null)
+            {
+                _cellCoords = new Point();
+            }
+            _cellCoords.x = param1 % AtouinConstants.MAP_WIDTH;
+            _cellCoords.y = Math.floor(param1 / AtouinConstants.MAP_WIDTH);
+            return _cellCoords;
         }// end function
 
         public static function cellId(param1:Point) : uint

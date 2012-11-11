@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.quest
+﻿package com.ankamagames.dofus.datacenter.quest
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -41,7 +41,7 @@ package com.ankamagames.dofus.datacenter.quest
 
         public function get steps() : Vector.<QuestStep>
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             if (!this._steps)
             {
                 this._steps = new Vector.<QuestStep>(this.stepIds.length, true);
@@ -64,7 +64,7 @@ package com.ankamagames.dofus.datacenter.quest
         public function getPriorityValue() : int
         {
             var _loc_1:* = PlayedCharacterManager.getInstance().infos.level;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             if (_loc_1 >= this.levelMin && _loc_1 <= this.levelMax)
             {
                 _loc_2 = _loc_2 + 10000;
@@ -88,12 +88,12 @@ package com.ankamagames.dofus.datacenter.quest
 
         public static function getFirstValidQuest(param1:GameRolePlayNpcQuestFlag) : Quest
         {
-            var _loc_2:Quest = null;
-            var _loc_4:Quest = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_3:int = 0;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_3:* = 0;
             for each (_loc_5 in param1.questsToValidId)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.manager
+﻿package com.ankamagames.dofus.kernel.sound.manager
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.data.map.*;
@@ -36,11 +36,11 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function setMap(param1:Map) : void
         {
-            var _loc_2:Layer = null;
-            var _loc_3:Cell = null;
-            var _loc_4:BasicElement = null;
-            var _loc_5:SoundElement = null;
-            var _loc_6:LocalizedMapSound = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             this.removeLocalizedSounds();
             for each (_loc_2 in param1.layers)
             {
@@ -66,11 +66,11 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function playLocalizedSounds() : void
         {
-            var _loc_1:LocalizedMapSound = null;
-            var _loc_2:uint = 0;
-            var _loc_3:String = null;
-            var _loc_4:Uri = null;
-            var _loc_5:ISound = null;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             for each (_loc_1 in this._localizedSounds)
             {
                 
@@ -107,7 +107,7 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function stopLocalizedSounds() : void
         {
-            var _loc_1:ISound = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._sounds)
             {
                 

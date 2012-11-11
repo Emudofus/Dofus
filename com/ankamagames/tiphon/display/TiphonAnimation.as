@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.display
+﻿package com.ankamagames.tiphon.display
 {
     import com.ankamagames.tiphon.types.*;
     import flash.display.*;

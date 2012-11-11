@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;

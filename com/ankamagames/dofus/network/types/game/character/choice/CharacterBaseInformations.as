@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.character.choice
+﻿package com.ankamagames.dofus.network.types.game.character.choice
 {
     import com.ankamagames.dofus.network.types.game.character.*;
     import com.ankamagames.dofus.network.types.game.look.*;

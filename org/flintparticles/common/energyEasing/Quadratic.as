@@ -1,4 +1,4 @@
-package org.flintparticles.common.energyEasing
+﻿package org.flintparticles.common.energyEasing
 {
 
     public class Quadratic extends Object

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.utils
+﻿package com.ankamagames.berilia.utils
 {
     import com.ankamagames.berilia.types.data.*;
 
@@ -26,6 +26,7 @@ package com.ankamagames.berilia.utils
         public static const ChatRollOverLink:Hook = new Hook("ChatRollOverLink", true);
         public static const UiUnloading:Hook = new Hook("UiUnloading", false);
         public static const UiUnloaded:Hook = new Hook("UiUnloaded", false);
+        public static const WindowResize:Hook = new Hook("WindowResize", false);
 
         public function BeriliaHookList()
         {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.atouin.types.*;
@@ -20,10 +20,10 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showNpc(param1:int, param2:int = 0) : MovieClip
         {
-            var _loc_4:Dictionary = null;
-            var _loc_5:Object = null;
-            var _loc_6:GraphicCell = null;
-            var _loc_7:Rectangle = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_3:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             if (_loc_3)
             {

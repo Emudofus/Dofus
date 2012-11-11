@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.quest
+﻿package com.ankamagames.dofus.datacenter.quest
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.npcs.*;
@@ -27,8 +27,6 @@ package com.ankamagames.dofus.datacenter.quest
         private var _description:String;
         private var _dialog:String;
         private var _objectives:Vector.<QuestObjective>;
-        private var _kamasReward:int;
-        private var _xpReward:int;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(QuestStep));
         private static const MODULE:String = "QuestSteps";
         private static const REWARD_SCALE_CAP:Number = 1.5;
@@ -41,12 +39,12 @@ package com.ankamagames.dofus.datacenter.quest
 
         public function get experienceReward() : uint
         {
-            return this.getExperienceReward();
+            return this.getExperienceReward(PlayedCharacterManager.getInstance().infos.level, PlayedCharacterManager.getInstance().experiencePercent);
         }// end function
 
         public function get kamasReward() : uint
         {
-            return this.getKamasReward();
+            return this.getKamasReward(PlayedCharacterManager.getInstance().infos.level);
         }// end function
 
         public function get itemsReward() : Vector.<Vector.<uint>>
@@ -106,7 +104,7 @@ package com.ankamagames.dofus.datacenter.quest
 
         public function get objectives() : Vector.<QuestObjective>
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             if (!this._objectives)
             {
                 this._objectives = new Vector.<QuestObjective>(this.objectiveIds.length, true);
@@ -123,8 +121,8 @@ package com.ankamagames.dofus.datacenter.quest
 
         private function initCurrentLevelRewards() : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:QuestStepRewards = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             var _loc_1:* = PlayedCharacterManager.getInstance().infos.level;
             if (this._currentLevelRewards == null || _loc_1 < this._currentLevelRewards.levelMin && this._currentLevelRewards.levelMin != -1 || _loc_1 > this._currentLevelRewards.levelMax && this._currentLevelRewards.levelMax != -1)
             {
@@ -143,22 +141,22 @@ package com.ankamagames.dofus.datacenter.quest
             return;
         }// end function
 
-        private function getKamasReward() : int
+        public function getKamasReward(param1:int) : int
         {
-            return Math.pow(this.kamasScaleWithPlayerLevel ? (PlayedCharacterManager.getInstance().infos.level) : (this.optimalLevel), 2) * 2 * this.duration * this.kamasRatio;
+            var _loc_2:* = this.kamasScaleWithPlayerLevel ? (param1) : (this.optimalLevel);
+            return (Math.pow(_loc_2, 2) + 20 * _loc_2 - 20) * this.kamasRatio * this.duration * 2;
         }// end function
 
-        private function getExperienceReward() : int
+        public function getExperienceReward(param1:int, param2:int) : int
         {
-            var _loc_3:int = 0;
-            var _loc_1:* = PlayedCharacterManager.getInstance().infos.level;
-            var _loc_2:* = 1 + PlayedCharacterManager.getInstance().experiencePercent / 100;
-            if (_loc_1 > this.optimalLevel)
+            var _loc_4:* = 0;
+            var _loc_3:* = 1 + param2 / 100;
+            if (param1 > this.optimalLevel)
             {
-                _loc_3 = Math.min(PlayedCharacterManager.getInstance().infos.level, this.optimalLevel * REWARD_SCALE_CAP);
-                return ((1 - REWARD_REDUCED_SCALE) * this.getFixeExperienceReward(this.optimalLevel) + REWARD_REDUCED_SCALE * this.getFixeExperienceReward(_loc_3)) * _loc_2;
+                _loc_4 = Math.min(param1, this.optimalLevel * REWARD_SCALE_CAP);
+                return ((1 - REWARD_REDUCED_SCALE) * this.getFixeExperienceReward(this.optimalLevel) + REWARD_REDUCED_SCALE * this.getFixeExperienceReward(_loc_4)) * _loc_3;
             }
-            return this.getFixeExperienceReward(_loc_1) * _loc_2;
+            return this.getFixeExperienceReward(param1) * _loc_3;
         }// end function
 
         private function getFixeExperienceReward(param1:int) : int

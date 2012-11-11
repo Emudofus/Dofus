@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.berilia.types.data.*;
 
@@ -16,9 +16,12 @@ package com.ankamagames.dofus.misc.lists
         public static const OpenGrimoireQuestTab:Hook = new Hook("OpenGrimoireQuestTab", false);
         public static const OpenGrimoireAlignmentTab:Hook = new Hook("OpenGrimoireAlignmentTab", false);
         public static const OpenGrimoireJobTab:Hook = new Hook("OpenGrimoireJobTab", false);
+        public static const OpenGrimoireCalendarTab:Hook = new Hook("OpenGrimoireCalendarTab", false);
         public static const OpenSmileys:Hook = new Hook("OpenSmileys", false);
         public static const OpenTeamSearch:Hook = new Hook("OpenTeamSearch", false);
         public static const OpenArena:Hook = new Hook("OpenArena", false);
+        public static const OpenKrosmaster:Hook = new Hook("OpenKrosmaster", false);
+        public static const OpenKrosmasterCollection:Hook = new Hook("OpenKrosmasterCollection", false);
 
         public function TriggerHookList()
         {

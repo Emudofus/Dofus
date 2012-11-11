@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.guild
+﻿package com.ankamagames.dofus.network.messages.game.guild
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.jerakine.network.*;
@@ -9,6 +9,7 @@ package com.ankamagames.dofus.network.messages.game.guild
         private var _isInitialized:Boolean = false;
         public var guildInfo:GuildInformations;
         public var memberRights:uint = 0;
+        public var enabled:Boolean = false;
         public static const protocolId:uint = 5564;
 
         public function GuildJoinedMessage()
@@ -27,10 +28,11 @@ package com.ankamagames.dofus.network.messages.game.guild
             return 5564;
         }// end function
 
-        public function initGuildJoinedMessage(param1:GuildInformations = null, param2:uint = 0) : GuildJoinedMessage
+        public function initGuildJoinedMessage(param1:GuildInformations = null, param2:uint = 0, param3:Boolean = false) : GuildJoinedMessage
         {
             this.guildInfo = param1;
             this.memberRights = param2;
+            this.enabled = param3;
             this._isInitialized = true;
             return this;
         }// end function
@@ -38,6 +40,7 @@ package com.ankamagames.dofus.network.messages.game.guild
         override public function reset() : void
         {
             this.guildInfo = new GuildInformations();
+            this.enabled = false;
             this._isInitialized = false;
             return;
         }// end function
@@ -70,6 +73,7 @@ package com.ankamagames.dofus.network.messages.game.guild
                 throw new Error("Forbidden value (" + this.memberRights + ") on element memberRights.");
             }
             param1.writeUnsignedInt(this.memberRights);
+            param1.writeBoolean(this.enabled);
             return;
         }// end function
 
@@ -88,6 +92,7 @@ package com.ankamagames.dofus.network.messages.game.guild
             {
                 throw new Error("Forbidden value (" + this.memberRights + ") on element of GuildJoinedMessage.memberRights.");
             }
+            this.enabled = param1.readBoolean();
             return;
         }// end function
 

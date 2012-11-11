@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.sequence
+﻿package com.ankamagames.tiphon.sequence
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.sequencer.*;
@@ -49,7 +49,7 @@ package com.ankamagames.tiphon.sequence
 
         override public function start() : void
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             if (this._target.isShowingOnlyBackground())
             {
                 this._callbackExecuted = true;
@@ -108,7 +108,7 @@ package com.ankamagames.tiphon.sequence
 
         private function onAnimationEnd(event:TiphonEvent) : void
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             if (this._target)
             {
                 if (this._endEvent != TiphonEvent.ANIMATION_END)

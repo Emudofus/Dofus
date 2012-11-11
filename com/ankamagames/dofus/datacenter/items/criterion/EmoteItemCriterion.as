@@ -1,8 +1,8 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+    import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
 
@@ -17,8 +17,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get isRespected() : Boolean
         {
-            var _loc_2:int = 0;
-            var _loc_1:* = (Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame).emotes;
+            var _loc_2:* = 0;
+            var _loc_1:* = (Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame).emotes;
             for each (_loc_2 in _loc_1)
             {
                 
@@ -48,8 +48,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override protected function getCriterion() : int
         {
-            var _loc_2:int = 0;
-            var _loc_1:* = (Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame).emotes;
+            var _loc_2:* = 0;
+            var _loc_1:* = (Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame).emotes;
             for each (_loc_2 in _loc_1)
             {
                 

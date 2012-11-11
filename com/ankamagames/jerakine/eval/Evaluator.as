@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.eval
+﻿package com.ankamagames.jerakine.eval
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.utils.*;
@@ -21,20 +21,20 @@ package com.ankamagames.jerakine.eval
 
         private function simpleEval(param1:String)
         {
-            var _loc_2:Function = null;
-            var _loc_4:String = null;
-            var _loc_12:Array = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
+            var _loc_12:* = null;
             var _loc_13:* = undefined;
-            var _loc_15:Boolean = false;
-            var _loc_16:Boolean = false;
-            var _loc_17:uint = 0;
-            var _loc_3:String = "";
-            var _loc_5:Boolean = false;
-            var _loc_6:Boolean = false;
-            var _loc_7:String = "";
+            var _loc_15:* = false;
+            var _loc_16:* = false;
+            var _loc_17:* = 0;
+            var _loc_3:* = "";
+            var _loc_5:* = false;
+            var _loc_6:* = false;
+            var _loc_7:* = "";
             var _loc_8:* = STRING;
             var _loc_9:* = new Array();
-            var _loc_10:uint = 0;
+            var _loc_10:* = 0;
             while (_loc_10 < param1.length)
             {
                 
@@ -247,8 +247,8 @@ package com.ankamagames.jerakine.eval
                     _loc_9.push(parseFloat(_loc_7));
                 }
             }
-            var _loc_11:Array = [this.divide, this.multiply, this.minus, this.plus, this.sup, this.inf, this.supOrEquals, this.infOrEquals, this.equals, this.diff, this.and, this.or, this.ternary];
-            var _loc_14:uint = 0;
+            var _loc_11:* = [this.divide, this.multiply, this.minus, this.plus, this.sup, this.inf, this.supOrEquals, this.infOrEquals, this.equals, this.diff, this.and, this.or, this.ternary];
+            var _loc_14:* = 0;
             while (_loc_14 < _loc_11.length)
             {
                 
@@ -334,12 +334,12 @@ package com.ankamagames.jerakine.eval
 
         private function complexEval(param1:String)
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_5:* = undefined;
-            var _loc_6:uint = 0;
+            var _loc_6:* = 0;
             param1 = this.trim(param1);
-            var _loc_3:Boolean = true;
-            var _loc_4:int = 0;
+            var _loc_3:* = true;
+            var _loc_4:* = 0;
             while (_loc_3)
             {
                 
@@ -449,7 +449,7 @@ package com.ankamagames.jerakine.eval
         private function showPosInExpr(param1:uint, param2:String) : String
         {
             var _loc_3:* = param2 + "\n";
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < param1)
             {
                 
@@ -461,11 +461,11 @@ package com.ankamagames.jerakine.eval
 
         private function trim(param1:String) : String
         {
-            var _loc_5:String = null;
-            var _loc_2:String = "";
-            var _loc_3:Boolean = false;
-            var _loc_4:Boolean = false;
-            var _loc_6:uint = 0;
+            var _loc_5:* = null;
+            var _loc_2:* = "";
+            var _loc_3:* = false;
+            var _loc_4:* = false;
+            var _loc_6:* = 0;
             while (_loc_6 < param1.length)
             {
                 

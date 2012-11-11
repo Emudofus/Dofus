@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.protocols
+﻿package com.ankamagames.jerakine.resources.protocols
 {
     import com.ankamagames.jerakine.resources.*;
     import com.ankamagames.jerakine.resources.adapters.*;

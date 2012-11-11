@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.data.map.elements
+﻿package com.ankamagames.atouin.data.map.elements
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.*;

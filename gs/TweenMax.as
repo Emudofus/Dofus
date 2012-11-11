@@ -1,6 +1,5 @@
-package gs
+﻿package gs
 {
-    import com.ankamagames.tubul.interfaces.*;
     import flash.events.*;
     import flash.utils.*;
     import gs.events.*;
@@ -46,12 +45,12 @@ package gs
 
         override public function initTweenVals(param1:Boolean = false, param2:String = "") : void
         {
-            var _loc_3:String = null;
-            var _loc_4:int = 0;
-            var _loc_5:Object = null;
-            var _loc_6:Object = null;
-            var _loc_7:Array = null;
-            var _loc_9:Number = NaN;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_9:* = NaN;
             param2 = param2 + " hexColors bezier bezierThrough shortRotation orientToBezier quaternions onCompleteAll onCompleteAllParams yoyo loop onCompleteListener onUpdateListener onStartListener ";
             if (!param1 && TweenLite.overwriteManager.enabled)
             {
@@ -254,7 +253,7 @@ package gs
 
         public function invalidate(param1:Boolean = true) : void
         {
-            var _loc_2:Number = NaN;
+            var _loc_2:* = NaN;
             if (this.initted)
             {
                 _loc_2 = this.progress;
@@ -301,11 +300,11 @@ package gs
 
         public function setDestination(param1:String, param2, param3:Boolean = true) : void
         {
-            var _loc_5:Object = null;
-            var _loc_6:int = 0;
-            var _loc_7:Object = null;
-            var _loc_8:Array = null;
-            var _loc_9:Array = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_4:* = this.progress;
             if (this.vars[param1] != undefined && this.initted)
             {
@@ -354,10 +353,10 @@ package gs
 
         protected function adjustStartValues() : void
         {
-            var _loc_2:Number = NaN;
-            var _loc_3:Number = NaN;
-            var _loc_4:Object = null;
-            var _loc_5:int = 0;
+            var _loc_2:* = NaN;
+            var _loc_3:* = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             var _loc_1:* = this.progress;
             if (_loc_1 != 0)
             {
@@ -378,8 +377,8 @@ package gs
 
         public function killProperties(param1:Array) : void
         {
-            var _loc_3:int = 0;
-            var _loc_2:Object = {};
+            var _loc_3:* = 0;
+            var _loc_2:* = {};
             _loc_3 = param1.length - 1;
             while (_loc_3 > -1)
             {
@@ -398,7 +397,7 @@ package gs
         {
             if (!isNaN(this.vars.yoyo) && (this._repeatCount < this.vars.yoyo || this.vars.yoyo == 0) || !isNaN(this.vars.loop) && (this._repeatCount < this.vars.loop || this.vars.loop == 0))
             {
-                var _loc_2:String = this;
+                var _loc_2:* = this;
                 var _loc_3:* = this._repeatCount + 1;
                 _loc_2._repeatCount = _loc_3;
                 if (!isNaN(this.vars.yoyo))
@@ -420,8 +419,8 @@ package gs
 
         protected function initDispatcher() : void
         {
-            var _loc_1:Object = null;
-            var _loc_2:String = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this._dispatcher == null)
             {
                 this._dispatcher = new EventDispatcher(this);
@@ -623,17 +622,17 @@ package gs
 
         public static function allTo(param1:Array, param2:Number, param3:Object) : Array
         {
-            var _loc_4:int = 0;
-            var _loc_5:Object = null;
-            var _loc_6:String = null;
-            var _loc_7:Number = NaN;
-            var _loc_8:Object = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = NaN;
+            var _loc_8:* = null;
             trace("WARNING: TweenMax.allTo() and TweenMax.allFrom() have been deprecated in favor of the much more powerful and flexible TweenGroup class. See http://blog.greensock.com/tweengroup/ for more details. Future versions of TweenMax may not include allTo() and allFrom() (to conserve file size).");
             if (param1.length == 0)
             {
                 return [];
             }
-            var _loc_9:Array = [];
+            var _loc_9:* = [];
             var _loc_10:* = param3.delayIncrement || 0;
             delete param3.delayIncrement;
             if (param3.onCompleteAll == undefined)
@@ -704,7 +703,7 @@ package gs
 
         public static function callbackProxy(param1:Array, param2:Array = null) : void
         {
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 
@@ -719,7 +718,7 @@ package gs
 
         public static function sequence(param1:Object, param2:Array) : Array
         {
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param2.length)
             {
                 
@@ -731,18 +730,18 @@ package gs
 
         public static function multiSequence(param1:Array) : Array
         {
-            var _loc_6:Object = null;
-            var _loc_7:Object = null;
-            var _loc_8:Number = NaN;
-            var _loc_9:Number = NaN;
-            var _loc_10:uint = 0;
-            var _loc_11:Object = null;
-            var _loc_12:String = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
             trace("WARNING: TweenMax.multiSequence() and TweenMax.sequence() have been deprecated in favor of the much more powerful and flexible TweenGroup class. See http://blog.greensock.com/tweengroup/ for more details. Future versions of TweenMax may not include sequence() and multiSequence() (to conserve file size).");
             var _loc_2:* = new Dictionary();
-            var _loc_3:Array = [];
+            var _loc_3:* = [];
             var _loc_4:* = TweenLite.overwriteManager.mode;
-            var _loc_5:Number = 0;
+            var _loc_5:* = 0;
             _loc_10 = 0;
             while (_loc_10 < param1.length)
             {
@@ -785,11 +784,11 @@ package gs
 
         public static function parseBeziers(param1:Object, param2:Boolean = false) : Object
         {
-            var _loc_3:int = 0;
-            var _loc_4:Array = null;
-            var _loc_5:Object = null;
-            var _loc_6:String = null;
-            var _loc_7:Object = {};
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = {};
             if (param2)
             {
                 for (_loc_6 in param1)
@@ -852,10 +851,10 @@ package gs
 
         public static function getTweensOf(param1:Object) : Array
         {
-            var _loc_4:TweenLite = null;
-            var _loc_5:int = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             var _loc_2:* = masterList[param1];
-            var _loc_3:Array = [];
+            var _loc_3:* = [];
             if (_loc_2 != null)
             {
                 _loc_5 = _loc_2.length - 1;
@@ -898,11 +897,11 @@ package gs
 
         public static function getAllTweens() : Array
         {
-            var _loc_3:Array = null;
-            var _loc_4:int = 0;
-            var _loc_5:TweenLite = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_1:* = masterList;
-            var _loc_2:Array = [];
+            var _loc_2:* = [];
             for each (_loc_3 in _loc_1)
             {
                 
@@ -939,8 +938,8 @@ package gs
 
         public static function killAll(param1:Boolean = false, param2:Boolean = true, param3:Boolean = true) : void
         {
-            var _loc_5:Boolean = false;
-            var _loc_6:int = 0;
+            var _loc_5:* = false;
+            var _loc_6:* = 0;
             var _loc_4:* = getAllTweens();
             _loc_6 = getAllTweens().length - 1;
             while (_loc_6 > -1)
@@ -978,7 +977,7 @@ package gs
 
         public static function changePause(param1:Boolean, param2:Boolean = true, param3:Boolean = false) : void
         {
-            var _loc_5:Boolean = false;
+            var _loc_5:* = false;
             var _loc_4:* = getAllTweens();
             var _loc_6:* = getAllTweens().length - 1;
             while (_loc_6 > -1)
@@ -1002,11 +1001,11 @@ package gs
 
         public static function bezierProxy(param1:Object, param2:Number = 0) : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:String = null;
-            var _loc_8:Object = null;
-            var _loc_9:Number = NaN;
-            var _loc_10:uint = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = NaN;
+            var _loc_10:* = 0;
             var _loc_3:* = param1.target.t;
             var _loc_4:* = param1.info.props;
             var _loc_5:* = param1.info.target;
@@ -1047,19 +1046,19 @@ package gs
 
         public static function bezierProxy2(param1:Object, param2:Number = 0) : void
         {
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Number = NaN;
-            var _loc_9:Array = null;
-            var _loc_10:Number = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = null;
+            var _loc_10:* = NaN;
             bezierProxy(param1, param2);
-            var _loc_3:Object = {};
+            var _loc_3:* = {};
             var _loc_4:* = param1.info.target;
             param1.info.target = _loc_3;
             param1.target.t = param1.target.t + 0.01;
             bezierProxy(param1);
             var _loc_5:* = param1.info.orientToBezier;
-            var _loc_11:uint = 0;
+            var _loc_11:* = 0;
             while (_loc_11 < _loc_5.length)
             {
                 

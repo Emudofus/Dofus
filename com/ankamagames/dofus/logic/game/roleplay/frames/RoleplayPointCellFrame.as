@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+﻿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.atouin.managers.*;
@@ -9,6 +9,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.dofus.kernel.*;
+    import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;
     import com.ankamagames.dofus.misc.lists.*;
@@ -44,7 +45,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function RoleplayPointCellFrame(param1:Function = null, param2:Sprite = null, param3:Boolean = false, param4:Function = null, param5:Boolean = false)
         {
-            var _loc_6:LinkedCursorData = null;
+            var _loc_6:* = null;
             this._entitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             this._callBack = param1;
             this._freeCellOnly = param3;
@@ -78,11 +79,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:CellOverMessage = null;
-            var _loc_3:CellOutMessage = null;
-            var _loc_4:EntityMouseOverMessage = null;
-            var _loc_5:CellClickMessage = null;
-            var _loc_6:EntityClickMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(true)
             {
                 case param1 is CellOverMessage:
@@ -203,6 +204,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
         public function cancelShow() : void
         {
             KernelEventsManager.getInstance().processCallback(HookList.ShowCell);
+            var _loc_1:* = Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
+            _loc_1.roleplayPointCellFrame = null;
             Kernel.getWorker().removeFrame(this);
             return;
         }// end function

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.dofus.logic.game.common.actions.*;
     import com.ankamagames.dofus.logic.game.common.actions.guild.*;
@@ -26,6 +26,9 @@ package com.ankamagames.dofus.misc.lists
         public static const FriendOrGuildMemberLevelUpWarningSet:DofusApiAction = new DofusApiAction("FriendOrGuildMemberLevelUpWarningSet", FriendOrGuildMemberLevelUpWarningSetAction);
         public static const GuildGetInformations:DofusApiAction = new DofusApiAction("GuildGetInformations", GuildGetInformationsAction);
         public static const GuildCreationValid:DofusApiAction = new DofusApiAction("GuildCreationValid", GuildCreationValidAction);
+        public static const GuildModificationValid:DofusApiAction = new DofusApiAction("GuildModificationValid", GuildModificationValidAction);
+        public static const GuildModificationNameValid:DofusApiAction = new DofusApiAction("GuildModificationNameValid", GuildModificationNameValidAction);
+        public static const GuildModificationEmblemValid:DofusApiAction = new DofusApiAction("GuildModificationEmblemValid", GuildModificationEmblemValidAction);
         public static const GuildInvitation:DofusApiAction = new DofusApiAction("GuildInvitation", GuildInvitationAction);
         public static const GuildInvitationByName:DofusApiAction = new DofusApiAction("GuildInvitationByName", GuildInvitationByNameAction);
         public static const GuildInvitationAnswer:DofusApiAction = new DofusApiAction("GuildInvitationAnswer", GuildInvitationAnswerAction);
@@ -39,7 +42,6 @@ package com.ankamagames.dofus.misc.lists
         public static const GuildFightTakePlaceRequest:DofusApiAction = new DofusApiAction("GuildFightTakePlaceRequest", GuildFightTakePlaceRequestAction);
         public static const GuildFightLeaveRequest:DofusApiAction = new DofusApiAction("GuildFightLeaveRequest", GuildFightLeaveRequestAction);
         public static const TaxCollectorHireRequest:DofusApiAction = new DofusApiAction("TaxCollectorHireRequest", TaxCollectorHireRequestAction);
-        public static const TaxCollectorFireRequest:DofusApiAction = new DofusApiAction("TaxCollectorFireRequest", TaxCollectorFireRequestAction);
         public static const GameRolePlayTaxCollectorFightRequest:DofusApiAction = new DofusApiAction("GameRolePlayTaxCollectorFightRequest", GameRolePlayTaxCollectorFightRequestAction);
         public static const CharacterReportRequest:DofusApiAction = new DofusApiAction("CharacterReport", CharacterReportAction);
         public static const ChatReportRequest:DofusApiAction = new DofusApiAction("ChatReport", ChatReportAction);

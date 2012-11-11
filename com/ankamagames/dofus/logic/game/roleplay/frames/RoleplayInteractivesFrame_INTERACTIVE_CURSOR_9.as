@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+﻿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
     import mx.core.*;
 

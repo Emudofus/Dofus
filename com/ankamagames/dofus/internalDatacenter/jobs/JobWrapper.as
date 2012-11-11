@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.jobs
+﻿package com.ankamagames.dofus.internalDatacenter.jobs
 {
     import com.ankamagames.dofus.datacenter.jobs.*;
     import com.ankamagames.jerakine.data.*;
@@ -121,7 +121,7 @@ package com.ankamagames.dofus.internalDatacenter.jobs
 
         public static function create(param1:uint, param2:Boolean = true) : JobWrapper
         {
-            var _loc_3:JobWrapper = null;
+            var _loc_3:* = null;
             if (!_cache[param1] || !param2)
             {
                 _loc_3 = new JobWrapper;

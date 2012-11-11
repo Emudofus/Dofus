@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.enums.*;
@@ -215,9 +215,9 @@ package com.ankamagames.berilia.types.graphic
 
         public function iAmFinalized(param1:FinalizableUIComponent) : void
         {
-            var _loc_2:FinalizableUIComponent = null;
-            var _loc_4:int = 0;
-            var _loc_5:Callback = null;
+            var _loc_2:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             if (!this._lock || this._rendering)
             {
                 return;
@@ -243,13 +243,13 @@ package com.ankamagames.berilia.types.graphic
                 this.tempHolder = null;
             }
             this._isNotFinalized = false;
-            var _loc_3:Boolean = false;
+            var _loc_3:* = false;
             if (this.uiClass && this.uiClass.hasOwnProperty("main"))
             {
                 this._rendering = true;
                 _loc_4 = getTimer();
                 FpsManager.getInstance().startTracking("hook", 7108545);
-                ErrorManager.tryFunction(this.uiClass["main"], [this._properties], "Une erreur est survenue lors de l\'ex�cution de la fonction main de l\'interface " + name + " (" + getQualifiedClassName(this.uiClass) + ")");
+                ErrorManager.tryFunction(this.uiClass["main"], [this._properties], "Une erreur est survenue lors de l\'exécution de la fonction main de l\'interface " + name + " (" + getQualifiedClassName(this.uiClass) + ")");
                 _log.info("Exec main from " + this.uiClass + "::" + this._uiData.module.id + " : " + (getTimer() - _loc_4) + " ms");
                 FpsManager.getInstance().stopTracking("hook");
                 this._rendering = false;
@@ -280,9 +280,9 @@ package com.ankamagames.berilia.types.graphic
 
         public function render() : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:GraphicElement = null;
-            var _loc_5:FinalizableUIComponent = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             this._renderAsk = true;
             var _loc_1:* = this._ready;
             this._ready = false;
@@ -363,8 +363,8 @@ package com.ankamagames.berilia.types.graphic
 
         public function removeFromRenderList(param1:String) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:GraphicElement = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             _loc_2 = 0;
             while (_loc_2 < this._aGraphicLocationStack.length)
             {
@@ -393,7 +393,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function addDynamicSizeElement(param1:GraphicElement) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aSizeStack.length)
             {
                 
@@ -409,7 +409,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function addDynamicElement(param1:GraphicElement) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aGraphicLocationStack.length)
             {
                 
@@ -470,7 +470,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function updateLinkedUi() : void
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._linkedUi)
             {
                 
@@ -501,10 +501,10 @@ package com.ankamagames.berilia.types.graphic
 
         public function destroyUi(param1:Object) : void
         {
-            var _loc_2:RadioGroup = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:GraphicContainer = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             if (param1 !== SecureCenter.ACCESS_KEY)
             {
                 throw new IllegalOperationError();
@@ -546,8 +546,8 @@ package com.ankamagames.berilia.types.graphic
 
         private function processSize() : void
         {
-            var _loc_1:GraphicElement = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aSizeStack.length)
             {
                 
@@ -587,8 +587,8 @@ package com.ankamagames.berilia.types.graphic
 
         private function processLocation(param1:GraphicElement) : void
         {
-            var _loc_5:Point = null;
-            var _loc_6:Point = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = param1.sprite.x;
             var _loc_3:* = param1.sprite.y;
             param1.sprite.x = 0;
@@ -626,10 +626,10 @@ package com.ankamagames.berilia.types.graphic
 
         private function getLocation(param1:Point, param2:GraphicLocation, param3:DisplayObject) : Point
         {
-            var _loc_7:DisplayObject = null;
-            var _loc_8:DisplayObject = null;
-            var _loc_9:Array = null;
-            var _loc_10:UiRootContainer = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_4:* = new Point();
             var _loc_5:* = new Point();
             var _loc_6:* = new Point();
@@ -841,13 +841,13 @@ package com.ankamagames.berilia.types.graphic
 
         private function zSort(param1:Array) : Boolean
         {
-            var _loc_2:GraphicElement = null;
-            var _loc_3:GraphicLocation = null;
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
-            var _loc_8:uint = 0;
-            var _loc_4:Boolean = true;
-            var _loc_5:Boolean = false;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_4:* = true;
+            var _loc_5:* = false;
             while (_loc_4)
             {
                 

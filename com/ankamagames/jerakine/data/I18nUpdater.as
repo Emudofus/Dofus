@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.managers.*;
@@ -45,10 +45,10 @@ package com.ankamagames.jerakine.data
 
         override protected function onLoaded(event:ResourceLoadedEvent) : void
         {
-            var _loc_2:LangMetaData = null;
-            var _loc_3:Uri = null;
-            var _loc_4:uint = 0;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             switch(event.uri.fileType)
             {
                 case "d2i":

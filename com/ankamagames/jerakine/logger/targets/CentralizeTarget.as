@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger.targets
+﻿package com.ankamagames.jerakine.logger.targets
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.events.*;
@@ -25,7 +25,7 @@ package com.ankamagames.jerakine.logger.targets
 
         private function send(param1:uint, param2:String) : void
         {
-            var _loc_3:LoggerHistoryElement = null;
+            var _loc_3:* = null;
             if (_socket.connected)
             {
                 _socket.writeUTF("(" + LogLevel.getString(param1) + ") " + param2);
@@ -51,7 +51,7 @@ package com.ankamagames.jerakine.logger.targets
 
         private function onSocket(event:Event) : void
         {
-            var _loc_2:LoggerHistoryElement = null;
+            var _loc_2:* = null;
             _connecting = false;
             for each (_loc_2 in _history)
             {

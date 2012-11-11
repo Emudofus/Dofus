@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.entities.behaviours
+﻿package com.ankamagames.jerakine.entities.behaviours
 {
     import com.ankamagames.jerakine.entities.interfaces.*;
     import com.ankamagames.jerakine.types.positions.*;

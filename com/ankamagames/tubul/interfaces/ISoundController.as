@@ -1,8 +1,8 @@
-package com.ankamagames.tubul.interfaces
+﻿package com.ankamagames.tubul.interfaces
 {
     import __AS3__.vec.*;
-    import com.ankamagames.tubul.interfaces.*;
     import com.ankamagames.tubul.types.*;
+    import flash.events.*;
 
     public interface ISoundController extends IEventDispatcher
     {

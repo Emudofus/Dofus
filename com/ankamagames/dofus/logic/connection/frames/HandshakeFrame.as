@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.connection.frames
+﻿package com.ankamagames.dofus.logic.connection.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.*;
@@ -35,9 +35,9 @@ package com.ankamagames.dofus.logic.connection.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:ProtocolRequired = null;
-            var _loc_3:AuthorizedFrame = null;
-            var _loc_4:Object = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             ConnectionsHandler.hasReceivedMsg = true;
             switch(true)
             {

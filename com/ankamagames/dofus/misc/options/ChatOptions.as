@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.options
+﻿package com.ankamagames.dofus.misc.options
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -37,11 +37,11 @@ package com.ankamagames.dofus.misc.options
 
         private function onCssLoaded() : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             var _loc_1:* = CssManager.getInstance().getCss(this._cssUri);
             var _loc_3:* = OptionManager.getOptionManager("dofus").switchUiSkin;
             var _loc_4:* = OptionManager.getOptionManager("chat").currentChatTheme;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < 14)
             {
                 

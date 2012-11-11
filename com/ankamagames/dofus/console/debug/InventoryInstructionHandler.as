@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -21,15 +21,15 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:Array = null;
-            var _loc_5:Array = null;
-            var _loc_6:String = null;
-            var _loc_7:Array = null;
-            var _loc_8:uint = 0;
-            var _loc_9:ItemWrapper = null;
-            var _loc_10:Item = null;
-            var _loc_11:Item = null;
-            var _loc_12:AdminQuietCommandMessage = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
             switch(param2)
             {
                 case "listinventory":

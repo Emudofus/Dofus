@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.chat
+﻿package com.ankamagames.dofus.console.chat
 {
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.data.*;

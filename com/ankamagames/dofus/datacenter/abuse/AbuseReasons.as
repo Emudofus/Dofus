@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.abuse
+﻿package com.ankamagames.dofus.datacenter.abuse
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

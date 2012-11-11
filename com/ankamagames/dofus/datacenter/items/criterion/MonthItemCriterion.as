@@ -1,6 +1,7 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.misc.*;
+    import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
 
@@ -28,7 +29,9 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override protected function getCriterion() : int
         {
-            return 0;
+            var _loc_1:* = new Date();
+            var _loc_2:* = TimeManager.getInstance().getDateFromTime(_loc_1.getTime())[3];
+            return (_loc_2 - 1);
         }// end function
 
     }

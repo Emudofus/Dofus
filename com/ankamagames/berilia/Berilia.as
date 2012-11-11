@@ -1,4 +1,4 @@
-package com.ankamagames.berilia
+ï»¿package com.ankamagames.berilia
 {
     import com.ankamagames.berilia.api.*;
     import com.ankamagames.berilia.components.*;
@@ -53,6 +53,7 @@ package com.ankamagames.berilia
         private static var _self:Berilia;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(Berilia));
         public static var _uiCache:Dictionary = new Dictionary();
+        public static var embedIcons:Class = EmbedIcons;
 
         public function Berilia()
         {
@@ -257,11 +258,11 @@ package com.ankamagames.berilia
 
         public function reset() : void
         {
-            var _loc_1:String = null;
-            var _loc_2:Array = null;
-            var _loc_3:String = null;
-            var _loc_4:UiModule = null;
-            var _loc_5:UiRootContainer = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             TimeoutHTMLLoader.resetCache();
             FpsManager.getInstance().startTracking("ui", 16525567);
             for (_loc_1 in _uiCache)
@@ -324,7 +325,6 @@ package com.ankamagames.berilia
                         FpsManager.getInstance().startTracking("hook", 7108545);
                         container.uiClass.main(properties);
                         FpsManager.getInstance().stopTracking("hook");
-                        _log.debug("Méthode main sur UiRootContainer : " + (getTimer() - t) + " ms.");
                         KernelEventsManager.getInstance().processCallback(BeriliaHookList.UiLoaded, sName);
                     }
                     catch (e:Error)
@@ -358,8 +358,8 @@ package com.ankamagames.berilia
 
         public function giveFocus(param1:UiRootContainer) : void
         {
-            var _loc_2:Boolean = false;
-            var _loc_3:Object = null;
+            var _loc_2:* = false;
+            var _loc_3:* = null;
             if (param1.strata == 1)
             {
                 _loc_2 = true;
@@ -481,7 +481,7 @@ package com.ankamagames.berilia
                     }
                 }
                 variables = DescribeTypeCache.getVariables(UiRootContainer(ui).uiClass, true, false);
-                var _loc_4:int = 0;
+                var _loc_4:* = 0;
                 var _loc_5:* = variables;
                 while (_loc_5 in _loc_4)
                 {
@@ -505,7 +505,7 @@ package com.ankamagames.berilia
                 }
                 UiRootContainer(ui).uiClass = null;
             }
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = UIEventManager.getInstance().instances;
             while (_loc_5 in _loc_4)
             {
@@ -529,7 +529,7 @@ package com.ankamagames.berilia
                 }
             }
             UiRootContainer(ui).remove();
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = ui.getElements();
             while (_loc_5 in _loc_4)
             {
@@ -563,7 +563,7 @@ package com.ankamagames.berilia
             topUi;
             if (ui.strata > 0 && ui.strata < 4)
             {
-                var _loc_4:int = 0;
+                var _loc_4:* = 0;
                 var _loc_5:* = this._aUiList;
                 while (_loc_5 in _loc_4)
                 {
@@ -590,15 +590,15 @@ package com.ankamagames.berilia
             FpsManager.getInstance().stopTracking("ui");
             KernelEventsManager.getInstance().processCallback(BeriliaHookList.UiUnloaded, sName);
             dispatchEvent(new UiUnloadEvent(UiUnloadEvent.UNLOAD_UI_COMPLETE, sName));
-            _log.debug(sName + " correctly unloaded");
+            _log.info(sName + " correctly unloaded");
             return true;
         }// end function
 
         public function unloadUiEvents(param1:String, param2:Boolean = false) : void
         {
-            var _loc_3:Object = null;
-            var _loc_4:Object = null;
-            var _loc_5:Object = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             FpsManager.getInstance().startTracking("ui", 16525567);
             if (this._aUiList[param1] == null)
             {
@@ -649,7 +649,7 @@ package com.ankamagames.berilia
 
         public function updateUiRender() : void
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             for (_loc_1 in this.uiList)
             {
                 
@@ -660,8 +660,8 @@ package com.ankamagames.berilia
 
         public function updateUiScale() : void
         {
-            var _loc_1:UiRootContainer = null;
-            var _loc_2:String = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for (_loc_2 in this.uiList)
             {
                 
@@ -701,7 +701,7 @@ package com.ankamagames.berilia
 
         private function updateHighestModalDepth() : void
         {
-            var _loc_1:UiRootContainer = null;
+            var _loc_1:* = null;
             this._highestModalDepth = -1;
             for each (_loc_1 in this._aUiList)
             {

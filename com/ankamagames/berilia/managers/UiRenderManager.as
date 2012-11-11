@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.pools.*;
@@ -52,7 +52,7 @@ package com.ankamagames.berilia.managers
 
         public function loadUi(param1:UiData, param2:UiRootContainer, param3 = null, param4:Boolean = true) : void
         {
-            var _loc_5:PoolableUiRenderer = null;
+            var _loc_5:* = null;
             var _loc_6:* = param1.file;
             if (!param1.file)
             {
@@ -60,6 +60,10 @@ package com.ankamagames.berilia.managers
             }
             if (BeriliaConstants.USE_UI_CACHE)
             {
+                if (param1.module is PreCompiledUiModule)
+                {
+                    this._aCache[_loc_6] = PreCompiledUiModule(param1.module).getDefinition(param1);
+                }
                 if (this._aCache[_loc_6] != null && this._aCache[_loc_6].useCache)
                 {
                     this._lastRenderStart = getTimer();
@@ -163,7 +167,7 @@ package com.ankamagames.berilia.managers
 
         private function processWaitingUi(param1:String, param2:Boolean = true) : void
         {
-            var _loc_3:RenderQueueItem = null;
+            var _loc_3:* = null;
             if (!this._aRendering[param1])
             {
                 return;
@@ -182,7 +186,7 @@ package com.ankamagames.berilia.managers
         private function onUiRender(event:UiRenderEvent) : void
         {
             var _loc_2:* = event.uiRenderer.uiDefinition;
-            if (_loc_2 && _loc_2.useCache && !this._aCache[_loc_2.name] && BeriliaConstants.USE_UI_CACHE)
+            if (!(event.uiTarget.uiData.module is PreCompiledUiModule) && _loc_2 && _loc_2.useCache && !this._aCache[_loc_2.name] && BeriliaConstants.USE_UI_CACHE)
             {
                 this._aCache[_loc_2.name] = _loc_2;
                 StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_DEFINITION, DATASTORE_CATEGORY_CACHE, this._aCache);
@@ -211,6 +215,30 @@ package com.ankamagames.berilia.managers
 
     }
 }
+
+import com.ankamagames.berilia.*;
+
+import com.ankamagames.berilia.pools.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import com.ankamagames.berilia.types.event.*;
+
+import com.ankamagames.berilia.types.graphic.*;
+
+import com.ankamagames.berilia.types.uiDefinition.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.managers.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.errors.*;
+
+import flash.events.*;
+
+import flash.utils.*;
 
 class RenderQueueItem extends Object
 {

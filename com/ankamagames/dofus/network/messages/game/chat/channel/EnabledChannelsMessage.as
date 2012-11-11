@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.chat.channel
+﻿package com.ankamagames.dofus.network.messages.game.chat.channel
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
         public function serializeAs_EnabledChannelsMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.channels.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.channels.length)
             {
                 
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.disallowed.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.disallowed.length)
             {
                 
@@ -93,10 +93,10 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
 
         public function deserializeAs_EnabledChannelsMessage(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -109,7 +109,7 @@ package com.ankamagames.dofus.network.messages.game.chat.channel
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

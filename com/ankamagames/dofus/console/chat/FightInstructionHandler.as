@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.chat
+﻿package com.ankamagames.dofus.console.chat
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.kernel.*;
@@ -21,11 +21,11 @@ package com.ankamagames.dofus.console.chat
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:uint = 0;
-            var _loc_6:GameFightOptionToggleMessage = null;
-            var _loc_7:int = 0;
-            var _loc_8:GameContextKickMessage = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
             switch(param2)
             {
                 case "spectator":
@@ -78,7 +78,7 @@ package com.ankamagames.dofus.console.chat
 
         private function getFighterId(param1:String) : int
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_2:* = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
             var _loc_3:* = _loc_2.battleFrame.fightersList;
             for each (_loc_4 in _loc_3)
@@ -94,9 +94,9 @@ package com.ankamagames.dofus.console.chat
 
         private function listFighters(param1:ConsoleHandler) : void
         {
-            var _loc_2:FightContextFrame = null;
-            var _loc_3:Vector.<int> = null;
-            var _loc_4:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             if (PlayedCharacterManager.getInstance().isFighting)
             {
                 _loc_2 = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;

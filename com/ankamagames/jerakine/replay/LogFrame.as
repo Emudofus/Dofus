@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.replay
+﻿package com.ankamagames.jerakine.replay
 {
     import com.ankamagames.jerakine.handlers.messages.*;
     import com.ankamagames.jerakine.handlers.messages.mouse.*;
@@ -64,7 +64,7 @@ package com.ankamagames.jerakine.replay
             sizeLimit = Math.pow(2, 20) * 8 * 4;
             try
             {
-                var _loc_3:int = 0;
+                var _loc_3:* = 0;
                 var _loc_4:* = log_files;
                 while (_loc_4 in _loc_3)
                 {
@@ -88,7 +88,7 @@ package com.ankamagames.jerakine.replay
             ;
             var _loc_3:* = new catch1;
             allowLogUpload;
-            trace("Error IO lors de la tentation de la cr�ation du fichier de log");
+            trace("Error IO lors de la tentation de la création du fichier de log");
             this._buffer = new ByteArray();
             this._classRef = new Dictionary();
             this._stringRef = new Dictionary();
@@ -241,8 +241,8 @@ package com.ankamagames.jerakine.replay
 
         private function writeObject(param1:ByteArray, param2) : uint
         {
-            var _loc_4:String = null;
-            var _loc_5:LogClassField = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (param2 == null)
             {
                 param1.writeInt(NULL_IDENTIFIER);
@@ -333,9 +333,9 @@ package com.ankamagames.jerakine.replay
 
         private function getClassField(param1) : Array
         {
-            var _loc_3:Array = null;
-            var _loc_4:uint = 0;
-            var _loc_5:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_2:* = getQualifiedClassName(param1);
             if (param1 is Array || param1 is Dictionary || param1 is Vector.<null> || param1 is Vector.<uint> || param1 is Vector.<Boolean> || param1 is Vector.<int> || param1 is Vector.<Number>)
             {
@@ -352,7 +352,7 @@ package com.ankamagames.jerakine.replay
                     }
                     _loc_3[_loc_3.length] = new LogClassField(NULL_IDENTIFIER, this.getClassIndex(getQualifiedClassName(param1[_loc_5])), false);
                 }
-                var _loc_6:String = this;
+                var _loc_6:* = this;
                 _loc_6._classCount = this._classCount + 1;
                 this.writeClassDefinition(++this._classCount, _loc_2, _loc_4, _loc_3);
                 this._arrayDef[param1] = this._classCount;
@@ -376,13 +376,13 @@ package com.ankamagames.jerakine.replay
             }
             var fieldList:* = new Array();
             var desc:* = DescribeTypeCache.typeDescription(getDefinitionByName(className) as Class);
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = desc..factory..variable;
             while (_loc_4 in _loc_3)
             {
                 
                 variable = _loc_4[_loc_3];
-                var _loc_6:int = 0;
+                var _loc_6:* = 0;
                 var _loc_7:* = variable..metadata;
                 var _loc_5:* = new XMLList("");
                 for each (_loc_8 in _loc_7)
@@ -400,8 +400,8 @@ package com.ankamagames.jerakine.replay
                 fieldList[varCount] = new LogClassField(this.getStringIndex(variable.@name.toString()), this.getClassIndex(variable.@type.toString()), XMLList(_loc_5).length());
                 varCount = (varCount + 1);
             }
-            var _loc_3:int = 0;
-            var _loc_6:int = 0;
+            var _loc_3:* = 0;
+            var _loc_6:* = 0;
             var _loc_7:* = desc..accessor;
             var _loc_5:* = new XMLList("");
             for each (_loc_8 in _loc_7)
@@ -421,7 +421,7 @@ package com.ankamagames.jerakine.replay
             {
                 
                 variable = _loc_4[_loc_3];
-                var _loc_6:int = 0;
+                var _loc_6:* = 0;
                 var _loc_7:* = variable..metadata;
                 var _loc_5:* = new XMLList("");
                 for each (_loc_8 in _loc_7)
@@ -440,7 +440,7 @@ package com.ankamagames.jerakine.replay
                 varCount = (varCount + 1);
             }
             this._classRef[className] = fieldList;
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             _loc_3._classCount = this._classCount + 1;
             this._classIndex[className] = this._classCount + 1;
             this.writeClassDefinition(this._classCount, className, varCount, fieldList);
@@ -449,7 +449,7 @@ package com.ankamagames.jerakine.replay
 
         private function writeClassDefinition(param1:int, param2:String, param3:uint, param4:Array) : void
         {
-            var _loc_5:LogClassField = null;
+            var _loc_5:* = null;
             var _loc_6:* = this.getStringIndex(param2);
             this._logStream.writeShort(1);
             this._logStream.writeUnsignedInt(param1);
@@ -470,7 +470,7 @@ package com.ankamagames.jerakine.replay
             {
                 return this._stringRef[param1];
             }
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             _loc_3._stringCount = this._stringCount + 1;
             var _loc_2:* = this._stringCount + 1;
             this._stringRef[param1] = _loc_2;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.types
+﻿package com.ankamagames.dofus.logic.game.common.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.mounts.*;
@@ -61,7 +61,7 @@ package com.ankamagames.dofus.logic.game.common.types
             a.unshift(o.model);
             mountData.ancestor = makeParent(a, 0, -1, 0);
             mountData.ability = new Array();
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             var _loc_6:* = o.behaviors;
             while (_loc_6 in _loc_5)
             {

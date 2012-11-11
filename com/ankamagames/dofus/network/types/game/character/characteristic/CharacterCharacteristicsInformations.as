@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.character.characteristic
+﻿package com.ankamagames.dofus.network.types.game.character.characteristic
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.character.alignment.*;
@@ -370,7 +370,7 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
             this.pvpAirElementReduction.serializeAs_CharacterBaseCharacteristic(param1);
             this.pvpFireElementReduction.serializeAs_CharacterBaseCharacteristic(param1);
             param1.writeShort(this.spellModifications.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.spellModifications.length)
             {
                 
@@ -388,7 +388,7 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
 
         public function deserializeAs_CharacterCharacteristicsInformations(param1:IDataInput) : void
         {
-            var _loc_4:CharacterSpellModification = null;
+            var _loc_4:* = null;
             this.experience = param1.readDouble();
             if (this.experience < 0)
             {
@@ -563,7 +563,7 @@ package com.ankamagames.dofus.network.types.game.character.characteristic
             this.pvpFireElementReduction = new CharacterBaseCharacteristic();
             this.pvpFireElementReduction.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

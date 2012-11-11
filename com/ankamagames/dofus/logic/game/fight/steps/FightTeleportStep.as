@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.dofus.kernel.*;
@@ -34,7 +34,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_2:FightTurnFrame = null;
+            var _loc_2:* = null;
             var _loc_1:* = DofusEntities.getEntity(this._fighterId) as IMovable;
             if (_loc_1)
             {

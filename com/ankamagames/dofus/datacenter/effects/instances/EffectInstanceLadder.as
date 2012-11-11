@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.effects.instances
+﻿package com.ankamagames.dofus.datacenter.effects.instances
 {
     import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.jerakine.interfaces.*;

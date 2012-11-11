@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -29,20 +29,20 @@ package com.ankamagames.dofus.uiApi
             return capture(Atouin.getInstance().worldContainer, param1, new Rectangle(0, 0, AtouinConstants.CELL_WIDTH * AtouinConstants.MAP_WIDTH, AtouinConstants.CELL_HEIGHT * AtouinConstants.MAP_HEIGHT), param2);
         }// end function
 
-        public static function getFromTarget(param1:Object, param2:Rectangle = null, param3:Number = 1) : BitmapData
+        public static function getFromTarget(param1:Object, param2:Rectangle = null, param3:Number = 1, param4:Boolean = false) : BitmapData
         {
             param1 = SecureCenter.unsecure(param1);
             if (!param1 || !(param1 is DisplayObject))
             {
                 return null;
             }
-            var _loc_4:* = param1 as DisplayObject;
-            var _loc_5:* = (param1 as DisplayObject).getBounds(param1 as DisplayObject);
-            if (!(param1 as DisplayObject).getBounds(param1 as DisplayObject).width || !_loc_5.height)
+            var _loc_5:* = param1 as DisplayObject;
+            var _loc_6:* = (param1 as DisplayObject).getBounds(param1 as DisplayObject);
+            if (!(param1 as DisplayObject).getBounds(param1 as DisplayObject).width || !_loc_6.height)
             {
                 return null;
             }
-            return capture(_loc_4, param2, _loc_5, param3);
+            return capture(_loc_5, param2, _loc_6, param3, param4);
         }// end function
 
         public static function jpegEncode(param1:BitmapData, param2:uint = 80, param3:Boolean = true, param4:String = "image.jpg") : ByteArray
@@ -65,27 +65,27 @@ package com.ankamagames.dofus.uiApi
             return _loc_4;
         }// end function
 
-        private static function capture(param1:DisplayObject, param2:Rectangle, param3:Rectangle, param4:Number = 1) : BitmapData
+        private static function capture(param1:DisplayObject, param2:Rectangle, param3:Rectangle, param4:Number = 1, param5:Boolean = false) : BitmapData
         {
-            var _loc_5:Rectangle = null;
-            var _loc_6:Matrix = null;
-            var _loc_7:BitmapData = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (!param2)
             {
-                _loc_5 = param3;
+                _loc_6 = param3;
             }
             else
             {
-                _loc_5 = param3.intersection(param2);
+                _loc_6 = param3.intersection(param2);
             }
             if (param1)
             {
-                _loc_6 = new Matrix();
-                _loc_6.scale(param4, param4);
-                _loc_6.translate((-_loc_5.x) * param4, (-_loc_5.y) * param4);
-                _loc_7 = new BitmapData(_loc_5.width * param4, _loc_5.height * param4);
-                _loc_7.draw(param1, _loc_6);
-                return _loc_7;
+                _loc_7 = new Matrix();
+                _loc_7.scale(param4, param4);
+                _loc_7.translate((-_loc_6.x) * param4, (-_loc_6.y) * param4);
+                _loc_8 = new BitmapData(_loc_6.width * param4, _loc_6.height * param4, param5, param5 ? (16711680) : (4294967295));
+                _loc_8.draw(param1, _loc_7);
+                return _loc_8;
             }
             return null;
         }// end function

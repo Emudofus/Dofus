@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.entities
+﻿package com.ankamagames.dofus.types.entities
 {
     import com.ankamagames.dofus.types.entities.*;
     import flash.display.*;
@@ -25,7 +25,7 @@ package com.ankamagames.dofus.types.entities
 
         public function update() : void
         {
-            var _loc_1:Boolean = false;
+            var _loc_1:* = false;
             var _loc_2:* = this._life / this._initialLife;
             if (this._subExplosion && Math.random() > _loc_2)
             {
@@ -38,7 +38,7 @@ package com.ankamagames.dofus.types.entities
             this._sprite.alpha = _loc_2 > 1 / 2 ? (1) : (_loc_2 * 2);
             if (this._life)
             {
-                var _loc_3:String = this;
+                var _loc_3:* = this;
                 var _loc_4:* = this._life - 1;
                 _loc_3._life = _loc_4;
             }

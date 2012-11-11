@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.frames.*;
@@ -16,7 +16,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get text() : String
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             if (_operator.text == ItemCriterionOperator.EQUAL && _criterionValue == 1 || _operator.text == ItemCriterionOperator.DIFFERENT && _criterionValue == 0)
             {
                 _loc_1 = I18n.getUiText("ui.tooltip.mountEquiped");

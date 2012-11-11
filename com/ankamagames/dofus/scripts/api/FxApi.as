@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.scripts.api
+﻿package com.ankamagames.dofus.scripts.api
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.utils.*;
@@ -89,7 +89,7 @@ package com.ankamagames.dofus.scripts.api
 
         public static function CreateGfxEntity(param1:uint, param2:MapPoint, param3:Number = 0, param4:Number = 0, param5:Boolean = false, param6:Boolean = true) : IEntity
         {
-            var _loc_7:int = -10000;
+            var _loc_7:* = -10000;
             while (DofusEntities.getEntity(_loc_7))
             {
                 
@@ -127,7 +127,7 @@ package com.ankamagames.dofus.scripts.api
 
         public static function CreateParticlesEntity(param1:uint) : ParticuleEmitterEntity
         {
-            var _loc_2:int = -10000;
+            var _loc_2:* = -10000;
             while (DofusEntities.getEntity(_loc_2))
             {
                 

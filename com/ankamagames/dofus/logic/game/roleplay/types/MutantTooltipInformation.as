@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.types
+﻿package com.ankamagames.dofus.logic.game.roleplay.types
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -25,7 +25,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
 
         private function onCssLoaded() : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             var _loc_1:* = CssManager.getInstance().getCss(this._cssUri);
             _loc_2 = _loc_1.getStyle("itemset");
             this.titleColor = _loc_2["color"];

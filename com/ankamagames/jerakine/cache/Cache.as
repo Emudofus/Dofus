@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.cache
+﻿package com.ankamagames.jerakine.cache
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.crypto.*;
@@ -108,8 +108,8 @@ package com.ankamagames.jerakine.cache
 
         public function cleanMemoryCache() : void
         {
-            var _loc_1:Boolean = true;
-            var _loc_2:uint = 0;
+            var _loc_1:* = true;
+            var _loc_2:* = 0;
             if (this._nCheckMemorySystem == CHECK_OBJECT_COUNT)
             {
                 while (this._nObjectCount >= this._nMaxCount)
@@ -165,8 +165,8 @@ package com.ankamagames.jerakine.cache
 
         public function clear() : void
         {
-            var _loc_1:ICachable = null;
-            var _loc_2:String = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for (_loc_2 in this._dicIndexObject)
             {
                 
@@ -177,7 +177,7 @@ package com.ankamagames.jerakine.cache
                 }
                 delete this._dicCache[_loc_1];
                 delete this._dicIndexObject[this.getIndex(_loc_1)];
-                var _loc_5:String = this;
+                var _loc_5:* = this;
                 var _loc_6:* = this._nObjectCount - 1;
                 _loc_5._nObjectCount = _loc_6;
                 _loc_1.destroy();
@@ -187,8 +187,8 @@ package com.ankamagames.jerakine.cache
 
         public function containsCachable(param1:Class, param2:String) : Boolean
         {
-            var _loc_4:Number = NaN;
-            var _loc_3:Boolean = false;
+            var _loc_4:* = NaN;
+            var _loc_3:* = false;
             if (param2 != "")
             {
                 _loc_4 = this.getIndexFromString(this.getStringFromClassAndName(param1, param2));
@@ -215,7 +215,7 @@ package com.ankamagames.jerakine.cache
 
         private function getStringFromClassAndName(param1:Class, param2:String) : String
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_4:* = getQualifiedClassName(param1).split("::");
             _loc_3 = getQualifiedClassName(param1).split("::")[1] + "" + param2;
             return _loc_3;
@@ -244,7 +244,7 @@ package com.ankamagames.jerakine.cache
         {
             this._dicCache[param1] = getTimer();
             this._dicIndexObject[this.getIndex(param1)] = param1;
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._nObjectCount + 1;
             _loc_2._nObjectCount = _loc_3;
             return;
@@ -252,7 +252,7 @@ package com.ankamagames.jerakine.cache
 
         private function cleanCache() : Boolean
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             var _loc_3:* = undefined;
             var _loc_1:* = getTimer();
             for (_loc_2 in this._dicIndexObject)
@@ -269,12 +269,12 @@ package com.ankamagames.jerakine.cache
             }
             if (_loc_3 != null && _loc_3["name"] != null)
             {
-                _log.error("Objet " + _loc_3["name"] + " supprim� du cache.");
+                _log.error("Objet " + _loc_3["name"] + " supprimé du cache.");
                 delete this._dicCache[_loc_3];
                 delete this._dicIndexObject[this.getIndex(_loc_3)];
                 var _loc_4:* = _loc_3;
                 _loc_4._loc_3["destroy"]();
-                var _loc_4:String = this;
+                var _loc_4:* = this;
                 var _loc_5:* = this._nObjectCount - 1;
                 _loc_4._nObjectCount = _loc_5;
                 return true;

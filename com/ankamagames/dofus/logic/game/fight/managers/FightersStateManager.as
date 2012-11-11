@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.managers
+﻿package com.ankamagames.dofus.logic.game.fight.managers
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.utils.*;

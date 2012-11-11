@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
+﻿package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.messages.*;
@@ -51,12 +51,12 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 
         override public function processInputMessage(param1:Message, param2:String) : Boolean
         {
-            var _loc_5:InteractiveElementActivationMessage = null;
-            var _loc_6:Interactive = null;
-            var _loc_7:InteractiveElementUpdatedMessage = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             canBeStacked = true;
             var _loc_3:* = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id);
-            var _loc_4:Boolean = false;
+            var _loc_4:* = false;
             if (param1 is MouseClickMessage)
             {
                 this._isFreeMovement = !((param1 as MouseClickMessage).target is SpriteWrapper);
@@ -132,9 +132,9 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 
         override public function processOutputMessage(param1:Message, param2:String) : Boolean
         {
-            var _loc_4:int = 0;
-            var _loc_5:IEntity = null;
-            var _loc_3:Boolean = false;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_3:* = false;
             if (param1 is InteractiveUseEndedMessage)
             {
                 this.stopAction();
@@ -187,10 +187,10 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 
         override public function addIcon() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:InteractiveElementSkill = null;
-            var _loc_3:Skill = null;
-            var _loc_4:InteractiveObject = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this.interactiveElement == null)
             {
                 return;

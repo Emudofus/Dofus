@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;
@@ -16,7 +16,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showEntity(param1:int, param2:int = 0) : Sprite
         {
-            var _loc_4:Rectangle = null;
+            var _loc_4:* = null;
             var _loc_3:* = DofusEntities.getEntity(param1) as DisplayObject;
             if (_loc_3)
             {

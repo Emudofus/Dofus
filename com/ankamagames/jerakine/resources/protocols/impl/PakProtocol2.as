@@ -1,5 +1,6 @@
-package com.ankamagames.jerakine.resources.protocols.impl
+﻿package com.ankamagames.jerakine.resources.protocols.impl
 {
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.newCache.*;
     import com.ankamagames.jerakine.resources.*;
     import com.ankamagames.jerakine.resources.protocols.*;
@@ -11,6 +12,7 @@ package com.ankamagames.jerakine.resources.protocols.impl
     {
         private static var _indexes:Dictionary = new Dictionary();
         private static var _properties:Dictionary = new Dictionary();
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(PakProtocol2));
 
         public function PakProtocol2()
         {
@@ -94,22 +96,22 @@ package com.ankamagames.jerakine.resources.protocols.impl
 
         private function initStream(param1:Uri) : FileStream
         {
-            var _loc_6:FileStream = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:uint = 0;
-            var _loc_12:uint = 0;
-            var _loc_13:uint = 0;
-            var _loc_14:uint = 0;
-            var _loc_15:String = null;
-            var _loc_16:String = null;
-            var _loc_17:uint = 0;
-            var _loc_18:String = null;
-            var _loc_19:int = 0;
-            var _loc_20:int = 0;
-            var _loc_21:int = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = 0;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = 0;
+            var _loc_18:* = null;
+            var _loc_19:* = 0;
+            var _loc_20:* = 0;
+            var _loc_21:* = 0;
             var _loc_2:* = param1;
             var _loc_3:* = _loc_2.toFile();
             var _loc_4:* = new Dictionary();

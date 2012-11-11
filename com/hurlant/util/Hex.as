@@ -1,4 +1,4 @@
-package com.hurlant.util
+﻿package com.hurlant.util
 {
     import flash.utils.*;
 
@@ -18,7 +18,7 @@ package com.hurlant.util
             {
                 param1 = "0" + param1;
             }
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 
@@ -30,8 +30,8 @@ package com.hurlant.util
 
         public static function fromArray(param1:ByteArray, param2:Boolean = false) : String
         {
-            var _loc_3:String = "";
-            var _loc_4:uint = 0;
+            var _loc_3:* = "";
+            var _loc_4:* = 0;
             while (_loc_4 < param1.length)
             {
                 

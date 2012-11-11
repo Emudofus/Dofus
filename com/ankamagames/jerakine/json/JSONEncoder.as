@@ -1,13 +1,17 @@
-package com.ankamagames.jerakine.json
+﻿package com.ankamagames.jerakine.json
 {
     import flash.utils.*;
 
     public class JSONEncoder extends Object
     {
+        private var _depthLimit:uint = 0;
+        private var _showObjectType:Boolean = false;
         private var jsonString:String;
 
-        public function JSONEncoder(param1)
+        public function JSONEncoder(param1, param2:uint = 0, param3:Boolean = false)
         {
+            this._depthLimit = param2;
+            this._showObjectType = param3;
             this.jsonString = this.convertToString(param1);
             return;
         }// end function
@@ -17,8 +21,12 @@ package com.ankamagames.jerakine.json
             return this.jsonString;
         }// end function
 
-        private function convertToString(param1) : String
+        private function convertToString(param1, param2:int = 0) : String
         {
+            if (this._depthLimit != 0 && param2 > this._depthLimit)
+            {
+                return "";
+            }
             if (param1 is String)
             {
                 return this.escapeString(param1 as String);
@@ -33,13 +41,13 @@ package com.ankamagames.jerakine.json
             }
             else
             {
-                if (param1 is Array)
+                if (param1 is Array || param1 is Vector.<int> || param1 is Vector.<uint> || param1 is Vector.<String> || param1 is Vector.<Boolean> || param1 is Vector.<null> || param1 is Dictionary)
                 {
-                    return this.arrayToString(param1 as Array);
+                    return this.arrayToString(param1, (param2 + 1));
                 }
                 if (param1 is Object && param1 != null)
                 {
-                    return this.objectToString(param1);
+                    return this.objectToString(param1, (param2 + 1));
                 }
             }
             return "null";
@@ -47,12 +55,12 @@ package com.ankamagames.jerakine.json
 
         private function escapeString(param1:String) : String
         {
-            var _loc_3:String = null;
-            var _loc_6:String = null;
-            var _loc_7:String = null;
-            var _loc_2:String = "";
+            var _loc_3:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_2:* = "";
             var _loc_4:* = param1.length;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -114,39 +122,48 @@ package com.ankamagames.jerakine.json
             return "\"" + _loc_2 + "\"";
         }// end function
 
-        private function arrayToString(param1:Array) : String
+        private function arrayToString(param1, param2:int) : String
         {
-            var _loc_2:String = "";
-            var _loc_3:int = 0;
-            while (_loc_3 < param1.length)
+            var _loc_4:* = undefined;
+            if (this._depthLimit != 0 && param2 > this._depthLimit)
+            {
+                return "";
+            }
+            var _loc_3:* = "";
+            for each (_loc_4 in param1)
             {
                 
-                if (_loc_2.length > 0)
+                if (_loc_3.length > 0)
                 {
-                    _loc_2 = _loc_2 + ",";
+                    _loc_3 = _loc_3 + ",";
                 }
-                _loc_2 = _loc_2 + this.convertToString(param1[_loc_3]);
-                _loc_3++;
+                _loc_3 = _loc_3 + this.convertToString(_loc_4);
             }
-            return "[" + _loc_2 + "]";
+            return "[" + _loc_3 + "]";
         }// end function
 
-        private function objectToString(param1:Object) : String
+        private function objectToString(param1:Object, param2:int) : String
         {
+            var className:Array;
             var value:Object;
             var key:String;
             var v:XML;
             var o:* = param1;
+            var depth:* = param2;
+            if (this._depthLimit != 0 && depth > this._depthLimit)
+            {
+                return "";
+            }
             var s:String;
             var classInfo:* = describeType(o);
             if (classInfo.@name.toString() == "Object")
             {
-                var _loc_3:int = 0;
-                var _loc_4:* = o;
-                while (_loc_4 in _loc_3)
+                var _loc_4:* = 0;
+                var _loc_5:* = o;
+                while (_loc_5 in _loc_4)
                 {
                     
-                    key = _loc_4[_loc_3];
+                    key = _loc_5[_loc_4];
                     value = o[key];
                     if (value is Function)
                     {
@@ -161,52 +178,68 @@ package com.ankamagames.jerakine.json
             }
             else
             {
-                var _loc_3:int = 0;
-                var _loc_6:int = 0;
-                var _loc_7:* = classInfo..;
-                var _loc_5:* = new XMLList("");
-                for each (_loc_8 in _loc_7)
+                var _loc_4:* = 0;
+                var _loc_7:* = 0;
+                var _loc_8:* = classInfo..;
+                var _loc_6:* = new XMLList("");
+                for each (_loc_9 in _loc_8)
                 {
                     
-                    var _loc_9:* = _loc_7[_loc_6];
-                    with (_loc_7[_loc_6])
+                    var _loc_10:* = _loc_8[_loc_7];
+                    with (_loc_8[_loc_7])
                     {
                         if (name() == "variable" || name() == "accessor" && attribute("access").charAt(0) == "r")
                         {
-                            _loc_5[_loc_6] = _loc_8;
+                            _loc_6[_loc_7] = _loc_9;
                         }
                     }
                 }
-                var _loc_4:* = _loc_5;
-                while (_loc_4 in _loc_3)
+                var _loc_5:* = _loc_6;
+                do
                 {
                     
-                    v = _loc_4[_loc_3];
-                    var _loc_6:int = 0;
-                    var _loc_7:* = v.metadata;
-                    var _loc_5:* = new XMLList("");
-                    for each (_loc_8 in _loc_7)
+                    v = _loc_5[_loc_4];
+                    var _loc_7:* = 0;
+                    var _loc_8:* = v.metadata;
+                    var _loc_6:* = new XMLList("");
+                    for each (_loc_9 in _loc_8)
                     {
                         
-                        var _loc_9:* = _loc_7[_loc_6];
-                        with (_loc_7[_loc_6])
+                        var _loc_10:* = _loc_8[_loc_7];
+                        with (_loc_8[_loc_7])
                         {
                             if (@name == "Transient")
                             {
-                                _loc_5[_loc_6] = _loc_8;
+                                _loc_6[_loc_7] = _loc_9;
                             }
                         }
                     }
-                    if (v.metadata && _loc_5.length() > 0)
+                    if (v.metadata && _loc_6.length() > 0)
                     {
-                        continue;
                     }
-                    if (s.length > 0)
+                    else
                     {
-                        s = s + ",";
+                        if (s.length > 0)
+                        {
+                            s = s + ",";
+                        }
+                        try
+                        {
+                            s = s + (this.escapeString(v.@name.toString()) + ":" + this.convertToString(o[v.@name]));
+                        }
+                        catch (e:Error)
+                        {
+                        }
                     }
-                    s = s + (this.escapeString(v.@name.toString()) + ":" + this.convertToString(o[v.@name]));
-                }
+                }while (_loc_5 in _loc_4)
+            }
+            if (this._showObjectType)
+            {
+                className = getQualifiedClassName(o).split("::");
+            }
+            if (className != null)
+            {
+                return "{" + this.escapeString("type") + ":" + this.escapeString(className.pop()) + ", " + this.escapeString("value") + ":{" + s + "}}";
             }
             return "{" + s + "}";
         }// end function

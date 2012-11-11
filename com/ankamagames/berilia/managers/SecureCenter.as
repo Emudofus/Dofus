@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.api.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -128,7 +128,7 @@ package com.ankamagames.berilia.managers
         public static function secureContent(param1:Array, param2:Boolean = false) : Array
         {
             var _loc_4:* = undefined;
-            var _loc_3:Array = [];
+            var _loc_3:* = [];
             for (_loc_4 in param1)
             {
                 
@@ -177,7 +177,7 @@ package com.ankamagames.berilia.managers
         public static function unsecureContent(param1:Array) : Array
         {
             var _loc_3:* = undefined;
-            var _loc_2:Array = [];
+            var _loc_2:* = [];
             for (_loc_3 in param1)
             {
                 

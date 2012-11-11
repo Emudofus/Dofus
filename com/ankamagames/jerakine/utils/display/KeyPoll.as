@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.events.*;
@@ -45,7 +45,7 @@ package com.ankamagames.jerakine.utils.display
 
         private function activateListener(event:Event) : void
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 32)
             {
                 
@@ -57,7 +57,7 @@ package com.ankamagames.jerakine.utils.display
 
         private function deactivateListener(event:Event) : void
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 32)
             {
                 

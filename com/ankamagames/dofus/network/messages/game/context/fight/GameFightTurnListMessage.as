@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.fight
+﻿package com.ankamagames.dofus.network.messages.game.context.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
         public function serializeAs_GameFightTurnListMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.ids.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.ids.length)
             {
                 
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.deadsIds.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.deadsIds.length)
             {
                 
@@ -93,10 +93,10 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 
         public function deserializeAs_GameFightTurnListMessage(param1:IDataInput) : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -105,7 +105,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

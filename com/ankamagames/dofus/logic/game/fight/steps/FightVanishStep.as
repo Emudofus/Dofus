@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.*;
@@ -42,10 +42,10 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:int = 0;
-            var _loc_4:TiphonSprite = null;
-            var _loc_5:TiphonSprite = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_1:* = DofusEntities.getEntity(this._entityId);
             if (!_loc_1)
             {
@@ -54,7 +54,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
                 return;
             }
             BuffManager.getInstance().dispell(_loc_1.id, false, false, true);
-            _loc_2 = BuffManager.getInstance().removeLinkedBuff(_loc_1.id, false, false, true);
+            _loc_2 = BuffManager.getInstance().removeLinkedBuff(_loc_1.id, false, true);
             BuffManager.getInstance().reaffectBuffs(_loc_1.id);
             this._vanishSubSequence = new SerialSequencer(FightBattleFrame.FIGHT_SEQUENCER_NAME);
             _loc_3 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._sourceId).disposition.cellId;
@@ -88,7 +88,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         private function manualRollOut(param1:int) : void
         {
-            var _loc_2:FightContextFrame = null;
+            var _loc_2:* = null;
             if (FightContextFrame.fighterEntityTooltipId == param1)
             {
                 TooltipManager.hide();

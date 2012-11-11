@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
     import com.ankamagames.dofus.logic.game.fight.frames.*;
@@ -35,19 +35,12 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 0;
             var _loc_1:* = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
             if (!_loc_1)
             {
                 super.executeCallbacks();
                 return;
-            }
-            if (this._intValue < 0)
-            {
-                _loc_3 = _loc_1.stats.permanentDamagePercent;
-                _loc_2 = Math.ceil(_loc_3 * this._intValue / 100);
-                _loc_1.stats.maxLifePoints = _loc_1.stats.maxLifePoints + _loc_2;
             }
             if (this._intValue < 0)
             {

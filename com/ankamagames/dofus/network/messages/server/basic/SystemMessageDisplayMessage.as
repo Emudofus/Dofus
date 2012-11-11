@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.server.basic
+﻿package com.ankamagames.dofus.network.messages.server.basic
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.server.basic
             }
             param1.writeShort(this.msgId);
             param1.writeShort(this.parameters.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.parameters.length)
             {
                 
@@ -93,7 +93,7 @@ package com.ankamagames.dofus.network.messages.server.basic
 
         public function deserializeAs_SystemMessageDisplayMessage(param1:IDataInput) : void
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             this.hangUp = param1.readBoolean();
             this.msgId = param1.readShort();
             if (this.msgId < 0)
@@ -101,7 +101,7 @@ package com.ankamagames.dofus.network.messages.server.basic
                 throw new Error("Forbidden value (" + this.msgId + ") on element of SystemMessageDisplayMessage.msgId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

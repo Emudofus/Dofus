@@ -1,4 +1,4 @@
-package org.audiofx.mp3
+﻿package org.audiofx.mp3
 {
     import flash.events.*;
     import flash.net.*;
@@ -65,15 +65,15 @@ package org.audiofx.mp3
 
         private function getFirstHeaderPosition() : uint
         {
-            var _loc_1:uint = 0;
-            var _loc_2:String = null;
-            var _loc_3:uint = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
             this.mp3Data.position = 0;
             while (this.mp3Data.position < this.mp3Data.length)
             {
@@ -112,8 +112,8 @@ package org.audiofx.mp3
 
         function getNextFrame() : ByteArraySegment
         {
-            var _loc_1:uint = 0;
-            var _loc_2:uint = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             this.mp3Data.position = this.currentPosition;
             while (true)
             {
@@ -157,7 +157,7 @@ package org.audiofx.mp3
             var _loc_3:* = this.getFrequencyIndex(param1);
             this.channels = _loc_2 > 2 ? (1) : (2);
             var _loc_4:* = versions[this.version];
-            var _loc_5:Array = [44100, 48000, 32000];
+            var _loc_5:* = [44100, 48000, 32000];
             this.sampleRate = _loc_5[_loc_3];
             switch(_loc_4)
             {

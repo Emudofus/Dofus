@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+﻿package com.ankamagames.jerakine.utils.misc
 {
 
     public class Levenshtein extends Object
@@ -11,9 +11,9 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function distance(param1:String, param2:String) : Number
         {
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:Number = NaN;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = NaN;
             var _loc_6:* = new Array();
             if (param1.length == 0)
             {
@@ -64,10 +64,10 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function suggest(param1:String, param2:Array, param3:uint = 5) : String
         {
-            var _loc_4:String = null;
-            var _loc_6:uint = 0;
-            var _loc_5:uint = 100000;
-            var _loc_7:uint = 0;
+            var _loc_4:* = null;
+            var _loc_6:* = 0;
+            var _loc_5:* = 100000;
+            var _loc_7:* = 0;
             while (_loc_7 < param2.length)
             {
                 

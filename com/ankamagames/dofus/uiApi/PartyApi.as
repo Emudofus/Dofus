@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -47,7 +47,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getPartyLeaderId(param1:int) : int
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (param1 == this.partyManagementFrame.arenaPartyId)
             {
                 for each (_loc_2 in this.partyManagementFrame.arenaPartyMembers)
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.uiApi
 
         public function isInParty(param1:uint) : Boolean
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this.partyManagementFrame.partyMembers)
             {
                 

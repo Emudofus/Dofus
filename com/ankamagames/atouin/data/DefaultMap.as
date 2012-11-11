@@ -1,14 +1,16 @@
-package com.ankamagames.atouin.data
+﻿package com.ankamagames.atouin.data
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.*;
+    import flash.utils.*;
 
     public class DefaultMap extends Map
     {
 
         public function DefaultMap(param1:uint = 0)
         {
-            var _loc_3:CellData = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             this.id = param1;
             mapVersion = 7;
             backgroundFixtures = new Array();
@@ -18,7 +20,7 @@ package com.ankamagames.atouin.data
             layers.push(this.createLayer(Layer.LAYER_DECOR));
             cells = new Array();
             cellsCount = AtouinConstants.MAP_CELLS_COUNT;
-            var _loc_2:int = 0;
+            _loc_2 = 0;
             while (_loc_2 < cellsCount)
             {
                 
@@ -26,6 +28,11 @@ package com.ankamagames.atouin.data
                 cells.push(_loc_3);
                 _loc_2++;
             }
+            return;
+        }// end function
+
+        override public function fromRaw(param1:IDataInput, param2:ByteArray = null) : void
+        {
             return;
         }// end function
 

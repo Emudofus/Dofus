@@ -1,10 +1,11 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.dofus.misc.utils.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.utils.misc.*;
+    import flash.geom.*;
 
     public class UtilApi extends Object implements IApi
     {
@@ -64,13 +65,13 @@ package com.ankamagames.dofus.uiApi
 
         public function stringToKamas(param1:String, param2:String = "-") : int
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_4:* = param1;
             do
             {
                 
                 _loc_3 = _loc_4;
-                _loc_4 = _loc_3.replace("", "");
+                _loc_4 = _loc_3.replace(" ", "");
             }while (_loc_3 != _loc_4)
             do
             {
@@ -102,6 +103,32 @@ package com.ankamagames.dofus.uiApi
         public function noAccent(param1:String) : String
         {
             return StringUtils.noAccent(param1);
+        }// end function
+
+        public function changeColor(param1:Object, param2:Number, param3:int, param4:Boolean = false) : void
+        {
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            if (param1 != null)
+            {
+                if (param4)
+                {
+                    _loc_5 = new ColorTransform(1, 1, 1, 1, 0, 0, 0);
+                    param1.colorTransform(_loc_5, param3);
+                }
+                else
+                {
+                    _loc_6 = param2 >> 16 & 255;
+                    _loc_7 = param2 >> 8 & 255;
+                    _loc_8 = param2 >> 0 & 255;
+                    _loc_9 = new ColorTransform(0, 0, 0, 1, _loc_6, _loc_7, _loc_8);
+                    param1.colorTransform(_loc_9, param3);
+                }
+            }
+            return;
         }// end function
 
     }

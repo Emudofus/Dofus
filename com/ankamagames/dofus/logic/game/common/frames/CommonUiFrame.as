@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.*;
@@ -47,41 +47,41 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:OpenSmileysAction = null;
-            var _loc_3:OpenBookAction = null;
-            var _loc_4:OpenTeamSearchAction = null;
-            var _loc_5:OpenArenaAction = null;
-            var _loc_6:IEntity = null;
-            var _loc_7:OpenInventoryAction = null;
-            var _loc_8:DisplayNumericalValueMessage = null;
-            var _loc_9:uint = 0;
-            var _loc_10:DelayedSystemMessageDisplayMessage = null;
-            var _loc_11:SystemMessageDisplayMessage = null;
-            var _loc_12:EntityTalkMessage = null;
-            var _loc_13:IDisplayable = null;
-            var _loc_14:String = null;
-            var _loc_15:uint = 0;
-            var _loc_16:Array = null;
-            var _loc_17:uint = 0;
-            var _loc_18:Array = null;
-            var _loc_19:ChatBubble = null;
-            var _loc_20:SubscriptionLimitationMessage = null;
-            var _loc_21:String = null;
-            var _loc_22:SubscriptionZoneMessage = null;
-            var _loc_23:AtlasPointInformationsMessage = null;
-            var _loc_24:GameFightOptionStateUpdateMessage = null;
-            var _loc_25:uint = 0;
-            var _loc_26:GameFightOptionToggleMessage = null;
-            var _loc_27:uint = 0;
-            var _loc_28:GameFightOptionToggleMessage = null;
-            var _loc_29:uint = 0;
-            var _loc_30:GameFightOptionToggleMessage = null;
-            var _loc_31:uint = 0;
-            var _loc_32:GameFightOptionToggleMessage = null;
-            var _loc_33:DelayedSystemMessageDisplayMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = null;
+            var _loc_17:* = 0;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = 0;
+            var _loc_26:* = null;
+            var _loc_27:* = 0;
+            var _loc_28:* = null;
+            var _loc_29:* = 0;
+            var _loc_30:* = null;
+            var _loc_31:* = 0;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
             var _loc_34:* = undefined;
-            var _loc_35:Array = null;
-            var _loc_36:MapCoordinatesExtended = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
             switch(true)
             {
                 case param1 is OpenSmileysAction:
@@ -297,6 +297,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             _loc_35.push(_loc_36.mapId);
                         }
                         FlagManager.getInstance().phoenixs = _loc_35;
+                        KernelEventsManager.getInstance().processCallback(HookList.phoenixUpdate);
                     }
                     return true;
                 }
@@ -391,9 +392,9 @@ package com.ankamagames.dofus.logic.game.common.frames
         private function systemMessageDisplay(param1:SystemMessageDisplayMessage) : void
         {
             var _loc_4:* = undefined;
-            var _loc_5:String = null;
-            var _loc_6:InfoMessage = null;
-            var _loc_7:uint = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             var _loc_2:* = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
             var _loc_3:* = new Array();
             for each (_loc_4 in param1.parameters)

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.guild
+﻿package com.ankamagames.dofus.network.messages.game.guild
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.jerakine.network.*;
@@ -24,9 +24,9 @@ package com.ankamagames.dofus.network.messages.game.guild
             return 5835;
         }// end function
 
-        public function initGuildMembershipMessage(param1:GuildInformations = null, param2:uint = 0) : GuildMembershipMessage
+        public function initGuildMembershipMessage(param1:GuildInformations = null, param2:uint = 0, param3:Boolean = false) : GuildMembershipMessage
         {
-            super.initGuildJoinedMessage(param1, param2);
+            super.initGuildJoinedMessage(param1, param2, param3);
             this._isInitialized = true;
             return this;
         }// end function

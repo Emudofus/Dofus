@@ -1,4 +1,4 @@
-package gs
+﻿package gs
 {
     import flash.filters.*;
     import flash.utils.*;
@@ -51,12 +51,12 @@ package gs
 
         override public function initTweenVals(param1:Boolean = false, param2:String = "") : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:Object = null;
-            var _loc_5:Object = null;
-            var _loc_6:Object = null;
-            var _loc_7:int = 0;
-            var _loc_8:String = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
             if (!param1 && TweenLite.overwriteManager.enabled)
             {
                 TweenLite.overwriteManager.manageOverwrites(this, masterList[this.target]);
@@ -182,12 +182,12 @@ package gs
 
         private function addFilter(param1:String, param2:Object, param3:Class, param4:Array, param5:BitmapFilter) : Object
         {
-            var _loc_8:int = 0;
-            var _loc_9:String = null;
-            var _loc_10:Number = NaN;
-            var _loc_11:Object = null;
-            var _loc_12:Object = null;
-            var _loc_6:Object = {type:param3, name:param1};
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = NaN;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_6:* = {type:param3, name:param1};
             var _loc_7:* = this.target.filters;
             _loc_8 = 0;
             while (_loc_8 < _loc_7.length)
@@ -245,13 +245,13 @@ package gs
 
         override public function render(param1:uint) : void
         {
-            var _loc_3:Number = NaN;
-            var _loc_4:Object = null;
-            var _loc_5:int = 0;
-            var _loc_6:Number = NaN;
-            var _loc_7:int = 0;
-            var _loc_8:Array = null;
-            var _loc_9:int = 0;
+            var _loc_3:* = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = NaN;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
             var _loc_2:* = (param1 - this.startTime) * 0.001 * this.combinedTimeScale;
             if (_loc_2 >= this.duration)
             {
@@ -366,7 +366,7 @@ package gs
         {
             if (param1 < 1e-005)
             {
-                var _loc_2:Number = 1e-005;
+                var _loc_2:* = 1e-005;
                 this._timeScale = 1e-005;
                 param1 = _loc_2;
             }
@@ -407,8 +407,8 @@ package gs
 
         public static function setGlobalTimeScale(param1:Number) : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:Array = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
             if (param1 < 1e-005)
             {
                 param1 = 1e-005;
@@ -451,7 +451,7 @@ package gs
             var _loc_5:* = (param2 >> 8 & 255) / 255;
             var _loc_6:* = (param2 & 255) / 255;
             var _loc_7:* = 1 - param3;
-            var _loc_8:Array = [1 - param3 + param3 * _loc_4 * _lumR, param3 * _loc_4 * _lumG, param3 * _loc_4 * _lumB, 0, 0, param3 * _loc_5 * _lumR, _loc_7 + param3 * _loc_5 * _lumG, param3 * _loc_5 * _lumB, 0, 0, param3 * _loc_6 * _lumR, param3 * _loc_6 * _lumG, _loc_7 + param3 * _loc_6 * _lumB, 0, 0, 0, 0, 0, 1, 0];
+            var _loc_8:* = [1 - param3 + param3 * _loc_4 * _lumR, param3 * _loc_4 * _lumG, param3 * _loc_4 * _lumB, 0, 0, param3 * _loc_5 * _lumR, _loc_7 + param3 * _loc_5 * _lumG, param3 * _loc_5 * _lumB, 0, 0, param3 * _loc_6 * _lumR, param3 * _loc_6 * _lumG, _loc_7 + param3 * _loc_6 * _lumB, 0, 0, 0, 0, 0, 1, 0];
             return applyMatrix(_loc_8, param1);
         }// end function
 
@@ -461,7 +461,7 @@ package gs
             {
                 return param1;
             }
-            var _loc_3:Array = [_lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, _lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, _lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, 0, 0, 0, 1, 0];
+            var _loc_3:* = [_lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, _lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, _lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, 0, 0, 0, 1, 0];
             return applyMatrix(_loc_3, param1);
         }// end function
 
@@ -474,7 +474,7 @@ package gs
             param2 = param2 * (Math.PI / 180);
             var _loc_3:* = Math.cos(param2);
             var _loc_4:* = Math.sin(param2);
-            var _loc_5:Array = [_lumR + _loc_3 * (1 - _lumR) + _loc_4 * (-_lumR), _lumG + _loc_3 * (-_lumG) + _loc_4 * (-_lumG), _lumB + _loc_3 * (-_lumB) + _loc_4 * (1 - _lumB), 0, 0, _lumR + _loc_3 * (-_lumR) + _loc_4 * 0.143, _lumG + _loc_3 * (1 - _lumG) + _loc_4 * 0.14, _lumB + _loc_3 * (-_lumB) + _loc_4 * -0.283, 0, 0, _lumR + _loc_3 * (-_lumR) + _loc_4 * (-(1 - _lumR)), _lumG + _loc_3 * (-_lumG) + _loc_4 * _lumG, _lumB + _loc_3 * (1 - _lumB) + _loc_4 * _lumB, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1];
+            var _loc_5:* = [_lumR + _loc_3 * (1 - _lumR) + _loc_4 * (-_lumR), _lumG + _loc_3 * (-_lumG) + _loc_4 * (-_lumG), _lumB + _loc_3 * (-_lumB) + _loc_4 * (1 - _lumB), 0, 0, _lumR + _loc_3 * (-_lumR) + _loc_4 * 0.143, _lumG + _loc_3 * (1 - _lumG) + _loc_4 * 0.14, _lumB + _loc_3 * (-_lumB) + _loc_4 * -0.283, 0, 0, _lumR + _loc_3 * (-_lumR) + _loc_4 * (-(1 - _lumR)), _lumG + _loc_3 * (-_lumG) + _loc_4 * _lumG, _lumB + _loc_3 * (1 - _lumB) + _loc_4 * _lumB, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1];
             return applyMatrix(_loc_5, param1);
         }// end function
 
@@ -498,7 +498,7 @@ package gs
             var _loc_4:* = _loc_3 * _lumR;
             var _loc_5:* = _loc_3 * _lumG;
             var _loc_6:* = _loc_3 * _lumB;
-            var _loc_7:Array = [_loc_4 + param2, _loc_5, _loc_6, 0, 0, _loc_4, _loc_5 + param2, _loc_6, 0, 0, _loc_4, _loc_5, _loc_6 + param2, 0, 0, 0, 0, 0, 1, 0];
+            var _loc_7:* = [_loc_4 + param2, _loc_5, _loc_6, 0, 0, _loc_4, _loc_5 + param2, _loc_6, 0, 0, _loc_4, _loc_5, _loc_6 + param2, 0, 0, 0, 0, 0, 1, 0];
             return applyMatrix(_loc_7, param1);
         }// end function
 
@@ -509,21 +509,21 @@ package gs
                 return param1;
             }
             param2 = param2 + 0.01;
-            var _loc_3:Array = [param2, 0, 0, 0, 128 * (1 - param2), 0, param2, 0, 0, 128 * (1 - param2), 0, 0, param2, 0, 128 * (1 - param2), 0, 0, 0, 1, 0];
+            var _loc_3:* = [param2, 0, 0, 0, 128 * (1 - param2), 0, param2, 0, 0, 128 * (1 - param2), 0, 0, param2, 0, 128 * (1 - param2), 0, 0, 0, 1, 0];
             return applyMatrix(_loc_3, param1);
         }// end function
 
         public static function applyMatrix(param1:Array, param2:Array) : Array
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             if (!(param1 is Array) || !(param2 is Array))
             {
                 return param2;
             }
-            var _loc_3:Array = [];
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_3:* = [];
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             _loc_6 = 0;
             while (_loc_6 < 4)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.spells
+﻿package com.ankamagames.dofus.internalDatacenter.spells
 {
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.jerakine.interfaces.*;

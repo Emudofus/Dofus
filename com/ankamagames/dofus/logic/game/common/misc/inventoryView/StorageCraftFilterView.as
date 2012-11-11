@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
     import com.ankamagames.dofus.datacenter.jobs.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -17,9 +17,9 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
         public function StorageCraftFilterView(param1:HookLock, param2:IStorageView, param3:int, param4:int) : void
         {
-            var _loc_6:RecipeWithSkill = null;
-            var _loc_7:Boolean = false;
-            var _loc_8:int = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = false;
+            var _loc_8:* = 0;
             super(param1);
             var _loc_5:* = Recipe.getAllRecipesForSkillId(param3, param4);
             this._ingredients = new Dictionary();
@@ -33,6 +33,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
                     this._ingredients[_loc_8] = true;
                 }
             }
+            this._ingredients[7508] = true;
             this._skillId = param3;
             this._slotCount = param4;
             this._parent = param2;

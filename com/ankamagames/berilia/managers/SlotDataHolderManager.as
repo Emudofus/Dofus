@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -46,8 +46,8 @@ package com.ankamagames.berilia.managers
 
         public function getHolders() : Array
         {
-            var _loc_2:Object = null;
-            var _loc_1:Array = [];
+            var _loc_2:* = null;
+            var _loc_1:* = [];
             for (_loc_2 in this._weakHolderReference)
             {
                 
@@ -58,8 +58,8 @@ package com.ankamagames.berilia.managers
 
         public function refreshAll() : void
         {
-            var _loc_1:Object = null;
-            var _loc_2:ISlotData = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for (_loc_1 in this._weakHolderReference)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.jobs.*;
@@ -49,33 +49,33 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:JobDescriptionMessage = null;
-            var _loc_3:int = 0;
-            var _loc_4:JobCrafterDirectorySettingsMessage = null;
-            var _loc_5:JobCrafterDirectoryDefineSettingsAction = null;
-            var _loc_6:JobCrafterDirectoryDefineSettingsMessage = null;
-            var _loc_7:JobExperienceUpdateMessage = null;
-            var _loc_8:JobExperienceMultiUpdateMessage = null;
-            var _loc_9:JobUnlearntMessage = null;
-            var _loc_10:JobLevelUpMessage = null;
-            var _loc_11:String = null;
-            var _loc_12:String = null;
-            var _loc_13:JobListedUpdateMessage = null;
-            var _loc_14:String = null;
-            var _loc_15:Job = null;
-            var _loc_16:JobCrafterDirectoryListRequestAction = null;
-            var _loc_17:JobCrafterDirectoryListRequestMessage = null;
-            var _loc_18:JobCrafterDirectoryEntryRequestAction = null;
-            var _loc_19:JobCrafterDirectoryEntryRequestMessage = null;
-            var _loc_20:JobCrafterContactLookRequestAction = null;
-            var _loc_21:ExchangeStartOkJobIndexMessage = null;
-            var _loc_22:Array = null;
-            var _loc_23:JobDescription = null;
-            var _loc_24:KnownJob = null;
-            var _loc_25:JobCrafterDirectorySettings = null;
-            var _loc_26:JobExperience = null;
-            var _loc_27:ContactLookRequestByIdMessage = null;
-            var _loc_28:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = 0;
             switch(true)
             {
                 case param1 is JobDescriptionMessage:

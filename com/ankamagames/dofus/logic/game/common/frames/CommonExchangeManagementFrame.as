@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -22,11 +22,13 @@ package com.ankamagames.dofus.logic.game.common.frames
     public class CommonExchangeManagementFrame extends Object implements Frame
     {
         private var _exchangeType:uint;
+        private var _numCurrentSequence:int;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(CommonExchangeManagementFrame));
 
         public function CommonExchangeManagementFrame(param1:uint)
         {
             this._exchangeType = param1;
+            this._numCurrentSequence = 0;
             return;
         }// end function
 
@@ -40,6 +42,20 @@ package com.ankamagames.dofus.logic.game.common.frames
             return Kernel.getWorker().getFrame(CraftFrame) as CraftFrame;
         }// end function
 
+        public function incrementEchangeSequence() : void
+        {
+            var _loc_1:* = this;
+            var _loc_2:* = this._numCurrentSequence + 1;
+            _loc_1._numCurrentSequence = _loc_2;
+            return;
+        }// end function
+
+        public function resetEchangeSequence() : void
+        {
+            this._numCurrentSequence = 0;
+            return;
+        }// end function
+
         public function pushed() : Boolean
         {
             return true;
@@ -47,23 +63,23 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:LeaveDialogRequestMessage = null;
-            var _loc_3:BidHouseManagementFrame = null;
-            var _loc_4:ExchangeAcceptMessage = null;
-            var _loc_5:LeaveDialogRequestMessage = null;
-            var _loc_6:ExchangeReadyAction = null;
-            var _loc_7:ExchangeReadyMessage = null;
-            var _loc_8:ExchangeObjectModifiedMessage = null;
-            var _loc_9:ItemWrapper = null;
-            var _loc_10:ExchangeObjectAddedMessage = null;
-            var _loc_11:ItemWrapper = null;
-            var _loc_12:ExchangeObjectRemovedMessage = null;
-            var _loc_13:ExchangeObjectMoveAction = null;
-            var _loc_14:ExchangeObjectMoveMessage = null;
-            var _loc_15:ExchangeIsReadyMessage = null;
-            var _loc_16:RoleplayEntitiesFrame = null;
-            var _loc_17:String = null;
-            var _loc_18:ExchangeKamaModifiedMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
             switch(true)
             {
                 case param1 is LeaveShopStockAction:
@@ -96,13 +112,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_6 = param1 as ExchangeReadyAction;
                     _loc_7 = new ExchangeReadyMessage();
-                    _loc_7.initExchangeReadyMessage(_loc_6.isReady);
+                    _loc_7.initExchangeReadyMessage(_loc_6.isReady, this._numCurrentSequence);
                     ConnectionsHandler.getConnection().send(_loc_7);
                     return true;
                 }
                 case param1 is ExchangeObjectModifiedMessage:
                 {
                     _loc_8 = param1 as ExchangeObjectModifiedMessage;
+                    var _loc_19:* = this;
+                    var _loc_20:* = this._numCurrentSequence + 1;
+                    _loc_19._numCurrentSequence = _loc_20;
                     _loc_9 = ItemWrapper.create(_loc_8.object.position, _loc_8.object.objectUID, _loc_8.object.objectGID, _loc_8.object.quantity, _loc_8.object.effects, false);
                     switch(this._exchangeType)
                     {
@@ -122,6 +141,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeObjectAddedMessage:
                 {
                     _loc_10 = param1 as ExchangeObjectAddedMessage;
+                    var _loc_19:* = this;
+                    var _loc_20:* = this._numCurrentSequence + 1;
+                    _loc_19._numCurrentSequence = _loc_20;
                     _loc_11 = ItemWrapper.create(_loc_10.object.position, _loc_10.object.objectUID, _loc_10.object.objectGID, _loc_10.object.quantity, _loc_10.object.effects, false);
                     switch(this._exchangeType)
                     {
@@ -141,6 +163,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeObjectRemovedMessage:
                 {
                     _loc_12 = param1 as ExchangeObjectRemovedMessage;
+                    var _loc_19:* = this;
+                    var _loc_20:* = this._numCurrentSequence + 1;
+                    _loc_19._numCurrentSequence = _loc_20;
                     switch(this._exchangeType)
                     {
                         case ExchangeTypeEnum.CRAFT:
@@ -175,6 +200,9 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeKamaModifiedMessage:
                 {
                     _loc_18 = param1 as ExchangeKamaModifiedMessage;
+                    var _loc_19:* = this;
+                    var _loc_20:* = this._numCurrentSequence + 1;
+                    _loc_19._numCurrentSequence = _loc_20;
                     if (!_loc_18.remote)
                     {
                         InventoryManager.getInstance().inventory.hiddedKamas = _loc_18.quantity;

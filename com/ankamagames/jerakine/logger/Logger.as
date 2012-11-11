@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger
+﻿package com.ankamagames.jerakine.logger
 {
 
     public interface Logger

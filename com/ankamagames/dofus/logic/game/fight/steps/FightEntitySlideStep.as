@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.common.misc.*;
     import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
@@ -34,8 +34,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_2:GameFightFighterInformations = null;
-            var _loc_3:MovementPath = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_1:* = DofusEntities.getEntity(this._fighterId) as IMovable;
             if (_loc_1)
             {

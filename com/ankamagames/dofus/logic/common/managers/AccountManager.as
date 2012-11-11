@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.fight.frames.*;
@@ -51,9 +51,9 @@ package com.ankamagames.dofus.logic.common.managers
 
         public function setAccountFromId(param1:int, param2:int, param3:String = null) : void
         {
-            var _loc_5:GameRolePlayNamedActorInformations = null;
-            var _loc_6:FightEntitiesFrame = null;
-            var _loc_7:GameFightFighterNamedInformations = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_4:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             if (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.console
+﻿package com.ankamagames.jerakine.console
 {
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.data.*;
@@ -62,7 +62,7 @@ package com.ankamagames.jerakine.console
 
         public function addHandler(param1, param2:ConsoleInstructionHandler) : void
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             if (param1 is Array)
             {
                 for each (_loc_3 in param1)
@@ -100,9 +100,9 @@ package com.ankamagames.jerakine.console
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
-            var _loc_6:ConsoleInstructionHandler = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(param2)
             {
                 case "help":
@@ -178,11 +178,11 @@ package com.ankamagames.jerakine.console
 
         public function autoComplete(param1:String) : String
         {
-            var _loc_3:String = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
-            var _loc_7:Boolean = false;
-            var _loc_8:uint = 0;
+            var _loc_3:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = false;
+            var _loc_8:* = 0;
             var _loc_2:* = new Array();
             var _loc_4:* = param1.split(" ");
             if (param1.split(" ").length == 1)
@@ -247,7 +247,7 @@ package com.ankamagames.jerakine.console
 
         public function getAutoCompletePossibilities(param1:String) : Array
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_2:* = new Array();
             for (_loc_3 in this._handlers)
             {
@@ -262,7 +262,7 @@ package com.ankamagames.jerakine.console
 
         public function getAutoCompletePossibilitiesOnParam(param1:String, param2:uint, param3:Array) : Array
         {
-            var _loc_7:String = null;
+            var _loc_7:* = null;
             var _loc_4:* = this._handlers[param1];
             var _loc_5:* = new Array();
             var _loc_6:* = new Array();
@@ -284,8 +284,8 @@ package com.ankamagames.jerakine.console
 
         private function dispatchMessage(param1:ConsoleInstructionMessage) : void
         {
-            var _loc_2:ConsoleInstructionHandler = null;
-            var _loc_3:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
             if (this._handlers[param1.cmd] != null)
             {
                 _loc_2 = this._handlers[param1.cmd] as ConsoleInstructionHandler;

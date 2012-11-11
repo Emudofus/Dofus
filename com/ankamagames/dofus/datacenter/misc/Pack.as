@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.misc
+﻿package com.ankamagames.dofus.datacenter.misc
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -22,7 +22,7 @@ package com.ankamagames.dofus.datacenter.misc
 
         public static function getPackByName(param1:String) : Pack
         {
-            var _loc_3:Pack = null;
+            var _loc_3:* = null;
             var _loc_2:* = getAllPacks();
             for each (_loc_3 in _loc_2)
             {

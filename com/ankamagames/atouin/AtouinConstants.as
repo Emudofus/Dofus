@@ -1,4 +1,4 @@
-package com.ankamagames.atouin
+﻿package com.ankamagames.atouin
 {
     import flash.geom.*;
 

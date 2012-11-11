@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.guild
+﻿package com.ankamagames.dofus.network.messages.game.guild
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -131,7 +131,7 @@ package com.ankamagames.dofus.network.messages.game.guild
             }
             param1.writeShort(this.boostPoints);
             param1.writeShort(this.spellId.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.spellId.length)
             {
                 
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.network.messages.game.guild
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.spellLevel.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.spellLevel.length)
             {
                 
@@ -165,8 +165,8 @@ package com.ankamagames.dofus.network.messages.game.guild
 
         public function deserializeAs_GuildInfosUpgradeMessage(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             this.maxTaxCollectorsCount = param1.readByte();
             if (this.maxTaxCollectorsCount < 0)
             {
@@ -208,7 +208,7 @@ package com.ankamagames.dofus.network.messages.game.guild
                 throw new Error("Forbidden value (" + this.boostPoints + ") on element of GuildInfosUpgradeMessage.boostPoints.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -221,7 +221,7 @@ package com.ankamagames.dofus.network.messages.game.guild
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

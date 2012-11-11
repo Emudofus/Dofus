@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.data
+﻿package com.ankamagames.dofus.types.data
 {
     import com.ankamagames.dofus.internalDatacenter.items.*;
 

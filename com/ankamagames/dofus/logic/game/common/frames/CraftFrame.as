@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -83,6 +83,11 @@ package com.ankamagames.dofus.logic.game.common.frames
             return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
         }// end function
 
+        private function get commonExchangeFrame() : CommonExchangeManagementFrame
+        {
+            return Kernel.getWorker().getFrame(CommonExchangeManagementFrame) as CommonExchangeManagementFrame;
+        }// end function
+
         public function processExchangeOkMultiCraftMessage(param1:ExchangeOkMultiCraftMessage) : void
         {
             PlayedCharacterManager.getInstance().isInExchange = true;
@@ -119,7 +124,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             this._crafterInfos.name = (this.roleplayContextFrame.entitiesFrame.getEntityInfos(this.crafterInfos.id) as GameRolePlayNamedActorInformations).name;
             this._customerInfos.look = EntityLookAdapter.getRiderLook(this.roleplayContextFrame.entitiesFrame.getEntityInfos(this.customerInfos.id).look);
             this._customerInfos.name = (this.roleplayContextFrame.entitiesFrame.getEntityInfos(this.customerInfos.id) as GameRolePlayNamedActorInformations).name;
-            var _loc_3:String = "";
+            var _loc_3:* = "";
             var _loc_4:* = _loc_2.initiatorId;
             if (_loc_2.initiatorId == PlayedCharacterManager.getInstance().infos.id)
             {
@@ -197,86 +202,87 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:ExchangePlayerMultiCraftRequestAction = null;
-            var _loc_3:ExchangePlayerMultiCraftRequestMessage = null;
-            var _loc_4:ExchangeItemGoldAddAsPaymentAction = null;
-            var _loc_5:uint = 0;
-            var _loc_6:ExchangeItemGoldAddAsPaymentMessage = null;
-            var _loc_7:ExchangeItemObjectAddAsPaymentAction = null;
-            var _loc_8:uint = 0;
-            var _loc_9:Array = null;
-            var _loc_10:ItemWrapper = null;
-            var _loc_11:ExchangeItemObjectAddAsPaymentMessage = null;
-            var _loc_12:ExchangeReplayStopAction = null;
-            var _loc_13:ExchangeReplayStopMessage = null;
-            var _loc_14:ExchangeCraftResultMessage = null;
-            var _loc_15:uint = 0;
-            var _loc_16:String = null;
-            var _loc_17:String = null;
-            var _loc_18:ItemWrapper = null;
-            var _loc_19:Boolean = false;
-            var _loc_20:ExchangeItemAutoCraftStopedMessage = null;
-            var _loc_21:String = null;
-            var _loc_22:Boolean = false;
-            var _loc_23:ExchangeStartOkCraftMessage = null;
-            var _loc_24:uint = 0;
-            var _loc_25:ExchangeGoldPaymentForCraftMessage = null;
-            var _loc_26:ExchangeItemPaymentForCraftMessage = null;
-            var _loc_27:ItemWrapper = null;
-            var _loc_28:ExchangeRemovedPaymentForCraftMessage = null;
-            var _loc_29:ExchangeModifiedPaymentForCraftMessage = null;
-            var _loc_30:ItemWrapper = null;
-            var _loc_31:ItemWrapper = null;
-            var _loc_32:Array = null;
-            var _loc_33:ExchangeClearPaymentForCraftMessage = null;
-            var _loc_34:ExchangeObjectModifiedInBagMessage = null;
-            var _loc_35:ExchangeObjectPutInBagMessage = null;
-            var _loc_36:ObjectItem = null;
-            var _loc_37:ItemWrapper = null;
-            var _loc_38:ExchangeObjectRemovedFromBagMessage = null;
-            var _loc_39:uint = 0;
-            var _loc_40:ExchangeObjectUseInWorkshopAction = null;
-            var _loc_41:ExchangeObjectUseInWorkshopMessage = null;
-            var _loc_42:ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction = null;
-            var _loc_43:ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage = null;
-            var _loc_44:ExchangeMultiCraftCrafterCanUseHisRessourcesMessage = null;
-            var _loc_45:ExchangeStartOkMulticraftCrafterMessage = null;
-            var _loc_46:Array = null;
-            var _loc_47:Skill = null;
-            var _loc_48:ExchangeStartOkMulticraftCustomerMessage = null;
-            var _loc_49:Array = null;
-            var _loc_50:Skill = null;
-            var _loc_51:ExchangeReplayAction = null;
-            var _loc_52:ExchangeReplayMessage = null;
-            var _loc_53:ExchangeReplayCountModifiedMessage = null;
-            var _loc_54:ExchangeItemAutoCraftRemainingMessage = null;
-            var _loc_55:ExchangeCraftSlotCountIncreasedMessage = null;
-            var _loc_56:ExchangeCraftResultWithObjectIdMessage = null;
-            var _loc_57:ExchangeCraftResultMagicWithObjectDescMessage = null;
-            var _loc_58:String = null;
-            var _loc_59:Boolean = false;
-            var _loc_60:Vector.<ObjectEffect> = null;
-            var _loc_61:EffectInstance = null;
-            var _loc_62:Array = null;
-            var _loc_63:String = null;
-            var _loc_64:String = null;
-            var _loc_65:ExchangeCraftResultWithObjectDescMessage = null;
-            var _loc_66:ObjectEffect = null;
-            var _loc_67:Boolean = false;
-            var _loc_68:ObjectEffect = null;
-            var _loc_69:int = 0;
-            var _loc_70:int = 0;
-            var _loc_71:int = 0;
-            var _loc_72:EffectInstanceInteger = null;
-            var _loc_73:EffectInstanceDice = null;
-            var _loc_74:ObjectEffect = null;
-            var _loc_75:Boolean = false;
-            var _loc_76:ObjectEffect = null;
-            var _loc_77:EffectInstanceMinMax = null;
-            var _loc_78:Object = null;
-            var _loc_79:ItemWrapper = null;
-            var _loc_80:ItemWrapper = null;
-            var _loc_81:ItemWrapper = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = false;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = false;
+            var _loc_23:* = null;
+            var _loc_24:* = 0;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
+            var _loc_39:* = 0;
+            var _loc_40:* = null;
+            var _loc_41:* = null;
+            var _loc_42:* = null;
+            var _loc_43:* = null;
+            var _loc_44:* = null;
+            var _loc_45:* = null;
+            var _loc_46:* = null;
+            var _loc_47:* = null;
+            var _loc_48:* = null;
+            var _loc_49:* = null;
+            var _loc_50:* = null;
+            var _loc_51:* = null;
+            var _loc_52:* = null;
+            var _loc_53:* = null;
+            var _loc_54:* = null;
+            var _loc_55:* = null;
+            var _loc_56:* = null;
+            var _loc_57:* = null;
+            var _loc_58:* = null;
+            var _loc_59:* = null;
+            var _loc_60:* = false;
+            var _loc_61:* = null;
+            var _loc_62:* = null;
+            var _loc_63:* = null;
+            var _loc_64:* = null;
+            var _loc_65:* = null;
+            var _loc_66:* = null;
+            var _loc_67:* = null;
+            var _loc_68:* = false;
+            var _loc_69:* = null;
+            var _loc_70:* = 0;
+            var _loc_71:* = 0;
+            var _loc_72:* = 0;
+            var _loc_73:* = null;
+            var _loc_74:* = null;
+            var _loc_75:* = null;
+            var _loc_76:* = false;
+            var _loc_77:* = null;
+            var _loc_78:* = null;
+            var _loc_79:* = null;
+            var _loc_80:* = null;
+            var _loc_81:* = null;
+            var _loc_82:* = null;
             switch(true)
             {
                 case param1 is ExchangePlayerMultiCraftRequestAction:
@@ -344,187 +350,187 @@ package com.ankamagames.dofus.logic.game.common.frames
                     {
                         case ExchangeCraftResultMessage.protocolId:
                         {
-                            _loc_17 = I18n.getUiText("ui.craft.noCraftResult");
+                            _loc_17 = I18n.getUiText("ui.craft.noResult");
                             break;
                         }
                         case ExchangeCraftResultWithObjectIdMessage.protocolId:
                         {
-                            _loc_56 = param1 as ExchangeCraftResultWithObjectIdMessage;
-                            _loc_18 = ItemWrapper.create(63, 0, _loc_56.objectGenericId, 1, null, false);
-                            _loc_16 = Item.getItemById(_loc_56.objectGenericId).name;
+                            _loc_57 = param1 as ExchangeCraftResultWithObjectIdMessage;
+                            _loc_18 = ItemWrapper.create(63, 0, _loc_57.objectGenericId, 1, null, false);
+                            _loc_16 = Item.getItemById(_loc_57.objectGenericId).name;
                             _loc_17 = I18n.getUiText("ui.craft.failed");
-                            _loc_19 = _loc_56.craftResult == 2;
+                            _loc_19 = _loc_57.craftResult == 2;
                             break;
                         }
                         case ExchangeCraftResultMagicWithObjectDescMessage.protocolId:
                         {
-                            _loc_57 = param1 as ExchangeCraftResultMagicWithObjectDescMessage;
-                            _loc_58 = "";
-                            _loc_59 = false;
-                            _loc_60 = _loc_57.objectInfo.effects;
-                            _loc_62 = new Array();
+                            _loc_58 = param1 as ExchangeCraftResultMagicWithObjectDescMessage;
+                            _loc_59 = "";
+                            _loc_60 = false;
+                            _loc_61 = _loc_58.objectInfo.effects;
+                            _loc_63 = new Array();
                             if (this._smithMagicOldObject)
                             {
-                                for each (_loc_66 in this._smithMagicOldObject.effectsList)
+                                for each (_loc_67 in this._smithMagicOldObject.effectsList)
                                 {
                                     
-                                    _loc_62.push(_loc_66);
-                                    if (_loc_66 is ObjectEffectInteger || _loc_66 is ObjectEffectDice)
+                                    _loc_63.push(_loc_67);
+                                    if (_loc_67 is ObjectEffectInteger || _loc_67 is ObjectEffectDice)
                                     {
-                                        _loc_67 = false;
-                                        for each (_loc_68 in _loc_60)
+                                        _loc_68 = false;
+                                        for each (_loc_69 in _loc_61)
                                         {
                                             
-                                            if ((_loc_68 is ObjectEffectInteger || _loc_68 is ObjectEffectDice) && _loc_68.actionId == _loc_66.actionId)
+                                            if ((_loc_69 is ObjectEffectInteger || _loc_69 is ObjectEffectDice) && _loc_69.actionId == _loc_67.actionId)
                                             {
-                                                _loc_67 = true;
-                                                _loc_69 = Effect.getEffectById(_loc_66.actionId).bonusType;
-                                                _loc_70 = Effect.getEffectById(_loc_68.actionId).bonusType;
-                                                if (_loc_68 is ObjectEffectInteger)
+                                                _loc_68 = true;
+                                                _loc_70 = Effect.getEffectById(_loc_67.actionId).bonusType;
+                                                _loc_71 = Effect.getEffectById(_loc_69.actionId).bonusType;
+                                                if (_loc_69 is ObjectEffectInteger)
                                                 {
-                                                    _loc_69 = _loc_69 * ObjectEffectInteger(_loc_66).value;
-                                                    _loc_70 = _loc_70 * ObjectEffectInteger(_loc_68).value;
-                                                    if (_loc_70 != _loc_69)
+                                                    _loc_70 = _loc_70 * ObjectEffectInteger(_loc_67).value;
+                                                    _loc_71 = _loc_71 * ObjectEffectInteger(_loc_69).value;
+                                                    if (_loc_71 != _loc_70)
                                                     {
-                                                        _loc_71 = _loc_70 - _loc_69;
-                                                        _loc_72 = new EffectInstanceInteger();
-                                                        _loc_72.effectId = _loc_68.actionId;
-                                                        if (_loc_71 > 0)
+                                                        _loc_72 = _loc_71 - _loc_70;
+                                                        _loc_73 = new EffectInstanceInteger();
+                                                        _loc_73.effectId = _loc_69.actionId;
+                                                        if (_loc_72 > 0)
                                                         {
-                                                            _loc_59 = true;
+                                                            _loc_60 = true;
                                                         }
-                                                        _loc_72.value = ObjectEffectInteger(_loc_68).value - ObjectEffectInteger(_loc_66).value;
-                                                        _loc_58 = _loc_58 + (" " + _loc_72.description + ",");
-                                                        _loc_58 = _loc_58.replace("+-", "-");
-                                                        _loc_58 = _loc_58.replace("--", "+");
-                                                        _loc_61 = _loc_72;
+                                                        _loc_73.value = ObjectEffectInteger(_loc_69).value - ObjectEffectInteger(_loc_67).value;
+                                                        _loc_59 = _loc_59 + (" " + _loc_73.description + ",");
+                                                        _loc_59 = _loc_59.replace("+-", "-");
+                                                        _loc_59 = _loc_59.replace("--", "+");
+                                                        _loc_62 = _loc_73;
                                                     }
                                                     continue;
                                                 }
-                                                if (_loc_68 is ObjectEffectDice)
+                                                if (_loc_69 is ObjectEffectDice)
                                                 {
-                                                    _loc_69 = ObjectEffectDice(_loc_66).diceNum;
-                                                    _loc_70 = ObjectEffectDice(_loc_68).diceNum;
-                                                    if (_loc_70 != _loc_69)
+                                                    _loc_70 = ObjectEffectDice(_loc_67).diceNum;
+                                                    _loc_71 = ObjectEffectDice(_loc_69).diceNum;
+                                                    if (_loc_71 != _loc_70)
                                                     {
-                                                        _loc_71 = _loc_70 - _loc_69;
-                                                        if (_loc_66.actionId == ActionIdConverter.ACTION_ITEM_CHANGE_DURABILITY)
+                                                        _loc_72 = _loc_71 - _loc_70;
+                                                        if (_loc_67.actionId == ActionIdConverter.ACTION_ITEM_CHANGE_DURABILITY)
                                                         {
-                                                            _loc_58 = _loc_58 + (" +" + _loc_71 + ",");
-                                                            _loc_71 = _loc_70;
+                                                            _loc_59 = _loc_59 + (" +" + _loc_72 + ",");
+                                                            _loc_72 = _loc_71;
                                                         }
-                                                        _loc_73 = new EffectInstanceDice();
-                                                        _loc_73.effectId = _loc_68.actionId;
-                                                        if (_loc_71 > 0)
+                                                        _loc_74 = new EffectInstanceDice();
+                                                        _loc_74.effectId = _loc_69.actionId;
+                                                        if (_loc_72 > 0)
                                                         {
-                                                            _loc_59 = true;
+                                                            _loc_60 = true;
                                                         }
-                                                        _loc_73.diceNum = _loc_71;
-                                                        _loc_73.diceSide = _loc_71;
-                                                        _loc_73.value = ObjectEffectDice(_loc_68).diceConst;
-                                                        _loc_61 = _loc_73;
-                                                        _loc_58 = _loc_58 + (" " + _loc_61.description + ",");
-                                                        _loc_58 = _loc_58.replace("+-", "-");
-                                                        _loc_58 = _loc_58.replace("--", "+");
+                                                        _loc_74.diceNum = _loc_72;
+                                                        _loc_74.diceSide = _loc_72;
+                                                        _loc_74.value = ObjectEffectDice(_loc_69).diceConst;
+                                                        _loc_62 = _loc_74;
+                                                        _loc_59 = _loc_59 + (" " + _loc_62.description + ",");
+                                                        _loc_59 = _loc_59.replace("+-", "-");
+                                                        _loc_59 = _loc_59.replace("--", "+");
                                                     }
                                                 }
                                             }
                                         }
-                                        if (!_loc_67)
+                                        if (!_loc_68)
                                         {
-                                            _loc_72 = new EffectInstanceInteger();
-                                            _loc_72.effectId = _loc_66.actionId;
-                                            _loc_72.value = -ObjectEffectInteger(_loc_66).value;
-                                            _loc_58 = _loc_58 + (" " + _loc_72.description + ",");
-                                            _loc_58 = _loc_58.replace("+-", "-");
-                                            _loc_58 = _loc_58.replace("--", "+");
-                                            _loc_61 = _loc_72;
+                                            _loc_73 = new EffectInstanceInteger();
+                                            _loc_73.effectId = _loc_67.actionId;
+                                            _loc_73.value = -ObjectEffectInteger(_loc_67).value;
+                                            _loc_59 = _loc_59 + (" " + _loc_73.description + ",");
+                                            _loc_59 = _loc_59.replace("+-", "-");
+                                            _loc_59 = _loc_59.replace("--", "+");
+                                            _loc_62 = _loc_73;
                                         }
                                     }
                                 }
                             }
-                            for each (_loc_74 in _loc_60)
+                            for each (_loc_75 in _loc_61)
                             {
                                 
-                                _loc_75 = true;
-                                for each (_loc_76 in _loc_62)
+                                _loc_76 = true;
+                                for each (_loc_77 in _loc_63)
                                 {
                                     
-                                    if (_loc_74 is ObjectEffectInteger || _loc_74 is ObjectEffectMinMax)
+                                    if (_loc_75 is ObjectEffectInteger || _loc_75 is ObjectEffectMinMax)
                                     {
-                                        if (_loc_74.actionId == _loc_76.actionId)
+                                        if (_loc_75.actionId == _loc_77.actionId)
                                         {
-                                            _loc_75 = false;
-                                            _loc_62.splice(_loc_62.indexOf(_loc_76), 1);
+                                            _loc_76 = false;
+                                            _loc_63.splice(_loc_63.indexOf(_loc_77), 1);
                                         }
                                         continue;
                                     }
-                                    _loc_75 = false;
+                                    _loc_76 = false;
                                 }
-                                if (_loc_75)
+                                if (_loc_76)
                                 {
-                                    if (_loc_74 is ObjectEffectMinMax)
+                                    if (_loc_75 is ObjectEffectMinMax)
                                     {
-                                        _loc_77 = new EffectInstanceMinMax();
-                                        _loc_77.effectId = _loc_74.actionId;
-                                        _loc_77.min = ObjectEffectMinMax(_loc_74).min;
-                                        _loc_77.max = ObjectEffectMinMax(_loc_74).max;
-                                        _loc_61 = _loc_77;
-                                        _loc_59 = true;
+                                        _loc_78 = new EffectInstanceMinMax();
+                                        _loc_78.effectId = _loc_75.actionId;
+                                        _loc_78.min = ObjectEffectMinMax(_loc_75).min;
+                                        _loc_78.max = ObjectEffectMinMax(_loc_75).max;
+                                        _loc_62 = _loc_78;
+                                        _loc_60 = true;
                                         continue;
                                     }
-                                    if (_loc_74 is ObjectEffectInteger)
+                                    if (_loc_75 is ObjectEffectInteger)
                                     {
-                                        _loc_72 = new EffectInstanceInteger();
-                                        _loc_72.effectId = _loc_74.actionId;
-                                        _loc_72.value = ObjectEffectInteger(_loc_74).value;
-                                        if (_loc_72.value > 0)
+                                        _loc_73 = new EffectInstanceInteger();
+                                        _loc_73.effectId = _loc_75.actionId;
+                                        _loc_73.value = ObjectEffectInteger(_loc_75).value;
+                                        if (_loc_73.value > 0)
                                         {
-                                            _loc_59 = true;
+                                            _loc_60 = true;
                                         }
-                                        _loc_58 = _loc_58 + (" " + _loc_72.description + ",");
-                                        _loc_61 = _loc_72;
+                                        _loc_59 = _loc_59 + (" " + _loc_73.description + ",");
+                                        _loc_62 = _loc_73;
                                     }
                                 }
-                            }
-                            _loc_63 = "";
-                            if (_loc_57.magicPoolStatus == 2)
-                            {
-                                _loc_63 = " +" + I18n.getUiText("ui.craft.smithResidualMagic");
-                            }
-                            else if (_loc_57.magicPoolStatus == 3)
-                            {
-                                _loc_63 = " -" + I18n.getUiText("ui.craft.smithResidualMagic");
                             }
                             _loc_64 = "";
-                            if (_loc_59)
+                            if (_loc_58.magicPoolStatus == 2)
                             {
-                                _loc_64 = _loc_64 + (I18n.getUiText("ui.craft.success") + I18n.getUiText("ui.common.colon"));
+                                _loc_64 = " +" + I18n.getUiText("ui.craft.smithResidualMagic");
+                            }
+                            else if (_loc_58.magicPoolStatus == 3)
+                            {
+                                _loc_64 = " -" + I18n.getUiText("ui.craft.smithResidualMagic");
+                            }
+                            _loc_65 = "";
+                            if (_loc_60)
+                            {
+                                _loc_65 = _loc_65 + (I18n.getUiText("ui.craft.success") + I18n.getUiText("ui.common.colon"));
                             }
                             else
                             {
-                                _loc_64 = _loc_64 + (I18n.getUiText("ui.craft.failure") + I18n.getUiText("ui.common.colon"));
+                                _loc_65 = _loc_65 + (I18n.getUiText("ui.craft.failure") + I18n.getUiText("ui.common.colon"));
                             }
-                            _loc_64 = _loc_64 + _loc_58;
-                            if (_loc_63 != "")
+                            _loc_65 = _loc_65 + _loc_59;
+                            if (_loc_64 != "")
                             {
-                                _loc_64 = _loc_64 + _loc_63;
+                                _loc_65 = _loc_65 + _loc_64;
                             }
                             else
                             {
-                                _loc_64 = _loc_64.substring(0, (_loc_64.length - 1));
+                                _loc_65 = _loc_65.substring(0, (_loc_65.length - 1));
                             }
-                            KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_64, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                            _loc_18 = ItemWrapper.create(63, _loc_57.objectInfo.objectUID, _loc_57.objectInfo.objectGID, 1, _loc_57.objectInfo.effects, false);
+                            KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_65, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
+                            _loc_18 = ItemWrapper.create(63, _loc_58.objectInfo.objectUID, _loc_58.objectInfo.objectGID, 1, _loc_58.objectInfo.effects, false);
                             this._smithMagicOldObject = _loc_18.clone();
-                            _loc_19 = _loc_57.craftResult == 2;
+                            _loc_19 = _loc_58.craftResult == 2;
                             break;
                         }
                         case ExchangeCraftResultWithObjectDescMessage.protocolId:
                         {
-                            _loc_65 = param1 as ExchangeCraftResultWithObjectDescMessage;
-                            _loc_18 = ItemWrapper.create(63, _loc_65.objectInfo.objectUID, _loc_65.objectInfo.objectGID, 1, _loc_65.objectInfo.effects, false);
-                            if (_loc_65.objectInfo.objectGID == 0)
+                            _loc_66 = param1 as ExchangeCraftResultWithObjectDescMessage;
+                            _loc_18 = ItemWrapper.create(63, _loc_66.objectInfo.objectUID, _loc_66.objectInfo.objectGID, 1, _loc_66.objectInfo.effects, false);
+                            if (_loc_66.objectInfo.objectGID == 0)
                             {
                                 break;
                             }
@@ -548,7 +554,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                                     break;
                                 }
                             }
-                            _loc_19 = _loc_65.craftResult == 2;
+                            _loc_19 = _loc_66.craftResult == 2;
                             break;
                         }
                         default:
@@ -606,8 +612,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                     }
                     if (_loc_22)
                     {
-                        _loc_78 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                        _loc_78.openPopup(I18n.getUiText("ui.popup.information"), _loc_21, [I18n.getUiText("ui.common.ok")]);
+                        _loc_79 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+                        _loc_79.openPopup(I18n.getUiText("ui.popup.information"), _loc_21, [I18n.getUiText("ui.common.ok")]);
                     }
                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_21, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
                     KernelEventsManager.getInstance().processCallback(CraftHookList.ExchangeItemAutoCraftStoped, _loc_20.reason);
@@ -640,6 +646,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeGoldPaymentForCraftMessage:
                 {
                     _loc_25 = param1 as ExchangeGoldPaymentForCraftMessage;
+                    if (this.commonExchangeFrame)
+                    {
+                        this.commonExchangeFrame.incrementEchangeSequence();
+                    }
                     if (_loc_25.onlySuccess)
                     {
                         this.paymentCraftList.kamaPaymentOnlySuccess = _loc_25.goldSum;
@@ -654,6 +664,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeItemPaymentForCraftMessage:
                 {
                     _loc_26 = param1 as ExchangeItemPaymentForCraftMessage;
+                    if (this.commonExchangeFrame)
+                    {
+                        this.commonExchangeFrame.incrementEchangeSequence();
+                    }
                     _loc_27 = ItemWrapper.create(63, _loc_26.object.objectUID, _loc_26.object.objectGID, _loc_26.object.quantity, _loc_26.object.effects, false);
                     this.addObjetPayment(_loc_26.onlySuccess, _loc_27);
                     KernelEventsManager.getInstance().processCallback(CraftHookList.PaymentCraftList, this.paymentCraftList, true);
@@ -662,6 +676,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeRemovedPaymentForCraftMessage:
                 {
                     _loc_28 = param1 as ExchangeRemovedPaymentForCraftMessage;
+                    if (this.commonExchangeFrame)
+                    {
+                        this.commonExchangeFrame.incrementEchangeSequence();
+                    }
                     this.removeObjetPayment(_loc_28.objectUID, _loc_28.onlySuccess);
                     KernelEventsManager.getInstance().processCallback(CraftHookList.PaymentCraftList, this.paymentCraftList, true);
                     return true;
@@ -669,6 +687,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeModifiedPaymentForCraftMessage:
                 {
                     _loc_29 = param1 as ExchangeModifiedPaymentForCraftMessage;
+                    if (this.commonExchangeFrame)
+                    {
+                        this.commonExchangeFrame.incrementEchangeSequence();
+                    }
                     _loc_30 = ItemWrapper.getItemFromUId(_loc_29.object.objectUID);
                     _loc_31 = ItemWrapper.create(63, _loc_29.object.objectUID, _loc_29.object.objectGID, _loc_29.object.quantity, _loc_29.object.effects, false);
                     if (_loc_29.onlySuccess)
@@ -686,6 +708,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeClearPaymentForCraftMessage:
                 {
                     _loc_33 = param1 as ExchangeClearPaymentForCraftMessage;
+                    if (this.commonExchangeFrame)
+                    {
+                        this.commonExchangeFrame.incrementEchangeSequence();
+                    }
                     switch(_loc_33.paymentType)
                     {
                         case PaymentTypeEnum.PAYMENT_IN_ANY_CASE:
@@ -710,13 +736,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case param1 is ExchangeObjectModifiedInBagMessage:
                 {
                     _loc_34 = param1 as ExchangeObjectModifiedInBagMessage;
-                    for each (_loc_79 in this.bagList)
+                    for each (_loc_80 in this.bagList)
                     {
                         
-                        if (_loc_79.objectUID == _loc_34.object.objectUID)
+                        if (_loc_80.objectUID == _loc_34.object.objectUID)
                         {
-                            _loc_80 = ItemWrapper.create(63, _loc_34.object.objectUID, _loc_34.object.objectGID, _loc_34.object.quantity, _loc_34.object.effects, false);
-                            this.bagList.splice(this.bagList.indexOf(_loc_79), 1, _loc_80);
+                            _loc_81 = ItemWrapper.create(63, _loc_34.object.objectUID, _loc_34.object.objectGID, _loc_34.object.quantity, _loc_34.object.effects, false);
+                            this.bagList.splice(this.bagList.indexOf(_loc_80), 1, _loc_81);
                             break;
                         }
                     }
@@ -736,10 +762,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_38 = param1 as ExchangeObjectRemovedFromBagMessage;
                     _loc_39 = 0;
-                    for each (_loc_81 in this.bagList)
+                    for each (_loc_82 in this.bagList)
                     {
                         
-                        if (_loc_81.objectUID == _loc_38.objectUID)
+                        if (_loc_82.objectUID == _loc_38.objectUID)
                         {
                             this.bagList.splice(_loc_39, 1);
                             break;
@@ -843,9 +869,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
                 case param1 is ExchangeLeaveMessage:
                 {
-                    PlayedCharacterManager.getInstance().isInExchange = false;
-                    this._success = ExchangeLeaveMessage(param1).success;
-                    Kernel.getWorker().removeFrame(this);
+                    _loc_56 = param1 as ExchangeLeaveMessage;
+                    if (_loc_56.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
+                    {
+                        PlayedCharacterManager.getInstance().isInExchange = false;
+                        this._success = _loc_56.success;
+                        Kernel.getWorker().removeFrame(this);
+                    }
                     return true;
                 }
                 default:
@@ -867,7 +897,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function addCraftComponent(param1:Boolean, param2:ItemWrapper) : void
         {
-            var _loc_3:PlayerExchangeCraftList = null;
+            var _loc_3:* = null;
             if (param1)
             {
                 _loc_3 = this.otherPlayerList;
@@ -887,7 +917,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function modifyCraftComponent(param1:Boolean, param2:ItemWrapper) : void
         {
-            var _loc_3:PlayerExchangeCraftList = null;
+            var _loc_3:* = null;
             if (param1)
             {
                 _loc_3 = this.otherPlayerList;
@@ -896,7 +926,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             {
                 _loc_3 = this.playerList;
             }
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3.componentList.length)
             {
                 
@@ -912,9 +942,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function removeCraftComponent(param1:Boolean, param2:uint) : void
         {
-            var _loc_5:ItemWrapper = null;
-            var _loc_6:ItemWrapper = null;
-            var _loc_3:uint = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_3:* = 0;
             var _loc_4:* = new PlayerExchangeCraftList();
             for each (_loc_5 in this.otherPlayerList.componentList)
             {
@@ -957,9 +987,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function removeObjetPayment(param1:uint, param2:Boolean) : void
         {
-            var _loc_4:Array = null;
-            var _loc_5:ItemWrapper = null;
-            var _loc_3:uint = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_3:* = 0;
             if (param2)
             {
                 _loc_4 = this.paymentCraftList.objectsPaymentOnlySuccess;
@@ -1006,6 +1036,133 @@ package com.ankamagames.dofus.logic.game.common.frames
     }
 }
 
+import __AS3__.vec.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.datacenter.effects.*;
+
+import com.ankamagames.dofus.datacenter.effects.instances.*;
+
+import com.ankamagames.dofus.datacenter.items.*;
+
+import com.ankamagames.dofus.datacenter.jobs.*;
+
+import com.ankamagames.dofus.internalDatacenter.items.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.kernel.net.*;
+
+import com.ankamagames.dofus.logic.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.craft.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.fight.miscs.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+
+import com.ankamagames.dofus.misc.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.items.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.effects.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.enums.*;
+
+import flash.utils.*;
+
+class PaymentCraftList extends Object
+{
+    public var kamaPaymentOnlySuccess:uint;
+    public var objectsPaymentOnlySuccess:Array;
+    public var kamaPayment:uint;
+    public var objectsPayment:Array;
+
+    function PaymentCraftList() : void
+    {
+        this.kamaPaymentOnlySuccess = 0;
+        this.objectsPaymentOnlySuccess = new Array();
+        this.kamaPayment = 0;
+        this.objectsPayment = new Array();
+        return;
+    }// end function
+
+}
+
+
+import __AS3__.vec.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.datacenter.effects.*;
+
+import com.ankamagames.dofus.datacenter.effects.instances.*;
+
+import com.ankamagames.dofus.datacenter.items.*;
+
+import com.ankamagames.dofus.datacenter.jobs.*;
+
+import com.ankamagames.dofus.internalDatacenter.items.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.kernel.net.*;
+
+import com.ankamagames.dofus.logic.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.craft.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.fight.miscs.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+
+import com.ankamagames.dofus.misc.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.items.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.effects.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.enums.*;
+
+import flash.utils.*;
+
 class PlayerExchangeCraftList extends Object
 {
     public var componentList:Array;
@@ -1015,6 +1172,75 @@ class PlayerExchangeCraftList extends Object
     {
         this.componentList = new Array();
         this.isCrafter = false;
+        return;
+    }// end function
+
+}
+
+
+import __AS3__.vec.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.datacenter.effects.*;
+
+import com.ankamagames.dofus.datacenter.effects.instances.*;
+
+import com.ankamagames.dofus.datacenter.items.*;
+
+import com.ankamagames.dofus.datacenter.jobs.*;
+
+import com.ankamagames.dofus.internalDatacenter.items.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.kernel.net.*;
+
+import com.ankamagames.dofus.logic.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.craft.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.fight.miscs.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+
+import com.ankamagames.dofus.misc.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.items.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.effects.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.enums.*;
+
+import flash.utils.*;
+
+class PlayerInfo extends Object
+{
+    public var id:uint;
+    public var name:String;
+    public var look:TiphonEntityLook;
+    public var skillLevel:int;
+
+    function PlayerInfo()
+    {
         return;
     }// end function
 

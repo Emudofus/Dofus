@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.chat
+﻿package com.ankamagames.dofus.console.chat
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.dofus.*;
@@ -19,12 +19,12 @@ package com.ankamagames.dofus.console.chat
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:BasicWhoIsRequestMessage = null;
-            var _loc_5:BasicWhoAmIRequestMessage = null;
-            var _loc_6:String = null;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
-            var _loc_9:Date = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             switch(param2)
             {
                 case "whois":

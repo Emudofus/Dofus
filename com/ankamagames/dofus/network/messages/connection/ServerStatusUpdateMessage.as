@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.connection
+﻿package com.ankamagames.dofus.network.messages.connection
 {
     import com.ankamagames.dofus.network.types.connection.*;
     import com.ankamagames.jerakine.network.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -10,11 +10,14 @@ package com.ankamagames.dofus.uiApi
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.roleplay.frames.*;
     import com.ankamagames.dofus.network.messages.authorized.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.types.positions.*;
     import flash.geom.*;
+    import flash.utils.*;
 
     public class MapApi extends Object implements IApi
     {
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(MapApi));
 
         public function MapApi()
         {
@@ -23,7 +26,12 @@ package com.ankamagames.dofus.uiApi
 
         public function getCurrentSubArea() : SubArea
         {
-            return SubArea.getSubAreaById((Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame).currentSubAreaId);
+            var _loc_1:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+            if (_loc_1)
+            {
+                return SubArea.getSubAreaById(_loc_1.currentSubAreaId);
+            }
+            return null;
         }// end function
 
         public function getAllSuperArea() : Array
@@ -74,12 +82,12 @@ package com.ankamagames.dofus.uiApi
 
         public function getHintIds() : Array
         {
-            var _loc_4:Hint = null;
-            var _loc_5:Object = null;
-            var _loc_6:MapPosition = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_1:* = Hint.getHints() as Array;
             var _loc_2:* = new Array();
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             for each (_loc_4 in _loc_1)
             {
                 
@@ -145,17 +153,17 @@ package com.ankamagames.dofus.uiApi
 
         public function movePlayer(param1:int, param2:int, param3:int = -1) : void
         {
-            var _loc_6:WorldPoint = null;
-            var _loc_7:uint = 0;
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:Boolean = false;
-            var _loc_12:Array = null;
-            var _loc_13:uint = 0;
-            var _loc_14:MapPosition = null;
-            var _loc_15:uint = 0;
-            var _loc_16:uint = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = false;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = 0;
             if (!PlayerManager.getInstance().hasRights)
             {
                 return;

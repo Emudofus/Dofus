@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.managers.*;
@@ -19,17 +19,17 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:UiModule = null;
-            var _loc_5:String = null;
-            var _loc_6:Array = null;
-            var _loc_7:UiModule = null;
-            var _loc_8:Boolean = false;
-            var _loc_9:Boolean = false;
-            var _loc_10:uint = 0;
-            var _loc_11:Array = null;
-            var _loc_12:String = null;
-            var _loc_13:String = null;
-            var _loc_14:ModuleScriptAnalyzer = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = false;
+            var _loc_9:* = false;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
             switch(param2)
             {
                 case "loadui":
@@ -218,8 +218,8 @@ package com.ankamagames.dofus.console.debug
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
         {
-            var _loc_5:String = null;
-            var _loc_4:Array = [];
+            var _loc_5:* = null;
+            var _loc_4:* = [];
             switch(param1)
             {
                 case "unloadui":

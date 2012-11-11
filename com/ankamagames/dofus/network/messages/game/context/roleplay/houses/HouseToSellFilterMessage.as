@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
@@ -7,9 +7,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
     {
         private var _isInitialized:Boolean = false;
         public var areaId:int = 0;
-        public var atLeastNbRoom:int = 0;
-        public var atLeastNbChest:int = 0;
-        public var skillRequested:int = 0;
+        public var atLeastNbRoom:uint = 0;
+        public var atLeastNbChest:uint = 0;
+        public var skillRequested:uint = 0;
         public var maxPrice:uint = 0;
         public static const protocolId:uint = 6137;
 
@@ -28,7 +28,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
             return 6137;
         }// end function
 
-        public function initHouseToSellFilterMessage(param1:int = 0, param2:int = 0, param3:int = 0, param4:int = 0, param5:uint = 0) : HouseToSellFilterMessage
+        public function initHouseToSellFilterMessage(param1:int = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0) : HouseToSellFilterMessage
         {
             this.areaId = param1;
             this.atLeastNbRoom = param2;
@@ -73,9 +73,21 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
         public function serializeAs_HouseToSellFilterMessage(param1:IDataOutput) : void
         {
             param1.writeInt(this.areaId);
+            if (this.atLeastNbRoom < 0)
+            {
+                throw new Error("Forbidden value (" + this.atLeastNbRoom + ") on element atLeastNbRoom.");
+            }
             param1.writeByte(this.atLeastNbRoom);
+            if (this.atLeastNbChest < 0)
+            {
+                throw new Error("Forbidden value (" + this.atLeastNbChest + ") on element atLeastNbChest.");
+            }
             param1.writeByte(this.atLeastNbChest);
-            param1.writeByte(this.skillRequested);
+            if (this.skillRequested < 0)
+            {
+                throw new Error("Forbidden value (" + this.skillRequested + ") on element skillRequested.");
+            }
+            param1.writeShort(this.skillRequested);
             if (this.maxPrice < 0)
             {
                 throw new Error("Forbidden value (" + this.maxPrice + ") on element maxPrice.");
@@ -94,8 +106,20 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
         {
             this.areaId = param1.readInt();
             this.atLeastNbRoom = param1.readByte();
+            if (this.atLeastNbRoom < 0)
+            {
+                throw new Error("Forbidden value (" + this.atLeastNbRoom + ") on element of HouseToSellFilterMessage.atLeastNbRoom.");
+            }
             this.atLeastNbChest = param1.readByte();
-            this.skillRequested = param1.readByte();
+            if (this.atLeastNbChest < 0)
+            {
+                throw new Error("Forbidden value (" + this.atLeastNbChest + ") on element of HouseToSellFilterMessage.atLeastNbChest.");
+            }
+            this.skillRequested = param1.readShort();
+            if (this.skillRequested < 0)
+            {
+                throw new Error("Forbidden value (" + this.skillRequested + ") on element of HouseToSellFilterMessage.skillRequested.");
+            }
             this.maxPrice = param1.readInt();
             if (this.maxPrice < 0)
             {

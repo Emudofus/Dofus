@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -41,9 +41,9 @@ package com.ankamagames.dofus.uiApi
             return Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
         }// end function
 
-        private function get roleplayEmoticonFrame() : RoleplayEmoticonFrame
+        private function get roleplayEmoticonFrame() : EmoticonFrame
         {
-            return Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame;
+            return Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
         }// end function
 
         private function get zaapFrame() : ZaapFrame
@@ -70,7 +70,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getSpellToForgetList() : Array
         {
-            var _loc_2:SpellWrapper = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Array();
             for each (_loc_2 in PlayedCharacterManager.getInstance().spellsInventory)
             {
@@ -133,8 +133,8 @@ package com.ankamagames.dofus.uiApi
 
         public function getEntityByName(param1:String) : Object
         {
-            var _loc_3:IEntity = null;
-            var _loc_4:GameRolePlayNamedActorInformations = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
             for each (_loc_3 in EntitiesManager.getInstance().entities)
             {
@@ -146,6 +146,21 @@ package com.ankamagames.dofus.uiApi
                 }
             }
             return null;
+        }// end function
+
+        public function switchButtonWrappers(param1:Object, param2:Object) : void
+        {
+            var _loc_3:* = param2.position;
+            var _loc_4:* = param1.position;
+            param2.setPosition(_loc_4);
+            param1.setPosition(_loc_3);
+            return;
+        }// end function
+
+        public function setButtonWrapperActivation(param1:Object, param2:Boolean) : void
+        {
+            param1.active = param2;
+            return;
         }// end function
 
     }

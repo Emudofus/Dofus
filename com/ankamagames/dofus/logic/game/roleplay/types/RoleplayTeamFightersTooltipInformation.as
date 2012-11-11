@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.types
+﻿package com.ankamagames.dofus.logic.game.roleplay.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.monsters.*;
@@ -11,15 +11,15 @@ package com.ankamagames.dofus.logic.game.roleplay.types
 
         public function RoleplayTeamFightersTooltipInformation(param1:FightTeam)
         {
-            var _loc_2:FightTeamMemberInformations = null;
-            var _loc_3:Fighter = null;
-            var _loc_4:Monster = null;
-            var _loc_5:uint = 0;
-            var _loc_6:String = null;
-            var _loc_7:uint = 0;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
-            var _loc_10:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             this.fighters = new Vector.<Fighter>;
             for each (_loc_2 in param1.teamInfos.teamMembers)
             {
@@ -60,6 +60,14 @@ package com.ankamagames.dofus.logic.game.roleplay.types
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.dofus.datacenter.monsters.*;
+
+import com.ankamagames.dofus.datacenter.npcs.*;
+
+import com.ankamagames.dofus.network.types.game.context.fight.*;
 
 class Fighter extends Object
 {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.berilia.factories.*;
     import com.ankamagames.berilia.managers.*;
@@ -18,7 +18,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showPlayerMenu(param1:String, param2:int = 0, param3:Number = 0, param4:String = null, param5:uint = 0) : void
         {
-            var _loc_8:GameRolePlayCharacterInformations = null;
+            var _loc_8:* = null;
             var _loc_6:* = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
             var _loc_7:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             if (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame && param2)
@@ -41,7 +41,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function getPlayerName(param1:String, param2:int = 0, param3:Number = 0, param4:String = null, param5:uint = 0) : String
         {
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             switch(param5)
             {
                 case ChatActivableChannelsEnum.CHANNEL_TEAM:

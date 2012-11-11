@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel
+ï»¿package com.ankamagames.dofus.kernel
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.types.*;
@@ -11,6 +11,7 @@ package com.ankamagames.dofus.kernel
     import com.ankamagames.berilia.utils.*;
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.console.moduleLogger.*;
+    import com.ankamagames.dofus.externalnotification.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -104,8 +105,8 @@ package com.ankamagames.dofus.kernel
 
         public function postInit() : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:String = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             this.initCaches();
             XmlConfig.getInstance().init(LangManager.getInstance().getCategory("config"));
             if (XmlConfig.getInstance().getEntry("config.buildType"))
@@ -162,6 +163,7 @@ package com.ankamagames.dofus.kernel
             Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_COURSE);
             Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_MARCHE);
             Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_STATIQUE);
+            AlmanaxManager.getInstance();
             var _loc_1:* = LangManager.getInstance().getStringEntry("config.lang.usingIME").split(",");
             if (_loc_1.indexOf(LangManager.getInstance().getStringEntry("config.lang.current")) != -1)
             {
@@ -172,7 +174,7 @@ package com.ankamagames.dofus.kernel
 
         public function reset(param1:Array = null, param2:Boolean = false, param3:Boolean = false) : void
         {
-            var _loc_4:Message = null;
+            var _loc_4:* = null;
             if (Constants.EVENT_MODE)
             {
                 _log.error("eventmode : quit");
@@ -212,12 +214,16 @@ package com.ankamagames.dofus.kernel
                 }
             }
             SoundManager.getInstance().manager.reset();
+            if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().initialized)
+            {
+                ExternalNotificationManager.getInstance().reset();
+            }
             return;
         }// end function
 
         public function initOptions() : void
         {
-            var _loc_6:SystemPopupUI = null;
+            var _loc_6:* = null;
             OptionManager.reset();
             var _loc_1:* = new AtouinOptions(Dofus.getInstance().getWorldContainer(), Kernel.getWorker());
             _loc_1.frustum = new Frustum(LangManager.getInstance().getIntEntry("config.atouin.frustum.marginLeft"), LangManager.getInstance().getIntEntry("config.atouin.frustum.marginTop"), LangManager.getInstance().getIntEntry("config.atouin.frustum.marginRight"), LangManager.getInstance().getIntEntry("config.atouin.frustum.marginBottom"));
@@ -227,6 +233,7 @@ package com.ankamagames.dofus.kernel
             _loc_1.jpgSubPath = LangManager.getInstance().getEntry("config.gfx.subpath.world.jpg");
             _loc_1.pngSubPath = LangManager.getInstance().getEntry("config.gfx.subpath.world.png");
             _loc_1.particlesScriptsPath = LangManager.getInstance().getEntry("config.atouin.path.emitters");
+            _loc_1.mapPictoExtension = LangManager.getInstance().getEntry("config.gfx.subpath.world.extension");
             if (_loc_1.jpgSubPath.charAt(0) == "!")
             {
                 _loc_1.jpgSubPath = "jpg";
@@ -234,6 +241,10 @@ package com.ankamagames.dofus.kernel
             if (_loc_1.pngSubPath.charAt(0) == "!")
             {
                 _loc_1.pngSubPath = "png";
+            }
+            if (_loc_1.mapPictoExtension.charAt(0) == "!")
+            {
+                _loc_1.mapPictoExtension = "png";
             }
             Atouin.getInstance().setDisplayOptions(_loc_1);
             var _loc_2:* = new DofusOptions();
@@ -254,7 +265,7 @@ package com.ankamagames.dofus.kernel
             {
                 _loc_6 = new SystemPopupUI("logWarning");
                 _loc_6.title = "Attention";
-                _loc_6.content = "Vous participez au programme d\'analyse des performances de Dofus 2.0 mais le système de log est désactivé dans les options (Options -> Support)";
+                _loc_6.content = "Vous participez au programme d\'analyse des performances de Dofus 2.0 mais le systÃ¨me de log est dÃ©sactivÃ© dans les options (Options -> Support)";
                 _loc_6.show();
             }
             return;
@@ -326,10 +337,10 @@ package com.ankamagames.dofus.kernel
 
         public static function panic(param1:uint = 0, param2:Array = null) : void
         {
-            var _loc_3:Sprite = null;
-            var _loc_4:TextField = null;
-            var _loc_5:TextField = null;
-            var _loc_6:LoadingScreen = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             _worker.clear();
             ConnectionsHandler.closeConnection();
             if (Math.random() * 1000 > 999)

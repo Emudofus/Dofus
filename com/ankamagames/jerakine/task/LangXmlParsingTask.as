@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.task
+﻿package com.ankamagames.jerakine.task
 {
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.logger.*;
@@ -28,7 +28,7 @@ package com.ankamagames.jerakine.task
 
         override public function step() : Boolean
         {
-            var _loc_1:LangFile = null;
+            var _loc_1:* = null;
             if (this._aFiles.length)
             {
                 _loc_1 = LangFile(this._aFiles.shift());
@@ -48,7 +48,7 @@ package com.ankamagames.jerakine.task
 
         public function parseForReg() : Boolean
         {
-            var _loc_1:LangFile = null;
+            var _loc_1:* = null;
             if (this._aFiles.length)
             {
                 _loc_1 = LangFile(this._aFiles.shift());
@@ -79,7 +79,7 @@ package com.ankamagames.jerakine.task
                 xml = new XML(sXml);
                 LangManager.getInstance().category[sCategory] = true;
                 StoreDataManager.getInstance().getSetData(JerakineConstants.DATASTORE_LANG, "langCategory", LangManager.getInstance().category);
-                var _loc_4:int = 0;
+                var _loc_4:* = 0;
                 var _loc_5:* = xml..entry;
                 while (_loc_5 in _loc_4)
                 {

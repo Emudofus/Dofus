@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.interactives
+﻿package com.ankamagames.dofus.datacenter.interactives
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -28,7 +28,7 @@ package com.ankamagames.dofus.datacenter.interactives
 
         public static function getInteractiveById(param1:int) : Interactive
         {
-            return GameData.getObject(MODULE, param1) as ;
+            return GameData.getObject(MODULE, param1) as Interactive;
         }// end function
 
         public static function getInteractives() : Array

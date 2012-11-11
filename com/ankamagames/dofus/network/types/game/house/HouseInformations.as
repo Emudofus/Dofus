@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.house
+﻿package com.ankamagames.dofus.network.types.game.house
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -56,7 +56,7 @@ package com.ankamagames.dofus.network.types.game.house
 
         public function serializeAs_HouseInformations(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.isOnSale);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.isSaleLocked);
             param1.writeByte(_loc_2);
@@ -66,7 +66,7 @@ package com.ankamagames.dofus.network.types.game.house
             }
             param1.writeInt(this.houseId);
             param1.writeShort(this.doorsOnMap.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.doorsOnMap.length)
             {
                 
@@ -94,7 +94,7 @@ package com.ankamagames.dofus.network.types.game.house
 
         public function deserializeAs_HouseInformations(param1:IDataInput) : void
         {
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             var _loc_2:* = param1.readByte();
             this.isOnSale = BooleanByteWrapper.getFlag(_loc_2, 0);
             this.isSaleLocked = BooleanByteWrapper.getFlag(_loc_2, 1);
@@ -104,7 +104,7 @@ package com.ankamagames.dofus.network.types.game.house
                 throw new Error("Forbidden value (" + this.houseId + ") on element of HouseInformations.houseId.");
             }
             var _loc_3:* = param1.readUnsignedShort();
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 

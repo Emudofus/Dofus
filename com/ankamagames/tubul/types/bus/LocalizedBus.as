@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types.bus
+﻿package com.ankamagames.tubul.types.bus
 {
     import com.ankamagames.tubul.interfaces.*;
     import com.ankamagames.tubul.types.sounds.*;
@@ -15,7 +15,7 @@ package com.ankamagames.tubul.types.bus
 
         public function updateObserverPosition(param1:Point) : void
         {
-            var _loc_2:ISound = null;
+            var _loc_2:* = null;
             for each (_loc_2 in _soundVector)
             {
                 

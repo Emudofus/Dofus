@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.misc.utils
         {
             if (this.count < this.countMax)
             {
-                var _loc_1:String = this;
+                var _loc_1:* = this;
                 var _loc_2:* = this.count + 1;
                 _loc_1.count = _loc_2;
                 this.store();

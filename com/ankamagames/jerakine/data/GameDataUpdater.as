@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.managers.*;

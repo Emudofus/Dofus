@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.utils
+﻿package com.ankamagames.atouin.utils
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.types.*;

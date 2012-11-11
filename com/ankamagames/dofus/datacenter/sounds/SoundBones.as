@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.sounds
+﻿package com.ankamagames.dofus.datacenter.sounds
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;
@@ -42,7 +42,7 @@ package com.ankamagames.dofus.datacenter.sounds
 
         public function getSoundAnimationByLabel(param1:String, param2:String = null) : Vector.<SoundAnimation>
         {
-            var _loc_4:SoundAnimation = null;
+            var _loc_4:* = null;
             if (this._cacheDictionary == null)
             {
                 this.makeCacheDictionary();
@@ -69,7 +69,7 @@ package com.ankamagames.dofus.datacenter.sounds
 
         private function makeCacheDictionary() : void
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             this._cacheDictionary = new Dictionary();
             for (_loc_1 in this.keys)
             {
@@ -81,7 +81,7 @@ package com.ankamagames.dofus.datacenter.sounds
 
         public static function getSoundBonesById(param1:uint) : SoundBones
         {
-            var _loc_2:* = GameData.getObject(MODULE, param1) as SoundBones;
+            var _loc_2:* = GameData.getObject(MODULE, param1) as ;
             return _loc_2;
         }// end function
 

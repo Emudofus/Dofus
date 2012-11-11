@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.uiDefinition
+﻿package com.ankamagames.berilia.types.uiDefinition
 {
 
     public class BasicElement extends Object
@@ -33,7 +33,7 @@ package com.ankamagames.berilia.types.uiDefinition
 
         public function copy(param1:BasicElement) : void
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             param1.strata = this.strata;
             param1.size = this.size;
             param1.minSize = this.minSize;

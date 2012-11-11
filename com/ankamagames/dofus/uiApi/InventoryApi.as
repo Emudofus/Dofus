@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -39,9 +39,9 @@ package com.ankamagames.dofus.uiApi
 
         public function getStorageObjectGID(param1:uint, param2:uint = 1) : Object
         {
-            var _loc_6:ItemWrapper = null;
+            var _loc_6:* = null;
             var _loc_3:* = new Array();
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = InventoryManager.getInstance().realInventory;
             for each (_loc_6 in _loc_5)
             {
@@ -62,21 +62,21 @@ package com.ankamagames.dofus.uiApi
             return null;
         }// end function
 
-        public function getItemQty(param1:uint) : uint
+        public function getItemQty(param1:uint, param2:uint = 0) : uint
         {
-            var _loc_4:ItemWrapper = null;
-            var _loc_2:uint = 0;
-            var _loc_3:* = InventoryManager.getInstance().realInventory;
-            for each (_loc_4 in _loc_3)
+            var _loc_5:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = InventoryManager.getInstance().realInventory;
+            for each (_loc_5 in _loc_4)
             {
                 
-                if (_loc_4.objectGID != param1 || _loc_4.position < 63)
+                if (_loc_5.position < 63 || _loc_5.objectGID != param1 || param2 > 0 && _loc_5.objectUID != param2)
                 {
                     continue;
                 }
-                _loc_2 = _loc_2 + _loc_4.quantity;
+                _loc_3 = _loc_3 + _loc_5.quantity;
             }
-            return _loc_2;
+            return _loc_3;
         }// end function
 
         public function getItem(param1:uint) : ItemWrapper
@@ -102,13 +102,13 @@ package com.ankamagames.dofus.uiApi
 
         public function getEquipementForPreset() : Array
         {
-            var _loc_3:Uri = null;
-            var _loc_5:Boolean = false;
-            var _loc_6:ItemWrapper = null;
-            var _loc_7:MountWrapper = null;
+            var _loc_3:* = null;
+            var _loc_5:* = false;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_1:* = InventoryManager.getInstance().inventory.getView("equipment").content;
             var _loc_2:* = new Array(16);
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < 16)
             {
                 
@@ -162,7 +162,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getVoidItemForPreset(param1:int) : SimpleTextureWrapper
         {
-            var _loc_2:Uri = null;
+            var _loc_2:* = null;
             switch(param1)
             {
                 case 9:
@@ -192,10 +192,10 @@ package com.ankamagames.dofus.uiApi
 
         public function getPresets() : Array
         {
-            var _loc_4:PresetWrapper = null;
+            var _loc_4:* = null;
             var _loc_1:* = new Array();
             var _loc_2:* = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < 8)
             {
                 
@@ -215,17 +215,20 @@ package com.ankamagames.dofus.uiApi
 
         public function removeSelectedItem() : Boolean
         {
-            var _loc_2:RoleplayPointCellFrame = null;
+            var _loc_2:* = null;
             var _loc_1:* = Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
-            if (_loc_1 && _loc_1.roleplayPointCellFrame != null && _loc_1.roleplayPointCellFrame.object != null)
+            if (_loc_1 && _loc_1.roleplayPointCellFrame && _loc_1.roleplayPointCellFrame.object)
             {
                 _loc_2 = Kernel.getWorker().getFrame(RoleplayPointCellFrame) as RoleplayPointCellFrame;
                 if (_loc_2)
                 {
                     _loc_2.cancelShow();
                 }
-                Kernel.getWorker().removeFrame(_loc_1.roleplayPointCellFrame.object as RoleplayPointCellFrame);
-                _loc_1.roleplayPointCellFrame = null;
+                else
+                {
+                    Kernel.getWorker().removeFrame(_loc_1.roleplayPointCellFrame.object as RoleplayPointCellFrame);
+                    _loc_1.roleplayPointCellFrame = null;
+                }
                 return true;
             }
             return false;

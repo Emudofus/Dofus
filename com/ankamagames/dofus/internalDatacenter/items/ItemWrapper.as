@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.items
+﻿package com.ankamagames.dofus.internalDatacenter.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.effects.*;
@@ -81,7 +81,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         override public function get weight() : uint
         {
-            var _loc_1:EffectInstance = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this.effects)
             {
                 
@@ -133,7 +133,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get isSpeakingObject() : Boolean
         {
-            var _loc_1:ObjectEffect = null;
+            var _loc_1:* = null;
             if (this.isLivingObject)
             {
                 return true;
@@ -217,8 +217,8 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get spellZoneEffects() : Vector.<IZoneShape>
         {
-            var _loc_2:EffectInstance = null;
-            var _loc_3:ZoneEffect = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_1:* = new Vector.<IZoneShape>;
             for each (_loc_2 in this.effects)
             {
@@ -260,10 +260,10 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get favoriteEffect() : Vector.<EffectInstance>
         {
-            var _loc_2:Object = null;
-            var _loc_3:Item = null;
-            var _loc_4:EffectInstance = null;
-            var _loc_5:EffectInstance = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_1:* = new Vector.<EffectInstance>;
             if (PlayedCharacterManager.getInstance())
             {
@@ -327,13 +327,13 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get shortName() : String
         {
-            var _loc_1:int = 0;
-            var _loc_2:String = null;
-            var _loc_3:Array = null;
-            var _loc_4:Array = null;
-            var _loc_5:EffectInstance = null;
-            var _loc_6:Monster = null;
-            var _loc_7:MonsterGrade = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             if (!this._shortName)
             {
                 switch(this.objectGID)
@@ -418,7 +418,7 @@ package com.ankamagames.dofus.internalDatacenter.items
         {
             if (this.objectGID != param3 || this.effectsList != param5)
             {
-                var _loc_7:String = null;
+                var _loc_7:* = null;
                 this._uriPngMode = null;
                 this._uri = _loc_7;
             }
@@ -432,7 +432,7 @@ package com.ankamagames.dofus.internalDatacenter.items
             var _loc_6:* = Item.getItemById(param3);
             Item.getItemById(param3).copy(Item.getItemById(param3), this);
             this.updateEffects(param5);
-            var _loc_7:String = this;
+            var _loc_7:* = this;
             var _loc_8:* = this._setCount + 1;
             _loc_7._setCount = _loc_8;
             return;
@@ -440,7 +440,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function getIconUri(param1:Boolean = true) : Uri
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             if (param1 && this._uriPngMode)
             {
                 return this._uriPngMode;
@@ -456,10 +456,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                 if (!_uriLoaderContext)
                 {
                     _uriLoaderContext = new LoaderContext();
-                    if (AirScanner.hasAir())
-                    {
-                        _uriLoaderContext["allowLoadBytesCodeExecution"] = true;
-                    }
+                    AirScanner.allowByteCodeExecution(_uriLoaderContext, true);
                 }
                 this._uri.loaderContext = _uriLoaderContext;
                 return this._uri;
@@ -481,10 +478,7 @@ package com.ankamagames.dofus.internalDatacenter.items
             if (!_uriLoaderContext)
             {
                 _uriLoaderContext = new LoaderContext();
-                if (AirScanner.hasAir())
-                {
-                    _uriLoaderContext["allowLoadBytesCodeExecution"] = true;
-                }
+                AirScanner.allowByteCodeExecution(_uriLoaderContext, true);
             }
             this._uri.loaderContext = _uriLoaderContext;
             return this._uri;
@@ -591,7 +585,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         private function getLivingObjectLevel(param1:int) : uint
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < LEVEL_STEP.length)
             {
                 
@@ -606,11 +600,11 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         private function updateEffects(param1:Vector.<ObjectEffect>) : void
         {
-            var _loc_5:ObjectEffect = null;
-            var _loc_6:EffectInstance = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = Item.getItemById(this.objectGID);
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             if (_loc_2 && _loc_2.isWeapon)
             {
                 switch(_loc_2.typeId)
@@ -661,7 +655,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public static function create(param1:uint, param2:uint, param3:uint, param4:uint, param5:Vector.<ObjectEffect>, param6:Boolean = true) : ItemWrapper
         {
-            var _loc_7:ItemWrapper = null;
+            var _loc_7:* = null;
             var _loc_8:* = Item.getItemById(param3);
             if (!_cache[param2] || !param6)
             {
@@ -695,8 +689,8 @@ package com.ankamagames.dofus.internalDatacenter.items
             _loc_7.position = param1;
             _loc_7.objectGID = param3;
             _loc_7.quantity = param4;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
             if (_loc_8 && _loc_8.isWeapon)
             {
                 switch(_loc_8.typeId)

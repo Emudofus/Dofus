@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -51,7 +51,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
         {
             param1.writeInt(this.slaveId);
             param1.writeShort(this.spellCooldowns.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.spellCooldowns.length)
             {
                 
@@ -79,10 +79,10 @@ package com.ankamagames.dofus.network.types.game.context.fight
 
         public function deserializeAs_GameFightResumeSlaveInfo(param1:IDataInput) : void
         {
-            var _loc_4:GameFightSpellCooldown = null;
+            var _loc_4:* = null;
             this.slaveId = param1.readInt();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

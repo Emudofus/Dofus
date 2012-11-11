@@ -1,4 +1,4 @@
-package org.audiofx.mp3
+﻿package org.audiofx.mp3
 {
     import com.ankamagames.jerakine.utils.system.*;
     import flash.display.*;
@@ -46,10 +46,10 @@ package org.audiofx.mp3
 
         private function generateSound(param1:MP3Parser) : Boolean
         {
-            var _loc_12:ByteArraySegment = null;
+            var _loc_12:* = null;
             var _loc_2:* = new ByteArray();
             _loc_2.endian = Endian.LITTLE_ENDIAN;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < SoundClassSwfByteCode.soundClassSwfBytes1.length)
             {
                 
@@ -74,8 +74,8 @@ package org.audiofx.mp3
             _loc_2.writeInt(0);
             _loc_2.writeByte(0);
             _loc_2.writeByte(0);
-            var _loc_7:uint = 0;
-            var _loc_8:uint = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
             while (true)
             {
                 
@@ -112,8 +112,7 @@ package org.audiofx.mp3
             var _loc_10:* = new Loader();
             new Loader().contentLoaderInfo.addEventListener(Event.COMPLETE, this.swfCreated);
             var _loc_11:* = new LoaderContext();
-            AirScanner.hasAir();
-            _loc_11["allowLoadBytesCodeExecution"] = true;
+            AirScanner.allowByteCodeExecution(_loc_11, true);
             _loc_10.loadBytes(_loc_2, _loc_11);
             return true;
         }// end function

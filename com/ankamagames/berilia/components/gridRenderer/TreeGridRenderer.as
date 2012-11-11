@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components.gridRenderer
+﻿package com.ankamagames.berilia.components.gridRenderer
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
@@ -31,7 +31,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function TreeGridRenderer(param1:String)
         {
-            var _loc_2:Array = null;
+            var _loc_2:* = null;
             this._log = Log.getLogger(getQualifiedClassName(LabelGridRenderer));
             this._shapeIndex = new Dictionary(true);
             this._indexRef = new Dictionary(true);
@@ -87,7 +87,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
         {
-            var _loc_5:Sprite = null;
+            var _loc_5:* = null;
             _loc_5 = new Sprite();
             _loc_5.mouseEnabled = false;
             this._indexRef[_loc_5] = param1;
@@ -171,9 +171,9 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
         {
-            var _loc_6:TreeData = null;
-            var _loc_7:Texture = null;
-            var _loc_8:Label = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (param3 is Sprite)
             {
                 _loc_6 = param1;
@@ -207,8 +207,10 @@ package com.ankamagames.berilia.components.gridRenderer
                     _loc_8.width = this._grid.slotWidth - _loc_8.x;
                     if (param1 && param1.value.hasOwnProperty("css"))
                     {
+                        this._log.debug("hasOwnProperty " + param1.value.css);
                         if (param1.value.css is String)
                         {
+                            this._log.debug("string");
                             if (!this._uriRef[param1.value.css])
                             {
                                 this._uriRef[param1.value.css] = new Uri(param1.value.css);
@@ -222,6 +224,7 @@ package com.ankamagames.berilia.components.gridRenderer
                     }
                     else
                     {
+                        this._log.debug("not hasOwnProperty ");
                         _loc_8.css = this._cssUri;
                     }
                     _loc_8.text = _loc_6.label;
@@ -246,7 +249,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function remove(param1:DisplayObject) : void
         {
-            var _loc_2:Label = null;
+            var _loc_2:* = null;
             this._indexRef[param1] = null;
             if (param1 is Label)
             {
@@ -280,7 +283,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function updateBackground(param1:Sprite, param2:uint, param3:Boolean) : void
         {
-            var _loc_5:Shape = null;
+            var _loc_5:* = null;
             if (!this._shapeIndex[param1])
             {
                 _loc_5 = new Shape();
@@ -305,7 +308,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function onRollOver(event:MouseEvent) : void
         {
-            var _loc_2:Sprite = null;
+            var _loc_2:* = null;
             if (event.target.name.indexOf("extension") == -1 && event.target.text.length)
             {
                 _loc_2 = event.target.parent as Sprite;
@@ -320,7 +323,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function onRollOut(event:MouseEvent) : void
         {
-            var _loc_2:Sprite = null;
+            var _loc_2:* = null;
             if (event.target.name.indexOf("extension") == -1)
             {
                 _loc_2 = event.target.parent as Sprite;
@@ -338,7 +341,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function onRelease(event:MouseEvent) : void
         {
-            var _loc_3:IInterfaceListener = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._indexRef[event.target.parent];
             _loc_2.expend = !_loc_2.expend;
             Tree(this._grid).rerender();

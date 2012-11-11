@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.jobs
+﻿package com.ankamagames.dofus.logic.game.common.actions.jobs
 {
     import com.ankamagames.dofus.internalDatacenter.jobs.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -22,7 +22,7 @@ package com.ankamagames.dofus.logic.game.common.actions.jobs
 
         public static function create(param1:uint, param2:uint, param3:Boolean, param4:Boolean, param5:Boolean) : JobCrafterDirectoryDefineSettingsAction
         {
-            var _loc_9:KnownJob = null;
+            var _loc_9:* = null;
             var _loc_6:* = new JobCrafterDirectoryDefineSettingsAction;
             new JobCrafterDirectoryDefineSettingsAction.jobId = param1;
             _loc_6.minSlot = param2;
@@ -31,7 +31,7 @@ package com.ankamagames.dofus.logic.game.common.actions.jobs
             _loc_6.resourcesRequired = param5;
             _loc_6.settings = new JobCrafterDirectorySettings();
             var _loc_7:* = PlayedCharacterManager.getInstance().jobs;
-            var _loc_8:uint = 0;
+            var _loc_8:* = 0;
             while (_loc_8 < _loc_7.length)
             {
                 

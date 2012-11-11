@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.chat
+﻿package com.ankamagames.dofus.console.chat
 {
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -18,7 +18,7 @@ package com.ankamagames.dofus.console.chat
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_5:EmotePlayRequestMessage = null;
+            var _loc_5:* = null;
             var _loc_4:* = PlayedCharacterManager.getInstance();
             if (PlayedCharacterManager.getInstance().state == PlayerLifeStatusEnum.STATUS_ALIVE_AND_KICKING && _loc_4.isRidding || _loc_4.isPetsMounting || _loc_4.infos.entityLook.bonesId == 1)
             {
@@ -36,17 +36,20 @@ package com.ankamagames.dofus.console.chat
 
         private function getEmoteId(param1:String) : uint
         {
-            var _loc_3:* = undefined;
-            var _loc_2:uint = 0;
-            for each (_loc_3 in Emoticon.getEmoticons())
+            var _loc_2:* = null;
+            for each (_loc_2 in Emoticon.getEmoticons())
             {
                 
-                if (_loc_3.shortcut == param1)
+                if (_loc_2.shortcut == param1)
                 {
-                    _loc_2 = _loc_3.id;
+                    return _loc_2.id;
+                }
+                if (_loc_2.defaultAnim == param1)
+                {
+                    return _loc_2.id;
                 }
             }
-            return _loc_2;
+            return 0;
         }// end function
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array

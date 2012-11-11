@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
@@ -72,7 +72,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
             }
             param1.writeShort(this.dungeonId);
             param1.writeShort(this.players.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.players.length)
             {
                 
@@ -90,14 +90,14 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 
         public function deserializeAs_DungeonPartyFinderRoomContentMessage(param1:IDataInput) : void
         {
-            var _loc_4:DungeonPartyFinderPlayer = null;
+            var _loc_4:* = null;
             this.dungeonId = param1.readShort();
             if (this.dungeonId < 0)
             {
                 throw new Error("Forbidden value (" + this.dungeonId + ") on element of DungeonPartyFinderRoomContentMessage.dungeonId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

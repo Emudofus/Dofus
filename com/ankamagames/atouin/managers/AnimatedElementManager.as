@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.managers
+﻿package com.ankamagames.atouin.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.types.*;
@@ -24,9 +24,9 @@ package com.ankamagames.atouin.managers
 
         public static function reset() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
-            var _loc_3:AnimatedElementInfo = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             if (_elements)
             {
                 _loc_1 = _elements.length;
@@ -55,8 +55,8 @@ package com.ankamagames.atouin.managers
 
         public static function removeAnimatedElement(param1:TiphonSprite) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:AnimatedElementInfo = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             while (_loc_2 < _elements.length)
             {
                 
@@ -78,10 +78,10 @@ package com.ankamagames.atouin.managers
 
         public static function loop(event:Event) : void
         {
-            var _loc_5:AnimatedElementInfo = null;
-            var _loc_6:SerialSequencer = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = getTimer();
-            var _loc_3:int = -1;
+            var _loc_3:* = -1;
             var _loc_4:* = _elements.length;
             while (++_loc_3 < _loc_4)
             {

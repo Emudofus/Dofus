@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.utils.errors
+﻿package com.ankamagames.berilia.utils.errors
 {
 
     public class ApiError extends Error

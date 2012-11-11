@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.managers
+﻿package com.ankamagames.dofus.logic.game.common.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.world.*;
@@ -48,7 +48,7 @@ package com.ankamagames.dofus.logic.game.common.managers
         public var isFighting:Boolean = false;
         public var teamId:int = 0;
         public var isSpectator:Boolean = false;
-        public var experiencePercent:uint = 0;
+        public var experiencePercent:int = 0;
         private static var _self:PlayedCharacterManager;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayedCharacterManager));
 
@@ -178,8 +178,8 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function get isIncarnation() : Boolean
         {
-            var _loc_2:ItemWrapper = null;
-            var _loc_3:ObjectEffect = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_1:* = InventoryManager.getInstance().inventory.getView("equipment");
             for each (_loc_2 in _loc_1.content)
             {
@@ -313,9 +313,9 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function levelDiff(param1:uint) : int
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_2:* = this.infos.level;
-            var _loc_4:int = 1;
+            var _loc_4:* = 1;
             if (param1 < _loc_2)
             {
                 _loc_4 = -1;

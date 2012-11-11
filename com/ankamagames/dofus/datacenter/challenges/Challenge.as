@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.challenges
+﻿package com.ankamagames.dofus.datacenter.challenges
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

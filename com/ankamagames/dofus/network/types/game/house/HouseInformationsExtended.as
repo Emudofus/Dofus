@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.house
+﻿package com.ankamagames.dofus.network.types.game.house
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;

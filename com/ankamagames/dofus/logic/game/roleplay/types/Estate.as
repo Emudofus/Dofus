@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.types
+﻿package com.ankamagames.dofus.logic.game.roleplay.types
 {
     import com.ankamagames.dofus.datacenter.houses.*;
     import com.ankamagames.dofus.datacenter.world.*;
@@ -18,13 +18,13 @@ package com.ankamagames.dofus.logic.game.roleplay.types
 
         public function Estate(param1:Object)
         {
-            var _loc_2:HouseInformationsForSell = null;
-            var _loc_3:SubArea = null;
-            var _loc_4:House = null;
-            var _loc_5:Area = null;
-            var _loc_6:PaddockInformationsForSell = null;
-            var _loc_7:SubArea = null;
-            var _loc_8:Area = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (param1 is HouseInformationsForSell)
             {
                 _loc_2 = param1 as HouseInformationsForSell;

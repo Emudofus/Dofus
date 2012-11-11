@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.managers
+﻿package com.ankamagames.dofus.logic.game.roleplay.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.monsters.*;
@@ -77,16 +77,16 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         public function initializeByMap(param1:uint) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             _log.info("Initialize AnimFunManager for map " + param1);
             this._mapId = param1;
             var _loc_2:* = new ParkMillerCarta();
             _loc_2.seed(param1 + 5435);
             this._animDelays = new Array();
             this._animDelaysSum = 0;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < ANIM_DELAY_SIZE)
             {
                 
@@ -104,7 +104,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         public function get running() : Boolean
         {
-            var _loc_1:AnimFunTimer = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._timerList)
             {
                 
@@ -134,7 +134,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
         public function stopAllTimer() : void
         {
             var _loc_1:* = this._timerList.length;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < _loc_1)
             {
                 
@@ -147,15 +147,15 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         private function onTimer(param1:AnimFunTimer) : void
         {
-            var _loc_2:Object = null;
-            var _loc_4:RoleplayEntitiesFrame = null;
-            var _loc_5:TiphonSprite = null;
-            var _loc_6:GameContextActorInformations = null;
-            var _loc_7:SerialSequencer = null;
-            var _loc_8:GameRolePlayGroupMonsterInformations = null;
-            var _loc_9:Monster = null;
-            var _loc_10:GameRolePlayNpcInformations = null;
-            var _loc_11:Npc = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             _log.info("Timer reached, run animFun.");
             var _loc_3:* = this._timerList.indexOf(param1);
             if (_loc_3 != -1)
@@ -179,7 +179,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
                 if (_loc_6 is GameRolePlayGroupMonsterInformations)
                 {
                     _loc_8 = _loc_6 as GameRolePlayGroupMonsterInformations;
-                    _loc_9 = Monster.getMonsterById(_loc_8.mainCreatureGenericId);
+                    _loc_9 = Monster.getMonsterById(_loc_8.staticInfos.mainCreatureLightInfos.creatureGenericId);
                     if (!_loc_9 || _loc_9.animFunList.length == 0)
                     {
                         return;
@@ -210,9 +210,9 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         private function initNextAnimFun() : void
         {
-            var _loc_2:Object = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             if (this._animDelaysSum == 0)
             {
                 _log.error("try to init a new animFun with a 0 delay sum");
@@ -242,10 +242,10 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         private function randomActor(param1:int) : int
         {
-            var _loc_5:GameContextActorInformations = null;
-            var _loc_6:Monster = null;
-            var _loc_7:Npc = null;
-            var _loc_8:int = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
             var _loc_2:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             var _loc_3:* = _loc_2.getEntitiesDictionnary();
             var _loc_4:* = new Array();
@@ -254,7 +254,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
                 
                 if (_loc_5 is GameRolePlayGroupMonsterInformations)
                 {
-                    _loc_6 = Monster.getMonsterById((_loc_5 as GameRolePlayGroupMonsterInformations).mainCreatureGenericId);
+                    _loc_6 = Monster.getMonsterById((_loc_5 as GameRolePlayGroupMonsterInformations).staticInfos.mainCreatureLightInfos.creatureGenericId);
                     if (_loc_6 && _loc_6.animFunList.length != 0)
                     {
                         _loc_4.push(_loc_5);
@@ -280,11 +280,11 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         private function randomAnim(param1:int, param2:int) : int
         {
-            var _loc_3:Object = null;
-            var _loc_11:GameRolePlayGroupMonsterInformations = null;
-            var _loc_12:Monster = null;
-            var _loc_13:GameRolePlayNpcInformations = null;
-            var _loc_14:Npc = null;
+            var _loc_3:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
             var _loc_4:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             if (!(Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame))
             {
@@ -294,7 +294,7 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
             if (_loc_4.getEntityInfos(param1) is GameRolePlayGroupMonsterInformations)
             {
                 _loc_11 = _loc_5 as GameRolePlayGroupMonsterInformations;
-                _loc_12 = Monster.getMonsterById(_loc_11.mainCreatureGenericId);
+                _loc_12 = Monster.getMonsterById(_loc_11.staticInfos.mainCreatureLightInfos.creatureGenericId);
                 if (!_loc_12)
                 {
                     return 0;
@@ -315,10 +315,10 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
             {
                 return 0;
             }
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_8:* = _loc_3.length;
-            var _loc_9:int = 0;
+            var _loc_9:* = 0;
             while (_loc_9 < _loc_8)
             {
                 
@@ -343,8 +343,8 @@ package com.ankamagames.dofus.logic.game.roleplay.managers
 
         private function getIsMapStatic() : Boolean
         {
-            var _loc_4:GameContextActorInformations = null;
-            var _loc_5:AnimatedCharacter = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_1:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
             var _loc_2:* = _loc_1.getEntitiesDictionnary();
             var _loc_3:* = new Array();

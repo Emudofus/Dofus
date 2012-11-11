@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.npcs
+﻿package com.ankamagames.dofus.datacenter.npcs
 {
     import com.ankamagames.dofus.types.data.*;
 

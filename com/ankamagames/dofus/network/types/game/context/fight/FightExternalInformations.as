@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -60,14 +60,14 @@ package com.ankamagames.dofus.network.types.game.context.fight
             }
             param1.writeInt(this.fightStart);
             param1.writeBoolean(this.fightSpectatorLocked);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 2)
             {
                 
                 this.fightTeams[_loc_2].serializeAs_FightTeamLightInformations(param1);
                 _loc_2 = _loc_2 + 1;
             }
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < 2)
             {
                 
@@ -92,7 +92,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 throw new Error("Forbidden value (" + this.fightStart + ") on element of FightExternalInformations.fightStart.");
             }
             this.fightSpectatorLocked = param1.readBoolean();
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 2)
             {
                 
@@ -100,7 +100,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 this.fightTeams[_loc_2].deserialize(param1);
                 _loc_2 = _loc_2 + 1;
             }
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < 2)
             {
                 

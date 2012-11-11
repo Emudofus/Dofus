@@ -1,14 +1,17 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
+    import __AS3__.vec.*;
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.atouin.messages.*;
     import com.ankamagames.atouin.types.*;
     import com.ankamagames.atouin.utils.*;
     import com.ankamagames.berilia.*;
+    import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.graphic.*;
     import com.ankamagames.dofus.datacenter.world.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
+    import com.ankamagames.dofus.misc.lists.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.authorized.*;
     import com.ankamagames.dofus.network.messages.common.basic.*;
@@ -35,10 +38,12 @@ package com.ankamagames.dofus.logic.common.frames
         private var _enabled:Boolean;
         private var _rollOverTimer:Timer;
         private var _actionTimer:Timer;
+        private var _chatTimer:Timer;
         private var _inFight:Boolean;
         private var _lastElemOver:Sprite;
         private var _lastEntityOver:IInteractive;
         private var _wait:Boolean;
+        private var _changeMap:Boolean = true;
         private static var _self:DebugBotFrame;
 
         public function DebugBotFrame()
@@ -55,12 +60,32 @@ package com.ankamagames.dofus.logic.common.frames
             return;
         }// end function
 
+        public function set enableChatMessagesBot(param1:Boolean) : void
+        {
+            if (param1)
+            {
+                this._changeMap = false;
+                this._chatTimer = new Timer(500);
+                this._chatTimer.addEventListener(TimerEvent.TIMER, this.sendChatMessage);
+            }
+            else if (this._chatTimer)
+            {
+                this._changeMap = true;
+                this._chatTimer.removeEventListener(TimerEvent.TIMER, this.sendChatMessage);
+            }
+            return;
+        }// end function
+
         public function pushed() : Boolean
         {
             this._enabled = true;
             this.fakeActivity();
             this._actionTimer.start();
             this._rollOverTimer.start();
+            if (this._chatTimer)
+            {
+                this._chatTimer.start();
+            }
             this._mapPos = MapPosition.getMapPositions();
             var _loc_1:* = new MapFightCountMessage();
             _loc_1.initMapFightCountMessage(1);
@@ -72,6 +97,10 @@ package com.ankamagames.dofus.logic.common.frames
         {
             this._rollOverTimer.stop();
             this._actionTimer.stop();
+            if (this._chatTimer)
+            {
+                this._chatTimer.stop();
+            }
             this._enabled = false;
             return true;
         }// end function
@@ -88,14 +117,14 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:MapFightCountMessage = null;
-            var _loc_3:MapRunningFightListMessage = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:GameFightJoinRequestMessage = null;
-            var _loc_7:ChatServerMessage = null;
-            var _loc_8:MapRunningFightListRequestMessage = null;
-            var _loc_9:FightExternalInformations = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             switch(true)
             {
                 case param1 is MapFightCountMessage:
@@ -140,7 +169,7 @@ package com.ankamagames.dofus.logic.common.frames
                 }
                 case param1 is GameFightJoinMessage:
                 {
-                    var _loc_10:String = this;
+                    var _loc_10:* = this;
                     var _loc_11:* = this._fightCount + 1;
                     _loc_10._fightCount = _loc_11;
                     this._inFight = true;
@@ -217,7 +246,7 @@ package com.ankamagames.dofus.logic.common.frames
 
         private function randomMove() : void
         {
-            if (this._inFight || this._wait)
+            if (this._inFight || this._wait || !this._changeMap)
             {
                 return;
             }
@@ -245,13 +274,13 @@ package com.ankamagames.dofus.logic.common.frames
 
         private function randomWalk() : void
         {
-            var _loc_2:CellReference = null;
-            var _loc_4:MapPoint = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
             if (this._inFight || this._wait)
             {
                 return;
             }
-            var _loc_1:Array = [];
+            var _loc_1:* = [];
             for each (_loc_2 in MapDisplayManager.getInstance().getDataMapContainer().getCell())
             {
                 
@@ -275,12 +304,12 @@ package com.ankamagames.dofus.logic.common.frames
 
         private function randomOver(... args) : void
         {
-            var _loc_3:IEntity = null;
-            var _loc_4:IInteractive = null;
-            var _loc_7:UiRootContainer = null;
-            var _loc_10:EntityMouseOutMessage = null;
-            var _loc_11:GraphicContainer = null;
-            var _loc_12:MouseOutMessage = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_7:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
             if (this._wait)
             {
                 return;
@@ -307,7 +336,7 @@ package com.ankamagames.dofus.logic.common.frames
             this._lastEntityOver = _loc_4;
             var _loc_5:* = new EntityMouseOverMessage(_loc_4);
             Kernel.getWorker().process(_loc_5);
-            var _loc_6:Array = [];
+            var _loc_6:* = [];
             for each (_loc_7 in Berilia.getInstance().uiList)
             {
                 
@@ -333,6 +362,18 @@ package com.ankamagames.dofus.logic.common.frames
             var _loc_9:* = new MouseOverMessage(_loc_8, new MouseEvent(MouseEvent.MOUSE_OVER));
             Kernel.getWorker().process(_loc_9);
             this._lastElemOver = _loc_8;
+            return;
+        }// end function
+
+        private function sendChatMessage(event:TimerEvent) : void
+        {
+            var _loc_2:* = Math.random() * 16777215;
+            var _loc_3:* = new Vector.<String>;
+            _loc_3[0] = "salut <span style=\"color:#" + (Math.random() * 16777215).toString(8) + "\">je suis la</span> et la";
+            _loc_3[1] = "i\'m batman :)";
+            _loc_3[2] = HtmlManager.addLink("i\'m a link now, awesome !!", "");
+            var _loc_4:* = _loc_3[Math.floor(Math.random() * _loc_3.length)];
+            KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_4, ChatActivableChannelsEnum.CHANNEL_GLOBAL);
             return;
         }// end function
 

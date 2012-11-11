@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.frames
+﻿package com.ankamagames.dofus.logic.game.fight.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -52,8 +52,10 @@ package com.ankamagames.dofus.logic.game.fight.frames
         private var arrowId:uint;
         private var _ie:Dictionary;
         private var _tempFighterList:Array;
-        public var _entitiesNumber:Dictionary;
-        public var _lastKnownPosition:Dictionary;
+        private var _illusionEntities:Dictionary;
+        private var _entitiesNumber:Dictionary;
+        private var _lastKnownPosition:Dictionary;
+        private var _lastKnownMovementPoint:Dictionary;
         private static const TEAM_CIRCLE_CLIP:Class = FightEntitiesFrame_TEAM_CIRCLE_CLIP;
         private static const SWORDS_CLIP:Class = FightEntitiesFrame_SWORDS_CLIP;
         private static const TEAM_CIRCLE_COLOR_1:uint = 255;
@@ -71,7 +73,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
             Atouin.getInstance().cellOverEnabled = true;
             Dofus.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onPropertyChanged);
             this._entitiesNumber = new Dictionary();
+            this._illusionEntities = new Dictionary();
             this._lastKnownPosition = new Dictionary();
+            this._lastKnownMovementPoint = new Dictionary();
             return super.pushed();
         }// end function
 
@@ -95,38 +99,37 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_2:GameFightRefreshFighterMessage = null;
-            var _loc_3:int = 0;
-            var _loc_4:GameContextActorInformations = null;
-            var _loc_5:GameFightShowFighterMessage = null;
-            var _loc_6:GameFightHumanReadyStateMessage = null;
-            var _loc_7:AnimatedCharacter = null;
-            var _loc_8:GameEntityDispositionMessage = null;
-            var _loc_9:GameEntitiesDispositionMessage = null;
-            var _loc_10:GameContextRefreshEntityLookMessage = null;
-            var _loc_11:TiphonSprite = null;
-            var _loc_12:int = 0;
-            var _loc_13:ShowCellSpectatorMessage = null;
-            var _loc_14:String = null;
-            var _loc_15:ShowCellMessage = null;
-            var _loc_16:FightContextFrame = null;
-            var _loc_17:String = null;
-            var _loc_18:String = null;
-            var _loc_19:MapComplementaryInformationsDataMessage = null;
-            var _loc_20:GameActionFightCarryCharacterMessage = null;
-            var _loc_21:GameActionFightThrowCharacterMessage = null;
-            var _loc_22:GameActionFightDropCharacterMessage = null;
-            var _loc_23:GameActionFightInvisibleDetectedMessage = null;
-            var _loc_24:IAnimationModifier = null;
-            var _loc_25:Sprite = null;
-            var _loc_26:IdentifiedEntityDispositionInformations = null;
-            var _loc_27:MapComplementaryInformationsWithCoordsMessage = null;
-            var _loc_28:MapComplementaryInformationsDataInHouseMessage = null;
-            var _loc_29:Boolean = false;
-            var _loc_30:MapObstacle = null;
-            var _loc_31:InteractiveElement = null;
-            var _loc_32:StatedElement = null;
-            var _loc_33:GameFightFighterInformations = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = 0;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = false;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
             switch(true)
             {
                 case param1 is GameFightRefreshFighterMessage:
@@ -155,13 +158,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     _loc_5 = param1 as GameFightShowFighterMessage;
                     if (param1 is GameFightShowFighterRandomStaticPoseMessage)
                     {
-                        _loc_24 = new CustomAnimStatiqueAnimationModifier();
-                        (_loc_24 as CustomAnimStatiqueAnimationModifier).randomStatique = true;
-                        this.updateFighter(_loc_5.informations, _loc_24);
+                        _loc_23 = new CustomAnimStatiqueAnimationModifier();
+                        (_loc_23 as CustomAnimStatiqueAnimationModifier).randomStatique = true;
+                        this.updateFighter(_loc_5.informations, _loc_23);
+                        this._illusionEntities[_loc_5.informations.contextualId] = true;
                     }
                     else
                     {
                         this.updateFighter(_loc_5.informations);
+                        this._illusionEntities[_loc_5.informations.contextualId] = false;
                         if (Kernel.getWorker().getFrame(FightPreparationFrame))
                         {
                             KernelEventsManager.getInstance().processCallback(FightHookList.UpdatePreFightersList, _loc_5.informations.contextualId);
@@ -179,8 +184,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     _loc_7 = this.addOrUpdateActor(getEntityInfos(_loc_6.characterId) as GameFightFighterInformations);
                     if (_loc_6.isReady)
                     {
-                        _loc_25 = new SWORDS_CLIP() as Sprite;
-                        _loc_7.addBackground("readySwords", _loc_25);
+                        _loc_24 = new SWORDS_CLIP() as Sprite;
+                        _loc_7.addBackground("readySwords", _loc_24);
                     }
                     else
                     {
@@ -202,14 +207,14 @@ package com.ankamagames.dofus.logic.game.fight.frames
                 case param1 is GameEntitiesDispositionMessage:
                 {
                     _loc_9 = param1 as GameEntitiesDispositionMessage;
-                    for each (_loc_26 in _loc_9.dispositions)
+                    for each (_loc_25 in _loc_9.dispositions)
                     {
                         
-                        if (getEntityInfos(_loc_26.id) && GameFightFighterInformations(getEntityInfos(_loc_26.id)).stats.invisibilityState != GameActionFightInvisibilityStateEnum.INVISIBLE)
+                        if (getEntityInfos(_loc_25.id) && GameFightFighterInformations(getEntityInfos(_loc_25.id)).stats.invisibilityState != GameActionFightInvisibilityStateEnum.INVISIBLE)
                         {
-                            this.updateActorDisposition(_loc_26.id, _loc_26);
+                            this.updateActorDisposition(_loc_25.id, _loc_25);
                         }
-                        KernelEventsManager.getInstance().processCallback(FightHookList.GameEntityDisposition, _loc_26.id, _loc_26.cellId, _loc_26.direction);
+                        KernelEventsManager.getInstance().processCallback(FightHookList.GameEntityDisposition, _loc_25.id, _loc_25.cellId, _loc_25.direction);
                     }
                     return true;
                 }
@@ -262,28 +267,28 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     _interactiveElements = _loc_19.interactiveElements;
                     if (param1 is MapComplementaryInformationsWithCoordsMessage)
                     {
-                        _loc_27 = param1 as MapComplementaryInformationsWithCoordsMessage;
+                        _loc_26 = param1 as MapComplementaryInformationsWithCoordsMessage;
                         if (PlayedCharacterManager.getInstance().isInHouse)
                         {
                             KernelEventsManager.getInstance().processCallback(HookList.HouseExit);
                         }
                         PlayedCharacterManager.getInstance().isInHouse = false;
                         PlayedCharacterManager.getInstance().isInHisHouse = false;
-                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_27.worldX, _loc_27.worldY);
-                        _worldPoint = new WorldPointWrapper(_loc_27.mapId, true, _loc_27.worldX, _loc_27.worldY);
+                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_26.worldX, _loc_26.worldY);
+                        _worldPoint = new WorldPointWrapper(_loc_26.mapId, true, _loc_26.worldX, _loc_26.worldY);
                     }
                     else if (param1 is MapComplementaryInformationsDataInHouseMessage)
                     {
-                        _loc_28 = param1 as MapComplementaryInformationsDataInHouseMessage;
-                        _loc_29 = PlayerManager.getInstance().nickname == _loc_28.currentHouse.ownerName;
+                        _loc_27 = param1 as MapComplementaryInformationsDataInHouseMessage;
+                        _loc_28 = PlayerManager.getInstance().nickname == _loc_27.currentHouse.ownerName;
                         PlayedCharacterManager.getInstance().isInHouse = true;
-                        if (_loc_29)
+                        if (_loc_28)
                         {
                             PlayedCharacterManager.getInstance().isInHisHouse = true;
                         }
-                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_28.currentHouse.worldX, _loc_28.currentHouse.worldY);
-                        KernelEventsManager.getInstance().processCallback(HookList.HouseEntered, _loc_29, _loc_28.currentHouse.ownerId, _loc_28.currentHouse.ownerName, _loc_28.currentHouse.price, _loc_28.currentHouse.isLocked, _loc_28.currentHouse.worldX, _loc_28.currentHouse.worldY, HouseWrapper.manualCreate(_loc_28.currentHouse.modelId, -1, _loc_28.currentHouse.ownerName, _loc_28.currentHouse.price != 0));
-                        _worldPoint = new WorldPointWrapper(_loc_28.mapId, true, _loc_28.currentHouse.worldX, _loc_28.currentHouse.worldY);
+                        PlayedCharacterManager.getInstance().currentMap.setOutdoorCoords(_loc_27.currentHouse.worldX, _loc_27.currentHouse.worldY);
+                        KernelEventsManager.getInstance().processCallback(HookList.HouseEntered, _loc_28, _loc_27.currentHouse.ownerId, _loc_27.currentHouse.ownerName, _loc_27.currentHouse.price, _loc_27.currentHouse.isLocked, _loc_27.currentHouse.worldX, _loc_27.currentHouse.worldY, HouseWrapper.manualCreate(_loc_27.currentHouse.modelId, -1, _loc_27.currentHouse.ownerName, _loc_27.currentHouse.price != 0));
+                        _worldPoint = new WorldPointWrapper(_loc_27.mapId, true, _loc_27.currentHouse.worldX, _loc_27.currentHouse.worldY);
                     }
                     else
                     {
@@ -300,28 +305,28 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     PlayedCharacterManager.getInstance().currentMap = _worldPoint;
                     PlayedCharacterManager.getInstance().currentSubArea = SubArea.getSubAreaById(_currentSubAreaId);
                     TooltipManager.hide();
-                    for each (_loc_30 in _loc_19.obstacles)
+                    for each (_loc_29 in _loc_19.obstacles)
                     {
                         
-                        InteractiveCellManager.getInstance().updateCell(_loc_30.obstacleCellId, _loc_30.state == MapObstacleStateEnum.OBSTACLE_OPENED);
+                        InteractiveCellManager.getInstance().updateCell(_loc_29.obstacleCellId, _loc_29.state == MapObstacleStateEnum.OBSTACLE_OPENED);
                     }
-                    for each (_loc_31 in _loc_19.interactiveElements)
+                    for each (_loc_30 in _loc_19.interactiveElements)
                     {
                         
-                        if (_loc_31.enabledSkills.length)
+                        if (_loc_30.enabledSkills.length)
                         {
-                            this.registerInteractive(_loc_31, _loc_31.enabledSkills[0].skillId);
+                            this.registerInteractive(_loc_30, _loc_30.enabledSkills[0].skillId);
                             continue;
                         }
-                        if (_loc_31.disabledSkills.length)
+                        if (_loc_30.disabledSkills.length)
                         {
-                            this.registerInteractive(_loc_31, _loc_31.disabledSkills[0].skillId);
+                            this.registerInteractive(_loc_30, _loc_30.disabledSkills[0].skillId);
                         }
                     }
-                    for each (_loc_32 in _loc_19.statedElements)
+                    for each (_loc_31 in _loc_19.statedElements)
                     {
                         
-                        this.updateStatedElement(_loc_32);
+                        this.updateStatedElement(_loc_31);
                     }
                     KernelEventsManager.getInstance().processCallback(HookList.MapComplementaryInformationsData, PlayedCharacterManager.getInstance().currentMap, _currentSubAreaId, Dofus.getInstance().options.mapCoordinates, _currentSubAreaSide);
                     KernelEventsManager.getInstance().processCallback(HookList.MapFightCount, 0);
@@ -332,13 +337,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     _loc_20 = param1 as GameActionFightCarryCharacterMessage;
                     if (_loc_20.cellId != -1)
                     {
-                        for each (_loc_33 in _entities)
+                        for each (_loc_32 in _entities)
                         {
                             
-                            if (_loc_33.contextualId == _loc_20.targetId)
+                            if (_loc_32.contextualId == _loc_20.targetId)
                             {
-                                (_loc_33.disposition as FightEntityDispositionInformations).carryingCharacterId = _loc_20.sourceId;
-                                this._tempFighterList.push(new TmpFighterInfos(_loc_33.contextualId, _loc_20.sourceId));
+                                (_loc_32.disposition as FightEntityDispositionInformations).carryingCharacterId = _loc_20.sourceId;
+                                this._tempFighterList.push(new TmpFighterInfos(_loc_32.contextualId, _loc_20.sourceId));
                                 break;
                             }
                         }
@@ -357,12 +362,6 @@ package com.ankamagames.dofus.logic.game.fight.frames
                     this.dropEntity(_loc_22.targetId);
                     return true;
                 }
-                case param1 is GameActionFightInvisibleDetectedMessage:
-                {
-                    _loc_23 = param1 as GameActionFightInvisibleDetectedMessage;
-                    this._lastKnownPosition[_loc_23.sourceId] = _loc_23.cellId;
-                    return true;
-                }
                 default:
                 {
                     break;
@@ -373,8 +372,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function dropEntity(param1:int) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:GameFightFighterInformations = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             for each (_loc_3 in _entities)
             {
                 
@@ -394,8 +393,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function showCreaturesInFight(param1:Boolean = false) : void
         {
-            var _loc_2:GameFightFighterInformations = null;
-            var _loc_3:AnimatedCharacter = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             _creaturesFightMode = param1;
             for each (_loc_2 in _entities)
             {
@@ -406,14 +405,47 @@ package com.ankamagames.dofus.logic.game.fight.frames
             return;
         }// end function
 
+        public function entityIsIllusion(param1:int) : Boolean
+        {
+            return this._illusionEntities[param1];
+        }// end function
+
         public function getLastKnownEntityPosition(param1:int) : int
         {
             return this._lastKnownPosition[param1] != null ? (this._lastKnownPosition[param1]) : (-1);
         }// end function
 
+        public function setLastKnownEntityPosition(param1:int, param2:int) : void
+        {
+            this._lastKnownPosition[param1] = param2;
+            return;
+        }// end function
+
+        public function getLastKnownEntityMovementPoint(param1:int) : int
+        {
+            return this._lastKnownMovementPoint[param1] != null ? (this._lastKnownMovementPoint[param1]) : (0);
+        }// end function
+
+        public function setLastKnownEntityMovementPoint(param1:int, param2:int, param3:Boolean = false) : void
+        {
+            if (this._lastKnownMovementPoint[param1] == null)
+            {
+                this._lastKnownMovementPoint[param1] = 0;
+            }
+            if (!param3)
+            {
+                this._lastKnownMovementPoint[param1] = param2;
+            }
+            else
+            {
+                this._lastKnownMovementPoint[param1] = this._lastKnownMovementPoint[param1] + param2;
+            }
+            return;
+        }// end function
+
         override public function pulled() : Boolean
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             Dofus.getInstance().options.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onPropertyChanged);
             this._tempFighterList = null;
             for each (_loc_1 in this._ie)
@@ -434,15 +466,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function registerInteractive(param1:InteractiveElement, param2:int) : void
         {
-            var _loc_5:String = null;
-            var _loc_7:InteractiveElement = null;
+            var _loc_5:* = null;
+            var _loc_7:* = null;
             var _loc_3:* = Atouin.getInstance().getIdentifiedElement(param1.elementId);
             if (!_loc_3)
             {
                 _log.error("Unknown identified element " + param1.elementId + ", unable to register it as interactive.");
                 return;
             }
-            var _loc_4:Boolean = false;
+            var _loc_4:* = false;
             for (_loc_5 in interactiveElements)
             {
                 
@@ -483,7 +515,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function findTiphonSprite(param1:DisplayObjectContainer) : TiphonSprite
         {
-            var _loc_3:DisplayObject = null;
+            var _loc_3:* = null;
             if (param1 is TiphonSprite)
             {
                 return param1 as TiphonSprite;
@@ -492,7 +524,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
             {
                 return null;
             }
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < param1.numChildren)
             {
                 
@@ -519,12 +551,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function getOrdonnedPreFighters() : Vector.<int>
         {
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:Boolean = false;
-            var _loc_11:GameFightFighterInformations = null;
-            var _loc_12:GameFightMinimalStatsPreparation = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = false;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
             var _loc_1:* = getEntitiesIdsList();
             var _loc_2:* = new Vector.<int>;
             if (!_loc_1 || _loc_1.length <= 1)
@@ -561,7 +593,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                 _loc_8 = false;
             }
             var _loc_9:* = Math.max(_loc_4.length, _loc_3.length);
-            var _loc_10:int = 0;
+            var _loc_10:* = 0;
             while (_loc_10 < _loc_9)
             {
                 
@@ -595,7 +627,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
         public function removeSwords() : void
         {
             var _loc_1:* = undefined;
-            var _loc_2:AnimatedCharacter = null;
+            var _loc_2:* = null;
             for each (_loc_1 in _entities)
             {
                 
@@ -609,37 +641,53 @@ package com.ankamagames.dofus.logic.game.fight.frames
             return;
         }// end function
 
-        public function updateFighter(param1:GameFightFighterInformations, param2:IAnimationModifier = null) : void
+        public function updateFighter(param1:GameFightFighterInformations, param2:IAnimationModifier = null, param3:Array = null) : void
         {
-            var _loc_4:int = 0;
-            var _loc_5:GameFightFighterInformations = null;
-            var _loc_6:AnimatedCharacter = null;
-            var _loc_7:FightChangeVisibilityStep = null;
-            var _loc_3:* = param1.contextualId;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            if (param3)
+            {
+                _loc_5 = 0;
+                while (_loc_5 < param3.length)
+                {
+                    
+                    _loc_6 = param3[_loc_5].statName;
+                    if (_loc_6 && param1.stats.hasOwnProperty(_loc_6))
+                    {
+                        param1.stats[_loc_6] = param1.stats[_loc_6] - param3[_loc_5].delta;
+                    }
+                    _loc_5++;
+                }
+            }
+            var _loc_4:* = param1.contextualId;
             if (param1.alive)
             {
-                _loc_4 = -1;
-                _loc_5 = _entities[param1.contextualId] as GameFightFighterInformations;
-                if (_loc_5)
+                _loc_7 = -1;
+                _loc_8 = _entities[param1.contextualId] as GameFightFighterInformations;
+                if (_loc_8)
                 {
-                    _loc_4 = _loc_5.stats.invisibilityState;
+                    _loc_7 = _loc_8.stats.invisibilityState;
                 }
-                if (_loc_4 == GameActionFightInvisibilityStateEnum.INVISIBLE && param1.stats.invisibilityState == _loc_4)
+                if (_loc_7 == GameActionFightInvisibilityStateEnum.INVISIBLE && param1.stats.invisibilityState == _loc_7)
                 {
                     registerActor(param1);
                     return;
                 }
-                if (_loc_5 != param1)
+                if (_loc_8 != param1)
                 {
                     registerActor(param1);
                 }
-                _loc_6 = this.addOrUpdateActor(param1, param2);
-                if (param1.stats.invisibilityState != GameActionFightInvisibilityStateEnum.VISIBLE && param1.stats.invisibilityState != _loc_4)
+                _loc_9 = this.addOrUpdateActor(param1, param2);
+                if (param1.stats.invisibilityState != GameActionFightInvisibilityStateEnum.VISIBLE && param1.stats.invisibilityState != _loc_7)
                 {
-                    _loc_7 = new FightChangeVisibilityStep(_loc_3, param1.stats.invisibilityState);
-                    _loc_7.start();
+                    _loc_10 = new FightChangeVisibilityStep(_loc_4, param1.stats.invisibilityState);
+                    _loc_10.start();
                 }
-                this.addCircleToFighter(_loc_6, param1.teamId == TeamEnum.TEAM_DEFENDER ? (TEAM_CIRCLE_COLOR_1) : (TEAM_CIRCLE_COLOR_2));
+                this.addCircleToFighter(_loc_9, param1.teamId == TeamEnum.TEAM_DEFENDER ? (TEAM_CIRCLE_COLOR_1) : (TEAM_CIRCLE_COLOR_2));
             }
             else
             {
@@ -651,7 +699,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function updateActor(param1:GameContextActorInformations, param2:Boolean = true, param3:IAnimationModifier = null) : void
         {
-            var _loc_5:AnimatedCharacter = null;
+            var _loc_5:* = null;
             var _loc_4:* = param1.contextualId;
             if (param2)
             {
@@ -684,14 +732,14 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function updateCarriedEntities(param1:GameContextActorInformations) : void
         {
-            var _loc_5:TmpFighterInfos = null;
-            var _loc_6:int = 0;
-            var _loc_7:FightEntityDispositionInformations = null;
-            var _loc_8:IEntity = null;
-            var _loc_9:IEntity = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_2:* = param1.contextualId;
             var _loc_3:* = this._tempFighterList.length;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 
@@ -741,8 +789,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function updateAllEntitiesNumber(param1:Vector.<int>) : void
         {
-            var _loc_3:int = 0;
-            var _loc_2:uint = 1;
+            var _loc_3:* = 0;
+            var _loc_2:* = 1;
             for each (_loc_3 in param1)
             {
                 
@@ -757,9 +805,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function updateEntityNumber(param1:int, param2:uint) : void
         {
-            var _loc_3:Sprite = null;
-            var _loc_4:Label = null;
-            var _loc_5:AnimatedCharacter = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (_entities[param1] && (!(_entities[param1] is GameFightCharacterInformations) || GameFightCharacterInformations(_entities[param1]).alive))
             {
                 if (!this._entitiesNumber[param1] || this._entitiesNumber[param1] == null)
@@ -791,9 +839,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function updateRemovedEntity(param1:int) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:FightBattleFrame = null;
-            var _loc_4:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             this._entitiesNumber[param1] = null;
             if (Dofus.getInstance().options.orderFighters)
             {
@@ -814,11 +862,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function onPropertyChanged(event:PropertyChangeEvent) : void
         {
-            var _loc_2:String = null;
-            var _loc_3:AnimatedCharacter = null;
-            var _loc_4:uint = 0;
-            var _loc_5:FightBattleFrame = null;
-            var _loc_6:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
             if (event.propertyName == "cellSelectionOnly")
             {
                 untargetableEntities = event.propertyValue || Kernel.getWorker().getFrame(FightPreparationFrame);
@@ -864,8 +912,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function set cellSelectionOnly(param1:Boolean) : void
         {
-            var _loc_2:GameContextActorInformations = null;
-            var _loc_3:AnimatedCharacter = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             for each (_loc_2 in _entities)
             {
                 
@@ -885,7 +933,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         override protected function updateActorDisposition(param1:int, param2:EntityDispositionInformations) : void
         {
-            var _loc_3:IEntity = null;
+            var _loc_3:* = null;
             super.updateActorDisposition(param1, param2);
             if (param2.cellId == -1)
             {
@@ -904,7 +952,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function getTmpFighterInfoIndex(param1:int) : int
         {
-            var _loc_2:TmpFighterInfos = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._tempFighterList)
             {
                 
@@ -923,6 +971,94 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.atouin.*;
+
+import com.ankamagames.atouin.managers.*;
+
+import com.ankamagames.berilia.components.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.datacenter.world.*;
+
+import com.ankamagames.dofus.internalDatacenter.house.*;
+
+import com.ankamagames.dofus.internalDatacenter.world.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.kernel.sound.*;
+
+import com.ankamagames.dofus.kernel.sound.enum.*;
+
+import com.ankamagames.dofus.logic.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.frames.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.misc.*;
+
+import com.ankamagames.dofus.logic.game.fight.actions.*;
+
+import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
+
+import com.ankamagames.dofus.logic.game.fight.managers.*;
+
+import com.ankamagames.dofus.logic.game.fight.miscs.*;
+
+import com.ankamagames.dofus.logic.game.fight.steps.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.messages.game.actions.fight.*;
+
+import com.ankamagames.dofus.network.messages.game.context.*;
+
+import com.ankamagames.dofus.network.messages.game.context.fight.*;
+
+import com.ankamagames.dofus.network.messages.game.context.fight.character.*;
+
+import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.context.*;
+
+import com.ankamagames.dofus.network.types.game.context.fight.*;
+
+import com.ankamagames.dofus.network.types.game.interactive.*;
+
+import com.ankamagames.dofus.types.entities.*;
+
+import com.ankamagames.dofus.types.enums.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.types.events.*;
+
+import com.ankamagames.jerakine.types.positions.*;
+
+import com.ankamagames.tiphon.display.*;
+
+import com.ankamagames.tiphon.types.*;
+
+import flash.display.*;
+
+import flash.filters.*;
+
+import flash.geom.*;
+
+import flash.utils.*;
 
 class TmpFighterInfos extends Object
 {

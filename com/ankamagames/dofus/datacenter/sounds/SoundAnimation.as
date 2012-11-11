@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.sounds
+﻿package com.ankamagames.dofus.datacenter.sounds
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -26,7 +26,7 @@ package com.ankamagames.dofus.datacenter.sounds
 
         public static function getSoundAnimationById(param1:uint) : SoundAnimation
         {
-            return GameData.getObject(MODULE, param1) as ;
+            return GameData.getObject(MODULE, param1) as SoundAnimation;
         }// end function
 
         public static function getSoundAnimations() : Array

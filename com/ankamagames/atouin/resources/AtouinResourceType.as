@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.resources
+﻿package com.ankamagames.atouin.resources
 {
 
     public class AtouinResourceType extends Object

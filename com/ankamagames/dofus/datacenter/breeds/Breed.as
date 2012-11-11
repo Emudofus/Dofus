@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.breeds
+﻿package com.ankamagames.dofus.datacenter.breeds
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.spells.*;
@@ -83,7 +83,7 @@ package com.ankamagames.dofus.datacenter.breeds
 
         public function get breedSpells() : Vector.<Spell>
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             if (!this._breedSpells && Spell.getSpellById(1) != null)
             {
                 this._breedSpells = new Vector.<Spell>;
@@ -100,7 +100,7 @@ package com.ankamagames.dofus.datacenter.breeds
         {
             var _loc_1:* = TiphonEntityLook.fromString(this.femaleLook);
             var _loc_2:* = this.femaleColors.length;
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -114,7 +114,7 @@ package com.ankamagames.dofus.datacenter.breeds
         {
             var _loc_1:* = TiphonEntityLook.fromString(this.maleLook);
             var _loc_2:* = this.maleColors.length;
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -220,11 +220,11 @@ package com.ankamagames.dofus.datacenter.breeds
 
         public static function getBreedFromSkin(param1:int) : Breed
         {
-            var _loc_3:Object = null;
-            var _loc_4:Breed = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_2:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_2:* = 0;
             if (!_skinsForBreed.length)
             {
                 for each (_loc_4 in getBreeds())

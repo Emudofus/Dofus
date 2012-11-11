@@ -1,13 +1,15 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.dofus.datacenter.abuse.*;
     import com.ankamagames.dofus.datacenter.alignments.*;
+    import com.ankamagames.dofus.datacenter.almanax.*;
     import com.ankamagames.dofus.datacenter.ambientSounds.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
     import com.ankamagames.dofus.datacenter.challenges.*;
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.datacenter.documents.*;
     import com.ankamagames.dofus.datacenter.effects.*;
+    import com.ankamagames.dofus.datacenter.externalnotifications.*;
     import com.ankamagames.dofus.datacenter.guild.*;
     import com.ankamagames.dofus.datacenter.houses.*;
     import com.ankamagames.dofus.datacenter.interactives.*;
@@ -78,9 +80,13 @@ package com.ankamagames.dofus.misc.lists
         public static const ambientSound:AmbientSound = null;
         public static const house:House = null;
         public static const rankName:RankName = null;
+        public static const emblemBackground:EmblemBackground = null;
+        public static const emblemSymbol:EmblemSymbol = null;
+        public static const emblemSymbolCategory:EmblemSymbolCategory = null;
         public static const interactive:Interactive = null;
         public static const itemType:ItemType = null;
         public static const emoticon:Emoticon = null;
+        public static const smiley:Smiley = null;
         public static const quest:Quest = null;
         public static const questCategory:QuestCategory = null;
         public static const questStep:QuestStep = null;
@@ -118,6 +124,8 @@ package com.ankamagames.dofus.misc.lists
         public static const soundBones:SoundBones = null;
         public static const stealthBones:StealthBones = null;
         public static const typeAction:TypeAction = null;
+        public static const externalNotification:ExternalNotification = null;
+        public static const almanaxCalendar:AlmanaxCalendar = null;
 
         public function GameDataList()
         {

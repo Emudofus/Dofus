@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+﻿package com.ankamagames.jerakine.utils.misc
 {
 
     public class CopyObject extends Object
@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function copyObject(param1:Object, param2:Array = null) : Object
         {
-            var _loc_5:String = null;
+            var _loc_5:* = null;
             var _loc_3:* = new Object();
             var _loc_4:* = DescribeTypeCache.getVariables(param1);
             for each (_loc_5 in _loc_4)

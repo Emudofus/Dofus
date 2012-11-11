@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.shortcut
+﻿package com.ankamagames.berilia.types.shortcut
 {
 
     public class ShortcutCategory extends Object

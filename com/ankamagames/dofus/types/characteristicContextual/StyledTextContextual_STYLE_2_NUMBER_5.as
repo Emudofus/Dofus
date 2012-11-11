@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.characteristicContextual
+﻿package com.ankamagames.dofus.types.characteristicContextual
 {
     import mx.core.*;
 

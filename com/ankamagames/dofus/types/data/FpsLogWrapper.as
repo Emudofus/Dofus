@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.data
+﻿package com.ankamagames.dofus.types.data
 {
 
     public class FpsLogWrapper extends Object

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.paddock.*;
@@ -80,7 +80,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
             }
             param1.writeShort(this.totalPage);
             param1.writeShort(this.paddockList.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.paddockList.length)
             {
                 
@@ -98,7 +98,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
 
         public function deserializeAs_PaddockToSellListMessage(param1:IDataInput) : void
         {
-            var _loc_4:PaddockInformationsForSell = null;
+            var _loc_4:* = null;
             this.pageIndex = param1.readShort();
             if (this.pageIndex < 0)
             {
@@ -110,7 +110,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
                 throw new Error("Forbidden value (" + this.totalPage + ") on element of PaddockToSellListMessage.totalPage.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

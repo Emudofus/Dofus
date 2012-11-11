@@ -1,10 +1,10 @@
-package com.ankamagames.dofus.logic.game.fight.actions
+﻿package com.ankamagames.dofus.logic.game.fight.actions
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 
     public class TimelineEntityClickAction extends Object implements Action
     {
-        public var cellId:int;
+        public var fighterId:int;
 
         public function TimelineEntityClickAction()
         {
@@ -14,7 +14,7 @@ package com.ankamagames.dofus.logic.game.fight.actions
         public static function create(param1:int) : TimelineEntityClickAction
         {
             var _loc_2:* = new TimelineEntityClickAction;
-            _loc_2.cellId = param1;
+            _loc_2.fighterId = param1;
             return _loc_2;
         }// end function
 

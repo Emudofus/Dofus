@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.sequence
+﻿package com.ankamagames.tiphon.sequence
 {
     import com.ankamagames.jerakine.sequencer.*;
     import com.ankamagames.tiphon.display.*;
@@ -17,7 +17,14 @@ package com.ankamagames.tiphon.sequence
 
         override public function start() : void
         {
-            this._target.setDirection(this._nDirection);
+            if (!this._target.getAnimation() || this._target.hasAnimation(this._target.getAnimation(), this._nDirection))
+            {
+                this._target.setDirection(this._nDirection);
+            }
+            else
+            {
+                _log.error("[SetDirectionStep] La direction " + this._nDirection + " n\'est pas disponible sur l\'animation " + this._target.getAnimation() + " du bones " + this._target.look.getBone());
+            }
             executeCallbacks();
             return;
         }// end function

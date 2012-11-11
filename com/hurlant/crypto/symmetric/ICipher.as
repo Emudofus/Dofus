@@ -1,4 +1,4 @@
-package com.hurlant.crypto.symmetric
+﻿package com.hurlant.crypto.symmetric
 {
     import flash.utils.*;
 

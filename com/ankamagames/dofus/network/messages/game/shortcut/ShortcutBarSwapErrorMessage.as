@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.shortcut
+﻿package com.ankamagames.dofus.network.messages.game.shortcut
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

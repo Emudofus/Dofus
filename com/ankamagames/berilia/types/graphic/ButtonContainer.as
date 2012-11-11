@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.enums.*;
@@ -13,13 +13,13 @@ package com.ankamagames.berilia.types.graphic
     public class ButtonContainer extends StateContainer implements IRadioItem, FinalizableUIComponent, IDragAndDropHandler
     {
         private var _selected:Boolean = false;
-        private var _mousePressed:Boolean = false;
-        private var _disabled:Boolean = false;
+        protected var _mousePressed:Boolean = false;
+        protected var _disabled:Boolean = false;
         private var _radioGroup:String;
         private var _value:Object;
         private var _checkbox:Boolean = false;
         private var _radioMode:Boolean = false;
-        private var _sLinkedTo:String;
+        protected var _sLinkedTo:String;
         protected var _soundId:String = "0";
         protected var _playRollOverSound:Boolean = true;
         protected var _isMute:Boolean = false;
@@ -95,7 +95,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function set selected(param1:Boolean) : void
         {
-            var _loc_2:RadioGroup = null;
+            var _loc_2:* = null;
             this._selected = param1;
             if (changingStateData)
             {
@@ -181,8 +181,8 @@ package com.ankamagames.berilia.types.graphic
 
         public function finalize() : void
         {
-            var _loc_1:UiRootContainer = null;
-            var _loc_2:RadioGroup = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this._radioGroup)
             {
                 _loc_1 = getUi();
@@ -263,7 +263,7 @@ package com.ankamagames.berilia.types.graphic
             return;
         }// end function
 
-        private function selectSound() : String
+        protected function selectSound() : String
         {
             if (this._soundId != "0")
             {
@@ -289,11 +289,11 @@ package com.ankamagames.berilia.types.graphic
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_3:IInterfaceListener = null;
-            var _loc_4:String = null;
-            var _loc_5:IInterfaceListener = null;
-            var _loc_6:RadioGroup = null;
-            var _loc_2:uint = 9999;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_2:* = 9999;
             if (!super.canProcessMessage(param1))
             {
                 return true;
@@ -356,7 +356,7 @@ package com.ankamagames.berilia.types.graphic
                                 }
                             }
                             _loc_2 = this._selected ? (StatesEnum.STATE_SELECTED_OVER) : (StatesEnum.STATE_OVER);
-                            if (!changingStateData[_loc_2])
+                            if (changingStateData && !changingStateData[_loc_2])
                             {
                                 _loc_2 = this._selected ? (StatesEnum.STATE_SELECTED) : (StatesEnum.STATE_NORMAL);
                             }

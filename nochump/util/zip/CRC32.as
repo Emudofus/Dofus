@@ -1,4 +1,4 @@
-package nochump.util.zip
+﻿package nochump.util.zip
 {
     import flash.utils.*;
 
@@ -25,7 +25,7 @@ package nochump.util.zip
 
         public function update(param1:ByteArray) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = param1.length;
             var _loc_4:* = ~this.crc;
             while (--_loc_3 >= 0)
@@ -39,10 +39,10 @@ package nochump.util.zip
 
         private static function makeCrcTable() : Array
         {
-            var _loc_3:uint = 0;
-            var _loc_4:int = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             var _loc_1:* = new Array(256);
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 256)
             {
                 

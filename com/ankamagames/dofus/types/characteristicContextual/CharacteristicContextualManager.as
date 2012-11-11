@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.characteristicContextual
+﻿package com.ankamagames.dofus.types.characteristicContextual
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.jerakine.entities.interfaces.*;
@@ -62,15 +62,15 @@ package com.ankamagames.dofus.types.characteristicContextual
 
         public function addStatContextual(param1:String, param2:IEntity, param3:TextFormat, param4:uint) : CharacteristicContextual
         {
-            var _loc_7:TextContextual = null;
-            var _loc_8:StyledTextContextual = null;
-            var _loc_9:TweenData = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             if (!param2 || param2.position.cellId == -1)
             {
                 return null;
             }
             this._type = param4;
-            var _loc_5:Array = [Math.abs(16711680 - (param3.color as uint)), Math.abs(255 - (param3.color as uint)), Math.abs(26112 - (param3.color as uint)), Math.abs(10053324 - (param3.color as uint))];
+            var _loc_5:* = [Math.abs(16711680 - (param3.color as uint)), Math.abs(255 - (param3.color as uint)), Math.abs(26112 - (param3.color as uint)), Math.abs(10053324 - (param3.color as uint))];
             var _loc_6:* = [Math.abs(16711680 - (param3.color as uint)), Math.abs(255 - (param3.color as uint)), Math.abs(26112 - (param3.color as uint)), Math.abs(10053324 - (param3.color as uint))].indexOf(Math.min(_loc_5[0], _loc_5[1], _loc_5[2], _loc_5[3]));
             switch(this._type)
             {
@@ -91,7 +91,7 @@ package com.ankamagames.dofus.types.characteristicContextual
                     {
                         _aEntitiesTweening.push(_loc_9);
                     }
-                    var _loc_10:String = this;
+                    var _loc_10:* = this;
                     var _loc_11:* = this._tweeningCount + 1;
                     _loc_10._tweeningCount = _loc_11;
                     this.beginTween(_loc_7);
@@ -111,7 +111,7 @@ package com.ankamagames.dofus.types.characteristicContextual
                     {
                         _aEntitiesTweening.push(_loc_9);
                     }
-                    var _loc_10:String = this;
+                    var _loc_10:* = this;
                     var _loc_11:* = this._tweeningCount + 1;
                     _loc_10._tweeningCount = _loc_11;
                     this.beginTween(_loc_8);
@@ -127,7 +127,7 @@ package com.ankamagames.dofus.types.characteristicContextual
 
         private function removeStatContextual(param1:Number) : void
         {
-            var _loc_2:CharacteristicContextual = null;
+            var _loc_2:* = null;
             if (_aEntitiesTweening[param1] != null)
             {
                 _loc_2 = _aEntitiesTweening[param1].context;
@@ -156,12 +156,12 @@ package com.ankamagames.dofus.types.characteristicContextual
 
         private function onScroll(event:Event) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:TweenData = null;
-            var _loc_5:CharacteristicContextual = null;
-            var _loc_6:Array = null;
-            var _loc_7:IRectangle = null;
-            var _loc_2:Array = [];
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_2:* = [];
             for (_loc_3 in _aEntitiesTweening)
             {
                 
@@ -225,7 +225,7 @@ package com.ankamagames.dofus.types.characteristicContextual
                 if (_loc_4._tweeningCurrentDistance >= 1)
                 {
                     this.removeStatContextual(int(_loc_3));
-                    var _loc_10:String = this;
+                    var _loc_10:* = this;
                     var _loc_11:* = this._tweeningCount - 1;
                     _loc_10._tweeningCount = _loc_11;
                     if (this._tweeningCount == 0)
@@ -252,6 +252,26 @@ package com.ankamagames.dofus.types.characteristicContextual
 
     }
 }
+
+import com.ankamagames.berilia.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.interfaces.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import com.ankamagames.jerakine.utils.errors.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.text.*;
+
+import flash.utils.*;
 
 class TweenData extends Object
 {

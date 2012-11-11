@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.managers.*;
@@ -15,6 +15,7 @@ package com.ankamagames.dofus.logic.game.common.frames
     import com.ankamagames.dofus.datacenter.notifications.*;
     import com.ankamagames.dofus.datacenter.npcs.*;
     import com.ankamagames.dofus.datacenter.world.*;
+    import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.internalDatacenter.communication.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.kernel.*;
@@ -58,6 +59,7 @@ package com.ankamagames.dofus.logic.game.common.frames
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.misc.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import flash.utils.*;
 
     public class ChatFrame extends Object implements Frame
@@ -66,24 +68,22 @@ package com.ankamagames.dofus.logic.game.common.frames
         private var _aDisallowedChannels:Array;
         private var _aMessagesByChannel:Array;
         private var _msgUId:uint = 0;
-        private var _maxMessagesStored:uint = 60;
+        private var _maxMessagesStored:uint = 100;
         private var _aCensoredWords:Dictionary;
         private var _smileyMood:int = -1;
         private var _options:ChatOptions;
         private var _cssUri:String;
         private var _aChatColors:Array;
         private var _ankaboxEnabled:Boolean = false;
+        private var _aSmilies:Array;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatFrame));
         public static const GUILD_SOUND:uint = 0;
         public static const PARTY_SOUND:uint = 1;
         public static const PRIVATE_SOUND:uint = 2;
         public static const ALERT_SOUND:uint = 3;
         public static const RED_CHANNEL_ID:uint = 666;
-        private static const URL_MATCHER:String = "((http|https|ftp)://)?(([^:@ ]*)(:([^@ ]*))?@)?((www\\.)?(([a-z\\-\\.]+)(\\.[a-z\\-]{2,})))(:([0-9]+))?(/[^?#]*)?(\\?([^#]*))?(#(.*))?";
-        private static const LINK_FILTERS:Array = new Array("WWW", "HTTP", "@", ".COM", ".FR", ".INFO", "HOTMAIL", "MSN", "GMAIL", "FTP");
-        private static const LINK_TLDS:Array = new Array(".com", ".edu", ".org", ".xxx", ".fr", ".info", ".net", ".de", ".ja", ".uk", ".us", ".it", ".nl", ".ru", ".es", ".pt", ".br");
-        private static const ALWAYS_LINK_TLDS:Array = new Array(".com", ".org", ".fr", ".info", ".net");
-        private static const WHITE_LIST:Array = new Array(".DOFUS.COM", ".ANKAMA-GAMES.COM", ".GOOGLE.COM", ".DOFUS.FR", ".DOFUS.DE", ".DOFUS.ES", ".DOFUS.CO.UK", ".WAKFU.COM", ".ANKAMA-SHOP.COM", ".ANKAMA.COM", ".ANKAMA-EDITIONS.COM", ".ANKAMA-WEB.COM", ".ANKAMA-EVENTS.COM", ".DOFUS-ARENA.COM", ".MUTAFUKAZ.COM", ".MANGA-DOFUS.COM", ".LABANDEPASSANTE.FR", "@_@", ".ANKAMA-PLAY.COM");
+        public static const URL_MATCHER:RegExp = /\b((http|https|ftp):\/\/)?(([^:@ ]*)(:([^@ ]*))?@)?((www\.)?(([a-z0-9\-\.]{2,})(\.[a-z0-9\-]{2,})))(:([0-9]+))?(\/[^\s`!()\[\]{};:''"",<>?«»“”‘’#]*)?(\?([^\s`!()\[\]{};:''"".,<>?«»“”‘’]*))?(#(.*))?""\b((http|https|ftp):\/\/)?(([^:@ ]*)(:([^@ ]*))?@)?((www\.)?(([a-z0-9\-\.]{2,})(\.[a-z0-9\-]{2,})))(:([0-9]+))?(\/[^\s`!()\[\]{};:'",<>?«»“”‘’#]*)?(\?([^\s`!()\[\]{};:'".,<>?«»“”‘’]*))?(#(.*))?/gi;
+        public static const LINK_TLDS:Array = new Array(".com", ".edu", ".org", ".fr", ".info", ".net", ".de", ".ja", ".uk", ".us", ".it", ".nl", ".ru", ".es", ".pt", ".br");
 
         public function ChatFrame()
         {
@@ -95,15 +95,24 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function pushed() : Boolean
         {
-            var _loc_1:Object = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             var _loc_6:* = undefined;
-            var _loc_7:SmileyWrapper = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
             this._options = new ChatOptions();
             this.setDisplayOptions(this._options);
             this._aChannels = ChatChannel.getChannels();
             this._aDisallowedChannels = new Array();
             this._aMessagesByChannel = new Array();
+            this._aSmilies = new Array();
             this._aCensoredWords = new Dictionary();
             for (_loc_1 in this._aChannels)
             {
@@ -112,16 +121,19 @@ package com.ankamagames.dofus.logic.game.common.frames
             }
             this._aMessagesByChannel[RED_CHANNEL_ID] = new Array();
             ConsolesManager.registerConsole("chat", new ConsoleHandler(Kernel.getWorker(), false), new ChatConsoleInstructionRegistrar());
-            _loc_2 = 1;
-            while (_loc_2 < 31)
+            for each (_loc_2 in Smiley.getSmileys())
             {
                 
-                _loc_7 = SmileyWrapper.create(_loc_2, _loc_2);
-                _loc_2 = _loc_2 + 1;
+                if (_loc_2.forPlayers)
+                {
+                    _loc_10 = SmileyWrapper.create(_loc_2.id, _loc_2.gfxId, _loc_2.order);
+                    this._aSmilies.push(_loc_10);
+                }
             }
-            var _loc_3:* = XmlConfig.getInstance().getEntry("config.lang.current");
-            var _loc_4:* = CensoredWord.getCensoredWords();
-            var _loc_5:uint = 0;
+            this._aSmilies.sortOn("order", Array.NUMERIC);
+            _loc_3 = XmlConfig.getInstance().getEntry("config.lang.current");
+            _loc_4 = CensoredWord.getCensoredWords();
+            _loc_5 = 0;
             for each (_loc_6 in _loc_4)
             {
                 
@@ -137,6 +149,24 @@ package com.ankamagames.dofus.logic.game.common.frames
                         }
                         this._aCensoredWords[_loc_6.word] = 1;
                     }
+                }
+            }
+            _loc_7 = OptionManager.getOptionManager("chat");
+            _loc_8 = PlayedCharacterManager.getInstance().id;
+            if (!_loc_7["moodSmiley_" + _loc_8])
+            {
+                _loc_7.add("moodSmiley_" + _loc_8, "");
+            }
+            var _loc_9:* = _loc_7["moodSmiley_" + _loc_8];
+            if (_loc_7["moodSmiley_" + _loc_8] && _loc_9 != "")
+            {
+                _loc_11 = new Date();
+                _loc_12 = _loc_9.split("_");
+                if (int(_loc_12[0]) > 0 && Number(_loc_12[1]) < _loc_11.time + 604800000)
+                {
+                    _loc_13 = new MoodSmileyRequestAction();
+                    _loc_13.smileyId = int(_loc_12[0]);
+                    this.process(_loc_13);
                 }
             }
             return true;
@@ -170,6 +200,11 @@ package com.ankamagames.dofus.logic.game.common.frames
         public function get censoredWords() : Dictionary
         {
             return this._aCensoredWords;
+        }// end function
+
+        public function get smilies() : Array
+        {
+            return this._aSmilies;
         }// end function
 
         public function get maxMessagesStored() : int
@@ -235,15 +270,19 @@ package com.ankamagames.dofus.logic.game.common.frames
             var scmsg:ChatSmileyMessage;
             var smileyItem:SmileyWrapper;
             var smileyEntity:IDisplayable;
+            var sysApi:SystemApi;
             var msrmsg:MoodSmileyRequestMessage;
             var msrtmsg:MoodSmileyResultMessage;
+            var date:Date;
+            var id:int;
+            var chatOpt:OptionManager;
             var cecmsg:ChannelEnablingChangeMessage;
             var cebmsg:ChannelEnablingMessage;
             var tua:TabsUpdateAction;
             var cca:ChatCommandAction;
             var ecmsg:EnabledChannelsMessage;
             var btmsg:BasicTimeMessage;
-            var date:Date;
+            var date2:Date;
             var oemsg:ObjectErrorMessage;
             var objectErrorText:String;
             var bwimsg:BasicWhoIsMessage;
@@ -347,7 +386,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         charas = PlayedCharacterManager.getInstance().characteristics;
                         infos = PlayedCharacterManager.getInstance().infos;
                         variables = I18n.getUiText("ui.chat.variable.experience").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -356,7 +395,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             content = content.replace(new RegExp(variable, "g"), int((charas.experience - charas.experienceLevelFloor) / (charas.experienceNextLevelFloor - charas.experienceLevelFloor) * 100) + "%");
                         }
                         variables = I18n.getUiText("ui.chat.variable.level").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -365,7 +404,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             content = content.replace(new RegExp(variable, "g"), infos.level);
                         }
                         variables = I18n.getUiText("ui.chat.variable.life").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -374,7 +413,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             content = content.replace(new RegExp(variable, "g"), charas.lifePoints);
                         }
                         variables = I18n.getUiText("ui.chat.variable.maxlife").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -383,7 +422,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             content = content.replace(new RegExp(variable, "g"), charas.maxLifePoints);
                         }
                         variables = I18n.getUiText("ui.chat.variable.lifepercent").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -392,7 +431,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             content = content.replace(new RegExp(variable, "g"), int(charas.lifePoints / charas.maxLifePoints * 100) + "%");
                         }
                         variables = I18n.getUiText("ui.chat.variable.myself").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -401,7 +440,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             content = content.replace(new RegExp(variable, "g"), infos.name);
                         }
                         variables = I18n.getUiText("ui.chat.variable.stats").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -410,7 +449,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             content = content.replace(new RegExp(variable, "g"), I18n.getUiText("ui.chat.variable.statsresult", new Array(this.displayCarac(charas.vitality), this.displayCarac(charas.wisdom), this.displayCarac(charas.strength), this.displayCarac(charas.intelligence), this.displayCarac(charas.chance), this.displayCarac(charas.agility), this.displayCarac(charas.initiative), this.displayCarac(charas.actionPoints), this.displayCarac(charas.movementPoints))));
                         }
                         variables = I18n.getUiText("ui.chat.variable.area").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -422,7 +461,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             }
                         }
                         variables = I18n.getUiText("ui.chat.variable.subarea").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -434,7 +473,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             }
                         }
                         variables = I18n.getUiText("ui.chat.variable.position").split(",");
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -444,7 +483,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         }
                         variables = I18n.getUiText("ui.chat.variable.guild").split(",");
                         guilde = this.socialFrame.guild == null ? (I18n.getUiText("ui.chat.variable.guilderror")) : (this.socialFrame.guild.guildName);
-                        var _loc_3:int = 0;
+                        var _loc_3:* = 0;
                         var _loc_4:* = variables;
                         while (_loc_4 in _loc_3)
                         {
@@ -493,6 +532,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                         }
                     }
                     content = content.split(charTempL).join("[").split(charTempR).join("]");
+                    if (content.length > 256)
+                    {
+                        content = content.substr(0, 253) + "...";
+                    }
                     objects = new Vector.<ObjectItem>;
                     if (!this._aChannels[ch].isPrivate)
                     {
@@ -723,7 +766,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     timsg = msg as TextInformationMessage;
                     param = new Array();
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = timsg.parameters;
                     while (_loc_4 in _loc_3)
                     {
@@ -784,6 +827,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                         }
                         this.saveMessage(channel, null, msgContent, timestamp);
                         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, msgContent, channel, timestamp, false);
+                        if (AirScanner.hasAir() && timsg.msgId == 224)
+                        {
+                            KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.MEMBER_CONNECTION, [params[0]]);
+                        }
                     }
                     else
                     {
@@ -814,7 +861,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     taimsg = msg as TextActionInformationMessage;
                     paramTaimsg = new Array();
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = taimsg.params;
                     while (_loc_4 in _loc_3)
                     {
@@ -840,6 +887,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                         case ChatErrorEnum.CHAT_ERROR_NO_PARTY:
                         case ChatErrorEnum.CHAT_ERROR_RECEIVER_NOT_FOUND:
                         case ChatErrorEnum.CHAT_ERROR_NO_PARTY_ARENA:
+                        case ChatErrorEnum.CHAT_ERROR_NO_TEAM:
                         {
                             contentErr = I18n.getUiText("ui.chat.error." + cemsg.reason);
                             break;
@@ -877,9 +925,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                     smileyItemLocalized.id = lcsmsg.smileyId;
                     cell = InteractiveCellManager.getInstance().getCell(lcsmsg.cellId);
                     gctr = new GraphicContainer();
-                    gctr.addChild(cell);
-                    gctr.x = cell.x + 58;
-                    gctr.y = cell.y - 35;
+                    gctr.x = cell.x;
+                    gctr.y = cell.y;
+                    gctr.width = cell.width;
+                    gctr.height = cell.height;
+                    gctr.x = gctr.x + 14;
+                    gctr.y = gctr.y - 35;
                     if (cell)
                     {
                         TooltipManager.show(smileyItemLocalized, gctr, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, "smiley_" + lcsmsg.entityId, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, null, null, false, StrataEnum.STRATA_WORLD);
@@ -913,13 +964,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                             return true;
                         }
                     }
-                    TooltipManager.show(smileyItem, smileyEntity.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, "smiley" + scmsg.entityId, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, null, null, false, StrataEnum.STRATA_WORLD);
+                    sysApi = new SystemApi();
+                    TooltipManager.show(smileyItem, smileyEntity.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, "smiley" + scmsg.entityId, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_TOP, 0, true, null, null, null, null, false, StrataEnum.STRATA_WORLD, sysApi.getCurrentZoom());
                     return true;
                 }
                 case msg is MoodSmileyRequestAction:
                 {
                     msrmsg = new MoodSmileyRequestMessage();
-                    _log.debug("MoodSmileyRequestAction " + MoodSmileyRequestAction(msg).smileyId);
                     msrmsg.initMoodSmileyRequestMessage(MoodSmileyRequestAction(msg).smileyId);
                     ConnectionsHandler.getConnection().send(msrmsg);
                     return true;
@@ -927,8 +978,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is MoodSmileyResultMessage:
                 {
                     msrtmsg = msg as MoodSmileyResultMessage;
-                    _log.debug("MoodSmileyResultMessage " + msrtmsg.resultCode + "  " + msrtmsg.smileyId);
                     this._smileyMood = msrtmsg.smileyId;
+                    date = new Date();
+                    id = PlayedCharacterManager.getInstance().id;
+                    chatOpt = OptionManager.getOptionManager("chat");
+                    if (!chatOpt["moodSmiley_" + id])
+                    {
+                        chatOpt.add("moodSmiley_" + id, "");
+                    }
+                    chatOpt["moodSmiley_" + id] = this._smileyMood + "_" + date.time;
                     KernelEventsManager.getInstance().processCallback(ChatHookList.MoodResult, msrtmsg.resultCode, msrtmsg.smileyId);
                     return true;
                 }
@@ -974,7 +1032,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is EnabledChannelsMessage:
                 {
                     ecmsg = msg as EnabledChannelsMessage;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = ecmsg.disallowed;
                     while (_loc_4 in _loc_3)
                     {
@@ -988,8 +1046,8 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is BasicTimeMessage:
                 {
                     btmsg = msg as BasicTimeMessage;
-                    date = new Date();
-                    TimeManager.getInstance().serverTimeLag = (btmsg.timestamp + btmsg.timezoneOffset) * 1000 - date.getTime();
+                    date2 = new Date();
+                    TimeManager.getInstance().serverTimeLag = (btmsg.timestamp + btmsg.timezoneOffset) * 1000 - date2.getTime();
                     TimeManager.getInstance().timezoneOffset = btmsg.timezoneOffset * 1000;
                     TimeManager.getInstance().dofusTimeYearLag = -1370;
                     return true;
@@ -1053,7 +1111,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     {
                         _log.error("Texte d\'erreur objet " + oemsg.reason + " manquant");
                     }
-                    return true;
+                    return false;
                 }
                 case msg is BasicWhoIsMessage:
                 {
@@ -1125,7 +1183,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     nbsmsg = msg as NotificationByServerMessage;
                     a = new Array();
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = nbsmsg.parameters;
                     while (_loc_4 in _loc_3)
                     {
@@ -1151,7 +1209,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     idName = parseInt(egtcgmsg.collectorName.split(",")[1], 36);
                     taxCollectorName = TaxCollectorFirstname.getTaxCollectorFirstnameById(idFName).firstname + " " + TaxCollectorName.getTaxCollectorNameById(idName).name;
                     textObjects;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = egtcgmsg.objectsInfos;
                     while (_loc_4 in _loc_3)
                     {
@@ -1163,7 +1221,14 @@ package com.ankamagames.dofus.logic.game.common.frames
                         }
                         textObjects = textObjects + (object.quantity + "x" + Item.getItemById(object.objectUID).name);
                     }
-                    objectsAndExp = I18n.getUiText("ui.social.thingsTaxCollectorGet", [textObjects, egtcgmsg.experience]);
+                    if (textObjects != "")
+                    {
+                        objectsAndExp = I18n.getUiText("ui.social.thingsTaxCollectorGet", [textObjects, egtcgmsg.experience]);
+                    }
+                    else
+                    {
+                        objectsAndExp = I18n.getUiText("ui.social.xpTaxCollectorGet", [egtcgmsg.experience]);
+                    }
                     text = I18n.getUiText("ui.social.taxcollectorRecolted", [taxCollectorName, "(" + egtcgmsg.worldX + ", " + egtcgmsg.worldY + ")", egtcgmsg.userName, objectsAndExp]);
                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, text, ChatActivableChannelsEnum.CHANNEL_GUILD, this.getTimestamp());
                     return true;
@@ -1218,9 +1283,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function onCssLoaded() : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             var _loc_1:* = CssManager.getInstance().getCss(this._cssUri);
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < 13)
             {
                 
@@ -1241,7 +1306,7 @@ package com.ankamagames.dofus.logic.game.common.frames
         private function displayCarac(param1:CharacterBaseCharacteristic) : String
         {
             var _loc_2:* = param1.alignGiftBonus + param1.contextModif + param1.objectsAndMountBonus;
-            var _loc_3:String = "+";
+            var _loc_3:* = "+";
             if (_loc_2 < 0)
             {
                 _loc_3 = "";
@@ -1293,9 +1358,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function saveMessage(param1:int = 0, param2:String = "", param3:String = "", param4:Number = 0, param5:String = "", param6:uint = 0, param7:String = "", param8:Vector.<ItemWrapper> = null, param9:String = "", param10:uint = 0, param11:uint = 0, param12:Array = null, param13:Boolean = false) : void
         {
-            var _loc_14:Object = null;
-            var _loc_16:uint = 0;
-            var _loc_17:uint = 0;
+            var _loc_14:* = null;
+            var _loc_16:* = 0;
+            var _loc_17:* = 0;
             if (param9 != "")
             {
                 _loc_14 = new ChatSentenceWithRecipient(this._msgUId, param2, param3, param1, param4, param5, param6, param7, param9, param10, param8);
@@ -1313,7 +1378,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 _loc_14 = new BasicChatSentence(this._msgUId, param2, param3, param1, param4, param5);
             }
             this._aMessagesByChannel[param1].push(_loc_14);
-            var _loc_15:uint = 0;
+            var _loc_15:* = 0;
             if (this._aMessagesByChannel[param1].length > this._maxMessagesStored)
             {
                 _loc_16 = this._aMessagesByChannel[param1].length - this._maxMessagesStored;
@@ -1326,7 +1391,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     _loc_17 = _loc_17 + 1;
                 }
             }
-            var _loc_18:String = this;
+            var _loc_18:* = this;
             var _loc_19:* = this._msgUId + 1;
             _loc_18._msgUId = _loc_19;
             KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage, param1, _loc_15);
@@ -1350,38 +1415,33 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function checkCensored(param1:String, param2:uint, param3:uint, param4:String) : Array
         {
-            var _loc_12:String = null;
-            var _loc_13:uint = 0;
-            var _loc_15:String = null;
-            var _loc_16:String = null;
-            var _loc_17:Array = null;
-            var _loc_18:Boolean = false;
-            var _loc_19:Array = null;
-            var _loc_20:String = null;
-            var _loc_21:String = null;
-            var _loc_22:String = null;
-            var _loc_23:int = 0;
-            var _loc_24:String = null;
-            var _loc_25:int = 0;
-            var _loc_26:String = null;
-            var _loc_27:String = null;
-            var _loc_28:String = null;
-            var _loc_29:int = 0;
-            var _loc_30:String = null;
-            var _loc_31:RegExp = null;
-            var _loc_32:Object = null;
-            var _loc_33:uint = 0;
-            var _loc_34:Number = NaN;
-            var _loc_35:String = null;
-            var _loc_36:Boolean = false;
-            var _loc_37:int = 0;
-            var _loc_38:String = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = false;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = 0;
+            var _loc_24:* = null;
+            var _loc_25:* = 0;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = 0;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
             var _loc_5:* = param1;
             if (OptionManager.getOptionManager("chat").filterInsult && param2 != 8 && param2 != 10 && param2 != 11 && param2 != 666)
             {
                 _loc_15 = XmlConfig.getInstance().getEntry("config.lang.current");
                 _loc_16 = "";
-                _loc_17 = ["&", "%", "?", "#", "", "!"];
+                _loc_17 = ["&", "%", "?", "#", "§", "!"];
                 _loc_18 = _loc_15 == "ja";
                 if (!_loc_18)
                 {
@@ -1434,7 +1494,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
                 else
                 {
-                    _loc_26 = "&%?";
+                    _loc_26 = "&%?§!&?&%§!&%!&%?#§!";
                     _loc_27 = _loc_5.toUpperCase();
                     for (_loc_28 in this._aCensoredWords)
                     {
@@ -1454,34 +1514,20 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
             }
             var _loc_6:* = _loc_5.split(" ");
-            var _loc_7:String = "";
-            var _loc_8:Boolean = false;
-            var _loc_9:String = "";
-            var _loc_10:String = "";
-            var _loc_11:String = "";
+            var _loc_7:* = "";
+            var _loc_8:* = false;
+            var _loc_9:* = "";
+            var _loc_10:* = "";
+            var _loc_11:* = "";
             for each (_loc_12 in _loc_6)
             {
                 
                 _loc_30 = "";
-                _loc_31 = new RegExp(URL_MATCHER, "ig");
-                _loc_32 = _loc_31.exec(_loc_12);
-                _loc_33 = 0;
-                while (_loc_32 != null)
+                _loc_31 = this.needToFormateUrl(_loc_12);
+                if (_loc_31.formate)
                 {
-                    
-                    _log.debug(_loc_32.index + " : " + _loc_32);
-                    _loc_30 = _loc_30 + _loc_12.substr(_loc_33, _loc_32.index);
-                    if ((_loc_32[2] != undefined || _loc_32[8] != undefined) && LINK_TLDS.indexOf(_loc_32[11]) != -1 || ALWAYS_LINK_TLDS.indexOf(_loc_32[11]) != -1)
-                    {
-                        _loc_30 = _loc_30 + ("[<a href=\'event:hook,ChatLinkRelease," + _loc_32[0] + "," + param3 + "," + param4 + "\'><u><b>" + _loc_32[0] + "</b></u></a>]");
-                        _loc_8 = true;
-                    }
-                    else
-                    {
-                        _loc_30 = _loc_30 + _loc_32[0];
-                    }
-                    _loc_33 = _loc_32.index + _loc_32[0].length;
-                    _loc_32 = _loc_31.exec(_loc_12);
+                    _loc_30 = _loc_30 + ("[<a href=\'event:chatLinkRelease," + _loc_31.url + "," + param3 + "," + param4 + "\'><u><b>" + _loc_31.url + "</b></u></a>]");
+                    _loc_8 = true;
                 }
                 if (_loc_30 == "")
                 {
@@ -1491,50 +1537,12 @@ package com.ankamagames.dofus.logic.game.common.frames
             }
             _loc_5 = _loc_7.slice(0, (_loc_7.length - 1));
             _loc_13 = 0;
-            if (!_loc_8)
-            {
-                _loc_34 = 0;
-                while (_loc_34 < _loc_6.length)
-                {
-                    
-                    _loc_35 = _loc_6[_loc_34].toString().toUpperCase();
-                    _loc_36 = false;
-                    _loc_37 = 0;
-                    while (_loc_37 < LINK_FILTERS.length)
-                    {
-                        
-                        if (_loc_35.indexOf(LINK_FILTERS[_loc_37]) > -1)
-                        {
-                            _loc_36 = true;
-                            _loc_13 = _loc_13 + 1;
-                            break;
-                        }
-                        _loc_37++;
-                    }
-                    if (_loc_36)
-                    {
-                        _loc_37 = 0;
-                        while (_loc_37 < WHITE_LIST.length)
-                        {
-                            
-                            if (_loc_35.indexOf(WHITE_LIST[_loc_37]) > -1)
-                            {
-                                _loc_36 = false;
-                                _loc_13 = _loc_13 - 1;
-                                break;
-                            }
-                            _loc_37++;
-                        }
-                    }
-                    _loc_34 = _loc_34 + 1;
-                }
-            }
-            var _loc_14:* = new Array();
+            _loc_14 = new Array();
             if (_loc_13 > 0)
             {
-                _loc_38 = I18n.getUiText("ui.popup.warning");
-                _loc_14[0] = _loc_5 + " [<font color=\"" + XmlConfig.getInstance().getEntry("colors.hyperlink.warning").replace("0x", "#") + "\"><u><b><a href=\'event:hook,ChatWarning\'>" + I18n.getUiText("ui.popup.warning") + "</a></b></u></font>]";
-                _loc_14[1] = _loc_5 + " [" + _loc_38 + "]";
+                _loc_32 = I18n.getUiText("ui.popup.warning");
+                _loc_14[0] = _loc_5 + " [<font color=\"" + XmlConfig.getInstance().getEntry("colors.hyperlink.warning").replace("0x", "#") + "\"><u><b><a href=\'event:chatWarning\'>" + I18n.getUiText("ui.popup.warning") + "</a></b></u></font>]";
+                _loc_14[1] = _loc_5 + " [" + _loc_32 + "]";
             }
             else
             {
@@ -1544,8 +1552,161 @@ package com.ankamagames.dofus.logic.game.common.frames
             return _loc_14;
         }// end function
 
+        public function needToFormateUrl(param1:String) : Object
+        {
+            var _loc_2:* = param1.replace("&amp;amp;", "&");
+            var _loc_3:* = _loc_2 != param1;
+            var _loc_4:* = new RegExp(URL_MATCHER);
+            var _loc_5:* = new RegExp(URL_MATCHER).exec(_loc_2);
+            var _loc_6:* = new Object();
+            new Object().formate = false;
+            if (_loc_5)
+            {
+                if (_loc_3)
+                {
+                    _loc_6.url = _loc_5[0].replace("&", "&amp;amp;");
+                }
+                else
+                {
+                    _loc_6.url = _loc_5[0];
+                }
+                _loc_6.index = _loc_5.index;
+                if (_loc_5[2] == undefined && _loc_5[8] == undefined && _loc_5[7].split(".").length >= 2 && LINK_TLDS.indexOf(_loc_5[11]) == -1)
+                {
+                    _loc_6.formate = false;
+                }
+                else
+                {
+                    _loc_6.formate = true;
+                }
+            }
+            return _loc_6;
+        }// end function
+
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.atouin.managers.*;
+
+import com.ankamagames.atouin.types.*;
+
+import com.ankamagames.berilia.enums.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import com.ankamagames.berilia.types.graphic.*;
+
+import com.ankamagames.dofus.console.*;
+
+import com.ankamagames.dofus.datacenter.communication.*;
+
+import com.ankamagames.dofus.datacenter.items.*;
+
+import com.ankamagames.dofus.datacenter.livingObjects.*;
+
+import com.ankamagames.dofus.datacenter.notifications.*;
+
+import com.ankamagames.dofus.datacenter.npcs.*;
+
+import com.ankamagames.dofus.datacenter.world.*;
+
+import com.ankamagames.dofus.externalnotification.enums.*;
+
+import com.ankamagames.dofus.internalDatacenter.communication.*;
+
+import com.ankamagames.dofus.internalDatacenter.items.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.kernel.net.*;
+
+import com.ankamagames.dofus.kernel.sound.*;
+
+import com.ankamagames.dofus.kernel.sound.enum.*;
+
+import com.ankamagames.dofus.logic.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.chat.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.misc.*;
+
+import com.ankamagames.dofus.logic.game.fight.frames.*;
+
+import com.ankamagames.dofus.logic.game.fight.messages.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.misc.options.*;
+
+import com.ankamagames.dofus.misc.utils.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.messages.game.basic.*;
+
+import com.ankamagames.dofus.network.messages.game.chat.*;
+
+import com.ankamagames.dofus.network.messages.game.chat.channel.*;
+
+import com.ankamagames.dofus.network.messages.game.chat.smiley.*;
+
+import com.ankamagames.dofus.network.messages.game.context.notification.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.items.*;
+
+import com.ankamagames.dofus.network.messages.game.moderation.*;
+
+import com.ankamagames.dofus.network.messages.web.ankabox.*;
+
+import com.ankamagames.dofus.network.types.game.character.characteristic.*;
+
+import com.ankamagames.dofus.network.types.game.character.choice.*;
+
+import com.ankamagames.dofus.network.types.game.context.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.effects.*;
+
+import com.ankamagames.dofus.types.entities.*;
+
+import com.ankamagames.dofus.uiApi.*;
+
+import com.ankamagames.jerakine.console.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.managers.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.misc.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
+import flash.utils.*;
 
 class Notification extends Object
 {
@@ -1563,6 +1724,7 @@ class Notification extends Object
     public var position:int;
     public var notifyUser:Boolean = false;
     public var tutorialId:int = -1;
+    public var blockCallbackOnTimerEnds:Boolean = false;
     private var _buttonList:Array;
     private var _imageList:Array;
 
@@ -1624,12 +1786,150 @@ class Notification extends Object
         return;
     }// end function
 
-    public function setTimer(param1:uint, param2:Boolean = false) : void
+    public function setTimer(param1:uint, param2:Boolean = false, param3:Boolean = false) : void
     {
         this._duration = param1 * 1000;
         this.startTime = 0;
         this.pauseOnOver = param2;
+        this.blockCallbackOnTimerEnds = param3;
         this.notifyUser = true;
+        return;
+    }// end function
+
+}
+
+
+import __AS3__.vec.*;
+
+import com.ankamagames.atouin.managers.*;
+
+import com.ankamagames.atouin.types.*;
+
+import com.ankamagames.berilia.enums.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import com.ankamagames.berilia.types.graphic.*;
+
+import com.ankamagames.dofus.console.*;
+
+import com.ankamagames.dofus.datacenter.communication.*;
+
+import com.ankamagames.dofus.datacenter.items.*;
+
+import com.ankamagames.dofus.datacenter.livingObjects.*;
+
+import com.ankamagames.dofus.datacenter.notifications.*;
+
+import com.ankamagames.dofus.datacenter.npcs.*;
+
+import com.ankamagames.dofus.datacenter.world.*;
+
+import com.ankamagames.dofus.externalnotification.enums.*;
+
+import com.ankamagames.dofus.internalDatacenter.communication.*;
+
+import com.ankamagames.dofus.internalDatacenter.items.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.kernel.net.*;
+
+import com.ankamagames.dofus.kernel.sound.*;
+
+import com.ankamagames.dofus.kernel.sound.enum.*;
+
+import com.ankamagames.dofus.logic.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.chat.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.misc.*;
+
+import com.ankamagames.dofus.logic.game.fight.frames.*;
+
+import com.ankamagames.dofus.logic.game.fight.messages.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.misc.options.*;
+
+import com.ankamagames.dofus.misc.utils.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.messages.game.basic.*;
+
+import com.ankamagames.dofus.network.messages.game.chat.*;
+
+import com.ankamagames.dofus.network.messages.game.chat.channel.*;
+
+import com.ankamagames.dofus.network.messages.game.chat.smiley.*;
+
+import com.ankamagames.dofus.network.messages.game.context.notification.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
+
+import com.ankamagames.dofus.network.messages.game.inventory.items.*;
+
+import com.ankamagames.dofus.network.messages.game.moderation.*;
+
+import com.ankamagames.dofus.network.messages.web.ankabox.*;
+
+import com.ankamagames.dofus.network.types.game.character.characteristic.*;
+
+import com.ankamagames.dofus.network.types.game.character.choice.*;
+
+import com.ankamagames.dofus.network.types.game.context.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.effects.*;
+
+import com.ankamagames.dofus.types.entities.*;
+
+import com.ankamagames.dofus.uiApi.*;
+
+import com.ankamagames.jerakine.console.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.managers.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.misc.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
+import flash.utils.*;
+
+class Smiley extends Object
+{
+    public var pictoId:int;
+    public var position:int;
+
+    function Smiley(param1:int, param2:int) : void
+    {
+        this.pictoId = param1;
+        this.position = param2;
         return;
     }// end function
 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.types.*;
@@ -7,6 +7,7 @@ package com.ankamagames.dofus.uiApi
     import com.ankamagames.berilia.types.*;
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.berilia.utils.errors.*;
+    import com.ankamagames.dofus.externalnotification.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.common.frames.*;
     import com.ankamagames.dofus.misc.lists.*;
@@ -63,7 +64,7 @@ package com.ankamagames.dofus.uiApi
             {
                 throw new ApiError("Config module [" + param1 + "] does not exist.");
             }
-            if (this.isSimpleConfigType(_loc_4[param2]))
+            if (this.isSimpleConfigType(_loc_4.getDefaultValue(param2)))
             {
                 _loc_4[param2] = param3;
             }
@@ -106,6 +107,17 @@ package com.ankamagames.dofus.uiApi
             return _loc_2.isOptionalFeatureActive(param1);
         }// end function
 
+        public function getExternalNotificationValue(param1:int) : int
+        {
+            return ExternalNotificationManager.getInstance().getNotificationValue(param1);
+        }// end function
+
+        public function setExternalNotificationValue(param1:int, param2:int) : void
+        {
+            ExternalNotificationManager.getInstance().setNotificationValue(param1, param2);
+            return;
+        }// end function
+
         private function init() : void
         {
             if (_init)
@@ -141,7 +153,7 @@ package com.ankamagames.dofus.uiApi
 
         private function onPropertyChanged(event:PropertyChangeEvent) : void
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             var _loc_2:* = event.propertyValue;
             if (_loc_2 is DisplayObject)
             {

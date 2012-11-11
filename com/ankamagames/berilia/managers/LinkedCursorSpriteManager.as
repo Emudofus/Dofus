@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.types.data.*;
@@ -83,8 +83,8 @@ package com.ankamagames.berilia.managers
 
         private function updateCursors(param1 = null) : void
         {
-            var _loc_4:LinkedCursorData = null;
-            var _loc_5:String = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (this._mustClean)
             {
                 this._mustClean = false;
@@ -119,7 +119,7 @@ package com.ankamagames.berilia.managers
 
         private function remove(param1:String) : void
         {
-            var _loc_4:Object = null;
+            var _loc_4:* = null;
             var _loc_2:* = this.items[param1].sprite as DisplayObject;
             if (_loc_2.parent)
             {
@@ -128,7 +128,7 @@ package com.ankamagames.berilia.managers
             this.items[param1] = null;
             delete this.items[param1];
             delete this._mustBeRemoved[param1];
-            var _loc_3:Boolean = true;
+            var _loc_3:* = true;
             for (_loc_4 in this.items)
             {
                 

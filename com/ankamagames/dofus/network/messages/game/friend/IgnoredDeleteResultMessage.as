@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.friend
+﻿package com.ankamagames.dofus.network.messages.game.friend
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.friend
 
         public function serializeAs_IgnoredDeleteResultMessage(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.success);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.session);
             param1.writeByte(_loc_2);

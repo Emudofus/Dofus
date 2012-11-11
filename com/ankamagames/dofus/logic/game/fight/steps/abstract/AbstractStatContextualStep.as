@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps.abstract
+﻿package com.ankamagames.dofus.logic.game.fight.steps.abstract
 {
     import com.ankamagames.berilia.types.event.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;

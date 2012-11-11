@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.purchasable
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.purchasable
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

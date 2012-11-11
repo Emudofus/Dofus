@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.mount
+﻿package com.ankamagames.dofus.logic.game.common.actions.mount
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

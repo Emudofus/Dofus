@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -41,9 +41,9 @@ package com.ankamagames.dofus.uiApi
 
         public function getAllQuests() : Vector.<Object>
         {
-            var _loc_3:QuestActiveInformations = null;
-            var _loc_4:Vector.<uint> = null;
-            var _loc_5:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             var _loc_1:* = new Vector.<Object>(0, false);
             var _loc_2:* = this.getQuestFrame().getActiveQuests();
             for each (_loc_3 in _loc_2)
@@ -62,7 +62,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getActiveQuests() : Vector.<uint>
         {
-            var _loc_3:QuestActiveInformations = null;
+            var _loc_3:* = null;
             var _loc_1:* = new Vector.<uint>;
             var _loc_2:* = this.getQuestFrame().getActiveQuests();
             for each (_loc_3 in _loc_2)
@@ -80,14 +80,14 @@ package com.ankamagames.dofus.uiApi
 
         public function getAllQuestsOrderByCategory(param1:Boolean = false) : Array
         {
-            var _loc_3:Quest = null;
-            var _loc_4:QuestActiveInformations = null;
-            var _loc_6:Object = null;
-            var _loc_9:uint = 0;
-            var _loc_10:Vector.<uint> = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_6:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
             var _loc_2:* = new Array();
-            var _loc_5:int = 0;
-            var _loc_7:uint = 0;
+            var _loc_5:* = 0;
+            var _loc_7:* = 0;
             var _loc_8:* = this.getQuestFrame().getActiveQuests();
             _loc_5 = _loc_5 + _loc_8.length;
             for each (_loc_4 in _loc_8)

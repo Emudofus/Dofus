@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.enums
+﻿package com.ankamagames.atouin.enums
 {
 
     public class PlacementStrataEnums extends Object

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.dofus.network.types.game.guild.*;
     import com.ankamagames.jerakine.network.*;

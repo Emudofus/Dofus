@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.utils.crypto.*;
@@ -14,8 +14,8 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:CRC32 = null;
-            var _loc_5:ByteArray = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             switch(param2)
             {
                 case "crc32":

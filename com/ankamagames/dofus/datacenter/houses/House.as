@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.houses
+﻿package com.ankamagames.dofus.datacenter.houses
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

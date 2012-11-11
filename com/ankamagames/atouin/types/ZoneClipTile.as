@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.enums.*;
@@ -21,7 +21,7 @@ package com.ankamagames.atouin.types
         private var _clipName:String;
         private var _needBorders:Boolean;
         private var _borderSprites:Array;
-        private var BORDER:Class;
+        private var _borderBitmapData:BitmapData;
         private var _displayMe:Boolean = false;
         private var _currentRessource:LoadedTile;
         private var _displayBehavior:IDisplayBehavior;
@@ -37,7 +37,7 @@ package com.ankamagames.atouin.types
 
         public function ZoneClipTile(param1:Uri, param2:String = "Bloc", param3:Boolean = false)
         {
-            var _loc_4:LoadedTile = null;
+            var _loc_4:* = null;
             this._borderSprites = new Array();
             mouseEnabled = false;
             mouseChildren = false;
@@ -76,10 +76,6 @@ package com.ankamagames.atouin.types
             else if (_loc_3.getClip(this._clipName) == null || _loc_3.getClip(this._clipName).clip == null)
             {
                 _loc_3.addClip(this._clipName, _loc_2.getDefinition(this._clipName));
-                if (this._needBorders)
-                {
-                    _loc_3.addClip(BORDER_CLIP, _loc_2.getDefinition(BORDER_CLIP));
-                }
             }
             this._currentRessource = _loc_3;
             if (this._displayMe)
@@ -92,14 +88,14 @@ package com.ankamagames.atouin.types
 
         public function display(param1:uint = 0) : void
         {
-            var _loc_2:Object = null;
-            var _loc_3:Sprite = null;
-            var _loc_4:Boolean = false;
-            var _loc_5:Boolean = false;
-            var _loc_6:Boolean = false;
-            var _loc_7:Sprite = null;
-            var _loc_8:Sprite = null;
-            var _loc_9:Sprite = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = false;
+            var _loc_5:* = false;
+            var _loc_6:* = false;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             if (this._currentRessource == null || this._currentRessource.getClip(this._clipName) == null || this._currentRessource.getClip(this._clipName).clip == null)
             {
                 this._displayMe = true;
@@ -107,21 +103,20 @@ package com.ankamagames.atouin.types
             else
             {
                 _loc_2 = this._currentRessource.getClip(this._clipName);
-                this._cellInstance = new _loc_2.clip;
-                addChild(this._cellInstance);
+                if (_loc_2.clip != null)
+                {
+                    this._cellInstance = new _loc_2.clip;
+                    addChild(this._cellInstance);
+                }
                 if (this._needBorders)
                 {
-                    if (this.BORDER == null)
-                    {
-                        this.BORDER = this._currentRessource.getClip(BORDER_CLIP).clip;
-                    }
                     this._borderSprites = new Array();
                     _loc_4 = this.cellId % 14 == 0;
                     _loc_5 = (this.cellId + 1) % 14 == 0;
                     _loc_6 = Math.floor(this.cellId / 14) % 2 == 0;
                     if (_loc_4 && _loc_6)
                     {
-                        _loc_3 = new this.BORDER() as Sprite;
+                        _loc_3 = this.getFakeTile();
                         _loc_3.x = -AtouinConstants.CELL_HALF_WIDTH;
                         _loc_3.y = -AtouinConstants.CELL_HALF_HEIGHT;
                         this._borderSprites.push(_loc_3);
@@ -129,7 +124,7 @@ package com.ankamagames.atouin.types
                     }
                     else if (_loc_5 && !_loc_6)
                     {
-                        _loc_3 = new this.BORDER() as Sprite;
+                        _loc_3 = this.getFakeTile();
                         _loc_3.x = AtouinConstants.CELL_HALF_WIDTH;
                         _loc_3.y = -AtouinConstants.CELL_HALF_HEIGHT;
                         this._borderSprites.push(_loc_3);
@@ -137,7 +132,7 @@ package com.ankamagames.atouin.types
                     }
                     if (this.cellId < 14)
                     {
-                        _loc_3 = new this.BORDER() as Sprite;
+                        _loc_3 = this.getFakeTile();
                         _loc_3.x = AtouinConstants.CELL_HALF_WIDTH;
                         _loc_3.y = -AtouinConstants.CELL_HALF_HEIGHT;
                         this._borderSprites.push(_loc_3);
@@ -145,7 +140,7 @@ package com.ankamagames.atouin.types
                     }
                     else if (this.cellId > 545)
                     {
-                        _loc_3 = new this.BORDER() as Sprite;
+                        _loc_3 = this.getFakeTile();
                         _loc_3.x = -AtouinConstants.CELL_HALF_WIDTH;
                         _loc_3.y = AtouinConstants.CELL_HALF_HEIGHT;
                         this._borderSprites.push(_loc_3);
@@ -153,7 +148,7 @@ package com.ankamagames.atouin.types
                     }
                     if (this.cellId == 532)
                     {
-                        _loc_7 = new this.BORDER() as Sprite;
+                        _loc_7 = this.getFakeTile();
                         _loc_7.x = -AtouinConstants.CELL_HALF_WIDTH;
                         _loc_7.y = AtouinConstants.CELL_HALF_HEIGHT;
                         this._borderSprites.push(_loc_7);
@@ -161,7 +156,7 @@ package com.ankamagames.atouin.types
                     }
                     else if (this.cellId == 559)
                     {
-                        _loc_8 = new this.BORDER() as Sprite;
+                        _loc_8 = this.getFakeTile();
                         _loc_8.x = AtouinConstants.CELL_HALF_WIDTH;
                         _loc_8.y = AtouinConstants.CELL_HALF_HEIGHT;
                         this._borderSprites.push(_loc_8);
@@ -233,7 +228,7 @@ package com.ankamagames.atouin.types
 
         public function remove() : void
         {
-            var _loc_1:Sprite = null;
+            var _loc_1:* = null;
             this._displayed = false;
             if (this._borderSprites.length)
             {
@@ -282,9 +277,32 @@ package com.ankamagames.atouin.types
             return this._clipName;
         }// end function
 
+        public function getFakeTile() : Sprite
+        {
+            var _loc_3:* = null;
+            if (this._borderBitmapData == null)
+            {
+                _loc_3 = new Shape();
+                _loc_3.graphics.beginFill(16711680);
+                _loc_3.graphics.moveTo(86 / 2, 0);
+                _loc_3.graphics.lineTo(86, 43 / 2);
+                _loc_3.graphics.lineTo(86 / 2, 43);
+                _loc_3.graphics.lineTo(0, 43 / 2);
+                _loc_3.graphics.endFill();
+                this._borderBitmapData = new BitmapData(86, 43, true, 16711680);
+                this._borderBitmapData.draw(_loc_3);
+            }
+            var _loc_1:* = new Bitmap(this._borderBitmapData);
+            _loc_1.x = -86 / 2;
+            _loc_1.y = -43 / 2;
+            var _loc_2:* = new Sprite();
+            _loc_2.addChild(_loc_1);
+            return _loc_2;
+        }// end function
+
         private static function getRessource(param1:String) : LoadedTile
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = clips.length;
             _loc_2 = 0;
             while (_loc_2 < _loc_3)
@@ -308,10 +326,37 @@ package com.ankamagames.atouin.types
     }
 }
 
+import com.ankamagames.atouin.*;
+
+import com.ankamagames.atouin.enums.*;
+
+import com.ankamagames.atouin.managers.*;
+
+import com.ankamagames.jerakine.entities.behaviours.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.interfaces.*;
+
+import com.ankamagames.jerakine.resources.adapters.impl.*;
+
+import com.ankamagames.jerakine.resources.events.*;
+
+import com.ankamagames.jerakine.resources.loaders.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.types.positions.*;
+
+import flash.display.*;
+
+import flash.geom.*;
+
+import flash.system.*;
+
 class LoadedTile extends Object
 {
     public var fileName:String;
-    public var appDomain:ApplicationDomain;
     private var _clips:Array;
 
     function LoadedTile(param1:String) : void
@@ -340,7 +385,7 @@ class LoadedTile extends Object
 
     public function getClip(param1:String) : Object
     {
-        var _loc_2:Object = null;
+        var _loc_2:* = null;
         for each (_loc_2 in this._clips)
         {
             

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.character.deletion
+﻿package com.ankamagames.dofus.network.messages.game.character.deletion
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

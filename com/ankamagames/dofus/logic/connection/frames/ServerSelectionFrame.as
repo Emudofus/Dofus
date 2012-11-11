@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.connection.frames
+﻿package com.ankamagames.dofus.logic.connection.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.*;
@@ -58,21 +58,21 @@ package com.ankamagames.dofus.logic.connection.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:ServersListMessage = null;
-            var _loc_3:ServerStatusUpdateMessage = null;
-            var _loc_4:ServerSelectionAction = null;
-            var _loc_5:SelectedServerDataMessage = null;
-            var _loc_6:ExpectedSocketClosureMessage = null;
-            var _loc_7:AcquaintanceSearchAction = null;
-            var _loc_8:AcquaintanceSearchMessage = null;
-            var _loc_9:AcquaintanceSearchErrorMessage = null;
-            var _loc_10:String = null;
-            var _loc_11:AcquaintanceServerListMessage = null;
-            var _loc_12:SelectedServerRefusedMessage = null;
-            var _loc_13:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
             var _loc_14:* = undefined;
-            var _loc_15:ServerSelectionMessage = null;
-            var _loc_16:String = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
             switch(true)
             {
                 case param1 is ServersListMessage:
@@ -350,7 +350,7 @@ package com.ankamagames.dofus.logic.connection.frames
 
         private function broadcastServersListUpdate() : void
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             this._serversUsedList = new Vector.<GameServerInformations>;
             for each (_loc_1 in this._serversList)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.script.api
+﻿package com.ankamagames.jerakine.script.api
 {
     import com.ankamagames.jerakine.utils.display.*;
     import flash.display.*;

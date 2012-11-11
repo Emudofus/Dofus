@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types
+﻿package com.ankamagames.jerakine.types
 {
     import flash.utils.*;
 
@@ -48,9 +48,8 @@ package com.ankamagames.jerakine.types
 
         public function release() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.blue = 0;
-            var _loc_1:* = _loc_1;
             this.green = _loc_1;
             this.red = _loc_1;
             return;

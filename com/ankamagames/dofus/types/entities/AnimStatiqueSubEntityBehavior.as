@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.entities
+﻿package com.ankamagames.dofus.types.entities
 {
     import com.ankamagames.dofus.types.enums.*;
     import com.ankamagames.tiphon.display.*;
@@ -29,7 +29,10 @@ package com.ankamagames.dofus.types.entities
                 case this._parentData.animation.indexOf(AnimationEnum.ANIM_MORT) != -1:
                 case this._parentData.animation.indexOf("AnimEmote") != -1:
                 {
-                    this._animation = AnimationEnum.ANIM_STATIQUE;
+                    if (!param1.hasAnimation(param2.animation, param2.direction))
+                    {
+                        this._animation = AnimationEnum.ANIM_STATIQUE;
+                    }
                     break;
                 }
                 default:

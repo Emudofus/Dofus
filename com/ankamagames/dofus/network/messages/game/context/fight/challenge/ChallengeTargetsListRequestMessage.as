@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.fight.challenge
+﻿package com.ankamagames.dofus.network.messages.game.context.fight.challenge
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

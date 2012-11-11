@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.atlas
+﻿package com.ankamagames.dofus.network.messages.game.atlas
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.jerakine.network.*;

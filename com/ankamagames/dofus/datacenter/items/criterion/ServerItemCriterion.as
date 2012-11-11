@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.servers.*;
     import com.ankamagames.dofus.logic.common.managers.*;

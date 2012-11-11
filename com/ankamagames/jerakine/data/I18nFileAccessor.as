@@ -1,6 +1,7 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import com.ankamagames.jerakine.logger.*;
+    import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.filesystem.*;
@@ -26,9 +27,9 @@ package com.ankamagames.jerakine.data
 
         public function init(param1:Uri) : void
         {
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_8:String = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_8:* = null;
             var _loc_2:* = param1.toFile();
             if (!_loc_2 || !_loc_2.exists)
             {
@@ -43,7 +44,7 @@ package com.ankamagames.jerakine.data
             var _loc_3:* = this._stream.readInt();
             this._stream.position = _loc_3;
             var _loc_4:* = this._stream.readInt();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_4)
             {
                 
@@ -58,6 +59,11 @@ package com.ankamagames.jerakine.data
                 _loc_8 = this._stream.readUTF();
                 _loc_6 = this._stream.readInt();
                 this._textIndexes[_loc_8] = _loc_6;
+            }
+            for (_loc_8 in this._textIndexes)
+            {
+                
+                LangManager.getInstance().setEntry(_loc_8, this.getNamedText(_loc_8));
             }
             _log.debug("Initialized !");
             return;
@@ -93,7 +99,7 @@ package com.ankamagames.jerakine.data
                     {
                     }
                     content = new XML(rawContent);
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = content..override;
                     while (_loc_4 in _loc_3)
                     {

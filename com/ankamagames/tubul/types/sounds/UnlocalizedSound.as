@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types.sounds
+﻿package com.ankamagames.tubul.types.sounds
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.tubul.interfaces.*;

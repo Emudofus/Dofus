@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.newCache.garbage.*;
@@ -32,8 +32,8 @@ package com.ankamagames.jerakine.data
 
         public static function getObject(param1:String, param2:int) : Object
         {
-            var _loc_3:Object = null;
-            var _loc_4:WeakReference = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (_overrides[param1] && _overrides[param1][param2])
             {
                 param2 = _overrides[param1][param2];
@@ -74,7 +74,7 @@ package com.ankamagames.jerakine.data
 
         public static function getObjects(param1:String) : Array
         {
-            var _loc_2:Array = null;
+            var _loc_2:* = null;
             if (_objectsCaches[param1])
             {
                 _loc_2 = _objectsCaches[param1].object as Array;

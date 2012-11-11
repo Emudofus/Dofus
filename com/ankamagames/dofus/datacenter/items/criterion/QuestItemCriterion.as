@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.quest.*;
     import com.ankamagames.dofus.kernel.*;
@@ -20,7 +20,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get text() : String
         {
-            var _loc_1:String = "";
+            var _loc_1:* = "";
             var _loc_2:* = Quest.getQuestById(this._questId);
             if (!_loc_2)
             {

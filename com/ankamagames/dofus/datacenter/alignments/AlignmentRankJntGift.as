@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.alignments
+﻿package com.ankamagames.dofus.datacenter.alignments
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;

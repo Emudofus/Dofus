@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types.enums
+﻿package com.ankamagames.jerakine.types.enums
 {
     import com.ankamagames.jerakine.entities.messages.*;
     import com.ankamagames.jerakine.utils.errors.*;

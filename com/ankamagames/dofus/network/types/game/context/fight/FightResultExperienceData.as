@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -79,7 +79,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
         public function serializeAs_FightResultExperienceData(param1:IDataOutput) : void
         {
             super.serializeAs_FightResultAdditionalData(param1);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.showExperience);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.showExperienceLevelFloor);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.showExperienceNextLevelFloor);

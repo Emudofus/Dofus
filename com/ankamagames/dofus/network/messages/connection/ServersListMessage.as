@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.connection
+﻿package com.ankamagames.dofus.network.messages.connection
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.connection.*;
@@ -64,7 +64,7 @@ package com.ankamagames.dofus.network.messages.connection
         public function serializeAs_ServersListMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.servers.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.servers.length)
             {
                 
@@ -82,9 +82,9 @@ package com.ankamagames.dofus.network.messages.connection
 
         public function deserializeAs_ServersListMessage(param1:IDataInput) : void
         {
-            var _loc_4:GameServerInformations = null;
+            var _loc_4:* = null;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

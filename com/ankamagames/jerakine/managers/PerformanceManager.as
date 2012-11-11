@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.managers
+﻿package com.ankamagames.jerakine.managers
 {
     import com.ankamagames.jerakine.utils.display.*;
     import flash.events.*;
@@ -44,8 +44,8 @@ package com.ankamagames.jerakine.managers
 
         private static function onEnterFrame(event:Event) : void
         {
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             var _loc_2:* = performance;
             var _loc_3:* = getTimer();
             if (_totalFrames % 21 == 0)

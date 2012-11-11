@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.dofus.network.types.game.character.alignment.*;
     import com.ankamagames.dofus.network.types.game.context.*;
@@ -22,10 +22,10 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
             return 36;
         }// end function
 
-        public function initGameRolePlayCharacterInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:String = "", param5:HumanInformations = null, param6:ActorAlignmentInformations = null) : GameRolePlayCharacterInformations
+        public function initGameRolePlayCharacterInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:String = "", param5:HumanInformations = null, param6:uint = 0, param7:ActorAlignmentInformations = null) : GameRolePlayCharacterInformations
         {
-            super.initGameRolePlayHumanoidInformations(param1, param2, param3, param4, param5);
-            this.alignmentInfos = param6;
+            super.initGameRolePlayHumanoidInformations(param1, param2, param3, param4, param5, param6);
+            this.alignmentInfos = param7;
             return this;
         }// end function
 

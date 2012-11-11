@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -202,7 +202,7 @@ package com.ankamagames.berilia.components
 
         public function set caretIndex(param1:int) : void
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             if (param1 == -1)
             {
                 _loc_2 = this._tText.text.length;
@@ -317,7 +317,7 @@ package com.ankamagames.berilia.components
 
         override public function set height(param1:Number) : void
         {
-            var _loc_2:Number = NaN;
+            var _loc_2:* = NaN;
             if (!this._tText.multiline)
             {
                 _loc_2 = this._tText.textHeight;
@@ -729,7 +729,7 @@ package com.ankamagames.berilia.components
 
         public function appendText(param1:String, param2:String = null) : void
         {
-            var _loc_3:TextFormat = null;
+            var _loc_3:* = null;
             if (param2 && this._aStyleObj[param2])
             {
                 if (this._tText.filters.length)
@@ -756,12 +756,12 @@ package com.ankamagames.berilia.components
 
         private function bindCss() : void
         {
-            var _loc_3:String = null;
-            var _loc_4:String = null;
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (!this._sCssUrl)
             {
                 if (this._needToFinalize)
@@ -975,11 +975,11 @@ package com.ankamagames.berilia.components
 
         public function resizeText(param1:Boolean = true) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:Boolean = false;
-            var _loc_5:int = 0;
-            var _loc_6:Number = NaN;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = false;
+            var _loc_5:* = 0;
+            var _loc_6:* = NaN;
             this.removeTooltipExtension();
             if (!this._tText.multiline && this._tText.autoSize == "none" && this._tfFormatter && !this._tText.wordWrap)
             {
@@ -1068,8 +1068,8 @@ package com.ankamagames.berilia.components
             this._textFieldTooltipExtension.y = this._tText.y;
             this._tText.height = this._tText.textHeight + 3;
             __height = this._tText.height;
-            var _loc_2:DisplayObjectContainer = this;
-            var _loc_3:int = 0;
+            var _loc_2:* = this;
+            var _loc_3:* = 0;
             while (_loc_3 < 4)
             {
                 
@@ -1117,8 +1117,8 @@ package com.ankamagames.berilia.components
             {
                 return;
             }
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._tText.numLines)
             {
                 
@@ -1176,7 +1176,7 @@ package com.ankamagames.berilia.components
 
         public function finalize() : void
         {
-            var _loc_1:UiRootContainer = null;
+            var _loc_1:* = null;
             if (this._binded)
             {
                 if (this._autoResize)

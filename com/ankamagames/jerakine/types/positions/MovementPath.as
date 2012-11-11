@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types.positions
+﻿package com.ankamagames.jerakine.types.positions
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.types.enums.*;
@@ -53,7 +53,7 @@ package com.ankamagames.jerakine.types.positions
 
         public function fillFromCellIds(param1:Vector.<uint>) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < param1.length)
             {
                 
@@ -102,8 +102,8 @@ package com.ankamagames.jerakine.types.positions
         public function toString() : String
         {
             var _loc_1:* = "\ndepart : [" + this._oStart.x + ", " + this._oStart.y + "]";
-            _loc_1 = _loc_1 + ("\narriv�e : [" + this._oEnd.x + ", " + this._oEnd.y + "]\nchemin :");
-            var _loc_2:uint = 0;
+            _loc_1 = _loc_1 + ("\narrivée : [" + this._oEnd.x + ", " + this._oEnd.y + "]\nchemin :");
+            var _loc_2:* = 0;
             while (_loc_2 < this._aPath.length)
             {
                 
@@ -115,7 +115,7 @@ package com.ankamagames.jerakine.types.positions
 
         public function compress() : void
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             if (this._aPath.length > 0)
             {
                 _loc_1 = this._aPath.length - 1;
@@ -136,9 +136,9 @@ package com.ankamagames.jerakine.types.positions
 
         public function fill() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:PathElement = null;
-            var _loc_3:PathElement = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (this._aPath.length > 0)
             {
                 _loc_1 = 0;
@@ -200,9 +200,9 @@ package com.ankamagames.jerakine.types.positions
 
         public function getCells() : Vector.<uint>
         {
-            var _loc_3:MapPoint = null;
+            var _loc_3:* = null;
             var _loc_1:* = new Vector.<uint>;
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aPath.length)
             {
                 

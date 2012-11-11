@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -31,11 +31,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_1:SpellCastInFightManager = null;
-            var _loc_2:PlayedCharacterManager = null;
-            var _loc_3:uint = 0;
-            var _loc_4:SpellWrapper = null;
-            var _loc_5:SpellManager = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (this._fighterId == CurrentPlayedFighterManager.getInstance().currentFighterId)
             {
                 _loc_1 = CurrentPlayedFighterManager.getInstance().getSpellCastManagerById(this._fighterId);

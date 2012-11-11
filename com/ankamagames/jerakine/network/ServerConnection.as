@@ -1,11 +1,10 @@
-package com.ankamagames.jerakine.network
+﻿package com.ankamagames.jerakine.network
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.messages.*;
     import com.ankamagames.jerakine.replay.*;
-    import com.ankamagames.tubul.interfaces.*;
     import flash.events.*;
     import flash.net.*;
     import flash.utils.*;
@@ -72,12 +71,12 @@ package com.ankamagames.jerakine.network
 
         public function get latencyAvg() : uint
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             if (this._latencyBuffer.length == 0)
             {
                 return 0;
             }
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             for each (_loc_2 in this._latencyBuffer)
             {
                 
@@ -168,7 +167,7 @@ package com.ankamagames.jerakine.network
 
         override public function toString() : String
         {
-            var _loc_1:String = "Server connection status:\n";
+            var _loc_1:* = "Server connection status:\n";
             _loc_1 = _loc_1 + ("  Connected:       " + (connected ? ("Yes") : ("No")) + "\n");
             if (connected)
             {
@@ -209,11 +208,12 @@ package com.ankamagames.jerakine.network
 
         public function resume() : void
         {
-            var _loc_1:INetworkMessage = null;
+            var _loc_1:* = null;
             this._pause = false;
-            for each (_loc_1 in this._pauseBuffer)
+            while (this._pauseBuffer.length && !this._pause)
             {
                 
+                _loc_1 = this._pauseBuffer.shift();
                 if (DEBUG_DATA)
                 {
                     _log.trace("[RCV] " + _loc_1);
@@ -328,7 +328,7 @@ package com.ankamagames.jerakine.network
         private function readMessageLength(param1:uint, param2:IDataInput) : uint
         {
             var _loc_3:* = param1 & NetworkMessage.BIT_MASK;
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             switch(_loc_3)
             {
                 case 0:
@@ -372,10 +372,10 @@ package com.ankamagames.jerakine.network
 
         protected function lowReceive(param1:IDataInput) : INetworkMessage
         {
-            var _loc_2:INetworkMessage = null;
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             if (!this._splittedPacket)
             {
                 if (param1.bytesAvailable < 2)
@@ -455,7 +455,7 @@ package com.ankamagames.jerakine.network
 
         protected function onConnect(event:Event) : void
         {
-            var _loc_2:INetworkMessage = null;
+            var _loc_2:* = null;
             this._connecting = false;
             if (this._timeoutTimer)
             {
@@ -521,7 +521,7 @@ package com.ankamagames.jerakine.network
             }
             _log.error("Failure while opening socket, timeout.");
             this._connecting = false;
-            this._handler.process(new ServerConnectionFailedMessage(this, "timeout"));
+            this._handler.process(new ServerConnectionFailedMessage(this, "timeout§§§"));
             return;
         }// end function
 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -108,7 +108,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
             param1.writeInt(this.mapId);
             param1.writeByte(this.subareaAlignmentSide);
             param1.writeShort(this.houses.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.houses.length)
             {
                 
@@ -117,7 +117,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.actors.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.actors.length)
             {
                 
@@ -126,7 +126,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_3 = _loc_3 + 1;
             }
             param1.writeShort(this.interactiveElements.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.interactiveElements.length)
             {
                 
@@ -134,7 +134,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_4 = _loc_4 + 1;
             }
             param1.writeShort(this.statedElements.length);
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < this.statedElements.length)
             {
                 
@@ -142,7 +142,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_5 = _loc_5 + 1;
             }
             param1.writeShort(this.obstacles.length);
-            var _loc_6:uint = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < this.obstacles.length)
             {
                 
@@ -150,7 +150,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_6 = _loc_6 + 1;
             }
             param1.writeShort(this.fights.length);
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < this.fights.length)
             {
                 
@@ -168,14 +168,14 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
 
         public function deserializeAs_MapComplementaryInformationsDataMessage(param1:IDataInput) : void
         {
-            var _loc_14:uint = 0;
-            var _loc_15:HouseInformations = null;
-            var _loc_16:uint = 0;
-            var _loc_17:GameRolePlayActorInformations = null;
-            var _loc_18:InteractiveElement = null;
-            var _loc_19:StatedElement = null;
-            var _loc_20:MapObstacle = null;
-            var _loc_21:FightCommonInformations = null;
+            var _loc_14:* = 0;
+            var _loc_15:* = null;
+            var _loc_16:* = 0;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
             this.subAreaId = param1.readShort();
             if (this.subAreaId < 0)
             {
@@ -188,7 +188,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
             }
             this.subareaAlignmentSide = param1.readByte();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -199,7 +199,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -210,7 +210,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_5 = _loc_5 + 1;
             }
             var _loc_6:* = param1.readUnsignedShort();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 
@@ -220,7 +220,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_7 = _loc_7 + 1;
             }
             var _loc_8:* = param1.readUnsignedShort();
-            var _loc_9:uint = 0;
+            var _loc_9:* = 0;
             while (_loc_9 < _loc_8)
             {
                 
@@ -230,7 +230,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_9 = _loc_9 + 1;
             }
             var _loc_10:* = param1.readUnsignedShort();
-            var _loc_11:uint = 0;
+            var _loc_11:* = 0;
             while (_loc_11 < _loc_10)
             {
                 
@@ -240,7 +240,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_11 = _loc_11 + 1;
             }
             var _loc_12:* = param1.readUnsignedShort();
-            var _loc_13:uint = 0;
+            var _loc_13:* = 0;
             while (_loc_13 < _loc_12)
             {
                 

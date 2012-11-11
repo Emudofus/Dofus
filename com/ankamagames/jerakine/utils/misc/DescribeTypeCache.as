@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+﻿package com.ankamagames.jerakine.utils.misc
 {
     import flash.utils.*;
 
@@ -30,56 +30,83 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function getVariables(param1:Object, param2:Boolean = false, param3:Boolean = true) : Array
         {
-            var _loc_5:Array = null;
-            var _loc_6:XML = null;
-            var _loc_7:XML = null;
-            var _loc_8:XML = null;
-            var _loc_4:* = getQualifiedClassName(param1);
-            if (param3)
+            var variables:Array;
+            var description:XML;
+            var variableNode:XML;
+            var key:String;
+            var accessorNode:XML;
+            var o:* = param1;
+            var onlyVar:* = param2;
+            var useCache:* = param3;
+            var className:* = getQualifiedClassName(o);
+            if (useCache)
             {
-                if (param2 && _variables[_loc_4])
+                if (onlyVar && _variables[className])
                 {
-                    return _variables[_loc_4];
+                    return _variables[className];
                 }
-                if (!param2 && _variablesAndAccessor[_loc_4])
+                if (!onlyVar && _variablesAndAccessor[className])
                 {
-                    return _variablesAndAccessor[_loc_4];
+                    return _variablesAndAccessor[className];
                 }
             }
-            _loc_5 = new Array();
-            _loc_6 = typeDescription(param1, param3);
-            for each (_loc_7 in _loc_6..variable)
+            variables = new Array();
+            description = typeDescription(o, useCache);
+            if (description.@isDynamic.toString() == "true" || o is Proxy)
+            {
+                try
+                {
+                    var _loc_5:* = 0;
+                    var _loc_6:* = o;
+                    while (_loc_6 in _loc_5)
+                    {
+                        
+                        key = _loc_6[_loc_5];
+                        variables.push(key);
+                    }
+                }
+                catch (e:Error)
+                {
+                }
+            }
+            var _loc_5:* = 0;
+            var _loc_6:* = description..variable;
+            while (_loc_6 in _loc_5)
             {
                 
-                _loc_5.push(_loc_7.@name.toString());
+                variableNode = _loc_6[_loc_5];
+                variables.push(variableNode.@name.toString());
             }
-            if (!param2)
+            if (!onlyVar)
             {
-                for each (_loc_8 in _loc_6..accessor)
+                var _loc_5:* = 0;
+                var _loc_6:* = description..accessor;
+                while (_loc_6 in _loc_5)
                 {
                     
-                    _loc_5.push(_loc_8.@name.toString());
+                    accessorNode = _loc_6[_loc_5];
+                    variables.push(accessorNode.@name.toString());
                 }
             }
-            if (param3)
+            if (useCache)
             {
-                if (param2)
+                if (onlyVar)
                 {
-                    _variables[_loc_4] = _loc_5;
+                    _variables[className] = variables;
                 }
                 else
                 {
-                    _variablesAndAccessor[_loc_4] = _loc_5;
+                    _variablesAndAccessor[className] = variables;
                 }
             }
-            return _loc_5;
+            return variables;
         }// end function
 
         public static function getTags(param1:Object) : Dictionary
         {
-            var _loc_4:XML = null;
-            var _loc_5:XML = null;
-            var _loc_6:String = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = getQualifiedClassName(param1);
             if (_tags[_loc_2])
             {

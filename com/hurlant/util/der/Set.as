@@ -1,4 +1,4 @@
-package com.hurlant.util.der
+﻿package com.hurlant.util.der
 {
     import com.hurlant.util.der.*;
 
@@ -13,7 +13,7 @@ package com.hurlant.util.der
 
         override public function toString() : String
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             _loc_1 = DER.indent;
             DER.indent = DER.indent + "    ";
             var _loc_2:* = join("\n");

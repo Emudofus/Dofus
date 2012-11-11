@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.fight
+﻿package com.ankamagames.dofus.network.messages.game.context.fight
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 
         public function serializeAs_GameFightJoinMessage(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.canBeCancelled);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.canSayReady);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.isSpectator);

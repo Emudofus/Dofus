@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -204,6 +204,10 @@ package com.ankamagames.berilia.components
 
         public function set flv(param1:String) : void
         {
+            if (!getUi().uiModule.trusted)
+            {
+                throw new SecurityError();
+            }
             var _loc_2:* = param1.split("file://");
             if (_loc_2.length > 1)
             {
@@ -223,6 +227,10 @@ package com.ankamagames.berilia.components
 
         public function set fms(param1:String) : void
         {
+            if (!getUi().uiModule.trusted)
+            {
+                throw new SecurityError();
+            }
             this._fms = param1;
             return;
         }// end function

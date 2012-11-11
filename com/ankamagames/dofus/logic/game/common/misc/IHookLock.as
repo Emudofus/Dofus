@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc
+﻿package com.ankamagames.dofus.logic.game.common.misc
 {
     import com.ankamagames.berilia.types.data.*;
 

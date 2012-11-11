@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.tooltip
+﻿package com.ankamagames.berilia.types.tooltip
 {
     import com.ankamagames.berilia.types.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -19,16 +19,16 @@ package com.ankamagames.berilia.types.tooltip
 
         public static function place(param1:DisplayObject, param2:IRectangle, param3:uint = 6, param4:uint = 0, param5:int = 3) : void
         {
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:Point = null;
-            var _loc_12:Point = null;
-            var _loc_13:Rectangle2 = null;
-            var _loc_14:Point = null;
-            var _loc_15:Rectangle2 = null;
-            var _loc_16:Object = null;
-            var _loc_6:Boolean = false;
-            var _loc_7:Array = [LocationEnum.POINT_TOPLEFT, LocationEnum.POINT_TOP, LocationEnum.POINT_TOPRIGHT, LocationEnum.POINT_LEFT, LocationEnum.POINT_CENTER, LocationEnum.POINT_RIGHT, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_BOTTOMRIGHT];
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_6:* = false;
+            var _loc_7:* = [LocationEnum.POINT_TOPLEFT, LocationEnum.POINT_TOP, LocationEnum.POINT_TOPRIGHT, LocationEnum.POINT_LEFT, LocationEnum.POINT_CENTER, LocationEnum.POINT_RIGHT, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_BOTTOMRIGHT];
             var _loc_8:* = new Array();
             for each (_loc_9 in _loc_7)
             {
@@ -87,7 +87,7 @@ package com.ankamagames.berilia.types.tooltip
         public static function placeWithArrow(param1:DisplayObject, param2:IRectangle) : Object
         {
             var _loc_3:* = new Point(param1.x, param1.y);
-            var _loc_4:Object = {bottomFlip:false, leftFlip:false};
+            var _loc_4:* = {bottomFlip:false, leftFlip:false};
             _loc_3.x = param2.x + param2.width / 2 + 5;
             _loc_3.y = param2.y - param1.height;
             if (_loc_3.x + param1.width > StageShareManager.startWidth)

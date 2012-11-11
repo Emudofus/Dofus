@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.entities
+﻿package com.ankamagames.dofus.types.entities
 {
     import com.ankamagames.jerakine.entities.interfaces.*;
     import com.ankamagames.jerakine.types.positions.*;

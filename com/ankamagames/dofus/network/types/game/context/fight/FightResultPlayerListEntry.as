@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -53,7 +53,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
             }
             param1.writeByte(this.level);
             param1.writeShort(this.additional.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.additional.length)
             {
                 
@@ -72,8 +72,8 @@ package com.ankamagames.dofus.network.types.game.context.fight
 
         public function deserializeAs_FightResultPlayerListEntry(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:FightResultAdditionalData = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             super.deserialize(param1);
             this.level = param1.readUnsignedByte();
             if (this.level < 1 || this.level > 200)
@@ -81,7 +81,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 throw new Error("Forbidden value (" + this.level + ") on element of FightResultPlayerListEntry.level.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

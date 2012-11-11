@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -37,14 +37,14 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:LivingObjectDissociateAction = null;
-            var _loc_3:LivingObjectDissociateMessage = null;
-            var _loc_4:LivingObjectFeedAction = null;
-            var _loc_5:ObjectFeedMessage = null;
-            var _loc_6:LivingObjectChangeSkinRequestAction = null;
-            var _loc_7:LivingObjectChangeSkinRequestMessage = null;
-            var _loc_8:ObjectModifiedMessage = null;
-            var _loc_9:ItemWrapper = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             switch(true)
             {
                 case param1 is LivingObjectDissociateAction:

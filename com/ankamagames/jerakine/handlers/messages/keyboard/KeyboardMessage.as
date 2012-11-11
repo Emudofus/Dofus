@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.handlers.messages.keyboard
+﻿package com.ankamagames.jerakine.handlers.messages.keyboard
 {
     import com.ankamagames.jerakine.handlers.messages.*;
     import flash.display.*;

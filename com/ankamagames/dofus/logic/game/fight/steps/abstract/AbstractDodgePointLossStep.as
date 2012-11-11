@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps.abstract
+﻿package com.ankamagames.dofus.logic.game.fight.steps.abstract
 {
     import com.ankamagames.jerakine.sequencer.*;
 

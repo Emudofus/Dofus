@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.managers.*;
@@ -23,24 +23,24 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_5:uint = 0;
-            var _loc_6:MapPoint = null;
-            var _loc_7:uint = 0;
-            var _loc_8:Selection = null;
-            var _loc_9:Lozenge = null;
-            var _loc_10:Vector.<uint> = null;
-            var _loc_11:uint = 0;
-            var _loc_12:uint = 0;
-            var _loc_13:MapPoint = null;
-            var _loc_14:MapPoint = null;
-            var _loc_15:Vector.<uint> = null;
-            var _loc_16:Selection = null;
-            var _loc_17:uint = 0;
-            var _loc_18:MapPoint = null;
-            var _loc_19:uint = 0;
-            var _loc_20:MapPoint = null;
-            var _loc_21:Array = null;
-            var _loc_22:int = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = 0;
+            var _loc_18:* = null;
+            var _loc_19:* = 0;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = 0;
             var _loc_4:* = DataMapProvider.getInstance();
             switch(param2)
             {

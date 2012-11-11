@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.enum
+﻿package com.ankamagames.dofus.kernel.sound.enum
 {
 
     public class SoundTypeEnum extends Object

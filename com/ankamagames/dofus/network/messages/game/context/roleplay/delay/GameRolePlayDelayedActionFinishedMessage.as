@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.delay
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

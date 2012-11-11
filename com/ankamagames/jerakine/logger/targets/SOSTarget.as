@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger.targets
+﻿package com.ankamagames.jerakine.logger.targets
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.logger.targets.*;
@@ -19,9 +19,19 @@ package com.ankamagames.jerakine.logger.targets
             return;
         }// end function
 
+        public function get socket() : XMLSocket
+        {
+            return _socket;
+        }// end function
+
+        public function get connected() : Boolean
+        {
+            return _connecting;
+        }// end function
+
         override public function logEvent(event:LogEvent) : void
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             if (enabled && event is TextLogEvent)
             {
                 _loc_2 = event.message;
@@ -60,7 +70,7 @@ package com.ankamagames.jerakine.logger.targets
 
         private static function send(param1:int, param2:String) : void
         {
-            var _loc_3:LoggerHistoryElement = null;
+            var _loc_3:* = null;
             if (_socket.connected)
             {
                 if (param1 != LogLevel.COMMANDS)
@@ -129,7 +139,7 @@ package com.ankamagames.jerakine.logger.targets
 
         private static function onSocket(event:Event) : void
         {
-            var _loc_2:LoggerHistoryElement = null;
+            var _loc_2:* = null;
             _connecting = false;
             for each (_loc_2 in _history)
             {

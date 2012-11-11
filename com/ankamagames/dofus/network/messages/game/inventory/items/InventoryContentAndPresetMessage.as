@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.items
+﻿package com.ankamagames.dofus.network.messages.game.inventory.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.inventory.preset.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
         {
             super.serializeAs_InventoryContentMessage(param1);
             param1.writeShort(this.presets.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.presets.length)
             {
                 
@@ -85,10 +85,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
 
         public function deserializeAs_InventoryContentAndPresetMessage(param1:IDataInput) : void
         {
-            var _loc_4:Preset = null;
+            var _loc_4:* = null;
             super.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

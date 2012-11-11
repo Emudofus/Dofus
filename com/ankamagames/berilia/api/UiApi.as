@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.api
+﻿package com.ankamagames.berilia.api
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.*;
@@ -23,7 +23,6 @@ package com.ankamagames.berilia.api
     import com.ankamagames.jerakine.utils.memory.*;
     import com.ankamagames.jerakine.utils.misc.*;
     import com.ankamagames.jerakine.utils.pattern.*;
-    import com.ankamagames.jerakine.utils.system.*;
     import flash.display.*;
     import flash.geom.*;
     import flash.utils.*;
@@ -68,8 +67,8 @@ package com.ankamagames.berilia.api
 
         public function loadUi(param1:String, param2:String = null, param3 = null, param4:uint = 1, param5:String = null) : Object
         {
-            var _loc_8:Array = null;
-            var _loc_9:UiRootContainer = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_6:* = this._module;
             var _loc_7:* = param1;
             if (!this._module.uis[param1])
@@ -111,8 +110,8 @@ package com.ankamagames.berilia.api
 
         public function loadUiInside(param1:String, param2:GraphicContainer, param3:String = null, param4 = null) : Object
         {
-            var _loc_7:Array = null;
-            var _loc_8:UiRootContainer = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_5:* = this._module;
             var _loc_6:* = param1;
             if (!this._module.uis[param1])
@@ -173,10 +172,26 @@ package com.ankamagames.berilia.api
             return SecureCenter.secure(_loc_2, this._module.trusted);
         }// end function
 
+        public function getUiInstances() : Vector.<UiRootContainer>
+        {
+            var _loc_3:* = null;
+            var _loc_1:* = Berilia.getInstance().uiList;
+            var _loc_2:* = new Vector.<UiRootContainer>;
+            for each (_loc_3 in _loc_1)
+            {
+                
+                if (_loc_3.uiModule == this._module)
+                {
+                    _loc_2.push(_loc_3);
+                }
+            }
+            return _loc_2;
+        }// end function
+
         public function getModuleList() : Array
         {
-            var _loc_3:UiModule = null;
-            var _loc_1:Array = [];
+            var _loc_3:* = null;
+            var _loc_1:* = [];
             var _loc_2:* = UiModuleManager.getInstance().getModules();
             for each (_loc_3 in _loc_2)
             {
@@ -190,8 +205,8 @@ package com.ankamagames.berilia.api
 
         public function setModuleEnable(param1:String, param2:Boolean) : void
         {
-            var _loc_3:Array = null;
-            var _loc_4:UiModule = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (param2)
             {
                 _loc_3 = UiModuleManager.getInstance().disabledModule;
@@ -247,7 +262,7 @@ package com.ankamagames.berilia.api
 
         public function addComponentHook(param1:GraphicContainer, param2:String) : void
         {
-            var _loc_4:InstanceEvent = null;
+            var _loc_4:* = null;
             var _loc_3:* = this.getEventClassName(param2);
             if (!_loc_3)
             {
@@ -471,7 +486,7 @@ package com.ankamagames.berilia.api
 
         public function showTooltip(param1, param2, param3:Boolean = false, param4:String = "standard", param5:uint = 0, param6:uint = 2, param7:int = 3, param8:String = null, param9:Class = null, param10:Object = null, param11:String = null, param12:Boolean = false, param13:int = 4) : void
         {
-            var _loc_14:Tooltip = null;
+            var _loc_14:* = null;
             if (this._currentUi)
             {
                 _loc_14 = TooltipManager.show(param1, param2, this._module, param3, param4, param5, param6, param7, true, param8, param9, param10, param11, param12, param13);
@@ -524,7 +539,7 @@ package com.ankamagames.berilia.api
 
         public function setFollowCursorUri(param1, param2:Boolean = false, param3:Boolean = false, param4:int = 0, param5:int = 0, param6:Number = 1) : void
         {
-            var _loc_7:LinkedCursorData = null;
+            var _loc_7:* = null;
             if (param1)
             {
                 _loc_7 = new LinkedCursorData();
@@ -587,37 +602,35 @@ package com.ankamagames.berilia.api
             return StageShareManager.startHeight;
         }// end function
 
+        public function getWindowWidth() : int
+        {
+            return StageShareManager.stage.stageWidth;
+        }// end function
+
+        public function getWindowHeight() : int
+        {
+            return StageShareManager.stage.stageHeight;
+        }// end function
+
+        public function getWindowScale() : Number
+        {
+            return StageShareManager.windowScale;
+        }// end function
+
         public function setFullScreen(param1:Boolean, param2:Boolean = false) : void
         {
-            _log.trace(StageShareManager.rootContainer.name);
-            if (AirScanner.hasAir())
-            {
-                if (param1)
-                {
-                    if (!param2)
-                    {
-                        StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
-                    }
-                    else
-                    {
-                        StageShareManager.stage["nativeWindow"].maximize();
-                    }
-                }
-                else if (!param2)
-                {
-                    StageShareManager.stage.displayState = StageDisplayState.NORMAL;
-                }
-                else
-                {
-                    StageShareManager.stage["nativeWindow"].minimize();
-                }
-            }
+            StageShareManager.setFullScreen(param1, param2);
             return;
         }// end function
 
         public function useIME() : Boolean
         {
             return Berilia.getInstance().useIME;
+        }// end function
+
+        public function replaceParams(param1:String, param2:Array, param3:String = "%") : String
+        {
+            return I18n.replaceParams(param1, param2, param3);
         }// end function
 
         public function replaceKey(param1:String) : String

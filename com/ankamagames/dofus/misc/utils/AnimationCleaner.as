@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.dofus.types.enums.*;
 
@@ -12,7 +12,7 @@ package com.ankamagames.dofus.misc.utils
 
         public static function cleanBones1AnimName(param1:uint, param2:String = null) : String
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             switch(param1)
             {
                 case 1:

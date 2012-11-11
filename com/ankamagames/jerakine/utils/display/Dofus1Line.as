@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import com.ankamagames.jerakine.types.*;
     import flash.geom.*;
@@ -13,34 +13,34 @@ package com.ankamagames.jerakine.utils.display
 
         public static function getLine(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int) : Array
         {
-            var _loc_10:int = 0;
-            var _loc_11:Point3D = null;
-            var _loc_21:Point = null;
-            var _loc_22:int = 0;
-            var _loc_23:int = 0;
-            var _loc_24:Number = NaN;
-            var _loc_25:Number = NaN;
-            var _loc_26:Number = NaN;
-            var _loc_27:Number = NaN;
-            var _loc_28:Number = NaN;
-            var _loc_29:Number = NaN;
-            var _loc_30:Number = NaN;
-            var _loc_31:Number = NaN;
-            var _loc_32:uint = 0;
-            var _loc_33:uint = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = 0;
+            var _loc_23:* = 0;
+            var _loc_24:* = NaN;
+            var _loc_25:* = NaN;
+            var _loc_26:* = NaN;
+            var _loc_27:* = NaN;
+            var _loc_28:* = NaN;
+            var _loc_29:* = NaN;
+            var _loc_30:* = NaN;
+            var _loc_31:* = NaN;
+            var _loc_32:* = 0;
+            var _loc_33:* = 0;
             var _loc_7:* = new Array();
             var _loc_8:* = new Point3D(param1, param2, param3);
             var _loc_9:* = new Point3D(param4, param5, param6);
             _loc_11 = new Point3D(_loc_8.x + 0.5, _loc_8.y + 0.5, _loc_8.z);
             var _loc_12:* = new Point3D(_loc_9.x + 0.5, _loc_9.y + 0.5, _loc_9.z);
-            var _loc_13:Number = 0;
-            var _loc_14:Number = 0;
-            var _loc_15:Number = 0;
-            var _loc_16:Number = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = 0;
+            var _loc_15:* = 0;
+            var _loc_16:* = 0;
             var _loc_17:* = _loc_11.z > _loc_12.z;
             var _loc_18:* = new Array();
             var _loc_19:* = new Array();
-            var _loc_20:uint = 0;
+            var _loc_20:* = 0;
             if (Math.abs(_loc_11.x - _loc_12.x) == Math.abs(_loc_11.y - _loc_12.y))
             {
                 _loc_16 = Math.abs(_loc_11.x - _loc_12.x);

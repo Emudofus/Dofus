@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
     import com.ankamagames.tiphon.display.*;
     import flash.display.*;
@@ -44,7 +44,7 @@ package com.ankamagames.tiphon.types
 
         private function _getRoot() : ScriptedAnimation
         {
-            var _loc_1:DisplayObject = this;
+            var _loc_1:* = this;
             while (_loc_1)
             {
                 

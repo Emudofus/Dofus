@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+ï»¿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.types.data.*;
@@ -43,27 +43,27 @@ package com.ankamagames.dofus.uiApi
                 }
                 case ExchangeErrorEnum.REQUEST_CHARACTER_JOB_NOT_EQUIPED:
                 {
-                    return "La requête d\'échange ne peut pas aboutir car l\'objet permetant de faire le craft n\'est pas équipé;
+                    return "La requÃªte d\'Ã©change ne peut pas aboutir car l\'objet permetant de faire le craft n\'est pas Ã©quipÃ©";
                 }
                 case ExchangeErrorEnum.REQUEST_CHARACTER_NOT_SUSCRIBER:
                 {
-                    return "La requête d\'échange ne peut pas aboutir, le joueur n est pas enregistré;
+                    return "La requÃªte d\'Ã©change ne peut pas aboutir, le joueur n est pas enregistrÃ©";
                 }
                 case ExchangeErrorEnum.REQUEST_CHARACTER_OCCUPIED:
                 {
-                    return "La requête d\'échange ne peut pas aboutir car la cible est occupée;
+                    return "La requÃªte d\'Ã©change ne peut pas aboutir car la cible est occupÃ©e";
                 }
                 case ExchangeErrorEnum.REQUEST_CHARACTER_OVERLOADED:
                 {
-                    return "La requête d\'échange ne peut pas aboutir, le joueur est \'overloaded?\'";
+                    return "La requÃªte d\'Ã©change ne peut pas aboutir, le joueur est \'overloaded?\'";
                 }
                 case ExchangeErrorEnum.REQUEST_CHARACTER_TOOL_TOO_FAR:
                 {
-                    return "La requête d\'échange ne peut pas aboutir, la machine est trop loin";
+                    return "La requÃªte d\'Ã©change ne peut pas aboutir, la machine est trop loin";
                 }
                 case ExchangeErrorEnum.REQUEST_IMPOSSIBLE:
                 {
-                    return "La requête d\'échange ne peut pas aboutir";
+                    return "La requÃªte d\'Ã©change ne peut pas aboutir";
                 }
                 case ExchangeErrorEnum.MOUNT_PADDOCK_ERROR:
                 {
@@ -78,7 +78,7 @@ package com.ankamagames.dofus.uiApi
                     break;
                 }
             }
-            return "Erreur d\'échange de type inconnue";
+            return "Erreur d\'Ã©change de type inconnue";
         }// end function
 
     }

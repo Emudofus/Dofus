@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

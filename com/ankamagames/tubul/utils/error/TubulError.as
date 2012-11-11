@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.utils.error
+﻿package com.ankamagames.tubul.utils.error
 {
 
     public class TubulError extends Error

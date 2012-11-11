@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.loaders
+﻿package com.ankamagames.jerakine.resources.loaders
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.newCache.*;
@@ -25,31 +25,45 @@ package com.ankamagames.jerakine.resources.loaders
 
         protected function checkCache(param1:Uri) : Boolean
         {
-            var _loc_2:String = null;
-            var _loc_3:CacheableResource = null;
-            if (param1.protocol == "pak" || param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0)
+            var _loc_2:* = this.getCachedValue(param1);
+            if (_loc_2 != null)
             {
-                _loc_2 = RES_CACHE_PREFIX + param1.toSum();
-            }
-            else
-            {
-                _loc_2 = RES_CACHE_PREFIX + new Uri(param1.path).toSum();
-            }
-            if (this._cache && this._cache.contains(_loc_2))
-            {
-                _loc_3 = this._cache.peek(_loc_2);
-                this.dispatchSuccess(param1, _loc_3.resourceType, _loc_3.resource);
+                this.dispatchSuccess(param1, _loc_2.resourceType, _loc_2.resource);
                 return true;
             }
             return false;
         }// end function
 
+        private function getCachedValue(param1:Uri) : CacheableResource
+        {
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            if (param1.protocol == "pak" || param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0)
+            {
+                _loc_3 = RES_CACHE_PREFIX + param1.toSum();
+            }
+            else
+            {
+                _loc_3 = RES_CACHE_PREFIX + new Uri(param1.path).toSum();
+            }
+            if (this._cache && this._cache.contains(_loc_3))
+            {
+                _loc_2 = this._cache.peek(_loc_3);
+            }
+            return _loc_2;
+        }// end function
+
+        public function isInCache(param1:Uri) : Boolean
+        {
+            return this.getCachedValue(param1) != null;
+        }// end function
+
         protected function dispatchSuccess(param1:Uri, param2:uint, param3) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:CacheableResource = null;
-            var _loc_6:ResourceLoadedEvent = null;
-            var _loc_7:ResourceLoaderProgressEvent = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             if (param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0)
             {
                 _loc_4 = RES_CACHE_PREFIX + param1.toSum();
@@ -63,7 +77,7 @@ package com.ankamagames.jerakine.resources.loaders
                 _loc_5 = new CacheableResource(param2, param3);
                 this._cache.store(_loc_4, _loc_5);
             }
-            var _loc_8:String = this;
+            var _loc_8:* = this;
             var _loc_9:* = this._filesLoaded + 1;
             _loc_8._filesLoaded = _loc_9;
             if (hasEventListener(ResourceLoadedEvent.LOADED))
@@ -91,8 +105,8 @@ package com.ankamagames.jerakine.resources.loaders
 
         protected function dispatchFailure(param1:Uri, param2:String, param3:uint) : void
         {
-            var _loc_4:ResourceErrorEvent = null;
-            var _loc_5:String = this;
+            var _loc_4:* = null;
+            var _loc_5:* = this;
             var _loc_6:* = this._filesLoaded + 1;
             _loc_5._filesLoaded = _loc_6;
             if (hasEventListener(ResourceErrorEvent.ERROR))
@@ -116,7 +130,7 @@ package com.ankamagames.jerakine.resources.loaders
 
         private function dispatchComplete() : void
         {
-            var _loc_1:ResourceLoaderProgressEvent = null;
+            var _loc_1:* = null;
             if (!this._completed)
             {
                 this._completed = true;

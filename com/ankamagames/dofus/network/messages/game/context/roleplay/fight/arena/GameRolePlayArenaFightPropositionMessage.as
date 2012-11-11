@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
             }
             param1.writeInt(this.fightId);
             param1.writeShort(this.alliesId.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.alliesId.length)
             {
                 
@@ -101,14 +101,14 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 
         public function deserializeAs_GameRolePlayArenaFightPropositionMessage(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             this.fightId = param1.readInt();
             if (this.fightId < 0)
             {
                 throw new Error("Forbidden value (" + this.fightId + ") on element of GameRolePlayArenaFightPropositionMessage.fightId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

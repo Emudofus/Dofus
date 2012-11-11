@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.spells.*;

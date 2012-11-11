@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.manager
+ï»¿package com.ankamagames.dofus.kernel.sound.manager
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.data.map.*;
@@ -148,11 +148,11 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function setSubArea(param1:Map = null) : void
         {
-            var _loc_6:AmbientSound = null;
-            var _loc_7:AmbientSound = null;
-            var _loc_8:AmbientSound = null;
-            var _loc_9:AmbientSound = null;
-            var _loc_10:Boolean = false;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = false;
             var _loc_2:* = MapPosition.getMapPositionById(param1.id);
             this.removeLocalizedSounds();
             this._localizedSoundsManager.setMap(param1);
@@ -168,7 +168,7 @@ package com.ankamagames.dofus.kernel.sound.manager
                 return;
             }
             var _loc_4:* = new Vector.<Vector.<AmbientSound>>;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < 4)
             {
                 
@@ -227,7 +227,7 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function playSound(param1:ISound, param2:Boolean = false, param3:int = -1) : ISound
         {
-            var _loc_6:String = null;
+            var _loc_6:* = null;
             if (!this.checkIfAvailable())
             {
                 return null;
@@ -270,15 +270,15 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function handleFLAEvent(param1:String, param2:String, param3:String, param4:Object = null) : void
         {
-            var _loc_9:TiphonSprite = null;
-            var _loc_10:Object = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             if (!(this.soundIsActivate && RegConnectionManager.getInstance().isMain))
             {
                 return;
             }
-            var _loc_5:Number = 0;
-            var _loc_6:Number = 0;
-            var _loc_7:int = -1;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = -1;
             if (param4.hasOwnProperty("absoluteBounds"))
             {
                 _loc_5 = param4.absoluteBounds.x;
@@ -341,7 +341,7 @@ package com.ankamagames.dofus.kernel.sound.manager
                     break;
                 }
             }
-            var _loc_8:int = -1;
+            var _loc_8:* = -1;
             if (param4.look.skins)
             {
                 _loc_8 = param4.look.skins[0];
@@ -399,7 +399,7 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function removeSoundEntity(param1:ISound) : void
         {
-            var _loc_3:ISound = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._reverseEntitySounds[param1];
             if (!this._entitySounds[_loc_2])
             {
@@ -425,8 +425,8 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function removeEntitySound(param1:IEntity) : void
         {
-            var _loc_2:ISound = null;
-            var _loc_3:VolumeFadeEffect = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (this._entityDictionary[param1] == null)
             {
                 return;
@@ -655,12 +655,13 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function buildSoundLabel(param1:int, param2:String, param3:String) : String
         {
-            var _loc_9:SoundAnimation = null;
-            var _loc_10:RegExp = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             if (param3 != null)
             {
-                _loc_10 = /^\s*(.*?)\s*$""^\s*(.*?)\s*$/g;
-                param3 = param3.replace(_loc_10, "$1");
+                _loc_8 = /^\s*(.*?)\s*$""^\s*(.*?)\s*$/g;
+                param3 = param3.replace(_loc_8, "$1");
                 if (param3.length == 0)
                 {
                     param3 = null;
@@ -674,23 +675,21 @@ package com.ankamagames.dofus.kernel.sound.manager
             var _loc_5:* = _loc_4.getEntityInfos(param1);
             if (!_loc_4.getEntityInfos(param1) || !_loc_5.look)
             {
-                _log.error(param1 + " : donnés incomplètes pour ce bones, impossible de créer les sons");
+                _log.error(param1 + " : donnÃ©s incomplÃ¨tes pour ce bones, impossible de crÃ©er les sons");
                 return null;
             }
             var _loc_6:* = _loc_5.look.bonesId;
             var _loc_7:* = SoundBones.getSoundBonesById(_loc_6);
-            if (!SoundBones.getSoundBonesById(_loc_6))
+            if (SoundBones.getSoundBonesById(_loc_6) != null)
             {
-                _log.error(param1 + " : donnés incomplètes pour ce bones (pas de données sons), impossible de créer les sons");
-                return null;
+                _loc_9 = new Vector.<SoundEventParamWrapper>;
+                for each (_loc_10 in _loc_7.getSoundAnimationByLabel(param2, param3))
+                {
+                    
+                    _loc_9.push(new SoundEventParamWrapper(_loc_10.filename, _loc_10.volume, _loc_10.rolloff, _loc_10.automationDuration, _loc_10.automationVolume, _loc_10.automationFadeIn, _loc_10.automationFadeOut, _loc_10.noCutSilence));
+                }
             }
-            var _loc_8:* = new Vector.<SoundEventParamWrapper>;
-            for each (_loc_9 in _loc_7.getSoundAnimationByLabel(param2, param3))
-            {
-                
-                _loc_8.push(new SoundEventParamWrapper(_loc_9.filename, _loc_9.volume, _loc_9.rolloff, _loc_9.automationDuration, _loc_9.automationVolume, _loc_9.automationFadeIn, _loc_9.automationFadeOut, _loc_9.noCutSilence));
-            }
-            return FLAEventLabelParser.buildSoundLabel(_loc_8);
+            return FLAEventLabelParser.buildSoundLabel(_loc_9);
         }// end function
 
     }

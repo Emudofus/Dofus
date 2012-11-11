@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.system
+﻿package com.ankamagames.jerakine.utils.system
 {
     import flash.system.*;
 
@@ -6,9 +6,20 @@ package com.ankamagames.jerakine.utils.system
     {
         private static var _initialized:Boolean = false;
         private static var _hasAir:Boolean;
+        private static var _isStreaming:Boolean;
 
         public function AirScanner()
         {
+            return;
+        }// end function
+
+        public static function init(param1:Boolean = false) : void
+        {
+            if (!_initialized)
+            {
+                initialize();
+                _isStreaming = param1;
+            }
             return;
         }// end function
 
@@ -37,8 +48,32 @@ package com.ankamagames.jerakine.utils.system
             if (!_initialized)
             {
                 initialize();
+                _isStreaming = false;
             }
             return _hasAir;
+        }// end function
+
+        public static function isStreamingVersion() : Boolean
+        {
+            if (!_initialized)
+            {
+                initialize();
+                _isStreaming = false;
+            }
+            return _isStreaming;
+        }// end function
+
+        public static function allowByteCodeExecution(param1:LoaderContext, param2:Boolean) : void
+        {
+            if (param1.hasOwnProperty("allowCodeImport"))
+            {
+                param1["allowCodeImport"] = param2;
+            }
+            else
+            {
+                param1["allowLoadBytesCodeExecution"] = param2;
+            }
+            return;
         }// end function
 
     }

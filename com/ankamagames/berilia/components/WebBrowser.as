@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -187,7 +187,7 @@ package com.ankamagames.berilia.components
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_2:DisplayObject = null;
+            var _loc_2:* = null;
             if (param1 is MouseWheelMessage)
             {
                 _loc_2 = MouseWheelMessage(param1).target;
@@ -251,7 +251,14 @@ package com.ankamagames.berilia.components
 
         public function load(param1:URLRequest) : void
         {
-            this._htmlLoader.load(param1);
+            if (getUi().uiModule.trusted)
+            {
+                this._htmlLoader.load(param1);
+            }
+            else
+            {
+                throw new SecurityError("Only trusted module can use WebBroswer");
+            }
             return;
         }// end function
 
@@ -290,7 +297,7 @@ package com.ankamagames.berilia.components
         {
             var link:Object;
             var input:Object;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = this._linkList;
             do
             {
@@ -304,7 +311,7 @@ package com.ankamagames.berilia.components
                 {
                 }
             }while (_loc_3 in _loc_2)
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = this._inputList;
             do
             {

@@ -1,4 +1,4 @@
-package nochump.util.zip
+﻿package nochump.util.zip
 {
     import flash.utils.*;
 
@@ -19,7 +19,7 @@ package nochump.util.zip
         {
             this.buf = new ByteArray();
             this.compressed = false;
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.totalIn = 0;
             this.totalOut = _loc_1;
             return;

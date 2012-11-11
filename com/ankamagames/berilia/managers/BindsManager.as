@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
@@ -32,6 +32,7 @@ package com.ankamagames.berilia.managers
 
         public function BindsManager()
         {
+            this._aRegisterKey = [];
             this._avaibleKeyboard = new Array();
             if (_self != null)
             {
@@ -53,8 +54,8 @@ package com.ankamagames.berilia.managers
 
         override public function initialize() : void
         {
-            var _loc_5:File = null;
-            var _loc_6:Bind = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             super.initialize();
             this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
             this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.objectLoaded);
@@ -110,12 +111,12 @@ package com.ankamagames.berilia.managers
 
         public function getBind(param1:Bind, param2:Boolean = false) : Bind
         {
-            var _loc_5:Bind = null;
+            var _loc_5:* = null;
             if (this._aRegisterKey == null)
             {
                 return null;
             }
-            var _loc_3:int = -1;
+            var _loc_3:* = -1;
             var _loc_4:* = this._aRegisterKey.length;
             while (++_loc_3 < _loc_4)
             {
@@ -131,7 +132,7 @@ package com.ankamagames.berilia.managers
 
         public function isRegister(param1:Bind) : Boolean
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aRegisterKey.length)
             {
                 
@@ -146,8 +147,8 @@ package com.ankamagames.berilia.managers
 
         public function isPermanent(param1:Bind) : Boolean
         {
-            var _loc_2:Shortcut = null;
-            var _loc_3:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
             while (_loc_3 < this._aRegisterKey.length)
             {
                 
@@ -166,8 +167,8 @@ package com.ankamagames.berilia.managers
 
         public function isDisabled(param1:Bind) : Boolean
         {
-            var _loc_3:Bind = null;
-            var _loc_2:uint = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aRegisterKey.length)
             {
                 
@@ -183,8 +184,8 @@ package com.ankamagames.berilia.managers
 
         public function setDisabled(param1:Bind, param2:Boolean) : void
         {
-            var _loc_4:Bind = null;
-            var _loc_3:uint = 0;
+            var _loc_4:* = null;
+            var _loc_3:* = 0;
             while (_loc_3 < this._aRegisterKey.length)
             {
                 
@@ -201,7 +202,7 @@ package com.ankamagames.berilia.managers
 
         public function isRegisteredName(param1:String) : Boolean
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aRegisterKey.length)
             {
                 
@@ -216,7 +217,7 @@ package com.ankamagames.berilia.managers
 
         public function canBind(param1:Bind) : Boolean
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.length)
             {
                 
@@ -231,8 +232,8 @@ package com.ankamagames.berilia.managers
 
         public function removeBind(param1:Bind) : void
         {
-            var _loc_3:String = null;
-            var _loc_2:uint = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aRegisterKey.length)
             {
                 
@@ -253,11 +254,11 @@ package com.ankamagames.berilia.managers
         {
             if (!this.canBind(param1))
             {
-                com.ankamagames.berilia.managers:GenericEventsManager::_log.error(param1.toString() + " cannot be bind.");
+                _log.error(param1.toString() + " cannot be bind.");
                 return;
             }
             this.removeBind(param1);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aRegisterKey.length)
             {
                 
@@ -283,7 +284,7 @@ package com.ankamagames.berilia.managers
 
         public function getBindFromShortcut(param1:String, param2:Boolean = false) : Bind
         {
-            var _loc_3:Bind = null;
+            var _loc_3:* = null;
             for each (_loc_3 in this._aRegisterKey)
             {
                 
@@ -297,20 +298,20 @@ package com.ankamagames.berilia.managers
 
         public function processCallback(param1, ... args) : void
         {
-            var _loc_4:GenericListener = null;
-            var _loc_6:Array = null;
-            var _loc_7:TextField = null;
-            var _loc_8:UiRootContainer = null;
-            var _loc_9:Boolean = false;
-            var _loc_10:uint = 0;
-            var _loc_11:UiRootContainer = null;
+            var _loc_4:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = false;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
             var _loc_12:* = undefined;
             args = Bind(param1);
             if (!this.isRegisteredShortcut(args))
             {
                 return;
             }
-            var _loc_5:Boolean = true;
+            var _loc_5:* = true;
             if (_aEvent[args.targetedShortcut])
             {
                 _loc_6 = _aEvent[args.targetedShortcut].concat(_aEvent["ALL"]);
@@ -373,8 +374,8 @@ package com.ankamagames.berilia.managers
 
         public function reset() : void
         {
-            var _loc_2:Bind = null;
-            var _loc_3:Shortcut = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_1:* = new Array();
             for each (_loc_2 in this._aRegisterKey)
             {
@@ -399,7 +400,7 @@ package com.ankamagames.berilia.managers
 
         public function changeKeyboard(param1:String, param2:Boolean = false) : void
         {
-            var _loc_3:LocalizedKeyboard = null;
+            var _loc_3:* = null;
             for each (_loc_3 in this._avaibleKeyboard)
             {
                 
@@ -416,7 +417,7 @@ package com.ankamagames.berilia.managers
 
         public function getRegisteredBind(param1:Bind) : Bind
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aRegisterKey.length)
             {
                 
@@ -431,9 +432,9 @@ package com.ankamagames.berilia.managers
 
         public function newShortcut(param1:Shortcut) : void
         {
-            var _loc_2:Bind = null;
-            var _loc_4:Bind = null;
-            var _loc_3:int = 0;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
+            var _loc_3:* = 0;
             while (_loc_3 < this._waitingBinds.length)
             {
                 
@@ -475,7 +476,7 @@ package com.ankamagames.berilia.managers
 
         private function fillShortcutsEnum() : void
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("C", "", false, true));
             ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("V", "", false, true));
             ShortcutsEnum.BASIC_SHORTCUT_FORBIDDEN.push(new Bind("(F4)", "", true, false));
@@ -522,11 +523,11 @@ package com.ankamagames.berilia.managers
 
         private function parseBindsXml(param1:String, param2:Boolean) : void
         {
-            var _loc_4:Bind = null;
-            var _loc_5:Shortcut = null;
-            var _loc_7:Bind = null;
-            var _loc_8:Boolean = false;
-            var _loc_9:XML = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = false;
+            var _loc_9:* = null;
             var _loc_3:* = XML(param1);
             var _loc_6:* = new Array();
             for each (_loc_7 in this._aRegisterKey)

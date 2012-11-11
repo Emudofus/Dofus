@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+﻿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.managers.*;
@@ -62,9 +62,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function pushed() : Boolean
         {
-            var _loc_1:int = 0;
-            var _loc_2:GameRolePlayCharacterInformations = null;
-            var _loc_3:Array = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!this._namesVisible)
             {
                 this._playersNames = new Vector.<DisplayedEntity>;
@@ -115,9 +115,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function pulled() : Boolean
         {
-            var _loc_1:DisplayedEntity = null;
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             if (this._namesVisible)
             {
                 _loc_3 = this._playersNames.length;
@@ -149,20 +149,20 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:GameMapMovementMessage = null;
-            var _loc_3:TeleportOnSameMapMessage = null;
-            var _loc_4:GameContextRemoveElementMessage = null;
-            var _loc_5:EntityMouseOverMessage = null;
-            var _loc_6:CellOverMessage = null;
-            var _loc_7:AnimatedCharacter = null;
-            var _loc_8:CellOutMessage = null;
-            var _loc_9:AnimatedCharacter = null;
-            var _loc_10:EntityMouseOutMessage = null;
-            var _loc_11:GameActionFightTeleportOnSameMapMessage = null;
-            var _loc_12:GameActionFightLeaveMessage = null;
-            var _loc_13:GameActionFightDeathMessage = null;
-            var _loc_14:IEntity = null;
-            var _loc_15:IEntity = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
             this.addListener();
             switch(true)
             {
@@ -326,7 +326,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function movementHandler(param1:int) : void
         {
-            var _loc_3:DisplayedEntity = null;
+            var _loc_3:* = null;
             var _loc_2:* = DofusEntities.getEntity(param1);
             if (!_loc_2)
             {
@@ -346,7 +346,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function entityMovementCompleteHandler(param1:IEntity) : void
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_2:* = this.getEntity(param1.id);
             var _loc_3:* = this._playersNames.indexOf(_loc_2);
             if (_loc_3 != -1)
@@ -361,9 +361,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function gameRolePlayShowActorHandler(param1:Object) : void
         {
-            var _loc_2:GameRolePlayCharacterInformations = null;
-            var _loc_3:int = 0;
-            var _loc_4:DisplayedEntity = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
             if (param1.informations is GameRolePlayMerchantInformations)
             {
                 this.removeElementHandler(param1.informations.contextualId);
@@ -392,8 +392,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function removeElementHandler(param1:int) : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             var _loc_2:* = this.getEntity(param1);
             if (_loc_2 != null)
             {
@@ -440,7 +440,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function onAnimationEnd(event:TiphonEvent) : void
         {
-            var _loc_3:DisplayedEntity = null;
+            var _loc_3:* = null;
             var _loc_2:* = event.currentTarget as AnimatedCharacter;
             if (_loc_2.hasEventListener(TiphonEvent.ANIMATION_END))
             {
@@ -466,7 +466,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function getEntity(param1:int) : DisplayedEntity
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = this._playersNames.length;
             _loc_2 = 0;
             while (_loc_2 < _loc_3)
@@ -484,7 +484,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function getEntityFromLabel(param1:Label) : DisplayedEntity
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = this._playersNames.length;
             _loc_2 = 0;
             while (_loc_2 < _loc_3)
@@ -524,11 +524,11 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function addEntity(param1:int, param2:String) : void
         {
-            var _loc_3:Label = null;
-            var _loc_4:TiphonSprite = null;
-            var _loc_5:DisplayedEntity = null;
-            var _loc_6:IEntity = null;
-            var _loc_7:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             if (this.getEntity(param1) == null)
             {
                 _loc_3 = new Label();
@@ -583,7 +583,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function updateAllTooltips() : void
         {
-            var _loc_1:DisplayedEntity = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._playersNames)
             {
                 
@@ -595,8 +595,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function updateAllTooltipsAfterRender() : void
         {
-            var _loc_1:DisplayedEntity = null;
-            var _loc_2:AnimatedCharacter = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for each (_loc_1 in this._playersNames)
             {
                 
@@ -626,8 +626,8 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function onTooltipClicked(event:MouseEvent) : void
         {
-            var _loc_2:DisplayedEntity = null;
-            var _loc_3:GameContextActorInformations = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!PlayedCharacterManager.getInstance().isFighting)
             {
                 _loc_2 = this.getEntityFromLabel(event.currentTarget as Label);
@@ -642,10 +642,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function updateTextsPosition(event:Event) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:DisplayedEntity = null;
-            var _loc_5:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             if (!this.removeListener())
             {
                 _loc_3 = this._movableEntities.length;
@@ -694,10 +694,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function waitForEntity(event:Event) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:DisplayedEntity = null;
-            var _loc_4:TiphonSprite = null;
-            var _loc_5:DisplayObject = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             for each (_loc_2 in this._waitList)
             {
                 
@@ -731,10 +731,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         private function getBounds(param1:int) : IRectangle
         {
-            var _loc_4:IRectangle = null;
-            var _loc_5:Rectangle = null;
-            var _loc_6:Rectangle2 = null;
-            var _loc_7:DisplayObject = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_2:* = DofusEntities.getEntity(param1) as TiphonSprite;
             var _loc_3:* = _loc_2.getSlot("Tete");
             if (_loc_3)
@@ -766,6 +766,84 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.atouin.managers.*;
+
+import com.ankamagames.atouin.messages.*;
+
+import com.ankamagames.berilia.*;
+
+import com.ankamagames.berilia.components.*;
+
+import com.ankamagames.berilia.enums.*;
+
+import com.ankamagames.dofus.datacenter.interactives.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.logic.game.common.actions.roleplay.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.common.misc.*;
+
+import com.ankamagames.dofus.logic.game.fight.actions.*;
+
+import com.ankamagames.dofus.logic.game.fight.frames.*;
+
+import com.ankamagames.dofus.logic.game.fight.messages.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.managers.*;
+
+import com.ankamagames.dofus.network.messages.game.actions.fight.*;
+
+import com.ankamagames.dofus.network.messages.game.actions.sequence.*;
+
+import com.ankamagames.dofus.network.messages.game.context.*;
+
+import com.ankamagames.dofus.network.messages.game.context.fight.*;
+
+import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.types.game.context.*;
+
+import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+
+import com.ankamagames.dofus.types.entities.*;
+
+import com.ankamagames.dofus.uiApi.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.entities.messages.*;
+
+import com.ankamagames.jerakine.interfaces.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.types.enums.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import com.ankamagames.tiphon.display.*;
+
+import com.ankamagames.tiphon.events.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.geom.*;
+
+import flash.utils.*;
 
 class DisplayedEntity extends Object
 {

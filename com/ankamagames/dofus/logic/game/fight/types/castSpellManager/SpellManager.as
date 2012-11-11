@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
+﻿package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
 {
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.dofus.internalDatacenter.spells.*;
@@ -63,7 +63,7 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
 
         public function cast(param1:int, param2:Array, param3:Boolean = true) : void
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             this._lastCastTurn = param1;
             for each (_loc_4 in param2)
             {
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
             }
             if (param3)
             {
-                var _loc_5:String = this;
+                var _loc_5:* = this;
                 var _loc_6:* = this._castThisTurn + 1;
                 _loc_5._castThisTurn = _loc_6;
             }
@@ -110,9 +110,9 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
 
         public function get cooldown() : int
         {
-            var _loc_5:CharacterSpellModification = null;
-            var _loc_6:int = 0;
-            var _loc_8:int = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_8:* = 0;
             var _loc_1:* = Spell.getSpellById(this._spellId);
             var _loc_2:* = SpellLevel.getLevelById(_loc_1.spellLevels[(this._spellLevel - 1)]);
             var _loc_3:* = new SpellModificator();
@@ -171,7 +171,7 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
 
         public function forceCooldown(param1:int) : void
         {
-            var _loc_5:SpellWrapper = null;
+            var _loc_5:* = null;
             var _loc_2:* = Spell.getSpellById(this._spellId);
             var _loc_3:* = SpellLevel.getLevelById(_loc_2.spellLevels[(this._spellLevel - 1)]);
             this._lastCastTurn = param1 + this._spellCastManager.currentTurn - _loc_3.minCastInterval;
@@ -193,7 +193,7 @@ package com.ankamagames.dofus.logic.game.fight.types.castSpellManager
 
         private function updateSpellWrapper(param1:Boolean = false) : void
         {
-            var _loc_5:SpellWrapper = null;
+            var _loc_5:* = null;
             var _loc_2:* = SpellWrapper.getSpellWrappersById(this._spellId, this._spellCastManager.entityId);
             var _loc_3:* = Spell.getSpellById(this._spellId);
             var _loc_4:* = SpellLevel.getLevelById(_loc_3.spellLevels[(this._spellLevel - 1)]);

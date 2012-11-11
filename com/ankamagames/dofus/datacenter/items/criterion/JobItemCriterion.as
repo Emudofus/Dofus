@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.jobs.*;
     import com.ankamagames.dofus.internalDatacenter.jobs.*;
@@ -36,8 +36,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get isRespected() : Boolean
         {
-            var _loc_1:KnownJob = null;
-            var _loc_2:KnownJob = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for each (_loc_2 in PlayedCharacterManager.getInstance().jobs)
             {
                 
@@ -62,15 +62,15 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get text() : String
         {
-            var _loc_1:String = "";
-            var _loc_2:String = "";
+            var _loc_1:* = "";
+            var _loc_2:* = "";
             var _loc_3:* = Job.getJobById(this._jobId);
             if (!_loc_3)
             {
                 return _loc_2;
             }
             var _loc_4:* = _loc_3.name;
-            var _loc_5:String = "";
+            var _loc_5:* = "";
             if (this._jobLevel >= 0)
             {
                 _loc_5 = " " + I18n.getUiText("ui.common.short.level") + " " + String(this._jobLevel);

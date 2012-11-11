@@ -1,4 +1,4 @@
-package org.flintparticles.twoD.renderers
+﻿package org.flintparticles.twoD.renderers
 {
     import flash.display.*;
     import flash.filters.*;
@@ -44,7 +44,7 @@ package org.flintparticles.twoD.renderers
 
         public function removeFilter(param1:BitmapFilter) : void
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._preFilters.length)
             {
                 
@@ -123,8 +123,8 @@ package org.flintparticles.twoD.renderers
 
         override protected function renderParticles(param1:Array) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             if (!this._bitmap)
             {
                 return;
@@ -170,7 +170,7 @@ package org.flintparticles.twoD.renderers
 
         protected function drawParticle(param1:Particle2D) : void
         {
-            var _loc_2:Matrix = null;
+            var _loc_2:* = null;
             _loc_2 = param1.matrixTransform;
             _loc_2.translate(-this._canvas.x, -this._canvas.y);
             this._bitmapData.draw(param1.image, _loc_2, param1.colorTransform, DisplayObject(param1.image).blendMode, null, this._smoothing);

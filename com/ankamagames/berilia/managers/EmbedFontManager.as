@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.resources.events.*;
@@ -53,7 +53,7 @@ package com.ankamagames.berilia.managers
         public function getFont(param1:String) : Font
         {
             var _loc_2:* = Font.enumerateFonts();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2.length)
             {
                 
@@ -68,7 +68,7 @@ package com.ankamagames.berilia.managers
 
         private function loadFonts() : void
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             if (this._currentlyLoading != null)
             {
                 return;
@@ -91,8 +91,8 @@ package com.ankamagames.berilia.managers
 
         private function onComplete(event:ResourceLoadedEvent) : void
         {
-            var _loc_3:Array = null;
-            var _loc_4:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             var _loc_2:* = Swl(event.resource).getDefinition(FileUtils.getFileStartName(event.uri.uri)) as Class;
             this._aFonts[FileUtils.getFileStartName(event.uri.uri)] = true;
             if (_loc_2["EMBED_FONT"])

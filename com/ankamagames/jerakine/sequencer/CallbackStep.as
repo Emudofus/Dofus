@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.sequencer
+﻿package com.ankamagames.jerakine.sequencer
 {
     import com.ankamagames.jerakine.types.*;
 

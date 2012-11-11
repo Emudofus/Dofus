@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.mount
+﻿package com.ankamagames.dofus.network.messages.game.context.mount
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.paddock.*;
@@ -64,7 +64,7 @@ package com.ankamagames.dofus.network.messages.game.context.mount
         public function serializeAs_GameDataPaddockObjectListAddMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.paddockItemDescription.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.paddockItemDescription.length)
             {
                 
@@ -82,9 +82,9 @@ package com.ankamagames.dofus.network.messages.game.context.mount
 
         public function deserializeAs_GameDataPaddockObjectListAddMessage(param1:IDataInput) : void
         {
-            var _loc_4:PaddockItem = null;
+            var _loc_4:* = null;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

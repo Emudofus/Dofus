@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.communication
+﻿package com.ankamagames.dofus.internalDatacenter.communication
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.interfaces.*;

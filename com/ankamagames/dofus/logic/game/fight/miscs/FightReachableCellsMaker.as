@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.miscs
+﻿package com.ankamagames.dofus.logic.game.fight.miscs
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.managers.*;
@@ -19,39 +19,51 @@ package com.ankamagames.dofus.logic.game.fight.miscs
         private var _waitingCells:Vector.<_ReachableCellStore>;
         private var _watchedCells:Vector.<_ReachableCellStore>;
 
-        public function FightReachableCellsMaker(param1:GameFightFighterInformations)
+        public function FightReachableCellsMaker(param1:GameFightFighterInformations, param2:int = -1, param3:int = -1)
         {
-            var _loc_3:String = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:IEntity = null;
-            var _loc_7:_ReachableCellStore = null;
-            var _loc_2:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = NaN;
+            var _loc_4:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             this._infos = param1;
-            this._mp = this._infos.stats.movementPoints > 0 ? (this._infos.stats.movementPoints) : (0);
-            this._mapPoint = MapPoint.fromCellId(this._infos.disposition.cellId);
-            this._cellGrid = new Vector.<Vector.<_ReachableCellStore>>(this._mp * 2 + 1);
-            for (_loc_3 in this._cellGrid)
+            if (param3 != -1)
             {
-                
-                this._cellGrid[_loc_3] = new Vector.<_ReachableCellStore>(this._mp * 2 + 1);
+                this._mp = param3;
             }
-            for each (_loc_6 in EntitiesManager.getInstance().entities)
+            else
+            {
+                this._mp = this._infos.stats.movementPoints > 0 ? (this._infos.stats.movementPoints) : (0);
+            }
+            this._mapPoint = MapPoint.fromCellId(param2 != -1 ? (param2) : (this._infos.disposition.cellId));
+            this._cellGrid = new Vector.<Vector.<_ReachableCellStore>>(this._mp * 2 + 1);
+            for (_loc_5 in this._cellGrid)
             {
                 
-                if (_loc_6.id != this._infos.contextualId)
+                this._cellGrid[_loc_5] = new Vector.<_ReachableCellStore>(this._mp * 2 + 1);
+            }
+            for each (_loc_8 in EntitiesManager.getInstance().entities)
+            {
+                
+                if (_loc_8.id != this._infos.contextualId)
                 {
-                    _loc_4 = _loc_6.position.x - this._mapPoint.x + this._mp;
-                    _loc_5 = _loc_6.position.y - this._mapPoint.y + this._mp;
-                    if (_loc_4 >= 0 && _loc_4 < this._mp * 2 + 1 && _loc_5 >= 0 && _loc_5 < this._mp * 2 + 1)
+                    _loc_6 = _loc_8.position.x - this._mapPoint.x + this._mp;
+                    _loc_7 = _loc_8.position.y - this._mapPoint.y + this._mp;
+                    if (_loc_6 >= 0 && _loc_6 < this._mp * 2 + 1 && _loc_7 >= 0 && _loc_7 < this._mp * 2 + 1)
                     {
-                        param1 = _loc_2.getEntityInfos(_loc_6.id) as GameFightFighterInformations;
+                        param1 = _loc_4.getEntityInfos(_loc_8.id) as GameFightFighterInformations;
                         if (param1)
                         {
-                            _loc_7 = new _ReachableCellStore(_loc_6.position, _loc_4, _loc_5, this._cellGrid);
-                            _loc_7.state = _ReachableCellStore.STATE_UNREACHABLE;
-                            _loc_7.evade = TackleUtil.getTackleForFighter(param1, this._infos);
-                            this._cellGrid[_loc_4][_loc_5] = _loc_7;
+                            _loc_9 = new _ReachableCellStore(_loc_8.position, _loc_6, _loc_7, this._cellGrid);
+                            _loc_9.state = _ReachableCellStore.STATE_UNREACHABLE;
+                            _loc_10 = TackleUtil.getTackleForFighter(param1, this._infos);
+                            if (!_loc_9.evade || _loc_10 < _loc_9.evade)
+                            {
+                                _loc_9.evade = _loc_10;
+                            }
+                            this._cellGrid[_loc_6][_loc_7] = _loc_9;
                         }
                     }
                 }
@@ -74,8 +86,8 @@ package com.ankamagames.dofus.logic.game.fight.miscs
 
         private function compute() : void
         {
-            var _loc_1:Vector.<_ReachableCellStore> = null;
-            var _loc_4:_ReachableCellStore = null;
+            var _loc_1:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = this._mp;
             var _loc_3:* = this._mp;
             this._waitingCells = new Vector.<_ReachableCellStore>;
@@ -122,7 +134,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
 
         private function markNode(param1:int, param2:int, param3:int, param4:int) : void
         {
-            var _loc_8:int = 0;
+            var _loc_8:* = 0;
             var _loc_5:* = param1 - this._mapPoint.x + this._mp;
             var _loc_6:* = param2 - this._mapPoint.y + this._mp;
             var _loc_7:* = this._cellGrid[_loc_5][_loc_6];
@@ -178,6 +190,20 @@ package com.ankamagames.dofus.logic.game.fight.miscs
     }
 }
 
+import __AS3__.vec.*;
+
+import com.ankamagames.atouin.managers.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.logic.game.fight.frames.*;
+
+import com.ankamagames.dofus.network.types.game.context.fight.*;
+
+import com.ankamagames.jerakine.entities.interfaces.*;
+
+import com.ankamagames.jerakine.types.positions.*;
+
 class _ReachableCellStore extends Object
 {
     public var mapPoint:MapPoint;
@@ -205,7 +231,7 @@ class _ReachableCellStore extends Object
 
     public function findState(param1:GameFightFighterInformations) : void
     {
-        var _loc_3:_ReachableCellStore = null;
+        var _loc_3:* = null;
         var _loc_2:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[this.mapPoint.cellId]);
         if (!_loc_2.mov || _loc_2.nonWalkableDuringFight)
         {

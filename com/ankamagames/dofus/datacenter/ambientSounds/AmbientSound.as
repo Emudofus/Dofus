@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.ambientSounds
+﻿package com.ankamagames.dofus.datacenter.ambientSounds
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

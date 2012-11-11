@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.monsters
+﻿package com.ankamagames.dofus.datacenter.monsters
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types.miscs
+﻿package com.ankamagames.atouin.types.miscs
 {
 
     public class PartialDataMap extends Object

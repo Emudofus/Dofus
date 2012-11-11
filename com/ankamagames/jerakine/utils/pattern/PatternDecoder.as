@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.pattern
+﻿package com.ankamagames.jerakine.utils.pattern
 {
 
     public class PatternDecoder extends Object
@@ -44,9 +44,9 @@ package com.ankamagames.jerakine.utils.pattern
 
         public static function replace(param1:String, param2:String) : String
         {
-            var _loc_5:Array = null;
+            var _loc_5:* = null;
             var _loc_3:* = param1.split("##");
-            var _loc_4:uint = 1;
+            var _loc_4:* = 1;
             while (_loc_4 < _loc_3.length)
             {
                 
@@ -65,10 +65,10 @@ package com.ankamagames.jerakine.utils.pattern
 
         private static function findOptionnalDices(param1:Array, param2:Array) : Array
         {
-            var _loc_10:uint = 0;
-            var _loc_11:uint = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
             var _loc_3:* = param1.length;
-            var _loc_4:String = "";
+            var _loc_4:* = "";
             var _loc_5:* = new Array();
             var _loc_6:* = new Array();
             var _loc_7:* = param1;
@@ -126,13 +126,13 @@ package com.ankamagames.jerakine.utils.pattern
 
         private static function decodeDescription(param1:Array, param2:Array) : Array
         {
-            var _loc_3:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Number = NaN;
-            var _loc_9:String = null;
-            var _loc_10:Number = NaN;
-            var _loc_11:Number = NaN;
+            var _loc_3:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = null;
+            var _loc_10:* = NaN;
+            var _loc_11:* = NaN;
             _loc_3 = 0;
             var _loc_4:* = new String();
             var _loc_5:* = param1.length;
@@ -208,10 +208,10 @@ package com.ankamagames.jerakine.utils.pattern
 
         private static function decodeCombine(param1:Array, param2:Object) : Array
         {
-            var _loc_3:Number = NaN;
-            var _loc_6:String = null;
-            var _loc_7:Number = NaN;
-            var _loc_8:String = null;
+            var _loc_3:* = NaN;
+            var _loc_6:* = null;
+            var _loc_7:* = NaN;
+            var _loc_8:* = null;
             _loc_3 = 0;
             var _loc_4:* = new String();
             var _loc_5:* = param1.length;
@@ -254,7 +254,7 @@ package com.ankamagames.jerakine.utils.pattern
 
         private static function find(param1:Array, param2:Object) : Number
         {
-            var _loc_4:Number = NaN;
+            var _loc_4:* = NaN;
             var _loc_3:* = param1.length;
             _loc_4 = 0;
             while (_loc_4 < _loc_3)

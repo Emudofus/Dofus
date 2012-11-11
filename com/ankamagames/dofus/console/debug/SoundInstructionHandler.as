@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+ï»¿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.dofus.kernel.sound.*;
     import com.ankamagames.dofus.kernel.sound.manager.*;
@@ -18,16 +18,16 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:String = null;
-            var _loc_6:Number = NaN;
-            var _loc_7:Boolean = false;
-            var _loc_8:String = null;
-            var _loc_9:Number = NaN;
-            var _loc_10:Boolean = false;
-            var _loc_11:uint = 0;
-            var _loc_12:uint = 0;
-            var _loc_13:uint = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = NaN;
+            var _loc_7:* = false;
+            var _loc_8:* = null;
+            var _loc_9:* = NaN;
+            var _loc_10:* = false;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
             switch(param2)
             {
                 case "playmusic":
@@ -138,7 +138,7 @@ package com.ankamagames.dofus.console.debug
                 }
                 case "clearsoundcache":
                 {
-                    return "Nettoye les fichiers pré-cachés pour le son afin de les relire directement depuis le disque lors de la prochaine demande de lecture";
+                    return "Nettoye les fichiers prÃ©-cachÃ©s pour le son afin de les relire directement depuis le disque lors de la prochaine demande de lecture";
                 }
                 default:
                 {
@@ -155,11 +155,11 @@ package com.ankamagames.dofus.console.debug
 
         private function getParams(param1:Array, param2:Array) : Array
         {
-            var _loc_4:String = null;
-            var _loc_5:uint = 0;
-            var _loc_6:String = null;
-            var _loc_7:String = null;
-            var _loc_3:Array = [];
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_3:* = [];
             for (_loc_4 in param1)
             {
                 

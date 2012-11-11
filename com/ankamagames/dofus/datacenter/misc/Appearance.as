@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.misc
+﻿package com.ankamagames.dofus.datacenter.misc
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

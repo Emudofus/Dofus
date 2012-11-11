@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -55,16 +55,16 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:SetEnablePVPRequestAction = null;
-            var _loc_3:SetEnablePVPRequestMessage = null;
-            var _loc_4:AlignmentRankUpdateMessage = null;
-            var _loc_5:AlignmentSubAreasListMessage = null;
-            var _loc_6:AlignmentAreaUpdateMessage = null;
-            var _loc_7:Area = null;
-            var _loc_8:AlignmentSide = null;
-            var _loc_9:String = null;
-            var _loc_10:AlignmentSubAreaUpdateMessage = null;
-            var _loc_11:SubArea = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             switch(true)
             {
                 case param1 is SetEnablePVPRequestAction:

@@ -1,4 +1,4 @@
-package com.hurlant.crypto.prng
+﻿package com.hurlant.crypto.prng
 {
     import com.hurlant.crypto.prng.*;
     import com.hurlant.crypto.symmetric.*;
@@ -29,9 +29,9 @@ package com.hurlant.crypto.prng
 
         public function init(param1:ByteArray) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             _loc_2 = 0;
             while (_loc_2 < 256)
             {
@@ -57,7 +57,7 @@ package com.hurlant.crypto.prng
 
         public function next() : uint
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.i = (this.i + 1) & 255;
             this.j = this.j + this.S[this.i] & 255;
             _loc_1 = this.S[this.i];
@@ -73,7 +73,7 @@ package com.hurlant.crypto.prng
 
         public function encrypt(param1:ByteArray) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < param1.length)
             {
                 
@@ -91,7 +91,7 @@ package com.hurlant.crypto.prng
 
         public function dispose() : void
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             if (this.S != null)
             {
                 _loc_1 = 0;

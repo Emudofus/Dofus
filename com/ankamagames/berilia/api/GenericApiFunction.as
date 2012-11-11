@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.api
+﻿package com.ankamagames.berilia.api
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.utils.errors.*;

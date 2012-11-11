@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.friend
+﻿package com.ankamagames.dofus.network.types.game.friend
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.dofus.network.types.game.look.*;
@@ -56,7 +56,7 @@ package com.ankamagames.dofus.network.types.game.friend
         public function serializeAs_FriendSpouseOnlineInformations(param1:IDataOutput) : void
         {
             super.serializeAs_FriendSpouseInformations(param1);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.inFight);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.followSpouse);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.pvpEnabled);

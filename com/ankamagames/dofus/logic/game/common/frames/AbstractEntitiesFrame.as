@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+ï»¿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -77,8 +77,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function set untargetableEntities(param1:Boolean) : void
         {
-            var _loc_2:GameContextActorInformations = null;
-            var _loc_3:AnimatedCharacter = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             this._untargetableEntities = param1;
             for each (_loc_2 in this._entities)
             {
@@ -133,7 +133,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function getEntitiesIdsList() : Vector.<int>
         {
-            var _loc_2:GameContextActorInformations = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Vector.<int>(0, false);
             for each (_loc_2 in this._entities)
             {
@@ -160,10 +160,10 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function addOrUpdateActor(param1:GameContextActorInformations, param2:IAnimationModifier = null) : AnimatedCharacter
         {
-            var _loc_5:TiphonEntityLook = null;
-            var _loc_6:GameRolePlayHumanoidInformations = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_3:* = DofusEntities.getEntity(param1.contextualId) as AnimatedCharacter;
-            var _loc_4:Boolean = true;
+            var _loc_4:* = true;
             if (!(param1 is GameRolePlayNpcInformations) && param1 is GameRolePlayHumanoidInformations)
             {
                 if (this._creaturesMode && this.isIncarnation(EntityLookAdapter.fromNetwork(param1.look).toString()))
@@ -174,6 +174,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_5 = this.getLook(param1.look);
                 }
+            }
+            else if (this._creaturesMode && param1 is GameRolePlayMerchantInformations)
+            {
+                _loc_5 = this.getDealerPokemonLook(param1.look);
             }
             else if (this._creaturesMode && param1 is GameRolePlayTaxCollectorInformations)
             {
@@ -222,7 +226,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             else
             {
                 _loc_4 = false;
-                var _loc_7:String = this;
+                var _loc_7:* = this;
                 var _loc_8:* = this._humanNumber - 1;
                 _loc_7._humanNumber = _loc_8;
                 this.updateActorLook(param1.contextualId, param1.look, true);
@@ -274,13 +278,13 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         protected function updateActorLook(param1:int, param2:EntityLook, param3:Boolean = false) : void
         {
-            var _loc_5:TiphonEntityLook = null;
-            var _loc_6:GameContextActorInformations = null;
-            var _loc_7:int = 0;
-            var _loc_8:SerialSequencer = null;
-            var _loc_9:AddGfxEntityStep = null;
-            var _loc_10:Monster = null;
-            var _loc_11:TiphonSprite = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             if (this._entities[param1])
             {
                 _loc_6 = this._entities[param1] as GameContextActorInformations;
@@ -410,7 +414,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     if (_loc_3 is TiphonSprite && (_loc_3 as TiphonSprite).rootEntity && (_loc_3 as TiphonSprite).rootEntity != _loc_3)
                     {
-                        _log.debug("PAS DE SYNCHRO pour " + (_loc_3 as TiphonSprite).name + " car entité portée ");
+                        _log.debug("PAS DE SYNCHRO pour " + (_loc_3 as TiphonSprite).name + " car entitÃ© portÃ©e");
                     }
                     else
                     {
@@ -478,7 +482,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 _loc_2.destroy();
             }
             this.updateCreaturesLimit();
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             var _loc_4:* = this._humanNumber - 1;
             _loc_3._humanNumber = _loc_4;
             delete this._entities[param1];
@@ -491,9 +495,10 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         protected function switchPokemonMode() : Boolean
         {
-            var _loc_1:SwitchCreatureModeAction = null;
+            var _loc_1:* = null;
             if (this._creaturesMode != (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._humanNumber >= this._creaturesLimit))
             {
+                _log.debug("human number: " + this._humanNumber + ", creature limit: " + this._creaturesLimit + " => " + this._creaturesMode);
                 _loc_1 = SwitchCreatureModeAction.create(!this._creaturesMode);
                 Kernel.getWorker().process(_loc_1);
                 return true;
@@ -503,9 +508,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         protected function getLook(param1:EntityLook) : TiphonEntityLook
         {
-            var _loc_4:TiphonEntityLook = null;
-            var _loc_5:uint = 0;
-            var _loc_6:int = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             var _loc_2:* = EntityLookAdapter.fromNetwork(param1);
             var _loc_3:* = _loc_2;
             if (this._creaturesMode || this._creaturesFightMode)
@@ -513,16 +518,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                 _loc_5 = 0;
                 if (this.isBoneCorrect(_loc_2.getBone()))
                 {
-                    _loc_5 = Breed.getBreedFromSkin(_loc_2.skins[0]).id;
+                    _loc_5 = Breed.getBreedFromSkin(_loc_2.firstSkin).id;
                 }
-                else if (_loc_2.getBone() == 639 || _loc_2.getBone() == 1824 || _loc_2.getBone() == 1659 || _loc_2.getBone() == 1834)
+                else if (_loc_2.getBone() == 639 || _loc_2.getBone() == 1824 || _loc_2.getBone() == 1659 || _loc_2.getBone() == 1834 || _loc_2.getBone() == 1792)
                 {
                     _loc_4 = TiphonUtility.getLookWithoutMount(_loc_2);
                     if (_loc_4 != _loc_2)
                     {
                         if (this.isBoneCorrect(_loc_4.getBone()))
                         {
-                            _loc_5 = Breed.getBreedFromSkin(_loc_4.skins[0]).id;
+                            _loc_5 = Breed.getBreedFromSkin(_loc_4.firstSkin).id;
                         }
                     }
                 }
@@ -578,7 +583,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         protected function getFightPokemonLook(param1:EntityLook, param2:Boolean = false, param3:Boolean = false, param4:Boolean = false, param5:Boolean = false) : TiphonEntityLook
         {
-            var _loc_8:int = 0;
+            var _loc_8:* = 0;
             var _loc_6:* = EntityLookAdapter.fromNetwork(param1);
             var _loc_7:* = EntityLookAdapter.fromNetwork(param1);
             switch(param2)
@@ -633,9 +638,17 @@ package com.ankamagames.dofus.logic.game.common.frames
             return _loc_2;
         }// end function
 
+        private function getDealerPokemonLook(param1:EntityLook) : TiphonEntityLook
+        {
+            var _loc_2:* = EntityLookAdapter.fromNetwork(param1);
+            _loc_2.setBone(1965);
+            _loc_2.setScales(0.9, 0.9);
+            return _loc_2;
+        }// end function
+
         protected function updateCreaturesLimit() : void
         {
-            var _loc_1:Number = NaN;
+            var _loc_1:* = NaN;
             this._creaturesLimit = OptionManager.getOptionManager("tiphon").creaturesMode;
             if (this._creaturesMode)
             {
@@ -656,7 +669,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function onAtouinOptionChange(event:PropertyChangeEvent) : void
         {
-            var _loc_2:Array = null;
+            var _loc_2:* = null;
             var _loc_3:* = undefined;
             if (event.propertyName == "useLowDefSkin")
             {
@@ -695,9 +708,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function isIncarnation(param1:String) : Boolean
         {
-            var _loc_3:Incarnation = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
+            var _loc_3:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = Incarnation.getAllIncarnation();
             var _loc_4:* = param1.slice(1, param1.indexOf("|"));
             for each (_loc_3 in _loc_2)

@@ -1,4 +1,4 @@
-package mx.utils
+﻿package mx.utils
 {
     import flash.display.*;
     import flash.utils.*;
@@ -72,7 +72,7 @@ package mx.utils
 
         public static function getUnqualifiedClassName(param1:Object) : String
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             if (param1 is String)
             {
                 _loc_2 = param1 as String;

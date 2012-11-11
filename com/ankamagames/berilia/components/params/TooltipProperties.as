@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components.params
+﻿package com.ankamagames.berilia.components.params
 {
     import com.ankamagames.berilia.types.tooltip.*;
     import com.ankamagames.berilia.utils.*;
@@ -15,8 +15,9 @@ package com.ankamagames.berilia.components.params
         public var data:Object = null;
         public var makerName:String;
         public var makerParam:Object;
+        public var zoom:Number;
 
-        public function TooltipProperties(param1:Tooltip, param2:Boolean, param3:IRectangle, param4:uint, param5:uint, param6:int, param7, param8:Object)
+        public function TooltipProperties(param1:Tooltip, param2:Boolean, param3:IRectangle, param4:uint, param5:uint, param6:int, param7, param8:Object, param9:Number = 1)
         {
             this.position = param3;
             this.tooltip = param1;
@@ -27,6 +28,7 @@ package com.ankamagames.berilia.components.params
             this.data = param7;
             this.makerName = param1.makerName;
             this.makerParam = param8;
+            this.zoom = param9;
             return;
         }// end function
 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
     import com.ankamagames.dofus.network.types.game.character.choice.*;
     import com.ankamagames.dofus.network.types.game.look.*;

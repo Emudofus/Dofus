@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.startup
+﻿package com.ankamagames.dofus.network.types.game.startup
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.data.items.*;
@@ -66,7 +66,7 @@ package com.ankamagames.dofus.network.types.game.startup
             param1.writeUTF(this.descUrl);
             param1.writeUTF(this.pictureUrl);
             param1.writeShort(this.items.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.items.length)
             {
                 
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.network.types.game.startup
 
         public function deserializeAs_StartupActionAddObject(param1:IDataInput) : void
         {
-            var _loc_4:ObjectItemInformationWithQuantity = null;
+            var _loc_4:* = null;
             this.uid = param1.readInt();
             if (this.uid < 0)
             {
@@ -95,7 +95,7 @@ package com.ankamagames.dofus.network.types.game.startup
             this.descUrl = param1.readUTF();
             this.pictureUrl = param1.readUTF();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

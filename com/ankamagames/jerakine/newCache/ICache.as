@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.newCache
+﻿package com.ankamagames.jerakine.newCache
 {
 
     public interface ICache

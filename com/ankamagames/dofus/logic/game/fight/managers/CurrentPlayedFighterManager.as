@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.managers
+﻿package com.ankamagames.dofus.logic.game.fight.managers
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.items.*;
@@ -112,8 +112,8 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function getSpellById(param1:uint) : SpellWrapper
         {
-            var _loc_2:SpellWrapper = null;
-            var _loc_4:SpellWrapper = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
             var _loc_3:* = PlayedCharacterManager.getInstance();
             for each (_loc_4 in _loc_3.spellsInventory)
             {
@@ -150,16 +150,16 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function canCastThisSpell(param1:uint, param2:uint, param3:int = 2.14748e+009) : Boolean
         {
-            var _loc_6:SpellWrapper = null;
-            var _loc_8:SpellWrapper = null;
-            var _loc_11:uint = 0;
-            var _loc_13:CharacterSpellModification = null;
-            var _loc_15:int = 0;
-            var _loc_16:int = 0;
-            var _loc_19:Weapon = null;
-            var _loc_20:SpellState = null;
-            var _loc_21:Weapon = null;
-            var _loc_22:uint = 0;
+            var _loc_6:* = null;
+            var _loc_8:* = null;
+            var _loc_11:* = 0;
+            var _loc_13:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = 0;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = 0;
             var _loc_4:* = Spell.getSpellById(param1);
             var _loc_5:* = Spell.getSpellById(param1).getSpellLevel(param2);
             if (Spell.getSpellById(param1).getSpellLevel(param2) == null)
@@ -311,7 +311,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
             {
                 return false;
             }
-            if (_loc_18.cooldown > 0)
+            if (_loc_18.cooldown > 0 || _loc_6.actualCooldown > 0)
             {
                 return false;
             }
@@ -333,7 +333,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function getSpellModifications(param1:int, param2:int) : CharacterSpellModification
         {
-            var _loc_4:CharacterSpellModification = null;
+            var _loc_4:* = null;
             var _loc_3:* = this.getCharacteristicsInformations();
             if (_loc_3)
             {

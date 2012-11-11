@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.entities.behaviours.movements
+﻿package com.ankamagames.atouin.entities.behaviours.movements
 {
     import com.ankamagames.jerakine.utils.errors.*;
 

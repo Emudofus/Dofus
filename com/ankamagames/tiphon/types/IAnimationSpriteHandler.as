@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
     import com.ankamagames.jerakine.entities.interfaces.*;
     import com.ankamagames.tiphon.engine.*;

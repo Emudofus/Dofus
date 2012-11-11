@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
@@ -272,8 +272,8 @@ package com.ankamagames.berilia.types.graphic
 
         override public function getStrata(param1:uint) : Sprite
         {
-            var _loc_2:uint = 0;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             if (_aStrata[param1] != null)
             {
                 return _aStrata[param1];

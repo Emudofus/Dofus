@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.protocols
+﻿package com.ankamagames.jerakine.resources.protocols
 {
     import com.ankamagames.jerakine.resources.*;
     import com.ankamagames.jerakine.resources.protocols.impl.*;
@@ -23,6 +23,10 @@ package com.ankamagames.jerakine.resources.protocols
                 case "http":
                 {
                     return new HttpProtocol();
+                }
+                case "httpc":
+                {
+                    return new HttpCacheProtocol();
                 }
                 case "file":
                 {

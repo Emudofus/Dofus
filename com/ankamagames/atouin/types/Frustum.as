@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.jerakine.logger.*;
@@ -30,8 +30,8 @@ package com.ankamagames.atouin.types
 
         public function refresh() : Frustum
         {
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
             width = MAX_WIDTH + this._marginRight + this._marginLeft;
             height = MAX_HEIGHT + this._marginTop + this._marginBottom;
             var _loc_1:* = StageShareManager.startHeight / height;

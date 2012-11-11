@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.jerakine.data.*;
@@ -15,8 +15,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get text() : String
         {
-            var _loc_1:String = null;
-            var _loc_2:String = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (PlayerManager.getInstance().hasRights)
             {
                 _loc_1 = _criterionValue.toString();

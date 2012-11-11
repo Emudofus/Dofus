@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types
+﻿package com.ankamagames.jerakine.types
 {
     import com.ankamagames.jerakine.utils.errors.*;
 

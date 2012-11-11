@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.managers
+﻿package com.ankamagames.dofus.logic.game.common.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.jobs.*;
@@ -163,7 +163,7 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function get currentStorageView() : IStorageView
         {
-            var _loc_1:IStorageView = null;
+            var _loc_1:* = null;
             _loc_1 = this.inventory.getView("storageBidHouseFilter") as IStorageView;
             if (_loc_1)
             {
@@ -221,7 +221,7 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function enableSmithMagicFilter(param1:Skill) : void
         {
-            var _loc_3:CraftFrame = null;
+            var _loc_3:* = null;
             this.disableSmithMagicFilter();
             if (!param1)
             {
@@ -250,7 +250,7 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function enableCraftFilter(param1:Skill, param2:int) : void
         {
-            var _loc_4:CraftFrame = null;
+            var _loc_4:* = null;
             this.disableCraftFilter();
             if (!param1)
             {
@@ -383,9 +383,9 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         private function refreshViews() : void
         {
-            var _loc_2:StorageBidHouseFilterView = null;
-            var _loc_3:StorageSmithMagicFilterView = null;
-            var _loc_4:StorageCraftFilterView = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_1:* = this.getStorageViewOrFilter();
             if (this.getIsBidHouseFilterEnabled())
             {

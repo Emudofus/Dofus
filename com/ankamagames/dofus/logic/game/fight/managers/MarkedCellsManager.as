@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.managers
+﻿package com.ankamagames.dofus.logic.game.fight.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -43,10 +43,10 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function addMark(param1:int, param2:int, param3:Spell, param4:Vector.<GameActionMarkedCell>) : void
         {
-            var _loc_5:MarkInstance = null;
-            var _loc_6:GameActionMarkedCell = null;
-            var _loc_7:Selection = null;
-            var _loc_8:uint = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
             if (!this._marks[param1] || this._marks[param1].cells.length == 0)
             {
                 _loc_5 = new MarkInstance();
@@ -90,7 +90,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function removeMark(param1:int) : void
         {
-            var _loc_3:Selection = null;
+            var _loc_3:* = null;
             var _loc_2:* = (this._marks[param1] as MarkInstance).selections;
             for each (_loc_3 in _loc_2)
             {
@@ -125,10 +125,10 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function destroy() : void
         {
-            var _loc_2:String = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_1:* = new Array();
             for (_loc_2 in this._marks)
             {
@@ -161,19 +161,19 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         private function getSelectionUid() : String
         {
-            var _loc_1:String = this;
+            var _loc_1:* = this;
             _loc_1._markUid = this._markUid + 1;
             return MARK_SELECTIONS_PREFIX + this._markUid++;
         }// end function
 
         private function updateDataMapProvider() : void
         {
-            var _loc_2:MarkInstance = null;
-            var _loc_3:DataMapProvider = null;
-            var _loc_4:MapPoint = null;
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
-            var _loc_1:Array = [];
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_1:* = [];
             for each (_loc_2 in this._marks)
             {
                 

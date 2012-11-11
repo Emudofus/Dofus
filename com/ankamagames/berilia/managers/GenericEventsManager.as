@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.types.listener.*;
     import com.ankamagames.jerakine.logger.*;
@@ -38,8 +38,8 @@ package com.ankamagames.berilia.managers
 
         public function removeEventListener(param1:GenericListener) : void
         {
-            var _loc_2:String = null;
-            var _loc_3:Object = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             for (_loc_2 in this._aEvent)
             {
                 
@@ -66,9 +66,9 @@ package com.ankamagames.berilia.managers
 
         public function removeEventListenerByName(param1:String) : void
         {
-            var _loc_2:String = null;
-            var _loc_3:Object = null;
-            var _loc_4:GenericListener = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             for (_loc_2 in this._aEvent)
             {
                 
@@ -96,8 +96,8 @@ package com.ankamagames.berilia.managers
 
         public function removeEvent(param1) : void
         {
-            var _loc_2:GenericListener = null;
-            var _loc_3:Array = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_4:* = undefined;
             var _loc_5:* = undefined;
             var _loc_6:* = undefined;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.entities
+﻿package com.ankamagames.dofus.types.entities
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.effects.instances.*;
@@ -22,11 +22,11 @@ package com.ankamagames.dofus.types.entities
 
         public function updateFromParentEntity(param1:TiphonSprite, param2:BehaviorData) : void
         {
-            var _loc_3:IAnimationModifier = null;
-            var _loc_4:Boolean = false;
-            var _loc_5:CastingSpell = null;
-            var _loc_6:Vector.<EffectInstanceDice> = null;
-            var _loc_7:EffectInstanceDice = null;
+            var _loc_3:* = null;
+            var _loc_4:* = false;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             this._subentity = param1;
             this._parentData = param2;
             if (param1.animationModifiers && param1.animationModifiers.length)

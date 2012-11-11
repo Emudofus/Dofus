@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.engine
+﻿package com.ankamagames.tiphon.engine
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.utils.display.*;
@@ -33,9 +33,9 @@ package com.ankamagames.tiphon.engine
 
         public static function displayDofusScriptError(param1:String, param2:TiphonSprite) : void
         {
-            var _loc_3:TextField = null;
-            var _loc_4:Timer = null;
-            var _loc_5:Point = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (_enabled && param2)
             {
                 _loc_3 = new TextField();
@@ -58,10 +58,10 @@ package com.ankamagames.tiphon.engine
 
         private static function onTimer(event:TimerEvent) : void
         {
-            var _loc_5:TextField = null;
+            var _loc_5:* = null;
             var _loc_2:* = event.currentTarget as Timer;
             var _loc_3:* = _textList.length;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
@@ -21,17 +21,17 @@ package com.ankamagames.dofus.network.types.game.context.fight
         public var waterElementResistPercent:int = 0;
         public var airElementResistPercent:int = 0;
         public var fireElementResistPercent:int = 0;
-        public var neutralElementFixedResist:int = 0;
-        public var earthElementFixedResist:int = 0;
-        public var waterElementFixedResist:int = 0;
-        public var airElementFixedResist:int = 0;
-        public var fireElementFixedResist:int = 0;
+        public var neutralElementReduction:int = 0;
+        public var earthElementReduction:int = 0;
+        public var waterElementReduction:int = 0;
+        public var airElementReduction:int = 0;
+        public var fireElementReduction:int = 0;
         public var criticalDamageFixedResist:int = 0;
         public var pushDamageFixedResist:int = 0;
         public var dodgePALostProbability:uint = 0;
         public var dodgePMLostProbability:uint = 0;
-        public var tackleBlock:uint = 0;
-        public var tackleEvade:uint = 0;
+        public var tackleBlock:int = 0;
+        public var tackleEvade:int = 0;
         public var invisibilityState:int = 0;
         public static const protocolId:uint = 31;
 
@@ -45,7 +45,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
             return 31;
         }// end function
 
-        public function initGameFightMinimalStats(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0, param6:int = 0, param7:int = 0, param8:int = 0, param9:int = 0, param10:int = 0, param11:Boolean = false, param12:int = 0, param13:int = 0, param14:int = 0, param15:int = 0, param16:int = 0, param17:int = 0, param18:int = 0, param19:int = 0, param20:int = 0, param21:int = 0, param22:int = 0, param23:int = 0, param24:uint = 0, param25:uint = 0, param26:uint = 0, param27:uint = 0, param28:int = 0) : GameFightMinimalStats
+        public function initGameFightMinimalStats(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0, param6:int = 0, param7:int = 0, param8:int = 0, param9:int = 0, param10:int = 0, param11:Boolean = false, param12:int = 0, param13:int = 0, param14:int = 0, param15:int = 0, param16:int = 0, param17:int = 0, param18:int = 0, param19:int = 0, param20:int = 0, param21:int = 0, param22:int = 0, param23:int = 0, param24:uint = 0, param25:uint = 0, param26:int = 0, param27:int = 0, param28:int = 0) : GameFightMinimalStats
         {
             this.lifePoints = param1;
             this.maxLifePoints = param2;
@@ -63,11 +63,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
             this.waterElementResistPercent = param14;
             this.airElementResistPercent = param15;
             this.fireElementResistPercent = param16;
-            this.neutralElementFixedResist = param17;
-            this.earthElementFixedResist = param18;
-            this.waterElementFixedResist = param19;
-            this.airElementFixedResist = param20;
-            this.fireElementFixedResist = param21;
+            this.neutralElementReduction = param17;
+            this.earthElementReduction = param18;
+            this.waterElementReduction = param19;
+            this.airElementReduction = param20;
+            this.fireElementReduction = param21;
             this.criticalDamageFixedResist = param22;
             this.pushDamageFixedResist = param23;
             this.dodgePALostProbability = param24;
@@ -96,11 +96,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
             this.waterElementResistPercent = 0;
             this.airElementResistPercent = 0;
             this.fireElementResistPercent = 0;
-            this.neutralElementFixedResist = 0;
-            this.earthElementFixedResist = 0;
-            this.waterElementFixedResist = 0;
-            this.airElementFixedResist = 0;
-            this.fireElementFixedResist = 0;
+            this.neutralElementReduction = 0;
+            this.earthElementReduction = 0;
+            this.waterElementReduction = 0;
+            this.airElementReduction = 0;
+            this.fireElementReduction = 0;
             this.criticalDamageFixedResist = 0;
             this.pushDamageFixedResist = 0;
             this.dodgePALostProbability = 0;
@@ -155,11 +155,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
             param1.writeShort(this.waterElementResistPercent);
             param1.writeShort(this.airElementResistPercent);
             param1.writeShort(this.fireElementResistPercent);
-            param1.writeShort(this.neutralElementFixedResist);
-            param1.writeShort(this.earthElementFixedResist);
-            param1.writeShort(this.waterElementFixedResist);
-            param1.writeShort(this.airElementFixedResist);
-            param1.writeShort(this.fireElementFixedResist);
+            param1.writeShort(this.neutralElementReduction);
+            param1.writeShort(this.earthElementReduction);
+            param1.writeShort(this.waterElementReduction);
+            param1.writeShort(this.airElementReduction);
+            param1.writeShort(this.fireElementReduction);
             param1.writeShort(this.criticalDamageFixedResist);
             param1.writeShort(this.pushDamageFixedResist);
             if (this.dodgePALostProbability < 0)
@@ -172,15 +172,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 throw new Error("Forbidden value (" + this.dodgePMLostProbability + ") on element dodgePMLostProbability.");
             }
             param1.writeShort(this.dodgePMLostProbability);
-            if (this.tackleBlock < 0)
-            {
-                throw new Error("Forbidden value (" + this.tackleBlock + ") on element tackleBlock.");
-            }
             param1.writeShort(this.tackleBlock);
-            if (this.tackleEvade < 0)
-            {
-                throw new Error("Forbidden value (" + this.tackleEvade + ") on element tackleEvade.");
-            }
             param1.writeShort(this.tackleEvade);
             param1.writeByte(this.invisibilityState);
             return;
@@ -230,11 +222,11 @@ package com.ankamagames.dofus.network.types.game.context.fight
             this.waterElementResistPercent = param1.readShort();
             this.airElementResistPercent = param1.readShort();
             this.fireElementResistPercent = param1.readShort();
-            this.neutralElementFixedResist = param1.readShort();
-            this.earthElementFixedResist = param1.readShort();
-            this.waterElementFixedResist = param1.readShort();
-            this.airElementFixedResist = param1.readShort();
-            this.fireElementFixedResist = param1.readShort();
+            this.neutralElementReduction = param1.readShort();
+            this.earthElementReduction = param1.readShort();
+            this.waterElementReduction = param1.readShort();
+            this.airElementReduction = param1.readShort();
+            this.fireElementReduction = param1.readShort();
             this.criticalDamageFixedResist = param1.readShort();
             this.pushDamageFixedResist = param1.readShort();
             this.dodgePALostProbability = param1.readShort();
@@ -248,15 +240,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 throw new Error("Forbidden value (" + this.dodgePMLostProbability + ") on element of GameFightMinimalStats.dodgePMLostProbability.");
             }
             this.tackleBlock = param1.readShort();
-            if (this.tackleBlock < 0)
-            {
-                throw new Error("Forbidden value (" + this.tackleBlock + ") on element of GameFightMinimalStats.tackleBlock.");
-            }
             this.tackleEvade = param1.readShort();
-            if (this.tackleEvade < 0)
-            {
-                throw new Error("Forbidden value (" + this.tackleEvade + ") on element of GameFightMinimalStats.tackleEvade.");
-            }
             this.invisibilityState = param1.readByte();
             return;
         }// end function

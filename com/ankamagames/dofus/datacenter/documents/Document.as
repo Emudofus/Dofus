@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.documents
+﻿package com.ankamagames.dofus.datacenter.documents
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.datacenter.documents
 
         public static function getDocumentById(param1:int) : Document
         {
-            return GameData.getObject(MODULE, param1) as ;
+            return GameData.getObject(MODULE, param1) as Document;
         }// end function
 
         public static function getDocuments() : Array

@@ -1,7 +1,8 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
+    import com.ankamagames.berilia.utils.web.*;
     import com.ankamagames.dofus.datacenter.misc.*;
     import com.ankamagames.jerakine.resources.adapters.impl.*;
     import com.ankamagames.jerakine.resources.events.*;
@@ -19,9 +20,9 @@ package com.ankamagames.dofus.misc.utils
 
         public function ModuleScriptAnalyzer(param1:UiModule)
         {
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SINGLE_LOADER);
             this._usedActions = [];
             if (!_actionList)
@@ -57,8 +58,8 @@ package com.ankamagames.dofus.misc.utils
 
         private function onSwfLoaded(event:ResourceLoadedEvent) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:ActionDescription = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = event.resource;
             for each (_loc_3 in _actionList)
             {

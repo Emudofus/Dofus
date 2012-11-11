@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.mount
+﻿package com.ankamagames.dofus.network.types.game.mount
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

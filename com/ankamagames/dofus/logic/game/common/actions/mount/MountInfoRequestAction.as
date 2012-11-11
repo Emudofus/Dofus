@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.mount
+﻿package com.ankamagames.dofus.logic.game.common.actions.mount
 {
     import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.dofus.datacenter.effects.instances.*;
@@ -20,7 +20,7 @@ package com.ankamagames.dofus.logic.game.common.actions.mount
 
         public static function create(param1:ItemWrapper) : MountInfoRequestAction
         {
-            var _loc_3:EffectInstance = null;
+            var _loc_3:* = null;
             var _loc_2:* = new MountInfoRequestAction;
             _loc_2.item = param1;
             for each (_loc_3 in param1.effects)

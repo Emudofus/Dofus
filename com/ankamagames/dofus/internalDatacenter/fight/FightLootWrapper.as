@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.fight
+﻿package com.ankamagames.dofus.internalDatacenter.fight
 {
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.network.types.game.context.fight.*;
@@ -13,7 +13,7 @@ package com.ankamagames.dofus.internalDatacenter.fight
         public function FightLootWrapper(param1:FightLoot)
         {
             this.objects = new Array();
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < param1.objects.length)
             {
                 

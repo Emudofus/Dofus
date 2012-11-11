@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.utils
+﻿package com.ankamagames.dofus.kernel.sound.utils
 {
     import com.ankamagames.dofus.kernel.sound.*;
     import com.ankamagames.jerakine.managers.*;

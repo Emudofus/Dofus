@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -48,9 +48,9 @@ package com.ankamagames.dofus.uiApi
 
         public function getKnownJobs() : Array
         {
-            var _loc_3:KnownJob = null;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             if (!PlayedCharacterManager.getInstance().jobs)
             {
                 return null;
@@ -77,7 +77,7 @@ package com.ankamagames.dofus.uiApi
                 }
                 _loc_5 = _loc_5 + 1;
             }
-            var _loc_6:uint = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < 6)
             {
                 
@@ -93,14 +93,14 @@ package com.ankamagames.dofus.uiApi
 
         public function getJobSkills(param1:Job) : Array
         {
-            var _loc_5:SkillActionDescription = null;
+            var _loc_5:* = null;
             var _loc_2:* = this.getJobDescription(param1.id);
             if (!_loc_2)
             {
                 return null;
             }
             var _loc_3:* = new Array(_loc_2.skills.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             for each (_loc_5 in _loc_2.skills)
             {
                 
@@ -167,10 +167,10 @@ package com.ankamagames.dofus.uiApi
 
         public function getMaxSlotsByJobId(param1:int) : int
         {
-            var _loc_4:SkillActionDescription = null;
-            var _loc_5:SkillActionDescriptionCraft = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_2:* = this.getJobDescription(param1);
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             if (!_loc_2)
             {
                 return 0;
@@ -192,7 +192,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getJobCraftSkillInfos(param1:Job, param2:Skill) : Object
         {
-            var _loc_8:SkillActionDescriptionCraftExtended = null;
+            var _loc_8:* = null;
             var _loc_3:* = this.getJobDescription(param1.id);
             if (!_loc_3)
             {
@@ -251,15 +251,15 @@ package com.ankamagames.dofus.uiApi
 
         public function getJobRecipes(param1:Job, param2:Array = null, param3:Skill = null, param4:String = null) : Array
         {
-            var _loc_7:SkillActionDescription = null;
-            var _loc_8:Vector.<int> = null;
-            var _loc_9:int = 0;
-            var _loc_10:Recipe = null;
-            var _loc_11:uint = 0;
-            var _loc_12:Boolean = false;
-            var _loc_13:uint = 0;
-            var _loc_14:uint = 0;
-            var _loc_15:ItemWrapper = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = false;
+            var _loc_13:* = 0;
+            var _loc_14:* = 0;
+            var _loc_15:* = null;
             var _loc_5:* = this.getJobDescription(param1.id);
             if (!this.getJobDescription(param1.id))
             {
@@ -370,7 +370,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getJobCrafterDirectorySettingsById(param1:uint) : Object
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this.jobsFrame.settings)
             {
                 
@@ -389,10 +389,10 @@ package com.ankamagames.dofus.uiApi
 
         public function getUsableSkillsInMap(param1:int) : Array
         {
-            var _loc_6:Boolean = false;
-            var _loc_7:uint = 0;
-            var _loc_8:InteractiveElement = null;
-            var _loc_9:InteractiveElementSkill = null;
+            var _loc_6:* = false;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_2:* = new Array();
             var _loc_3:* = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
             var _loc_4:* = _loc_3.entitiesFrame.interactiveElements;
@@ -442,8 +442,8 @@ package com.ankamagames.dofus.uiApi
 
         private function skillSortFunction(param1:RecipeWithSkill, param2:RecipeWithSkill) : Number
         {
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             var _loc_3:* = param1.recipe.quantities.length;
             var _loc_4:* = param2.recipe.quantities.length;
             if (_loc_3 > _loc_4)
@@ -489,7 +489,7 @@ package com.ankamagames.dofus.uiApi
 
         private function getSkillActionDescription(param1:JobDescription, param2:uint) : SkillActionDescription
         {
-            var _loc_3:SkillActionDescription = null;
+            var _loc_3:* = null;
             for each (_loc_3 in param1.skills)
             {
                 

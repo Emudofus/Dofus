@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.system
+﻿package com.ankamagames.jerakine.utils.system
 {
     import flash.utils.*;
 
@@ -15,9 +15,9 @@ package com.ankamagames.jerakine.utils.system
 
         public function setArguments(param1:Array) : void
         {
-            var _loc_2:String = null;
-            var _loc_3:Array = null;
-            var _loc_4:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (param1)
             {
                 for each (_loc_2 in param1)

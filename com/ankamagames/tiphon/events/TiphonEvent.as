@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.events
+﻿package com.ankamagames.tiphon.events
 {
     import com.ankamagames.tiphon.types.*;
     import flash.events.*;

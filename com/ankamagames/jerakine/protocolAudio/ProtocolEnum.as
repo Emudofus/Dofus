@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.protocolAudio
+﻿package com.ankamagames.jerakine.protocolAudio
 {
 
     public class ProtocolEnum extends Object

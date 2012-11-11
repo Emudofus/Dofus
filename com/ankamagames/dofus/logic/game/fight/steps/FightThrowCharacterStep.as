@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+ï»¿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.atouin.managers.*;
@@ -52,22 +52,22 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_8:GameFightFighterInformations = null;
-            var _loc_9:FightTurnFrame = null;
-            var _loc_10:Projectile = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_1:* = DofusEntities.getEntity(this._fighterId) as DisplayObject;
             var _loc_2:* = _loc_1 as IEntity;
             _loc_1 = TiphonUtility.getEntityWithoutMount(_loc_1 as TiphonSprite);
             var _loc_3:* = DofusEntities.getEntity(this._carriedId);
             if (!_loc_3)
             {
-                _log.error("Attention, l\'entité [" + this._fighterId + "] ne porte pas [" + this._carriedId + "]");
+                _log.error("Attention, l\'entitÃ© [" + this._fighterId + "] ne porte pas [" + this._carriedId + "]");
                 this.throwFinished();
                 return;
             }
             if (!_loc_1)
             {
-                _log.error("Attention, l\'entité [" + this._fighterId + "] ne porte pas [" + this._carriedId + "]");
+                _log.error("Attention, l\'entitÃ© [" + this._fighterId + "] ne porte pas [" + this._carriedId + "]");
                 (_loc_3 as IDisplayable).display(PlacementStrataEnums.STRATA_PLAYER);
                 if (_loc_3 is TiphonSprite)
                 {
@@ -89,7 +89,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
                     _loc_9.freePlayer();
                 }
             }
-            var _loc_4:Boolean = false;
+            var _loc_4:* = false;
             if (TiphonSprite(_loc_3).look.getBone() == 761)
             {
                 _loc_4 = true;
@@ -186,7 +186,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         private function throwFinished(event:Event = null) : void
         {
-            var _loc_4:DisplayObject = null;
+            var _loc_4:* = null;
             if (this._throwSubSequence)
             {
                 this._throwSubSequence.removeEventListener(SequencerEvent.SEQUENCE_END, this.throwFinished);

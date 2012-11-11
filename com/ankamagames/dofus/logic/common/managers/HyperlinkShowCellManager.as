@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.dofus.types.sequences.*;
     import com.ankamagames.jerakine.sequencer.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.managers
+ï»¿package com.ankamagames.jerakine.managers
 {
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.data.*;
@@ -27,6 +27,7 @@ package com.ankamagames.jerakine.managers
         private var _loader:IResourceLoader;
         private var _parseReference:Dictionary;
         private var _fontManager:FontManager;
+        private var _replaceErrorCallback:Function;
         private static var _self:LangManager;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(LangManager));
         static const KEY_LANG_INDEX:String = "langIndex";
@@ -76,6 +77,12 @@ package com.ankamagames.jerakine.managers
         public function get category() : Array
         {
             return this._aCategory;
+        }// end function
+
+        public function set replaceErrorCallback(param1:Function) : void
+        {
+            this._replaceErrorCallback = param1;
+            return;
         }// end function
 
         public function loadFile(param1:String, param2:Boolean = true) : void
@@ -130,7 +137,7 @@ package com.ankamagames.jerakine.managers
 
         public function setEntry(param1:String, param2:String, param3:String = null) : void
         {
-            var _loc_4:Class = null;
+            var _loc_4:* = null;
             if (!param3)
             {
                 this._aLang[param1] = param2;
@@ -190,12 +197,12 @@ package com.ankamagames.jerakine.managers
 
         public function replaceKey(param1:String, param2:Boolean = false) : String
         {
-            var _loc_3:Array = null;
-            var _loc_4:RegExp = null;
-            var _loc_5:uint = 0;
-            var _loc_6:String = null;
-            var _loc_7:Array = null;
-            var _loc_8:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (param1 != null && param1.indexOf("[") != -1)
             {
                 _loc_4 = /\[([^\]]*)\]""\[([^\]]*)\]/g;
@@ -228,15 +235,22 @@ package com.ankamagames.jerakine.managers
                             if (_loc_8.charAt(0) == "~")
                             {
                             }
-                            _loc_6 = "!" + _loc_8;
-                            _loc_7 = this.findCategory(_loc_8);
-                            if (_loc_7.length)
+                            if (this._replaceErrorCallback != null)
                             {
-                                _log.warn("Référence incorrect vers la clef [" + _loc_8 + "] dans : " + param1 + " (pourrait être " + _loc_7.join(" ou ") + ")");
+                                _loc_6 = this._replaceErrorCallback(_loc_8);
                             }
-                            else
+                            if (_loc_6 == null)
                             {
-                                _log.warn("Référence inconue vers la clef [" + _loc_8 + "] dans : " + param1);
+                                _loc_6 = "!" + _loc_8;
+                                _loc_7 = this.findCategory(_loc_8);
+                                if (_loc_7.length)
+                                {
+                                    _log.warn("RÃ©fÃ©rence incorrect vers la clef [" + _loc_8 + "] dans : " + param1 + " (pourrait Ãªtre " + _loc_7.join(" ou ") + ")");
+                                }
+                                else
+                                {
+                                    _log.warn("RÃ©fÃ©rence inconue vers la clef [" + _loc_8 + "] dans : " + param1);
+                                }
                             }
                         }
                     }
@@ -249,7 +263,7 @@ package com.ankamagames.jerakine.managers
 
         public function getCategory(param1:String, param2:Boolean = true) : Array
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             var _loc_3:* = new Array();
             for (_loc_4 in this._aLang)
             {
@@ -272,7 +286,7 @@ package com.ankamagames.jerakine.managers
 
         public function findCategory(param1:String) : Array
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             var _loc_2:* = param1.split(".")[0];
             var _loc_3:* = new Array();
             for (_loc_4 in this._aCategory)
@@ -308,8 +322,8 @@ package com.ankamagames.jerakine.managers
 
         public function clear(param1:String = null) : void
         {
-            var _loc_2:String = null;
-            var _loc_3:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (param1)
             {
                 _loc_2 = param1 + ".";
@@ -359,7 +373,7 @@ package com.ankamagames.jerakine.managers
 
         private function loadLangFile(param1:String, param2:LangMetaData) : void
         {
-            var _loc_4:Uri = null;
+            var _loc_4:* = null;
             var _loc_3:* = FileUtils.getExtension(param1);
             if (_loc_3 == null)
             {
@@ -482,15 +496,15 @@ package com.ankamagames.jerakine.managers
 
         private function onZipFileComplete(event:ResourceLoadedEvent) : void
         {
-            var _loc_5:String = null;
-            var _loc_8:String = null;
-            var _loc_9:ZipEntry = null;
-            var _loc_10:uint = 0;
+            var _loc_5:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
             var _loc_2:* = event.resource;
             var _loc_3:* = new Array();
             var _loc_4:* = new Array();
             var _loc_6:* = LangMetaData(event.uri.tag);
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_2.entries.length)
             {
                 

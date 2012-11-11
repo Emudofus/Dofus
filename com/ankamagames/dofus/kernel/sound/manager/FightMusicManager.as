@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.manager
+﻿package com.ankamagames.dofus.kernel.sound.manager
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.ambientSounds.*;
@@ -47,9 +47,9 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function startFight() : void
         {
-            var _loc_2:GameContextActorInformations = null;
-            var _loc_3:GameFightMonsterInformations = null;
-            var _loc_4:Monster = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             this._hasBoss = false;
             var _loc_1:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             if (_loc_1)
@@ -73,11 +73,11 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function playFightMusic() : void
         {
-            var _loc_1:AmbientSound = null;
-            var _loc_2:uint = 0;
-            var _loc_3:String = null;
-            var _loc_4:Uri = null;
-            var _loc_5:VolumeFadeEffect = null;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (!SoundManager.getInstance().manager.soundIsActivate)
             {
                 return;
@@ -135,10 +135,10 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function setFightSounds(param1:Vector.<AmbientSound>, param2:Vector.<AmbientSound>) : void
         {
-            var _loc_4:AmbientSound = null;
+            var _loc_4:* = null;
             this._fightMusics = param1;
             this._bossMusics = param2;
-            var _loc_3:String = "";
+            var _loc_3:* = "";
             if (this._fightMusics.length == 0 && this._bossMusics.length == 0)
             {
                 _loc_3 = "Ni musique de combat, ni musique de boss ???";
@@ -164,9 +164,9 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function selectValidSounds() : void
         {
-            var _loc_2:AmbientSound = null;
-            var _loc_3:int = 0;
-            var _loc_1:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_1:* = 0;
             for each (_loc_2 in this._fightMusics)
             {
                 

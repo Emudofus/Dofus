@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -48,7 +48,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
 
         public function serializeAs_FightOptionsInformations(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.isSecret);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.isRestrictedToPartyOnly);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.isClosed);

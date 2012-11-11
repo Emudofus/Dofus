@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
     import com.ankamagames.jerakine.resources.events.*;
     import com.ankamagames.jerakine.resources.loaders.impl.*;

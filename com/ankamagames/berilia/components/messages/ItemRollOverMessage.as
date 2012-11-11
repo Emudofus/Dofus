@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components.messages
+﻿package com.ankamagames.berilia.components.messages
 {
     import com.ankamagames.berilia.components.*;
     import com.ankamagames.berilia.types.data.*;

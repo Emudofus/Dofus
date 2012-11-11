@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.frames
+﻿package com.ankamagames.berilia.frames
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.api.*;
@@ -16,6 +16,7 @@ package com.ankamagames.berilia.frames
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
+    import com.ankamagames.jerakine.utils.display.*;
     import com.ankamagames.jerakine.utils.misc.*;
     import flash.display.*;
     import flash.events.*;
@@ -26,6 +27,9 @@ package com.ankamagames.berilia.frames
         private var hierarchy:Array;
         private var currentDo:DisplayObject;
         private var _isProcessingDirectInteraction:Boolean;
+        private var _lastTs:uint = 0;
+        private var _lastW:uint;
+        private var _lastH:uint;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(UIInteractionFrame));
 
         public function UIInteractionFrame()
@@ -45,21 +49,21 @@ package com.ankamagames.berilia.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:HumanInputMessage = null;
-            var _loc_3:Boolean = false;
-            var _loc_4:Boolean = false;
-            var _loc_5:Grid = null;
-            var _loc_6:Boolean = false;
-            var _loc_7:ComponentMessage = null;
-            var _loc_8:KeyboardKeyUpMessage = null;
-            var _loc_9:UIComponent = null;
-            var _loc_10:Boolean = false;
-            var _loc_11:MouseClickMessage = null;
-            var _loc_12:UIComponent = null;
-            var _loc_13:UIComponent = null;
-            var _loc_14:Action = null;
-            var _loc_15:InstanceEvent = null;
-            var _loc_16:Array = null;
+            var _loc_2:* = null;
+            var _loc_3:* = false;
+            var _loc_4:* = false;
+            var _loc_5:* = null;
+            var _loc_6:* = false;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = false;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
             this._isProcessingDirectInteraction = false;
             this.currentDo = null;
             switch(true)
@@ -195,8 +199,6 @@ package com.ankamagames.berilia.frames
                             switch(true)
                             {
                                 case param1 is MouseMiddleClickMessage:
-                                {
-                                }
                                 case param1 is ChangeMessage:
                                 {
                                     break;
@@ -326,18 +328,20 @@ package com.ankamagames.berilia.frames
 
         public function pushed() : Boolean
         {
+            StageShareManager.stage.addEventListener(Event.RESIZE, this.onStageResize);
             return true;
         }// end function
 
         public function pulled() : Boolean
         {
+            StageShareManager.stage.removeEventListener(Event.RESIZE, this.onStageResize);
             return true;
         }// end function
 
         private function processRegisteredUiEvent(param1:Message, param2:Grid) : void
         {
-            var _loc_5:Array = null;
-            var _loc_6:String = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_3:* = InstanceEvent(UIEventManager.getInstance().instances[this.currentDo]);
             var _loc_4:* = EventEnums.convertMsgToFct(getQualifiedClassName(param1));
             ModuleLogger.log(param1, _loc_3.instance);
@@ -362,6 +366,23 @@ package com.ankamagames.berilia.frames
             {
                 ErrorManager.tryFunction(_loc_3.callbackObject[_loc_4], [SecureCenter.secure(_loc_3.instance)]);
             }
+            return;
+        }// end function
+
+        private function onStageResize(event:Event = null) : void
+        {
+            if (this._lastW == StageShareManager.stage.stageWidth && this._lastH == StageShareManager.stage.stageHeight)
+            {
+                return;
+            }
+            if (getTimer() - this._lastTs > 100)
+            {
+                this._lastTs = getTimer();
+                this._lastW = StageShareManager.stage.stageWidth;
+                this._lastH = StageShareManager.stage.stageHeight;
+                KernelEventsManager.getInstance().processCallback(BeriliaHookList.WindowResize, this._lastW, this._lastH, StageShareManager.windowScale);
+            }
+            setTimeout(this.onStageResize, 101);
             return;
         }// end function
 

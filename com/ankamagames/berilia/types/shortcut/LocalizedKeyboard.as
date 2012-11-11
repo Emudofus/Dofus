@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.shortcut
+﻿package com.ankamagames.berilia.types.shortcut
 {
     import com.ankamagames.jerakine.types.*;
 

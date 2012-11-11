@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.fight
+﻿package com.ankamagames.dofus.internalDatacenter.fight
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;
@@ -114,11 +114,11 @@ package com.ankamagames.dofus.internalDatacenter.fight
             this._fireResist = _loc_3.stats.fireElementResistPercent;
             this._neutralResist = _loc_3.stats.neutralElementResistPercent;
             this._waterResist = _loc_3.stats.waterElementResistPercent;
-            this._airFixedResist = _loc_3.stats.airElementFixedResist;
-            this._earthFixedResist = _loc_3.stats.earthElementFixedResist;
-            this._fireFixedResist = _loc_3.stats.fireElementFixedResist;
-            this._neutralFixedResist = _loc_3.stats.neutralElementFixedResist;
-            this._waterFixedResist = _loc_3.stats.waterElementFixedResist;
+            this._airFixedResist = _loc_3.stats.airElementReduction;
+            this._earthFixedResist = _loc_3.stats.earthElementReduction;
+            this._fireFixedResist = _loc_3.stats.fireElementReduction;
+            this._neutralFixedResist = _loc_3.stats.neutralElementReduction;
+            this._waterFixedResist = _loc_3.stats.waterElementReduction;
             return;
         }// end function
 

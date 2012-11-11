@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.livingObjects
+﻿package com.ankamagames.dofus.datacenter.livingObjects
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;

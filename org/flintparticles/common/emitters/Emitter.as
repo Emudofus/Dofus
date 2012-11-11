@@ -1,4 +1,4 @@
-package org.flintparticles.common.emitters
+﻿package org.flintparticles.common.emitters
 {
     import flash.events.*;
     import org.flintparticles.common.actions.*;
@@ -72,7 +72,7 @@ package org.flintparticles.common.emitters
         public function hasInitializerOfType(param1:Class) : Boolean
         {
             var _loc_2:* = this._initializers.length;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -89,10 +89,10 @@ package org.flintparticles.common.emitters
         {
             if (isNaN(param2))
             {
-                param2 = param1.org.flintparticles.common.actions:Action::getDefaultPriority();
+                param2 = param1.getDefaultPriority();
             }
             this._actions.add(param1, param2);
-            param1.org.flintparticles.common.actions:Action::addedToEmitter(this);
+            param1.addedToEmitter(this);
             return;
         }// end function
 
@@ -100,7 +100,7 @@ package org.flintparticles.common.emitters
         {
             if (this._actions.remove(param1))
             {
-                param1.org.flintparticles.common.actions:Action::removedFromEmitter(this);
+                param1.removedFromEmitter(this);
             }
             return;
         }// end function
@@ -113,7 +113,7 @@ package org.flintparticles.common.emitters
         public function hasActionOfType(param1:Class) : Boolean
         {
             var _loc_2:* = this._actions.length;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -154,7 +154,7 @@ package org.flintparticles.common.emitters
         public function hasActivityOfType(param1:Class) : Boolean
         {
             var _loc_2:* = this._activities.length;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -237,10 +237,10 @@ package org.flintparticles.common.emitters
 
         protected function createParticle() : Particle
         {
-            var _loc_1:* = this._particleFactory.org.flintparticles.common.particles:ParticleFactory::createParticle();
+            var _loc_1:* = this._particleFactory.createParticle();
             var _loc_2:* = this._initializers.length;
             this.initParticle(_loc_1);
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -259,9 +259,9 @@ package org.flintparticles.common.emitters
 
         public function addExistingParticles(param1:Array, param2:Boolean = false) : void
         {
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             var _loc_3:* = param1.length;
             if (param2)
             {
@@ -294,7 +294,7 @@ package org.flintparticles.common.emitters
         public function killAllParticles() : void
         {
             var _loc_1:* = this._particles.length;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < _loc_1)
             {
                 
@@ -315,7 +315,7 @@ package org.flintparticles.common.emitters
             this._started = true;
             this._running = true;
             var _loc_1:* = this._activities.length;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < _loc_1)
             {
                 
@@ -348,11 +348,11 @@ package org.flintparticles.common.emitters
 
         public function update(param1:Number) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:Particle = null;
-            var _loc_5:Action = null;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             if (!this._running || param1 > this._maximumFrameTime)
             {
                 return;

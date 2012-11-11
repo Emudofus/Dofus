@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc
+﻿package com.ankamagames.dofus.logic.game.common.misc
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.tubul
+Ôªøpackage com.ankamagames.tubul
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -50,8 +50,8 @@ package com.ankamagames.tubul
 
         public function get totalPlayingSounds() : uint
         {
-            var _loc_2:IAudioBus = null;
-            var _loc_1:uint = 0;
+            var _loc_2:* = null;
+            var _loc_1:* = 0;
             for each (_loc_2 in this._audioBusList)
             {
                 
@@ -72,7 +72,7 @@ package com.ankamagames.tubul
 
         public function set earPosition(param1:Point) : void
         {
-            var _loc_2:IAudioBus = null;
+            var _loc_2:* = null;
             this._earPosition = param1;
             for each (_loc_2 in this._audioBusList)
             {
@@ -102,8 +102,8 @@ package com.ankamagames.tubul
 
         public function getSoundById(param1:int) : ISound
         {
-            var _loc_2:IAudioBus = null;
-            var _loc_3:ISound = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             for each (_loc_2 in this.audioBusList)
             {
                 
@@ -138,8 +138,8 @@ package com.ankamagames.tubul
 
         public function setDisplayOptions(param1:TubulOptions) : void
         {
-            var _loc_2:String = null;
-            var _loc_3:PropertyChangeEvent = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             this._tuOptions = param1;
             this._tuOptions.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onPropertyChanged);
             for (_loc_2 in this._tuOptions)
@@ -169,7 +169,7 @@ package com.ankamagames.tubul
 
         public function clearCache() : void
         {
-            var _loc_1:IAudioBus = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._busDictionary)
             {
                 
@@ -190,9 +190,9 @@ package com.ankamagames.tubul
 
         public function removeBus(param1:uint) : void
         {
-            var _loc_2:IAudioBus = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             if (!this.isActive)
             {
                 return;
@@ -225,7 +225,7 @@ package com.ankamagames.tubul
 
         public function clearBuses() : void
         {
-            var _loc_1:IAudioBus = null;
+            var _loc_1:* = null;
             if (!this.isActive)
             {
                 return;
@@ -251,7 +251,7 @@ package com.ankamagames.tubul
         {
             if (this._loadedSoundsInformations[param1])
             {
-                trace("Existe dÈj‡");
+                trace("Existe d√©j√†");
             }
             return null;
         }// end function
@@ -260,7 +260,7 @@ package com.ankamagames.tubul
         {
             if (this._loadedSoundsInformations[param1])
             {
-                trace("Existe dÈj‡");
+                trace("Existe d√©j√†");
             }
             else
             {
@@ -305,8 +305,8 @@ package com.ankamagames.tubul
 
         public function dumpPlayingSounds() : void
         {
-            var _loc_1:IAudioBus = null;
-            var _loc_2:ISound = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             _log.debug("--------------- dumpPlayingSounds --------------------");
             for each (_loc_1 in this._audioBusList)
             {
@@ -324,7 +324,7 @@ package com.ankamagames.tubul
 
         private function resetTubul() : void
         {
-            var _loc_1:IAudioBus = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._audioBusList)
             {
                 
@@ -337,8 +337,8 @@ package com.ankamagames.tubul
 
         private function retriveRollOffPresets(param1:XML) : void
         {
-            var _loc_3:XML = null;
-            var _loc_4:RollOffPreset = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = param1.elements();
             if (this._rollOffPresets == null)
             {

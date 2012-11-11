@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
     import __AS3__.vec.*;
 
@@ -38,7 +38,7 @@ package com.ankamagames.berilia.types.data
 
         private static function _fromArray(param1:Object, param2:TreeData) : Vector.<TreeData>
         {
-            var _loc_4:TreeData = null;
+            var _loc_4:* = null;
             var _loc_5:* = undefined;
             var _loc_6:* = undefined;
             var _loc_3:* = new Vector.<>;

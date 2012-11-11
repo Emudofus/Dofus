@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.data.items.effects
+﻿package com.ankamagames.dofus.network.types.game.data.items.effects
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

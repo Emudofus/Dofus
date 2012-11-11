@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;
@@ -50,9 +50,9 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_4:IEntity = null;
-            var _loc_7:TiphonSprite = null;
-            var _loc_8:MapPoint = null;
+            var _loc_4:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_1:* = DofusEntities.getEntity(this._fighterId);
             var _loc_2:* = _loc_1.position;
             var _loc_3:* = _loc_1 as TiphonSprite;

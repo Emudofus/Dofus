@@ -1,4 +1,4 @@
-package org.flintparticles.common.utils
+﻿package org.flintparticles.common.utils
 {
     import flash.display.*;
     import flash.events.*;

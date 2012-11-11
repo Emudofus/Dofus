@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
         {
             super.serializeAs_AbstractPartyMessage(param1);
             param1.writeShort(this.geopositions.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.geopositions.length)
             {
                 
@@ -85,10 +85,10 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 
         public function deserializeAs_PartyLocateMembersMessage(param1:IDataInput) : void
         {
-            var _loc_4:PartyMemberGeoPosition = null;
+            var _loc_4:* = null;
             super.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

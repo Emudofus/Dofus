@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.conquest
+﻿package com.ankamagames.dofus.internalDatacenter.conquest
 {
     import com.ankamagames.dofus.misc.*;
     import com.ankamagames.dofus.network.types.game.character.*;

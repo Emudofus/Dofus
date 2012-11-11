@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.managers
+﻿package com.ankamagames.atouin.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -50,8 +50,8 @@ package com.ankamagames.atouin.managers
 
         public function update(param1:String, param2:uint = 0) : void
         {
-            var _loc_4:Vector.<uint> = null;
-            var _loc_5:Vector.<uint> = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_3:* = this.getSelection(param1);
             if (!_loc_3)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.quest
+﻿package com.ankamagames.dofus.datacenter.quest
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.datacenter.quest
 
         public function get quests() : Vector.<Quest>
         {
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             if (!this._quests)
             {
                 _loc_2 = this.questIds.length;

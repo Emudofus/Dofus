@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.adapters
+ï»¿package com.ankamagames.jerakine.resources.adapters
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.pools.*;
@@ -59,24 +59,18 @@ package com.ankamagames.jerakine.resources.adapters
             {
                 if (this._uri.loaderContext)
                 {
-                    if (AirScanner.hasAir())
-                    {
-                        this._uri.loaderContext["allowLoadBytesCodeExecution"] = true;
-                    }
+                    AirScanner.allowByteCodeExecution(this._uri.loaderContext, true);
                 }
                 else
                 {
                     this._uri.loaderContext = new LoaderContext();
-                    if (AirScanner.hasAir())
-                    {
-                        this._uri.loaderContext["allowLoadBytesCodeExecution"] = true;
-                    }
+                    AirScanner.allowByteCodeExecution(this._uri.loaderContext, true);
                 }
                 this._ldr.loadBytes(data, this._uri.loaderContext);
             }
             catch (e:SecurityError)
             {
-                trace("Erreur de sécurité en chargeant le fichier " + uri + " : \n" + e.getStackTrace());
+                trace("Erreur de sÃ©curitÃ© en chargeant le fichier " + uri + " : \n" + e.getStackTrace());
                 throw e;
             }
             return;

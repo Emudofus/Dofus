@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.chat
+﻿package com.ankamagames.dofus.console.chat
 {
     import com.ankamagames.dofus.kernel.net.*;
     import com.ankamagames.dofus.network.messages.game.basic.*;
@@ -16,9 +16,9 @@ package com.ankamagames.dofus.console.chat
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:BasicSwitchModeRequestMessage = null;
-            var _loc_5:BasicSwitchModeRequestMessage = null;
-            var _loc_6:GameRolePlayFreeSoulRequestMessage = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(param2)
             {
                 case "away":

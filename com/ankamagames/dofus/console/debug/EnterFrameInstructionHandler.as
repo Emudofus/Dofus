@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.utils.display.*;
@@ -14,12 +14,12 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:Dictionary = null;
-            var _loc_5:Dictionary = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_6:* = undefined;
-            var _loc_7:String = null;
+            var _loc_7:* = null;
             var _loc_8:* = undefined;
-            var _loc_9:String = null;
+            var _loc_9:* = null;
             switch(param2)
             {
                 case "enterframecount":

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.uiRender
+﻿package com.ankamagames.berilia.uiRender
 {
     import com.ankamagames.berilia.enums.*;
     import com.ankamagames.berilia.managers.*;
@@ -39,7 +39,7 @@ package com.ankamagames.berilia.uiRender
                 TemplateManager.getInstance().removeEventListener(TemplateLoadedEvent.EVENT_TEMPLATE_LOADED, this.onTemplateLoaded);
                 return;
             }
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             while (_loc_1 < this._aImportFile.length)
             {
                 
@@ -51,8 +51,8 @@ package com.ankamagames.berilia.uiRender
 
         private function matchImport(param1:XMLNode) : void
         {
-            var _loc_2:XMLNode = null;
-            var _loc_3:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
             while (_loc_3 < param1.childNodes.length)
             {
                 
@@ -81,21 +81,21 @@ package com.ankamagames.berilia.uiRender
 
         private function replaceTemplateCall(param1:XMLNode) : Boolean
         {
-            var _loc_2:XMLNode = null;
-            var _loc_3:XMLNode = null;
-            var _loc_4:XMLNode = null;
-            var _loc_5:XMLNode = null;
-            var _loc_7:uint = 0;
-            var _loc_8:String = null;
-            var _loc_9:uint = 0;
-            var _loc_10:Array = null;
-            var _loc_11:String = null;
-            var _loc_12:Array = null;
-            var _loc_14:Boolean = false;
-            var _loc_15:String = null;
-            var _loc_16:XMLNode = null;
-            var _loc_6:Boolean = false;
-            var _loc_13:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_14:* = false;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_6:* = false;
+            var _loc_13:* = 0;
             while (_loc_13 < param1.childNodes.length)
             {
                 
@@ -139,7 +139,7 @@ package com.ankamagames.berilia.uiRender
                             _loc_9 = _loc_9 + 1;
                         }
                         _loc_2.removeNode();
-                        var _loc_17:Boolean = true;
+                        var _loc_17:* = true;
                         _loc_14 = true;
                         _loc_6 = _loc_17;
                     }

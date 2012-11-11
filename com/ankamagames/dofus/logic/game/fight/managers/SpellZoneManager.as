@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.managers
+﻿package com.ankamagames.dofus.logic.game.fight.managers
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.atouin.managers.*;
@@ -78,15 +78,15 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         private function getSpellZone() : IZone
         {
-            var _loc_2:uint = 0;
-            var _loc_3:EffectInstance = null;
-            var _loc_4:Cross = null;
-            var _loc_5:Square = null;
-            var _loc_6:Cross = null;
-            var _loc_7:Cross = null;
-            var _loc_8:Cross = null;
-            var _loc_9:Cross = null;
-            var _loc_1:uint = 88;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_1:* = 88;
             _loc_2 = 666;
             for each (_loc_3 in this._spellWrapper["effects"])
             {

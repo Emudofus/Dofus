@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
             }
             param1.writeShort(this.messageId);
             param1.writeShort(this.dialogParams.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.dialogParams.length)
             {
                 
@@ -83,7 +83,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.visibleReplies.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.visibleReplies.length)
             {
                 
@@ -105,15 +105,15 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 
         public function deserializeAs_NpcDialogQuestionMessage(param1:IDataInput) : void
         {
-            var _loc_6:String = null;
-            var _loc_7:uint = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             this.messageId = param1.readShort();
             if (this.messageId < 0)
             {
                 throw new Error("Forbidden value (" + this.messageId + ") on element of NpcDialogQuestionMessage.messageId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -122,7 +122,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

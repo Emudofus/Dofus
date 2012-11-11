@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc
+﻿package com.ankamagames.dofus.logic.game.common.misc
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -20,8 +20,8 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public static function getEntity(param1:int) : IEntity
         {
-            var _loc_3:IEntityLocalizer = null;
-            var _loc_2:IEntity = null;
+            var _loc_3:* = null;
+            var _loc_2:* = null;
             for each (_loc_3 in _localizers)
             {
                 
@@ -36,9 +36,9 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public static function registerLocalizer(param1:IEntityLocalizer) : void
         {
-            var _loc_4:IEntityLocalizer = null;
+            var _loc_4:* = null;
             var _loc_2:* = getQualifiedClassName(param1);
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             for each (_loc_4 in _localizers)
             {
                 
@@ -54,8 +54,8 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public static function reset() : void
         {
-            var _loc_2:IEntityLocalizer = null;
-            var _loc_1:int = 0;
+            var _loc_2:* = null;
+            var _loc_1:* = 0;
             while (_loc_1 < _localizers.length)
             {
                 

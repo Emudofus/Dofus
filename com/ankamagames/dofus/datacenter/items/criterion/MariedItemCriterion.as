@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -14,7 +14,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get text() : String
         {
-            var _loc_1:String = "";
+            var _loc_1:* = "";
             switch(_operator.text)
             {
                 case ItemCriterionOperator.EQUAL:

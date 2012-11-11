@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
@@ -31,12 +31,12 @@ package com.ankamagames.tiphon.types
 
         public function get complete() : Boolean
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             if (!this._validate)
             {
                 return false;
             }
-            var _loc_1:Boolean = true;
+            var _loc_1:* = true;
             for each (_loc_2 in this._aSkinPartOrdered)
             {
                 
@@ -62,7 +62,7 @@ package com.ankamagames.tiphon.types
 
         public function add(param1:uint, param2:int = -1) : uint
         {
-            var _loc_3:int = -1;
+            var _loc_3:* = -1;
             if (!_censoredSkin)
             {
                 _censoredSkin = CensoredContentManager.getInstance().getCensoredIndex(2);
@@ -77,7 +77,7 @@ package com.ankamagames.tiphon.types
                 param1 = _alternativeSkin[param1][param2];
             }
             var _loc_4:* = new Array();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < this._aSkinPartOrdered.length)
             {
                 
@@ -91,7 +91,7 @@ package com.ankamagames.tiphon.types
             if (this._aSkinPartOrdered.length != _loc_4.length)
             {
                 this._aSkinPartOrdered = _loc_4;
-                var _loc_6:String = this;
+                var _loc_6:* = this;
                 var _loc_7:* = this._ressourceLoading + 1;
                 _loc_6._ressourceLoading = _loc_7;
                 Tiphon.skinLibrary.addResource(param1, new Uri(TiphonConstants.SWF_SKIN_PATH + param1 + ".swl"));
@@ -130,26 +130,23 @@ package com.ankamagames.tiphon.types
 
         private function onResourceLoaded(param1:uint) : void
         {
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._ressourceCount + 1;
             _loc_2._ressourceCount = _loc_3;
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._ressourceLoading - 1;
             _loc_2._ressourceLoading = _loc_3;
-            if (this.complete)
-            {
-                this.processSkin();
-            }
+            this.processSkin();
             return;
         }// end function
 
         private function processSkin() : void
         {
-            var _loc_1:uint = 0;
-            var _loc_3:Swl = null;
-            var _loc_4:Array = null;
-            var _loc_5:String = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aSkinPartOrdered.length)
             {
                 
@@ -173,6 +170,10 @@ package com.ankamagames.tiphon.types
             if (this.complete)
             {
                 dispatchEvent(new Event(Event.COMPLETE));
+            }
+            else
+            {
+                dispatchEvent(new Event(ProgressEvent.PROGRESS));
             }
             return;
         }// end function

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components.gridRenderer
+﻿package com.ankamagames.berilia.components.gridRenderer
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
@@ -24,7 +24,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function LabelGridRenderer(param1:String)
         {
-            var _loc_2:Array = null;
+            var _loc_2:* = null;
             this._log = Log.getLogger(getQualifiedClassName(LabelGridRenderer));
             this._shapeIndex = new Dictionary(true);
             if (param1)
@@ -98,7 +98,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
         {
-            var _loc_6:Label = null;
+            var _loc_6:* = null;
             if (param3 is Label)
             {
                 _loc_6 = param3 as Label;
@@ -124,7 +124,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function remove(param1:DisplayObject) : void
         {
-            var _loc_2:Label = null;
+            var _loc_2:* = null;
             if (param1 is Label)
             {
                 _loc_2 = param1 as Label;
@@ -157,7 +157,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function updateBackground(param1:Label, param2:uint, param3:Boolean) : void
         {
-            var _loc_5:Shape = null;
+            var _loc_5:* = null;
             if (!this._shapeIndex[param1])
             {
                 _loc_5 = new Shape();
@@ -182,7 +182,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function onRollOver(event:MouseEvent) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             var _loc_2:* = event.currentTarget as Label;
             if (this._overColor && _loc_2.text.length > 0)
             {
@@ -198,7 +198,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         private function onRollOut(event:MouseEvent) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             var _loc_2:* = event.currentTarget as Label;
             if (_loc_2.text.length > 0)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;

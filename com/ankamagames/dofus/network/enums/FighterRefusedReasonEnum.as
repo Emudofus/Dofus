@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.enums
+﻿package com.ankamagames.dofus.network.enums
 {
 
     public class FighterRefusedReasonEnum extends Object

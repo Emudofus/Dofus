@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.scripts.api
+﻿package com.ankamagames.dofus.scripts.api
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.items.*;
@@ -68,8 +68,8 @@ package com.ankamagames.dofus.scripts.api
 
         public static function GetStepsFromType(param1:SpellFxRunner, param2:String) : Vector.<IFightStep>
         {
-            var _loc_4:ISequencable = null;
-            var _loc_5:IFightStep = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_3:* = new Vector.<IFightStep>(0, false);
             for each (_loc_4 in param1.stepsBuffer)
             {
@@ -101,9 +101,9 @@ package com.ankamagames.dofus.scripts.api
 
         public static function AddStepBefore(param1:SpellFxRunner, param2:ISequencable, param3:ISequencable) : void
         {
-            var _loc_6:ISequencable = null;
-            var _loc_4:int = -1;
-            var _loc_5:uint = 0;
+            var _loc_6:* = null;
+            var _loc_4:* = -1;
+            var _loc_5:* = 0;
             for each (_loc_6 in param1.stepsBuffer)
             {
                 
@@ -125,9 +125,9 @@ package com.ankamagames.dofus.scripts.api
 
         public static function AddStepAfter(param1:SpellFxRunner, param2:ISequencable, param3:ISequencable) : void
         {
-            var _loc_6:ISequencable = null;
-            var _loc_4:int = -1;
-            var _loc_5:uint = 0;
+            var _loc_6:* = null;
+            var _loc_4:* = -1;
+            var _loc_5:* = 0;
             for each (_loc_6 in param1.stepsBuffer)
             {
                 
@@ -149,9 +149,9 @@ package com.ankamagames.dofus.scripts.api
 
         public static function CreateExplosionEntity(param1:SpellFxRunner, param2:uint, param3:String, param4:uint, param5:Boolean, param6:Boolean, param7:uint) : ExplosionEntity
         {
-            var _loc_9:Array = null;
-            var _loc_10:uint = 0;
-            var _loc_11:int = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
             var _loc_8:* = new Uri(TiphonConstants.SWF_SKULL_PATH + "/" + param2 + ".swl");
             if (param3)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.security
+﻿package com.ankamagames.dofus.network.messages.security
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
@@ -62,7 +62,7 @@ package com.ankamagames.dofus.network.messages.security
         public function serializeAs_RawDataMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.content.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.content.length)
             {
                 

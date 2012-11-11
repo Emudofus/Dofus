@@ -1,4 +1,4 @@
-package mx.graphics.codec
+﻿package mx.graphics.codec
 {
     import flash.display.*;
     import flash.utils.*;
@@ -64,7 +64,7 @@ package mx.graphics.codec
             {
                 param1 = 100;
             }
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             if (param1 < 50)
             {
                 _loc_2 = int(5000 / param1);
@@ -105,11 +105,11 @@ package mx.graphics.codec
 
         private function computeHuffmanTbl(param1:Array, param2:Array) : Array
         {
-            var _loc_7:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:Array = [];
-            var _loc_6:int = 1;
+            var _loc_7:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = [];
+            var _loc_6:* = 1;
             while (_loc_6 <= 16)
             {
                 
@@ -132,10 +132,10 @@ package mx.graphics.codec
 
         private function initCategoryNumber() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:int = 1;
-            var _loc_3:int = 2;
-            var _loc_4:int = 1;
+            var _loc_1:* = 0;
+            var _loc_2:* = 1;
+            var _loc_3:* = 2;
+            var _loc_4:* = 1;
             while (_loc_4 <= 15)
             {
                 
@@ -168,10 +168,10 @@ package mx.graphics.codec
 
         private function initQuantTables(param1:int) : void
         {
-            var _loc_3:Number = NaN;
-            var _loc_8:int = 0;
-            var _loc_2:int = 0;
-            var _loc_4:Array = [16, 11, 10, 16, 24, 40, 51, 61, 12, 12, 14, 19, 26, 58, 60, 55, 14, 13, 16, 24, 40, 57, 69, 56, 14, 17, 22, 29, 51, 87, 80, 62, 18, 22, 37, 56, 68, 109, 103, 77, 24, 35, 55, 64, 81, 104, 113, 92, 49, 64, 78, 87, 103, 121, 120, 101, 72, 92, 95, 98, 112, 100, 103, 99];
+            var _loc_3:* = NaN;
+            var _loc_8:* = 0;
+            var _loc_2:* = 0;
+            var _loc_4:* = [16, 11, 10, 16, 24, 40, 51, 61, 12, 12, 14, 19, 26, 58, 60, 55, 14, 13, 16, 24, 40, 57, 69, 56, 14, 17, 22, 29, 51, 87, 80, 62, 18, 22, 37, 56, 68, 109, 103, 77, 24, 35, 55, 64, 81, 104, 113, 92, 49, 64, 78, 87, 103, 121, 120, 101, 72, 92, 95, 98, 112, 100, 103, 99];
             _loc_2 = 0;
             while (_loc_2 < 64)
             {
@@ -188,7 +188,7 @@ package mx.graphics.codec
                 this.YTable[this.ZigZag[_loc_2]] = _loc_3;
                 _loc_2++;
             }
-            var _loc_5:Array = [17, 18, 24, 47, 99, 99, 99, 99, 18, 21, 26, 66, 99, 99, 99, 99, 24, 26, 56, 99, 99, 99, 99, 99, 47, 66, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99];
+            var _loc_5:* = [17, 18, 24, 47, 99, 99, 99, 99, 18, 21, 26, 66, 99, 99, 99, 99, 24, 26, 56, 99, 99, 99, 99, 99, 47, 66, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99];
             _loc_2 = 0;
             while (_loc_2 < 64)
             {
@@ -205,9 +205,9 @@ package mx.graphics.codec
                 this.UVTable[this.ZigZag[_loc_2]] = _loc_3;
                 _loc_2++;
             }
-            var _loc_6:Array = [1, 1.38704, 1.30656, 1.17588, 1, 0.785695, 0.541196, 0.275899];
+            var _loc_6:* = [1, 1.38704, 1.30656, 1.17588, 1, 0.785695, 0.541196, 0.275899];
             _loc_2 = 0;
-            var _loc_7:int = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < 8)
             {
                 
@@ -227,8 +227,8 @@ package mx.graphics.codec
 
         private function internalEncode(param1:Object, param2:int, param3:int, param4:Boolean = true) : ByteArray
         {
-            var _loc_11:int = 0;
-            var _loc_12:BitString = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = null;
             var _loc_5:* = param1 as BitmapData;
             var _loc_6:* = param1 as ByteArray;
             this.byteout = new ByteArray();
@@ -240,12 +240,12 @@ package mx.graphics.codec
             this.writeSOF0(param2, param3);
             this.writeDHT();
             this.writeSOS();
-            var _loc_7:Number = 0;
-            var _loc_8:Number = 0;
-            var _loc_9:Number = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
             this.bytenew = 0;
             this.bytepos = 7;
-            var _loc_10:int = 0;
+            var _loc_10:* = 0;
             while (_loc_10 < param3)
             {
                 
@@ -274,15 +274,15 @@ package mx.graphics.codec
 
         private function RGB2YUV(param1:BitmapData, param2:ByteArray, param3:int, param4:int, param5:int, param6:int) : void
         {
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:int = 0;
-            var _loc_12:uint = 0;
-            var _loc_13:Number = NaN;
-            var _loc_14:Number = NaN;
-            var _loc_15:Number = NaN;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = NaN;
+            var _loc_14:* = NaN;
+            var _loc_15:* = NaN;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
             while (_loc_8 < 8)
             {
                 
@@ -325,10 +325,10 @@ package mx.graphics.codec
 
         private function processDU(param1:Array, param2:Array, param3:Number, param4:Array, param5:Array) : Number
         {
-            var _loc_8:int = 0;
-            var _loc_12:int = 0;
-            var _loc_13:int = 0;
-            var _loc_14:int = 0;
+            var _loc_8:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = 0;
             var _loc_6:* = param5[0];
             var _loc_7:* = param5[240];
             var _loc_9:* = this.fDCTQuant(param1, param2);
@@ -350,7 +350,7 @@ package mx.graphics.codec
                 this.writeBits(param4[this.category[32767 + _loc_10]]);
                 this.writeBits(this.bitcode[32767 + _loc_10]);
             }
-            var _loc_11:int = 63;
+            var _loc_11:* = 63;
             while (_loc_11 > 0 && this.DU[_loc_11] == 0)
             {
                 
@@ -396,27 +396,27 @@ package mx.graphics.codec
 
         private function fDCTQuant(param1:Array, param2:Array) : Array
         {
-            var _loc_4:int = 0;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Number = NaN;
-            var _loc_9:Number = NaN;
-            var _loc_10:Number = NaN;
-            var _loc_11:Number = NaN;
-            var _loc_12:Number = NaN;
-            var _loc_13:Number = NaN;
-            var _loc_14:Number = NaN;
-            var _loc_15:Number = NaN;
-            var _loc_16:Number = NaN;
-            var _loc_17:Number = NaN;
-            var _loc_18:Number = NaN;
-            var _loc_19:Number = NaN;
-            var _loc_20:Number = NaN;
-            var _loc_21:Number = NaN;
-            var _loc_22:Number = NaN;
-            var _loc_23:Number = NaN;
-            var _loc_3:int = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_10:* = NaN;
+            var _loc_11:* = NaN;
+            var _loc_12:* = NaN;
+            var _loc_13:* = NaN;
+            var _loc_14:* = NaN;
+            var _loc_15:* = NaN;
+            var _loc_16:* = NaN;
+            var _loc_17:* = NaN;
+            var _loc_18:* = NaN;
+            var _loc_19:* = NaN;
+            var _loc_20:* = NaN;
+            var _loc_21:* = NaN;
+            var _loc_22:* = NaN;
+            var _loc_23:* = NaN;
+            var _loc_3:* = 0;
             _loc_4 = 0;
             while (_loc_4 < 8)
             {
@@ -514,7 +514,7 @@ package mx.graphics.codec
                     this.bytenew = this.bytenew | uint(1 << this.bytepos);
                 }
                 _loc_3 = _loc_3 - 1;
-                var _loc_4:String = this;
+                var _loc_4:* = this;
                 var _loc_5:* = this.bytepos - 1;
                 _loc_4.bytepos = _loc_5;
                 if (this.bytepos < 0)
@@ -569,7 +569,7 @@ package mx.graphics.codec
 
         private function writeDQT() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.writeWord(65499);
             this.writeWord(132);
             this.writeByte(0);
@@ -613,7 +613,7 @@ package mx.graphics.codec
 
         private function writeDHT() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             this.writeWord(65476);
             this.writeWord(418);
             this.writeByte(0);
@@ -699,7 +699,13 @@ package mx.graphics.codec
     }
 }
 
-class BitString extends Object
+import flash.display.*;
+
+import flash.utils.*;
+
+import mx.graphics.codec.*;
+
+final class BitString extends Object
 {
     public var len:int = 0;
     public var val:int = 0;

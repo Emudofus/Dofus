@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.tiphon.engine.*;
@@ -14,8 +14,8 @@ package com.ankamagames.tiphon.types
 
         override public function addSwl(param1:Swl, param2:String) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:Array = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             super.addSwl(param1, param2);
             for each (_loc_3 in param1.getDefinitions())
             {

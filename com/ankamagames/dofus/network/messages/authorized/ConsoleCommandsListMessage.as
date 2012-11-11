@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.authorized
+﻿package com.ankamagames.dofus.network.messages.authorized
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -79,7 +79,7 @@ package com.ankamagames.dofus.network.messages.authorized
                 arguments = arguments + 1;
             }
             param1.writeShort(arguments.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < arguments.length)
             {
                 
@@ -87,7 +87,7 @@ package com.ankamagames.dofus.network.messages.authorized
                 _loc_4 = _loc_4 + 1;
             }
             param1.writeShort(this.descriptions.length);
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < this.descriptions.length)
             {
                 
@@ -105,11 +105,11 @@ package com.ankamagames.dofus.network.messages.authorized
 
         public function deserializeAs_ConsoleCommandsListMessage(param1:IDataInput) : void
         {
-            var _loc_9:String = null;
-            var _loc_10:String = null;
-            var _loc_11:String = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             arguments = param1.readUnsignedShort();
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < arguments)
             {
                 
@@ -118,7 +118,7 @@ package com.ankamagames.dofus.network.messages.authorized
                 _loc_4 = _loc_4 + 1;
             }
             var _loc_5:* = param1.readUnsignedShort();
-            var _loc_6:uint = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < _loc_5)
             {
                 
@@ -127,7 +127,7 @@ package com.ankamagames.dofus.network.messages.authorized
                 _loc_6 = _loc_6 + 1;
             }
             var _loc_7:* = param1.readUnsignedShort();
-            var _loc_8:uint = 0;
+            var _loc_8:* = 0;
             while (_loc_8 < _loc_7)
             {
                 

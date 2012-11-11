@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.display
+﻿package com.ankamagames.tiphon.display
 {
     import com.ankamagames.tiphon.types.*;
     import flash.display.*;
@@ -10,7 +10,7 @@ package com.ankamagames.tiphon.display
 
         public function RasterizedSyncAnimation(param1:MovieClip, param2:String)
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             super(param1, param2);
             _target = param1;
             _totalFrames = _target.totalFrames;

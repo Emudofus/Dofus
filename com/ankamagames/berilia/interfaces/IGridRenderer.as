@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.interfaces
+﻿package com.ankamagames.berilia.interfaces
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;

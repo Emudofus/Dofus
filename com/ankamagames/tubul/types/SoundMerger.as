@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types
+﻿package com.ankamagames.tubul.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -47,7 +47,7 @@ package com.ankamagames.tubul.types
             {
                 this._sounds.splice(_loc_2, 1);
                 param1.dispatchEvent(new Event(Event.SOUND_COMPLETE));
-                var _loc_3:String = this;
+                var _loc_3:* = this;
                 _loc_3._soundsCount = this._soundsCount - 1;
                 if (!--this._soundsCount)
                 {
@@ -91,7 +91,7 @@ package com.ankamagames.tubul.types
 
         private function directPlay(param1:SoundWrapper, param2:int) : void
         {
-            var _loc_3:SoundChannel = null;
+            var _loc_3:* = null;
             if (!StageShareManager.stage.hasEventListener(Event.ENTER_FRAME))
             {
                 StageShareManager.stage.addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
@@ -137,24 +137,24 @@ package com.ankamagames.tubul.types
 
         private function sampleData(event:SampleDataEvent) : void
         {
-            var _loc_3:uint = 0;
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:uint = 0;
-            var _loc_12:uint = 0;
-            var _loc_13:ByteArray = null;
-            var _loc_14:SoundWrapper = null;
-            var _loc_16:Boolean = false;
-            var _loc_17:Number = NaN;
-            var _loc_18:Number = NaN;
-            var _loc_19:Number = NaN;
-            var _loc_20:Number = NaN;
-            var _loc_21:Boolean = false;
+            var _loc_3:* = 0;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_16:* = false;
+            var _loc_17:* = NaN;
+            var _loc_18:* = NaN;
+            var _loc_19:* = NaN;
+            var _loc_20:* = NaN;
+            var _loc_21:* = false;
             var _loc_2:* = getTimer();
             var _loc_15:* = event.data;
             _loc_11 = 0;
@@ -240,7 +240,7 @@ package com.ankamagames.tubul.types
             while (_loc_10 < DATA_SAMPLES_BUFFER_SIZE)
             {
                 
-                var _loc_22:Number = 0;
+                var _loc_22:* = 0;
                 _loc_18 = 0;
                 _loc_17 = _loc_22;
                 _loc_11 = 0;
@@ -301,7 +301,7 @@ package com.ankamagames.tubul.types
 
         private function sampleSilence(event:SampleDataEvent) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < SILENCE_SAMPLES_BUFFER_SIZE)
             {
                 
@@ -332,7 +332,7 @@ package com.ankamagames.tubul.types
 
         private function onEnterFrame(event:Event) : void
         {
-            var _loc_2:SoundWrapper = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._directChannels)
             {
                 

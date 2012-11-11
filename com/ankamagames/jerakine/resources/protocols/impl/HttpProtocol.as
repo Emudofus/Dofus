@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.protocols.impl
+﻿package com.ankamagames.jerakine.resources.protocols.impl
 {
     import com.ankamagames.jerakine.newCache.*;
     import com.ankamagames.jerakine.resources.*;

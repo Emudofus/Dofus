@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

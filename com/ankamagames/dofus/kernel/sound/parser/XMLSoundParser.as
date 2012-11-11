@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.parser
+﻿package com.ankamagames.dofus.kernel.sound.parser
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.types.*;
@@ -15,19 +15,19 @@ package com.ankamagames.dofus.kernel.sound.parser
 
         public static function parseXMLSoundFile(param1:XML, param2:Vector.<uint>) : SoundEventParamWrapper
         {
-            var _loc_4:XML = null;
-            var _loc_6:XML = null;
-            var _loc_7:Vector.<SoundEventParamWrapper> = null;
-            var _loc_8:XMLList = null;
-            var _loc_9:Vector.<SoundEventParamWrapper> = null;
-            var _loc_10:XML = null;
-            var _loc_11:uint = 0;
-            var _loc_12:String = null;
-            var _loc_13:Array = null;
-            var _loc_14:String = null;
-            var _loc_15:String = null;
-            var _loc_16:uint = 0;
-            var _loc_17:SoundEventParamWrapper = null;
+            var _loc_4:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = 0;
+            var _loc_17:* = null;
             var _loc_3:* = param1.elements();
             var _loc_5:* = /^\s*(.*?)\s*$""^\s*(.*?)\s*$/g;
             for each (_loc_6 in _loc_3)
@@ -73,7 +73,7 @@ package com.ankamagames.dofus.kernel.sound.parser
 
         public static function isLocalized(param1:String) : Boolean
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             for each (_loc_2 in _IDS_UNLOCALIZED)
             {
                 

@@ -1,4 +1,4 @@
-package gs
+﻿package gs
 {
     import flash.display.*;
     import flash.events.*;
@@ -78,7 +78,7 @@ package gs
             this._specialVars = this.vars.isTV == true ? (this.vars.exposedProps) : (this.vars);
             this.tweens = [];
             this._subTweens = [];
-            var _loc_5:Boolean = false;
+            var _loc_5:* = false;
             this.initted = false;
             this._hst = _loc_5;
             this.initTime = currentTime;
@@ -110,12 +110,12 @@ package gs
 
         public function initTweenVals(param1:Boolean = false, param2:String = "") : void
         {
-            var _loc_3:String = null;
-            var _loc_4:int = 0;
-            var _loc_5:Array = null;
-            var _loc_6:ColorTransform = null;
-            var _loc_7:ColorTransform = null;
-            var _loc_8:Object = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (!param1 && overwriteManager.enabled)
             {
                 overwriteManager.manageOverwrites(this, masterList[this.target]);
@@ -207,7 +207,7 @@ package gs
 
         protected function addSubTween(param1:String, param2:Function, param3:Object, param4:Object, param5:Object = null) : void
         {
-            var _loc_6:String = null;
+            var _loc_6:* = null;
             this._subTweens[this._subTweens.length] = {name:param1, proxy:param2, target:param3, info:param5};
             for (_loc_6 in param4)
             {
@@ -225,9 +225,9 @@ package gs
 
         public function render(param1:uint) : void
         {
-            var _loc_3:Number = NaN;
-            var _loc_4:Object = null;
-            var _loc_5:int = 0;
+            var _loc_3:* = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             var _loc_2:* = (param1 - this.startTime) * 0.001;
             if (_loc_2 >= this.duration)
             {
@@ -269,7 +269,7 @@ package gs
 
         public function activate() : void
         {
-            var _loc_1:Boolean = true;
+            var _loc_1:* = true;
             this.active = true;
             this.started = _loc_1;
             if (!this.initted)
@@ -315,7 +315,7 @@ package gs
             this.tweens = [];
             this._subTweens = [];
             this.vars = {};
-            var _loc_1:Boolean = false;
+            var _loc_1:* = false;
             this._hasUpdate = false;
             this._hst = _loc_1;
             return;
@@ -342,9 +342,9 @@ package gs
 
         public function set enabled(param1:Boolean) : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:Boolean = false;
-            var _loc_4:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = false;
+            var _loc_4:* = 0;
             if (param1)
             {
                 if (masterList[this.target] == undefined)
@@ -401,9 +401,9 @@ package gs
 
         public static function updateAll(event:Event = null) : void
         {
-            var _loc_4:Array = null;
-            var _loc_5:int = 0;
-            var _loc_6:TweenLite = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
             var _loc_7:* = getTimer();
             currentTime = getTimer();
             var _loc_2:* = _loc_7;
@@ -453,9 +453,9 @@ package gs
 
         public static function killTweensOf(param1:Object = null, param2:Boolean = false) : void
         {
-            var _loc_3:Array = null;
-            var _loc_4:int = 0;
-            var _loc_5:TweenLite = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             if (param1 != null && masterList[param1] != undefined)
             {
                 _loc_3 = masterList[param1];
@@ -478,8 +478,8 @@ package gs
 
         static function killGarbage(event:TimerEvent) : void
         {
-            var _loc_3:Object = null;
-            var _loc_4:Array = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = masterList;
             for (_loc_3 in _loc_2)
             {

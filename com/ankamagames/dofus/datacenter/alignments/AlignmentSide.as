@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.alignments
+﻿package com.ankamagames.dofus.datacenter.alignments
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -30,7 +30,7 @@ package com.ankamagames.dofus.datacenter.alignments
 
         public static function getAlignmentSideById(param1:int) : AlignmentSide
         {
-            return GameData.getObject(MODULE, param1) as AlignmentSide;
+            return GameData.getObject(MODULE, param1) as ;
         }// end function
 
         public static function getAlignmentSides() : Array

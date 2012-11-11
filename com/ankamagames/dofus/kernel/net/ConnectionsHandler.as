@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.net
+ï»¿package com.ankamagames.dofus.kernel.net
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.common.utils.*;
@@ -94,7 +94,7 @@ package com.ankamagames.dofus.kernel.net
 
         public static function confirmGameServerConnection() : void
         {
-            _log.debug("Confirmation de la connexion au serveur de jeu, désactivation du timer");
+            _log.debug("Confirmation de la connexion au serveur de jeu, dÃ©sactivation du timer");
             if (_connectionTimeout)
             {
                 _connectionTimeout.stop();
@@ -104,13 +104,13 @@ package com.ankamagames.dofus.kernel.net
 
         public static function onConnectionTimeout(event:TimerEvent) : void
         {
-            var _loc_2:BasicPingMessage = null;
+            var _loc_2:* = null;
             _log.debug("Expiration du timer de connexion au serveur de jeu");
             if (_currentConnection && _currentConnection.connected)
             {
                 _loc_2 = new BasicPingMessage();
                 _loc_2.initBasicPingMessage(true);
-                _log.warn("La connection au serveur de jeu semble longue. On envoit un BasicPingMessage pour essayer de débloquer la situation.");
+                _log.warn("La connection au serveur de jeu semble longue. On envoit un BasicPingMessage pour essayer de dÃ©bloquer la situation.");
                 _currentConnection.send(_loc_2);
                 if (_connectionTimeout)
                 {

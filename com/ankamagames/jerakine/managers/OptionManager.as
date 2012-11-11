@@ -1,9 +1,8 @@
-package com.ankamagames.jerakine.managers
+﻿package com.ankamagames.jerakine.managers
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.types.events.*;
-    import com.ankamagames.tubul.interfaces.*;
     import flash.display.*;
     import flash.events.*;
     import flash.utils.*;
@@ -55,6 +54,11 @@ package com.ankamagames.jerakine.managers
                 this._properties[param1] = param2;
             }
             return;
+        }// end function
+
+        public function getDefaultValue(param1:String)
+        {
+            return this._defaultValue[param1];
         }// end function
 
         public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
@@ -146,8 +150,8 @@ package com.ankamagames.jerakine.managers
 
         public static function getOptionManagers() : Array
         {
-            var _loc_2:String = null;
-            var _loc_1:Array = [];
+            var _loc_2:* = null;
+            var _loc_1:* = [];
             for (_loc_2 in _optionsManager)
             {
                 

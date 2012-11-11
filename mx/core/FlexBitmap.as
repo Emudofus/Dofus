@@ -1,4 +1,4 @@
-package mx.core
+﻿package mx.core
 {
     import flash.display.*;
     import mx.utils.*;

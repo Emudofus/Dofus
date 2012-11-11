@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.alignments.*;
     import com.ankamagames.dofus.kernel.*;
@@ -36,7 +36,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get isRespected() : Boolean
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_1:* = (Kernel.getWorker().getFrame(AlignmentFrame) as AlignmentFrame).playerRank;
             var _loc_2:* = AlignmentRankJntGift.getAlignmentRankJntGiftById(_loc_1);
             if (_loc_2 && _loc_2.gifts)
@@ -68,7 +68,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get text() : String
         {
-            var _loc_1:Array = null;
+            var _loc_1:* = null;
             if (_operator.text == ">")
             {
                 _loc_1 = _criterionValueText.split(",");

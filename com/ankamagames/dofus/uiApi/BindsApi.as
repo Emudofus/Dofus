@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.frames.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -34,7 +34,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getShortcut() : Array
         {
-            var _loc_3:Shortcut = null;
+            var _loc_3:* = null;
             var _loc_1:* = new Array();
             var _loc_2:* = Shortcut.getShortcuts();
             for each (_loc_3 in _loc_2)

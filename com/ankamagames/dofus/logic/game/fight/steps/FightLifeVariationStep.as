@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -63,7 +63,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
             }
             var _loc_2:* = _loc_1.stats.lifePoints + this._delta;
             _loc_1.stats.lifePoints = Math.max(0, _loc_2);
-            _loc_1.stats.maxLifePoints = Math.max(0, _loc_1.stats.maxLifePoints + this._permanentDamages);
+            _loc_1.stats.maxLifePoints = Math.max(1, _loc_1.stats.maxLifePoints + this._permanentDamages);
             if (_loc_1.stats.lifePoints > _loc_1.stats.maxLifePoints)
             {
                 _loc_1.stats.lifePoints = _loc_1.stats.maxLifePoints;
@@ -83,11 +83,11 @@ package com.ankamagames.dofus.logic.game.fight.steps
             }
             if (this._delta < 0 || this._delta == 0 && !this.skipTextEvent)
             {
-                FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_LOSS, [_targetId, Math.abs(this._delta), this._actionId], _targetId, castingSpellId);
+                FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_LOSS, [_targetId, Math.abs(this._delta), this._actionId], _targetId, castingSpellId, false, 2);
             }
             else if (this._delta > 0)
             {
-                FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_GAIN, [_targetId, Math.abs(this._delta), this._actionId], _targetId, castingSpellId);
+                FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_LIFE_GAIN, [_targetId, Math.abs(this._delta), this._actionId], _targetId, castingSpellId, false, 2);
             }
             super.start();
             return;

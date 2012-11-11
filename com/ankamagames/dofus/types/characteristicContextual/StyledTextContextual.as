@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.characteristicContextual
+﻿package com.ankamagames.dofus.types.characteristicContextual
 {
     import flash.display.*;
 
@@ -61,10 +61,10 @@ package com.ankamagames.dofus.types.characteristicContextual
 
         private function init(param1:String, param2:uint) : void
         {
-            var _loc_3:DisplayObject = null;
-            var _loc_5:String = null;
-            var _loc_6:Sprite = null;
-            var _loc_4:uint = 0;
+            var _loc_3:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_4:* = 0;
             while (_loc_4 < param1.length)
             {
                 

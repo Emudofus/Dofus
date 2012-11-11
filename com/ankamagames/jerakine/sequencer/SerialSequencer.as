@@ -1,10 +1,9 @@
-package com.ankamagames.jerakine.sequencer
+﻿package com.ankamagames.jerakine.sequencer
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.sequencer.*;
     import com.ankamagames.jerakine.types.events.*;
     import com.ankamagames.jerakine.utils.misc.*;
-    import com.ankamagames.tubul.interfaces.*;
     import flash.events.*;
     import flash.utils.*;
 
@@ -75,7 +74,12 @@ package com.ankamagames.jerakine.sequencer
 
         public function clear() : void
         {
-            var _loc_1:ISequencable = null;
+            var _loc_1:* = null;
+            if (this._currentStep)
+            {
+                this._currentStep.clear();
+                this._currentStep = null;
+            }
             for each (_loc_1 in this._aStep)
             {
                 
@@ -87,8 +91,8 @@ package com.ankamagames.jerakine.sequencer
 
         override public function toString() : String
         {
-            var _loc_1:String = "";
-            var _loc_2:uint = 0;
+            var _loc_1:* = "";
+            var _loc_2:* = 0;
             while (_loc_2 < this._aStep.length)
             {
                 
@@ -111,7 +115,7 @@ package com.ankamagames.jerakine.sequencer
             {
                 if (this._currentStep is ISubSequenceSequencable)
                 {
-                    var _loc_2:String = this;
+                    var _loc_2:* = this;
                     var _loc_3:* = this._activeSubSequenceCount + 1;
                     _loc_2._activeSubSequenceCount = _loc_3;
                     ISubSequenceSequencable(this._currentStep).addEventListener(SequencerEvent.SEQUENCE_END, this.onSubSequenceEnd);
@@ -158,7 +162,7 @@ package com.ankamagames.jerakine.sequencer
 
         private function onSubSequenceEnd(event:SequencerEvent) : void
         {
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._activeSubSequenceCount - 1;
             _loc_2._activeSubSequenceCount = _loc_3;
             if (!this._activeSubSequenceCount)
@@ -171,7 +175,7 @@ package com.ankamagames.jerakine.sequencer
 
         public static function clearByType(param1:String) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             for (_loc_2 in SEQUENCERS[param1])
             {
                 

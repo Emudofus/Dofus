@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import com.ankamagames.jerakine.interfaces.*;
     import flash.display.*;

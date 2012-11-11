@@ -1,10 +1,11 @@
-package com.ankamagames.dofus.logic.connection.frames
+﻿package com.ankamagames.dofus.logic.connection.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
     import com.ankamagames.dofus.kernel.sound.*;
+    import com.ankamagames.dofus.logic.common.actions.*;
     import com.ankamagames.dofus.logic.common.frames.*;
     import com.ankamagames.dofus.logic.connection.messages.*;
     import com.ankamagames.dofus.logic.game.common.actions.*;
@@ -14,6 +15,7 @@ package com.ankamagames.dofus.logic.connection.frames
     import com.ankamagames.dofus.network.messages.server.basic.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
+    import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
     import flash.utils.*;
@@ -38,15 +40,18 @@ package com.ankamagames.dofus.logic.connection.frames
         {
             this._worker = Kernel.getWorker();
             this.m = new MapEditorManager();
+            Kernel.getWorker().process(new GameStartingMessage());
             Dofus.getInstance().renameApp("Dofus");
             return true;
         }// end function
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:DelayedSystemMessageDisplayMessage = null;
-            var _loc_3:SystemMessageDisplayMessage = null;
-            var _loc_4:DelayedSystemMessageDisplayMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(true)
             {
                 case param1 is DelayedSystemMessageDisplayMessage:
@@ -61,11 +66,31 @@ package com.ankamagames.dofus.logic.connection.frames
                     if (_loc_3.hangUp)
                     {
                         ConnectionsHandler.connectionGonnaBeClosed(DisconnectionReasonEnum.DISCONNECTED_BY_POPUP);
-                        _loc_4 = new DelayedSystemMessageDisplayMessage();
-                        _loc_4.initDelayedSystemMessageDisplayMessage(_loc_3.hangUp, _loc_3.msgId, _loc_3.parameters);
-                        DisconnectionHandlerFrame.messagesAfterReset.push(_loc_4);
+                        _loc_6 = new DelayedSystemMessageDisplayMessage();
+                        _loc_6.initDelayedSystemMessageDisplayMessage(_loc_3.hangUp, _loc_3.msgId, _loc_3.parameters);
+                        DisconnectionHandlerFrame.messagesAfterReset.push(_loc_6);
                     }
                     this.systemMessageDisplay(_loc_3);
+                    return true;
+                }
+                case param1 is AgreementAgreedAction:
+                {
+                    _loc_4 = AgreementAgreedAction(param1);
+                    if (_loc_4.fileName == "eula")
+                    {
+                        _loc_5 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal." + _loc_4.fileName).length;
+                        OptionManager.getOptionManager("dofus")["legalAgreementEula"] = _loc_5;
+                    }
+                    if (_loc_4.fileName == "tou")
+                    {
+                        _loc_5 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
+                        OptionManager.getOptionManager("dofus")["legalAgreementTou"] = _loc_5;
+                    }
+                    if (_loc_4.fileName == "modstou")
+                    {
+                        _loc_5 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.modstou").length;
+                        OptionManager.getOptionManager("dofus")["legalAgreementModsTou"] = _loc_5;
+                    }
                     return true;
                 }
                 case param1 is OpenMainMenuAction:
@@ -89,7 +114,7 @@ package com.ankamagames.dofus.logic.connection.frames
         private function systemMessageDisplay(param1:SystemMessageDisplayMessage) : void
         {
             var _loc_4:* = undefined;
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             var _loc_2:* = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
             var _loc_3:* = new Array();
             for each (_loc_4 in param1.parameters)

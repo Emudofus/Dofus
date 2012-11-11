@@ -1,4 +1,4 @@
-package mx.core
+﻿package mx.core
 {
     import flash.display.*;
     import flash.events.*;
@@ -18,7 +18,7 @@ package mx.core
 
         public function BitmapAsset(param1:BitmapData = null, param2:String = "auto", param3:Boolean = false)
         {
-            var _loc_4:ApplicationDomain = null;
+            var _loc_4:* = null;
             super(param1, param2, param3);
             if (FlexVersionClass == null)
             {
@@ -106,7 +106,7 @@ package mx.core
 
         override public function get width() : Number
         {
-            var _loc_1:Point = null;
+            var _loc_1:* = null;
             if (this.layoutFeatures == null)
             {
                 return super.width;
@@ -140,7 +140,7 @@ package mx.core
 
         override public function get height() : Number
         {
-            var _loc_1:Point = null;
+            var _loc_1:* = null;
             if (this.layoutFeatures == null)
             {
                 return super.height;
@@ -371,7 +371,7 @@ package mx.core
 
         public function invalidateLayoutDirection() : void
         {
-            var _loc_2:Boolean = false;
+            var _loc_2:* = false;
             var _loc_1:* = parent;
             while (_loc_1)
             {
@@ -423,8 +423,8 @@ package mx.core
 
         private function initAdvancedLayoutFeatures() : void
         {
-            var _loc_1:ApplicationDomain = null;
-            var _loc_2:IAssetLayoutFeatures = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this.layoutFeaturesClass == null)
             {
                 _loc_1 = ApplicationDomain.currentDomain;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.types
+﻿package com.ankamagames.dofus.logic.game.roleplay.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -19,7 +19,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
 
         public function getTeamByType(param1:uint) : FightTeam
         {
-            var _loc_2:FightTeam = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this.teams)
             {
                 
@@ -33,7 +33,7 @@ package com.ankamagames.dofus.logic.game.roleplay.types
 
         public function getTeamById(param1:uint) : FightTeam
         {
-            var _loc_2:FightTeam = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this.teams)
             {
                 

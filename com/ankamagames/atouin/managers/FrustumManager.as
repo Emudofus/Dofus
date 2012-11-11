@@ -1,5 +1,6 @@
-package com.ankamagames.atouin.managers
+﻿package com.ankamagames.atouin.managers
 {
+    import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.*;
     import com.ankamagames.atouin.messages.*;
@@ -134,54 +135,123 @@ package com.ankamagames.atouin.managers
             var _loc_7:* = new Point(param1.x + param1.width, param1.y);
             var _loc_8:* = new Point(param1.x, param1.y + param1.height - AtouinConstants.CELL_HALF_HEIGHT * param1.scale);
             var _loc_9:* = new Point(param1.x + param1.width, param1.y + param1.height - AtouinConstants.CELL_HALF_HEIGHT * param1.scale);
-            this._shapeTop.graphics.clear();
-            this._shapeRight.graphics.clear();
-            this._shapeBottom.graphics.clear();
-            this._shapeLeft.graphics.clear();
-            var _loc_10:Number = 0;
-            this._shapeLeft.graphics.beginFill(16746564, _loc_10);
-            this._shapeLeft.graphics.moveTo(0, _loc_6.y);
-            this._shapeLeft.graphics.lineTo(_loc_6.x, _loc_6.y);
-            this._shapeLeft.graphics.lineTo(_loc_2.x, _loc_2.y);
-            this._shapeLeft.graphics.lineTo(_loc_4.x, _loc_4.y);
-            this._shapeLeft.graphics.lineTo(_loc_8.x, _loc_8.y);
-            this._shapeLeft.graphics.lineTo(0, _loc_8.y);
-            this._shapeLeft.graphics.lineTo(0, _loc_6.y);
-            this._shapeLeft.graphics.endFill();
-            this._shapeTop.graphics.beginFill(7803289, _loc_10);
-            this._shapeTop.graphics.moveTo(_loc_6.x, 0);
-            this._shapeTop.graphics.lineTo(_loc_6.x, _loc_6.y);
-            this._shapeTop.graphics.lineTo(_loc_2.x, _loc_2.y);
-            this._shapeTop.graphics.lineTo(_loc_3.x, _loc_3.y);
-            this._shapeTop.graphics.lineTo(_loc_7.x, _loc_7.y);
-            this._shapeTop.graphics.lineTo(_loc_7.x, 0);
-            this._shapeTop.graphics.lineTo(0, 0);
-            this._shapeTop.graphics.endFill();
-            this._shapeRight.graphics.beginFill(1218969, _loc_10);
-            this._shapeRight.graphics.moveTo(StageShareManager.startWidth, _loc_7.y);
-            this._shapeRight.graphics.lineTo(_loc_7.x, _loc_7.y);
-            this._shapeRight.graphics.lineTo(_loc_3.x, _loc_3.y);
-            this._shapeRight.graphics.lineTo(_loc_5.x, _loc_5.y);
-            this._shapeRight.graphics.lineTo(_loc_9.x, _loc_9.y);
-            this._shapeRight.graphics.lineTo(StageShareManager.startWidth, _loc_9.y);
-            this._shapeRight.graphics.lineTo(StageShareManager.startWidth, _loc_7.y);
-            this._shapeRight.graphics.endFill();
-            this._shapeBottom.graphics.beginFill(7807590, _loc_10);
-            this._shapeBottom.graphics.moveTo(_loc_9.x, StageShareManager.startHeight);
-            this._shapeBottom.graphics.lineTo(_loc_9.x, _loc_9.y);
-            this._shapeBottom.graphics.lineTo(_loc_5.x, _loc_5.y + 10);
-            this._shapeBottom.graphics.lineTo(_loc_4.x, _loc_4.y + 10);
-            this._shapeBottom.graphics.lineTo(_loc_8.x, _loc_8.y);
-            this._shapeBottom.graphics.lineTo(_loc_8.x, StageShareManager.startHeight);
-            this._shapeBottom.graphics.lineTo(_loc_9.x, StageShareManager.startHeight);
-            this._shapeBottom.graphics.endFill();
+            var _loc_10:* = 1;
+            var _loc_11:* = new Vector.<int>(7, true);
+            new Vector.<int>(7, true)[0] = 1;
+            _loc_11[1] = 2;
+            _loc_11[2] = 2;
+            _loc_11[3] = 2;
+            _loc_11[4] = 2;
+            _loc_11[5] = 2;
+            _loc_11[6] = 2;
+            var _loc_12:* = new Vector.<Number>(14, true);
+            new Vector.<Number>(14, true)[0] = 0;
+            _loc_12[1] = _loc_6.y;
+            _loc_12[2] = _loc_6.x;
+            _loc_12[3] = _loc_6.y;
+            _loc_12[4] = _loc_2.x;
+            _loc_12[5] = _loc_2.y;
+            _loc_12[6] = _loc_4.x;
+            _loc_12[7] = _loc_4.y;
+            _loc_12[8] = _loc_8.x;
+            _loc_12[9] = _loc_8.y;
+            _loc_12[10] = 0;
+            _loc_12[11] = _loc_8.y;
+            _loc_12[12] = 0;
+            _loc_12[13] = _loc_6.y;
+            var _loc_13:* = this.drawShape(16746564, _loc_11, _loc_12);
+            if (this.drawShape(16746564, _loc_11, _loc_12) != null)
+            {
+                this._shapeLeft.addChild(_loc_13);
+            }
+            var _loc_14:* = new Vector.<Number>(14, true);
+            new Vector.<Number>(14, true)[0] = _loc_6.x;
+            _loc_14[1] = 0;
+            _loc_14[2] = _loc_6.x;
+            _loc_14[3] = _loc_6.y;
+            _loc_14[4] = _loc_2.x;
+            _loc_14[5] = _loc_2.y;
+            _loc_14[6] = _loc_3.x;
+            _loc_14[7] = _loc_3.y;
+            _loc_14[8] = _loc_7.x;
+            _loc_14[9] = _loc_7.y;
+            _loc_14[10] = _loc_7.x;
+            _loc_14[11] = 0;
+            _loc_14[12] = 0;
+            _loc_14[13] = 0;
+            _loc_13 = this.drawShape(7803289, _loc_11, _loc_14);
+            if (_loc_13 != null)
+            {
+                this._shapeTop.addChild(_loc_13);
+            }
+            var _loc_15:* = new Vector.<Number>(14, true);
+            new Vector.<Number>(14, true)[0] = StageShareManager.startWidth;
+            _loc_15[1] = _loc_7.y;
+            _loc_15[2] = _loc_7.x;
+            _loc_15[3] = _loc_7.y;
+            _loc_15[4] = _loc_3.x;
+            _loc_15[5] = _loc_3.y;
+            _loc_15[6] = _loc_5.x;
+            _loc_15[7] = _loc_5.y;
+            _loc_15[8] = _loc_9.x;
+            _loc_15[9] = _loc_9.y;
+            _loc_15[10] = StageShareManager.startWidth;
+            _loc_15[11] = _loc_9.y;
+            _loc_15[12] = StageShareManager.startWidth;
+            _loc_15[13] = _loc_7.y;
+            _loc_13 = this.drawShape(1218969, _loc_11, _loc_15);
+            if (_loc_13 != null)
+            {
+                _loc_13.x = StageShareManager.startWidth - _loc_13.width;
+                _loc_13.y = 15;
+                this._shapeRight.addChild(_loc_13);
+            }
+            var _loc_16:* = new Vector.<Number>(14, true);
+            new Vector.<Number>(14, true)[0] = _loc_9.x;
+            _loc_16[1] = StageShareManager.startHeight;
+            _loc_16[2] = _loc_9.x;
+            _loc_16[3] = _loc_9.y;
+            _loc_16[4] = _loc_5.x;
+            _loc_16[5] = _loc_5.y + 10;
+            _loc_16[6] = _loc_4.x;
+            _loc_16[7] = _loc_4.y + 10;
+            _loc_16[8] = _loc_8.x;
+            _loc_16[9] = _loc_8.y;
+            _loc_16[10] = _loc_8.x;
+            _loc_16[11] = StageShareManager.startHeight;
+            _loc_16[12] = _loc_9.x;
+            _loc_16[13] = StageShareManager.startHeight;
+            _loc_13 = this.drawShape(7807590, _loc_11, _loc_16);
+            if (_loc_13 != null)
+            {
+                _loc_13.y = StageShareManager.startHeight - _loc_13.height;
+                this._shapeBottom.addChild(_loc_13);
+            }
             return;
+        }// end function
+
+        private function drawShape(param1:uint, param2:Vector.<int>, param3:Vector.<Number>) : Bitmap
+        {
+            var _loc_5:* = null;
+            var _loc_4:* = new Shape();
+            new Shape().graphics.beginFill(param1, 0);
+            _loc_4.graphics.drawPath(param2, param3);
+            _loc_4.graphics.endFill();
+            if (_loc_4.width > 0 && _loc_4.height > 0)
+            {
+                _loc_5 = new BitmapData(_loc_4.width, _loc_4.height, true, 16777215);
+                _loc_5.draw(_loc_4);
+                _loc_4.graphics.clear();
+                _loc_4 = null;
+                return new Bitmap(_loc_5);
+            }
+            return null;
         }// end function
 
         private function click(event:MouseEvent) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
             switch(event.target)
             {
@@ -221,48 +291,49 @@ package com.ankamagames.atouin.managers
 
         private function findNearestCell(param1:Sprite) : int
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:Point = null;
-            var _loc_7:int = 0;
-            var _loc_8:Number = NaN;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_12:int = 0;
-            var _loc_13:Number = NaN;
-            var _loc_14:CellData = null;
-            var _loc_15:uint = 0;
-            var _loc_11:* = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = NaN;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = NaN;
+            var _loc_15:* = null;
+            var _loc_16:* = 0;
+            var _loc_12:* = MapDisplayManager.getInstance().getDataMapContainer().dataMap;
             switch(param1)
             {
                 case this._shapeRight:
                 {
                     _loc_2 = AtouinConstants.MAP_WIDTH - 1;
                     _loc_3 = AtouinConstants.MAP_WIDTH - 1;
-                    _loc_9 = _loc_11.rightNeighbourId;
+                    _loc_9 = _loc_12.rightNeighbourId;
                     break;
                 }
                 case this._shapeLeft:
                 {
                     _loc_2 = 0;
                     _loc_3 = 0;
-                    _loc_9 = _loc_11.leftNeighbourId;
+                    _loc_9 = _loc_12.leftNeighbourId;
                     break;
                 }
                 case this._shapeBottom:
                 {
                     _loc_2 = AtouinConstants.MAP_HEIGHT - 1;
                     _loc_3 = -(AtouinConstants.MAP_HEIGHT - 1);
-                    _loc_9 = _loc_11.bottomNeighbourId;
+                    _loc_9 = _loc_12.bottomNeighbourId;
                     break;
                 }
                 case this._shapeTop:
                 {
                     _loc_2 = 0;
                     _loc_3 = 0;
-                    _loc_9 = _loc_11.topNeighbourId;
+                    _loc_9 = _loc_12.topNeighbourId;
                     break;
                 }
                 default:
@@ -272,24 +343,25 @@ package com.ankamagames.atouin.managers
             }
             if (param1 == this._shapeRight || param1 == this._shapeLeft)
             {
-                _loc_13 = AtouinConstants.MAP_HEIGHT * AtouinConstants.CELL_HEIGHT * this._frustrum.scale;
+                _loc_14 = AtouinConstants.MAP_HEIGHT * AtouinConstants.CELL_HEIGHT * this._frustrum.scale;
+                _loc_11 = AtouinConstants.MAP_HEIGHT * 2;
                 _loc_10 = 0;
-                while (_loc_10 < AtouinConstants.MAP_HEIGHT * 2)
+                while (_loc_10 < _loc_11)
                 {
                     
-                    _loc_12 = CellIdConverter.coordToCellId(_loc_2, _loc_3);
-                    _loc_6 = Cell.cellPixelCoords(_loc_12);
-                    _loc_7 = CellData(_loc_11.cells[_loc_12]).floor;
+                    _loc_13 = CellIdConverter.coordToCellId(_loc_2, _loc_3);
+                    _loc_6 = Cell.cellPixelCoords(_loc_13);
+                    _loc_7 = CellData(_loc_12.cells[_loc_13]).floor;
                     _loc_8 = Math.abs(param1.mouseY - this._frustrum.y - (_loc_6.y - _loc_7 + AtouinConstants.CELL_HALF_HEIGHT) * this._frustrum.scale);
-                    if (_loc_8 < _loc_13)
+                    if (_loc_8 < _loc_14)
                     {
-                        _loc_14 = _loc_11.cells[_loc_12] as CellData;
-                        _loc_15 = _loc_14.mapChangeData;
-                        if (_loc_15 && (param1 == this._shapeRight && (_loc_15 & 1 || (_loc_12 + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && _loc_15 & 2 || (_loc_12 + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && _loc_15 & 128) || param1 == this._shapeLeft && (_loc_2 == -_loc_3 && _loc_15 & 8 || _loc_15 & 16 || _loc_2 == -_loc_3 && _loc_15 & 32)))
+                        _loc_15 = _loc_12.cells[_loc_13] as CellData;
+                        _loc_16 = _loc_15.mapChangeData;
+                        if (_loc_16 && (param1 == this._shapeRight && (_loc_16 & 1 || (_loc_13 + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && _loc_16 & 2 || (_loc_13 + 1) % (AtouinConstants.MAP_WIDTH * 2) == 0 && _loc_16 & 128) || param1 == this._shapeLeft && (_loc_2 == -_loc_3 && _loc_16 & 8 || _loc_16 & 16 || _loc_2 == -_loc_3 && _loc_16 & 32)))
                         {
                             _loc_4 = _loc_2;
                             _loc_5 = _loc_3;
-                            _loc_13 = _loc_8;
+                            _loc_14 = _loc_8;
                         }
                     }
                     else
@@ -306,30 +378,30 @@ package com.ankamagames.atouin.managers
                     }
                     _loc_10 = _loc_10 + 1;
                 }
-                if (_loc_13 != AtouinConstants.MAP_HEIGHT * AtouinConstants.CELL_HEIGHT * this._frustrum.scale)
+                if (_loc_14 != AtouinConstants.MAP_HEIGHT * AtouinConstants.CELL_HEIGHT * this._frustrum.scale)
                 {
                     return CellIdConverter.coordToCellId(_loc_4, _loc_5);
                 }
             }
             else
             {
-                _loc_13 = AtouinConstants.MAP_WIDTH * AtouinConstants.CELL_WIDTH * this._frustrum.scale;
+                _loc_14 = AtouinConstants.MAP_WIDTH * AtouinConstants.CELL_WIDTH * this._frustrum.scale;
                 _loc_10 = 0;
                 while (_loc_10 < AtouinConstants.MAP_WIDTH * 2)
                 {
                     
-                    _loc_12 = CellIdConverter.coordToCellId(_loc_2, _loc_3);
-                    _loc_6 = Cell.cellPixelCoords(_loc_12);
+                    _loc_13 = CellIdConverter.coordToCellId(_loc_2, _loc_3);
+                    _loc_6 = Cell.cellPixelCoords(_loc_13);
                     _loc_8 = Math.abs(param1.mouseX - this._frustrum.x - (_loc_6.x + AtouinConstants.CELL_HALF_WIDTH) * this._frustrum.scale);
-                    if (_loc_8 < _loc_13)
+                    if (_loc_8 < _loc_14)
                     {
-                        _loc_14 = _loc_11.cells[_loc_12] as CellData;
-                        _loc_15 = _loc_14.mapChangeData;
-                        if (_loc_15 && (param1 == this._shapeTop && (_loc_12 < AtouinConstants.MAP_WIDTH && _loc_15 & 32 || _loc_15 & 64 || _loc_12 < AtouinConstants.MAP_WIDTH && _loc_15 & 128) || param1 == this._shapeBottom && (_loc_12 >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && _loc_15 & 2 || _loc_15 & 4 || _loc_12 >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && _loc_15 & 8)))
+                        _loc_15 = _loc_12.cells[_loc_13] as CellData;
+                        _loc_16 = _loc_15.mapChangeData;
+                        if (_loc_16 && (param1 == this._shapeTop && (_loc_13 < AtouinConstants.MAP_WIDTH && _loc_16 & 32 || _loc_16 & 64 || _loc_13 < AtouinConstants.MAP_WIDTH && _loc_16 & 128) || param1 == this._shapeBottom && (_loc_13 >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && _loc_16 & 2 || _loc_16 & 4 || _loc_13 >= AtouinConstants.MAP_CELLS_COUNT - AtouinConstants.MAP_WIDTH && _loc_16 & 8)))
                         {
                             _loc_4 = _loc_2;
                             _loc_5 = _loc_3;
-                            _loc_13 = _loc_8;
+                            _loc_14 = _loc_8;
                         }
                     }
                     else
@@ -346,7 +418,7 @@ package com.ankamagames.atouin.managers
                     }
                     _loc_10 = _loc_10 + 1;
                 }
-                if (_loc_13 != AtouinConstants.MAP_WIDTH * AtouinConstants.CELL_WIDTH * this._frustrum.scale)
+                if (_loc_14 != AtouinConstants.MAP_WIDTH * AtouinConstants.CELL_WIDTH * this._frustrum.scale)
                 {
                     return CellIdConverter.coordToCellId(_loc_4, _loc_5);
                 }
@@ -365,7 +437,7 @@ package com.ankamagames.atouin.managers
 
         private function out(event:MouseEvent) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             switch(event.target)
             {
                 case this._shapeRight:
@@ -401,7 +473,7 @@ package com.ankamagames.atouin.managers
 
         private function mouseMove(event:MouseEvent) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             switch(event.target)
             {
                 case this._shapeRight:

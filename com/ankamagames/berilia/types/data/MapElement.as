@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -71,7 +71,7 @@ package com.ankamagames.berilia.types.data
         public static function removeAllElements(param1) : void
         {
             var _loc_2:* = undefined;
-            var _loc_3:MapElement = null;
+            var _loc_3:* = null;
             for (_loc_2 in _elementRef)
             {
                 

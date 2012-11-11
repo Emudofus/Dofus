@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.*;
@@ -35,8 +35,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:GameContextCreateMessage = null;
-            var _loc_3:GameContextQuitMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             switch(true)
             {
                 case param1 is GameContextCreateMessage:

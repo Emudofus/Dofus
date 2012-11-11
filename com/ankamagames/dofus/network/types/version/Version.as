@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.version
+﻿package com.ankamagames.dofus.network.types.version
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

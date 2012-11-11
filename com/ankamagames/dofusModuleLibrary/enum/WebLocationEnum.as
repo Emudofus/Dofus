@@ -1,4 +1,4 @@
-package com.ankamagames.dofusModuleLibrary.enum
+﻿package com.ankamagames.dofusModuleLibrary.enum
 {
 
     public class WebLocationEnum extends Object

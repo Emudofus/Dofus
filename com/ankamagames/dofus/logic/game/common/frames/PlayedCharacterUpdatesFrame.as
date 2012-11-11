@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -19,6 +19,7 @@ package com.ankamagames.dofus.logic.game.common.frames
     import com.ankamagames.dofus.logic.game.roleplay.frames.*;
     import com.ankamagames.dofus.misc.lists.*;
     import com.ankamagames.dofus.network.enums.*;
+    import com.ankamagames.dofus.network.messages.game.almanach.*;
     import com.ankamagames.dofus.network.messages.game.atlas.compass.*;
     import com.ankamagames.dofus.network.messages.game.character.stats.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.death.*;
@@ -41,6 +42,7 @@ package com.ankamagames.dofus.logic.game.common.frames
     public class PlayedCharacterUpdatesFrame extends Object implements Frame
     {
         public var setList:Array;
+        public var guildEmblemSymbolCategories:int;
         public static var SPELL_TOOLTIP_CACHE_NUM:int = 0;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayedCharacterUpdatesFrame));
 
@@ -72,6 +74,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             var semsg:ServerExperienceModificatorMessage;
             var cslmsg:CharacterStatsListMessage;
             var fightBattleFrame:FightBattleFrame;
+            var ccmsg:CharacterCapabilitiesMessage;
             var isla:IncreaseSpellLevelAction;
             var spurmsg:SpellUpgradeRequestMessage;
             var susmsg:SpellUpgradeSuccessMessage;
@@ -89,6 +92,7 @@ package com.ankamagames.dofus.logic.game.common.frames
             var cegmsg:CharacterExperienceGainMessage;
             var grplsmsg:GameRolePlayPlayerLifeStatusMessage;
             var grpgomsg:GameRolePlayGameOverMessage;
+            var acdmsg:AlmanachCalendarDateMessage;
             var sumsg:SetUpdateMessage;
             var crmsg:CompassResetMessage;
             var cumsg:CompassUpdateMessage;
@@ -109,7 +113,6 @@ package com.ankamagames.dofus.logic.game.common.frames
             var onSameMap:Boolean;
             var displayTextInfo:String;
             var swBreed:Spell;
-            var spellAllreadyIn:Boolean;
             var obtentionLevel:uint;
             var swrapper:SpellWrapper;
             var pBreed:Breed;
@@ -137,7 +140,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                 case msg is ServerExperienceModificatorMessage:
                 {
                     semsg = msg as ServerExperienceModificatorMessage;
-                    PlayedCharacterManager.getInstance().experiencePercent = semsg.experiencePercent;
+                    PlayedCharacterManager.getInstance().experiencePercent = semsg.experiencePercent - 100;
                     return true;
                 }
                 case msg is CharacterStatsListMessage:
@@ -152,6 +155,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                     {
                         this.updateCharacterStatsList(cslmsg);
                     }
+                    return true;
+                }
+                case msg is CharacterCapabilitiesMessage:
+                {
+                    ccmsg = msg as CharacterCapabilitiesMessage;
+                    this.guildEmblemSymbolCategories = ccmsg.guildEmblemSymbolCategories;
                     return true;
                 }
                 case msg is IncreaseSpellLevelAction:
@@ -172,7 +181,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                     position;
                     updated;
                     previousCooldown;
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = PlayedCharacterManager.getInstance().spellsInventory;
                     while (_loc_4 in _loc_3)
                     {
@@ -184,10 +193,10 @@ package com.ankamagames.dofus.logic.game.common.frames
                             if (oldSw)
                             {
                                 previousCooldown = oldSw.actualCooldown;
-                                break;
                             }
                             updatedSW = SpellWrapper.create(sw.position, sw.id, susmsg.spellLevel, true, sw.playerId);
                             position = sw.position;
+                            break;
                         }
                     }
                     if (updatedSW == null)
@@ -246,17 +255,16 @@ package com.ankamagames.dofus.logic.game.common.frames
                             healPointEarned = (clumsg.newLevel - PlayedCharacterManager.getInstance().infos.level) * 5;
                             newSpell = new Array();
                             playerBreed = Breed.getBreedById(PlayedCharacterManager.getInstance().infos.breed);
-                            var _loc_3:int = 0;
+                            var _loc_3:* = 0;
                             var _loc_4:* = playerBreed.breedSpells;
                             while (_loc_4 in _loc_3)
                             {
                                 
                                 swBreed = _loc_4[_loc_3];
-                                spellAllreadyIn;
                                 obtentionLevel = SpellLevel.getLevelById(swBreed.spellLevels[0]).minPlayerLevel;
                                 if (obtentionLevel <= clumsg.newLevel && obtentionLevel > PlayedCharacterManager.getInstance().infos.level)
                                 {
-                                    swrapper = SpellWrapper.create(68, swBreed.id, 1, false, PlayedCharacterManager.getInstance().id);
+                                    swrapper = SpellWrapper.create(63, swBreed.id, 1, false);
                                     newSpell.push(swrapper);
                                 }
                             }
@@ -271,7 +279,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             {
                                 spellObtained;
                                 pBreed = Breed.getBreedById(PlayedCharacterManager.getInstance().infos.breed);
-                                var _loc_3:int = 0;
+                                var _loc_3:* = 0;
                                 var _loc_4:* = pBreed.breedSpells;
                                 while (_loc_4 in _loc_3)
                                 {
@@ -312,7 +320,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             onSameMap;
                             try
                             {
-                                var _loc_3:int = 0;
+                                var _loc_3:* = 0;
                                 var _loc_4:* = this.roleplayContextFrame.entitiesFrame.getEntitiesIdsList();
                                 while (_loc_4 in _loc_3)
                                 {
@@ -333,7 +341,7 @@ package com.ankamagames.dofus.logic.game.common.frames
                             }
                             catch (e:Error)
                             {
-                                _log.warn("Un probl�me est survenu lors du traitement du message CharacterLevelUpInformationMessage. " + "Un personnage vient de changer de niveau mais on n\'est surement pas encore sur la map");
+                                _log.warn("Un problème est survenu lors du traitement du message CharacterLevelUpInformationMessage. " + "Un personnage vient de changer de niveau mais on n\'est surement pas encore sur la map");
                             }
                             displayTextInfo = I18n.getUiText("ui.common.characterLevelUp", ["{player," + cluimsg.name + "}", cluimsg.newLevel]);
                             KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, displayTextInfo, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
@@ -378,6 +386,12 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     grpgomsg = msg as GameRolePlayGameOverMessage;
                     KernelEventsManager.getInstance().processCallback(HookList.GameRolePlayPlayerLifeStatus, 2, 1);
+                    return true;
+                }
+                case msg is AlmanachCalendarDateMessage:
+                {
+                    acdmsg = msg as AlmanachCalendarDateMessage;
+                    KernelEventsManager.getInstance().processCallback(HookList.CalendarDate, acdmsg.date);
                     return true;
                 }
                 case msg is SetUpdateMessage:
@@ -486,14 +500,14 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function updateCharacterStatsList(param1:CharacterStatsListMessage) : void
         {
-            var _loc_3:Vector.<CharacterSpellModification> = null;
-            var _loc_4:Vector.<CharacterSpellModification> = null;
-            var _loc_5:int = 0;
-            var _loc_6:Array = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:Array = null;
-            var _loc_10:SpellWrapper = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_2:* = PlayedCharacterManager.getInstance().characteristics;
             if (_loc_2)
             {
@@ -509,9 +523,6 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     InventoryManager.getInstance().inventory.kamas = param1.stats.kamas;
                 }
-            }
-            if (PlayedCharacterManager.getInstance().characteristics)
-            {
                 _loc_3 = PlayedCharacterManager.getInstance().characteristics.spellModifications;
                 _loc_4 = param1.stats.spellModifications;
                 _loc_5 = Math.max(_loc_3.length, _loc_4.length);
@@ -587,12 +598,12 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function getPlayerSet(param1:uint) : PlayerSetInfo
         {
-            var _loc_4:PlayerSetInfo = null;
-            var _loc_5:Vector.<uint> = null;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = this.setList.length;
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

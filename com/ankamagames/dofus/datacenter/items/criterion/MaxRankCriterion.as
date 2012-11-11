@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.frames.*;
@@ -18,7 +18,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
         {
             var _loc_1:* = String(_criterionValue);
             var _loc_2:* = I18n.getUiText("ui.common.pvpMaxRank");
-            var _loc_3:String = ">";
+            var _loc_3:* = ">";
             if (_operator.text == ItemCriterionOperator.DIFFERENT)
             {
                 _loc_3 = I18n.getUiText("ui.common.differentFrom") + " >";

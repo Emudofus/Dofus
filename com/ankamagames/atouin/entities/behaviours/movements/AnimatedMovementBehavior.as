@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.entities.behaviours.movements
+﻿package com.ankamagames.atouin.entities.behaviours.movements
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.managers.*;
@@ -51,10 +51,10 @@ package com.ankamagames.atouin.entities.behaviours.movements
 
         public function synchroniseSubEntitiesPosition(param1:IMovable, param2:DisplayObject = null) : void
         {
-            var _loc_3:TiphonSprite = null;
-            var _loc_4:Array = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_5:* = undefined;
-            var _loc_6:Array = null;
+            var _loc_6:* = null;
             var _loc_7:* = undefined;
             if (param1 is TiphonSprite)
             {
@@ -154,7 +154,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
 
         protected function initMovement(param1:IMovable, param2:TweenEntityData, param3:Boolean = false) : void
         {
-            var _loc_4:PathElement = null;
+            var _loc_4:* = null;
             if (_aEntitiesMoving[param1.id] != null)
             {
                 _log.warn("Moving an already moving entity. Replacing the previous move.");
@@ -187,7 +187,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
 
         protected function goNextCell(param1:IMovable) : void
         {
-            var _loc_3:PathElement = null;
+            var _loc_3:* = null;
             var _loc_2:* = _aEntitiesMoving[param1.id];
             _loc_2.currentCell = param1.position;
             if (_stoppingEntity[param1])
@@ -265,8 +265,8 @@ package com.ankamagames.atouin.entities.behaviours.movements
 
         protected function processMovement(param1:TweenEntityData, param2:uint) : void
         {
-            var _loc_4:ISoundPositionListener = null;
-            var _loc_5:Point = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             param1.barycentre = param1.velocity * (param2 - param1.start);
             if (param1.barycentre > 1)
             {
@@ -317,7 +317,7 @@ package com.ankamagames.atouin.entities.behaviours.movements
 
         private function onEnterFrame(event:Event) : void
         {
-            var _loc_3:TweenEntityData = null;
+            var _loc_3:* = null;
             var _loc_2:* = getTimer();
             for each (_loc_3 in _aEntitiesMoving)
             {

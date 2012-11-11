@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.dofus.network.types.game.context.*;
     import com.ankamagames.dofus.network.types.game.look.*;
@@ -21,11 +21,11 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
             return 3;
         }// end function
 
-        public function initGameRolePlayMutantInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:String = "", param5:HumanInformations = null, param6:int = 0, param7:int = 0) : GameRolePlayMutantInformations
+        public function initGameRolePlayMutantInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:String = "", param5:HumanInformations = null, param6:uint = 0, param7:int = 0, param8:int = 0) : GameRolePlayMutantInformations
         {
-            super.initGameRolePlayHumanoidInformations(param1, param2, param3, param4, param5);
-            this.monsterId = param6;
-            this.powerLevel = param7;
+            super.initGameRolePlayHumanoidInformations(param1, param2, param3, param4, param5, param6);
+            this.monsterId = param7;
+            this.powerLevel = param8;
             return this;
         }// end function
 

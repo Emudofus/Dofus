@@ -1,10 +1,11 @@
-package com.ankamagames.dofus.logic.connection.managers
+﻿package com.ankamagames.dofus.logic.connection.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.dofus.logic.connection.actions.*;
     import com.ankamagames.dofus.logic.game.common.frames.*;
+    import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.connection.*;
     import com.ankamagames.dofus.network.types.secure.*;
     import com.ankamagames.jerakine.data.*;
@@ -12,6 +13,7 @@ package com.ankamagames.dofus.logic.connection.managers
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.errors.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import flash.utils.*;
 
     public class AuthentificationManager extends Object implements IDestroyable
@@ -61,7 +63,7 @@ package com.ankamagames.dofus.logic.connection.managers
         public function setPublicKey(param1:Vector.<int>) : void
         {
             var _loc_2:* = new ByteArray();
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 
@@ -95,10 +97,10 @@ package com.ankamagames.dofus.logic.connection.managers
 
         public function getIdentificationMessage() : IdentificationMessage
         {
-            var _loc_1:IdentificationMessage = null;
-            var _loc_2:String = null;
-            var _loc_3:Array = null;
-            var _loc_4:IdentificationAccountForceMessage = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this._lva.username.indexOf("|") == -1)
             {
                 _loc_1 = new IdentificationMessage();
@@ -114,7 +116,7 @@ package com.ankamagames.dofus.logic.connection.managers
                     this.ankamaPortalKey = this.cipherMd5String(this._lva.password);
                     _loc_1.initIdentificationMessage(_loc_1.version, XmlConfig.getInstance().getEntry("config.lang.current"), this._lva.username, this.cipherRsa(this._lva.password, this._certificate), this._lva.serverId, this._lva.autoSelectServer, this._certificate != null, false);
                 }
-                _loc_1.version.initVersion(BuildInfos.BUILD_VERSION.major, BuildInfos.BUILD_VERSION.minor, BuildInfos.BUILD_VERSION.release, BuildInfos.BUILD_REVISION, BuildInfos.BUILD_PATCH, BuildInfos.BUILD_VERSION.buildType);
+                _loc_1.version.initVersionExtended(BuildInfos.BUILD_VERSION.major, BuildInfos.BUILD_VERSION.minor, BuildInfos.BUILD_VERSION.release, BuildInfos.BUILD_REVISION, BuildInfos.BUILD_PATCH, BuildInfos.BUILD_VERSION.buildType, AirScanner.isStreamingVersion() ? (ClientInstallTypeEnum.CLIENT_STREAMING) : (ClientInstallTypeEnum.CLIENT_BUNDLE), AirScanner.hasAir() ? (ClientTechnologyEnum.CLIENT_AIR) : (ClientTechnologyEnum.CLIENT_FLASH));
                 return _loc_1;
             }
             else
@@ -124,7 +126,7 @@ package com.ankamagames.dofus.logic.connection.managers
                 _loc_4 = new IdentificationAccountForceMessage();
                 new IdentificationAccountForceMessage().initIdentificationAccountForceMessage(_loc_4.version, XmlConfig.getInstance().getEntry("config.lang.current"), _loc_3[0], this.cipherRsa(this._lva.password, this._certificate), this._lva.serverId, this._lva.autoSelectServer, this._certificate != null, false, _loc_3[1]);
             }
-            _loc_4.version.initVersion(BuildInfos.BUILD_VERSION.major, BuildInfos.BUILD_VERSION.minor, BuildInfos.BUILD_VERSION.release, BuildInfos.BUILD_REVISION, BuildInfos.BUILD_PATCH, BuildInfos.BUILD_VERSION.buildType);
+            _loc_4.version.initVersionExtended(BuildInfos.BUILD_VERSION.major, BuildInfos.BUILD_VERSION.minor, BuildInfos.BUILD_VERSION.release, BuildInfos.BUILD_REVISION, BuildInfos.BUILD_PATCH, BuildInfos.BUILD_VERSION.buildType, AirScanner.isStreamingVersion() ? (ClientInstallTypeEnum.CLIENT_STREAMING) : (ClientInstallTypeEnum.CLIENT_BUNDLE), AirScanner.hasAir() ? (ClientTechnologyEnum.CLIENT_AIR) : (ClientTechnologyEnum.CLIENT_FLASH));
             return _loc_4;
         }// end function
 
@@ -142,8 +144,8 @@ package com.ankamagames.dofus.logic.connection.managers
 
         private function cipherRsa(param1:String, param2:TrustCertificate) : Vector.<int>
         {
-            var _loc_4:ByteArray = null;
-            var _loc_7:int = 0;
+            var _loc_4:* = null;
+            var _loc_7:* = 0;
             var _loc_3:* = new ByteArray();
             if (param2)
             {
@@ -159,7 +161,7 @@ package com.ankamagames.dofus.logic.connection.managers
             _loc_4 = RSA.publicEncrypt(this._publicKey, _loc_3);
             var _loc_5:* = new Vector.<int>;
             _loc_4.position = 0;
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             while (_loc_4.bytesAvailable != 0)
             {
                 

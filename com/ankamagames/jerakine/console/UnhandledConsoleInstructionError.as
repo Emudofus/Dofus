@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.console
+﻿package com.ankamagames.jerakine.console
 {
 
     public class UnhandledConsoleInstructionError extends Error

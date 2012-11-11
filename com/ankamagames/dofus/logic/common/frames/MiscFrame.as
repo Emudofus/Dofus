@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -57,7 +57,7 @@ package com.ankamagames.dofus.logic.common.frames
         public function process(param1:Message) : Boolean
         {
             var mrcMsg:MouseRightClickMessage;
-            var current:*;
+            var current:DisplayObject;
             var stage:Stage;
             var worldContainer:DisplayObjectContainer;
             var beriliaContainer:DisplayObjectContainer;

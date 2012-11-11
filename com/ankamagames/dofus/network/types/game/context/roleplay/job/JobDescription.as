@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay.job
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay.job
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -51,7 +51,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
             }
             param1.writeByte(this.jobId);
             param1.writeShort(this.skills.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.skills.length)
             {
                 
@@ -70,15 +70,15 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
 
         public function deserializeAs_JobDescription(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:SkillActionDescription = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             this.jobId = param1.readByte();
             if (this.jobId < 0)
             {
                 throw new Error("Forbidden value (" + this.jobId + ") on element of JobDescription.jobId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

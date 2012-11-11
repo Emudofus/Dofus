@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.display.*;
@@ -36,7 +36,7 @@ package com.ankamagames.jerakine.utils.display
 
         public static function addEventListener(param1:Function, param2:String, param3:uint = 4.29497e+009) : void
         {
-            var _loc_4:Stage = null;
+            var _loc_4:* = null;
             if (param3 == uint.MAX_VALUE || param3 >= StageShareManager.stage.frameRate)
             {
                 _realTimeListeners[param1] = param2;
@@ -52,6 +52,8 @@ package com.ankamagames.jerakine.utils.display
                     _listenerUp = true;
                 }
             }
+            var _loc_6:* = _listenersCount + 1;
+            _listenersCount = _loc_6;
             return;
         }// end function
 
@@ -91,8 +93,8 @@ package com.ankamagames.jerakine.utils.display
 
         private static function onEnterFrame(event:Event) : void
         {
-            var _loc_2:ControledEnterFrameListener = null;
-            var _loc_3:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
             _currentTime = getTimer();
             for each (_loc_2 in _controledListeners)
             {
@@ -110,6 +112,14 @@ package com.ankamagames.jerakine.utils.display
 
     }
 }
+
+import com.ankamagames.jerakine.logger.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.utils.*;
 
 class ControledEnterFrameListener extends Object
 {

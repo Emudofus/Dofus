@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.utils.benchmark.monitoring.ui.*;
@@ -16,7 +16,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
         public static function countKeys(param1:Dictionary) : int
         {
             var _loc_3:* = undefined;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             for (_loc_3 in param1)
             {
                 
@@ -42,7 +42,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
 
         public static function isSpecialGraph(param1:String) : Boolean
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             for each (_loc_2 in FpsManagerConst.SPECIAL_GRAPH)
             {
                 
@@ -56,8 +56,8 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
 
         public static function numberOfSpecialGraphDisplayed(param1:Dictionary) : int
         {
-            var _loc_3:Graph = null;
-            var _loc_2:int = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             for each (_loc_3 in param1)
             {
                 
@@ -71,8 +71,8 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
 
         public static function getVectorMaxValue(param1:Vector.<Number>) : Number
         {
-            var _loc_3:Number = NaN;
-            var _loc_2:Number = 0;
+            var _loc_3:* = NaN;
+            var _loc_2:* = 0;
             for each (_loc_3 in param1)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.guild
+﻿package com.ankamagames.dofus.internalDatacenter.guild
 {
     import com.ankamagames.dofus.datacenter.npcs.*;
     import com.ankamagames.dofus.network.types.game.guild.tax.*;
@@ -62,7 +62,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
 
         public static function create(param1:TaxCollectorInformations, param2:TaxCollectorFightersInformation = null) : TaxCollectorWrapper
         {
-            var _loc_3:TaxCollectorWrapper = null;
+            var _loc_3:* = null;
             _loc_3 = new TaxCollectorWrapper;
             _loc_3.uniqueId = param1.uniqueId;
             _loc_3.lastName = TaxCollectorName.getTaxCollectorNameById(param1.lastNameId).name;

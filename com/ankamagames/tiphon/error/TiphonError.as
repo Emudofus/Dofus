@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.error
+﻿package com.ankamagames.tiphon.error
 {
 
     public class TiphonError extends Error

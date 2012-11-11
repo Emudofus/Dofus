@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
     import com.ankamagames.dofus.logic.game.fight.managers.*;

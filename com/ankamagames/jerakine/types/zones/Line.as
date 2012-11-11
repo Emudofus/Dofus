@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types.zones
+﻿package com.ankamagames.jerakine.types.zones
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -63,7 +63,7 @@ package com.ankamagames.jerakine.types.zones
 
         public function getCells(param1:uint = 0) : Vector.<uint>
         {
-            var _loc_6:Boolean = false;
+            var _loc_6:* = false;
             var _loc_2:* = new Vector.<uint>;
             var _loc_3:* = MapPoint.fromCellId(param1);
             var _loc_4:* = _loc_3.x;

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.memory
+﻿package com.ankamagames.jerakine.utils.memory
 {
     import flash.utils.*;
 
@@ -15,7 +15,7 @@ package com.ankamagames.jerakine.utils.memory
 
         public function get object() : Object
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             for (_loc_1 in this.dictionary)
             {
                 
@@ -26,7 +26,7 @@ package com.ankamagames.jerakine.utils.memory
 
         private function getObject() : Object
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             for (_loc_1 in this.dictionary)
             {
                 

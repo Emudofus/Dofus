@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.actions.estate
+﻿package com.ankamagames.dofus.logic.game.roleplay.actions.estate
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

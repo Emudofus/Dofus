@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.items
+﻿package com.ankamagames.dofus.internalDatacenter.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -25,7 +25,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get objects() : Array
         {
-            var _loc_1:MountWrapper = null;
+            var _loc_1:* = null;
             if (this.mount)
             {
                 if (PlayedCharacterManager.getInstance().mount || !PlayedCharacterManager.getInstance().mount && this._objects[8])
@@ -98,8 +98,8 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function updateObject(param1:PresetItem) : void
         {
-            var _loc_3:Uri = null;
-            var _loc_5:uint = 0;
+            var _loc_3:* = null;
+            var _loc_5:* = 0;
             var _loc_2:* = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "bitmap/failureSlot.png");
             var _loc_4:* = param1.position;
             if (this._objects[_loc_4])
@@ -161,17 +161,17 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public static function create(param1:int, param2:int, param3:Vector.<PresetItem>, param4:Boolean = false) : PresetWrapper
         {
-            var _loc_7:Uri = null;
-            var _loc_9:Boolean = false;
-            var _loc_10:PresetItem = null;
-            var _loc_11:MountWrapper = null;
+            var _loc_7:* = null;
+            var _loc_9:* = false;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             var _loc_5:* = new PresetWrapper;
             new PresetWrapper.id = param1;
             _loc_5.gfxId = param2;
             _loc_5.objects = new Array(16);
             _loc_5.mount = param4;
             var _loc_6:* = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "bitmap/failureSlot.png");
-            var _loc_8:int = 0;
+            var _loc_8:* = 0;
             while (_loc_8 < 16)
             {
                 

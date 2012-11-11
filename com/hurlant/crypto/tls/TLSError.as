@@ -1,4 +1,4 @@
-package com.hurlant.crypto.tls
+﻿package com.hurlant.crypto.tls
 {
 
     public class TLSError extends Error

@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.factory
+﻿package com.ankamagames.tubul.factory
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.tubul.enum.*;
@@ -17,9 +17,9 @@ package com.ankamagames.tubul.factory
 
         public static function getSound(param1:uint, param2:Uri) : ISound
         {
-            var _loc_8:String = null;
-            var _loc_9:File = null;
-            var _loc_3:Boolean = false;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_3:* = false;
             var _loc_4:* = param2.path;
             var _loc_5:* = param2.path.split("/")[_loc_4.split("/").length - 2];
             var _loc_6:* = _loc_4.substring(0, _loc_4.indexOf(param2.fileName)) + _loc_5 + "_mono";

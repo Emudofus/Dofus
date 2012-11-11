@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.entities
+﻿package com.ankamagames.dofus.types.entities
 {
     import com.ankamagames.jerakine.entities.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -35,8 +35,8 @@ package com.ankamagames.dofus.types.entities
 
         public function ExplosionEntity(param1:Uri, param2:Array, param3:uint = 40, param4:Boolean = false, param5:uint = 2)
         {
-            var _loc_6:uint = 0;
-            var _loc_7:ColorTransform = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
             this._renderer = new DisplayObjectRenderer();
             if (!param1)
             {
@@ -103,10 +103,10 @@ package com.ankamagames.dofus.types.entities
 
         private function createParticle(param1:DisplayObjectContainer, param2:uint, param3:Array, param4:uint, param5:Number, param6:Array, param7:Function, param8:Number = 0, param9:Number = 0) : void
         {
-            var _loc_11:DisplayObject = null;
-            var _loc_12:uint = 0;
-            var _loc_13:uint = 0;
-            var _loc_10:uint = 0;
+            var _loc_11:* = null;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
+            var _loc_10:* = 0;
             while (_loc_10 < param2)
             {
                 
@@ -152,8 +152,8 @@ package com.ankamagames.dofus.types.entities
         private function onResourceReady(event:ResourceLoadedEvent) : void
         {
             var _loc_2:* = Swl(event.resource).getDefinitions();
-            var _loc_3:Array = [];
-            var _loc_4:uint = 0;
+            var _loc_3:* = [];
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_2.length)
             {
                 
@@ -195,7 +195,7 @@ package com.ankamagames.dofus.types.entities
 
         private static function onFrame(event:Event) : void
         {
-            var _loc_2:IParticule = null;
+            var _loc_2:* = null;
             for each (_loc_2 in _particules)
             {
                 

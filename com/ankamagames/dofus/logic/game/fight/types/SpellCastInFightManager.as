@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.kernel.*;
@@ -24,8 +24,8 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         public function nextTurn() : void
         {
-            var _loc_1:SpellManager = null;
-            var _loc_2:String = this;
+            var _loc_1:* = null;
+            var _loc_2:* = this;
             var _loc_3:* = this.currentTurn + 1;
             _loc_2.currentTurn = _loc_3;
             for each (_loc_1 in this._spells)
@@ -38,8 +38,8 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         public function resetInitialCooldown() : void
         {
-            var _loc_1:SpellManager = null;
-            var _loc_3:SpellWrapper = null;
+            var _loc_1:* = null;
+            var _loc_3:* = null;
             var _loc_2:* = Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
             for each (_loc_3 in _loc_2.fullSpellList)
             {

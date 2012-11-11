@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.types.data.*;
@@ -34,9 +34,9 @@ package com.ankamagames.dofus.uiApi
 
         public function destroy() : void
         {
-            var mfs:ModuleFilestream;
+            var mfs:*;
             this._module = null;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = this._openedFiles;
             do
             {
@@ -107,7 +107,7 @@ package com.ankamagames.dofus.uiApi
 
         public function deleteFile(param1:String) : void
         {
-            param1 = param1.replace(".", "");
+            param1 = ModuleFilestream.cleanUrl(param1);
             var _loc_2:* = new File(this._module.storagePath + param1 + ".dmf");
             if (_loc_2.exists && !_loc_2.isDirectory)
             {
@@ -118,7 +118,7 @@ package com.ankamagames.dofus.uiApi
 
         public function deleteDir(param1:String, param2:Boolean = true) : void
         {
-            param1 = param1.replace(".", "");
+            param1 = ModuleFilestream.cleanUrl(param1);
             var _loc_3:* = new File(this._module.storagePath + param1 + ".dmf");
             if (_loc_3.exists && _loc_3.isDirectory)
             {
@@ -129,10 +129,10 @@ package com.ankamagames.dofus.uiApi
 
         public function getDirectoryContent(param1:String = null, param2:Boolean = false, param3:Boolean = false) : Array
         {
-            var _loc_6:Array = null;
-            var _loc_7:File = null;
-            param1 = param1 ? (param1.replace(".", "")) : ("");
-            var _loc_4:Array = [];
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            param1 = param1 ? (ModuleFilestream.cleanUrl(param1)) : ("");
+            var _loc_4:* = [];
             var _loc_5:* = new File(this._module.storagePath + param1);
             if (new File(this._module.storagePath + param1).exists && _loc_5.isDirectory)
             {
@@ -155,14 +155,14 @@ package com.ankamagames.dofus.uiApi
 
         public function isDirectory(param1:String) : Boolean
         {
-            param1 = param1 ? (param1.replace(".", "")) : ("");
+            param1 = param1 ? (ModuleFilestream.cleanUrl(param1)) : ("");
             var _loc_2:* = new File(this._module.storagePath + param1);
             return _loc_2.exists && _loc_2.isDirectory;
         }// end function
 
         public function createDirectory(param1:String) : void
         {
-            param1 = param1 ? (param1.replace(".", "")) : ("");
+            param1 = param1 ? (ModuleFilestream.cleanUrl(param1)) : ("");
             var _loc_2:* = new File(this._module.storagePath + param1);
             ModuleFilestream.checkCreation(param1, this._module);
             _loc_2.createDirectory();

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.berilia.factories.*;
     import com.ankamagames.berilia.managers.*;

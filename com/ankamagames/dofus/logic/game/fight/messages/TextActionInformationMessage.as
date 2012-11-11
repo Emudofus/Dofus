@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.messages
+﻿package com.ankamagames.dofus.logic.game.fight.messages
 {
     import com.ankamagames.jerakine.messages.*;
 

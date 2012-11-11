@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.tooltip
+﻿package com.ankamagames.berilia.types.tooltip
 {
     import flash.events.*;
 
@@ -14,7 +14,7 @@ package com.ankamagames.berilia.types.tooltip
 
         public function processContent(param1:Object) : String
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._content;
             for (_loc_3 in param1)
             {

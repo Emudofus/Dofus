@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.moderation
+﻿package com.ankamagames.dofus.network.messages.game.moderation
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

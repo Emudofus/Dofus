@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types.sounds
+﻿package com.ankamagames.tubul.types.sounds
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.tubul.*;
@@ -136,8 +136,8 @@ package com.ankamagames.tubul.types.sounds
 
         private function updateSound() : void
         {
-            var _loc_1:Number = NaN;
-            var _loc_10:Number = NaN;
+            var _loc_1:* = NaN;
+            var _loc_10:* = NaN;
             _loc_1 = this._position.y + (this._position.y - this._observerPosition.y) * 2;
             var _loc_2:* = Math.abs(this._observerPosition.x - this._position.x);
             var _loc_3:* = Math.abs(this._observerPosition.y - _loc_1);
@@ -159,7 +159,7 @@ package com.ankamagames.tubul.types.sounds
             {
                 volume = 0;
             }
-            var _loc_9:Number = 640;
+            var _loc_9:* = 640;
             this.pan = this._position.x / _loc_9 - 1;
             if (_soundLoaded)
             {

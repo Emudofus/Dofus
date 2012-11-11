@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.miscs
+﻿package com.ankamagames.dofus.logic.game.fight.miscs
 {
     import com.ankamagames.dofus.types.enums.*;
     import com.ankamagames.tiphon.types.*;

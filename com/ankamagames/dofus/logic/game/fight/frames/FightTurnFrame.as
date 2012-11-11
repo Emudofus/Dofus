@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.frames
+﻿package com.ankamagames.dofus.logic.game.fight.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -79,7 +79,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function set myTurn(param1:Boolean) : void
         {
-            var _loc_5:IEntity = null;
+            var _loc_5:* = null;
             var _loc_2:* = param1 != this._myTurn;
             var _loc_3:* = !this._myTurn;
             this._myTurn = param1;
@@ -145,12 +145,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:CellOverMessage = null;
-            var _loc_3:GameFightSpellCastAction = null;
-            var _loc_4:GameFightFighterInformations = null;
-            var _loc_5:CellClickMessage = null;
-            var _loc_6:EntityMovementCompleteMessage = null;
-            var _loc_7:Frame = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             switch(true)
             {
                 case param1 is CellOverMessage:
@@ -274,14 +274,14 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function drawPath(param1:MapPoint = null) : void
         {
-            var _loc_3:Number = NaN;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_15:PathElement = null;
-            var _loc_16:Selection = null;
-            var _loc_17:Sprite = null;
-            var _loc_18:TextFormat = null;
-            var _loc_19:GlowFilter = null;
+            var _loc_3:* = NaN;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
             if (this._isRequestingMovement)
             {
                 return;
@@ -316,9 +316,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
             }
             this._cells = new Vector.<uint>;
             this._cellsUnreachable = new Vector.<uint>;
-            var _loc_10:Boolean = true;
-            var _loc_11:int = 0;
-            var _loc_12:PathElement = null;
+            var _loc_10:* = true;
+            var _loc_11:* = 0;
+            var _loc_12:* = null;
             var _loc_13:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             var _loc_14:* = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntityInfos(_loc_2.id) as GameFightFighterInformations;
             for each (_loc_15 in _loc_9.path)
@@ -499,8 +499,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function askMoveTo(param1:MapPoint) : Boolean
         {
-            var _loc_8:int = 0;
-            var _loc_12:PathElement = null;
+            var _loc_8:* = 0;
+            var _loc_12:* = null;
             if (this._isRequestingMovement)
             {
                 return false;
@@ -510,13 +510,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
             if (!_loc_2)
             {
                 _log.warn("The player tried to move before its character was added to the scene. Aborting.");
-                var _loc_14:Boolean = false;
+                var _loc_14:* = false;
                 this._isRequestingMovement = false;
                 return _loc_14;
             }
             if (IMovable(_loc_2).isMoving)
             {
-                var _loc_14:Boolean = false;
+                var _loc_14:* = false;
                 this._isRequestingMovement = false;
                 return _loc_14;
             }
@@ -524,15 +524,15 @@ package com.ankamagames.dofus.logic.game.fight.frames
             var _loc_4:* = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
             if (_loc_3.path.length == 0 || _loc_3.path.length > _loc_4.movementPointsCurrent)
             {
-                var _loc_14:Boolean = false;
+                var _loc_14:* = false;
                 this._isRequestingMovement = false;
                 return _loc_14;
             }
             var _loc_5:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             var _loc_6:* = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntityInfos(_loc_2.id) as GameFightFighterInformations;
             var _loc_7:* = TackleUtil.getTackle(_loc_6, _loc_2.position);
-            var _loc_9:int = 0;
-            var _loc_10:PathElement = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
             var _loc_11:* = _loc_4.movementPointsCurrent;
             this._cells = new Vector.<uint>;
             for each (_loc_12 in _loc_3.path)

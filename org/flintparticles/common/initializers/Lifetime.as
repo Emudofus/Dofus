@@ -1,4 +1,4 @@
-package org.flintparticles.common.initializers
+﻿package org.flintparticles.common.initializers
 {
     import org.flintparticles.common.emitters.*;
     import org.flintparticles.common.particles.*;

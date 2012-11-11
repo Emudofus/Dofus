@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.moduleLogger
+﻿package com.ankamagames.dofus.console.moduleLogger
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.*;
@@ -50,7 +50,7 @@ package com.ankamagames.dofus.console.moduleLogger
             this._lines = new Vector.<String>;
             this._allInfo = new Vector.<TypeMessage>;
             this.regExp = new RegExp("<[^>]*>", "g");
-            this.regExp2 = new RegExp("", "g");
+            this.regExp2 = new RegExp("•", "g");
             if (_self)
             {
                 throw new Error();
@@ -61,9 +61,9 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function output(param1:TypeMessage) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:String = null;
-            var _loc_4:Array = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this._active)
             {
                 this._allInfo.push(param1);
@@ -115,7 +115,7 @@ package com.ankamagames.dofus.console.moduleLogger
 
         public function disableLogEvent() : void
         {
-            var _loc_1:ConsoleIcon = null;
+            var _loc_1:* = null;
             this._showHook = false;
             this._showUI = false;
             this._showAction = false;
@@ -182,7 +182,7 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function createUI() : void
         {
-            var _loc_9:ConsoleIcon = null;
+            var _loc_9:* = null;
             this._backGround = new Sprite();
             this._textField = new TextField();
             this._textField.addEventListener(TextEvent.LINK, this.onTextClick);
@@ -197,7 +197,7 @@ package com.ankamagames.dofus.console.moduleLogger
             _loc_1.color = OUTPUT_COLOR;
             this._textField.defaultTextFormat = _loc_1;
             this._textField.styleSheet = CONSOLE_STYLE;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             this._iconList = new Sprite();
             var _loc_3:* = new ConsoleIcon("cancel", ICON_SIZE);
             _loc_3.addEventListener(MouseEvent.MOUSE_DOWN, this.clearConsole);
@@ -214,7 +214,7 @@ package com.ankamagames.dofus.console.moduleLogger
             this._iconList.addChild(_loc_5);
             this._filterButton = new Array();
             var _loc_6:* = new Array(new ColorTransform(0.9, 1, 1.1), new ColorTransform(0.9, 1.2, 0.8), new ColorTransform(1.3, 0.7, 0.8), new ColorTransform(1.3, 1.3, 0.5));
-            var _loc_7:int = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6.length)
             {
                 
@@ -256,7 +256,7 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function createWindow() : void
         {
-            var _loc_1:NativeWindowInitOptions = null;
+            var _loc_1:* = null;
             if (!this._window)
             {
                 _loc_1 = new NativeWindowInitOptions();
@@ -349,14 +349,14 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function onFilterChange(event:Event = null) : void
         {
-            var _loc_5:TypeMessage = null;
-            var _loc_6:int = 0;
-            var _loc_7:String = null;
-            var _loc_8:Array = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             this._lines.splice(0, this._lines.length);
             var _loc_2:* = this._filterUI && this._filterUI.isOn;
             var _loc_3:* = this._allInfo.length;
-            var _loc_4:int = -1;
+            var _loc_4:* = -1;
             while (++_loc_4 < _loc_3)
             {
                 
@@ -394,8 +394,8 @@ package com.ankamagames.dofus.console.moduleLogger
 
         private function onResize(event:Event = null) : void
         {
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             this._backGround.graphics.clear();
             this._backGround.graphics.beginFill(BACKGROUND_COLOR);
             this._backGround.graphics.drawRect(0, 0, this._window.stage.stageWidth, this._window.stage.stageHeight);
@@ -429,8 +429,8 @@ package com.ankamagames.dofus.console.moduleLogger
             this._textField.width = this._window.stage.stageWidth - TextFieldScrollBar.WIDTH;
             this._textField.height = this._window.stage.stageHeight - this._textField.y - SCROLLBAR_SIZE;
             this._textField.scrollV = 0;
-            var _loc_2:String = "";
-            var _loc_3:int = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 0;
             while (_loc_3 < 200)
             {
                 

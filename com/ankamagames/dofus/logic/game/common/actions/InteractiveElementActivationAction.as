@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions
+﻿package com.ankamagames.dofus.logic.game.common.actions
 {
     import com.ankamagames.dofus.network.types.game.interactive.*;
     import com.ankamagames.jerakine.handlers.messages.*;

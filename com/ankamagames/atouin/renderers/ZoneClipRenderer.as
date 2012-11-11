@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.renderers
+﻿package com.ankamagames.atouin.renderers
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -35,9 +35,9 @@ package com.ankamagames.atouin.renderers
 
         public function render(param1:Vector.<uint>, param2:Color, param3:DataMapContainer, param4:Boolean = false) : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:ZoneClipTile = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
             this._cells = param1;
             var _loc_5:* = new ParkMillerCarta();
             new ParkMillerCarta().seed(this._currentMapId + 5435);
@@ -74,13 +74,13 @@ package com.ankamagames.atouin.renderers
 
         public function remove(param1:Vector.<uint>, param2:DataMapContainer) : void
         {
-            var _loc_4:int = 0;
-            var _loc_8:ZoneClipTile = null;
+            var _loc_4:* = 0;
+            var _loc_8:* = null;
             if (!param1)
             {
                 return;
             }
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_5:* = new Array();
             var _loc_6:* = param1.length;
             _loc_4 = 0;
@@ -91,7 +91,7 @@ package com.ankamagames.atouin.renderers
                 _loc_4++;
             }
             _loc_6 = this._aCellTile.length;
-            var _loc_7:int = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 
@@ -120,7 +120,7 @@ package com.ankamagames.atouin.renderers
 
         private static function getZoneTile(param1:Uri, param2:String, param3:Boolean) : ZoneClipTile
         {
-            var _loc_5:ZoneClipTile = null;
+            var _loc_5:* = null;
             var _loc_4:* = getData(param1.fileName, param2);
             if (getData(param1.fileName, param2).length)
             {
@@ -140,7 +140,7 @@ package com.ankamagames.atouin.renderers
 
         private static function getData(param1:String, param2:String) : CachedTile
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = zoneTile.length;
             _loc_3 = 0;
             while (_loc_3 < _loc_4)
@@ -159,6 +159,20 @@ package com.ankamagames.atouin.renderers
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.atouin.*;
+
+import com.ankamagames.atouin.types.*;
+
+import com.ankamagames.atouin.utils.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.types.events.*;
+
+import com.ankamagames.jerakine.utils.prng.*;
 
 class CachedTile extends Object
 {

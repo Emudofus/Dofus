@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug.frames
+﻿package com.ankamagames.dofus.console.debug.frames
 {
     import com.ankamagames.dofus.kernel.updater.*;
     import com.ankamagames.dofus.network.messages.updater.parts.*;
@@ -33,10 +33,10 @@ package com.ankamagames.dofus.console.debug.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:PartsListMessage = null;
-            var _loc_3:PartInfoMessage = null;
-            var _loc_4:DownloadCurrentSpeedMessage = null;
-            var _loc_5:ContentPart = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             switch(true)
             {
                 case param1 is PartsListMessage:

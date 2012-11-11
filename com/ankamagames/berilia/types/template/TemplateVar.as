@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.template
+﻿package com.ankamagames.berilia.types.template
 {
 
     public class TemplateVar extends Object

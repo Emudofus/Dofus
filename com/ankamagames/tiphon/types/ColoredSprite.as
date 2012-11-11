@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.geom.*;
@@ -16,7 +16,7 @@ package com.ankamagames.tiphon.types
 
         override public function init(param1:IAnimationSpriteHandler) : void
         {
-            var _loc_3:ColorTransform = null;
+            var _loc_3:* = null;
             var _loc_2:* = parseInt(getQualifiedClassName(this).split("_")[1]);
             _loc_3 = param1.getColorTransform(_loc_2);
             if (_loc_3)

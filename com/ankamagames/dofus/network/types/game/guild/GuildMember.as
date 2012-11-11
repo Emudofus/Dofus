@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.guild
+﻿package com.ankamagames.dofus.network.types.game.guild
 {
     import com.ankamagames.dofus.network.types.game.character.*;
     import com.ankamagames.jerakine.network.*;
@@ -16,6 +16,7 @@ package com.ankamagames.dofus.network.types.game.guild
         public var alignmentSide:int = 0;
         public var hoursSinceLastConnection:uint = 0;
         public var moodSmileyId:int = 0;
+        public var accountId:uint = 0;
         public static const protocolId:uint = 88;
 
         public function GuildMember()
@@ -28,7 +29,7 @@ package com.ankamagames.dofus.network.types.game.guild
             return 88;
         }// end function
 
-        public function initGuildMember(param1:uint = 0, param2:uint = 0, param3:String = "", param4:int = 0, param5:Boolean = false, param6:uint = 0, param7:Number = 0, param8:uint = 0, param9:uint = 0, param10:uint = 99, param11:int = 0, param12:uint = 0, param13:int = 0) : GuildMember
+        public function initGuildMember(param1:uint = 0, param2:uint = 0, param3:String = "", param4:int = 0, param5:Boolean = false, param6:uint = 0, param7:Number = 0, param8:uint = 0, param9:uint = 0, param10:uint = 99, param11:int = 0, param12:uint = 0, param13:int = 0, param14:uint = 0) : GuildMember
         {
             super.initCharacterMinimalInformations(param1, param2, param3);
             this.breed = param4;
@@ -41,6 +42,7 @@ package com.ankamagames.dofus.network.types.game.guild
             this.alignmentSide = param11;
             this.hoursSinceLastConnection = param12;
             this.moodSmileyId = param13;
+            this.accountId = param14;
             return this;
         }// end function
 
@@ -57,6 +59,7 @@ package com.ankamagames.dofus.network.types.game.guild
             this.alignmentSide = 0;
             this.hoursSinceLastConnection = 0;
             this.moodSmileyId = 0;
+            this.accountId = 0;
             return;
         }// end function
 
@@ -99,6 +102,11 @@ package com.ankamagames.dofus.network.types.game.guild
             }
             param1.writeShort(this.hoursSinceLastConnection);
             param1.writeByte(this.moodSmileyId);
+            if (this.accountId < 0)
+            {
+                throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+            }
+            param1.writeInt(this.accountId);
             return;
         }// end function
 
@@ -145,6 +153,11 @@ package com.ankamagames.dofus.network.types.game.guild
                 throw new Error("Forbidden value (" + this.hoursSinceLastConnection + ") on element of GuildMember.hoursSinceLastConnection.");
             }
             this.moodSmileyId = param1.readByte();
+            this.accountId = param1.readInt();
+            if (this.accountId < 0)
+            {
+                throw new Error("Forbidden value (" + this.accountId + ") on element of GuildMember.accountId.");
+            }
             return;
         }// end function
 

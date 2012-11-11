@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display.spellZone
+﻿package com.ankamagames.jerakine.utils.display.spellZone
 {
     import __AS3__.vec.*;
 

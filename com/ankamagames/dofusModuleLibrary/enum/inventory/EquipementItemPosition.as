@@ -1,4 +1,4 @@
-package com.ankamagames.dofusModuleLibrary.enum.inventory
+﻿package com.ankamagames.dofusModuleLibrary.enum.inventory
 {
 
     public class EquipementItemPosition extends Object

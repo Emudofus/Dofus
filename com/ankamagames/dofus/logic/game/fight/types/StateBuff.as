@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.logic.game.fight.fightEvents.*;

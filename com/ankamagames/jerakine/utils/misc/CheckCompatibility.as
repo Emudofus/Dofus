@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+﻿package com.ankamagames.jerakine.utils.misc
 {
     import flash.utils.*;
 
@@ -42,13 +42,13 @@ package com.ankamagames.jerakine.utils.misc
             }
             var referenceDesc:* = DescribeTypeCache.typeDescription(reference);
             var targetDesc:* = DescribeTypeCache.typeDescription(target);
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             var _loc_7:* = referenceDesc..method;
             while (_loc_7 in _loc_6)
             {
                 
                 method = _loc_7[_loc_6];
-                var _loc_9:int = 0;
+                var _loc_9:* = 0;
                 var _loc_10:* = targetDesc..method;
                 var _loc_8:* = new XMLList("");
                 for each (_loc_11 in _loc_10)
@@ -72,14 +72,14 @@ package com.ankamagames.jerakine.utils.misc
                     }
                     return false;
                 }
-                var _loc_8:int = 0;
+                var _loc_8:* = 0;
                 var _loc_9:* = method..parameter;
                 while (_loc_9 in _loc_8)
                 {
                     
                     param = _loc_9[_loc_8];
-                    var _loc_11:int = 0;
-                    var _loc_14:int = 0;
+                    var _loc_11:* = 0;
+                    var _loc_14:* = 0;
                     var _loc_15:* = targetDesc..method;
                     var _loc_13:* = new XMLList("");
                     for each (_loc_16 in _loc_15)
@@ -134,14 +134,14 @@ package com.ankamagames.jerakine.utils.misc
             var referenceDesc:* = DescribeTypeCache.typeDescription(reference);
             var targetDesc:* = DescribeTypeCache.typeDescription(target);
             var ok:Boolean;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             var _loc_6:* = referenceDesc..method;
             while (_loc_6 in _loc_5)
             {
                 
                 method = _loc_6[_loc_5];
                 fct = "public function " + method.@name + "(";
-                var _loc_8:int = 0;
+                var _loc_8:* = 0;
                 var _loc_9:* = targetDesc..method;
                 var _loc_7:* = new XMLList("");
                 for each (_loc_10 in _loc_9)
@@ -160,15 +160,15 @@ package com.ankamagames.jerakine.utils.misc
                 {
                     ok;
                 }
-                var _loc_7:int = 0;
+                var _loc_7:* = 0;
                 var _loc_8:* = method..parameter;
                 while (_loc_8 in _loc_7)
                 {
                     
                     param = _loc_8[_loc_7];
                     fct = fct + ((parseInt(param.@index) > 1 ? (", ") : ("")) + "param" + param.@index + " : " + param.@type);
-                    var _loc_10:int = 0;
-                    var _loc_13:int = 0;
+                    var _loc_10:* = 0;
+                    var _loc_13:* = 0;
                     var _loc_14:* = targetDesc..method;
                     var _loc_12:* = new XMLList("");
                     for each (_loc_15 in _loc_14)

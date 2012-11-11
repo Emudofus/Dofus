@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.data.items
+﻿package com.ankamagames.dofus.network.types.game.data.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -66,7 +66,7 @@ package com.ankamagames.dofus.network.types.game.data.items
             param1.writeShort(this.powerRate);
             param1.writeBoolean(this.overMax);
             param1.writeShort(this.effects.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.effects.length)
             {
                 
@@ -95,8 +95,8 @@ package com.ankamagames.dofus.network.types.game.data.items
 
         public function deserializeAs_ObjectItemNotInContainer(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:ObjectEffect = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             super.deserialize(param1);
             this.objectGID = param1.readShort();
             if (this.objectGID < 0)
@@ -106,7 +106,7 @@ package com.ankamagames.dofus.network.types.game.data.items
             this.powerRate = param1.readShort();
             this.overMax = param1.readBoolean();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

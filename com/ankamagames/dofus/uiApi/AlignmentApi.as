@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -113,11 +113,11 @@ package com.ankamagames.dofus.uiApi
 
         public function getOrderRanks(param1:uint) : Array
         {
-            var _loc_6:AlignmentRank = null;
+            var _loc_6:* = null;
             var _loc_2:* = new Array();
             var _loc_3:* = AlignmentRank.getAlignmentRanks();
             var _loc_4:* = _loc_3.length;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -193,8 +193,8 @@ package com.ankamagames.dofus.uiApi
 
         public function isPlayerDefender() : Boolean
         {
-            var _loc_2:PrismFightersWrapper = null;
-            var _loc_3:PrismFightersWrapper = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_1:* = PlayedCharacterManager.getInstance().id;
             for each (_loc_2 in this.getPrismDefenders())
             {
@@ -231,9 +231,9 @@ package com.ankamagames.dofus.uiApi
 
         private function filterGiftsByRank(param1, param2:int, param3:Array) : void
         {
-            var _loc_4:Array = null;
-            var _loc_5:Array = null;
-            var _loc_6:int = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
             var _loc_7:* = undefined;
             this._rankGifts = new Array();
             if (param1.id == this._rankId)

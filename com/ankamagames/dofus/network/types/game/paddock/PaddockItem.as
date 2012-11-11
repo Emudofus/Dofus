@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.paddock
+﻿package com.ankamagames.dofus.network.types.game.paddock
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.dofus.network.types.game.mount.*;

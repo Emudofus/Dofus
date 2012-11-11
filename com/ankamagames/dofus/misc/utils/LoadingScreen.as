@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.types.graphic.*;
@@ -140,8 +140,8 @@ package com.ankamagames.dofus.misc.utils
 
         private function finalizeInitialization() : void
         {
-            var _loc_3:Bitmap = null;
-            var _loc_6:TextField = null;
+            var _loc_3:* = null;
+            var _loc_6:* = null;
             this._logTf = new TextField();
             this._logTf.width = StageShareManager.startWidth;
             this._logTf.height = 500;
@@ -229,7 +229,7 @@ package com.ankamagames.dofus.misc.utils
             this._progressClip = new this._dofusProgress();
             this._progressClip.x = 608;
             this._progressClip.y = 821;
-            var _loc_7:Number = 0.5;
+            var _loc_7:* = 0.5;
             this._progressClip.scaleY = 0.5;
             this._progressClip.scaleX = _loc_7;
             addChild(this._progressClip);
@@ -277,7 +277,7 @@ package com.ankamagames.dofus.misc.utils
 
         public function log(param1:String, param2:uint) : void
         {
-            var _loc_3:ColorTransform = null;
+            var _loc_3:* = null;
             if (param2 == ERROR || param2 == WARNING)
             {
                 _loc_3 = new ColorTransform();

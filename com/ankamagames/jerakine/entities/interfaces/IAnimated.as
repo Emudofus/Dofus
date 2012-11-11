@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.entities.interfaces
+﻿package com.ankamagames.jerakine.entities.interfaces
 {
 
     public interface IAnimated

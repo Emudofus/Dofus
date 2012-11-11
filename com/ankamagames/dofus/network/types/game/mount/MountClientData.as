@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.mount
+﻿package com.ankamagames.dofus.network.types.game.mount
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.data.items.effects.*;
@@ -137,7 +137,7 @@ package com.ankamagames.dofus.network.types.game.mount
 
         public function serializeAs_MountClientData(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.sex);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.isRideable);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.isWild);
@@ -150,7 +150,7 @@ package com.ankamagames.dofus.network.types.game.mount
             }
             param1.writeInt(this.model);
             param1.writeShort(this.ancestor.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.ancestor.length)
             {
                 
@@ -162,7 +162,7 @@ package com.ankamagames.dofus.network.types.game.mount
                 _loc_3 = _loc_3 + 1;
             }
             param1.writeShort(this.behaviors.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.behaviors.length)
             {
                 
@@ -253,7 +253,7 @@ package com.ankamagames.dofus.network.types.game.mount
             }
             param1.writeInt(this.reproductionCountMax);
             param1.writeShort(this.effectList.length);
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < this.effectList.length)
             {
                 
@@ -271,9 +271,9 @@ package com.ankamagames.dofus.network.types.game.mount
 
         public function deserializeAs_MountClientData(param1:IDataInput) : void
         {
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:ObjectEffectInteger = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
             var _loc_2:* = param1.readByte();
             this.sex = BooleanByteWrapper.getFlag(_loc_2, 0);
             this.isRideable = BooleanByteWrapper.getFlag(_loc_2, 1);
@@ -286,7 +286,7 @@ package com.ankamagames.dofus.network.types.game.mount
                 throw new Error("Forbidden value (" + this.model + ") on element of MountClientData.model.");
             }
             var _loc_3:* = param1.readUnsignedShort();
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 
@@ -299,7 +299,7 @@ package com.ankamagames.dofus.network.types.game.mount
                 _loc_4 = _loc_4 + 1;
             }
             var _loc_5:* = param1.readUnsignedShort();
-            var _loc_6:uint = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < _loc_5)
             {
                 
@@ -391,7 +391,7 @@ package com.ankamagames.dofus.network.types.game.mount
                 throw new Error("Forbidden value (" + this.reproductionCountMax + ") on element of MountClientData.reproductionCountMax.");
             }
             var _loc_7:* = param1.readUnsignedShort();
-            var _loc_8:uint = 0;
+            var _loc_8:* = 0;
             while (_loc_8 < _loc_7)
             {
                 

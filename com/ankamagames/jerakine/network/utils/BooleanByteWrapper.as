@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.network.utils
+﻿package com.ankamagames.jerakine.network.utils
 {
 
     public class BooleanByteWrapper extends Object

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.replay
+﻿package com.ankamagames.jerakine.replay
 {
 
     public class MouseInteraction extends Object

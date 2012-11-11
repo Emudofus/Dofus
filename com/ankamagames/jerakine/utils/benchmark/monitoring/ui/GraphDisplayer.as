@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
@@ -31,12 +31,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         private function initTexts() : void
         {
-            var _loc_1:TextFormat = null;
             this._txtSprite = new Sprite();
             this._txtSprite.mouseEnabled = false;
             this._txtSprite.x = FpsManagerConst.PADDING_LEFT;
             this._txtSprite.y = FpsManagerConst.PADDING_TOP;
-            _loc_1 = new TextFormat("Verdana", 13);
+            var _loc_1:* = new TextFormat("Verdana", 13);
             _loc_1.color = 16777215;
             this._fpsTf = new TextField();
             this._fpsTf.defaultTextFormat = _loc_1;
@@ -71,35 +70,39 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
             return;
         }// end function
 
-        public function update() : void
+        public function update(param1:Boolean = true) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:uint = 0;
-            var _loc_4:Graph = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             this.addConstValue(FpsManagerConst.SPECIAL_GRAPH[1].name, 1000 / StageShareManager.stage.frameRate);
-            var _loc_1:* = FpsManagerConst.BOX_WIDTH - 1;
+            if (!param1)
+            {
+                return;
+            }
+            var _loc_2:* = FpsManagerConst.BOX_WIDTH - 1;
             this._graphDisplay.bitmapData.lock();
             this._graphDisplay.bitmapData.scroll(-1, 0);
-            this._graphDisplay.bitmapData.fillRect(new Rectangle(_loc_1, 1, 1, FpsManagerConst.BOX_HEIGHT), 16711680);
-            for each (_loc_4 in this._graphToDisplay)
+            this._graphDisplay.bitmapData.fillRect(new Rectangle(_loc_2, 1, 1, FpsManagerConst.BOX_HEIGHT), 16711680);
+            for each (_loc_5 in this._graphToDisplay)
             {
                 
-                if (!FpsManagerUtils.isSpecialGraph(_loc_4.indice))
+                if (!FpsManagerUtils.isSpecialGraph(_loc_5.indice))
                 {
-                    this.addConstValue(_loc_4.indice);
+                    this.addConstValue(_loc_5.indice);
                 }
-                _loc_4.setNewFrame();
-                if (_loc_4.points.length == 0 || !_loc_4.graphVisible)
+                _loc_5.setNewFrame();
+                if (_loc_5.points.length == 0 || !_loc_5.graphVisible)
                 {
                     continue;
                 }
-                _loc_2 = this.formateValue(_loc_4.points[(_loc_4.points.length - 1)]);
-                _loc_3 = FpsManagerUtils.addAlphaToColor(_loc_4.color, 4294967295);
-                if (_loc_4.points.length >= 2)
+                _loc_3 = this.formateValue(_loc_5.points[(_loc_5.points.length - 1)]);
+                _loc_4 = FpsManagerUtils.addAlphaToColor(_loc_5.color, 4294967295);
+                if (_loc_5.points.length >= 2)
                 {
-                    this.linkGraphValues(_loc_1, _loc_2, this.formateValue(_loc_4.points[_loc_4.points.length - 2]), _loc_3);
+                    this.linkGraphValues(_loc_2, _loc_3, this.formateValue(_loc_5.points[_loc_5.points.length - 2]), _loc_4);
                 }
-                this._graphDisplay.bitmapData.setPixel32(_loc_1, _loc_2, _loc_2 == 1 ? (4294901760) : (_loc_3));
+                this._graphDisplay.bitmapData.setPixel32(_loc_2, _loc_3, _loc_3 == 1 ? (4294901760) : (_loc_4));
             }
             this._graphDisplay.bitmapData.unlock();
             return;
@@ -175,11 +178,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         private function showGraph(event:Event) : void
         {
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             var _loc_2:* = event.currentTarget as Graph;
             var _loc_3:* = _loc_2.points.length;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_7:* = FpsManagerUtils.addAlphaToColor(_loc_2.color, 4294967295);
             this._graphDisplay.bitmapData.lock();
             _loc_4 = 0;
@@ -225,6 +228,18 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
                 this._graphDisplay.bitmapData.fillRect(new Rectangle((param1 - 1), (param2 > param3 ? (param3) : (param2)) + 1, 1, (Math.abs(param2 - param3) - 1)), param4);
             }
             return;
+        }// end function
+
+        public function getExternalGraphs() : Array
+        {
+            var _loc_2:* = null;
+            var _loc_1:* = new Array();
+            for each (_loc_2 in this._graphToDisplay)
+            {
+                
+                _loc_1.push({name:_loc_2.indice, points:_loc_2.points, color:_loc_2.color});
+            }
+            return _loc_1;
         }// end function
 
     }

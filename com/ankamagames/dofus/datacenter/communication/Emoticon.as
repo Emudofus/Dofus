@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.communication
+﻿package com.ankamagames.dofus.datacenter.communication
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;
@@ -42,19 +42,27 @@ package com.ankamagames.dofus.datacenter.communication
 
         public function get shortcut() : String
         {
-            return this.defaultAnim;
+            if (!this._shortcut)
+            {
+                this._shortcut = I18n.getText(this.shortcutId);
+            }
+            if (!this._shortcut || this._shortcut == "")
+            {
+                return this.defaultAnim;
+            }
+            return this._shortcut;
         }// end function
 
         public function getAnimName(param1:TiphonEntityLook) : String
         {
-            var _loc_2:String = null;
-            var _loc_3:String = null;
-            var _loc_4:Array = null;
-            var _loc_5:uint = 0;
-            var _loc_6:Array = null;
-            var _loc_7:uint = 0;
-            var _loc_8:String = null;
-            var _loc_9:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
             var _loc_10:* = undefined;
             if (param1)
             {

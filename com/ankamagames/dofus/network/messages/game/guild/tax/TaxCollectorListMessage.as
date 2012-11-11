@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.guild.tax
+﻿package com.ankamagames.dofus.network.messages.game.guild.tax
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -85,7 +85,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
             }
             param1.writeShort(this.taxCollectorHireCost);
             param1.writeShort(this.informations.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.informations.length)
             {
                 
@@ -94,7 +94,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.fightersInformations.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.fightersInformations.length)
             {
                 
@@ -112,9 +112,9 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
 
         public function deserializeAs_TaxCollectorListMessage(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:TaxCollectorInformations = null;
-            var _loc_8:TaxCollectorFightersInformation = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             this.nbcollectorMax = param1.readByte();
             if (this.nbcollectorMax < 0)
             {
@@ -126,7 +126,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
                 throw new Error("Forbidden value (" + this.taxCollectorHireCost + ") on element of TaxCollectorListMessage.taxCollectorHireCost.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -137,7 +137,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -35,11 +35,11 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:BasicPongMessage = null;
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:IServerConnection = null;
-            var _loc_6:BasicLatencyStatsMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(true)
             {
                 case param1 is BasicPongMessage:

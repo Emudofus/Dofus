@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.adapters.impl
+﻿package com.ankamagames.jerakine.resources.adapters.impl
 {
     import com.ankamagames.jerakine.resources.*;
     import com.ankamagames.jerakine.resources.adapters.*;
@@ -66,10 +66,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
             {
                 loaderContext = new LoaderContext();
             }
-            if (AirScanner.hasAir())
-            {
-                loaderContext["allowLoadBytesCodeExecution"] = true;
-            }
+            AirScanner.allowByteCodeExecution(loaderContext, true);
             loaderContext.applicationDomain = new ApplicationDomain(ApplicationDomainShareManager.currentApplicationDomain);
             var ldr:* = new Loader();
             ldr.contentLoaderInfo.addEventListener(Event.INIT, this.onScriptInit);
@@ -115,9 +112,9 @@ package com.ankamagames.jerakine.resources.adapters.impl
 
         private static function decipherSwf(param1:ByteArray, param2:ByteArray, param3:ByteArray) : void
         {
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_4:uint = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_4:* = 0;
             while (param2.bytesAvailable > 0)
             {
                 

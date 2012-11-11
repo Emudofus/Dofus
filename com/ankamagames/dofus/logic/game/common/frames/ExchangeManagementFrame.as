@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -79,8 +79,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function processExchangeRequestedTradeMessage(param1:ExchangeRequestedTradeMessage) : void
         {
-            var _loc_4:SocialFrame = null;
-            var _loc_5:LeaveDialogAction = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (param1.exchangeType != ExchangeTypeEnum.PLAYER_TRADE)
             {
                 return;
@@ -124,118 +124,134 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:ExchangeStartedWithStorageMessage = null;
-            var _loc_5:int = 0;
-            var _loc_6:ExchangeStartedMessage = null;
-            var _loc_7:StorageInventoryContentMessage = null;
-            var _loc_8:ExchangeStartOkTaxCollectorMessage = null;
-            var _loc_9:StorageObjectUpdateMessage = null;
-            var _loc_10:ObjectItem = null;
-            var _loc_11:ItemWrapper = null;
-            var _loc_12:StorageObjectRemoveMessage = null;
-            var _loc_13:StorageObjectsUpdateMessage = null;
-            var _loc_14:StorageObjectsRemoveMessage = null;
-            var _loc_15:StorageKamasUpdateMessage = null;
-            var _loc_16:ExchangeObjectMoveKamaAction = null;
-            var _loc_17:ExchangeObjectMoveKamaMessage = null;
-            var _loc_18:ExchangeObjectTransfertAllToInvAction = null;
-            var _loc_19:ExchangeObjectTransfertAllToInvMessage = null;
-            var _loc_20:ExchangeObjectTransfertListToInvAction = null;
-            var _loc_21:ExchangeObjectTransfertAllFromInvAction = null;
-            var _loc_22:ExchangeObjectTransfertAllFromInvMessage = null;
-            var _loc_23:ExchangeObjectTransfertListFromInvAction = null;
-            var _loc_24:ExchangeStartOkNpcShopMessage = null;
-            var _loc_25:GameContextActorInformations = null;
-            var _loc_26:TiphonEntityLook = null;
-            var _loc_27:Array = null;
-            var _loc_28:String = null;
-            var _loc_29:String = null;
-            var _loc_30:TiphonEntityLook = null;
-            var _loc_31:TiphonEntityLook = null;
-            var _loc_32:ExchangeStartedWithPodsMessage = null;
-            var _loc_33:int = 0;
-            var _loc_34:int = 0;
-            var _loc_35:int = 0;
-            var _loc_36:int = 0;
-            var _loc_37:int = 0;
-            var _loc_38:ObjectItem = null;
-            var _loc_39:ObjectItem = null;
-            var _loc_40:ItemWrapper = null;
-            var _loc_41:uint = 0;
-            var _loc_42:ExchangeObjectTransfertListToInvMessage = null;
-            var _loc_43:ExchangeObjectTransfertListFromInvMessage = null;
-            var _loc_44:ObjectItemToSellInNpcShop = null;
-            var _loc_45:ItemWrapper = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = null;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
+            var _loc_39:* = 0;
+            var _loc_40:* = 0;
+            var _loc_41:* = 0;
+            var _loc_42:* = 0;
+            var _loc_43:* = 0;
+            var _loc_44:* = null;
+            var _loc_45:* = null;
+            var _loc_46:* = null;
+            var _loc_47:* = 0;
+            var _loc_48:* = null;
+            var _loc_49:* = null;
+            var _loc_50:* = null;
+            var _loc_51:* = null;
             switch(true)
             {
                 case param1 is ExchangeStartedWithStorageMessage:
                 {
                     _loc_4 = param1 as ExchangeStartedWithStorageMessage;
                     PlayedCharacterManager.getInstance().isInExchange = true;
-                    _loc_5 = _loc_4.storageMaxSlot;
-                    this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeBankStartedWithStorage, ExchangeTypeEnum.STORAGE, _loc_5);
+                    _loc_5 = Kernel.getWorker().getFrame(CommonExchangeManagementFrame) as CommonExchangeManagementFrame;
+                    if (_loc_5)
+                    {
+                        _loc_5.resetEchangeSequence();
+                    }
+                    _loc_6 = _loc_4.storageMaxSlot;
+                    this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeBankStartedWithStorage, ExchangeTypeEnum.STORAGE, _loc_6);
                     return true;
                 }
                 case param1 is ExchangeStartedMessage:
                 {
-                    _loc_6 = param1 as ExchangeStartedMessage;
+                    _loc_7 = param1 as ExchangeStartedMessage;
                     PlayedCharacterManager.getInstance().isInExchange = true;
-                    switch(_loc_6.exchangeType)
+                    _loc_5 = Kernel.getWorker().getFrame(CommonExchangeManagementFrame) as CommonExchangeManagementFrame;
+                    if (_loc_5)
+                    {
+                        _loc_5.resetEchangeSequence();
+                    }
+                    switch(_loc_7.exchangeType)
                     {
                         case ExchangeTypeEnum.PLAYER_TRADE:
                         {
-                            _loc_28 = this._sourceInformations.name;
-                            _loc_29 = this._targetInformations.name;
-                            _loc_30 = EntityLookAdapter.getRiderLook(this._sourceInformations.look);
-                            _loc_31 = EntityLookAdapter.getRiderLook(this._targetInformations.look);
-                            if (_loc_6.getMessageId() == ExchangeStartedWithPodsMessage.protocolId)
+                            _loc_34 = this._sourceInformations.name;
+                            _loc_35 = this._targetInformations.name;
+                            _loc_36 = EntityLookAdapter.getRiderLook(this._sourceInformations.look);
+                            _loc_37 = EntityLookAdapter.getRiderLook(this._targetInformations.look);
+                            if (_loc_7.getMessageId() == ExchangeStartedWithPodsMessage.protocolId)
                             {
-                                _loc_32 = param1 as ExchangeStartedWithPodsMessage;
+                                _loc_38 = param1 as ExchangeStartedWithPodsMessage;
                             }
-                            _loc_33 = -1;
-                            _loc_34 = -1;
-                            _loc_35 = -1;
-                            _loc_36 = -1;
-                            if (_loc_32 != null)
+                            _loc_39 = -1;
+                            _loc_40 = -1;
+                            _loc_41 = -1;
+                            _loc_42 = -1;
+                            if (_loc_38 != null)
                             {
-                                if (_loc_32.firstCharacterId == this._sourceInformations.contextualId)
+                                if (_loc_38.firstCharacterId == this._sourceInformations.contextualId)
                                 {
-                                    _loc_33 = _loc_32.firstCharacterCurrentWeight;
-                                    _loc_34 = _loc_32.secondCharacterCurrentWeight;
-                                    _loc_35 = _loc_32.firstCharacterMaxWeight;
-                                    _loc_36 = _loc_32.secondCharacterMaxWeight;
+                                    _loc_39 = _loc_38.firstCharacterCurrentWeight;
+                                    _loc_40 = _loc_38.secondCharacterCurrentWeight;
+                                    _loc_41 = _loc_38.firstCharacterMaxWeight;
+                                    _loc_42 = _loc_38.secondCharacterMaxWeight;
                                 }
                                 else
                                 {
-                                    _loc_34 = _loc_32.firstCharacterCurrentWeight;
-                                    _loc_33 = _loc_32.secondCharacterCurrentWeight;
-                                    _loc_36 = _loc_32.firstCharacterMaxWeight;
-                                    _loc_35 = _loc_32.secondCharacterMaxWeight;
+                                    _loc_40 = _loc_38.firstCharacterCurrentWeight;
+                                    _loc_39 = _loc_38.secondCharacterCurrentWeight;
+                                    _loc_42 = _loc_38.firstCharacterMaxWeight;
+                                    _loc_41 = _loc_38.secondCharacterMaxWeight;
                                 }
                             }
-                            if (PlayedCharacterManager.getInstance().id == _loc_32.firstCharacterId)
+                            if (PlayedCharacterManager.getInstance().id == _loc_38.firstCharacterId)
                             {
-                                _loc_37 = _loc_32.secondCharacterId;
+                                _loc_43 = _loc_38.secondCharacterId;
                             }
                             else
                             {
-                                _loc_37 = _loc_32.firstCharacterId;
+                                _loc_43 = _loc_38.firstCharacterId;
                             }
-                            _log.debug("look : " + _loc_30.toString() + "    " + _loc_31.toString());
-                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStarted, _loc_28, _loc_29, _loc_30, _loc_31, _loc_33, _loc_34, _loc_35, _loc_36, _loc_37);
-                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType, _loc_6.exchangeType);
+                            _log.debug("look : " + _loc_36.toString() + "    " + _loc_37.toString());
+                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStarted, _loc_34, _loc_35, _loc_36, _loc_37, _loc_39, _loc_40, _loc_41, _loc_42, _loc_43);
+                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType, _loc_7.exchangeType);
                             return true;
                         }
                         case ExchangeTypeEnum.STORAGE:
                         {
-                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType, _loc_6.exchangeType);
+                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType, _loc_7.exchangeType);
                             return true;
                         }
                         case ExchangeTypeEnum.TAXCOLLECTOR:
                         {
-                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType, _loc_6.exchangeType);
+                            this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartedType, _loc_7.exchangeType);
                             return true;
                         }
                         default:
@@ -247,129 +263,144 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
                 case param1 is StorageInventoryContentMessage:
                 {
-                    _loc_7 = param1 as StorageInventoryContentMessage;
-                    InventoryManager.getInstance().bankInventory.kamas = _loc_7.kamas;
-                    InventoryManager.getInstance().bankInventory.initializeFromObjectItems(_loc_7.objects);
+                    _loc_8 = param1 as StorageInventoryContentMessage;
+                    InventoryManager.getInstance().bankInventory.kamas = _loc_8.kamas;
+                    InventoryManager.getInstance().bankInventory.initializeFromObjectItems(_loc_8.objects);
                     InventoryManager.getInstance().bankInventory.releaseHooks();
                     return false;
                 }
                 case param1 is ExchangeStartOkTaxCollectorMessage:
                 {
-                    _loc_8 = param1 as ExchangeStartOkTaxCollectorMessage;
-                    InventoryManager.getInstance().bankInventory.kamas = _loc_8.goldInfo;
-                    InventoryManager.getInstance().bankInventory.initializeFromObjectItems(_loc_8.objectsInfos);
+                    _loc_9 = param1 as ExchangeStartOkTaxCollectorMessage;
+                    InventoryManager.getInstance().bankInventory.kamas = _loc_9.goldInfo;
+                    InventoryManager.getInstance().bankInventory.initializeFromObjectItems(_loc_9.objectsInfos);
                     InventoryManager.getInstance().bankInventory.releaseHooks();
                     return false;
                 }
                 case param1 is StorageObjectUpdateMessage:
                 {
-                    _loc_9 = param1 as StorageObjectUpdateMessage;
-                    _loc_10 = _loc_9.object;
-                    _loc_11 = ItemWrapper.create(_loc_10.position, _loc_10.objectUID, _loc_10.objectGID, _loc_10.quantity, _loc_10.effects);
-                    InventoryManager.getInstance().bankInventory.modifyItem(_loc_11);
+                    _loc_10 = param1 as StorageObjectUpdateMessage;
+                    _loc_11 = _loc_10.object;
+                    _loc_12 = ItemWrapper.create(_loc_11.position, _loc_11.objectUID, _loc_11.objectGID, _loc_11.quantity, _loc_11.effects);
+                    InventoryManager.getInstance().bankInventory.modifyItem(_loc_12);
                     InventoryManager.getInstance().bankInventory.releaseHooks();
                     return false;
                 }
                 case param1 is StorageObjectRemoveMessage:
                 {
-                    _loc_12 = param1 as StorageObjectRemoveMessage;
-                    InventoryManager.getInstance().bankInventory.removeItem(_loc_12.objectUID);
+                    _loc_13 = param1 as StorageObjectRemoveMessage;
+                    InventoryManager.getInstance().bankInventory.removeItem(_loc_13.objectUID);
                     InventoryManager.getInstance().bankInventory.releaseHooks();
                     return false;
                 }
                 case param1 is StorageObjectsUpdateMessage:
                 {
-                    _loc_13 = param1 as StorageObjectsUpdateMessage;
-                    for each (_loc_38 in _loc_13.objectList)
+                    _loc_14 = param1 as StorageObjectsUpdateMessage;
+                    for each (_loc_44 in _loc_14.objectList)
                     {
                         
-                        _loc_39 = _loc_38;
-                        _loc_40 = ItemWrapper.create(_loc_39.position, _loc_39.objectUID, _loc_39.objectGID, _loc_39.quantity, _loc_39.effects);
-                        InventoryManager.getInstance().bankInventory.modifyItem(_loc_40);
+                        _loc_45 = _loc_44;
+                        _loc_46 = ItemWrapper.create(_loc_45.position, _loc_45.objectUID, _loc_45.objectGID, _loc_45.quantity, _loc_45.effects);
+                        InventoryManager.getInstance().bankInventory.modifyItem(_loc_46);
                     }
                     InventoryManager.getInstance().bankInventory.releaseHooks();
                     return false;
                 }
                 case param1 is StorageObjectsRemoveMessage:
                 {
-                    _loc_14 = param1 as StorageObjectsRemoveMessage;
-                    for each (_loc_41 in _loc_14.objectUIDList)
+                    _loc_15 = param1 as StorageObjectsRemoveMessage;
+                    for each (_loc_47 in _loc_15.objectUIDList)
                     {
                         
-                        InventoryManager.getInstance().bankInventory.removeItem(_loc_41);
+                        InventoryManager.getInstance().bankInventory.removeItem(_loc_47);
                     }
                     InventoryManager.getInstance().bankInventory.releaseHooks();
                     return false;
                 }
                 case param1 is StorageKamasUpdateMessage:
                 {
-                    _loc_15 = param1 as StorageKamasUpdateMessage;
-                    InventoryManager.getInstance().bankInventory.kamas = _loc_15.kamasTotal;
-                    KernelEventsManager.getInstance().processCallback(InventoryHookList.StorageKamasUpdate, _loc_15.kamasTotal);
+                    _loc_16 = param1 as StorageKamasUpdateMessage;
+                    InventoryManager.getInstance().bankInventory.kamas = _loc_16.kamasTotal;
+                    KernelEventsManager.getInstance().processCallback(InventoryHookList.StorageKamasUpdate, _loc_16.kamasTotal);
                     return false;
                 }
                 case param1 is ExchangeObjectMoveKamaAction:
                 {
-                    _loc_16 = param1 as ExchangeObjectMoveKamaAction;
-                    _loc_17 = new ExchangeObjectMoveKamaMessage();
-                    _loc_17.initExchangeObjectMoveKamaMessage(_loc_16.kamas);
-                    this._serverConnection.send(_loc_17);
+                    _loc_17 = param1 as ExchangeObjectMoveKamaAction;
+                    _loc_18 = new ExchangeObjectMoveKamaMessage();
+                    _loc_18.initExchangeObjectMoveKamaMessage(_loc_17.kamas);
+                    this._serverConnection.send(_loc_18);
                     return true;
                 }
                 case param1 is ExchangeObjectTransfertAllToInvAction:
                 {
-                    _loc_18 = param1 as ExchangeObjectTransfertAllToInvAction;
-                    _loc_19 = new ExchangeObjectTransfertAllToInvMessage();
-                    _loc_19.initExchangeObjectTransfertAllToInvMessage();
-                    this._serverConnection.send(_loc_19);
+                    _loc_19 = param1 as ExchangeObjectTransfertAllToInvAction;
+                    _loc_20 = new ExchangeObjectTransfertAllToInvMessage();
+                    _loc_20.initExchangeObjectTransfertAllToInvMessage();
+                    this._serverConnection.send(_loc_20);
                     return true;
                 }
                 case param1 is ExchangeObjectTransfertListToInvAction:
                 {
-                    _loc_20 = param1 as ExchangeObjectTransfertListToInvAction;
-                    if (_loc_20.ids.length != 0)
+                    _loc_21 = param1 as ExchangeObjectTransfertListToInvAction;
+                    if (_loc_21.ids.length != 0)
                     {
-                        _loc_42 = new ExchangeObjectTransfertListToInvMessage();
-                        _loc_42.initExchangeObjectTransfertListToInvMessage(_loc_20.ids);
-                        this._serverConnection.send(_loc_42);
+                        _loc_48 = new ExchangeObjectTransfertListToInvMessage();
+                        _loc_48.initExchangeObjectTransfertListToInvMessage(_loc_21.ids);
+                        this._serverConnection.send(_loc_48);
                     }
+                    return true;
+                }
+                case param1 is ExchangeObjectTransfertExistingToInvAction:
+                {
+                    _loc_22 = param1 as ExchangeObjectTransfertExistingToInvAction;
+                    _loc_23 = new ExchangeObjectTransfertExistingToInvMessage();
+                    _loc_23.initExchangeObjectTransfertExistingToInvMessage();
+                    this._serverConnection.send(_loc_23);
                     return true;
                 }
                 case param1 is ExchangeObjectTransfertAllFromInvAction:
                 {
-                    _loc_21 = param1 as ExchangeObjectTransfertAllFromInvAction;
-                    _loc_22 = new ExchangeObjectTransfertAllFromInvMessage();
-                    _loc_22.initExchangeObjectTransfertAllFromInvMessage();
-                    this._serverConnection.send(_loc_22);
+                    _loc_24 = param1 as ExchangeObjectTransfertAllFromInvAction;
+                    _loc_25 = new ExchangeObjectTransfertAllFromInvMessage();
+                    _loc_25.initExchangeObjectTransfertAllFromInvMessage();
+                    this._serverConnection.send(_loc_25);
                     return true;
                 }
                 case param1 is ExchangeObjectTransfertListFromInvAction:
                 {
-                    _loc_23 = param1 as ExchangeObjectTransfertListFromInvAction;
-                    _log.debug("ExchangeObjectTransfertListFromInvAction : " + _loc_23.ids.length);
-                    if (_loc_23.ids.length != 0)
+                    _loc_26 = param1 as ExchangeObjectTransfertListFromInvAction;
+                    if (_loc_26.ids.length != 0)
                     {
-                        _loc_43 = new ExchangeObjectTransfertListFromInvMessage();
-                        _loc_43.initExchangeObjectTransfertListFromInvMessage(_loc_23.ids.slice(0, 999));
-                        this._serverConnection.send(_loc_43);
+                        _loc_49 = new ExchangeObjectTransfertListFromInvMessage();
+                        _loc_49.initExchangeObjectTransfertListFromInvMessage(_loc_26.ids.slice(0, 1000));
+                        this._serverConnection.send(_loc_49);
                     }
+                    return true;
+                }
+                case param1 is ExchangeObjectTransfertExistingFromInvAction:
+                {
+                    _loc_27 = param1 as ExchangeObjectTransfertExistingFromInvAction;
+                    _loc_28 = new ExchangeObjectTransfertExistingFromInvMessage();
+                    _loc_28.initExchangeObjectTransfertExistingFromInvMessage();
+                    this._serverConnection.send(_loc_28);
                     return true;
                 }
                 case param1 is ExchangeStartOkNpcShopMessage:
                 {
-                    _loc_24 = param1 as ExchangeStartOkNpcShopMessage;
+                    _loc_29 = param1 as ExchangeStartOkNpcShopMessage;
                     PlayedCharacterManager.getInstance().isInExchange = true;
                     Kernel.getWorker().process(ChangeWorldInteractionAction.create(false, true));
-                    _loc_25 = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_loc_24.npcSellerId);
-                    _loc_26 = EntityLookAdapter.fromNetwork(_loc_25.look);
-                    _loc_27 = new Array();
-                    for each (_loc_44 in _loc_24.objectsInfos)
+                    _loc_30 = this.roleplayContextFrame.entitiesFrame.getEntityInfos(_loc_29.npcSellerId);
+                    _loc_31 = EntityLookAdapter.fromNetwork(_loc_30.look);
+                    _loc_32 = new Array();
+                    for each (_loc_50 in _loc_29.objectsInfos)
                     {
                         
-                        _loc_45 = ItemWrapper.create(63, 0, _loc_44.objectGID, 0, _loc_44.effects, false);
-                        _loc_27.push({item:_loc_45, price:_loc_44.objectPrice, criterion:new GroupItemCriterion(_loc_44.buyCriterion)});
+                        _loc_51 = ItemWrapper.create(63, 0, _loc_50.objectGID, 0, _loc_50.effects, false);
+                        _loc_32.push({item:_loc_51, price:_loc_50.objectPrice, criterion:new GroupItemCriterion(_loc_50.buyCriterion)});
                     }
-                    this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartOkNpcShop, _loc_24.npcSellerId, _loc_27, _loc_26, _loc_24.tokenId);
+                    this._kernelEventsManager.processCallback(ExchangeHookList.ExchangeStartOkNpcShop, _loc_29.npcSellerId, _loc_32, _loc_31, _loc_29.tokenId);
                     return true;
                 }
                 case param1 is LeaveDialogRequestAction:
@@ -379,9 +410,13 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
                 case param1 is ExchangeLeaveMessage:
                 {
-                    PlayedCharacterManager.getInstance().isInExchange = false;
-                    this._success = ExchangeLeaveMessage(param1).success;
-                    Kernel.getWorker().removeFrame(this);
+                    _loc_33 = param1 as ExchangeLeaveMessage;
+                    if (_loc_33.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
+                    {
+                        PlayedCharacterManager.getInstance().isInExchange = false;
+                        this._success = _loc_33.success;
+                        Kernel.getWorker().removeFrame(this);
+                    }
                     return true;
                 }
                 default:

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.enums
+﻿package com.ankamagames.dofus.types.enums
 {
 
     public class NotificationTypeEnum extends Object

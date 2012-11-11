@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.quest.objectives
+﻿package com.ankamagames.dofus.datacenter.quest.objectives
 {
     import com.ankamagames.dofus.datacenter.monsters.*;
     import com.ankamagames.dofus.datacenter.npcs.*;

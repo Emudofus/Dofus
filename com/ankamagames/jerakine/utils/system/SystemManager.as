@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.system
+﻿package com.ankamagames.jerakine.utils.system
 {
     import com.ankamagames.jerakine.enum.*;
     import flash.desktop.*;

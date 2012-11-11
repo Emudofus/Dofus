@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.berilia.types.data.*;
 
@@ -62,6 +62,7 @@ package com.ankamagames.dofus.misc.lists
         public static const OpenGrimoireSpellTab:Hook = new Hook("OpenGrimoireSpellTab", false);
         public static const OpenSpellInterface:Hook = new Hook("OpenSpellInterface", false);
         public static const OpenWebPortal:Hook = new Hook("OpenWebPortal", false);
+        public static const OpenKrosmaster:Hook = new Hook("OpenKrosmaster", false);
         public static const OpenRecipe:Hook = new Hook("OpenRecipe", false);
         public static const OpenSet:Hook = new Hook("OpenSet", false);
         public static const OpenFeed:Hook = new Hook("OpenFeed", false);
@@ -140,6 +141,7 @@ package com.ankamagames.dofus.misc.lists
         public static const PartyMemberLifeUpdate:Hook = new Hook("PartyMemberLifeUpdate", false);
         public static const PartyMemberUpdate:Hook = new Hook("PartyMemberUpdate", false);
         public static const PartyMemberUpdateDetails:Hook = new Hook("PartyMemberUpdateDetails", false);
+        public static const PartyMemberFollowUpdate:Hook = new Hook("PartyMemberFollowUpdate", false);
         public static const LifePointsRegenBegin:Hook = new Hook("LifePointsRegenBegin", false);
         public static const PlayedCharacterLookChange:Hook = new Hook("PlayedCharacterLookChange", false);
         public static const MapRunningFightList:Hook = new Hook("MapRunningFightList", false);
@@ -152,6 +154,7 @@ package com.ankamagames.dofus.misc.lists
         public static const GameRolePlayPlayerLifeStatus:Hook = new Hook("GameRolePlayPlayerLifeStatus", false);
         public static const DoubleClickItemInventory:Hook = new Hook("DoubleClickItemInventory", false);
         public static const NonSubscriberPopup:Hook = new Hook("NonSubscriberPopup", false);
+        public static const InformationPopup:Hook = new Hook("InformationPopup", false);
         public static const SubscriptionZone:Hook = new Hook("SubscriptionZone", false);
         public static const GiftList:Hook = new Hook("GiftList", false);
         public static const GiftAssigned:Hook = new Hook("GiftAssigned", false);
@@ -182,6 +185,14 @@ package com.ankamagames.dofus.misc.lists
         public static const SecureModeChange:Hook = new Hook("SecureModeChange", true);
         public static const InactivityNotification:Hook = new Hook("InactivityNotification", false);
         public static const LaggingNotification:Hook = new Hook("LaggingNotification", false);
+        public static const phoenixUpdate:Hook = new Hook("phoenixUpdate", true);
+        public static const ExternalNotification:Hook = new Hook("ExternalNotification", false);
+        public static const CalendarDate:Hook = new Hook("CalendarDate", false);
+        public static const KrosmasterAuthTokenError:Hook = new Hook("KrosmasterAuthTokenError", false);
+        public static const KrosmasterAuthToken:Hook = new Hook("KrosmasterAuthToken", false);
+        public static const KrosmasterInventoryError:Hook = new Hook("KrosmasterInventoryError", false);
+        public static const KrosmasterInventory:Hook = new Hook("KrosmasterInventory", false);
+        public static const KrosmasterTransfer:Hook = new Hook("KrosmasterTransfer", false);
 
         public function HookList()
         {

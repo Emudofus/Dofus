@@ -1,4 +1,4 @@
-package com.hurlant.util.der
+﻿package com.hurlant.util.der
 {
     import com.hurlant.util.der.*;
     import flash.utils.*;
@@ -27,9 +27,9 @@ package com.hurlant.util.der
 
         public function toDER() : ByteArray
         {
-            var _loc_3:IAsn1Type = null;
+            var _loc_3:* = null;
             var _loc_1:* = new ByteArray();
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < length)
             {
                 
@@ -50,12 +50,12 @@ package com.hurlant.util.der
 
         public function toString() : String
         {
-            var _loc_4:Boolean = false;
-            var _loc_5:String = null;
+            var _loc_4:* = false;
+            var _loc_5:* = null;
             var _loc_1:* = DER.indent;
             DER.indent = DER.indent + "    ";
-            var _loc_2:String = "";
-            var _loc_3:int = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 0;
             while (_loc_3 < length)
             {
                 
@@ -91,7 +91,7 @@ package com.hurlant.util.der
             var _loc_2:* = undefined;
             var _loc_3:* = undefined;
             var _loc_4:* = undefined;
-            var _loc_5:ObjectIdentifier = null;
+            var _loc_5:* = null;
             for each (_loc_2 in this)
             {
                 

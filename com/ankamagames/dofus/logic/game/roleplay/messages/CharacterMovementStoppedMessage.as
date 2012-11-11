@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.messages
+﻿package com.ankamagames.dofus.logic.game.roleplay.messages
 {
     import com.ankamagames.jerakine.messages.*;
 

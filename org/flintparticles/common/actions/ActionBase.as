@@ -1,4 +1,4 @@
-package org.flintparticles.common.actions
+﻿package org.flintparticles.common.actions
 {
     import com.ankamagames.jerakine.handlers.messages.*;
     import org.flintparticles.common.emitters.*;

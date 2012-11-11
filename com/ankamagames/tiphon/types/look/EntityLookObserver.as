@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types.look
+﻿package com.ankamagames.tiphon.types.look
 {
 
     public interface EntityLookObserver

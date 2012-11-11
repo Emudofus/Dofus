@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -95,7 +95,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
             }
             param1.writeByte(this.maxParticipants);
             param1.writeShort(this.members.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.members.length)
             {
                 
@@ -104,7 +104,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.guests.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.guests.length)
             {
                 
@@ -123,9 +123,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 
         public function deserializeAs_PartyJoinMessage(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:PartyMemberInformations = null;
-            var _loc_8:PartyGuestInformations = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             super.deserialize(param1);
             this.partyType = param1.readByte();
             if (this.partyType < 0)
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                 throw new Error("Forbidden value (" + this.maxParticipants + ") on element of PartyJoinMessage.maxParticipants.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -154,7 +154,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

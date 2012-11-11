@@ -1,4 +1,4 @@
-package org.flintparticles.twoD.emitters
+﻿package org.flintparticles.twoD.emitters
 {
     import org.flintparticles.common.emitters.*;
     import org.flintparticles.common.particles.*;
@@ -66,7 +66,7 @@ package org.flintparticles.twoD.emitters
 
         override protected function initParticle(param1:Particle) : void
         {
-            var _loc_2:Particle2D = null;
+            var _loc_2:* = null;
             _loc_2 = Particle2D(param1);
             _loc_2.x = this._x;
             _loc_2.y = this._y;
@@ -76,8 +76,8 @@ package org.flintparticles.twoD.emitters
 
         override protected function sortParticles() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             if (this.spaceSort)
             {
                 this.spaceSortedX = _particles.sortOn("x", Array.NUMERIC | Array.RETURNINDEXEDARRAY);

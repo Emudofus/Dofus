@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.data.map
+﻿package com.ankamagames.atouin.data.map
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.*;
@@ -43,6 +43,7 @@ package com.ankamagames.atouin.data.map
         public var presetId:int;
         public var cellsCount:int;
         public var layersCount:int;
+        public var isUsingNewMovementSystem:Boolean = false;
         public var layers:Array;
         public var cells:Array;
         private var _parsed:Boolean;
@@ -87,18 +88,15 @@ package com.ankamagames.atouin.data.map
 
         public function fromRaw(param1:IDataInput, param2:ByteArray = null) : void
         {
-            var header:int;
             var i:int;
-            var j:int;
-            var k:int;
-            var l:int;
+            var header:int;
+            var bg:Fixture;
+            var la:Layer;
+            var _oldMvtSystem:uint;
+            var cd:CellData;
             var dataLen:uint;
             var encryptedData:ByteArray;
-            var ind:uint;
-            var bg:Fixture;
             var fg:Fixture;
-            var la:Layer;
-            var cd:CellData;
             var raw:* = param1;
             var decryptionKey:* = param2;
             try
@@ -131,12 +129,12 @@ package com.ankamagames.atouin.data.map
                         }
                         encryptedData = new ByteArray();
                         raw.readBytes(encryptedData, 0, dataLen);
-                        ind;
-                        while (ind < encryptedData.length)
+                        i;
+                        while (i < encryptedData.length)
                         {
                             
-                            encryptedData[ind] = encryptedData[ind] ^ decryptionKey[ind % decryptionKey.length];
-                            ind = (ind + 1);
+                            encryptedData[i] = encryptedData[i] ^ decryptionKey[i % decryptionKey.length];
+                            i = (i + 1);
                         }
                         encryptedData.position = 0;
                         raw = encryptedData;
@@ -250,18 +248,18 @@ package com.ankamagames.atouin.data.map
                     _log.debug("Foregrounds count : " + this.foregroundsCount);
                 }
                 this.foregroundFixtures = new Array();
-                j;
-                while (j < this.foregroundsCount)
+                i;
+                while (i < this.foregroundsCount)
                 {
                     
                     fg = new Fixture(this);
                     if (AtouinConstants.DEBUG_FILES_PARSING)
                     {
-                        _log.debug("Foreground at index " + j + " :");
+                        _log.debug("Foreground at index " + i + " :");
                     }
                     fg.fromRaw(raw);
                     this.foregroundFixtures.push(fg);
-                    j = (j + 1);
+                    i = (i + 1);
                 }
                 this.cellsCount = AtouinConstants.MAP_CELLS_COUNT;
                 if (AtouinConstants.DEBUG_FILES_PARSING)
@@ -280,32 +278,44 @@ package com.ankamagames.atouin.data.map
                     _log.debug("Layers count : " + this.layersCount);
                 }
                 this.layers = new Array();
-                k;
-                while (k < this.layersCount)
+                i;
+                while (i < this.layersCount)
                 {
                     
                     la = new Layer(this);
                     if (AtouinConstants.DEBUG_FILES_PARSING)
                     {
-                        _log.debug("Layer at index " + k + " :");
+                        _log.debug("Layer at index " + i + " :");
                     }
                     la.fromRaw(raw, this.mapVersion);
                     this.layers.push(la);
-                    k = (k + 1);
+                    i = (i + 1);
                 }
                 this.cells = new Array();
-                l;
-                while (l < this.cellsCount)
+                i;
+                while (i < this.cellsCount)
                 {
                     
                     cd = new CellData(this);
                     if (AtouinConstants.DEBUG_FILES_PARSING)
                     {
-                        _log.debug("Cell data at index " + l + " :");
+                        _log.debug("Cell data at index " + i + " :");
                     }
                     cd.fromRaw(raw);
+                    if (!_oldMvtSystem)
+                    {
+                        _oldMvtSystem = cd.moveZone;
+                    }
+                    if (cd.moveZone != _oldMvtSystem)
+                    {
+                        this.isUsingNewMovementSystem = true;
+                    }
                     this.cells.push(cd);
-                    l = (l + 1);
+                    i = (i + 1);
+                }
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    trace(this.isUsingNewMovementSystem ? ("This map is using the new movement system") : ("This map is using the old movement system"));
                 }
                 this._parsed = true;
             }
@@ -319,85 +329,86 @@ package com.ankamagames.atouin.data.map
 
         private function computeGfxList(param1:Boolean = false) : void
         {
-            var _loc_6:String = null;
-            var _loc_7:Layer = null;
-            var _loc_8:Array = null;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:Cell = null;
-            var _loc_12:Array = null;
-            var _loc_13:int = 0;
-            var _loc_14:int = 0;
-            var _loc_15:BasicElement = null;
-            var _loc_16:int = 0;
-            var _loc_17:GraphicalElementData = null;
-            var _loc_18:NormalGraphicalElementData = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
             var _loc_2:* = Elements.getInstance();
             var _loc_3:* = new Array();
             this._gfxCount = new Array();
             var _loc_4:* = this.layers.length;
-            var _loc_5:int = 0;
+            _loc_5 = 0;
             while (_loc_5 < _loc_4)
             {
                 
-                _loc_7 = this.layers[_loc_5];
+                _loc_12 = this.layers[_loc_5];
                 if (param1 && _loc_5 == 0)
                 {
                 }
                 else
                 {
-                    _loc_8 = _loc_7.cells;
+                    _loc_8 = _loc_12.cells;
                     _loc_9 = _loc_8.length;
-                    _loc_10 = 0;
-                    while (_loc_10 < _loc_9)
+                    _loc_6 = 0;
+                    while (_loc_6 < _loc_9)
                     {
                         
-                        _loc_11 = _loc_8[_loc_10];
-                        _loc_12 = _loc_11.elements;
-                        _loc_13 = _loc_12.length;
-                        _loc_14 = 0;
-                        while (_loc_14 < _loc_13)
+                        _loc_13 = _loc_8[_loc_6];
+                        _loc_10 = _loc_13.elements;
+                        _loc_11 = _loc_10.length;
+                        _loc_7 = 0;
+                        while (_loc_7 < _loc_11)
                         {
                             
-                            _loc_15 = _loc_12[_loc_14];
-                            if (_loc_15.elementType == ElementTypesEnum.GRAPHICAL)
+                            _loc_14 = _loc_10[_loc_7];
+                            if (_loc_14.elementType == ElementTypesEnum.GRAPHICAL)
                             {
-                                _loc_16 = GraphicalElement(_loc_15).elementId;
-                                _loc_17 = _loc_2.getElementData(_loc_16);
-                                if (_loc_17 == null)
+                                _loc_15 = GraphicalElement(_loc_14).elementId;
+                                _loc_16 = _loc_2.getElementData(_loc_15);
+                                if (_loc_16 == null)
                                 {
-                                    _log.error("Unknown graphical element ID " + _loc_16);
+                                    _log.error("Unknown graphical element ID " + _loc_15);
                                     ;
                                 }
-                                else if (_loc_17 is NormalGraphicalElementData)
+                                else if (_loc_16 is NormalGraphicalElementData)
                                 {
-                                    _loc_18 = _loc_17 as NormalGraphicalElementData;
-                                    _loc_3[_loc_18.gfxId] = _loc_18;
-                                    if (this._gfxCount[_loc_18.gfxId])
+                                    _loc_17 = _loc_16 as NormalGraphicalElementData;
+                                    _loc_3[_loc_17.gfxId] = _loc_17;
+                                    if (this._gfxCount[_loc_17.gfxId])
                                     {
                                         var _loc_19:* = this._gfxCount;
-                                        var _loc_20:* = _loc_18.gfxId;
-                                        var _loc_21:* = this._gfxCount[_loc_18.gfxId] + 1;
+                                        var _loc_20:* = _loc_17.gfxId;
+                                        var _loc_21:* = this._gfxCount[_loc_17.gfxId] + 1;
                                         _loc_19[_loc_20] = _loc_21;
                                     }
                                     else
                                     {
-                                        this._gfxCount[_loc_18.gfxId] = 1;
+                                        this._gfxCount[_loc_17.gfxId] = 1;
                                     }
                                 }
                             }
-                            _loc_14++;
+                            _loc_7++;
                         }
-                        _loc_10++;
+                        _loc_6++;
                     }
                 }
                 _loc_5++;
             }
             this._gfxList = new Array();
-            for (_loc_6 in _loc_3)
+            for (_loc_18 in _loc_3)
             {
                 
-                this._gfxList.push(_loc_3[_loc_6]);
+                this._gfxList.push(_loc_3[_loc_18]);
             }
             return;
         }// end function

@@ -1,4 +1,4 @@
-package com.hurlant.util
+﻿package com.hurlant.util
 {
     import flash.utils.*;
 
@@ -21,11 +21,11 @@ package com.hurlant.util
 
         public static function encodeByteArray(param1:ByteArray) : String
         {
-            var _loc_3:Array = null;
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
-            var _loc_2:String = "";
+            var _loc_3:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_2:* = "";
             var _loc_4:* = new Array(4);
             param1.position = 0;
             while (param1.bytesAvailable > 0)
@@ -69,12 +69,12 @@ package com.hurlant.util
 
         public static function decodeToByteArray(param1:String) : ByteArray
         {
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = new ByteArray();
             var _loc_3:* = new Array(4);
             var _loc_4:* = new Array(3);
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < param1.length)
             {
                 
@@ -107,12 +107,12 @@ package com.hurlant.util
 
         public static function decodeToByteArrayB(param1:String) : ByteArray
         {
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = new ByteArray();
             var _loc_3:* = new Array(4);
             var _loc_4:* = new Array(3);
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < param1.length)
             {
                 

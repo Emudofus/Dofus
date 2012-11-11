@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.handlers.messages.mouse
+﻿package com.ankamagames.jerakine.handlers.messages.mouse
 {
     import com.ankamagames.jerakine.handlers.messages.*;
     import flash.display.*;

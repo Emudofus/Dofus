@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.enums.*;
@@ -32,10 +32,10 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:DebugHighlightCellsMessage = null;
-            var _loc_3:DebugClearHighlightCellsMessage = null;
-            var _loc_4:DebugInClientMessage = null;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             switch(true)
             {
                 case param1 is DebugHighlightCellsMessage:

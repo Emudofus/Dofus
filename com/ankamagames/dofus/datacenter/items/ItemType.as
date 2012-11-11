@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items
+﻿package com.ankamagames.dofus.datacenter.items
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -64,7 +64,7 @@ package com.ankamagames.dofus.datacenter.items
 
         private function parseZone() : void
         {
-            var _loc_1:Array = null;
+            var _loc_1:* = null;
             if (this.rawZone && this.rawZone.length)
             {
                 this._zoneShape = this.rawZone.charCodeAt(0);

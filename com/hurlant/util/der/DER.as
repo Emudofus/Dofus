@@ -1,4 +1,4 @@
-package com.hurlant.util.der
+﻿package com.hurlant.util.der
 {
     import flash.utils.*;
 
@@ -13,25 +13,25 @@ package com.hurlant.util.der
 
         public static function parse(param1:ByteArray, param2 = null) : IAsn1Type
         {
-            var _loc_3:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:ByteArray = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:Sequence = null;
-            var _loc_10:Array = null;
-            var _loc_11:Set = null;
-            var _loc_12:ByteString = null;
-            var _loc_13:PrintableString = null;
-            var _loc_14:UTCTime = null;
-            var _loc_15:Object = null;
-            var _loc_16:Boolean = false;
-            var _loc_17:Boolean = false;
-            var _loc_18:String = null;
+            var _loc_3:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = false;
+            var _loc_17:* = false;
+            var _loc_18:* = null;
             var _loc_19:* = undefined;
-            var _loc_20:IAsn1Type = null;
-            var _loc_21:int = 0;
-            var _loc_22:ByteArray = null;
+            var _loc_20:* = null;
+            var _loc_21:* = 0;
+            var _loc_22:* = null;
             _loc_3 = param1.readUnsignedByte();
             var _loc_4:* = (_loc_3 & 32) != 0;
             _loc_3 = _loc_3 & 31;
@@ -178,7 +178,7 @@ package com.hurlant.util.der
 
         private static function getLengthOfNextElement(param1:ByteArray) : int
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_2:* = param1.position;
             var _loc_5:* = param1;
             var _loc_6:* = param1.position + 1;

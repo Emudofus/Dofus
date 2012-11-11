@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.jerakine.console.*;
@@ -13,7 +13,7 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             switch(param2)
             {
                 case "panic":

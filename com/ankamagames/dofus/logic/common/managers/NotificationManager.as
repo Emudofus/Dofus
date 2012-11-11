@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -13,7 +13,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public function NotificationManager(param1:PrivateClass)
         {
-            this._notificationList = new Vector.<Notification>;
+            this._notificationList = new Vector.<>;
             return;
         }// end function
 
@@ -60,17 +60,17 @@ package com.ankamagames.dofus.logic.common.managers
             return;
         }// end function
 
-        public function addTimerToNotification(param1:uint, param2:uint, param3:Boolean = false) : void
+        public function addTimerToNotification(param1:uint, param2:uint, param3:Boolean = false, param4:Boolean = false) : void
         {
-            var _loc_4:* = this.getNotification(param1);
-            this.getNotification(param1).setTimer(param2, param3);
+            var _loc_5:* = this.getNotification(param1);
+            this.getNotification(param1).setTimer(param2, param3, param4);
             return;
         }// end function
 
         public function sendNotification(param1:int = -1) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             if (param1 == -1)
             {
                 _loc_2 = 0;
@@ -83,7 +83,7 @@ package com.ankamagames.dofus.logic.common.managers
             }
             else if (param1 >= 0 && param1 < this._notificationList.length && this._notificationList[param1] != null)
             {
-                this.openNotification(this._notificationList[param1] as Notification);
+                this.openNotification(this._notificationList[param1] as );
                 this._notificationList.splice(param1, 1);
             }
             return;
@@ -91,7 +91,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public function clearAllNotification() : void
         {
-            this._notificationList = new Vector.<Notification>;
+            this._notificationList = new Vector.<>;
             return;
         }// end function
 
@@ -110,9 +110,9 @@ package com.ankamagames.dofus.logic.common.managers
             return;
         }// end function
 
-        public function closeNotification(param1:String) : void
+        public function closeNotification(param1:String, param2:Boolean = false) : void
         {
-            KernelEventsManager.getInstance().processCallback(HookList.CloseNotification, param1);
+            KernelEventsManager.getInstance().processCallback(HookList.CloseNotification, param1, param2);
             return;
         }// end function
 
@@ -134,6 +134,37 @@ package com.ankamagames.dofus.logic.common.managers
     }
 }
 
+import __AS3__.vec.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
+class PrivateClass extends Object
+{
+
+    function PrivateClass()
+    {
+        return;
+    }// end function
+
+}
+
+
+import __AS3__.vec.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
 class Notification extends Object
 {
     public var title:String;
@@ -150,6 +181,7 @@ class Notification extends Object
     public var position:int;
     public var notifyUser:Boolean = false;
     public var tutorialId:int = -1;
+    public var blockCallbackOnTimerEnds:Boolean = false;
     private var _buttonList:Array;
     private var _imageList:Array;
 
@@ -211,11 +243,12 @@ class Notification extends Object
         return;
     }// end function
 
-    public function setTimer(param1:uint, param2:Boolean = false) : void
+    public function setTimer(param1:uint, param2:Boolean = false, param3:Boolean = false) : void
     {
         this._duration = param1 * 1000;
         this.startTime = 0;
         this.pauseOnOver = param2;
+        this.blockCallbackOnTimerEnds = param3;
         this.notifyUser = true;
         return;
     }// end function

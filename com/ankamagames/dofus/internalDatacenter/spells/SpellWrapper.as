@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.spells
+﻿package com.ankamagames.dofus.internalDatacenter.spells
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.components.*;
@@ -20,7 +20,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
     import com.ankamagames.jerakine.utils.display.spellZone.*;
     import flash.utils.*;
 
-    dynamic public class SpellWrapper extends Proxy implements ISlotData, IClonable, ICellZoneProvider
+    dynamic public class SpellWrapper extends Proxy implements ISlotData, IClonable, ICellZoneProvider, IDataCenter
     {
         private var _uri:Uri;
         private var _slotDataHolderManager:SlotDataHolderManager;
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public function get spellZoneEffects() : Vector.<IZoneShape>
         {
-            var _loc_1:SpellLevel = null;
+            var _loc_1:* = null;
             if (this.id != 0 || !PlayedCharacterManager.getInstance().currentWeapon)
             {
                 _loc_1 = this.spell.getSpellLevel(this.spellLevel);
@@ -190,14 +190,14 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public function get playerCriticalRate() : int
         {
-            var _loc_2:CharacterCharacteristicsInformations = null;
-            var _loc_3:CharacterBaseCharacteristic = null;
-            var _loc_4:CharacterBaseCharacteristic = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
             var _loc_1:* = this.getCriticalHitProbability();
             if (_loc_1 && PlayedCharacterApi.knowSpell(this.spell.id) >= 0)
             {
@@ -227,9 +227,9 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public function get playerCriticalFailureRate() : int
         {
-            var _loc_2:CharacterCharacteristicsInformations = null;
-            var _loc_3:Object = null;
-            var _loc_4:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             var _loc_1:* = this.criticalFailureProbability;
             if (_loc_1 && PlayedCharacterApi.knowSpell(this.spell.id) >= 0)
             {
@@ -246,8 +246,8 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public function get maximalRangeWithBoosts() : int
         {
-            var _loc_1:CharacterCharacteristicsInformations = null;
-            var _loc_2:int = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             if (this._spellLevel.rangeCanBeBoosted)
             {
                 _loc_1 = PlayedCharacterManager.getInstance().characteristics;
@@ -271,8 +271,8 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         override function getProperty(param1)
         {
-            var _loc_2:CurrentPlayedFighterManager = null;
-            var _loc_3:CharacterSpellModification = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (isAttribute(param1))
             {
                 return this[param1];
@@ -424,7 +424,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         private function getWeaponProperty(param1)
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_2:* = PlayedCharacterManager.getInstance().currentWeapon as ItemWrapper;
             if (!_loc_2)
             {
@@ -499,7 +499,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         private function getCriticalHitProbability() : Number
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_1:* = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.CRITICAL_HIT_BONUS);
             if (_loc_1)
             {
@@ -514,8 +514,8 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public function clone()
         {
-            var _loc_2:SpellWrapper = null;
-            var _loc_1:Boolean = false;
+            var _loc_2:* = null;
+            var _loc_1:* = false;
             if (_cache[this.spellId] != null || _playersCache[this.playerId][this.spellId])
             {
                 _loc_1 = true;
@@ -549,16 +549,17 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public static function create(param1:int, param2:uint, param3:int, param4:Boolean = true, param5:int = 0) : SpellWrapper
         {
-            var _loc_6:SpellWrapper = null;
-            var _loc_7:EffectInstance = null;
-            var _loc_8:CharacterSpellModification = null;
-            var _loc_9:CharacterSpellModification = null;
-            var _loc_10:CharacterSpellModification = null;
-            var _loc_11:int = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
             if (param2 == 0)
             {
                 param4 = false;
             }
+            param1 = 63;
             if (param4)
             {
                 if (_cache[param2] && _cache[param2].length > 0 && _cache[param2][param1] && !param5)
@@ -679,7 +680,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public static function getSpellWrapperById(param1:uint, param2:int, param3:int) : SpellWrapper
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             if (param2 != 0)
             {
                 if (!_playersCache[param2])
@@ -714,9 +715,9 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public static function getFirstSpellWrapperById(param1:uint, param2:int) : SpellWrapper
         {
-            var _loc_3:Array = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             if (param2 != 0)
             {
                 if (!_playersCache[param2])
@@ -768,7 +769,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public static function getSpellWrappersById(param1:uint, param2:int) : Array
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             if (param2 != 0)
             {
                 if (!_playersCache[param2])
@@ -803,10 +804,10 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public static function refreshAllPlayerSpellHolder(param1:int) : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:SpellWrapper = null;
-            var _loc_4:SpellWrapper = null;
-            var _loc_5:SlotDataHolderManager = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             for each (_loc_2 in _playersCache[param1])
             {
                 
@@ -834,8 +835,8 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public static function resetAllCoolDown(param1:int, param2:Object) : void
         {
-            var _loc_3:Array = null;
-            var _loc_4:SpellWrapper = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             SecureCenter.checkAccessKey(param2);
             for each (_loc_3 in _playersCache[param1])
             {
@@ -851,9 +852,9 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public static function removeAllSpellWrapperBut(param1:int, param2:Object) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             SecureCenter.checkAccessKey(param2);
             var _loc_3:* = new Array();
             for (_loc_4 in _playersCache)

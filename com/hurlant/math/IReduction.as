@@ -1,4 +1,4 @@
-package com.hurlant.math
+﻿package com.hurlant.math
 {
 
     interface IReduction

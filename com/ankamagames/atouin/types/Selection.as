@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.managers.*;
@@ -71,7 +71,7 @@ package com.ankamagames.atouin.types
             {
                 return false;
             }
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.cells.length)
             {
                 

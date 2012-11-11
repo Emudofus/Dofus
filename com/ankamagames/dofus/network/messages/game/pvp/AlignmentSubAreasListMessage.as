@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.pvp
+﻿package com.ankamagames.dofus.network.messages.game.pvp
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
         public function serializeAs_AlignmentSubAreasListMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.angelsSubAreas.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.angelsSubAreas.length)
             {
                 
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.evilsSubAreas.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.evilsSubAreas.length)
             {
                 
@@ -93,10 +93,10 @@ package com.ankamagames.dofus.network.messages.game.pvp
 
         public function deserializeAs_AlignmentSubAreasListMessage(param1:IDataInput) : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -105,7 +105,7 @@ package com.ankamagames.dofus.network.messages.game.pvp
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

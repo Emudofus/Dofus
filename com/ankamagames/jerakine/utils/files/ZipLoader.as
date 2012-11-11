@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.files
+﻿package com.ankamagames.jerakine.utils.files
 {
     import com.ankamagames.jerakine.cache.*;
     import flash.events.*;
@@ -91,7 +91,7 @@ package com.ankamagames.jerakine.utils.files
 
         public function fileExists(param1:String) : Boolean
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._filesNames.length)
             {
                 
@@ -121,10 +121,10 @@ package com.ankamagames.jerakine.utils.files
 
         private function onLoadComplete(event:Event) : void
         {
-            var _loc_4:ZipEntry = null;
+            var _loc_4:* = null;
             var _loc_2:* = ByteArray(URLLoader(event.target).data);
             this._zipFile = new ZipFile(_loc_2);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this._zipFile.entries.length)
             {
                 

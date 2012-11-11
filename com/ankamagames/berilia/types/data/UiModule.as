@@ -1,7 +1,8 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.*;
+    import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.utils.errors.*;
     import com.ankamagames.jerakine.logger.*;
@@ -10,7 +11,7 @@ package com.ankamagames.berilia.types.data
     import flash.system.*;
     import flash.utils.*;
 
-    public class UiModule extends Object
+    public class UiModule extends Object implements IModuleUtil
     {
         private var _instanceId:uint;
         private var _id:String;
@@ -36,13 +37,14 @@ package com.ankamagames.berilia.types.data
         var _loader:Loader;
         private var _moduleAppDomain:ApplicationDomain;
         private var _enable:Boolean = true;
+        private var _rawXml:XML;
         private static var ID_COUNT:uint = 0;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         static const _log:Logger = Log.getLogger(getQualifiedClassName(UiModule));
 
         public function UiModule(param1:String = null, param2:String = null, param3:String = null, param4:String = null, param5:String = null, param6:String = null, param7:String = null, param8:String = null, param9:String = null, param10:String = null, param11:Array = null, param12:Array = null, param13:Boolean = false)
         {
-            var _loc_14:UiData = null;
+            var _loc_14:* = null;
             this._instanceId = ID_COUNT + 1;
             MEMORY_LOG[this] = 1;
             this._name = param2;
@@ -171,7 +173,7 @@ package com.ankamagames.berilia.types.data
 
         public function set enable(param1:Boolean) : void
         {
-            var _loc_2:UiGroup = null;
+            var _loc_2:* = null;
             StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_MOD, this.id, param1);
             if (!this._enable && param1)
             {
@@ -213,7 +215,7 @@ package com.ankamagames.berilia.types.data
 
         public function set applicationDomain(param1:ApplicationDomain) : void
         {
-            var _loc_2:UiData = null;
+            var _loc_2:* = null;
             if (this._moduleAppDomain)
             {
                 throw new BeriliaError("ApplicationDomain cannot be set twice.");
@@ -257,6 +259,11 @@ package com.ankamagames.berilia.types.data
             return this._groups;
         }// end function
 
+        public function get rawXml() : XML
+        {
+            return this._rawXml;
+        }// end function
+
         public function getUi(param1:String) : UiData
         {
             return this._uis[param1];
@@ -293,20 +300,7 @@ package com.ankamagames.berilia.types.data
             return;
         }// end function
 
-        private function setProperty(param1:String, param2:String) : void
-        {
-            if (param2 && param2.length)
-            {
-                this["_" + param1] = param2;
-            }
-            else
-            {
-                this["_" + param1] = null;
-            }
-            return;
-        }// end function
-
-        public static function createFromXml(param1:XML, param2:String, param3:String) : UiModule
+        protected function fillFromXml(param1:XML, param2:String, param3:String) : void
         {
             var uiGroup:UiGroup;
             var group:XML;
@@ -325,34 +319,34 @@ package com.ankamagames.berilia.types.data
             var xml:* = param1;
             var nativePath:* = param2;
             var id:* = param3;
-            var um:* = new UiModule;
-            um.setProperty("name", xml..header..name);
-            um.setProperty("version", xml..header..version);
-            um.setProperty("gameVersion", xml..header..gameVersion);
-            um.setProperty("author", xml..header..author);
-            um.setProperty("description", xml..header..description);
-            um.setProperty("iconUri", xml..header..icon);
-            um.setProperty("shortDescription", xml..header..shortDescription);
-            um.setProperty("script", xml..script);
-            um.setProperty("shortcuts", xml..shortcuts);
+            this.setProperty("name", xml..header..name);
+            this.setProperty("version", xml..header..version);
+            this.setProperty("gameVersion", xml..header..gameVersion);
+            this.setProperty("author", xml..header..author);
+            this.setProperty("description", xml..header..description);
+            this.setProperty("iconUri", xml..header..icon);
+            this.setProperty("shortDescription", xml..header..shortDescription);
+            this.setProperty("script", xml..script);
+            this.setProperty("shortcuts", xml..shortcuts);
+            this._rawXml = xml;
             nativePath = nativePath.split("app:/").join("");
             if (nativePath.indexOf("file://") == -1 && nativePath.substr(0, 2) != "\\\\")
             {
                 nativePath = "file://" + nativePath;
             }
-            um._id = id;
-            if (um.script)
+            this._id = id;
+            if (this.script)
             {
-                um._script = nativePath + "/" + um.script;
+                this._script = nativePath + "/" + this.script;
             }
-            if (um.shortcuts)
+            if (this.shortcuts)
             {
-                um._shortcuts = nativePath + "/" + um.shortcuts;
+                this._shortcuts = nativePath + "/" + this.shortcuts;
             }
-            um._rootPath = nativePath + "/";
-            um._storagePath = unescape(um._rootPath + "storage/").replace("file://", "");
-            um._groups = new Vector.<UiGroup>;
-            var _loc_5:int = 0;
+            this._rootPath = nativePath + "/";
+            this._storagePath = unescape(this._rootPath + "storage/").replace("file://", "");
+            this._groups = new Vector.<UiGroup>;
+            var _loc_5:* = 0;
             var _loc_6:* = xml.uiGroup;
             while (_loc_6 in _loc_5)
             {
@@ -362,7 +356,7 @@ package com.ankamagames.berilia.types.data
                 groupName = group..@name;
                 try
                 {
-                    var _loc_8:int = 0;
+                    var _loc_8:* = 0;
                     var _loc_9:* = xml.uis;
                     var _loc_7:* = new XMLList("");
                     for each (_loc_10 in _loc_9)
@@ -378,7 +372,7 @@ package com.ankamagames.berilia.types.data
                         }
                     }
                     uisXML = _loc_7;
-                    var _loc_7:int = 0;
+                    var _loc_7:* = 0;
                     var _loc_8:* = uisXML..@name;
                     while (_loc_8 in _loc_7)
                     {
@@ -392,16 +386,16 @@ package com.ankamagames.berilia.types.data
                 }
                 uiGroup = new UiGroup(group.@name, group.@exclusive.toString() == "true", group.@permanent.toString() == "true", uiNames);
                 UiGroupManager.getInstance().registerGroup(uiGroup);
-                um._groups.push(uiGroup);
+                this._groups.push(uiGroup);
             }
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             var _loc_6:* = xml.uis;
             while (_loc_6 in _loc_5)
             {
                 
                 uis = _loc_6[_loc_5];
                 uisGroup = uis.@group.toString();
-                var _loc_7:int = 0;
+                var _loc_7:* = 0;
                 var _loc_8:* = uis..ui;
                 while (_loc_8 in _loc_7)
                 {
@@ -426,19 +420,39 @@ package com.ankamagames.berilia.types.data
                             file = nativePath + "/" + ui.@file;
                         }
                     }
-                    uiData = new UiData(um, ui.@name, file, ui["class"], uisGroup);
-                    um._uis[uiData.name] = uiData;
+                    uiData = new UiData(this, ui.@name, file, ui["class"], uisGroup);
+                    this._uis[uiData.name] = uiData;
                 }
             }
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             var _loc_6:* = xml.cachedFiles..path;
             while (_loc_6 in _loc_5)
             {
                 
                 path = _loc_6[_loc_5];
-                um.cachedFiles.push(path.children().toString());
+                this.cachedFiles.push(path.children().toString());
             }
-            return um;
+            return;
+        }// end function
+
+        private function setProperty(param1:String, param2:String) : void
+        {
+            if (param2 && param2.length)
+            {
+                this["_" + param1] = param2;
+            }
+            else
+            {
+                this["_" + param1] = null;
+            }
+            return;
+        }// end function
+
+        public static function createFromXml(param1:XML, param2:String, param3:String) : UiModule
+        {
+            var _loc_4:* = new UiModule;
+            new UiModule.fillFromXml(param1, param2, param3);
+            return _loc_4;
         }// end function
 
     }

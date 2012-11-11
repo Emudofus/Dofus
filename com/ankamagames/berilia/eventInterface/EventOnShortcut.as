@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.eventInterface
+﻿package com.ankamagames.berilia.eventInterface
 {
     import com.ankamagames.berilia.eventInterface.*;
 

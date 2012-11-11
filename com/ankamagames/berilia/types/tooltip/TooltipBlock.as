@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.tooltip
+﻿package com.ankamagames.berilia.types.tooltip
 {
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.jerakine.logger.*;
@@ -44,12 +44,12 @@ package com.ankamagames.berilia.types.tooltip
 
         public function initChunk(param1:Array) : void
         {
-            var _loc_2:ChunkData = null;
-            var _loc_4:String = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
             this._chunksUri = param1;
             this._totalChunk = param1.length;
             this._loadedChunk = 0;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this._totalChunk)
             {
                 
@@ -60,7 +60,7 @@ package com.ankamagames.berilia.types.tooltip
                     this.chunks[_loc_2.name] = _loc_4;
                     this._chunksUri.splice(_loc_3, 1);
                     _loc_3 = _loc_3 - 1;
-                    var _loc_5:String = this;
+                    var _loc_5:* = this;
                     var _loc_6:* = this._totalChunk - 1;
                     _loc_5._totalChunk = _loc_6;
                 }
@@ -75,7 +75,7 @@ package com.ankamagames.berilia.types.tooltip
 
         public function init() : void
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             this._totalChunk = this._chunksUri.length;
             if (this._totalChunk)
             {
@@ -122,7 +122,7 @@ package com.ankamagames.berilia.types.tooltip
 
         private function onLoaded(event:ResourceLoadedEvent) : void
         {
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._loadedChunk + 1;
             _loc_2._loadedChunk = _loc_3;
             _chunckCache[event.uri.path] = event.resource;
@@ -136,7 +136,7 @@ package com.ankamagames.berilia.types.tooltip
 
         private function onLoadError(event:ResourceErrorEvent) : void
         {
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._loadedChunk + 1;
             _loc_2._loadedChunk = _loc_3;
             if (this._loadedChunk == this._totalChunk)

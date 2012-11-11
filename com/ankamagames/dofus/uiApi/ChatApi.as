@@ -1,8 +1,9 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.factories.*;
     import com.ankamagames.berilia.interfaces.*;
+    import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.dofus.console.moduleLogger.*;
     import com.ankamagames.dofus.datacenter.communication.*;
@@ -170,6 +171,36 @@ package com.ankamagames.dofus.uiApi
         {
             ModuleLogger.log(param1, TypeMessage.LOG_CHAT);
             return;
+        }// end function
+
+        public function addHtmlLink(param1:String, param2:String) : String
+        {
+            return HtmlManager.addLink(param1, param2);
+        }// end function
+
+        public function addSpan(param1:String, param2:Object) : void
+        {
+            HtmlManager.addTag(param1, HtmlManager.SPAN, param2);
+            return;
+        }// end function
+
+        public function escapeChatString(param1:String) : String
+        {
+            var _loc_2:* = /&""&/g;
+            param1 = param1.replace(_loc_2, "&amp;");
+            _loc_2 = /{""{/g;
+            param1 = param1.replace(_loc_2, "&#123;");
+            _loc_2 = /}""}/g;
+            param1 = param1.replace(_loc_2, "&#125;");
+            return param1;
+        }// end function
+
+        public function unEscapeChatString(param1:String) : String
+        {
+            param1 = param1.split("&amp;#123;").join("&#123;");
+            param1 = param1.split("&amp;#125;").join("&#125;");
+            param1 = param1.split("&amp;amp;").join("&amp;");
+            return param1;
         }// end function
 
     }

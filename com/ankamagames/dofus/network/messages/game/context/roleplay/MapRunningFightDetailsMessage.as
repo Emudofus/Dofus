@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -82,7 +82,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
             }
             param1.writeInt(this.fightId);
             param1.writeShort(this.names.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.names.length)
             {
                 
@@ -90,7 +90,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.levels.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.levels.length)
             {
                 
@@ -107,7 +107,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
             }
             param1.writeByte(this.teamSwap);
             param1.writeShort(this.alives.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.alives.length)
             {
                 
@@ -125,16 +125,16 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
 
         public function deserializeAs_MapRunningFightDetailsMessage(param1:IDataInput) : void
         {
-            var _loc_8:String = null;
-            var _loc_9:uint = 0;
-            var _loc_10:Boolean = false;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = false;
             this.fightId = param1.readInt();
             if (this.fightId < 0)
             {
                 throw new Error("Forbidden value (" + this.fightId + ") on element of MapRunningFightDetailsMessage.fightId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -161,7 +161,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay
                 throw new Error("Forbidden value (" + this.teamSwap + ") on element of MapRunningFightDetailsMessage.teamSwap.");
             }
             var _loc_6:* = param1.readUnsignedShort();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.prism
+﻿package com.ankamagames.dofus.network.types.game.prism
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

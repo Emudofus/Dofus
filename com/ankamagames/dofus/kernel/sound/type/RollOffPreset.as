@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.type
+﻿package com.ankamagames.dofus.kernel.sound.type
 {
 
     public class RollOffPreset extends Object

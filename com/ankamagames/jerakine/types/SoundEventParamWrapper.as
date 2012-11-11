@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types
+﻿package com.ankamagames.jerakine.types
 {
 
     public class SoundEventParamWrapper extends Object

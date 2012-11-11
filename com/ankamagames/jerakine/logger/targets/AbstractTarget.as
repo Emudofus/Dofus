@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger.targets
+﻿package com.ankamagames.jerakine.logger.targets
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.logger.targets.*;
@@ -54,7 +54,7 @@ package com.ankamagames.jerakine.logger.targets
 
         private function checkIsFiltersValid(param1:Array) : Boolean
         {
-            var _loc_2:LogTargetFilter = null;
+            var _loc_2:* = null;
             for each (_loc_2 in param1)
             {
                 
@@ -68,7 +68,7 @@ package com.ankamagames.jerakine.logger.targets
 
         private function checkIsFilterValid(param1:String) : Boolean
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < FILTERS_FORBIDDEN_CHARS.length)
             {
                 
@@ -83,10 +83,10 @@ package com.ankamagames.jerakine.logger.targets
 
         public function onLog(event:LogEvent) : void
         {
-            var _loc_3:LogTargetFilter = null;
-            var _loc_4:RegExp = null;
-            var _loc_5:Boolean = false;
-            var _loc_2:Boolean = false;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = false;
+            var _loc_2:* = false;
             if (this._filters.length > 0)
             {
                 for each (_loc_3 in this._filters)

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.connection.frames
+﻿package com.ankamagames.dofus.logic.connection.frames
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.api.*;
@@ -69,7 +69,7 @@ package com.ankamagames.dofus.logic.connection.frames
 
         public function pushed() : Boolean
         {
-            var _loc_1:Boolean = false;
+            var _loc_1:* = false;
             if (BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG)
             {
                 KernelEventsManager.getInstance().disableAsyncError();
@@ -90,7 +90,7 @@ package com.ankamagames.dofus.logic.connection.frames
             for each (_loc_1 in this._aModuleInit)
             {
                 
-                var _loc_4:String = this;
+                var _loc_4:* = this;
                 var _loc_5:* = this._percentPerModule + 1;
                 _loc_4._percentPerModule = _loc_5;
             }
@@ -167,6 +167,10 @@ package com.ankamagames.dofus.logic.connection.frames
                             {
                                 throw new BeriliaError("Impossible de charger " + langAllMsg.file);
                             }
+                            if (Dofus.getInstance().forcedLang)
+                            {
+                                LangManager.getInstance().setEntry("config.lang.current", Dofus.getInstance().forcedLang);
+                            }
                             Kernel.getInstance().postInit();
                             this._aFiles = new Array();
                             this._aLoadedFiles = new Array();
@@ -226,7 +230,7 @@ package com.ankamagames.dofus.logic.connection.frames
                                     try
                                     {
                                         newValues = LangManager.getInstance().getCategory("config-" + XmlConfig.getInstance().getEntry("config.lang.current"));
-                                        var _loc_3:int = 0;
+                                        var _loc_3:* = 0;
                                         var _loc_4:* = newValues;
                                         while (_loc_4 in _loc_3)
                                         {
@@ -305,6 +309,8 @@ package com.ankamagames.dofus.logic.connection.frames
             ApiBinder.addApi("File", FileApi);
             ApiBinder.addApi("Security", SecurityApi);
             ApiBinder.addApi("Capture", CaptureApi);
+            ApiBinder.addApi("Notification", NotificationApi);
+            ApiBinder.addApi("ExternalNotification", ExternalNotificationApi);
             TooltipsFactory.registerAssoc(String, "text");
             TooltipsFactory.registerAssoc(TextTooltipInfo, "textInfo");
             TooltipsFactory.registerAssoc(SpellWrapper, "spell");
@@ -363,7 +369,9 @@ package com.ankamagames.dofus.logic.connection.frames
             HyperlinkFactory.registerProtocol("item", HyperlinkItemManager.showItem, HyperlinkItemManager.getItemName);
             HyperlinkFactory.registerProtocol("map", HyperlinkMapPosition.showPosition, HyperlinkMapPosition.getText);
             HyperlinkFactory.registerProtocol("chatitem", HyperlinkItemManager.showChatItem, null, HyperlinkItemManager.duplicateChatHyperlink);
-            HyperlinkFactory.registerProtocol("hook", HyperlinkSendHookManager.sendHook);
+            HyperlinkFactory.registerProtocol("openSocial", HyperlinkSocialManager.openSocial);
+            HyperlinkFactory.registerProtocol("chatLinkRelease", HyperlinkURLManager.chatLinkRelease);
+            HyperlinkFactory.registerProtocol("chatWarning", HyperlinkURLManager.chatWarning);
             HyperlinkFactory.registerProtocol("npc", HyperlinkShowNpcManager.showNpc);
             HyperlinkFactory.registerProtocol("monster", HyperlinkShowMonsterManager.showMonster, HyperlinkShowMonsterManager.getMonsterName);
             HyperlinkFactory.registerProtocol("monsterFight", HyperlinkShowMonsterFightManager.showEntity);
@@ -387,17 +395,17 @@ package com.ankamagames.dofus.logic.connection.frames
 
         private function checkInit() : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:String = null;
-            var _loc_4:XML = null;
-            var _loc_5:Array = null;
-            var _loc_6:XML = null;
-            var _loc_7:uint = 0;
-            var _loc_8:Array = null;
-            var _loc_9:Breed = null;
-            var _loc_10:XML = null;
-            var _loc_11:XML = null;
-            var _loc_1:Boolean = true;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_1:* = true;
             for (_loc_3 in this._aModuleInit)
             {
                 
@@ -476,8 +484,8 @@ package com.ankamagames.dofus.logic.connection.frames
 
         private function setModulePercent(param1:String, param2:Number, param3:Boolean = false) : void
         {
-            var _loc_5:Number = NaN;
-            var _loc_6:uint = 0;
+            var _loc_5:* = NaN;
+            var _loc_6:* = 0;
             if (!this._modPercents[param1])
             {
                 this._modPercents[param1] = 0;
@@ -490,7 +498,7 @@ package com.ankamagames.dofus.logic.connection.frames
             {
                 this._modPercents[param1] = param2;
             }
-            var _loc_4:Number = 0;
+            var _loc_4:* = 0;
             for each (_loc_5 in this._modPercents)
             {
                 

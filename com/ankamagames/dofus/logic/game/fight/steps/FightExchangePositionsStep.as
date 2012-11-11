@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.common.misc.*;
     import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
@@ -63,7 +63,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         private function doJump(param1:int, param2:int) : Boolean
         {
-            var _loc_3:IMovable = null;
+            var _loc_3:* = null;
             if (param2 > -1)
             {
                 _loc_3 = DofusEntities.getEntity(param1) as IMovable;

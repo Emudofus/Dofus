@@ -1,8 +1,8 @@
-package mx.core
+﻿package mx.core
 {
-    import com.ankamagames.tubul.interfaces.*;
     import flash.accessibility.*;
     import flash.display.*;
+    import flash.events.*;
     import flash.geom.*;
 
     public interface IFlexDisplayObject extends IBitmapDrawable, IEventDispatcher

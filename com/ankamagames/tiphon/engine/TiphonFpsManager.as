@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.engine
+﻿package com.ankamagames.tiphon.engine
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.utils.display.*;
@@ -30,10 +30,10 @@ package com.ankamagames.tiphon.engine
 
         private static function onTiphonGarbageCollector(event:Event) : void
         {
-            var _loc_4:Object = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:ScriptedAnimation = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
             var _loc_2:* = new Vector.<ScriptedAnimation>;
             var _loc_3:* = getTimer();
             for (_loc_4 in _oldScriptedAnimation)
@@ -74,7 +74,7 @@ package com.ankamagames.tiphon.engine
         private static function eraseMovieClip(param1:MovieClip) : void
         {
             var _loc_2:* = param1.totalFrames + 1;
-            var _loc_3:int = 1;
+            var _loc_3:* = 1;
             while (_loc_3 < _loc_2)
             {
                 
@@ -92,9 +92,9 @@ package com.ankamagames.tiphon.engine
 
         private static function eraseFrame(param1:DisplayObjectContainer) : void
         {
-            var _loc_3:DisplayObject = null;
-            var _loc_4:DisplayObject = null;
-            var _loc_2:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_2:* = 0;
             while (param1.numChildren > _loc_2)
             {
                 

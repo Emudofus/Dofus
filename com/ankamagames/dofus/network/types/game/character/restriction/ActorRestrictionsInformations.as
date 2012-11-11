@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.character.restriction
+﻿package com.ankamagames.dofus.network.types.game.character.restriction
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -99,7 +99,7 @@ package com.ankamagames.dofus.network.types.game.character.restriction
 
         public function serializeAs_ActorRestrictionsInformations(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.cantBeAggressed);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.cantBeChallenged);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.cantTrade);
@@ -109,7 +109,7 @@ package com.ankamagames.dofus.network.types.game.character.restriction
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 6, this.cantMinimize);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 7, this.cantMove);
             param1.writeByte(_loc_2);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             _loc_3 = BooleanByteWrapper.setFlag(_loc_3, 0, this.cantAggress);
             _loc_3 = BooleanByteWrapper.setFlag(_loc_3, 1, this.cantChallenge);
             _loc_3 = BooleanByteWrapper.setFlag(_loc_3, 2, this.cantExchange);
@@ -119,7 +119,7 @@ package com.ankamagames.dofus.network.types.game.character.restriction
             _loc_3 = BooleanByteWrapper.setFlag(_loc_3, 6, this.cantUseObject);
             _loc_3 = BooleanByteWrapper.setFlag(_loc_3, 7, this.cantUseTaxCollector);
             param1.writeByte(_loc_3);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             _loc_4 = BooleanByteWrapper.setFlag(_loc_4, 0, this.cantUseInteractive);
             _loc_4 = BooleanByteWrapper.setFlag(_loc_4, 1, this.cantSpeakToNPC);
             _loc_4 = BooleanByteWrapper.setFlag(_loc_4, 2, this.cantChangeZone);

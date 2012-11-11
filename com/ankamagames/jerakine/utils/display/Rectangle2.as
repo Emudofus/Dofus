@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import com.ankamagames.jerakine.interfaces.*;
     import flash.geom.*;

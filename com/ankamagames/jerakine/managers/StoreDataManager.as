@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.managers
+﻿package com.ankamagames.jerakine.managers
 {
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -41,7 +41,7 @@ package com.ankamagames.jerakine.managers
             var aClass:* = this.getData(JerakineConstants.DATASTORE_CLASS_ALIAS, "classAliasList");
             var nonVectorClass:Array;
             var vectorClass:Array;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = aClass;
             while (_loc_3 in _loc_2)
             {
@@ -65,7 +65,7 @@ package com.ankamagames.jerakine.managers
 
         public function getData(param1:DataStoreType, param2:String)
         {
-            var _loc_3:CustomSharedObject = null;
+            var _loc_3:* = null;
             switch(param1.location)
             {
                 case DataStoreEnum.LOCATION_LOCAL:
@@ -116,7 +116,7 @@ package com.ankamagames.jerakine.managers
                     try
                     {
                         registerClassAlias(sAlias, Class(getDefinitionByName(className)));
-                        _log.error("Register " + className);
+                        _log.warn("Register " + className);
                     }
                     catch (e:Error)
                     {
@@ -145,9 +145,7 @@ package com.ankamagames.jerakine.managers
                     if (oInstance is Vector.<null>)
                     {
                         tmp = getQualifiedClassName(oInstance);
-                        var _loc_5:* = tmp.indexOf("<");
                         leftBracePos = tmp.indexOf("<");
-                        leftBracePos = _loc_5;
                         tmp = tmp.substr((leftBracePos + 1), tmp.lastIndexOf(">") - leftBracePos - 1);
                         this.registerClass(new (getDefinitionByName(tmp) as Class)(), true, keepClassInSo);
                     }
@@ -156,7 +154,7 @@ package com.ankamagames.jerakine.managers
                 {
                     desc = this.scanType(oInstance);
                 }
-                var _loc_5:int = 0;
+                var _loc_5:* = 0;
                 var _loc_6:* = desc;
                 while (_loc_6 in _loc_5)
                 {
@@ -193,7 +191,7 @@ package com.ankamagames.jerakine.managers
 
         public function setData(param1:DataStoreType, param2:String, param3, param4:Boolean = false) : Boolean
         {
-            var _loc_5:CustomSharedObject = null;
+            var _loc_5:* = null;
             if (this._aData[param1.category] == null)
             {
                 this._aData[param1.category] = new Dictionary(true);
@@ -252,7 +250,7 @@ package com.ankamagames.jerakine.managers
             {
                 this._aStoreSequence = new Array();
             }
-            var _loc_1:String = this;
+            var _loc_1:* = this;
             var _loc_2:* = this._nCurrentSequenceNum + 1;
             _loc_1._nCurrentSequenceNum = _loc_2;
             return;
@@ -260,9 +258,9 @@ package com.ankamagames.jerakine.managers
 
         public function stopStoreSequence() : void
         {
-            var _loc_1:DataStoreType = null;
-            var _loc_2:String = null;
-            var _loc_3:String = this;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = this;
             _loc_3._nCurrentSequenceNum = this._nCurrentSequenceNum - 1;
             this._bStoreSequence = --this._nCurrentSequenceNum != 0;
             if (this._bStoreSequence)
@@ -306,7 +304,7 @@ package com.ankamagames.jerakine.managers
         public function reset() : void
         {
             var s:CustomSharedObject;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = this._aSharedObjectCache;
             do
             {
@@ -409,8 +407,8 @@ package com.ankamagames.jerakine.managers
 
         private function scanType(param1) : Object
         {
-            var _loc_4:XML = null;
-            var _loc_5:XML = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_2:* = new Object();
             var _loc_3:* = this._describeType(param1);
             for each (_loc_4 in _loc_3..accessor)

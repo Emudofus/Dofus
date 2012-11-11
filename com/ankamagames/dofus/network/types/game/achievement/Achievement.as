@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.achievement
+﻿package com.ankamagames.dofus.network.types.game.achievement
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

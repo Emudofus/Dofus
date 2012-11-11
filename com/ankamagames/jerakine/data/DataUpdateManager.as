@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.logger.*;
@@ -73,10 +73,10 @@ package com.ankamagames.jerakine.data
 
         protected function onLoaded(event:ResourceLoadedEvent) : void
         {
-            var _loc_2:LangMetaData = null;
-            var _loc_3:Uri = null;
-            var _loc_4:Object = null;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             switch(event.uri.fileType)
             {
                 case "meta":
@@ -105,7 +105,7 @@ package com.ankamagames.jerakine.data
                     _loc_4 = event.resource;
                     StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO, _loc_4.moduleName + "_filelist", _loc_4.fileList);
                     StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO, _loc_4.moduleName + "_chunkLength", _loc_4.chunkLength);
-                    var _loc_6:String = this;
+                    var _loc_6:* = this;
                     var _loc_7:* = this._loadedFileCount + 1;
                     _loc_6._loadedFileCount = _loc_7;
                     this.processFileData(_loc_4, event.uri);

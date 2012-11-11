@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.crypto
+﻿package com.ankamagames.jerakine.utils.crypto
 {
     import flash.events.*;
     import flash.utils.*;
@@ -54,9 +54,9 @@ package com.ankamagames.jerakine.utils.crypto
 
         private function encodeByteArrayStep(event:Event) : void
         {
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             var _loc_2:* = STEP_LOOP;
             while (this._data.bytesAvailable > 0 && _loc_2--)
             {

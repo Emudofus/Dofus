@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.utils
+﻿package com.ankamagames.atouin.utils
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.elements.*;
@@ -26,20 +26,20 @@ package com.ankamagames.atouin.utils
 
         public static function detectCell(param1:Boolean, param2:Map, param3:WorldPoint, param4:Frustum, param5:WorldPoint) : PartialDataMap
         {
-            var _loc_7:Point = null;
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:int = 0;
-            var _loc_12:GraphicalElementData = null;
-            var _loc_19:int = 0;
-            var _loc_20:int = 0;
-            var _loc_23:Layer = null;
-            var _loc_24:String = null;
-            var _loc_25:Cell = null;
-            var _loc_26:BasicElement = null;
-            var _loc_27:NormalGraphicalElementData = null;
-            var _loc_28:uint = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = null;
+            var _loc_19:* = 0;
+            var _loc_20:* = 0;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = 0;
             if (param5 == null)
             {
                 _log.error("Cannot detect visible cells with no current map point.");

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.events
+﻿package com.ankamagames.jerakine.resources.events
 {
     import com.ankamagames.jerakine.types.*;
     import flash.events.*;

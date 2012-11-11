@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.data
+﻿package com.ankamagames.dofus.types.data
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.effects.*;
@@ -23,7 +23,7 @@ package com.ankamagames.dofus.types.data
             this.setObjects = param2;
             var _loc_5:* = param3.length;
             this.setEffects = new Vector.<EffectInstance>(_loc_5);
-            var _loc_6:int = 0;
+            var _loc_6:* = 0;
             while (_loc_6 < _loc_5)
             {
                 
@@ -35,6 +35,14 @@ package com.ankamagames.dofus.types.data
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.dofus.datacenter.effects.*;
+
+import com.ankamagames.dofus.datacenter.items.*;
+
+import com.ankamagames.dofus.misc.*;
 
 class ItemSet extends Object
 {

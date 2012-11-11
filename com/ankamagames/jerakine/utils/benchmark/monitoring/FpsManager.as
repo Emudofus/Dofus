@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring
 {
     import com.ankamagames.jerakine.utils.benchmark.monitoring.ui.*;
     import com.ankamagames.jerakine.utils.display.*;
@@ -6,12 +6,15 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
     import flash.display.*;
     import flash.events.*;
     import flash.geom.*;
+    import flash.net.*;
     import flash.profiler.*;
     import flash.system.*;
     import flash.utils.*;
 
     public class FpsManager extends Sprite
     {
+        private var conn:LocalConnection;
+        private var isExternal:Boolean;
         private var _decal:Point;
         private var _btnStateSpr:StateButton;
         private var _btnRetrace:RedrawRegionButton;
@@ -35,7 +38,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
             this._btnStateSpr.addEventListener(MouseEvent.CLICK, this.changeStateHandler);
             addChild(this._btnStateSpr);
             FpsManagerConst.PLAYER_VERSION = FpsManagerUtils.getVersion();
-            var _loc_1:int = 50;
+            var _loc_1:* = 50;
             y = 50;
             x = _loc_1;
             if (FpsManagerConst.PLAYER_VERSION >= 10)
@@ -50,15 +53,22 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
             return;
         }// end function
 
-        public function display() : void
+        public function display(param1:Boolean = false) : void
         {
             if (_instance == null)
             {
                 throw new Error("FpsManager is not initialized");
             }
+            this.isExternal = param1;
+            if (param1)
+            {
+                this.conn = new LocalConnection();
+                this.conn.addEventListener(StatusEvent.STATUS, this.onStatus);
+                this.conn.send("app#DofusDebugger:DofusDebugConnection", "updateStatus", true);
+            }
             StageShareManager.stage.addChild(_instance);
-            StageShareManager.stage.addEventListener(Event.ENTER_FRAME, this.loop);
             this._graphPanel.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+            StageShareManager.stage.addEventListener(Event.ENTER_FRAME, this.loop);
             return;
         }// end function
 
@@ -68,9 +78,19 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
             {
                 throw new Error("FpsManager is not initialized");
             }
-            StageShareManager.stage.removeChild(_instance);
+            if (this.isExternal)
+            {
+                this.conn.send("app#DofusDebugger:DofusDebugConnection", "updateStatus", false);
+                this.conn.removeEventListener(StatusEvent.STATUS, this.onStatus);
+                this.conn.close();
+                this.conn = null;
+            }
+            else
+            {
+                StageShareManager.stage.removeChild(_instance);
+                this._graphPanel.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+            }
             StageShareManager.stage.removeEventListener(Event.ENTER_FRAME, this.loop);
-            this._graphPanel.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
             return;
         }// end function
 
@@ -98,6 +118,29 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
             return;
         }// end function
 
+        private function onStatus(event:StatusEvent) : void
+        {
+            switch(event.level)
+            {
+                case "status":
+                {
+                    break;
+                }
+                case "error":
+                {
+                    trace("LocalConnection.send() failed");
+                    this.conn.removeEventListener(StatusEvent.STATUS, this.onStatus);
+                    this.conn = null;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+            return;
+        }// end function
+
         private function redrawRegionHandler(event:MouseEvent) : void
         {
             this._redrawRegionsVisible = !this._redrawRegionsVisible;
@@ -113,18 +156,37 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
 
         private function loop(event:Event) : void
         {
+            var _loc_4:* = NaN;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             this.stopTracking(FpsManagerConst.SPECIAL_GRAPH[0].name);
             this.startTracking(FpsManagerConst.SPECIAL_GRAPH[0].name, FpsManagerConst.SPECIAL_GRAPH[0].color);
             this._graphPanel.update();
             this.updateMem();
-            var _loc_4:String = this;
-            var _loc_5:* = this._ticks + 1;
-            _loc_4._ticks = _loc_5;
+            var _loc_7:* = this;
+            var _loc_8:* = this._ticks + 1;
+            _loc_7._ticks = _loc_8;
             var _loc_2:* = getTimer();
             var _loc_3:* = _loc_2 - this._last;
             if (_loc_3 >= 500)
             {
-                this._graphPanel.updateFpsValue(this._ticks / _loc_3 * 1000);
+                _loc_4 = this._ticks / _loc_3 * 1000;
+                if (this.isExternal && this.conn != null)
+                {
+                    this.conn.send("app#DofusDebugger:DofusDebugConnection", "updateValues", _loc_4, this._graphPanel.memory, FpsManagerUtils.getTimeFromNow(this._extensionPanel.lastGc));
+                    _loc_5 = this._graphPanel.getExternalGraphs();
+                    for each (_loc_6 in _loc_5)
+                    {
+                        
+                        if (this.conn == null)
+                        {
+                            break;
+                        }
+                        this.conn.send("app#DofusDebugger:DofusDebugConnection", "updateGraphValues", _loc_6.name, _loc_6.color, _loc_6.points);
+                    }
+                    this.conn.send("app#DofusDebugger:DofusDebugConnection", "updateGraphes");
+                }
+                this._graphPanel.updateFpsValue(_loc_4);
                 this._extensionPanel.update();
                 this._ticks = 0;
                 this._last = _loc_2;
@@ -134,8 +196,8 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
 
         private function updateMem() : void
         {
-            var _loc_1:Number = NaN;
-            var _loc_2:Number = NaN;
+            var _loc_1:* = NaN;
+            var _loc_2:* = NaN;
             this._graphPanel.memory = FpsManagerUtils.calculateMB(System.totalMemory).toPrecision(3);
             if (AirScanner.hasAir())
             {
@@ -174,15 +236,11 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring
             return;
         }// end function
 
-        public static function getInstance(param1:Boolean = false) : FpsManager
+        public static function getInstance() : FpsManager
         {
             if (_instance == null)
             {
                 _instance = new FpsManager;
-            }
-            if (param1)
-            {
-                _instance.display();
             }
             return _instance;
         }// end function

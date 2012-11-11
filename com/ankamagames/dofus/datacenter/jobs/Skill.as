@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.jobs
+﻿package com.ankamagames.dofus.datacenter.jobs
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.interactives.*;

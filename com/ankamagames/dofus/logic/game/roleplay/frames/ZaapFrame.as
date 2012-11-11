@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+﻿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -53,27 +53,28 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:ZaapListMessage = null;
-            var _loc_3:Array = null;
-            var _loc_4:TeleportDestinationsListMessage = null;
-            var _loc_5:Array = null;
-            var _loc_6:Vector.<Hint> = null;
-            var _loc_7:Hint = null;
-            var _loc_8:TeleportRequestAction = null;
-            var _loc_9:int = 0;
-            var _loc_10:TeleportRequestMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
             switch(true)
             {
                 case param1 is ZaapListMessage:
                 {
                     _loc_2 = param1 as ZaapListMessage;
                     _loc_3 = new Array();
-                    _loc_9 = 0;
-                    while (_loc_9 < _loc_2.mapIds.length)
+                    _loc_10 = 0;
+                    while (_loc_10 < _loc_2.mapIds.length)
                     {
                         
-                        _loc_3.push(new TeleportDestinationWrapper(_loc_2.teleporterType, _loc_2.mapIds[_loc_9], _loc_2.subAreaIds[_loc_9], _loc_2.costs[_loc_9], _loc_2.spawnMapId == _loc_2.mapIds[_loc_9]));
-                        _loc_9++;
+                        _loc_3.push(new TeleportDestinationWrapper(_loc_2.teleporterType, _loc_2.mapIds[_loc_10], _loc_2.subAreaIds[_loc_10], _loc_2.costs[_loc_10], _loc_2.spawnMapId == _loc_2.mapIds[_loc_10]));
+                        _loc_10++;
                     }
                     this._spawnMapId = _loc_2.spawnMapId;
                     KernelEventsManager.getInstance().processCallback(RoleplayHookList.TeleportDestinationList, _loc_3, TeleporterTypeEnum.TELEPORTER_ZAAP);
@@ -83,24 +84,24 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                 {
                     _loc_4 = param1 as TeleportDestinationsListMessage;
                     _loc_5 = new Array();
-                    _loc_9 = 0;
-                    while (_loc_9 < _loc_4.mapIds.length)
+                    _loc_10 = 0;
+                    while (_loc_10 < _loc_4.mapIds.length)
                     {
                         
                         if (_loc_4.teleporterType == TeleporterTypeEnum.TELEPORTER_SUBWAY)
                         {
-                            _loc_6 = TeleportDestinationWrapper.getHintsFromMapId(_loc_4.mapIds[_loc_9]);
+                            _loc_6 = TeleportDestinationWrapper.getHintsFromMapId(_loc_4.mapIds[_loc_10]);
                             for each (_loc_7 in _loc_6)
                             {
                                 
-                                _loc_5.push(new TeleportDestinationWrapper(_loc_4.teleporterType, _loc_4.mapIds[_loc_9], _loc_4.subAreaIds[_loc_9], _loc_4.costs[_loc_9], false, _loc_7));
+                                _loc_5.push(new TeleportDestinationWrapper(_loc_4.teleporterType, _loc_4.mapIds[_loc_10], _loc_4.subAreaIds[_loc_10], _loc_4.costs[_loc_10], false, _loc_7));
                             }
                         }
                         else
                         {
-                            _loc_5.push(new TeleportDestinationWrapper(_loc_4.teleporterType, _loc_4.mapIds[_loc_9], _loc_4.subAreaIds[_loc_9], _loc_4.costs[_loc_9]));
+                            _loc_5.push(new TeleportDestinationWrapper(_loc_4.teleporterType, _loc_4.mapIds[_loc_10], _loc_4.subAreaIds[_loc_10], _loc_4.costs[_loc_10]));
                         }
-                        _loc_9++;
+                        _loc_10++;
                     }
                     KernelEventsManager.getInstance().processCallback(RoleplayHookList.TeleportDestinationList, _loc_5, _loc_4.teleporterType);
                     return true;
@@ -110,9 +111,9 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                     _loc_8 = param1 as TeleportRequestAction;
                     if (_loc_8.cost <= PlayedCharacterManager.getInstance().characteristics.kamas)
                     {
-                        _loc_10 = new TeleportRequestMessage();
-                        _loc_10.initTeleportRequestMessage(_loc_8.teleportType, _loc_8.mapId);
-                        ConnectionsHandler.getConnection().send(_loc_10);
+                        _loc_11 = new TeleportRequestMessage();
+                        _loc_11.initTeleportRequestMessage(_loc_8.teleportType, _loc_8.mapId);
+                        ConnectionsHandler.getConnection().send(_loc_11);
                     }
                     else
                     {
@@ -127,8 +128,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                 }
                 case param1 is LeaveDialogMessage:
                 {
-                    Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
-                    Kernel.getWorker().removeFrame(this);
+                    _loc_9 = param1 as LeaveDialogMessage;
+                    if (_loc_9.dialogType == DialogTypeEnum.DIALOG_TELEPORTER)
+                    {
+                        Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
+                        Kernel.getWorker().removeFrame(this);
+                    }
                     return true;
                 }
                 default:

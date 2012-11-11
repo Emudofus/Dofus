@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -52,7 +52,7 @@ package com.ankamagames.berilia.types.data
 
         public function set value(param1) : void
         {
-            var _loc_2:IRadioItem = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._items)
             {
                 
@@ -66,7 +66,7 @@ package com.ankamagames.berilia.types.data
 
         public function set selectedItem(param1:IRadioItem) : void
         {
-            var _loc_2:IRadioItem = null;
+            var _loc_2:* = null;
             if (this._selected == param1)
             {
                 return;

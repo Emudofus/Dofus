@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.map
+﻿package com.ankamagames.jerakine.map
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -17,14 +17,14 @@ package com.ankamagames.jerakine.map
 
         public static function getCell(param1:IDataMapProvider, param2:Vector.<uint>, param3:MapPoint) : Vector.<uint>
         {
-            var _loc_5:uint = 0;
-            var _loc_8:Array = null;
-            var _loc_9:Boolean = false;
-            var _loc_10:String = null;
-            var _loc_11:MapPoint = null;
-            var _loc_13:int = 0;
+            var _loc_5:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = false;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_13:* = 0;
             var _loc_4:* = new Array();
-            var _loc_6:MapPoint = null;
+            var _loc_6:* = null;
             _loc_5 = 0;
             while (_loc_5 < param2.length)
             {

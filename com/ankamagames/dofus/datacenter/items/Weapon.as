@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items
+﻿package com.ankamagames.dofus.datacenter.items
 {
     import com.ankamagames.jerakine.interfaces.*;
 
@@ -51,7 +51,7 @@ package com.ankamagames.dofus.datacenter.items
 
         public static function getWeapons() : Array
         {
-            var _loc_3:Item = null;
+            var _loc_3:* = null;
             var _loc_1:* = Item.getItems();
             var _loc_2:* = new Array();
             for each (_loc_3 in _loc_1)

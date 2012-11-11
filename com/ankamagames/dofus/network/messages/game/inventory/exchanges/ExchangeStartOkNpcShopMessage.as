@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.data.items.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
             }
             param1.writeInt(this.tokenId);
             param1.writeShort(this.objectsInfos.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.objectsInfos.length)
             {
                 
@@ -94,7 +94,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 
         public function deserializeAs_ExchangeStartOkNpcShopMessage(param1:IDataInput) : void
         {
-            var _loc_4:ObjectItemToSellInNpcShop = null;
+            var _loc_4:* = null;
             this.npcSellerId = param1.readInt();
             this.tokenId = param1.readInt();
             if (this.tokenId < 0)
@@ -102,7 +102,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
                 throw new Error("Forbidden value (" + this.tokenId + ") on element of ExchangeStartOkNpcShopMessage.tokenId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

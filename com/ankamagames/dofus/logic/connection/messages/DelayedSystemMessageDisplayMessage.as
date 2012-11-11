@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.connection.messages
+﻿package com.ankamagames.dofus.logic.connection.messages
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.messages.server.basic.*;

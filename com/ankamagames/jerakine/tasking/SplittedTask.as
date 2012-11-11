@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.tasking
+﻿package com.ankamagames.jerakine.tasking
 {
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.utils.errors.*;

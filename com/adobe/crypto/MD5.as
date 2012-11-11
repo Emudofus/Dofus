@@ -1,4 +1,4 @@
-package com.adobe.crypto
+﻿package com.adobe.crypto
 {
     import com.adobe.utils.*;
     import flash.utils.*;
@@ -59,8 +59,8 @@ package com.adobe.crypto
         {
             var _loc_2:* = new Array();
             var _loc_3:* = param1.length * 8;
-            var _loc_4:int = 255;
-            var _loc_5:int = 0;
+            var _loc_4:* = 255;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_3)
             {
                 
@@ -74,17 +74,17 @@ package com.adobe.crypto
 
         public static function hashBinary(param1:ByteArray) : String
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
-            var _loc_2:int = 1732584193;
-            var _loc_3:int = -271733879;
-            var _loc_4:int = -1732584194;
-            var _loc_5:int = 271733878;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_2:* = 1732584193;
+            var _loc_3:* = -271733879;
+            var _loc_4:* = -1732584194;
+            var _loc_5:* = 271733878;
             var _loc_10:* = createBlocks(param1);
             var _loc_11:* = createBlocks(param1).length;
-            var _loc_12:int = 0;
+            var _loc_12:* = 0;
             while (_loc_12 < _loc_11)
             {
                 

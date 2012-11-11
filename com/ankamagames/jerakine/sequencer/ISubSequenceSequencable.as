@@ -1,7 +1,7 @@
-package com.ankamagames.jerakine.sequencer
+﻿package com.ankamagames.jerakine.sequencer
 {
     import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.tubul.interfaces.*;
+    import flash.events.*;
 
     public interface ISubSequenceSequencable extends ISequencable, IEventDispatcher
     {

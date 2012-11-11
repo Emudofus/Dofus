@@ -1,10 +1,11 @@
-package com.ankamagames.dofus.kernel.sound.manager
+﻿package com.ankamagames.dofus.kernel.sound.manager
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.sound.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.protocolAudio.*;
+    import com.ankamagames.jerakine.sound.*;
     import com.ankamagames.jerakine.utils.misc.*;
     import com.ankamagames.jerakine.utils.system.*;
     import flash.events.*;
@@ -73,7 +74,16 @@ package com.ankamagames.dofus.kernel.sound.manager
         private function init() : void
         {
             this._socketClientID = new Date().time;
-            this._sock = new Socket();
+            if (AirScanner.isStreamingVersion())
+            {
+                _log.debug("init flash sound sender");
+                this._sock = new FlashSoundSender(Dofus.getInstance().REG_LOCAL_CONNECTION_ID);
+            }
+            else
+            {
+                _log.debug("init socket");
+                this._sock = new Socket();
+            }
             this._sock.addEventListener(ProgressEvent.SOCKET_DATA, this.onData);
             this._sock.addEventListener(Event.CONNECT, this.onSocketConnect);
             this._sock.addEventListener(Event.CLOSE, this.onSocketClose);
@@ -93,7 +103,7 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         private function showInformationPopup() : void
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             if (UiModuleManager.getInstance().getModule("Ankama_Common"))
             {
                 _loc_1 = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
@@ -148,9 +158,9 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         private function onData(event:ProgressEvent) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:String = null;
-            var _loc_5:Number = NaN;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = NaN;
             var _loc_2:* = this._sock.readUTFBytes(event.bytesLoaded).split("|");
             for each (_loc_3 in _loc_2)
             {
@@ -218,7 +228,7 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         private function onSocketConnect(event:Event) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             this._socketAvaible = true;
             if (this._buffer.length)
             {
@@ -243,3 +253,36 @@ package com.ankamagames.dofus.kernel.sound.manager
 
     }
 }
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.dofus.kernel.sound.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.protocolAudio.*;
+
+import com.ankamagames.jerakine.sound.*;
+
+import com.ankamagames.jerakine.utils.misc.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
+import flash.events.*;
+
+import flash.net.*;
+
+import flash.utils.*;
+
+class SingletonEnforcer extends Object
+{
+
+    function SingletonEnforcer()
+    {
+        return;
+    }// end function
+
+}
+

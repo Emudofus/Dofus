@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.dofus.datacenter.alignments.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
@@ -27,13 +27,13 @@ package com.ankamagames.dofus.misc.utils
 
         public static function applyParams(param1:String, param2:Array, param3:String = "%") : String
         {
-            var _loc_10:String = null;
-            var _loc_4:Boolean = false;
-            var _loc_5:Boolean = false;
-            var _loc_6:String = "";
-            var _loc_7:String = "";
-            var _loc_8:String = "";
-            var _loc_9:uint = 0;
+            var _loc_10:* = null;
+            var _loc_4:* = false;
+            var _loc_5:* = false;
+            var _loc_6:* = "";
+            var _loc_7:* = "";
+            var _loc_8:* = "";
+            var _loc_9:* = 0;
             while (_loc_9 < param1.length)
             {
                 
@@ -112,27 +112,27 @@ package com.ankamagames.dofus.misc.utils
 
         private static function processReplace(param1:String, param2:String, param3:Array) : String
         {
-            var _loc_5:int = 0;
-            var _loc_6:Item = null;
-            var _loc_7:ItemType = null;
-            var _loc_8:Job = null;
-            var _loc_9:Quest = null;
-            var _loc_10:Spell = null;
-            var _loc_11:SpellState = null;
-            var _loc_12:Breed = null;
-            var _loc_13:Area = null;
-            var _loc_14:SubArea = null;
-            var _loc_15:MapPosition = null;
-            var _loc_16:Emoticon = null;
-            var _loc_17:Monster = null;
-            var _loc_18:MonsterRace = null;
-            var _loc_19:MonsterSuperRace = null;
-            var _loc_20:Challenge = null;
-            var _loc_21:AlignmentSide = null;
-            var _loc_22:Array = null;
-            var _loc_23:Dungeon = null;
-            var _loc_24:ItemWrapper = null;
-            var _loc_4:String = "";
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_4:* = "";
             _loc_5 = int(Number(param2.substr(1))) - 1;
             if (param1 == "")
             {

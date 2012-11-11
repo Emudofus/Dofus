@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.interClient
+﻿package com.ankamagames.dofus.misc.interClient
 {
     import com.ankamagames.dofus.*;
     import com.ankamagames.jerakine.logger.*;
@@ -20,10 +20,12 @@ package com.ankamagames.dofus.misc.interClient
 
         public function AppIdModifier()
         {
+            var applicationConfig:File;
             var idFile:File;
             var newAppId:String;
             var tmp2:Array;
             var ts:Number;
+            var pathSo:String;
             _self = this;
             if (!COMMON_FOLDER)
             {
@@ -32,7 +34,7 @@ package com.ankamagames.dofus.misc.interClient
                 tmp2.pop();
                 COMMON_FOLDER = tmp2.join(File.separator) + File.separator;
             }
-            var applicationConfig:* = new File(File.applicationDirectory.nativePath + File.separator + "META-INF" + File.separator + "AIR" + File.separator + "application.xml");
+            applicationConfig = new File(File.applicationDirectory.nativePath + File.separator + "META-INF" + File.separator + "AIR" + File.separator + "application.xml");
             var fs:* = new FileStream();
             fs.open(applicationConfig, FileMode.READ);
             var content:* = fs.readUTFBytes(fs.bytesAvailable);
@@ -89,18 +91,32 @@ package com.ankamagames.dofus.misc.interClient
             {
                 newAppId = tmp[0] + "-" + nextId;
             }
-            content = content.substr(0, startIdTagPos) + newAppId + content.substr(endIdTagPos);
-            fs.open(applicationConfig, FileMode.WRITE);
-            fs.writeUTFBytes(content);
-            fs.close();
+            try
+            {
+                content = content.substr(0, startIdTagPos) + newAppId + content.substr(endIdTagPos);
+                fs.open(applicationConfig, FileMode.WRITE);
+                fs.writeUTFBytes(content);
+                fs.close();
+            }
+            catch (e:Error)
+            {
+                _log.error("Impossible d\'écrir le fichier " + applicationConfig.nativePath);
+            }
             var soFolder:* = File.applicationStorageDirectory.resolvePath("#SharedObjects/" + FileUtils.getFileName(Dofus.getInstance().loaderInfo.loaderURL));
             var appInfoFile:* = new File(COMMON_FOLDER + APP_INFO);
-            fs.open(new File(COMMON_FOLDER + APP_INFO), FileMode.WRITE);
-            var pathSo:* = Base64.encode(soFolder.nativePath);
-            fs.writeInt(pathSo.length);
-            fs.writeUTFBytes(pathSo);
-            fs.writeBoolean(true);
-            fs.close();
+            try
+            {
+                fs.open(new File(COMMON_FOLDER + APP_INFO), FileMode.WRITE);
+                pathSo = Base64.encode(soFolder.nativePath);
+                fs.writeInt(pathSo.length);
+                fs.writeUTFBytes(pathSo);
+                fs.writeBoolean(true);
+                fs.close();
+            }
+            catch (e:Error)
+            {
+                _log.error("Impossible d\'écrir le fichier " + applicationConfig.nativePath);
+            }
             var t:* = new Timer(20000);
             t.addEventListener(TimerEvent.TIMER, this.updateTs);
             t.start();
@@ -109,10 +125,10 @@ package com.ankamagames.dofus.misc.interClient
 
         public function invalideCache() : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             var _loc_1:* = new FileStream();
             var _loc_2:* = new File(COMMON_FOLDER + APP_INFO);
-            var _loc_3:String = "";
+            var _loc_3:* = "";
             if (_loc_2.exists)
             {
                 _loc_1.open(_loc_2, FileMode.READ);
@@ -130,22 +146,43 @@ package com.ankamagames.dofus.misc.interClient
 
         private function log(param1:String) : void
         {
-            var _loc_2:* = new File(File.applicationDirectory.nativePath + File.separator + "logAppId.txt");
-            var _loc_3:* = new FileStream();
-            _loc_3.open(_loc_2, FileMode.APPEND);
-            _loc_3.writeUTFBytes("[" + this._currentAppId + "] " + param1 + "\n");
-            _loc_3.close();
+            var applicationConfig:File;
+            var fs:FileStream;
+            var txt:* = param1;
+            try
+            {
+                applicationConfig = new File(File.applicationDirectory.nativePath + File.separator + "logAppId.txt");
+                fs = new FileStream();
+                fs.open(applicationConfig, FileMode.APPEND);
+                fs.writeUTFBytes("[" + this._currentAppId + "] " + txt + "\n");
+                fs.close();
+            }
+            catch (e:Error)
+            {
+                _log.info("Impossible d\'écrir dans le fichier " + File.applicationDirectory.nativePath + File.separator + "logAppId.txt");
+            }
             return;
         }// end function
 
         private function updateTs(param1 = null) : void
         {
-            var _loc_2:* = new Date().time;
-            var _loc_3:* = new File(COMMON_FOLDER + APP_ID + this._currentAppId);
-            var _loc_4:* = new FileStream();
-            new FileStream().open(_loc_3, FileMode.WRITE);
-            _loc_4.writeDouble(_loc_2);
-            _loc_4.close();
+            var currentTimestamp:Number;
+            var idFile:File;
+            var idFileStream:FileStream;
+            var e:* = param1;
+            try
+            {
+                currentTimestamp = new Date().time;
+                idFile = new File(COMMON_FOLDER + APP_ID + this._currentAppId);
+                idFileStream = new FileStream();
+                idFileStream.open(idFile, FileMode.WRITE);
+                idFileStream.writeDouble(currentTimestamp);
+                idFileStream.close();
+            }
+            catch (e:Error)
+            {
+                _log.error("Impossible de mettre à jour le fichier " + (COMMON_FOLDER + APP_ID + _currentAppId));
+            }
             return;
         }// end function
 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.interactive.zaap
+﻿package com.ankamagames.dofus.network.messages.game.interactive.zaap
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
         {
             param1.writeByte(this.teleporterType);
             param1.writeShort(this.mapIds.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.mapIds.length)
             {
                 
@@ -87,7 +87,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.subAreaIds.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.subAreaIds.length)
             {
                 
@@ -99,7 +99,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
                 _loc_3 = _loc_3 + 1;
             }
             param1.writeShort(this.costs.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.costs.length)
             {
                 
@@ -121,16 +121,16 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
 
         public function deserializeAs_TeleportDestinationsListMessage(param1:IDataInput) : void
         {
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
             this.teleporterType = param1.readByte();
             if (this.teleporterType < 0)
             {
                 throw new Error("Forbidden value (" + this.teleporterType + ") on element of TeleportDestinationsListMessage.teleporterType.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -156,7 +156,7 @@ package com.ankamagames.dofus.network.messages.game.interactive.zaap
                 _loc_5 = _loc_5 + 1;
             }
             var _loc_6:* = param1.readUnsignedShort();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 

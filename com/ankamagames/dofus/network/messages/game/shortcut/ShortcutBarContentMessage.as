@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.shortcut
+﻿package com.ankamagames.dofus.network.messages.game.shortcut
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -69,7 +69,7 @@ package com.ankamagames.dofus.network.messages.game.shortcut
         {
             param1.writeByte(this.barType);
             param1.writeShort(this.shortcuts.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.shortcuts.length)
             {
                 
@@ -88,15 +88,15 @@ package com.ankamagames.dofus.network.messages.game.shortcut
 
         public function deserializeAs_ShortcutBarContentMessage(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:Shortcut = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             this.barType = param1.readByte();
             if (this.barType < 0)
             {
                 throw new Error("Forbidden value (" + this.barType + ") on element of ShortcutBarContentMessage.barType.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

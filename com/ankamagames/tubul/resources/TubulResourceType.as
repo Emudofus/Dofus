@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.resources
+﻿package com.ankamagames.tubul.resources
 {
 
     public class TubulResourceType extends Object

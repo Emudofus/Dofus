@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.jerakine.console.*;
@@ -13,8 +13,8 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:Spell = null;
-            var _loc_5:Spell = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             switch(param2)
             {
                 case "setspellscript":

@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.sequence
+﻿package com.ankamagames.tiphon.sequence
 {
     import com.ankamagames.jerakine.sequencer.*;
     import com.ankamagames.tiphon.events.*;

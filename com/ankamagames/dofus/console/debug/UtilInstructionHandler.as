@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.dofus.datacenter.monsters.*;
     import com.ankamagames.dofus.datacenter.spells.*;
@@ -24,14 +24,14 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:Array = null;
-            var _loc_5:Array = null;
-            var _loc_6:String = null;
-            var _loc_7:Monster = null;
-            var _loc_8:Array = null;
-            var _loc_9:Array = null;
-            var _loc_10:String = null;
-            var _loc_11:Spell = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             switch(param2)
             {
                 case "enablereport":
@@ -155,9 +155,9 @@ package com.ankamagames.dofus.console.debug
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
         {
-            var _loc_5:String = null;
-            var _loc_6:String = null;
-            var _loc_7:String = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_4:* = new Array();
             switch(param1)
             {
@@ -277,16 +277,16 @@ package com.ankamagames.dofus.console.debug
 
         private function info(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:String = null;
-            var _loc_6:int = 0;
-            var _loc_7:Object = null;
-            var _loc_8:String = null;
-            var _loc_9:Array = null;
-            var _loc_11:String = null;
-            var _loc_12:Object = null;
-            var _loc_13:int = 0;
-            var _loc_10:String = "";
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_10:* = "";
             if (param3.length != 2)
             {
                 param1.output(param2 + " needs 2 args.");
@@ -344,16 +344,16 @@ package com.ankamagames.dofus.console.debug
 
         private function search(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
-            var _loc_7:Array = null;
-            var _loc_8:String = null;
-            var _loc_9:Object = null;
-            var _loc_10:Object = null;
-            var _loc_11:String = null;
-            var _loc_12:Array = null;
-            var _loc_13:Array = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
             if (param3.length < 3)
             {
                 param1.output(param2 + " needs 3 arguments");
@@ -436,8 +436,8 @@ package com.ankamagames.dofus.console.debug
 
         private function validArgs() : Dictionary
         {
-            var _loc_3:XML = null;
-            var _loc_4:Array = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_1:* = new Dictionary();
             var _loc_2:* = describeType(GameDataList);
             for each (_loc_3 in _loc_2..constant)
@@ -454,8 +454,8 @@ package com.ankamagames.dofus.console.debug
 
         private function getSimpleVariablesAndAccessors(param1:String, param2:Boolean = false) : Array
         {
-            var _loc_5:String = null;
-            var _loc_6:XML = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_3:* = new Array();
             var _loc_4:* = describeType(getDefinitionByName(param1));
             for each (_loc_6 in _loc_4..variable)
@@ -501,8 +501,8 @@ package com.ankamagames.dofus.console.debug
 
         private function getIdFunction(param1:String) : String
         {
-            var _loc_3:XML = null;
-            var _loc_4:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_2:* = describeType(getDefinitionByName(param1));
             for each (_loc_3 in _loc_2..method)
             {
@@ -524,7 +524,7 @@ package com.ankamagames.dofus.console.debug
 
         private function getListingFunction(param1:String) : String
         {
-            var _loc_3:XML = null;
+            var _loc_3:* = null;
             var _loc_2:* = describeType(getDefinitionByName(param1));
             for each (_loc_3 in _loc_2..method)
             {
@@ -539,3 +539,34 @@ package com.ankamagames.dofus.console.debug
 
     }
 }
+
+import com.ankamagames.dofus.datacenter.monsters.*;
+
+import com.ankamagames.dofus.datacenter.spells.*;
+
+import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.misc.utils.errormanager.*;
+
+import com.ankamagames.jerakine.console.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.logger.targets.*;
+
+import com.ankamagames.jerakine.managers.*;
+
+import com.ankamagames.jerakine.utils.misc.*;
+
+import flash.utils.*;
+
+class EmptyError extends Error
+{
+
+    function EmptyError()
+    {
+        return;
+    }// end function
+
+}
+

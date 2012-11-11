@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import flash.events.*;
     import flash.html.*;
@@ -54,8 +54,8 @@ package com.ankamagames.berilia.types.graphic
 
         public static function getLoader(param1:String = null) : TimeoutHTMLLoader
         {
-            var _loc_2:TimeoutHTMLLoader = null;
-            if (param1 && INSTANCE_CACHE[param1])
+            var _loc_2:* = null;
+            if (param1 != null && INSTANCE_CACHE[param1])
             {
                 _loc_2 = INSTANCE_CACHE[param1];
                 _loc_2._fromCache = true;

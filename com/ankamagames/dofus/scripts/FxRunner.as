@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.scripts
+﻿package com.ankamagames.dofus.scripts
 {
     import com.ankamagames.jerakine.entities.interfaces.*;
     import com.ankamagames.jerakine.logger.*;

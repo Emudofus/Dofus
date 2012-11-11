@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.items
+﻿package com.ankamagames.dofus.network.messages.game.inventory.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
             }
             param1.writeShort(this.msgId);
             param1.writeShort(this.parameters.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.parameters.length)
             {
                 
@@ -97,14 +97,14 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
 
         public function deserializeAs_LivingObjectMessageRequestMessage(param1:IDataInput) : void
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             this.msgId = param1.readShort();
             if (this.msgId < 0)
             {
                 throw new Error("Forbidden value (" + this.msgId + ") on element of LivingObjectMessageRequestMessage.msgId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

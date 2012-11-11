@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.types.event.*;
     import com.ankamagames.berilia.types.template.*;
@@ -67,7 +67,7 @@ package com.ankamagames.berilia.managers
 
         public function areLoaded(param1:Array) : Boolean
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < param1.length)
             {
                 

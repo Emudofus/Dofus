@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -207,19 +207,19 @@ package com.ankamagames.berilia.components
 
         public function getGradientColor() : uint
         {
-            var _loc_1:Number = NaN;
-            var _loc_2:Number = NaN;
-            var _loc_3:Number = NaN;
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Number = NaN;
-            var _loc_9:Number = NaN;
-            var _loc_10:Number = NaN;
-            var _loc_11:Number = NaN;
-            var _loc_12:Number = NaN;
-            var _loc_13:Number = NaN;
+            var _loc_1:* = NaN;
+            var _loc_2:* = NaN;
+            var _loc_3:* = NaN;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_10:* = NaN;
+            var _loc_11:* = NaN;
+            var _loc_12:* = NaN;
+            var _loc_13:* = NaN;
             if (this._nGradientX >= this._nGradientWidth)
             {
                 this._nGradientX = this._nGradientWidth - 1;
@@ -293,13 +293,13 @@ package com.ankamagames.berilia.components
 
         private function getCurrentColor() : uint
         {
-            var _loc_1:Number = NaN;
-            var _loc_2:Number = NaN;
-            var _loc_3:Number = NaN;
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
+            var _loc_1:* = NaN;
+            var _loc_2:* = NaN;
+            var _loc_3:* = NaN;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
             if (!this._bFixedColor)
             {
                 this.getGradientColor();
@@ -481,7 +481,7 @@ package com.ankamagames.berilia.components
 
         private function onTextureSliderLoaded(event:Event) : void
         {
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._nLoadedSum + 1;
             _loc_2._nLoadedSum = _loc_3;
             this._texCursorSlider.removeEventListener(Event.COMPLETE, this.onTextureSliderLoaded);
@@ -494,7 +494,7 @@ package com.ankamagames.berilia.components
 
         private function onTextureGradientLoaded(event:Event) : void
         {
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._nLoadedSum + 1;
             _loc_2._nLoadedSum = _loc_3;
             this._texCursorGradient.removeEventListener(Event.COMPLETE, this.onTextureGradientLoaded);

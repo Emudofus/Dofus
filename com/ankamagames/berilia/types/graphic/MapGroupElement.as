@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.graphic
+﻿package com.ankamagames.berilia.types.graphic
 {
     import flash.display.*;
     import flash.geom.*;
@@ -31,7 +31,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function open() : void
         {
-            var _loc_8:DisplayObject = null;
+            var _loc_8:* = null;
             var _loc_1:* = this._icons.length * 5;
             var _loc_2:* = new Point(0, 0);
             if (_loc_1 < this._mapWidth * 3 / 4)
@@ -61,7 +61,7 @@ package com.ankamagames.berilia.types.graphic
             super.addChildAt(this._shape, 0);
             this.killAllTween();
             this._tween.push(new TweenMax(this._shape, _loc_3, {alpha:1}));
-            var _loc_4:Boolean = false;
+            var _loc_4:* = false;
             if (!this._initialPos)
             {
                 this._initialPos = new Array();
@@ -87,7 +87,7 @@ package com.ankamagames.berilia.types.graphic
 
         public function close() : void
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             graphics.clear();
             this.killAllTween();
             this._tween.push(new TweenMax(this._shape, 0.2, {alpha:0, onCompleteListener:this.shapeTweenFinished}));
@@ -121,7 +121,7 @@ package com.ankamagames.berilia.types.graphic
 
         private function killAllTween() : void
         {
-            var _loc_1:TweenMax = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._tween)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.prism
+﻿package com.ankamagames.dofus.network.messages.game.prism
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.character.*;
@@ -72,7 +72,7 @@ package com.ankamagames.dofus.network.messages.game.prism
         {
             param1.writeDouble(this.fightId);
             param1.writeShort(this.mainFighters.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.mainFighters.length)
             {
                 
@@ -80,7 +80,7 @@ package com.ankamagames.dofus.network.messages.game.prism
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.reserveFighters.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.reserveFighters.length)
             {
                 
@@ -98,11 +98,11 @@ package com.ankamagames.dofus.network.messages.game.prism
 
         public function deserializeAs_PrismFightDefendersStateMessage(param1:IDataInput) : void
         {
-            var _loc_6:CharacterMinimalPlusLookAndGradeInformations = null;
-            var _loc_7:CharacterMinimalPlusLookAndGradeInformations = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             this.fightId = param1.readDouble();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -112,7 +112,7 @@ package com.ankamagames.dofus.network.messages.game.prism
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

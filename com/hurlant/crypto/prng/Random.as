@@ -1,4 +1,4 @@
-package com.hurlant.crypto.prng
+﻿package com.hurlant.crypto.prng
 {
     import com.hurlant.util.*;
     import flash.system.*;
@@ -16,7 +16,7 @@ package com.hurlant.crypto.prng
 
         public function Random(param1:Class = null)
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             if (param1 == null)
             {
                 param1 = ARC4;
@@ -29,11 +29,11 @@ package com.hurlant.crypto.prng
             {
                 
                 _loc_2 = 65536 * Math.random();
-                var _loc_4:String = this;
+                var _loc_4:* = this;
                 _loc_4.pptr = this.pptr + 1;
                 var _loc_3:* = this.pptr + 1;
                 this.pool[_loc_3] = _loc_2 >>> 8;
-                var _loc_5:String = this;
+                var _loc_5:* = this;
                 _loc_5.pptr = this.pptr + 1;
                 this.pool[++this.pptr] = _loc_2 & 255;
             }
@@ -48,18 +48,18 @@ package com.hurlant.crypto.prng
             {
                 param1 = new Date().getTime();
             }
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             _loc_3.pptr = this.pptr + 1;
             var _loc_2:* = this.pptr + 1;
             this.pool[_loc_2] = this.pool[_loc_2] ^ param1 & 255;
-            var _loc_4:String = this;
+            var _loc_4:* = this;
             _loc_4.pptr = this.pptr + 1;
             var _loc_3:* = this.pptr + 1;
             this.pool[_loc_3] = this.pool[_loc_3] ^ param1 >> 8 & 255;
-            var _loc_5:String = this;
+            var _loc_5:* = this;
             _loc_5.pptr = this.pptr + 1;
             this.pool[++this.pptr] = this.pool[++this.pptr] ^ param1 >> 16 & 255;
-            var _loc_6:String = this;
+            var _loc_6:* = this;
             _loc_6.pptr = this.pptr + 1;
             this.pool[++this.pptr] = this.pool[++this.pptr] ^ param1 >> 24 & 255;
             this.pptr = this.pptr % this.psize;
@@ -69,7 +69,7 @@ package com.hurlant.crypto.prng
 
         public function autoSeed() : void
         {
-            var _loc_3:Font = null;
+            var _loc_3:* = null;
             var _loc_1:* = new ByteArray();
             _loc_1.writeUnsignedInt(System.totalMemory);
             _loc_1.writeUTF(Capabilities.serverString);
@@ -120,7 +120,7 @@ package com.hurlant.crypto.prng
 
         public function dispose() : void
         {
-            var _loc_1:uint = 0;
+            var _loc_1:* = 0;
             while (_loc_1 < this.pool.length)
             {
                 

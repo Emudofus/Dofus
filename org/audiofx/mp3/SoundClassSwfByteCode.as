@@ -1,4 +1,4 @@
-package org.audiofx.mp3
+﻿package org.audiofx.mp3
 {
 
     final class SoundClassSwfByteCode extends Object

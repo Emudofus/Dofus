@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.datacenter.jobs.*;

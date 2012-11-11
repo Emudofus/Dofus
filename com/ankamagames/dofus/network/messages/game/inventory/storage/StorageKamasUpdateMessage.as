@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.storage
+﻿package com.ankamagames.dofus.network.messages.game.inventory.storage
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring
 {
     import __AS3__.vec.*;
     import flash.utils.*;

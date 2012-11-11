@@ -1,13 +1,15 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.dofus.datacenter.abuse.*;
     import com.ankamagames.dofus.datacenter.alignments.*;
+    import com.ankamagames.dofus.datacenter.almanax.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.datacenter.effects.*;
+    import com.ankamagames.dofus.datacenter.externalnotifications.*;
     import com.ankamagames.dofus.datacenter.guild.*;
     import com.ankamagames.dofus.datacenter.houses.*;
     import com.ankamagames.dofus.datacenter.items.*;
@@ -21,13 +23,16 @@ package com.ankamagames.dofus.uiApi
     import com.ankamagames.dofus.datacenter.servers.*;
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.dofus.datacenter.world.*;
+    import com.ankamagames.dofus.internalDatacenter.almanax.*;
     import com.ankamagames.dofus.internalDatacenter.communication.*;
     import com.ankamagames.dofus.internalDatacenter.guild.*;
     import com.ankamagames.dofus.internalDatacenter.house.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.internalDatacenter.jobs.*;
     import com.ankamagames.dofus.internalDatacenter.spells.*;
+    import com.ankamagames.dofus.internalDatacenter.userInterface.*;
     import com.ankamagames.dofus.kernel.*;
+    import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.roleplay.frames.*;
     import com.ankamagames.dofus.network.types.game.data.items.effects.*;
@@ -101,7 +106,7 @@ package com.ankamagames.dofus.uiApi
             return Spell.getSpells();
         }// end function
 
-        public function getSpellItem(param1:uint, param2:uint = 1) : SpellWrapper
+        public function getSpellWrapper(param1:uint, param2:uint = 1) : SpellWrapper
         {
             var _loc_3:* = SpellWrapper.create(-1, param1, param2, false);
             return _loc_3;
@@ -110,6 +115,11 @@ package com.ankamagames.dofus.uiApi
         public function getEmoteWrapper(param1:uint, param2:uint = 0) : EmoteWrapper
         {
             return EmoteWrapper.create(param1, param2);
+        }// end function
+
+        public function getButtonWrapper(param1:uint, param2:int, param3:String, param4:Function, param5:String, param6:String = "") : ButtonWrapper
+        {
+            return ButtonWrapper.create(param1, param2, param3, param4, param5, param6);
         }// end function
 
         public function getJobWrapper(param1:uint) : JobWrapper
@@ -159,7 +169,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getAllArea(param1:Boolean = false, param2:Boolean = false) : Array
         {
-            var _loc_4:Area = null;
+            var _loc_4:* = null;
             var _loc_3:* = new Array();
             for each (_loc_4 in Area.getAllArea())
             {
@@ -370,7 +380,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getAlignmentBalance(param1:uint) : AlignmentBalance
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             if (param1 == 0)
             {
                 _loc_2 = 1;
@@ -449,7 +459,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getHouseSkills() : Array
         {
-            var _loc_2:Skill = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Array();
             for each (_loc_2 in Skill.getSkills())
             {
@@ -474,17 +484,30 @@ package com.ankamagames.dofus.uiApi
 
         public function getSmilies() : Array
         {
-            var _loc_3:SmileyWrapper = null;
-            var _loc_1:* = new Array();
-            var _loc_2:uint = 1;
-            while (_loc_2 < 31)
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_1:* = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
+            if (_loc_1 && _loc_1.smilies && _loc_1.smilies.length > 0)
+            {
+                return _loc_1.smilies;
+            }
+            var _loc_2:* = new Array();
+            for each (_loc_3 in Smiley.getSmileys())
             {
                 
-                _loc_3 = SmileyWrapper.create(_loc_2, _loc_2);
-                _loc_1.push(_loc_3);
-                _loc_2 = _loc_2 + 1;
+                if (_loc_3.forPlayers)
+                {
+                    _loc_4 = SmileyWrapper.create(_loc_3.id, _loc_3.gfxId, _loc_3.order);
+                    _loc_2.push(_loc_4);
+                }
             }
-            return _loc_1;
+            _loc_2.sortOn("order", Array.NUMERIC);
+            return _loc_2;
+        }// end function
+
+        public function getSmiley(param1:uint) : Smiley
+        {
+            return Smiley.getSmileyById(param1);
         }// end function
 
         public function getTaxCollectorName(param1:uint) : TaxCollectorName
@@ -499,29 +522,37 @@ package com.ankamagames.dofus.uiApi
 
         public function getEmblems() : Array
         {
-            var _loc_1:uint = 104;
-            var _loc_2:uint = 17;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_1:* = EmblemSymbol.getEmblemSymbols();
+            var _loc_2:* = EmblemBackground.getEmblemBackgrounds();
             var _loc_3:* = new Array();
             var _loc_4:* = new Array();
-            var _loc_5:uint = 1;
-            while (_loc_5 <= _loc_1)
+            for each (_loc_5 in _loc_1)
             {
                 
-                _loc_3.push(EmblemWrapper.create(_loc_5, EmblemWrapper.UP));
-                _loc_5 = _loc_5 + 1;
+                _loc_3.push(EmblemWrapper.create(_loc_5.id, EmblemWrapper.UP));
             }
-            var _loc_6:uint = 1;
-            while (_loc_6 <= _loc_2)
+            _loc_3.sortOn("order", Array.NUMERIC);
+            for each (_loc_6 in _loc_2)
             {
                 
-                if (_loc_6 != 21)
-                {
-                    _loc_4.push(EmblemWrapper.create(_loc_6, EmblemWrapper.BACK));
-                }
-                _loc_6 = _loc_6 + 1;
+                _loc_4.push(EmblemWrapper.create(_loc_6.id, EmblemWrapper.BACK));
             }
-            var _loc_7:* = new Array(_loc_3, _loc_4);
-            return new Array(_loc_3, _loc_4);
+            _loc_4.sortOn("order", Array.NUMERIC);
+            _loc_7 = new Array(_loc_3, _loc_4);
+            return _loc_7;
+        }// end function
+
+        public function getEmblemSymbol(param1:int) : EmblemSymbol
+        {
+            return EmblemSymbol.getEmblemSymbolById(param1);
+        }// end function
+
+        public function getAllEmblemSymbolCategories() : Array
+        {
+            return EmblemSymbolCategory.getEmblemSymbolCategories();
         }// end function
 
         public function getQuest(param1:int) : Quest
@@ -556,7 +587,7 @@ package com.ankamagames.dofus.uiApi
                 return [];
             }
             var _loc_2:* = new Array();
-            var _loc_3:int = 1;
+            var _loc_3:* = 1;
             while (_loc_3 <= param1.livingObjectLevel)
             {
                 
@@ -654,5 +685,134 @@ package com.ankamagames.dofus.uiApi
             return Effect.getEffectById(param1);
         }// end function
 
+        public function getAlmanaxEvent() : AlmanaxEvent
+        {
+            return AlmanaxManager.getInstance().event;
+        }// end function
+
+        public function getAlmanaxZodiac() : AlmanaxZodiac
+        {
+            return AlmanaxManager.getInstance().zodiac;
+        }// end function
+
+        public function getAlmanaxMonth() : AlmanaxMonth
+        {
+            return AlmanaxManager.getInstance().month;
+        }// end function
+
+        public function getAlmanaxCalendar(param1:uint) : AlmanaxCalendar
+        {
+            return AlmanaxCalendar.getAlmanaxCalendarById(param1);
+        }// end function
+
+        public function getExternalNotification(param1:int) : ExternalNotification
+        {
+            return ExternalNotification.getExternalNotificationById(param1);
+        }// end function
+
+        public function getExternalNotifications() : Array
+        {
+            return ExternalNotification.getExternalNotifications();
+        }// end function
+
     }
 }
+
+import com.ankamagames.berilia.interfaces.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import com.ankamagames.dofus.datacenter.abuse.*;
+
+import com.ankamagames.dofus.datacenter.alignments.*;
+
+import com.ankamagames.dofus.datacenter.almanax.*;
+
+import com.ankamagames.dofus.datacenter.breeds.*;
+
+import com.ankamagames.dofus.datacenter.communication.*;
+
+import com.ankamagames.dofus.datacenter.effects.*;
+
+import com.ankamagames.dofus.datacenter.externalnotifications.*;
+
+import com.ankamagames.dofus.datacenter.guild.*;
+
+import com.ankamagames.dofus.datacenter.houses.*;
+
+import com.ankamagames.dofus.datacenter.items.*;
+
+import com.ankamagames.dofus.datacenter.jobs.*;
+
+import com.ankamagames.dofus.datacenter.livingObjects.*;
+
+import com.ankamagames.dofus.datacenter.misc.*;
+
+import com.ankamagames.dofus.datacenter.monsters.*;
+
+import com.ankamagames.dofus.datacenter.notifications.*;
+
+import com.ankamagames.dofus.datacenter.npcs.*;
+
+import com.ankamagames.dofus.datacenter.quest.*;
+
+import com.ankamagames.dofus.datacenter.servers.*;
+
+import com.ankamagames.dofus.datacenter.spells.*;
+
+import com.ankamagames.dofus.datacenter.world.*;
+
+import com.ankamagames.dofus.internalDatacenter.almanax.*;
+
+import com.ankamagames.dofus.internalDatacenter.communication.*;
+
+import com.ankamagames.dofus.internalDatacenter.guild.*;
+
+import com.ankamagames.dofus.internalDatacenter.house.*;
+
+import com.ankamagames.dofus.internalDatacenter.items.*;
+
+import com.ankamagames.dofus.internalDatacenter.jobs.*;
+
+import com.ankamagames.dofus.internalDatacenter.spells.*;
+
+import com.ankamagames.dofus.internalDatacenter.userInterface.*;
+
+import com.ankamagames.dofus.kernel.*;
+
+import com.ankamagames.dofus.logic.game.common.frames.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.effects.*;
+
+import com.ankamagames.dofus.types.data.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.types.positions.*;
+
+import flash.utils.*;
+
+class Smiley extends Object
+{
+    public var pictoId:int;
+    public var position:int;
+
+    function Smiley(param1:int, param2:int) : void
+    {
+        this.pictoId = param1;
+        this.position = param2;
+        return;
+    }// end function
+
+}
+

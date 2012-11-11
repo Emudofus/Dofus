@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.template
+﻿package com.ankamagames.berilia.types.template
 {
     import com.ankamagames.berilia.enums.*;
     import com.ankamagames.jerakine.eval.*;
@@ -61,13 +61,13 @@ package com.ankamagames.berilia.types.template
 
         public function makeTemplate(param1:Array) : XMLNode
         {
-            var _loc_4:String = null;
-            var _loc_6:Array = null;
-            var _loc_7:TemplateVar = null;
-            var _loc_8:uint = 0;
+            var _loc_4:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
             var _loc_2:* = new Evaluator();
             var _loc_3:* = this._xDoc.toString();
-            var _loc_5:Array = [];
+            var _loc_5:* = [];
             for (_loc_4 in this._aTemplateParams)
             {
                 
@@ -118,10 +118,10 @@ package com.ankamagames.berilia.types.template
 
         private function matchDynamicsParts(param1:XMLNode) : void
         {
-            var _loc_2:XMLNode = null;
-            var _loc_3:TemplateVar = null;
-            var _loc_4:TemplateParam = null;
-            var _loc_5:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             while (_loc_5 < param1.childNodes.length)
             {
                 
@@ -171,9 +171,9 @@ package com.ankamagames.berilia.types.template
 
         private function replaceParam(param1:String, param2:Array, param3:String, param4:uint = 1) : String
         {
-            var _loc_5:String = null;
-            var _loc_7:String = null;
-            var _loc_8:uint = 0;
+            var _loc_5:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
             if (!param1)
             {
                 return param1;

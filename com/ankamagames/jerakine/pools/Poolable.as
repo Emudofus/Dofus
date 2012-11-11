@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.pools
+﻿package com.ankamagames.jerakine.pools
 {
 
     public interface Poolable

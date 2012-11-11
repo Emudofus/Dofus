@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;
@@ -16,7 +16,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showEntity(param1:int) : void
         {
-            var _loc_3:DisplayObject = null;
+            var _loc_3:* = null;
             var _loc_2:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
             if (_loc_2)
             {

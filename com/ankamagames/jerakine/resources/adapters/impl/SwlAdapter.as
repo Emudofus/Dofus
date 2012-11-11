@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.adapters.impl
+﻿package com.ankamagames.jerakine.resources.adapters.impl
 {
     import com.ankamagames.jerakine.pools.*;
     import com.ankamagames.jerakine.resources.*;
@@ -81,10 +81,7 @@ package com.ankamagames.jerakine.resources.adapters.impl
             {
                 loaderContext = new LoaderContext();
             }
-            if (AirScanner.hasAir())
-            {
-                loaderContext["allowLoadBytesCodeExecution"] = true;
-            }
+            AirScanner.allowByteCodeExecution(loaderContext, true);
             this._ldr.loadBytes(swfData, loaderContext);
             return;
         }// end function

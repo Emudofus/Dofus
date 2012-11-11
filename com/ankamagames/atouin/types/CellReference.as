@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.pools.*;
@@ -62,7 +62,7 @@ package com.ankamagames.atouin.types
 
         public function set visible(param1:Boolean) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             if (this._visible != param1)
             {
                 this._visible = param1;
@@ -79,7 +79,7 @@ package com.ankamagames.atouin.types
 
         public function get bounds() : Rectangle
         {
-            var _loc_3:DisplayObject = null;
+            var _loc_3:* = null;
             var _loc_1:* = (PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle).renew();
             var _loc_2:* = PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle;
             for each (_loc_3 in this.listSprites)
@@ -94,11 +94,11 @@ package com.ankamagames.atouin.types
 
         public function getAvgColor() : uint
         {
-            var _loc_4:ColorTransform = null;
-            var _loc_5:int = 0;
-            var _loc_1:Number = 0;
-            var _loc_2:Number = 0;
-            var _loc_3:Number = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             var _loc_6:* = this.listSprites.length;
             _loc_5 = 0;
             while (_loc_5 < _loc_6)

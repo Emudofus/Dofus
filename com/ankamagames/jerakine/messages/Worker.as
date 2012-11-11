@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.messages
+﻿package com.ankamagames.jerakine.messages
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -23,9 +23,9 @@ package com.ankamagames.jerakine.messages
         private var _currentFrameTypesCache:Dictionary;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(Worker));
         private static const DEBUG_FRAMES:Boolean = true;
-        private static const DEBUG_MESSAGES:Boolean = false;
+        private static const DEBUG_MESSAGES:Boolean = true;
         private static const MAX_MESSAGES_PER_FRAME:uint = 100;
-        private static const MAX_TIME_FRAME:uint = 200;
+        private static const MAX_TIME_FRAME:uint = 40;
 
         public function Worker()
         {
@@ -52,10 +52,10 @@ package com.ankamagames.jerakine.messages
 
         public function addFrame(param1:Frame, param2:Boolean = false) : void
         {
-            var _loc_3:Boolean = false;
-            var _loc_4:Boolean = false;
-            var _loc_5:Frame = null;
-            var _loc_6:Frame = null;
+            var _loc_3:* = false;
+            var _loc_4:* = false;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (this._currentFrameTypesCache[param1["constructor"]])
             {
                 _loc_3 = false;
@@ -117,10 +117,6 @@ package com.ankamagames.jerakine.messages
             if (!param1)
             {
                 return;
-            }
-            if (getQualifiedClassName(param1).indexOf("LoadingModuleFrame") != -1)
-            {
-                trace("ici");
             }
             if (DEBUG_FRAMES)
             {
@@ -187,7 +183,7 @@ package com.ankamagames.jerakine.messages
 
         public function clear() : void
         {
-            var _loc_1:Frame = null;
+            var _loc_1:* = null;
             if (DEBUG_FRAMES)
             {
                 _log.info("Clearing worker (no more frames or messages in queue)");
@@ -242,7 +238,7 @@ package com.ankamagames.jerakine.messages
 
         private function pullFrame(param1:Frame) : void
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             if (param1.pulled())
             {
                 _loc_2 = this._framesList.indexOf(param1);
@@ -262,8 +258,8 @@ package com.ankamagames.jerakine.messages
 
         private function processMessages() : void
         {
-            var _loc_3:Message = null;
-            var _loc_1:uint = 0;
+            var _loc_3:* = null;
+            var _loc_1:* = 0;
             var _loc_2:* = getTimer();
             while (_loc_1 < MAX_MESSAGES_PER_FRAME && this._messagesQueue.length > 0 && getTimer() - _loc_2 < MAX_TIME_FRAME)
             {
@@ -293,46 +289,34 @@ package com.ankamagames.jerakine.messages
 
         private function processMessage(param1:Message) : void
         {
-            var _loc_2:Boolean = false;
-            var _loc_3:Frame = null;
-            var _loc_4:String = null;
+            var _loc_2:* = false;
+            var _loc_3:* = null;
             this._processingMessage = true;
-            if (DEBUG_MESSAGES)
-            {
-                _log.info("Processing message: " + param1);
-            }
-            if (getQualifiedClassName(param1).indexOf("GameFightEndMessage") != -1)
-            {
-                _loc_4 = "";
-                for each (_loc_3 in this._framesList)
-                {
-                    
-                    _loc_4 = _loc_4 + (_loc_3 + " / " + _loc_3.priority);
-                }
-                _log.info("Liste des frames : " + _loc_4);
-            }
             for each (_loc_3 in this._framesList)
             {
                 
                 if (_loc_3.process(param1))
                 {
-                    _log.info(param1 + " eat by " + _loc_3);
                     _loc_2 = true;
                     break;
                 }
             }
+            if (DEBUG_MESSAGES && _loc_2)
+            {
+                _log.info("Message " + param1 + " processed by " + getQualifiedClassName(_loc_3).split("::")[1] + " (at frame " + FrameIdManager.frameId + ")");
+            }
             this._processingMessage = false;
             if (!_loc_2 && !(param1 is DiscardableMessage))
             {
-                _log.warn("Discarded message: " + param1);
+                _log.warn("Discarded message: " + param1 + " (at frame " + FrameIdManager.frameId + ")");
             }
             return;
         }// end function
 
         private function processFramesInAndOut() : void
         {
-            var _loc_1:Frame = null;
-            var _loc_2:Frame = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this._framesToRemove.length > 0)
             {
                 for each (_loc_1 in this._framesToRemove)

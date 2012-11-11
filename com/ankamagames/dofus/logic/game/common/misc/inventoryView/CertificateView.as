@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+ï»¿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -21,7 +21,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
         public function initialize(param1:Vector.<ItemWrapper>) : void
         {
-            var _loc_2:ItemWrapper = null;
+            var _loc_2:* = null;
             this._content = new Vector.<ItemWrapper>;
             for each (_loc_2 in param1)
             {
@@ -56,7 +56,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
             var _loc_3:* = this.content.indexOf(param1);
             if (_loc_3 == -1)
             {
-                _log.warn("L\'item qui doit être supprimé n\'est pas présent dans la liste");
+                _log.warn("L\'item qui doit Ãªtre supprimÃ© n\'est pas prÃ©sent dans la liste");
                 return;
             }
             this.content.splice(_loc_3, 1);

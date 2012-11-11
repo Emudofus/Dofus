@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.files
+﻿package com.ankamagames.jerakine.utils.files
 {
 
     public class FileUtils extends Object
@@ -11,8 +11,12 @@ package com.ankamagames.jerakine.utils.files
 
         public static function getExtension(param1:String) : String
         {
+            if (param1 == null)
+            {
+                return null;
+            }
             var _loc_2:* = param1.split(".");
-            if (_loc_2.length > 1)
+            if (_loc_2 != null && _loc_2.length > 1)
             {
                 return _loc_2[(_loc_2.length - 1)];
             }
@@ -27,8 +31,8 @@ package com.ankamagames.jerakine.utils.files
 
         public static function getFilePath(param1:String) : String
         {
-            var _loc_2:Array = null;
-            var _loc_3:Array = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (param1.indexOf("/") != -1)
             {
                 _loc_2 = param1.split("/");

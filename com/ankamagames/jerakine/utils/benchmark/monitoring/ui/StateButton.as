@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
     import flash.display.*;

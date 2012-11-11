@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc
+﻿package com.ankamagames.dofus.logic.game.common.misc
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.types.data.*;
@@ -16,7 +16,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function addHook(param1:Hook, param2:Array) : void
         {
-            var _loc_4:HookDef = null;
+            var _loc_4:* = null;
             var _loc_3:* = new HookDef(param1, param2);
             for each (_loc_4 in this._hooks)
             {
@@ -32,7 +32,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function release() : void
         {
-            var _loc_1:HookDef = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._hooks)
             {
                 
@@ -44,6 +44,12 @@ package com.ankamagames.dofus.logic.game.common.misc
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import com.ankamagames.dofus.logic.game.common.misc.*;
 
 class HookDef extends Object
 {
@@ -77,7 +83,7 @@ class HookDef extends Object
         {
             return false;
         }
-        var _loc_2:int = 0;
+        var _loc_2:* = 0;
         while (_loc_2 < this.args.length)
         {
             

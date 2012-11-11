@@ -1,4 +1,4 @@
-package org.flintparticles.common.counters
+﻿package org.flintparticles.common.counters
 {
     import org.flintparticles.common.counters.*;
     import org.flintparticles.common.emitters.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.jerakine.types.positions.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.jerakine.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -15,7 +15,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         public static function create(param1:String) : ItemCriterion
         {
-            var _loc_2:ItemCriterion = null;
+            var _loc_2:* = null;
             var _loc_3:* = param1.slice(0, 2);
             switch(_loc_3)
             {
@@ -152,14 +152,29 @@ package com.ankamagames.dofus.datacenter.items.criterion
                     _loc_2 = new SexItemCriterion(param1);
                     break;
                 }
+                case "PT":
+                {
+                    _loc_2 = new SpellItemCriterion(param1);
+                    break;
+                }
                 case "PU":
                 {
                     _loc_2 = new BonesItemCriterion(param1);
                     break;
                 }
+                case "Pw":
+                {
+                    _loc_2 = new GuildItemCriterion(param1);
+                    break;
+                }
                 case "PW":
                 {
                     _loc_2 = new WeightItemCriterion(param1);
+                    break;
+                }
+                case "Px":
+                {
+                    _loc_2 = new GuildRightsItemCriterion(param1);
                     break;
                 }
                 case "PX":
@@ -169,6 +184,11 @@ package com.ankamagames.dofus.datacenter.items.criterion
                 }
                 case "Pz":
                 {
+                    break;
+                }
+                case "Py":
+                {
+                    _loc_2 = new GuildLevelItemCriterion(param1);
                     break;
                 }
                 case "PZ":
@@ -196,6 +216,11 @@ package com.ankamagames.dofus.datacenter.items.criterion
                 case "SG":
                 {
                     _loc_2 = new MonthItemCriterion(param1);
+                    break;
+                }
+                case "Sd":
+                {
+                    _loc_2 = new DayItemCriterion(param1);
                     break;
                 }
                 case "SI":

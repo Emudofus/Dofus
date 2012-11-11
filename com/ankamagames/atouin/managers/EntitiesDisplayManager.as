@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.managers
+﻿package com.ankamagames.atouin.managers
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.enums.*;
@@ -125,10 +125,10 @@ package com.ankamagames.atouin.managers
 
         public function orderEntity(param1:DisplayObject, param2:Sprite) : void
         {
-            var _loc_7:DisplayObject = null;
-            var _loc_10:DisplayObjectContainer = null;
-            var _loc_11:int = 0;
-            var _loc_3:Boolean = false;
+            var _loc_7:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_3:* = false;
             var _loc_4:* = param1 as TiphonSprite;
             if (param1 as TiphonSprite && _loc_4.parentSprite)
             {
@@ -143,7 +143,7 @@ package com.ankamagames.atouin.managers
                 }
                 _loc_10 = Atouin.getInstance().overlayContainer;
                 _loc_11 = _loc_10.numChildren;
-                var _loc_9:uint = 0;
+                var _loc_9:* = 0;
                 while (_loc_9 < _loc_11)
                 {
                     
@@ -181,7 +181,7 @@ package com.ankamagames.atouin.managers
             }
             var _loc_5:* = param2.parent.getChildIndex(param2);
             var _loc_6:* = param2.parent.numChildren;
-            var _loc_8:Boolean = true;
+            var _loc_8:* = true;
             _loc_9 = _loc_5 + 1;
             while (_loc_9 < _loc_6)
             {

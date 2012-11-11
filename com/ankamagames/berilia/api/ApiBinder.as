@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.api
+﻿package com.ankamagames.berilia.api
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -58,11 +58,11 @@ package com.ankamagames.berilia.api
 
         public static function initApi(param1:Object, param2:UiModule, param3:ApplicationDomain = null) : String
         {
-            var _loc_4:Object = null;
-            var _loc_6:XML = null;
+            var _loc_4:* = null;
+            var _loc_6:* = null;
             var _loc_7:* = undefined;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             addApiData("module", param2);
             var _loc_5:* = DescribeTypeCache.typeDescription(param1);
             for each (_loc_6 in _loc_5..variable)
@@ -154,7 +154,7 @@ package com.ankamagames.berilia.api
                 api = new (sharedDefinition.getDefinition("d2api::" + name + "Api") as Class)();
                 apiRef = _apiClass[name];
                 instancied;
-                var _loc_5:int = 0;
+                var _loc_5:* = 0;
                 var _loc_6:* = apiDesc..metadata;
                 while (_loc_6 in _loc_5)
                 {
@@ -167,14 +167,14 @@ package com.ankamagames.berilia.api
                         break;
                     }
                 }
-                var _loc_5:int = 0;
+                var _loc_5:* = 0;
                 var _loc_6:* = apiDesc..method;
                 while (_loc_6 in _loc_5)
                 {
                     
                     method = _loc_6[_loc_5];
                     boxing;
-                    var _loc_7:int = 0;
+                    var _loc_7:* = 0;
                     var _loc_8:* = method.metadata;
                     while (_loc_8 in _loc_7)
                     {
@@ -185,7 +185,7 @@ package com.ankamagames.berilia.api
                             tag = metaData.@name;
                             if (metaData.@name == "Deprecated")
                             {
-                                var _loc_10:int = 0;
+                                var _loc_10:* = 0;
                                 var _loc_11:* = metaData.arg;
                                 var _loc_9:* = new XMLList("");
                                 for each (_loc_12 in _loc_11)
@@ -230,13 +230,13 @@ package com.ankamagames.berilia.api
                     }
                     api[method.@name] = GenericApiFunction.getRestrictedFunctionAccess(apiRef[method.@name]);
                 }
-                var _loc_5:int = 0;
+                var _loc_5:* = 0;
                 var _loc_6:* = apiDesc..accessor;
                 while (_loc_6 in _loc_5)
                 {
                     
                     accessor = _loc_6[_loc_5];
-                    var _loc_7:int = 0;
+                    var _loc_7:* = 0;
                     var _loc_8:* = accessor.metadata;
                     while (_loc_8 in _loc_7)
                     {

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.misc
+Ôªøpackage com.ankamagames.jerakine.utils.misc
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -44,7 +44,7 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function replace(param1:String, param2 = null, param3 = null) : String
         {
-            var _loc_6:uint = 0;
+            var _loc_6:* = 0;
             if (!param2)
             {
                 return param1;
@@ -92,7 +92,7 @@ package com.ankamagames.jerakine.utils.misc
         public static function concatSameString(param1:String, param2:String) : String
         {
             var _loc_3:* = param1.indexOf(param2);
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = _loc_3;
             while (_loc_5 != -1)
             {
@@ -114,11 +114,11 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function getDelimitedText(param1:String, param2:String, param3:String, param4:Boolean = false) : Vector.<String>
         {
-            var _loc_8:String = null;
-            var _loc_9:String = null;
-            var _loc_10:String = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_5:* = new Vector.<String>;
-            var _loc_6:Boolean = false;
+            var _loc_6:* = false;
             var _loc_7:* = param1;
             while (!_loc_6)
             {
@@ -143,11 +143,11 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function getAllIndexOf(param1:String, param2:String) : Array
         {
-            var _loc_7:int = 0;
+            var _loc_7:* = 0;
             var _loc_3:* = new Array();
-            var _loc_4:uint = 0;
-            var _loc_5:Boolean = false;
-            var _loc_6:uint = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = false;
+            var _loc_6:* = 0;
             while (!_loc_5)
             {
                 
@@ -175,35 +175,35 @@ package com.ankamagames.jerakine.utils.misc
         private static function initPattern() : void
         {
             pattern = new Vector.<RegExp>(29);
-            pattern[0] = new RegExp("", "g");
-            pattern[1] = new RegExp("", "g");
-            pattern[2] = new RegExp("", "g");
-            pattern[3] = new RegExp("", "g");
-            pattern[4] = new RegExp("", "g");
-            pattern[5] = new RegExp("", "g");
-            pattern[6] = new RegExp("[¿¡¬√ƒ≈]", "g");
-            pattern[7] = new RegExp("∆;
-            pattern[8] = new RegExp("«;
-            pattern[9] = new RegExp("[»… À]", "g");
-            pattern[10] = new RegExp("[ÃÕŒœ]", "g");
-            pattern[11] = new RegExp("–;
-            pattern[12] = new RegExp("—;
-            pattern[13] = new RegExp("[“”‘’÷ÿ]", "g");
-            pattern[14] = new RegExp("[Ÿ⁄€‹]", "g");
-            pattern[15] = new RegExp("[", "g");
-            pattern[16] = new RegExp("ﬁ;
-            pattern[17] = new RegExp("ﬂ;
-            pattern[18] = new RegExp("[‡·‚„‰Â]", "g");
-            pattern[19] = new RegExp("Ê;
-            pattern[20] = new RegExp("Á;
-            pattern[21] = new RegExp("[ËÈÍÎ];
-            pattern[22] = new RegExp("[ÏÌÓÔ];
-            pattern[23] = new RegExp("", "g");
-            pattern[24] = new RegExp("", "g");
-            pattern[25] = new RegExp("[", "g");
-            pattern[26] = new RegExp("[", "g");
-            pattern[27] = new RegExp("[", "g");
-            pattern[28] = new RegExp("", "g");
+            pattern[0] = new RegExp("≈†", "g");
+            pattern[1] = new RegExp("≈í", "g");
+            pattern[2] = new RegExp("≈Ω", "g");
+            pattern[3] = new RegExp("≈°", "g");
+            pattern[4] = new RegExp("≈ì", "g");
+            pattern[5] = new RegExp("≈æ", "g");
+            pattern[6] = new RegExp("[√Ä√Å√Ç√É√Ñ√Ö]", "g");
+            pattern[7] = new RegExp("√Ü", "g");
+            pattern[8] = new RegExp("√á", "g");
+            pattern[9] = new RegExp("[√à√â√ä√ã]", "g");
+            pattern[10] = new RegExp("[√å√ç√é√è]", "g");
+            pattern[11] = new RegExp("√ê", "g");
+            pattern[12] = new RegExp("√ë", "g");
+            pattern[13] = new RegExp("[√í√ì√î√ï√ñ√ò]", "g");
+            pattern[14] = new RegExp("[√ô√ö√õ√ú]", "g");
+            pattern[15] = new RegExp("[≈∏√ù]", "g");
+            pattern[16] = new RegExp("√û", "g");
+            pattern[17] = new RegExp("√ü", "g");
+            pattern[18] = new RegExp("[√†√°√¢√£√§√•]", "g");
+            pattern[19] = new RegExp("√¶", "g");
+            pattern[20] = new RegExp("√ß", "g");
+            pattern[21] = new RegExp("[√®√©√™√´]", "g");
+            pattern[22] = new RegExp("[√¨√≠√Æ√Ø]", "g");
+            pattern[23] = new RegExp("√∞", "g");
+            pattern[24] = new RegExp("√±", "g");
+            pattern[25] = new RegExp("[√≤√≥√¥√µ√∂√∏]", "g");
+            pattern[26] = new RegExp("[√π√∫√ª√º]", "g");
+            pattern[27] = new RegExp("[√Ω√ø]", "g");
+            pattern[28] = new RegExp("√æ", "g");
             patternReplace = new Vector.<String>(29);
             patternReplace[0] = "S";
             patternReplace[1] = "Oe";
@@ -239,7 +239,7 @@ package com.ankamagames.jerakine.utils.misc
 
         private static function decomposeUnicode(param1:String) : String
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_3:* = pattern.length;
             _loc_2 = 0;
             while (_loc_2 < _loc_3)
@@ -253,13 +253,13 @@ package com.ankamagames.jerakine.utils.misc
 
         private static function getSingleDelimitedText(param1:String, param2:String, param3:String, param4:Boolean = false) : String
         {
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
-            var _loc_5:String = "";
-            var _loc_6:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:Boolean = false;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_5:* = "";
+            var _loc_6:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = false;
             _loc_7 = param1.indexOf(param2, _loc_6);
             if (_loc_7 == -1)
             {
@@ -273,7 +273,7 @@ package com.ankamagames.jerakine.utils.misc
                 _loc_9 = param1.indexOf(param3, _loc_6);
                 if (_loc_9 == -1)
                 {
-                    trace("Erreur ! On n\'a pas trouvÈ d\'occurence du second dÈlimiteur.");
+                    trace("Erreur ! On n\'a pas trouv√© d\'occurence du second d√©limiteur.");
                     _loc_11 = true;
                 }
                 if (_loc_8 < _loc_9 && _loc_8 != -1)
@@ -301,35 +301,35 @@ package com.ankamagames.jerakine.utils.misc
 
         public static function formateIntToString(param1:Number) : String
         {
-            var _loc_5:int = 0;
-            var _loc_2:String = "";
-            var _loc_3:Number = 1000;
+            var _loc_5:* = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 1000;
             while (true)
             {
                 
                 if (param1 / _loc_3 < 1)
                 {
-                    _loc_2 = int(param1 % _loc_3 / (_loc_3 / 1000)) + "" + _loc_2;
+                    _loc_2 = int(param1 % _loc_3 / (_loc_3 / 1000)) + "¬†" + _loc_2;
                     break;
                     continue;
                 }
                 _loc_5 = int(param1 % _loc_3 / (_loc_3 / 1000));
                 if (_loc_5 < 10)
                 {
-                    _loc_2 = "00" + _loc_5 + "" + _loc_2;
+                    _loc_2 = "00" + _loc_5 + "¬†" + _loc_2;
                 }
                 else if (_loc_5 < 100)
                 {
-                    _loc_2 = "0" + _loc_5 + "" + _loc_2;
+                    _loc_2 = "0" + _loc_5 + "¬†" + _loc_2;
                 }
                 else
                 {
-                    _loc_2 = _loc_5 + "" + _loc_2;
+                    _loc_2 = _loc_5 + "¬†" + _loc_2;
                 }
                 _loc_3 = _loc_3 * 1000;
             }
             var _loc_4:* = _loc_2.charAt((_loc_2.length - 1));
-            if (_loc_2.charAt((_loc_2.length - 1)) == "")
+            if (_loc_2.charAt((_loc_2.length - 1)) == "¬†")
             {
                 return _loc_2.substr(0, (_loc_2.length - 1));
             }

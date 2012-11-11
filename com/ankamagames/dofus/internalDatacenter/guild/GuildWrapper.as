@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.guild
+﻿package com.ankamagames.dofus.internalDatacenter.guild
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.guild.*;
@@ -13,6 +13,8 @@ package com.ankamagames.dofus.internalDatacenter.guild
         public var upEmblem:EmblemWrapper;
         public var backEmblem:EmblemWrapper;
         public var level:uint = 0;
+        public var enabled:Boolean;
+        public var creationDate:uint;
         public var experience:Number;
         public var expLevelFloor:Number;
         public var expNextLevelFloor:Number;
@@ -168,11 +170,12 @@ package com.ankamagames.dofus.internalDatacenter.guild
             return this.isBoss || this.manageRights || (65536 & this._memberRightsNumber) > 0;
         }// end function
 
-        public function update(param1:uint, param2:String, param3:GuildEmblem, param4:Number) : void
+        public function update(param1:uint, param2:String, param3:GuildEmblem, param4:Number, param5:Boolean) : void
         {
             this.guildId = param1;
             this._guildName = param2;
             this._memberRightsNumber = param4;
+            this.enabled = param5;
             this.upEmblem.update(param3.symbolShape, EmblemWrapper.UP, param3.symbolColor);
             this.backEmblem.update(param3.backgroundShape, EmblemWrapper.BACK, param3.backgroundColor);
             return;
@@ -180,7 +183,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
 
         public function hasRight(param1:String) : Boolean
         {
-            var _loc_2:Boolean = false;
+            var _loc_2:* = false;
             switch(param1)
             {
                 case IS_BOSS:
@@ -292,28 +295,29 @@ package com.ankamagames.dofus.internalDatacenter.guild
             return;
         }// end function
 
-        public static function create(param1:uint, param2:String, param3:GuildEmblem, param4:Number) : GuildWrapper
+        public static function create(param1:uint, param2:String, param3:GuildEmblem, param4:Number, param5:Boolean) : GuildWrapper
         {
-            var _loc_5:GuildWrapper = null;
-            _loc_5 = new GuildWrapper;
-            _loc_5.initDictionary();
-            _loc_5.guildId = param1;
-            _loc_5._guildName = param2;
-            _loc_5._memberRightsNumber = param4;
+            var _loc_6:* = null;
+            _loc_6 = new GuildWrapper;
+            _loc_6.initDictionary();
+            _loc_6.guildId = param1;
+            _loc_6._guildName = param2;
+            _loc_6._memberRightsNumber = param4;
+            _loc_6.enabled = param5;
             if (param3 != null)
             {
-                _loc_5.upEmblem = EmblemWrapper.create(param3.symbolShape, EmblemWrapper.UP, param3.symbolColor);
-                _loc_5.backEmblem = EmblemWrapper.create(param3.backgroundShape, EmblemWrapper.BACK, param3.backgroundColor);
+                _loc_6.upEmblem = EmblemWrapper.create(param3.symbolShape, EmblemWrapper.UP, param3.symbolColor);
+                _loc_6.backEmblem = EmblemWrapper.create(param3.backgroundShape, EmblemWrapper.BACK, param3.backgroundColor);
             }
-            return _loc_5;
+            return _loc_6;
         }// end function
 
         public static function getRightsNumber(param1:Array) : Number
         {
-            var _loc_3:String = null;
-            var _loc_4:Boolean = false;
-            var _loc_5:String = null;
-            var _loc_2:Number = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = false;
+            var _loc_5:* = null;
+            var _loc_2:* = 0;
             for each (_loc_3 in guildRights)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -40,11 +40,10 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         private function init() : void
         {
-            var _loc_1:TextFormat = null;
             this._memoryGraph = new Vector.<Number>;
             this._memoryLimits = new Vector.<Number>;
             this._otherData = new Dictionary();
-            _loc_1 = new TextFormat("Verdana", 13);
+            var _loc_1:* = new TextFormat("Verdana", 13);
             _loc_1.color = 16777215;
             this._infosTf = new TextField();
             this._infosTf.y = FpsManagerConst.BOX_HEIGHT - 20;
@@ -89,7 +88,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         public function render() : void
         {
-            var _loc_1:MonitoredObject = null;
+            var _loc_1:* = null;
             this._memGraph.bitmapData.lock();
             this._memGraph.bitmapData.scroll(-1, 0);
             this._memGraph.bitmapData.fillRect(new Rectangle((FpsManagerConst.BOX_WIDTH - 1), 1, 1, FpsManagerConst.BOX_HEIGHT), 16711680);
@@ -108,8 +107,8 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         private function drawGraphValue(param1:Vector.<Number>, param2:Vector.<Number>, param3:uint) : void
         {
-            var _loc_5:int = 0;
-            var _loc_7:Number = NaN;
+            var _loc_5:* = 0;
+            var _loc_7:* = NaN;
             var _loc_4:* = FpsManagerConst.BOX_WIDTH - 1;
             var _loc_6:* = param2 == null ? (MAX_THEO_VALUE) : (param2[(param1.length - 1)]);
             _loc_5 = this.getGraphValue(param1, (param1.length - 1), _loc_6);
@@ -124,7 +123,7 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         public function clearOtherGraph() : void
         {
-            var _loc_1:MonitoredObject = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._otherData)
             {
                 
@@ -164,12 +163,12 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         private function drawLine(param1:Vector.<Number>, param2:Vector.<Number>, param3:uint = 16711680) : void
         {
-            var _loc_8:Number = NaN;
-            var _loc_9:Number = NaN;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             var _loc_6:* = param1.length;
-            var _loc_7:int = 0;
+            var _loc_7:* = 0;
             _loc_7 = 0;
             while (_loc_7 < _loc_6)
             {
@@ -195,7 +194,6 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
                 MAX_THEO_VALUE = Math.ceil(param1);
             }
             this._infosTf.text = "GC " + FpsManagerUtils.getTimeFromNow(this.lastGc);
-            this._infosTf.height = this._infosTf.textHeight;
             return;
         }// end function
 

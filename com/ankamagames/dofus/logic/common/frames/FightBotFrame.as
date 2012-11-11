@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.atouin.messages.*;
@@ -98,13 +98,13 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:GameFightReadyMessage = null;
-            var _loc_3:GameFightTurnStartMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             switch(true)
             {
                 case param1 is GameFightJoinMessage:
                 {
-                    var _loc_4:String = this;
+                    var _loc_4:* = this;
                     var _loc_5:* = this._fightCount + 1;
                     _loc_4._fightCount = _loc_5;
                     this._inFight = true;
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.logic.common.frames
                     if (_loc_3.id == PlayedCharacterManager.getInstance().id)
                     {
                         this._myTurn = true;
-                        var _loc_4:String = this;
+                        var _loc_4:* = this;
                         var _loc_5:* = this._turnPlayed + 1;
                         _loc_4._turnPlayed = _loc_5;
                         if (this._turnPlayed > 2)
@@ -212,7 +212,7 @@ package com.ankamagames.dofus.logic.common.frames
 
         private function nextTurnAction() : void
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             if (this._turnAction.length)
             {
                 _loc_1 = this._turnAction.shift();
@@ -280,7 +280,7 @@ package com.ankamagames.dofus.logic.common.frames
         private function randomWalk() : void
         {
             var _loc_3:* = undefined;
-            var _loc_5:IEntity = null;
+            var _loc_5:* = null;
             if (this._inFight || this._wait)
             {
                 return;
@@ -290,7 +290,7 @@ package com.ankamagames.dofus.logic.common.frames
             {
                 return;
             }
-            var _loc_2:Array = [];
+            var _loc_2:* = [];
             for each (_loc_3 in _loc_1.getEntitiesDictionnary())
             {
                 
@@ -330,12 +330,12 @@ package com.ankamagames.dofus.logic.common.frames
 
         private function randomOver(... args) : void
         {
-            var _loc_3:IEntity = null;
-            var _loc_4:IInteractive = null;
-            var _loc_7:UiRootContainer = null;
-            var _loc_10:EntityMouseOutMessage = null;
-            var _loc_11:GraphicContainer = null;
-            var _loc_12:MouseOutMessage = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_7:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
             if (this._wait)
             {
                 return;
@@ -362,7 +362,7 @@ package com.ankamagames.dofus.logic.common.frames
             this._lastEntityOver = _loc_4;
             var _loc_5:* = new EntityMouseOverMessage(_loc_4);
             Kernel.getWorker().process(_loc_5);
-            var _loc_6:Array = [];
+            var _loc_6:* = [];
             for each (_loc_7 in Berilia.getInstance().uiList)
             {
                 
@@ -393,10 +393,10 @@ package com.ankamagames.dofus.logic.common.frames
 
         private function castSpell(param1:uint, param2:Boolean) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:Array = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_6:* = undefined;
-            var _loc_7:GameFightMonsterInformations = null;
+            var _loc_7:* = null;
             var _loc_3:* = new GameActionFightCastRequestMessage();
             if (param2)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.sequencer
+﻿package com.ankamagames.jerakine.sequencer
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.sequencer.*;
@@ -38,7 +38,7 @@ package com.ankamagames.jerakine.sequencer
 
         protected function executeCallbacks() : void
         {
-            var _loc_1:ISequencableListener = null;
+            var _loc_1:* = null;
             FightProfiler.getInstance().stop();
             if (this._timeOut)
             {
@@ -59,7 +59,7 @@ package com.ankamagames.jerakine.sequencer
 
         public function removeListener(param1:ISequencableListener) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._aListener.length)
             {
                 

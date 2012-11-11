@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.managers
+﻿package com.ankamagames.jerakine.managers
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
@@ -64,7 +64,7 @@ package com.ankamagames.jerakine.managers
 
         public function getFontsList() : Array
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Array();
             for each (_loc_2 in this._fonts)
             {
@@ -98,7 +98,7 @@ package com.ankamagames.jerakine.managers
             var e:* = event;
             this._data = new XML(e.resource);
             this._fonts = new Dictionary();
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = this._data.Fonts;
             var _loc_3:* = new XMLList("");
             for each (_loc_6 in _loc_5)
@@ -116,7 +116,7 @@ package com.ankamagames.jerakine.managers
             xml = _loc_3;
             if (xml.length() == 0)
             {
-                var _loc_4:int = 0;
+                var _loc_4:* = 0;
                 var _loc_5:* = this._data.Fonts;
                 var _loc_3:* = new XMLList("");
                 for each (_loc_6 in _loc_5)

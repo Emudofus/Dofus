@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.entities
+﻿package com.ankamagames.dofus.types.entities
 {
     import com.ankamagames.atouin.entities.behaviours.display.*;
     import com.ankamagames.atouin.managers.*;

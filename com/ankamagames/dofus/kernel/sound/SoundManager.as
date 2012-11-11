@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound
+ï»¿package com.ankamagames.dofus.kernel.sound
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.sound.manager.*;
@@ -58,7 +58,7 @@ package com.ankamagames.dofus.kernel.sound
             }
             catch (e:Error)
             {
-                _log.warn("Une erreur est survenue lors de la récupération/application des paramètres audio (option audio)");
+                _log.warn("Une erreur est survenue lors de la rÃ©cupÃ©ration/application des paramÃ¨tres audio (option audio)");
                 try
                 {
                     obj = UiModuleManager.getInstance().getModule("Ankama_Common");
@@ -71,7 +71,7 @@ package com.ankamagames.dofus.kernel.sound
                 }
                 catch (error:Error)
                 {
-                    _log.warn("Nous n\'étions probablement pas encore en jeu, ni en pré jeu");
+                    _log.warn("Nous n\'Ã©tions probablement pas encore en jeu, ni en prÃ© jeu");
                 }
                 return;
         }// end function

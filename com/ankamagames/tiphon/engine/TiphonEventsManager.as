@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.engine
+﻿package com.ankamagames.tiphon.engine
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -43,11 +43,11 @@ package com.ankamagames.tiphon.engine
 
         public function parseLabels(param1:Scene, param2:String) : void
         {
-            var _loc_5:FrameLabel = null;
-            var _loc_6:String = null;
-            var _loc_7:int = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             var _loc_3:* = param1.labels.length;
-            var _loc_4:int = -1;
+            var _loc_4:* = -1;
             while (++_loc_4 < _loc_3)
             {
                 
@@ -61,12 +61,12 @@ package com.ankamagames.tiphon.engine
 
         public function dispatchEvents(param1) : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:TiphonEventInfo = null;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:EventListener = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
             if (!this._weakTiphonSprite)
             {
                 return;
@@ -117,12 +117,12 @@ package com.ankamagames.tiphon.engine
 
         public function destroy() : void
         {
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
-            var _loc_3:Vector.<TiphonEventInfo> = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:TiphonEventInfo = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
             if (this._events)
             {
                 _loc_1 = -1;
@@ -155,10 +155,10 @@ package com.ankamagames.tiphon.engine
 
         public function addEvent(param1:String, param2:int, param3:String) : void
         {
-            var _loc_4:TiphonEventInfo = null;
-            var _loc_5:TiphonEventInfo = null;
-            var _loc_6:TiphonEventInfo = null;
-            var _loc_7:TiphonSprite = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             if (this._events[param2] == null)
             {
                 this._events[param2] = new Vector.<TiphonEventInfo>;
@@ -199,10 +199,10 @@ package com.ankamagames.tiphon.engine
 
         public function removeEvents(param1:String, param2:String) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:Vector.<TiphonEventInfo> = null;
-            var _loc_5:Vector.<TiphonEventInfo> = null;
-            var _loc_6:TiphonEventInfo = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             for (_loc_3 in this._events)
             {
                 
@@ -226,8 +226,8 @@ package com.ankamagames.tiphon.engine
 
         private function parseLabel(param1:String) : TiphonEventInfo
         {
-            var _loc_2:TiphonEventInfo = null;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_5:* = null;
             var _loc_3:* = param1.split(BALISE_PARAM_BEGIN)[0];
             var _loc_4:* = /^\s*(.*?)\s*$""^\s*(.*?)\s*$/g;
             _loc_3 = _loc_3.replace(_loc_4, "$1");
@@ -274,7 +274,7 @@ package com.ankamagames.tiphon.engine
 
         private function convertOldLabel(param1:String) : TiphonEventInfo
         {
-            var _loc_2:TiphonEventInfo = null;
+            var _loc_2:* = null;
             switch(param1)
             {
                 case EVENT_END:
@@ -307,8 +307,8 @@ package com.ankamagames.tiphon.engine
 
         public static function addListener(param1:IFLAEventHandler, param2:String) : void
         {
-            var _loc_5:EventListener = null;
-            var _loc_3:int = -1;
+            var _loc_5:* = null;
+            var _loc_3:* = -1;
             var _loc_4:* = _listeners.length;
             while (++_loc_3 < _loc_4)
             {

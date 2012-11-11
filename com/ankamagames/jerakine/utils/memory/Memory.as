@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.memory
+﻿package com.ankamagames.jerakine.utils.memory
 {
     import flash.net.*;
     import flash.system.*;
@@ -21,7 +21,7 @@ package com.ankamagames.jerakine.utils.memory
         public static function humanReadableUsage() : String
         {
             var _loc_1:* = System.totalMemory;
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_1 > MOD)
             {
                 

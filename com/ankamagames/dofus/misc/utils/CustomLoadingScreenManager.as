@@ -1,5 +1,6 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
+    import com.ankamagames.dofus.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.managers.*;
@@ -31,6 +32,10 @@ package com.ankamagames.dofus.misc.utils
             var _loc_1:* = StoreDataManager.getInstance().getData(this._dataStore, "currentLoadingScreen") as String;
             var _loc_2:* = CustomLoadingScreen.recover(this._dataStore, _loc_1);
             var _loc_3:* = XmlConfig.getInstance().getEntry("config.lang.current");
+            if (!_loc_3)
+            {
+                _loc_3 = StoreDataManager.getInstance().getData(Constants.DATASTORE_LANG_VERSION, "lastLang");
+            }
             if (_loc_2 && !_loc_2.canBeRead())
             {
                 StoreDataManager.getInstance().setData(this._dataStore, "currentLoadingScreen", null);
@@ -64,7 +69,7 @@ package com.ankamagames.dofus.misc.utils
 
         public function loadCustomScreenList() : void
         {
-            var _loc_2:Uri = null;
+            var _loc_2:* = null;
             var _loc_1:* = XmlConfig.getInstance().getEntry("config.lang.current");
             _loc_2 = new Uri(XmlConfig.getInstance().getEntry("config.customLoadingScreen") + "loadingScreen_" + _loc_1 + ".xml");
             this._loader.load(_loc_2);
@@ -91,7 +96,7 @@ package com.ankamagames.dofus.misc.utils
                         return;
                     }
                     screens = new Array();
-                    var _loc_3:int = 0;
+                    var _loc_3:* = 0;
                     var _loc_4:* = xml..loadingScreen;
                     while (_loc_4 in _loc_3)
                     {

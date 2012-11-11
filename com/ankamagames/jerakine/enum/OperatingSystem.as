@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.enum
+﻿package com.ankamagames.jerakine.enum
 {
 
     public class OperatingSystem extends Object

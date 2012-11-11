@@ -1,10 +1,12 @@
-package com.ankamagames.dofus.internalDatacenter.items
+﻿package com.ankamagames.dofus.internalDatacenter.items
 {
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.datacenter.livingObjects.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.types.*;
+    import flash.utils.*;
 
     public class LivingObjectSkinWrapper extends Object implements ISlotData
     {
@@ -14,6 +16,8 @@ package com.ankamagames.dofus.internalDatacenter.items
         private var _skin:int;
         private var _uri:Uri;
         private var _pngMode:Boolean;
+        private var _backGroundIconUri:Uri;
+        private static const _log:Logger = Log.getLogger(getQualifiedClassName(LivingObjectSkinWrapper));
 
         public function LivingObjectSkinWrapper()
         {
@@ -60,10 +64,25 @@ package com.ankamagames.dofus.internalDatacenter.items
             return null;
         }// end function
 
+        public function get backGroundIconUri() : Uri
+        {
+            if (!this._backGroundIconUri)
+            {
+                this._backGroundIconUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
+            }
+            return this._backGroundIconUri;
+        }// end function
+
+        public function set backGroundIconUri(param1:Uri) : void
+        {
+            this._backGroundIconUri = param1;
+            return;
+        }// end function
+
         public function getIconUri(param1:Boolean = true) : Uri
         {
-            var _loc_3:int = 0;
-            var _loc_2:Boolean = false;
+            var _loc_3:* = 0;
+            var _loc_2:* = false;
             if (this._uri)
             {
                 if (param1 != this._pngMode)

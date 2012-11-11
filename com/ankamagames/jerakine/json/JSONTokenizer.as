@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.json
+﻿package com.ankamagames.jerakine.json
 {
 
     public class JSONTokenizer extends Object
@@ -22,10 +22,10 @@ package com.ankamagames.jerakine.json
 
         public function getNextToken() : JSONToken
         {
-            var _loc_2:String = null;
-            var _loc_3:String = null;
-            var _loc_4:String = null;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_1:* = new JSONToken();
             this.skipIgnored();
             switch(this.ch)
@@ -159,8 +159,8 @@ package com.ankamagames.jerakine.json
 
         private function readString() : JSONToken
         {
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             var _loc_1:* = this.loc;
             do
             {
@@ -195,18 +195,18 @@ package com.ankamagames.jerakine.json
 
         public function unescapeString(param1:String) : String
         {
-            var _loc_6:int = 0;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
-            var _loc_9:int = 0;
-            var _loc_10:String = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
             if (this.strict && this.controlCharsRegExp.test(param1))
             {
                 this.parseError("String contains unescaped control character (0x00-0x1F)");
             }
-            var _loc_2:String = "";
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_2:* = "";
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = param1.length;
             do
             {
@@ -299,8 +299,8 @@ package com.ankamagames.jerakine.json
 
         private function readNumber() : JSONToken
         {
-            var _loc_3:JSONToken = null;
-            var _loc_1:String = "";
+            var _loc_3:* = null;
+            var _loc_1:* = "";
             if (this.ch == "-")
             {
                 _loc_1 = _loc_1 + "-";
@@ -397,7 +397,7 @@ package com.ankamagames.jerakine.json
 
         private function nextChar() : String
         {
-            var _loc_1:String = this;
+            var _loc_1:* = this;
             _loc_1.loc = this.loc + 1;
             var _loc_1:* = this.jsonString.charAt(this.loc++);
             this.ch = this.jsonString.charAt(this.loc++);
@@ -406,7 +406,7 @@ package com.ankamagames.jerakine.json
 
         private function skipIgnored() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             do
             {
                 

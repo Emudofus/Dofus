@@ -1,5 +1,6 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
+    import com.ankamagames.dofus.types.events.*;
     import com.ankamagames.jerakine.json.*;
     import com.ankamagames.jerakine.logger.*;
     import flash.events.*;
@@ -32,9 +33,7 @@ package com.ankamagames.dofus.misc.utils
 
         private function onComplete(event:Event) : void
         {
-            this._loader.removeEventListener(Event.COMPLETE, this.onComplete);
-            this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
-            var _loc_2:Boolean = true;
+            var _loc_2:* = true;
             if (this._type == "json")
             {
                 _loc_2 = this.formateJsonResult(event.currentTarget.data);
@@ -89,14 +88,14 @@ package com.ankamagames.dofus.misc.utils
                     }
                     default:
                     {
-                        _log.error("ERROR RPS SERVICE: " + de.error);
+                        _log.error("ERROR RPC SERVICE: " + de.error);
                         break;
                     }
                 }
                 return false;
             }
             this._result = de.result;
-            return !(this._result.success != null && this._result.success == false);
+            return this._result is Boolean && this._result || !(!(this._result is Boolean) && this._result.success != null && this._result.success == false);
         }// end function
 
         private function createRpcObject(param1:String) : Object
@@ -133,12 +132,16 @@ package com.ankamagames.dofus.misc.utils
             {
                 this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
             }
+            if (this._loader.hasEventListener(SecurityErrorEvent.SECURITY_ERROR))
+            {
+                this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onError);
+            }
             this._loader = null;
             this._request = null;
             return;
         }// end function
 
-        public function getAllResultData() : Object
+        public function getAllResultData()
         {
             return this._result;
         }// end function
@@ -154,7 +157,7 @@ package com.ankamagames.dofus.misc.utils
 
         public function callMethod(param1:String, param2) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             this._params = param2;
             if (this._request == null || this._loader == null)
             {
@@ -214,15 +217,24 @@ package com.ankamagames.dofus.misc.utils
             this._loader = new URLLoader();
             this._loader.addEventListener(Event.COMPLETE, this.onComplete);
             this._loader.addEventListener(IOErrorEvent.IO_ERROR, this.onError);
+            this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onError);
             return;
         }// end function
 
         private function onError(event:Event) : void
         {
-            this._loader.removeEventListener(Event.COMPLETE, this.onComplete);
-            this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
             dispatchEvent(event);
+            dispatchEvent(new RpcEvent());
             return;
+        }// end function
+
+        public function get requestData()
+        {
+            if (this._request == null)
+            {
+                return null;
+            }
+            return JSON.decode(this._request.data as String);
         }// end function
 
     }

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -42,9 +42,10 @@ package com.ankamagames.berilia.components
         private var _startBounds:Rectangle;
         private var _disableAnimation:Boolean = false;
         private var _useCache:Boolean = true;
+        private var _roundCornerRadius:uint = 0;
         private var _bitmap:Bitmap;
         private var _showLoadingError:Boolean = true;
-        private var _return2:Boolean;
+        public var defaultBitmapData:BitmapData;
         private var rle_uri_path:Object;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
 
@@ -234,18 +235,21 @@ package com.ankamagames.berilia.components
 
         public function set gotoAndStop(param1) : void
         {
-            if (this._child && this._child is MovieClip)
+            var mv:MovieClip;
+            var value:* = param1;
+            mv = this._child as MovieClip;
+            if (mv != null)
             {
-                if (param1)
+                try
                 {
-                    (this._child as MovieClip).gotoAndStop(param1);
+                    mv.gotoAndStop(value);
                 }
-                else
+                catch (error:ArgumentError)
                 {
-                    (this._child as MovieClip).gotoAndStop(1);
+                    mv.stop();
                 }
+                this._gotoFrame = value;
             }
-            this._gotoFrame = param1;
             return;
         }// end function
 
@@ -256,6 +260,21 @@ package com.ankamagames.berilia.components
                 return (this._child as MovieClip).currentFrame.toString();
             }
             return this._gotoFrame;
+        }// end function
+
+        private function hasLabel(param1:MovieClip, param2:String) : Boolean
+        {
+            var _loc_4:* = null;
+            var _loc_3:* = param1.currentLabels;
+            for each (_loc_4 in _loc_3)
+            {
+                
+                if (param2 == _loc_4.name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }// end function
 
         public function set gotoAndPlay(param1) : void
@@ -341,9 +360,7 @@ package com.ankamagames.berilia.components
             {
                 return this._bitmap.bitmapData.clone();
             }
-            var _loc_1:* = new BitmapData(this.width, this.height);
-            _loc_1.draw(this);
-            return _loc_1.clone();
+            return null;
         }// end function
 
         public function stopAllAnimation() : void
@@ -356,11 +373,68 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
+        public function getChildDuration() : uint
+        {
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = this._child as DisplayObjectContainer;
+            if (_loc_2)
+            {
+                _loc_3 = 0;
+                while (_loc_3 < _loc_2.numChildren)
+                {
+                    
+                    _loc_4 = DisplayObjectContainer(this._child).getChildAt(_loc_3);
+                    if (_loc_4 is MovieClip && MovieClip(_loc_4).totalFrames && MovieClip(_loc_4).totalFrames > _loc_1)
+                    {
+                        _loc_1 = MovieClip(_loc_4).totalFrames;
+                    }
+                    _loc_3 = _loc_3 + 1;
+                }
+            }
+            else if (this._child is MovieClip)
+            {
+                _loc_5 = this._child as MovieClip;
+                _loc_1 = _loc_5.totalFrames;
+            }
+            return _loc_1;
+        }// end function
+
+        public function gotoAndPayChild(param1:uint) : void
+        {
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_2:* = this._child as DisplayObjectContainer;
+            if (_loc_2)
+            {
+                _loc_3 = 0;
+                while (_loc_3 < _loc_2.numChildren)
+                {
+                    
+                    _loc_4 = DisplayObjectContainer(this._child).getChildAt(_loc_3);
+                    if (_loc_4 is MovieClip)
+                    {
+                        (_loc_4 as MovieClip).gotoAndPlay(param1);
+                    }
+                    _loc_3 = _loc_3 + 1;
+                }
+            }
+            else if (this._child is MovieClip)
+            {
+                _loc_5 = this._child as MovieClip;
+                _loc_5.gotoAndPlay(param1);
+            }
+            return;
+        }// end function
+
         public function colorTransform(param1:ColorTransform, param2:int = 0) : void
         {
-            var _loc_3:DisplayObjectContainer = null;
-            var _loc_4:int = 0;
-            var _loc_5:DisplayObject = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             if (param2 == 0)
             {
                 transform.colorTransform = param1;
@@ -399,6 +473,18 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
+        public function get roundCornerRadius() : uint
+        {
+            return this._roundCornerRadius;
+        }// end function
+
+        public function set roundCornerRadius(param1:uint) : void
+        {
+            this._roundCornerRadius = param1;
+            this.initMask();
+            return;
+        }// end function
+
         public function finalize() : void
         {
             this.reload();
@@ -427,7 +513,7 @@ package com.ankamagames.berilia.components
 
         public function nextFrame() : void
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_1:* = this._child as MovieClip;
             if (_loc_1)
             {
@@ -445,8 +531,8 @@ package com.ankamagames.berilia.components
 
         private function reload() : void
         {
-            var _loc_1:Uri = null;
-            var _loc_2:Class = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this._bitmap != null)
             {
                 if (this._child && this._child.parent)
@@ -484,11 +570,11 @@ package com.ankamagames.berilia.components
                 }
                 if (this._uri.subPath)
                 {
-                    if (this._uri.protocol == "mod" || this._uri.protocol == "pak" || this._uri.protocol == "d2p" || this._uri.protocol == "pak2" || this._uri.protocol == "d2pOld")
+                    if (this._uri.protocol == "mod" || this._uri.protocol == "theme" || this._uri.protocol == "pak" || this._uri.protocol == "d2p" || this._uri.protocol == "pak2" || this._uri.protocol == "d2pOld")
                     {
                         _loc_1 = new Uri(this._uri.normalizedUri);
                     }
-                    else if (AirScanner.hasAir())
+                    else if (AirScanner.hasAir() && this._uri.protocol != "httpc")
                     {
                         _loc_1 = new Uri(this._uri.path);
                     }
@@ -506,6 +592,10 @@ package com.ankamagames.berilia.components
                 else
                 {
                     _loc_1 = this._uri;
+                }
+                if (this._uri.protocol == "httpc" && !this._loader.isInCache(this.uri))
+                {
+                    this.loadBitmapData(this.defaultBitmapData);
                 }
                 this._loader.load(_loc_1, this._useCache ? (UriCacheFactory.getCacheFromUri(_loc_1)) : (null), _loc_2);
             }
@@ -625,20 +715,46 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
+        private function initMask() : void
+        {
+            if (mask)
+            {
+                removeChild(mask);
+            }
+            if (this._roundCornerRadius == 0)
+            {
+                mask = null;
+                return;
+            }
+            var _loc_1:* = new Shape();
+            _loc_1.graphics.beginFill(7798784);
+            _loc_1.graphics.drawRoundRectComplex(0, 0, this.width, this.height, this._roundCornerRadius, this._roundCornerRadius, this._roundCornerRadius, this._roundCornerRadius);
+            addChild(_loc_1);
+            mask = _loc_1;
+            return;
+        }// end function
+
         private function onLoaded(event:ResourceLoadedEvent) : void
         {
             var aswf:ASwf;
             var error:ResourceErrorEvent;
             var rle:* = event;
-            this._return2 = false;
             if (__removed)
             {
                 return;
             }
-            this._loader = null;
-            if (!this._uri || this._uri.path != rle.uri.path && this._uri.normalizedUri != rle.uri.path)
+            if (this._bitmap != null)
             {
-                this._return2 = true;
+                if (this._bitmap.parent == this)
+                {
+                    removeChild(this._bitmap);
+                }
+                this._bitmap = null;
+            }
+            this._loader = null;
+            var pattern:* = /\/(_[0-9]*_\/)""\/(_[0-9]*_\/)/i;
+            if (this._uri == null || !AirScanner.isStreamingVersion() && this._uri.path != rle.uri.path && this._uri.normalizedUri != rle.uri.path)
+            {
                 this.rle_uri_path = rle.uri.path;
                 return;
             }
@@ -667,9 +783,9 @@ package com.ankamagames.berilia.components
             }
             else if (rle.resourceType == ResourceType.RESOURCE_ASWF)
             {
+                aswf = ASwf(rle.resource);
                 if (this._uri.subPath)
                 {
-                    aswf = ASwf(rle.resource);
                     try
                     {
                         this._child = addChild(new (aswf.applicationDomain.getDefinition(this._uri.subPath) as Class)() as DisplayObject);
@@ -684,14 +800,25 @@ package com.ankamagames.berilia.components
                         return;
                     }
                 }
+                else
+                {
+                    this._child = addChild(aswf.content);
+                    if (this._child is MovieClip)
+                    {
+                        (this._child as MovieClip).stop();
+                    }
+                }
             }
             else
             {
                 throw new IllegalOperationError("A Texture component can\'t display a non-displayable resource.");
             }
-            this._startBounds = this._child.getBounds(this);
-            this._startedWidth = this._child.width;
-            this._startedHeight = this._child.height;
+            if (this._child != null)
+            {
+                this._startBounds = this._child.getBounds(this);
+                this._startedWidth = this._child.width;
+                this._startedHeight = this._child.height;
+            }
             this.organize();
             if (this._disableAnimation)
             {
@@ -702,12 +829,13 @@ package com.ankamagames.berilia.components
                 dispatchEvent(new Event(Event.COMPLETE));
                 Berilia.getInstance().handler.process(new TextureReadyMessage(this));
             }
+            this.initMask();
             return;
         }// end function
 
         private function onFailed(event:ResourceErrorEvent) : void
         {
-            var _loc_3:Shape = null;
+            var _loc_3:* = null;
             if (__removed)
             {
                 return;
@@ -737,6 +865,7 @@ package com.ankamagames.berilia.components
                             removeChildAt(0);
                         }
                         this._child = null;
+                        this._bitmap = null;
                     }
                     if (this._showLoadingError)
                     {

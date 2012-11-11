@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.chat
+﻿package com.ankamagames.dofus.console.chat
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -18,15 +18,15 @@ package com.ankamagames.dofus.console.chat
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
-            var _loc_7:PartyInvitationAction = null;
-            var _loc_8:String = null;
-            var _loc_9:FriendAddRequestMessage = null;
-            var _loc_10:FriendDeleteRequestMessage = null;
-            var _loc_11:IgnoredAddRequestMessage = null;
-            var _loc_12:IgnoredDeleteRequestMessage = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
             switch(param2)
             {
                 case "f":

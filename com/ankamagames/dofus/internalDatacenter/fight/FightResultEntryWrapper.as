@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.fight
+﻿package com.ankamagames.dofus.internalDatacenter.fight
 {
     import com.ankamagames.dofus.datacenter.monsters.*;
     import com.ankamagames.dofus.datacenter.npcs.*;
@@ -39,16 +39,16 @@ package com.ankamagames.dofus.internalDatacenter.fight
 
         public function FightResultEntryWrapper(param1:FightResultListEntry, param2:GameFightFighterInformations = null)
         {
-            var _loc_3:FightResultPlayerListEntry = null;
-            var _loc_4:FightResultTaxCollectorListEntry = null;
-            var _loc_5:GameFightTaxCollectorInformations = null;
-            var _loc_6:FightResultMutantListEntry = null;
-            var _loc_7:GameFightMonsterInformations = null;
-            var _loc_8:Monster = null;
-            var _loc_9:GameFightMonsterInformations = null;
-            var _loc_10:Monster = null;
-            var _loc_11:GameFightTaxCollectorInformations = null;
-            var _loc_12:FightResultAdditionalData = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
             this._item = param1;
             this.outcome = param1.outcome;
             this.rewards = new FightLootWrapper(param1.rewards);

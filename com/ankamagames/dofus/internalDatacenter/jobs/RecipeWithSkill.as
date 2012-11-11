@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.jobs
+﻿package com.ankamagames.dofus.internalDatacenter.jobs
 {
     import com.ankamagames.dofus.datacenter.jobs.*;
     import com.ankamagames.jerakine.interfaces.*;

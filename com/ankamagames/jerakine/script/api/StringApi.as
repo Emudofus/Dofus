@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.script.api
+﻿package com.ankamagames.jerakine.script.api
 {
 
     public class StringApi extends Object

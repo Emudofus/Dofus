@@ -1,4 +1,4 @@
-package org.flintparticles.common.counters
+﻿package org.flintparticles.common.counters
 {
     import flash.utils.*;
     import org.flintparticles.common.counters.*;
@@ -91,8 +91,8 @@ package org.flintparticles.common.counters
 
         public function updateEmitter(param1:Emitter, param2:Number) : uint
         {
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
             if (this._stop)
             {
                 return 0;
@@ -120,7 +120,7 @@ package org.flintparticles.common.counters
                 }
             }
             var _loc_3:* = param2;
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             _loc_3 = _loc_3 - this._timeToNext;
             while (_loc_3 >= 0)
             {

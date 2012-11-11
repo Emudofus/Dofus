@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.spells
+﻿package com.ankamagames.dofus.network.messages.game.inventory.spells
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.data.items.*;
@@ -68,7 +68,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.spells
         {
             param1.writeBoolean(this.spellPrevisualization);
             param1.writeShort(this.spells.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.spells.length)
             {
                 
@@ -86,10 +86,10 @@ package com.ankamagames.dofus.network.messages.game.inventory.spells
 
         public function deserializeAs_SpellListMessage(param1:IDataInput) : void
         {
-            var _loc_4:SpellItem = null;
+            var _loc_4:* = null;
             this.spellPrevisualization = param1.readBoolean();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

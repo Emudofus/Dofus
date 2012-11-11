@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+Ôªøpackage com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -59,8 +59,8 @@ package com.ankamagames.berilia.components
 
         public function set look(param1) : void
         {
-            var _loc_2:TiphonEntityLook = null;
-            var _loc_3:TiphonSprite = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (lookAdaptater != null)
             {
                 _loc_2 = lookAdaptater(param1);
@@ -242,13 +242,13 @@ package com.ankamagames.berilia.components
 
         override public function set cacheAsBitmap(param1:Boolean) : void
         {
-            _log.fatal("Attention : Il ne faut surtout pas utiliser la propriÈtÈ cacheAsBitmap sur les EntityDisplayer. TiphonSprite le gËre dÈj‡.");
+            _log.fatal("Attention : Il ne faut surtout pas utiliser la propri√©t√© cacheAsBitmap sur les EntityDisplayer. TiphonSprite le g√®re d√©j√†.");
             return;
         }// end function
 
         public function setAnimationAndDirection(param1:String, param2:uint) : void
         {
-            var _loc_3:SerialSequencer = null;
+            var _loc_3:* = null;
             if (!this._fromCache)
             {
                 this._animation = param1;
@@ -278,10 +278,10 @@ package com.ankamagames.berilia.components
 
         public function equipCharacter(param1:Array, param2:int = 0) : void
         {
-            var _loc_3:Array = null;
-            var _loc_4:TiphonEntityLook = null;
-            var _loc_5:Array = null;
-            var _loc_6:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
             if (this._entity is TiphonSprite)
             {
                 _loc_3 = TiphonSprite(this._entity).look.toString().split("|");
@@ -314,9 +314,9 @@ package com.ankamagames.berilia.components
 
         public function getSlotPosition(param1:String) : Point
         {
-            var _loc_2:Object = null;
-            var _loc_3:Point = null;
-            var _loc_4:Point = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this._entity && this._entity is TiphonSprite)
             {
                 _loc_2 = TiphonSprite(this._entity).getSlot(param1);
@@ -338,8 +338,8 @@ package com.ankamagames.berilia.components
 
         override public function remove() : void
         {
-            var _loc_1:ISubEntityBehavior = null;
-            var _loc_2:TiphonSprite = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this._entity)
             {
                 (this._entity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED, this.onCharacterReady);
@@ -398,11 +398,11 @@ package com.ankamagames.berilia.components
         private function onCharacterReady(event:Event) : void
         {
             var _loc_2:* = undefined;
-            var _loc_3:Number = NaN;
-            var _loc_4:Rectangle = null;
-            var _loc_5:DisplayInfoSprite = null;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
+            var _loc_3:* = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
             if (this._gotoAndStop)
             {
                 if (this._gotoAndStop == -1)
@@ -562,7 +562,7 @@ package com.ankamagames.berilia.components
         private function needUpdate(event:Event) : void
         {
             var _loc_2:* = undefined;
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             EnterFrameDispatcher.removeEventListener(this.needUpdate);
             this._listenForUpdate = false;
             if (this._oldEntity)

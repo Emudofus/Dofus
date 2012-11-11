@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.*;
@@ -34,10 +34,13 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:ServerConnectionClosedMessage = null;
-            var _loc_3:WrongSocketClosureReasonMessage = null;
-            var _loc_4:UnexpectedSocketClosureMessage = null;
-            var _loc_5:DisconnectionReason = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             switch(true)
             {
                 case param1 is ServerConnectionClosedMessage:
@@ -48,8 +51,8 @@ package com.ankamagames.dofus.logic.common.frames
                         _log.trace("The connection was closed. Checking reasons.");
                         if (ConnectionsHandler.hasReceivedMsg)
                         {
-                            _loc_5 = ConnectionsHandler.handleDisconnection();
-                            if (!_loc_5.expected)
+                            _loc_7 = ConnectionsHandler.handleDisconnection();
+                            if (!_loc_7.expected)
                             {
                                 _log.warn("The connection was closed unexpectedly. Reseting.");
                                 if (messagesAfterReset.length == 0)
@@ -60,14 +63,14 @@ package com.ankamagames.dofus.logic.common.frames
                             }
                             else
                             {
-                                _log.trace("The connection closure was expected (reason: " + _loc_5.reason + "). Dispatching the message.");
-                                if (_loc_5.reason == DisconnectionReasonEnum.DISCONNECTED_BY_POPUP || _loc_5.reason == DisconnectionReasonEnum.SWITCHING_TO_HUMAN_VENDOR)
+                                _log.trace("The connection closure was expected (reason: " + _loc_7.reason + "). Dispatching the message.");
+                                if (_loc_7.reason == DisconnectionReasonEnum.DISCONNECTED_BY_POPUP || _loc_7.reason == DisconnectionReasonEnum.SWITCHING_TO_HUMAN_VENDOR)
                                 {
                                     Kernel.getInstance().reset();
                                 }
                                 else
                                 {
-                                    Kernel.getWorker().process(new ExpectedSocketClosureMessage(_loc_5.reason));
+                                    Kernel.getWorker().process(new ExpectedSocketClosureMessage(_loc_7.reason));
                                 }
                             }
                         }
@@ -95,10 +98,32 @@ package com.ankamagames.dofus.logic.common.frames
                 }
                 case param1 is ResetGameAction:
                 {
+                    _loc_5 = param1 as ResetGameAction;
                     _log.fatal("ResetGameAction");
                     SoundManager.getInstance().manager.removeAllSounds();
                     ConnectionsHandler.closeConnection();
-                    Kernel.getInstance().reset();
+                    if (_loc_5.messageToShow != "")
+                    {
+                        _loc_8 = [OpenPopupAction.create(_loc_5.messageToShow)];
+                        Kernel.getInstance().reset(_loc_8);
+                    }
+                    else
+                    {
+                        Kernel.getInstance().reset();
+                    }
+                    return true;
+                }
+                case param1 is OpenPopupAction:
+                {
+                    _loc_6 = UiModuleManager.getInstance().getModule("Ankama_Common");
+                    if (_loc_6 == null)
+                    {
+                        messagesAfterReset.push(param1);
+                    }
+                    else
+                    {
+                        KernelEventsManager.getInstance().processCallback(HookList.InformationPopup, [(param1 as OpenPopupAction).messageToShow]);
+                    }
                     return true;
                 }
                 default:

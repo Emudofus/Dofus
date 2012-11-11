@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.dungeon
+﻿package com.ankamagames.dofus.network.messages.game.context.dungeon
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
         public function serializeAs_DungeonKeyRingMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.availables.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.availables.length)
             {
                 
@@ -79,7 +79,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.unavailables.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.unavailables.length)
             {
                 
@@ -101,10 +101,10 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
 
         public function deserializeAs_DungeonKeyRingMessage(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -117,7 +117,7 @@ package com.ankamagames.dofus.network.messages.game.context.dungeon
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

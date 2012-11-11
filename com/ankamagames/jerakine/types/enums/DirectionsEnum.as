@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types.enums
+﻿package com.ankamagames.jerakine.types.enums
 {
 
     public class DirectionsEnum extends Object

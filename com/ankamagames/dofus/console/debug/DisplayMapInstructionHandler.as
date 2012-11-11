@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.managers.*;
@@ -21,8 +21,8 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:ByteArray = null;
-            var _loc_5:int = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             this._console = param1;
             switch(param2)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.newCache.impl
+﻿package com.ankamagames.jerakine.newCache.impl
 {
     import com.ankamagames.jerakine.newCache.*;
     import flash.utils.*;
@@ -28,7 +28,7 @@ package com.ankamagames.jerakine.newCache.impl
         {
             var _loc_2:* = this._cache[param1];
             delete this._cache[param1];
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             var _loc_4:* = this._size - 1;
             _loc_3._size = _loc_4;
             return _loc_2;
@@ -42,7 +42,7 @@ package com.ankamagames.jerakine.newCache.impl
         public function store(param1, param2) : void
         {
             this._cache[param1] = param2;
-            var _loc_3:String = this;
+            var _loc_3:* = this;
             var _loc_4:* = this._size + 1;
             _loc_3._size = _loc_4;
             return;

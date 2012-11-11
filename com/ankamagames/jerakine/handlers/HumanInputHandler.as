@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.handlers
+﻿package com.ankamagames.jerakine.handlers
 {
     import com.ankamagames.jerakine.handlers.messages.keyboard.*;
     import com.ankamagames.jerakine.handlers.messages.mouse.*;
@@ -7,7 +7,6 @@ package com.ankamagames.jerakine.handlers
     import com.ankamagames.jerakine.utils.display.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import com.ankamagames.jerakine.utils.memory.*;
-    import com.ankamagames.jerakine.utils.system.*;
     import flash.display.*;
     import flash.events.*;
     import flash.ui.*;
@@ -65,22 +64,59 @@ package com.ankamagames.jerakine.handlers
             return;
         }// end function
 
-        public function registerListeners() : void
+        public function unregisterListeners(param1:Stage = null) : void
         {
-            StageShareManager.stage.addEventListener(MouseEvent.DOUBLE_CLICK, this.onDoubleClick, true, 1, true);
-            StageShareManager.stage.addEventListener(MouseEvent.CLICK, this.onClick, true, 1, true);
-            StageShareManager.stage.addEventListener(MouseEvent.MOUSE_WHEEL, this.onMouseWheel, true, 1, true);
-            StageShareManager.stage.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver, true, 1, true);
-            StageShareManager.stage.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut, true, 1, true);
-            StageShareManager.stage.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown, true, 1, true);
-            StageShareManager.stage.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp, true, 1, true);
-            if (AirScanner.hasAir())
+            var target:* = param1;
+            if (target == null)
             {
-                StageShareManager.stage.addEventListener(MouseEvent["MIDDLE_CLICK"], this.onMiddleClick, true, 1, true);
+                target = StageShareManager.stage;
             }
-            StageShareManager.stage.addEventListener("rightClick", this.onRightClick, true, 1, true);
-            StageShareManager.stage.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown, false, 1, true);
-            StageShareManager.stage.addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp, false, 1, true);
+            target.removeEventListener(MouseEvent.DOUBLE_CLICK, this.onDoubleClick, true);
+            target.removeEventListener(MouseEvent.CLICK, this.onClick, true);
+            target.removeEventListener(MouseEvent.MOUSE_WHEEL, this.onMouseWheel, true);
+            target.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver, true);
+            target.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut, true);
+            target.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown, true);
+            target.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp, true);
+            try
+            {
+                target.removeEventListener(MouseEvent.MIDDLE_CLICK, this.onMiddleClick, true);
+                target.removeEventListener(MouseEvent.RIGHT_CLICK, this.onRightClick, true);
+            }
+            catch (e:TypeError)
+            {
+                _log.error("RIGHT_CLICK / MIDDLE_CLICK non supporté");
+            }
+            target.removeEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown, false);
+            target.removeEventListener(KeyboardEvent.KEY_UP, this.onKeyUp, false);
+            return;
+        }// end function
+
+        public function registerListeners(param1:Stage = null) : void
+        {
+            var target:* = param1;
+            if (target == null)
+            {
+                target = StageShareManager.stage;
+            }
+            target.addEventListener(MouseEvent.DOUBLE_CLICK, this.onDoubleClick, true, 1, true);
+            target.addEventListener(MouseEvent.CLICK, this.onClick, true, 1, true);
+            target.addEventListener(MouseEvent.MOUSE_WHEEL, this.onMouseWheel, true, 1, true);
+            target.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver, true, 1, true);
+            target.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut, true, 1, true);
+            target.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown, true, 1, true);
+            target.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp, true, 1, true);
+            try
+            {
+                target.addEventListener(MouseEvent.MIDDLE_CLICK, this.onMiddleClick, true, 1, true);
+                target.addEventListener(MouseEvent.RIGHT_CLICK, this.onRightClick, true, 1, true);
+            }
+            catch (e:TypeError)
+            {
+                _log.error("RIGHT_CLICK / MIDDLE_CLICK non supporté");
+            }
+            target.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown, false, 1, true);
+            target.addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp, false, 1, true);
             return;
         }// end function
 

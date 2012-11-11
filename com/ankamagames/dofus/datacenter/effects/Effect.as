@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.effects
+﻿package com.ankamagames.dofus.datacenter.effects
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -19,6 +19,7 @@ package com.ankamagames.dofus.datacenter.effects
         public var showInSet:Boolean;
         public var bonusType:int;
         public var useInFight:Boolean;
+        public var effectPriority:uint;
         private var _description:String;
         private static const MODULE:String = "Effects";
 

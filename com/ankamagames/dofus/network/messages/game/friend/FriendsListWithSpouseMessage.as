@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.friend
+﻿package com.ankamagames.dofus.network.messages.game.friend
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;

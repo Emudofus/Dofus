@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function initializeMountLists(param1:Vector.<MountClientData>, param2:Vector.<MountClientData>) : void
         {
-            var _loc_3:MountClientData = null;
+            var _loc_3:* = null;
             this._stableList = new Array();
             if (param1)
             {
@@ -91,54 +91,54 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:MountInformationInPaddockRequestAction = null;
-            var _loc_3:MountInformationInPaddockRequestMessage = null;
-            var _loc_4:IMovable = null;
-            var _loc_5:MountFeedRequestAction = null;
-            var _loc_6:MountReleaseRequestMessage = null;
-            var _loc_7:MountSterilizeRequestMessage = null;
-            var _loc_8:MountRenameRequestAction = null;
-            var _loc_9:MountRenameRequestMessage = null;
-            var _loc_10:MountSetXpRatioRequestAction = null;
-            var _loc_11:MountSetXpRatioRequestMessage = null;
-            var _loc_12:MountInfoRequestAction = null;
-            var _loc_13:MountInformationRequestMessage = null;
-            var _loc_14:ExchangeRequestOnMountStockMessage = null;
-            var _loc_15:Object = null;
-            var _loc_16:MountRenamedMessage = null;
-            var _loc_17:Number = NaN;
-            var _loc_18:String = null;
-            var _loc_19:ExchangeHandleMountStableAction = null;
-            var _loc_20:ExchangeHandleMountStableMessage = null;
-            var _loc_21:ExchangeMountStableBornAddMessage = null;
-            var _loc_22:Object = null;
-            var _loc_23:ExchangeMountStableAddMessage = null;
-            var _loc_24:ExchangeMountStableRemoveMessage = null;
-            var _loc_25:ExchangeMountPaddockAddMessage = null;
-            var _loc_26:ExchangeMountPaddockRemoveMessage = null;
-            var _loc_27:MountDataMessage = null;
-            var _loc_28:Boolean = false;
-            var _loc_29:AnimatedCharacter = null;
-            var _loc_30:MountEquipedErrorMessage = null;
-            var _loc_31:String = null;
-            var _loc_32:ExchangeWeightMessage = null;
-            var _loc_33:ExchangeStartOkMountMessage = null;
-            var _loc_34:ExchangeStartOkMountWithOutPaddockMessage = null;
-            var _loc_35:UpdateMountBoostMessage = null;
-            var _loc_36:Object = null;
-            var _loc_37:MountEmoteIconUsedOkMessage = null;
-            var _loc_38:TiphonSprite = null;
-            var _loc_39:ExchangeMountTakenFromPaddockMessage = null;
-            var _loc_40:String = null;
-            var _loc_41:MountReleasedMessage = null;
-            var _loc_42:MountToggleRidingRequestMessage = null;
-            var _loc_43:MountFeedRequestMessage = null;
-            var _loc_44:int = 0;
-            var _loc_45:Object = null;
-            var _loc_46:UpdateMountBoost = null;
-            var _loc_47:UpdateMountIntBoost = null;
-            var _loc_48:String = null;
-            var _loc_49:SerialSequencer = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = NaN;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
+            var _loc_20:* = null;
+            var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
+            var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
+            var _loc_28:* = false;
+            var _loc_29:* = null;
+            var _loc_30:* = null;
+            var _loc_31:* = null;
+            var _loc_32:* = null;
+            var _loc_33:* = null;
+            var _loc_34:* = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
+            var _loc_39:* = null;
+            var _loc_40:* = null;
+            var _loc_41:* = null;
+            var _loc_42:* = null;
+            var _loc_43:* = null;
+            var _loc_44:* = 0;
+            var _loc_45:* = null;
+            var _loc_46:* = null;
+            var _loc_47:* = null;
+            var _loc_48:* = null;
+            var _loc_49:* = null;
             switch(true)
             {
                 case param1 is MountInformationInPaddockRequestAction:

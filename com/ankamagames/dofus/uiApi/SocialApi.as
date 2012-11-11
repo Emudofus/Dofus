@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -45,7 +45,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getFriendsList() : Array
         {
-            var _loc_3:FriendWrapper = null;
+            var _loc_3:* = null;
             var _loc_1:* = new Array();
             var _loc_2:* = this.socialFrame.friendsList;
             for each (_loc_3 in _loc_2)
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getEnemiesList() : Array
         {
-            var _loc_2:EnemyWrapper = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Array();
             for each (_loc_2 in this.socialFrame.enemiesList)
             {
@@ -101,7 +101,7 @@ package com.ankamagames.dofus.uiApi
 
         public function getIgnoredList() : Array
         {
-            var _loc_2:IgnoredWrapper = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Array();
             for each (_loc_2 in this.socialFrame.ignoredList)
             {
@@ -142,6 +142,12 @@ package com.ankamagames.dofus.uiApi
             return this.socialFrame.hasSpouse;
         }// end function
 
+        public function getAllowedGuildEmblemSymbolCategories() : int
+        {
+            var _loc_1:* = Kernel.getWorker().getFrame(PlayedCharacterUpdatesFrame) as PlayedCharacterUpdatesFrame;
+            return _loc_1.guildEmblemSymbolCategories;
+        }// end function
+
         public function hasGuild() : Boolean
         {
             return this.socialFrame.hasGuild;
@@ -164,8 +170,8 @@ package com.ankamagames.dofus.uiApi
 
         public function hasGuildRight(param1:uint, param2:String) : Boolean
         {
-            var _loc_3:GuildMember = null;
-            var _loc_4:GuildWrapper = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (!this.socialFrame.hasGuild)
             {
                 return false;
@@ -179,7 +185,7 @@ package com.ankamagames.dofus.uiApi
                 
                 if (_loc_3.id == param1)
                 {
-                    _loc_4 = GuildWrapper.create(0, "", null, _loc_3.rights);
+                    _loc_4 = GuildWrapper.create(0, "", null, _loc_3.rights, true);
                     return _loc_4.hasRight(param2);
                 }
             }
@@ -232,7 +238,7 @@ package com.ankamagames.dofus.uiApi
 
         public function isPlayerDefender(param1:uint, param2:int) : Boolean
         {
-            var _loc_4:TaxCollectorFightersWrapper = null;
+            var _loc_4:* = null;
             var _loc_3:* = TaxCollectorsManager.getInstance().taxCollectorsFighters[param2];
             if (_loc_3)
             {
@@ -256,8 +262,8 @@ package com.ankamagames.dofus.uiApi
 
         public function removeIgnoredPlayer(param1:String) : void
         {
-            var _loc_3:IgnoredWrapper = null;
-            var _loc_2:int = 0;
+            var _loc_3:* = null;
+            var _loc_2:* = 0;
             while (_loc_2 < this.socialFrame.ignoredList.length)
             {
                 
@@ -274,10 +280,10 @@ package com.ankamagames.dofus.uiApi
 
         public function getChatSentence(param1:Number, param2:String) : BasicChatSentence
         {
-            var _loc_6:Array = null;
-            var _loc_7:BasicChatSentence = null;
-            var _loc_3:Boolean = false;
-            var _loc_4:BasicChatSentence = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_3:* = false;
+            var _loc_4:* = null;
             var _loc_5:* = Kernel.getWorker().getFrame(ChatFrame) as ChatFrame;
             for each (_loc_6 in _loc_5.getMessages())
             {

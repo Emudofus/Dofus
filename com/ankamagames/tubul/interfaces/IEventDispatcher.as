@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.interfaces
+﻿package com.ankamagames.tubul.interfaces
 {
     import flash.events.*;
 

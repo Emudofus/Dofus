@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.params.*;
@@ -33,10 +33,10 @@ package com.ankamagames.berilia.managers
             return;
         }// end function
 
-        public static function show(param1, param2, param3:UiModule, param4:Boolean = true, param5:String = "standard", param6:uint = 0, param7:uint = 2, param8:int = 3, param9:Boolean = true, param10:String = null, param11:Class = null, param12:Object = null, param13:String = null, param14:Boolean = false, param15:int = 4) : Tooltip
+        public static function show(param1, param2, param3:UiModule, param4:Boolean = true, param5:String = "standard", param6:uint = 0, param7:uint = 2, param8:int = 3, param9:Boolean = true, param10:String = null, param11:Class = null, param12:Object = null, param13:String = null, param14:Boolean = false, param15:int = 4, param16:Number = 1) : Tooltip
         {
-            var _loc_17:Array = null;
-            var _loc_18:Tooltip = null;
+            var _loc_18:* = null;
+            var _loc_19:* = null;
             if (!_isInit)
             {
                 Berilia.getInstance().addEventListener(UiRenderEvent.UIRenderComplete, onUiRenderComplete);
@@ -54,21 +54,23 @@ package com.ankamagames.berilia.managers
             }
             if (param13)
             {
-                _loc_17 = param13.split("#");
-                if (_tooltipCache[_loc_17[0]] && _loc_17.length == 1 || _tooltipCache[_loc_17[0]] && _loc_17.length > 1 && _tooltipCacheParam[_loc_17[0]] == _loc_17[1])
+                _loc_18 = param13.split("#");
+                if (_tooltipCache[_loc_18[0]] && _loc_18.length == 1 || _tooltipCache[_loc_18[0]] && _loc_18.length > 1 && _tooltipCacheParam[_loc_18[0]] == _loc_18[1])
                 {
-                    _loc_18 = _tooltipCache[_loc_17[0]] as Tooltip;
+                    _loc_19 = _tooltipCache[_loc_18[0]] as Tooltip;
                     _tooltips[param5] = param1;
-                    _tooltipsStrata[param5] = _loc_18.display.strata;
-                    Berilia.getInstance().uiList[param5] = _loc_18.display;
-                    DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt((StrataEnum.STRATA_TOOLTIP + 1))).addChild(_loc_18.display);
-                    _loc_18.display.x = 0;
-                    _loc_18.display.y = 0;
-                    _loc_18.display.uiClass.main(new TooltipProperties(_loc_18, param4, getTargetRect(param2), param6, param7, param8, SecureCenter.secure(param1), param12));
-                    return _loc_18;
+                    _tooltipsStrata[param5] = _loc_19.display.strata;
+                    Berilia.getInstance().uiList[param5] = _loc_19.display;
+                    DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt((StrataEnum.STRATA_TOOLTIP + 1))).addChild(_loc_19.display);
+                    _loc_19.display.x = 0;
+                    _loc_19.display.y = 0;
+                    _loc_19.display.scaleX = param16;
+                    _loc_19.display.scaleY = param16;
+                    _loc_19.display.uiClass.main(new TooltipProperties(_loc_19, param4, getTargetRect(param2), param6, param7, param8, SecureCenter.secure(param1), param12, param16));
+                    return _loc_19;
                 }
             }
-            var _loc_16:* = TooltipsFactory.create(param1, param10, param11, param12);
+            var _loc_17:* = TooltipsFactory.create(param1, param10, param11, param12);
             if (!TooltipsFactory.create(param1, param10, param11, param12))
             {
                 _log.error("Erreur lors du rendu du tooltip de " + param1 + " (" + getQualifiedClassName(param1) + ")");
@@ -76,15 +78,15 @@ package com.ankamagames.berilia.managers
             }
             if (param3)
             {
-                _loc_16.uiModuleName = param3.id;
+                _loc_17.uiModuleName = param3.id;
             }
             _tooltips[param5] = param1;
             if (param14)
             {
                 param15 = StrataEnum.STRATA_TOP;
             }
-            _loc_16.askTooltip(new Callback(onTooltipReady, _loc_16, param3, param5, param1, param2, param4, param6, param7, param8, param13, param15, param12));
-            return _loc_16;
+            _loc_17.askTooltip(new Callback(onTooltipReady, _loc_17, param3, param5, param1, param2, param4, param6, param7, param8, param13, param15, param12, param16));
+            return _loc_17;
         }// end function
 
         public static function hide(param1:String = "standard") : void
@@ -116,7 +118,7 @@ package com.ankamagames.berilia.managers
 
         public static function updateContent(param1:String, param2:String, param3:Object) : void
         {
-            var _loc_4:Tooltip = null;
+            var _loc_4:* = null;
             if (isVisible(param2))
             {
                 _loc_4 = _tooltipCache[param1] as Tooltip;
@@ -130,8 +132,8 @@ package com.ankamagames.berilia.managers
 
         public static function hideAll() : void
         {
-            var _loc_1:String = null;
-            var _loc_2:int = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             for (_loc_1 in _tooltips)
             {
                 
@@ -146,7 +148,7 @@ package com.ankamagames.berilia.managers
 
         public static function clearCache() : void
         {
-            var _loc_2:Tooltip = null;
+            var _loc_2:* = null;
             var _loc_1:* = Berilia.getInstance();
             for each (_loc_2 in _tooltipCache)
             {
@@ -160,26 +162,26 @@ package com.ankamagames.berilia.managers
             return;
         }// end function
 
-        private static function onTooltipReady(param1:Tooltip, param2:UiModule, param3:String, param4, param5, param6:Boolean, param7:uint, param8:uint, param9:int, param10:String, param11:int, param12:Object) : void
+        private static function onTooltipReady(param1:Tooltip, param2:UiModule, param3:String, param4, param5, param6:Boolean, param7:uint, param8:uint, param9:int, param10:String, param11:int, param12:Object, param13:int) : void
         {
-            var _loc_15:UiData = null;
-            var _loc_16:Array = null;
-            var _loc_13:* = param10 != null;
-            var _loc_14:* = _tooltips[param3] && _tooltips[param3] === param4;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
+            var _loc_14:* = param10 != null;
+            var _loc_15:* = _tooltips[param3] && _tooltips[param3] === param4;
             _tooltipsStrata[param3] = param11;
-            if (_loc_14 || param10)
+            if (_loc_15 || param10)
             {
-                _loc_15 = new UiData(param2, param3, null, null);
-                _loc_15.xml = param1.content;
-                _loc_15.uiClass = param1.scriptClass;
-                param1.display = Berilia.getInstance().loadUi(param2, _loc_15, param3, new TooltipProperties(param1, param6, getTargetRect(param5), param7, param8, param9, SecureCenter.secure(param4), param12), true, param11, !_loc_14);
+                _loc_16 = new UiData(param2, param3, null, null);
+                _loc_16.xml = param1.content;
+                _loc_16.uiClass = param1.scriptClass;
+                param1.display = Berilia.getInstance().loadUi(param2, _loc_16, param3, new TooltipProperties(param1, param6, getTargetRect(param5), param7, param8, param9, SecureCenter.secure(param4), param12, param13), true, param11, !_loc_15, null);
                 if (param10)
                 {
-                    _loc_16 = param10.split("#");
-                    _tooltipCache[_loc_16[0]] = param1;
-                    if (_loc_16.length > 0)
+                    _loc_17 = param10.split("#");
+                    _tooltipCache[_loc_17[0]] = param1;
+                    if (_loc_17.length > 0)
                     {
-                        _tooltipCacheParam[_loc_16[0]] = _loc_16[1];
+                        _tooltipCacheParam[_loc_17[0]] = _loc_17[1];
                     }
                     param1.display.cached = true;
                     param1.display.cacheAsBitmap = true;
@@ -190,12 +192,12 @@ package com.ankamagames.berilia.managers
 
         private static function getTargetRect(param1) : TooltipRectangle
         {
-            var _loc_2:Point = null;
-            var _loc_4:Point = null;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Boolean = false;
-            var _loc_8:TooltipRectangle = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = false;
+            var _loc_8:* = null;
             var _loc_3:* = SecureCenter.unsecure(param1);
             if (_loc_3)
             {
@@ -252,9 +254,9 @@ package com.ankamagames.berilia.managers
 
         private static function removeTooltipsHiddenByUi(param1:String) : void
         {
-            var _loc_5:String = null;
-            var _loc_6:int = 0;
-            var _loc_7:Rectangle = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
             var _loc_2:* = Berilia.getInstance();
             var _loc_3:* = _loc_2.getUi(param1);
             if (!_loc_3)

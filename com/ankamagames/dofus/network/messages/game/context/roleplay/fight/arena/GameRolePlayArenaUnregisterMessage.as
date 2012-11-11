@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

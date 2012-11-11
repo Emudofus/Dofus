@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.uiRender
+﻿package com.ankamagames.berilia.uiRender
 {
     import com.ankamagames.berilia.components.*;
     import com.ankamagames.berilia.enums.*;
@@ -125,7 +125,7 @@ package com.ankamagames.berilia.uiRender
                     }
                 }
                 errorLog;
-                var _loc_4:int = 0;
+                var _loc_4:* = 0;
                 var _loc_5:* = openTag;
                 while (_loc_5 in _loc_4)
                 {
@@ -136,7 +136,7 @@ package com.ankamagames.berilia.uiRender
                         errorLog = errorLog + ("\n - " + tag + " have no closing tag");
                     }
                 }
-                var _loc_4:int = 0;
+                var _loc_4:* = 0;
                 var _loc_5:* = closeTag;
                 while (_loc_5 in _loc_4)
                 {
@@ -171,8 +171,8 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseMainNode(param1:XMLNode) : UiDefinition
         {
-            var _loc_12:XMLNode = null;
-            var _loc_14:int = 0;
+            var _loc_12:* = null;
+            var _loc_14:* = 0;
             var _loc_2:* = new UiDefinition();
             var _loc_3:* = param1.childNodes;
             if (!_loc_3.length)
@@ -256,7 +256,7 @@ package com.ankamagames.berilia.uiRender
 
         private function cleanLocalConstants(param1:Array) : void
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             for (_loc_2 in param1)
             {
                 
@@ -267,12 +267,12 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseConstants(param1:XMLNode, param2:Array) : void
         {
-            var _loc_3:XMLNode = null;
-            var _loc_6:int = 0;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
-            var _loc_10:String = null;
+            var _loc_3:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_4:* = param1.childNodes;
             var _loc_5:* = param1.childNodes.length;
             _loc_6 = 0;
@@ -334,16 +334,16 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseGraphicElement(param1:XMLNode, param2:XMLNode = null, param3:BasicElement = null) : BasicElement
         {
-            var _loc_4:XMLNode = null;
-            var _loc_7:int = 0;
-            var _loc_8:String = null;
-            var _loc_9:Class = null;
+            var _loc_4:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_10:* = undefined;
-            var _loc_11:Object = null;
-            var _loc_12:String = null;
-            var _loc_13:String = null;
-            var _loc_14:Class = null;
-            var _loc_15:String = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
             var _loc_5:* = param1.childNodes;
             var _loc_6:* = param1.childNodes.length;
             if (!param2)
@@ -561,45 +561,66 @@ package com.ankamagames.berilia.uiRender
                             }
                         }
                         _loc_11 = this.getClassDesc(_loc_9);
-                        if (_loc_4.firstChild)
+                        if (_loc_11[_loc_4.nodeName])
                         {
-                            switch(_loc_11[_loc_4.nodeName])
+                            if (_loc_4.firstChild)
                             {
-                                case "Boolean":
+                                _loc_12 = _loc_4.toString();
+                                _loc_13 = _loc_12.substr(_loc_4.nodeName.length + 2, _loc_12.length - _loc_4.nodeName.length * 2 - 5);
+                                _loc_10 = LangManager.getInstance().replaceKey(_loc_13);
+                                switch(_loc_11[_loc_4.nodeName])
                                 {
+                                    case "Boolean":
+                                    {
+                                        _loc_10 = _loc_10 != "false";
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        if (_loc_10.charAt(0) == "[" && _loc_10.charAt((_loc_10.length - 1)) == "]")
+                                        {
+                                            break;
+                                        }
+                                        _loc_14 = getDefinitionByName(_loc_11[_loc_4.nodeName]) as Class;
+                                        _loc_10 = new _loc_14(_loc_10);
+                                        break;
+                                    }
+                                }
+                                ContainerElement(param3).properties[_loc_4.nodeName] = _loc_10;
+                            }
+                        }
+                        else
+                        {
+                            switch(param2.nodeName)
+                            {
+                                case XmlTagsEnum.TAG_CONTAINER:
+                                case XmlTagsEnum.TAG_BUTTON:
+                                case XmlTagsEnum.TAG_STATECONTAINER:
+                                case XmlTagsEnum.TAG_SCROLLCONTAINER:
+                                case XmlTagsEnum.TAG_GRID:
+                                case XmlTagsEnum.TAG_COMBOBOX:
+                                case XmlTagsEnum.TAG_TREE:
+                                {
+                                    if (ApplicationDomain.currentDomain.hasDefinition("com.ankamagames.berilia.components." + _loc_4.nodeName))
+                                    {
+                                        ContainerElement(param3).childs.push(this.parseGraphicElement(_loc_4));
+                                    }
+                                    else
+                                    {
+                                        this._log.warn("[" + this._sUrl + "] " + _loc_4.nodeName + " is unknown component / property on " + param2.nodeName);
+                                    }
                                     break;
                                 }
                                 default:
                                 {
+                                    if (_loc_4.firstChild != null)
+                                    {
+                                        _loc_15 = _loc_4.toString();
+                                        param3.properties[_loc_4.nodeName] = _loc_15.substr(_loc_4.nodeName.length + 2, _loc_15.length - _loc_4.nodeName.length * 2 - 5);
+                                    }
+                                    break;
                                     break;
                                 }
-                            }
-                        }
-                        switch(param2.nodeName)
-                        {
-                            case XmlTagsEnum.TAG_CONTAINER:
-                            case XmlTagsEnum.TAG_BUTTON:
-                            case XmlTagsEnum.TAG_STATECONTAINER:
-                            case XmlTagsEnum.TAG_SCROLLCONTAINER:
-                            case XmlTagsEnum.TAG_GRID:
-                            case XmlTagsEnum.TAG_COMBOBOX:
-                            case XmlTagsEnum.TAG_TREE:
-                            {
-                                if (ApplicationDomain.currentDomain.hasDefinition("com.ankamagames.berilia.components." + _loc_4.nodeName))
-                                {
-                                }
-                                else
-                                {
-                                }
-                                break;
-                            }
-                            default:
-                            {
-                                if (_loc_4.firstChild != null)
-                                {
-                                }
-                                break;
-                                break;
                             }
                         }
                         break;
@@ -617,12 +638,12 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseStateContainer(param1:XMLNode, param2:String)
         {
-            var _loc_3:XMLNode = null;
-            var _loc_6:int = 0;
-            var _loc_7:StateContainerElement = null;
+            var _loc_3:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
             var _loc_8:* = undefined;
-            var _loc_9:String = null;
-            var _loc_10:Array = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_4:* = param1.childNodes;
             var _loc_5:* = param1.childNodes.length;
             if (param2 == XmlTagsEnum.TAG_BUTTON)
@@ -728,14 +749,14 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseSetProperties(param1:XMLNode, param2:Object) : void
         {
-            var _loc_3:XMLNode = null;
-            var _loc_6:int = 0;
-            var _loc_7:String = null;
-            var _loc_8:Array = null;
-            var _loc_9:XMLNode = null;
-            var _loc_10:Array = null;
-            var _loc_11:int = 0;
-            var _loc_12:int = 0;
+            var _loc_3:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
             var _loc_4:* = param1.childNodes;
             var _loc_5:* = param1.childNodes.length;
             _loc_6 = 0;
@@ -789,11 +810,11 @@ package com.ankamagames.berilia.uiRender
         private function cleanComponentProperty(param1:BasicElement, param2:Array = null) : Boolean
         {
             var _loc_6:* = undefined;
-            var _loc_7:Class = null;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
-            var _loc_10:Array = null;
-            var _loc_11:String = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             if (!param2)
             {
                 param2 = param1.properties;
@@ -804,28 +825,47 @@ package com.ankamagames.berilia.uiRender
             for (_loc_8 in param2)
             {
                 
-                switch(_loc_4[_loc_8])
+                if (_loc_4[_loc_8])
                 {
-                    case "Boolean":
+                    _loc_6 = LangManager.getInstance().replaceKey(param2[_loc_8]);
+                    switch(_loc_4[_loc_8])
                     {
-                        break;
+                        case "Boolean":
+                        {
+                            _loc_6 = _loc_6 != "false";
+                            break;
+                        }
+                        case getQualifiedClassName(Uri):
+                        {
+                            _loc_7 = getDefinitionByName(_loc_4[_loc_8]) as Class;
+                            _loc_6 = new _loc_7(_loc_6);
+                            break;
+                        }
+                        case "*":
+                        {
+                            break;
+                        }
+                        default:
+                        {
+                            if (_loc_6.charAt(0) == "[" && _loc_6.charAt((_loc_6.length - 1)) == "]")
+                            {
+                                break;
+                            }
+                            _loc_7 = getDefinitionByName(_loc_4[_loc_8]) as Class;
+                            _loc_6 = new _loc_7(_loc_6);
+                            break;
+                        }
                     }
-                    case getQualifiedClassName(Uri):
-                    {
-                        break;
-                    }
-                    case "*":
-                    {
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
+                    _loc_5[_loc_8] = _loc_6;
+                    continue;
                 }
+                _loc_10 = new Array();
                 for (_loc_11 in _loc_4)
                 {
+                    
+                    _loc_10.push(_loc_11);
                 }
+                this._log.warn("[" + this._sUrl + "]" + _loc_8 + " is unknow for " + param1.className + " component" + this.suggest(_loc_8, _loc_10));
             }
             for (_loc_9 in _loc_5)
             {
@@ -837,8 +877,8 @@ package com.ankamagames.berilia.uiRender
 
         protected function getClassDesc(param1:Object) : Object
         {
-            var _loc_5:XML = null;
-            var _loc_6:XML = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = getQualifiedClassName(param1);
             if (_classDescCache[_loc_2])
             {
@@ -861,10 +901,10 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseSize(param1:XMLNode, param2:Boolean) : GraphicSize
         {
-            var _loc_3:XMLNode = null;
-            var _loc_6:int = 0;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
+            var _loc_3:* = null;
+            var _loc_6:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             if (param1.attributes.length)
             {
                 this._log.warn("[" + this._sUrl + "]" + param1.nodeName + " cannot have attribut");
@@ -917,14 +957,14 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseAnchors(param1:XMLNode) : Array
         {
-            var _loc_2:XMLNode = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:XMLNode = null;
-            var _loc_9:GraphicLocation = null;
-            var _loc_10:String = null;
-            var _loc_11:Array = null;
-            var _loc_12:int = 0;
+            var _loc_2:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = 0;
             if (param1.attributes.length)
             {
                 this._log.warn("[" + this._sUrl + "]" + param1.nodeName + " cannot have attribut");
@@ -1036,9 +1076,9 @@ package com.ankamagames.berilia.uiRender
 
         protected function parseShortcutsEvent(param1:XMLNode) : Array
         {
-            var _loc_2:XMLNode = null;
-            var _loc_5:int = 0;
-            var _loc_6:String = null;
+            var _loc_2:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
             var _loc_3:* = param1.childNodes;
             var _loc_4:* = _loc_3.length;
             var _loc_7:* = new Array();
@@ -1060,10 +1100,10 @@ package com.ankamagames.berilia.uiRender
 
         private function parseEvent(param1:XMLNode) : Array
         {
-            var _loc_2:XMLNode = null;
-            var _loc_5:int = 0;
-            var _loc_6:String = null;
-            var _loc_8:Array = null;
+            var _loc_2:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_8:* = null;
             var _loc_3:* = param1.childNodes;
             var _loc_4:* = _loc_3.length;
             var _loc_7:* = new Array();
@@ -1231,7 +1271,7 @@ package com.ankamagames.berilia.uiRender
 
         private function getStrataNum(param1:String) : uint
         {
-            var _loc_2:Array = null;
+            var _loc_2:* = null;
             if (param1 == StrataEnum.STRATA_NAME_LOW)
             {
                 return StrataEnum.STRATA_LOW;
@@ -1259,9 +1299,9 @@ package com.ankamagames.berilia.uiRender
 
         private function suggest(param1:String, param2:Array, param3:uint = 5, param4:uint = 3) : String
         {
-            var _loc_7:Number = NaN;
-            var _loc_8:int = 0;
-            var _loc_5:String = "";
+            var _loc_7:* = NaN;
+            var _loc_8:* = 0;
+            var _loc_5:* = "";
             var _loc_6:* = new Array();
             _loc_8 = 0;
             while (_loc_8 < param2.length)

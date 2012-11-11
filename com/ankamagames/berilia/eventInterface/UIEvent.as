@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.eventInterface
+﻿package com.ankamagames.berilia.eventInterface
 {
 
     public interface UIEvent

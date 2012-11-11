@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.errors
+﻿package com.ankamagames.jerakine.utils.errors
 {
 
     public class FileTypeError extends Error

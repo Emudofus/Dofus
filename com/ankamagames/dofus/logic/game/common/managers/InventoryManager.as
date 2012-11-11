@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.managers
+﻿package com.ankamagames.dofus.logic.game.common.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;

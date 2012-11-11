@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.quest
+﻿package com.ankamagames.dofus.logic.game.common.actions.quest
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

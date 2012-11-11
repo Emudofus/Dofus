@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.messages
+﻿package com.ankamagames.atouin.messages
 {
 
     public class MapsLoadingStartedMessage extends MapMessage

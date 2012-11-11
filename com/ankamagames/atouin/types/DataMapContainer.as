@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.elements.subtypes.*;
@@ -47,11 +47,11 @@ package com.ankamagames.atouin.types
 
         public function removeContainer() : void
         {
-            var _loc_1:Sprite = null;
-            var _loc_2:Sprite = null;
-            var _loc_3:CellReference = null;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < this._aCell.length)
             {
                 
@@ -120,13 +120,13 @@ package com.ankamagames.atouin.types
 
         public function clean(param1:Boolean = false) : Boolean
         {
-            var _loc_2:Sprite = null;
-            var _loc_3:Sprite = null;
-            var _loc_4:CellReference = null;
-            var _loc_5:uint = 0;
-            var _loc_6:Array = null;
-            var _loc_7:String = null;
-            var _loc_8:WorldPoint = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (!param1)
             {
                 _loc_6 = VisibleCellDetection.detectCell(false, this._map, WorldPoint.fromMapId(this.id), Atouin.getInstance().options.frustum, MapDisplayManager.getInstance().currentMapPoint).cell;
@@ -188,7 +188,7 @@ package com.ankamagames.atouin.types
 
         public function addAnimatedElement(param1:WorldEntitySprite, param2:EntityGraphicalElementData) : void
         {
-            var _loc_3:Object = {element:param1, data:param2};
+            var _loc_3:* = {element:param1, data:param2};
             this._animatedElement.push(_loc_3);
             this.updateAnimatedElement(_loc_3);
             return;
@@ -196,7 +196,7 @@ package com.ankamagames.atouin.types
 
         public function setTemporaryAnimatedElementState(param1:Boolean) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             this._temporaryEnable = param1;
             for each (_loc_2 in this._animatedElement)
             {
@@ -333,7 +333,7 @@ package com.ankamagames.atouin.types
 
         private function onEntityRendered(event:TiphonEvent) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._animatedElement)
             {
                 
@@ -350,7 +350,7 @@ package com.ankamagames.atouin.types
 
         private function onOptionChange(event:PropertyChangeEvent) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (event.propertyName == "allowAnimatedGfx")
             {
                 this._allowAnimatedGfx = event.propertyValue;

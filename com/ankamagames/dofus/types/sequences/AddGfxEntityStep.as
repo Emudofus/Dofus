@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.sequences
+﻿package com.ankamagames.dofus.types.sequences
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.atouin.managers.*;
@@ -41,9 +41,9 @@ package com.ankamagames.dofus.types.sequences
 
         override public function start() : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:Array = null;
-            var _loc_4:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             var _loc_1:* = EntitiesManager.getInstance().getFreeEntityId();
             this._entity = new Projectile(_loc_1, TiphonEntityLook.fromString("{" + this._gfxId + "}"), true);
             this._entity.addEventListener(TiphonEvent.ANIMATION_SHOT, this.shot);

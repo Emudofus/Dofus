@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.*;
@@ -73,7 +73,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
             }
             this._needToWarn = true;
             BuffManager.getInstance().dispell(_loc_1.id, false, false, true);
-            var _loc_4:* = BuffManager.getInstance().removeLinkedBuff(_loc_1.id, false, false, true);
+            var _loc_4:* = BuffManager.getInstance().removeLinkedBuff(_loc_1.id, false, true);
             BuffManager.getInstance().reaffectBuffs(_loc_1.id);
             _loc_2.stats.lifePoints = 0;
             if (PlayedCharacterManager.getInstance().infos.id == this._entityId)
@@ -105,7 +105,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         private function manualRollOut(param1:int) : void
         {
-            var _loc_2:FightContextFrame = null;
+            var _loc_2:* = null;
             if (FightContextFrame.fighterEntityTooltipId == param1)
             {
                 TooltipManager.hide();

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.system
+﻿package com.ankamagames.jerakine.utils.system
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.display.*;
@@ -51,7 +51,7 @@ package com.ankamagames.jerakine.utils.system
 
         public function show() : void
         {
-            StageShareManager.stage.addChild(this);
+            StageShareManager.rootContainer.addChild(this);
             return;
         }// end function
 
@@ -133,9 +133,9 @@ package com.ankamagames.jerakine.utils.system
         private function buildUI(param1:Boolean = false) : void
         {
             var _loc_3:* = undefined;
-            var _loc_4:Sprite = null;
-            var _loc_5:Object = null;
-            var _loc_6:DisplayObject = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (!this._title || !this._content)
             {
                 return;

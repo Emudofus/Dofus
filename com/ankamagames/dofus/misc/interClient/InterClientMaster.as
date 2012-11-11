@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.interClient
+﻿package com.ankamagames.dofus.misc.interClient
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.events.*;
@@ -116,13 +116,13 @@ package com.ankamagames.dofus.misc.interClient
 
         private function ping(param1:String) : void
         {
-            var _loc_5:String = null;
+            var _loc_5:* = null;
             this._lastPingTs = getTimer();
             this._sending_lc.send(param1, "pong");
             this._lastClientPing[param1] = this._lastPingTs;
             var _loc_2:* = InterClientManager.getInstance().clientListInfo;
             var _loc_3:* = _loc_2.length;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 

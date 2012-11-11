@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import flash.utils.*;
 
@@ -54,14 +54,14 @@ package com.ankamagames.jerakine.data
             return I18nFileAccessor.getInstance().hasNamedText(param1);
         }// end function
 
-        private static function replaceParams(param1:String, param2:Array, param3:String) : String
+        public static function replaceParams(param1:String, param2:Array, param3:String) : String
         {
             if (!param2 || !param2.length)
             {
                 return param1;
             }
             var _loc_4:* = new Array();
-            var _loc_5:uint = 1;
+            var _loc_5:* = 1;
             while (_loc_5 <= param2.length)
             {
                 

@@ -1,7 +1,8 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
+    import com.ankamagames.berilia.enums.*;
     import com.ankamagames.berilia.frames.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -10,6 +11,7 @@ package com.ankamagames.berilia.components
     import com.ankamagames.berilia.utils.*;
     import com.ankamagames.jerakine.handlers.messages.mouse.*;
     import com.ankamagames.jerakine.interfaces.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.display.*;
@@ -21,7 +23,7 @@ package com.ankamagames.berilia.components
     import flash.utils.*;
     import gs.events.*;
 
-    public class Slot extends GraphicContainer implements ISlotDataHolder, FinalizableUIComponent, IDragAndDropHandler
+    public class Slot extends ButtonContainer implements ISlotDataHolder, FinalizableUIComponent, IDragAndDropHandler
     {
         private var _data:ISlotData;
         private var _dropValidator:Function;
@@ -33,12 +35,12 @@ package com.ankamagames.berilia.components
         private var _icon:Texture;
         private var _effect:Texture;
         private var _tx_timerForeground:Texture;
-        private var _finalized:Boolean = false;
         private var _allowDrag:Boolean = true;
         private var _dragStartPoint:Point;
         private var _displayBackgroundIcon:Boolean = true;
         private var _dragging:Boolean = false;
         private var _selected:Boolean;
+        private var _isButton:Boolean = false;
         private var _isTimerRunning:Boolean = false;
         private var _timerMaxDuration:int;
         private var _timerStartTime:int;
@@ -60,9 +62,11 @@ package com.ankamagames.berilia.components
         private var _quantitySprite:Sprite;
         private var _quantityText:TextField;
         private const _quantityTextFormat:TextFormat;
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(Slot));
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         public static const DRAG_AND_DROP_CURSOR_NAME:String = "DragAndDrop";
         public static const NEED_CACHE_AS_BITMAP:String = "needCacheAsBitmap";
+        private static var _unicID:uint = 0;
 
         public function Slot()
         {
@@ -83,6 +87,10 @@ package com.ankamagames.berilia.components
             {
                 this._data.addHolder(this);
             }
+            if (this._isButton)
+            {
+                addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
+            }
             this.refresh();
             return;
         }// end function
@@ -92,30 +100,37 @@ package com.ankamagames.berilia.components
             return SecureCenter.unsecure(this._data);
         }// end function
 
-        public function get finalized() : Boolean
+        override public function get finalized() : Boolean
         {
-            return this._finalized;
+            return _finalized;
         }// end function
 
-        public function set finalized(param1:Boolean) : void
+        override public function set finalized(param1:Boolean) : void
         {
-            this._finalized = param1;
+            _finalized = param1;
             return;
         }// end function
 
-        public function set selected(param1:Boolean) : void
+        override public function set selected(param1:Boolean) : void
         {
             this._selected = param1;
-            if (this._effect)
+            if (!this._isButton)
             {
-                if (param1)
+                if (this._effect)
                 {
-                    this._effect.uri = this.selectedTexture;
+                    if (param1)
+                    {
+                        this._effect.uri = this.selectedTexture;
+                    }
+                    else
+                    {
+                        this._effect.uri = null;
+                    }
                 }
-                else
-                {
-                    this._effect.uri = null;
-                }
+            }
+            else
+            {
+                super.selected = param1;
             }
             return;
         }// end function
@@ -279,6 +294,22 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
+        public function set isButton(param1:Boolean) : void
+        {
+            this._isButton = param1;
+            if (!param1)
+            {
+                buttonMode = false;
+                useHandCursor = false;
+            }
+            else
+            {
+                buttonMode = true;
+                useHandCursor = true;
+            }
+            return;
+        }// end function
+
         public function refresh() : void
         {
             this.finalize();
@@ -326,11 +357,19 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
-        public function finalize() : void
+        override public function finalize() : void
         {
+            var stateChangingProperties:Array;
             if (!this._icon)
             {
+                var _loc_3:* = _unicID + 1;
+                _unicID = _loc_3;
                 this._icon = new Texture();
+                if (EmbedIcons.SLOT_DEFAULT_ICON != null)
+                {
+                    this._icon.defaultBitmapData = EmbedIcons.SLOT_DEFAULT_ICON;
+                }
+                this._icon.name = "tx_slotUnicIcon" + _unicID;
                 this._icon.addEventListener(TextureLoadFailedEvent.EVENT_TEXTURE_LOAD_FAILED, this.onSlotTextureFailed);
                 this._icon.forceReload = true;
                 this._icon.mouseEnabled = false;
@@ -381,7 +420,7 @@ package com.ankamagames.berilia.components
             }
             catch (e:Error)
             {
-                _log.warn("C\'est mal de pas impl�menter les fonction de base sur " + getQualifiedClassName(_data));
+                _log.warn("C\'est mal de pas implémenter les fonction de base sur " + getQualifiedClassName(_data));
             }
             if (this._data && this._data.info1 && !this._hideTopLabel)
             {
@@ -416,7 +455,30 @@ package com.ankamagames.berilia.components
                 this._effect.finalized = true;
                 addChild(this._effect);
             }
-            this._finalized = true;
+            if (this._isButton && (!changingStateData || changingStateData.length == 0))
+            {
+                stateChangingProperties = new Array();
+                stateChangingProperties[StatesEnum.STATE_NORMAL] = new Array();
+                stateChangingProperties[StatesEnum.STATE_NORMAL][this._icon.name] = new Array();
+                stateChangingProperties[StatesEnum.STATE_NORMAL][this._icon.name]["gotoAndStop"] = "normal";
+                stateChangingProperties[StatesEnum.STATE_OVER] = new Array();
+                stateChangingProperties[StatesEnum.STATE_OVER][this._icon.name] = new Array();
+                stateChangingProperties[StatesEnum.STATE_OVER][this._icon.name]["gotoAndStop"] = "over";
+                stateChangingProperties[StatesEnum.STATE_CLICKED] = new Array();
+                stateChangingProperties[StatesEnum.STATE_CLICKED][this._icon.name] = new Array();
+                stateChangingProperties[StatesEnum.STATE_CLICKED][this._icon.name]["gotoAndStop"] = "pressed";
+                stateChangingProperties[StatesEnum.STATE_SELECTED] = new Array();
+                stateChangingProperties[StatesEnum.STATE_SELECTED][this._icon.name] = new Array();
+                stateChangingProperties[StatesEnum.STATE_SELECTED][this._icon.name]["gotoAndStop"] = "selected";
+                stateChangingProperties[StatesEnum.STATE_SELECTED_OVER] = new Array();
+                stateChangingProperties[StatesEnum.STATE_SELECTED_OVER][this._icon.name] = new Array();
+                stateChangingProperties[StatesEnum.STATE_SELECTED_OVER][this._icon.name]["gotoAndStop"] = "selected_over";
+                stateChangingProperties[StatesEnum.STATE_SELECTED_CLICKED] = new Array();
+                stateChangingProperties[StatesEnum.STATE_SELECTED_CLICKED][this._icon.name] = new Array();
+                stateChangingProperties[StatesEnum.STATE_SELECTED_CLICKED][this._icon.name]["gotoAndStop"] = "selected_pressed";
+                changingStateData = stateChangingProperties;
+            }
+            _finalized = true;
             if (getUi())
             {
                 getUi().iAmFinalized(this);
@@ -475,15 +537,61 @@ package com.ankamagames.berilia.components
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_2:LinkedCursorData = null;
-            var _loc_3:* = undefined;
-            var _loc_4:* = undefined;
-            var _loc_5:uint = 0;
-            var _loc_6:IDragAndDropHandler = null;
-            var _loc_7:SlotDragAndDropData = null;
-            var _loc_8:ISlotDataHolder = null;
-            var _loc_9:IInterfaceListener = null;
-            var _loc_10:IInterfaceListener = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = undefined;
+            var _loc_7:* = undefined;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            if (this._isButton)
+            {
+                _loc_3 = 9999;
+                if (!super.canProcessMessage(param1))
+                {
+                    return true;
+                }
+                if (!_disabled)
+                {
+                    switch(true)
+                    {
+                        case param1 is MouseDownMessage:
+                        {
+                            _mousePressed = true;
+                            break;
+                        }
+                        case param1 is MouseDoubleClickMessage:
+                        case param1 is MouseClickMessage:
+                        {
+                            _mousePressed = false;
+                            if (!isMute)
+                            {
+                                for each (_loc_4 in Berilia.getInstance().UISoundListeners)
+                                {
+                                    
+                                    _loc_5 = super.selectSound();
+                                    if (int(_loc_5) != -1)
+                                    {
+                                        _loc_4.playUISound(_loc_5);
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        default:
+                        {
+                            super.process(param1);
+                            break;
+                            break;
+                        }
+                    }
+                }
+            }
             switch(true)
             {
                 case param1 is MouseDownMessage:
@@ -511,9 +619,9 @@ package com.ankamagames.berilia.components
                         _loc_2 = LinkedCursorSpriteManager.getInstance().getItem(DRAG_AND_DROP_CURSOR_NAME);
                         if (_loc_2 && _loc_2.data is SlotDragAndDropData && SlotDragAndDropData(_loc_2.data).slotData != this._data)
                         {
-                            _loc_4 = SecureCenter.secure(SlotDragAndDropData(_loc_2.data).currentHolder);
-                            _loc_5 = getTimer();
-                            if (this.dropValidator != null && this.dropValidator(this, SlotDragAndDropData(_loc_2.data).slotData, _loc_4))
+                            _loc_7 = SecureCenter.secure(SlotDragAndDropData(_loc_2.data).currentHolder);
+                            _loc_8 = getTimer();
+                            if (this.dropValidator != null && this.dropValidator(this, SlotDragAndDropData(_loc_2.data).slotData, _loc_7))
                             {
                                 this._effect.uri = this.acceptDragTexture;
                             }
@@ -550,57 +658,57 @@ package com.ankamagames.berilia.components
                 }
                 case param1 is MouseReleaseOutsideMessage:
                 {
-                    _loc_3 = MouseReleaseOutsideMessage(param1).mouseEvent.target;
+                    _loc_6 = MouseReleaseOutsideMessage(param1).mouseEvent.target;
                     _loc_2 = LinkedCursorSpriteManager.getInstance().getItem(DRAG_AND_DROP_CURSOR_NAME);
-                    if (_loc_2 && this._dragging && !(_loc_3 is ISlotDataHolder))
+                    if (_loc_2 && this._dragging && !(_loc_6 is ISlotDataHolder))
                     {
-                        _loc_4 = SecureCenter.secure(SlotDragAndDropData(_loc_2.data).currentHolder);
+                        _loc_7 = SecureCenter.secure(SlotDragAndDropData(_loc_2.data).currentHolder);
                         switch(true)
                         {
-                            case _loc_3 is IDragAndDropHandler:
+                            case _loc_6 is IDragAndDropHandler:
                             {
-                                if ((_loc_3 as IDragAndDropHandler).dropValidator != null)
+                                if ((_loc_6 as IDragAndDropHandler).dropValidator != null)
                                 {
-                                    _loc_6 = _loc_3 as IDragAndDropHandler;
-                                    _loc_7 = _loc_2.data;
-                                    _loc_8 = null;
-                                    if (_loc_7)
+                                    _loc_9 = _loc_6 as IDragAndDropHandler;
+                                    _loc_10 = _loc_2.data;
+                                    _loc_11 = null;
+                                    if (_loc_10)
                                     {
-                                        _loc_8 = _loc_7.currentHolder;
+                                        _loc_11 = _loc_10.currentHolder;
                                     }
-                                    if (_loc_6.dropValidator(this, this.data, _loc_8))
+                                    if (_loc_9.dropValidator(this, this.data, _loc_11))
                                     {
-                                        _loc_6.processDrop(this, this.data, _loc_8);
+                                        _loc_9.processDrop(this, this.data, _loc_11);
                                     }
-                                    for each (_loc_9 in Berilia.getInstance().UISoundListeners)
+                                    for each (_loc_12 in Berilia.getInstance().UISoundListeners)
                                     {
                                         
-                                        _loc_9.playUISound("16053");
+                                        _loc_12.playUISound("16053");
                                     }
                                 }
                                 break;
                             }
-                            case _loc_3 is MovieClip:
-                            case _loc_3 is TextField:
-                            case _loc_3 is Stage:
+                            case _loc_6 is MovieClip:
+                            case _loc_6 is TextField:
+                            case _loc_6 is Stage:
                             {
-                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedNorBeriliaNorWorld, _loc_4);
+                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedNorBeriliaNorWorld, _loc_7);
                                 break;
                             }
-                            case getQualifiedClassName(_loc_3.parent).indexOf("com.ankamagames.berilia") >= 0:
+                            case getQualifiedClassName(_loc_6.parent).indexOf("com.ankamagames.berilia") >= 0:
                             {
-                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedOnBerilia, _loc_4, _loc_3);
+                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedOnBerilia, _loc_7, _loc_6);
                                 break;
                             }
-                            case Boolean(_loc_3.parent && _loc_3.parent.parent is MapViewer):
-                            case Boolean(_loc_3.parent && getQualifiedClassName(_loc_3.parent).indexOf("Dofus") >= 0):
+                            case Boolean(_loc_6.parent && _loc_6.parent.parent is MapViewer):
+                            case Boolean(_loc_6.parent && getQualifiedClassName(_loc_6.parent).indexOf("Dofus") >= 0):
                             {
-                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedNorBeriliaNorWorld, _loc_4, _loc_3);
+                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedNorBeriliaNorWorld, _loc_7, _loc_6);
                                 break;
                             }
                             default:
                             {
-                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedOnWorld, _loc_4, _loc_3);
+                                KernelEventsManager.getInstance().processCallback(BeriliaHookList.SlotDropedOnWorld, _loc_7, _loc_6);
                                 break;
                                 break;
                             }
@@ -611,9 +719,9 @@ package com.ankamagames.berilia.components
                             KernelEventsManager.getInstance().processCallback(BeriliaHookList.DropEnd, SecureCenter.secure(SlotDragAndDropData(_loc_2.data).currentHolder));
                         }
                     }
-                    else if (_loc_3 is Slot)
+                    else if (_loc_6 is Slot)
                     {
-                        if ((_loc_3 as Slot).allowDrag == false)
+                        if ((_loc_6 as Slot).allowDrag == false)
                         {
                             LinkedCursorSpriteManager.getInstance().removeItem(DRAG_AND_DROP_CURSOR_NAME);
                             if (_loc_2 != null)
@@ -653,18 +761,18 @@ package com.ankamagames.berilia.components
                     _loc_2 = LinkedCursorSpriteManager.getInstance().getItem(DRAG_AND_DROP_CURSOR_NAME);
                     if (_loc_2 && _loc_2.data is SlotDragAndDropData)
                     {
-                        _loc_7 = _loc_2.data;
-                        if (_loc_7.slotData != this._data && this.dropValidator(this, SlotDragAndDropData(_loc_2.data).slotData, _loc_7.currentHolder))
+                        _loc_10 = _loc_2.data;
+                        if (_loc_10.slotData != this._data && this.dropValidator(this, SlotDragAndDropData(_loc_2.data).slotData, _loc_10.currentHolder))
                         {
-                            if (_loc_7.currentHolder)
+                            if (_loc_10.currentHolder)
                             {
-                                _loc_7.currentHolder.removeDropSource(_loc_7.currentHolder);
+                                _loc_10.currentHolder.removeDropSource(_loc_10.currentHolder);
                             }
-                            this.processDrop(this, _loc_7.slotData, _loc_7.currentHolder);
-                            for each (_loc_10 in Berilia.getInstance().UISoundListeners)
+                            this.processDrop(this, _loc_10.slotData, _loc_10.currentHolder);
+                            for each (_loc_13 in Berilia.getInstance().UISoundListeners)
                             {
                                 
-                                _loc_10.playUISound("16053");
+                                _loc_13.playUISound("16053");
                             }
                             LinkedCursorSpriteManager.getInstance().removeItem(DRAG_AND_DROP_CURSOR_NAME);
                         }
@@ -672,10 +780,10 @@ package com.ankamagames.berilia.components
                         {
                             LinkedCursorSpriteManager.getInstance().removeItem(DRAG_AND_DROP_CURSOR_NAME);
                         }
-                        Berilia.getInstance().handler.process(new DropMessage(this, _loc_7.currentHolder));
+                        Berilia.getInstance().handler.process(new DropMessage(this, _loc_10.currentHolder));
                         if (this._allowDrag)
                         {
-                            KernelEventsManager.getInstance().processCallback(BeriliaHookList.DropEnd, SecureCenter.secure(_loc_7.currentHolder));
+                            KernelEventsManager.getInstance().processCallback(BeriliaHookList.DropEnd, SecureCenter.secure(_loc_10.currentHolder));
                         }
                     }
                     if (this._dragging)
@@ -715,6 +823,7 @@ package com.ankamagames.berilia.components
                 this._unboxedRemoveDropSource = null;
                 this._processDrop = null;
                 this._unboxedProcessDrop = null;
+                removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
                 if (this._topLabel)
                 {
                     this._topLabel.remove();
@@ -789,7 +898,7 @@ package com.ankamagames.berilia.components
 
         private function onEnterFrame(event:Event) : void
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             var _loc_2:* = getTimer();
             if (_loc_2 > this._timerStartTime + this._timerMaxDuration)
             {
@@ -840,11 +949,11 @@ package com.ankamagames.berilia.components
 
         private function onDragAndDropStart(event:Event) : void
         {
-            var _loc_2:IInterfaceListener = null;
-            var _loc_3:LinkedCursorData = null;
-            var _loc_4:BitmapData = null;
-            var _loc_5:SlotDragAndDropData = null;
-            var _loc_6:Array = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (!stage)
             {
                 return;
@@ -875,5 +984,73 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
+        private function onAddedToStage(event:Event) : void
+        {
+            removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
+            var _loc_2:* = getUi();
+            if (_loc_2 && this._icon)
+            {
+                _loc_2.registerId(this._icon.name, new GraphicElement(this._icon, new Array(), this._icon.name));
+            }
+            return;
+        }// end function
+
     }
 }
+
+import com.ankamagames.berilia.*;
+
+import com.ankamagames.berilia.components.messages.*;
+
+import com.ankamagames.berilia.enums.*;
+
+import com.ankamagames.berilia.frames.*;
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.data.*;
+
+import com.ankamagames.berilia.types.event.*;
+
+import com.ankamagames.berilia.types.graphic.*;
+
+import com.ankamagames.berilia.utils.*;
+
+import com.ankamagames.jerakine.handlers.messages.mouse.*;
+
+import com.ankamagames.jerakine.interfaces.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.messages.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.filters.*;
+
+import flash.geom.*;
+
+import flash.text.*;
+
+import flash.utils.*;
+
+import gs.events.*;
+
+class DragSprite extends Sprite
+{
+
+    function DragSprite(param1:BitmapData)
+    {
+        alpha = 0.8;
+        addChild(new Bitmap(param1));
+        return;
+    }// end function
+
+}
+

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.factories
+﻿package com.ankamagames.berilia.factories
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.tooltip.*;
@@ -48,8 +48,8 @@ package com.ankamagames.berilia.factories
         public static function create(param1, param2:String = null, param3:Class = null, param4:Object = null) : Tooltip
         {
             var _loc_6:* = undefined;
-            var _loc_7:Tooltip = null;
-            var _loc_8:Object = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (!param2)
             {
                 param2 = _makerAssoc[getQualifiedClassName(param1)];
@@ -85,6 +85,12 @@ package com.ankamagames.berilia.factories
 
     }
 }
+
+import com.ankamagames.berilia.managers.*;
+
+import com.ankamagames.berilia.types.tooltip.*;
+
+import flash.utils.*;
 
 class TooltipData extends Object
 {

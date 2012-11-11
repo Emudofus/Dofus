@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.fight.challenge
+﻿package com.ankamagames.dofus.network.messages.game.context.fight.challenge
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
         public function serializeAs_ChallengeTargetsListMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.targetIds.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.targetIds.length)
             {
                 
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.targetCells.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.targetCells.length)
             {
                 
@@ -97,10 +97,10 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
 
         public function deserializeAs_ChallengeTargetsListMessage(param1:IDataInput) : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -109,7 +109,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight.challenge
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

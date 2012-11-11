@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.display
+﻿package com.ankamagames.tiphon.display
 {
     import flash.display.*;
     import flash.utils.*;
@@ -131,11 +131,11 @@ package com.ankamagames.tiphon.display
 
         public static function countFrames() : Object
         {
-            var _loc_3:RasterizedFrameList = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             for each (_loc_3 in FRAMES)
             {
                 
@@ -157,7 +157,7 @@ package com.ankamagames.tiphon.display
 
         public static function optimize(param1:int = 1) : void
         {
-            var _loc_2:RasterizedFrameList = null;
+            var _loc_2:* = null;
             for each (_loc_2 in FRAMES)
             {
                 

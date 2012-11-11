@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.character.creation
+﻿package com.ankamagames.dofus.network.messages.game.character.creation
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.enums.*;
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.character.creation
             param1.writeUTF(this.name);
             param1.writeByte(this.breed);
             param1.writeBoolean(this.sex);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 5)
             {
                 
@@ -95,12 +95,12 @@ package com.ankamagames.dofus.network.messages.game.character.creation
         {
             this.name = param1.readUTF();
             this.breed = param1.readByte();
-            if (this.breed < BreedEnum.Feca || this.breed > BreedEnum.Zobal)
+            if (this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Steamer)
             {
                 throw new Error("Forbidden value (" + this.breed + ") on element of CharacterCreationRequestMessage.breed.");
             }
             this.sex = param1.readBoolean();
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 5)
             {
                 

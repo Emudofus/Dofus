@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.character.choice
+﻿package com.ankamagames.dofus.network.messages.game.character.choice
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.character.choice.*;
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
         {
             super.serializeAs_CharactersListMessage(param1);
             param1.writeShort(this.charactersToRecolor.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.charactersToRecolor.length)
             {
                 
@@ -83,7 +83,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.charactersToRename.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.charactersToRename.length)
             {
                 
@@ -91,7 +91,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
                 _loc_3 = _loc_3 + 1;
             }
             param1.writeShort(this.unusableCharacters.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.unusableCharacters.length)
             {
                 
@@ -109,12 +109,12 @@ package com.ankamagames.dofus.network.messages.game.character.choice
 
         public function deserializeAs_CharactersListWithModificationsMessage(param1:IDataInput) : void
         {
-            var _loc_8:CharacterToRecolorInformation = null;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
             super.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -124,7 +124,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -133,7 +133,7 @@ package com.ankamagames.dofus.network.messages.game.character.choice
                 _loc_5 = _loc_5 + 1;
             }
             var _loc_6:* = param1.readUnsignedShort();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 

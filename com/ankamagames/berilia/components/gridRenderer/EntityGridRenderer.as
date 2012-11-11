@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components.gridRenderer
+﻿package com.ankamagames.berilia.components.gridRenderer
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.*;
@@ -35,7 +35,7 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
         {
-            var _loc_7:EntityDisplayer = null;
+            var _loc_7:* = null;
             var _loc_5:* = new GraphicContainer();
             new GraphicContainer().mouseEnabled = true;
             var _loc_6:* = new Texture();
@@ -69,9 +69,9 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
         {
-            var _loc_6:GraphicContainer = null;
-            var _loc_7:EntityDisplayer = null;
-            var _loc_8:EntityDisplayer = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (param3 is GraphicContainer)
             {
                 _loc_6 = GraphicContainer(param3);
@@ -121,8 +121,8 @@ package com.ankamagames.berilia.components.gridRenderer
 
         public function remove(param1:DisplayObject) : void
         {
-            var _loc_2:EntityDisplayer = null;
-            var _loc_3:DisplayObject = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (param1 is GraphicContainer)
             {
                 _loc_2 = GraphicContainer(param1).getChildByName("entity") as EntityDisplayer;

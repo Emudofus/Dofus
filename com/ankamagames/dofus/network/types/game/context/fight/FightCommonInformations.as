@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.fight
+﻿package com.ankamagames.dofus.network.types.game.context.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -57,7 +57,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
             param1.writeInt(this.fightId);
             param1.writeByte(this.fightType);
             param1.writeShort(this.fightTeams.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.fightTeams.length)
             {
                 
@@ -65,7 +65,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.fightTeamsPositions.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.fightTeamsPositions.length)
             {
                 
@@ -77,7 +77,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 _loc_3 = _loc_3 + 1;
             }
             param1.writeShort(this.fightTeamsOptions.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.fightTeamsOptions.length)
             {
                 
@@ -95,9 +95,9 @@ package com.ankamagames.dofus.network.types.game.context.fight
 
         public function deserializeAs_FightCommonInformations(param1:IDataInput) : void
         {
-            var _loc_8:FightTeamInformations = null;
-            var _loc_9:uint = 0;
-            var _loc_10:FightOptionsInformations = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
             this.fightId = param1.readInt();
             this.fightType = param1.readByte();
             if (this.fightType < 0)
@@ -105,7 +105,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 throw new Error("Forbidden value (" + this.fightType + ") on element of FightCommonInformations.fightType.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -115,7 +115,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -128,7 +128,7 @@ package com.ankamagames.dofus.network.types.game.context.fight
                 _loc_5 = _loc_5 + 1;
             }
             var _loc_6:* = param1.readUnsignedShort();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.people
+﻿package com.ankamagames.dofus.internalDatacenter.people
 {
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.jerakine.interfaces.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.friend
+﻿package com.ankamagames.dofus.network.types.game.friend
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.dofus.network.types.game.look.*;

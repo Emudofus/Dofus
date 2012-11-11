@@ -1,4 +1,4 @@
-package com.hurlant.math
+﻿package com.hurlant.math
 {
     import com.hurlant.math.*;
 
@@ -40,7 +40,7 @@ package com.hurlant.math
 
         public function convert(param1:BigInteger) : BigInteger
         {
-            var _loc_2:BigInteger = null;
+            var _loc_2:* = null;
             if (param1.s < 0 || param1.t > 2 * this.m.t)
             {
                 return param1.mod(this.m);

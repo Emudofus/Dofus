@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.mounts
+﻿package com.ankamagames.dofus.datacenter.mounts
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

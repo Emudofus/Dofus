@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.crypto
+﻿package com.ankamagames.jerakine.utils.crypto
 {
     import flash.utils.*;
 
@@ -40,10 +40,10 @@ package com.ankamagames.jerakine.utils.crypto
 
         private static function initCRCTable() : Array
         {
-            var _loc_3:uint = 0;
-            var _loc_4:int = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             var _loc_1:* = new Array(256);
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < 256)
             {
                 

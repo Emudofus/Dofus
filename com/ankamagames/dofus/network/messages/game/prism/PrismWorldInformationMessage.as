@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.prism
+﻿package com.ankamagames.dofus.network.messages.game.prism
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.prism.*;
@@ -98,7 +98,7 @@ package com.ankamagames.dofus.network.messages.game.prism
             }
             param1.writeInt(this.maxSub);
             param1.writeShort(this.subAreasInformation.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.subAreasInformation.length)
             {
                 
@@ -116,7 +116,7 @@ package com.ankamagames.dofus.network.messages.game.prism
             }
             param1.writeInt(this.conqsTotal);
             param1.writeShort(this.conquetesInformation.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.conquetesInformation.length)
             {
                 
@@ -134,8 +134,8 @@ package com.ankamagames.dofus.network.messages.game.prism
 
         public function deserializeAs_PrismWorldInformationMessage(param1:IDataInput) : void
         {
-            var _loc_6:PrismSubAreaInformation = null;
-            var _loc_7:VillageConquestPrismInformation = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             this.nbSubOwned = param1.readInt();
             if (this.nbSubOwned < 0)
             {
@@ -152,7 +152,7 @@ package com.ankamagames.dofus.network.messages.game.prism
                 throw new Error("Forbidden value (" + this.maxSub + ") on element of PrismWorldInformationMessage.maxSub.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -172,7 +172,7 @@ package com.ankamagames.dofus.network.messages.game.prism
                 throw new Error("Forbidden value (" + this.conqsTotal + ") on element of PrismWorldInformationMessage.conqsTotal.");
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

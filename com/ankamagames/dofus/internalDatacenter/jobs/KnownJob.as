@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.jobs
+﻿package com.ankamagames.dofus.internalDatacenter.jobs
 {
     import com.ankamagames.dofus.network.types.game.context.roleplay.job.*;
     import com.ankamagames.jerakine.interfaces.*;

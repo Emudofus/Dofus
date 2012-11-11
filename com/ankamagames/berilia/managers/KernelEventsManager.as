@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.managers
+﻿package com.ankamagames.berilia.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.*;
@@ -48,8 +48,8 @@ package com.ankamagames.berilia.managers
 
         public function processCallback(param1:Hook, ... args) : void
         {
-            var _loc_6:String = null;
-            var _loc_7:GenericListener = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             FpsManager.getInstance().startTracking("hook", 7108545);
             if (!UiModuleManager.getInstance().ready)
             {
@@ -57,7 +57,7 @@ package com.ankamagames.berilia.managers
                 return;
             }
             args = SecureCenter.secureContent(args);
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = Berilia.getInstance().loadingUi;
             for (_loc_6 in _loc_5)
             {
@@ -79,7 +79,7 @@ package com.ankamagames.berilia.managers
                 return;
             }
             ModuleLogger.log(param1, args);
-            var _loc_8:Array = [];
+            var _loc_8:* = [];
             for each (_loc_7 in _aEvent[param1.name])
             {
                 
@@ -100,10 +100,10 @@ package com.ankamagames.berilia.managers
 
         private function processOldMessage(event:UiRenderEvent) : void
         {
-            var _loc_2:Hook = null;
-            var _loc_3:Array = null;
-            var _loc_5:String = null;
-            var _loc_6:GenericListener = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (!this._aLoadingUi[event.uiTarget.name])
             {
                 return;
@@ -113,7 +113,7 @@ package com.ankamagames.berilia.managers
                 this._aLoadingUi[event.uiTarget.name] = null;
                 return;
             }
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this._aLoadingUi[event.uiTarget.name].length)
             {
                 

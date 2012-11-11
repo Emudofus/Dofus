@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils.mapeditor
+﻿package com.ankamagames.dofus.misc.utils.mapeditor
 {
     import flash.events.*;
 

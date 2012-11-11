@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.pools
+﻿package com.ankamagames.jerakine.pools
 {
     import com.ankamagames.jerakine.logger.*;
     import flash.utils.*;
@@ -18,7 +18,7 @@ package com.ankamagames.jerakine.pools
             this._pool = new Array();
             this._growSize = param3;
             this._warnLimit = param4;
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < param2)
             {
                 
@@ -51,7 +51,7 @@ package com.ankamagames.jerakine.pools
 
         public function checkOut() : Poolable
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             if (this._pool.length == 0)
             {
                 _loc_2 = 0;

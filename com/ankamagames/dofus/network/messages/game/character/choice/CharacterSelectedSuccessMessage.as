@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.character.choice
+﻿package com.ankamagames.dofus.network.messages.game.character.choice
 {
     import com.ankamagames.dofus.network.types.game.character.choice.*;
     import com.ankamagames.jerakine.network.*;

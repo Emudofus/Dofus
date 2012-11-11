@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.scripts
+﻿package com.ankamagames.dofus.scripts
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;

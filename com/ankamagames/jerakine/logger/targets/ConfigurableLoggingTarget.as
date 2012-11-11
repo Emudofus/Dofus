@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger.targets
+﻿package com.ankamagames.jerakine.logger.targets
 {
     import com.ankamagames.jerakine.logger.targets.*;
 

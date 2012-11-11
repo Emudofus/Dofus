@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
+﻿package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
@@ -41,12 +41,12 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         public function watchObject(param1:Object, param2:uint, param3:Boolean = false) : void
         {
-            var _loc_6:List = null;
-            var _loc_7:List = null;
-            var _loc_8:List = null;
-            var _loc_9:XML = null;
-            var _loc_10:String = null;
-            var _loc_11:XML = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             var _loc_4:* = getQualifiedClassName(param1).split("::")[1];
             var _loc_5:* = this._listDataObject[_loc_4];
             if (this._listDataObject[_loc_4] == null)
@@ -118,8 +118,8 @@ package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 
         public function updateData() : void
         {
-            var _loc_2:MonitoredObject = null;
-            var _loc_1:String = "";
+            var _loc_2:* = null;
+            var _loc_1:* = "";
             for each (_loc_2 in this._listDataObject)
             {
                 

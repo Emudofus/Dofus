@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.managers
+ï»¿package com.ankamagames.atouin.managers
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.*;
@@ -9,6 +9,7 @@ package com.ankamagames.atouin.managers
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
     import com.ankamagames.jerakine.utils.misc.*;
     import flash.display.*;
+    import flash.errors.*;
     import flash.filesystem.*;
     import flash.geom.*;
     import flash.utils.*;
@@ -17,11 +18,14 @@ package com.ankamagames.atouin.managers
     {
         private static const _log:Logger = Log.getLogger(getQualifiedClassName(DataGroundMapManager));
         private static const MAPS_DIRECTORY:String = "./maps";
+        private static const JPEG_HIGH_QUALITY:uint = 80;
+        private static const JPEG_MEDIUM_QUALITY:uint = 70;
+        private static const JPEG_LOW_QUALITY:uint = 60;
         private static var _mask:Shape;
         private static var _currentDiskUsed:Number = 0;
-        private static const _highJpgEncoder:AsyncJPGEncoder = new AsyncJPGEncoder(60);
-        private static const _mediumJpgEncoder:AsyncJPGEncoder = new AsyncJPGEncoder(70);
-        private static const _lowJpgEncoder:AsyncJPGEncoder = new AsyncJPGEncoder(80);
+        private static var _jpgEncoder:AsyncJPGEncoder;
+        private static const _currentEncoderQuality:int = -1;
+        private static var _currentOutputFileStream:FileStream;
         private static var _bitmapDataList:Array = new Array();
         private static var _processing:Boolean = false;
         private static var _directory:File;
@@ -39,12 +43,12 @@ package com.ankamagames.atouin.managers
 
         public static function getCurrentDiskUsed() : Number
         {
-            var _loc_1:Number = NaN;
-            var _loc_2:File = null;
-            var _loc_3:Array = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:File = null;
+            var _loc_1:* = NaN;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
             if (_currentDiskUsed)
             {
                 return _currentDiskUsed;
@@ -83,7 +87,7 @@ package com.ankamagames.atouin.managers
 
         public static function saveGroundMap(param1:DisplayObjectContainer, param2:Map) : void
         {
-            var _loc_4:BitmapData = null;
+            var _loc_4:* = null;
             FpsManager.getInstance().startTracking("groundMap", 10621692);
             var _loc_3:* = new Matrix();
             if (param2.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY)
@@ -133,7 +137,7 @@ package com.ankamagames.atouin.managers
             try
             {
                 FpsManager.getInstance().startTracking("groundMap", 10621692);
-                _log.info("On se prépare à charger le jpeg d\'une map : " + map.id);
+                _log.info("On se prÃ©pare Ã  charger le jpeg d\'une map : " + map.id);
                 if (!_directory)
                 {
                     _directory = new File(CustomSharedObject.getCustomSharedObjectDirectory() + MAPS_DIRECTORY);
@@ -144,7 +148,7 @@ package com.ankamagames.atouin.managers
                 }
                 if (_currentMapId == map.id)
                 {
-                    _log.info("On ne fait rien, la map est en train d\'être générée.");
+                    _log.info("On ne fait rien, la map est en train d\'Ãªtre gÃ©nÃ©rÃ©e.");
                     return GroundCache.GROUND_CACHE_SKIP;
                 }
                 numMap = _bitmapDataList.length;
@@ -155,7 +159,7 @@ package com.ankamagames.atouin.managers
                     waitingMap = _bitmapDataList[(i + 1)];
                     if (waitingMap.id == map.id)
                     {
-                        _log.info("On ne fait rien, la map est en file d\'attente pour être générée.");
+                        _log.info("On ne fait rien, la map est en file d\'attente pour Ãªtre gÃ©nÃ©rÃ©e.");
                         return GroundCache.GROUND_CACHE_SKIP;
                     }
                     i = i + 2;
@@ -167,23 +171,31 @@ package com.ankamagames.atouin.managers
                     {
                         _log.info("Le fichier existe bien.");
                         fileStream = new FileStream();
-                        fileStream.open(file, FileMode.READ);
-                        if (fileStream.readInt() == AtouinConstants.GROUND_MAP_VERSION)
+                        try
                         {
-                            _log.info("La version globale est bonne.");
-                            if (fileStream.readByte() <= map.groundCacheCurrentlyUsed)
+                            fileStream.open(file, FileMode.READ);
+                            if (fileStream.readInt() == AtouinConstants.GROUND_MAP_VERSION)
                             {
-                                _log.info("La qualité est correcte.");
-                                fileCRC = fileStream.readInt();
-                                if (fileCRC == map.groundCRC)
+                                _log.info("La version globale est bonne.");
+                                if (fileStream.readByte() <= map.groundCacheCurrentlyUsed)
                                 {
-                                    _log.info("Le CRC est bon.");
-                                    GroundMapLoader.loadGroundMap(map, file, callBack, errorCallBack);
-                                    return GroundCache.GROUND_CACHE_AVAILABLE;
+                                    _log.info("La qualitÃ© est correcte.");
+                                    fileCRC = fileStream.readInt();
+                                    if (fileCRC == map.groundCRC)
+                                    {
+                                        _log.info("Le CRC est bon.");
+                                        GroundMapLoader.loadGroundMap(map, file, callBack, errorCallBack);
+                                        return GroundCache.GROUND_CACHE_AVAILABLE;
+                                    }
                                 }
                             }
+                            fileStream.close();
                         }
-                        fileStream.close();
+                        catch (e:IOError)
+                        {
+                            _log.error(e);
+                            return GroundCache.GROUND_CACHE_SKIP;
+                        }
                     }
                 }
                 else
@@ -203,43 +215,90 @@ package com.ankamagames.atouin.managers
 
         private static function process() : void
         {
-            var _loc_1:BitmapData = null;
-            var _loc_2:Map = null;
+            var bitmapData:BitmapData;
+            var map:Map;
+            var file:File;
             if (!_processing && _bitmapDataList.length)
             {
                 _processing = true;
-                _loc_1 = _bitmapDataList.shift();
-                _loc_2 = _bitmapDataList.shift();
-                _currentMapId = _loc_2.id;
-                if (_loc_2.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY)
+                bitmapData = _bitmapDataList.shift();
+                map = _bitmapDataList.shift();
+                _currentMapId = map.id;
+                initEncoder(map.groundCacheCurrentlyUsed);
+                try
                 {
-                    _lowJpgEncoder.encode(_loc_1, jpgGenerated, _loc_2);
+                    file = new File(CustomSharedObject.getCustomSharedObjectDirectory() + MAPS_DIRECTORY + "/" + map.id + ".bg");
+                    _currentOutputFileStream = new FileStream();
+                    _currentOutputFileStream.open(file, FileMode.WRITE);
                 }
-                else if (_loc_2.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY)
+                catch (e:Error)
                 {
-                    _mediumJpgEncoder.encode(_loc_1, jpgGenerated, _loc_2);
+                    _log.info("Le fichier est lockÃ© " + file.nativePath);
                 }
-                else if (_loc_2.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_HIGH_QUALITY)
+                _jpgEncoder.encode(bitmapData, jpgGenerated, map);
+            }
+            return;
+        }// end function
+
+        private static function initEncoder(param1:uint) : void
+        {
+            var _loc_2:* = 0;
+            if (_currentEncoderQuality != param1)
+            {
+                switch(true)
                 {
-                    _highJpgEncoder.encode(_loc_1, jpgGenerated, _loc_2);
+                    case param1 == GroundCache.GROUND_CACHE_HIGH_QUALITY:
+                    {
+                        _loc_2 = JPEG_HIGH_QUALITY;
+                        break;
+                    }
+                    case param1 == GroundCache.GROUND_CACHE_MEDIUM_QUALITY:
+                    {
+                        _loc_2 = JPEG_MEDIUM_QUALITY;
+                        break;
+                    }
+                    case param1 == GroundCache.GROUND_CACHE_LOW_QUALITY:
+                    {
+                        _loc_2 = JPEG_LOW_QUALITY;
+                        break;
+                    }
+                    default:
+                    {
+                        _loc_2 = JPEG_MEDIUM_QUALITY;
+                        _log.error("Attention Enum d\'encodage pour la qualitÃ© JPG non valide, utisation d\'une qualitÃ© moyenne");
+                        break;
+                    }
                 }
+                _jpgEncoder = new AsyncJPGEncoder(_loc_2);
             }
             return;
         }// end function
 
         private static function jpgGenerated(param1:ByteArray, param2:Map) : void
         {
-            var _loc_3:* = new File(CustomSharedObject.getCustomSharedObjectDirectory() + MAPS_DIRECTORY + "/" + param2.id + ".bg");
-            var _loc_4:* = new FileStream();
-            new FileStream().openAsync(_loc_3, FileMode.WRITE);
-            _loc_4.writeInt(AtouinConstants.GROUND_MAP_VERSION);
-            _loc_4.writeByte(param2.groundCacheCurrentlyUsed);
-            _loc_4.writeInt(param2.groundCRC);
-            _currentDiskUsed = _currentDiskUsed + param1.length;
-            _loc_4.writeBytes(param1);
-            _loc_4.close();
-            _processing = false;
-            _currentMapId = -1;
+            var rawJPG:* = param1;
+            var map:* = param2;
+            try
+            {
+                _currentOutputFileStream.writeInt(AtouinConstants.GROUND_MAP_VERSION);
+                _currentOutputFileStream.writeByte(map.groundCacheCurrentlyUsed);
+                _currentOutputFileStream.writeInt(map.groundCRC);
+                _currentDiskUsed = _currentDiskUsed + rawJPG.length;
+                _currentOutputFileStream.writeBytes(rawJPG);
+                _processing = false;
+                _currentMapId = -1;
+            }
+            catch (e:IOError)
+            {
+                _log.error("Impossible de sauvegarder le background de la map ");
+                try
+                {
+                }
+                _currentOutputFileStream.close();
+            }
+            catch (e:Error)
+            {
+            }
             process();
             return;
         }// end function

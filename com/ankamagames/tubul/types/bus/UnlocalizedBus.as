@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types.bus
+﻿package com.ankamagames.tubul.types.bus
 {
 
     public class UnlocalizedBus extends AudioBus

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.utils
+﻿package com.ankamagames.berilia.utils
 {
 
     public class UiProperties extends Object

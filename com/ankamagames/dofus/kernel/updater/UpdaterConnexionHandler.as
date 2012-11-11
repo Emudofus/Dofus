@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.updater
+﻿package com.ankamagames.dofus.kernel.updater
 {
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.kernel.*;

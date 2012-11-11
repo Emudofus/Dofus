@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.renderers
+﻿package com.ankamagames.atouin.renderers
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.types.*;
@@ -23,16 +23,16 @@ package com.ankamagames.atouin.renderers
 
         public function render(param1:Vector.<uint>, param2:Color, param3:DataMapContainer, param4:Boolean = false) : void
         {
-            var _loc_5:TrapZoneTile = null;
-            var _loc_7:uint = 0;
-            var _loc_8:MapPoint = null;
-            var _loc_9:Boolean = false;
-            var _loc_10:Boolean = false;
-            var _loc_11:Boolean = false;
-            var _loc_12:Boolean = false;
-            var _loc_13:uint = 0;
-            var _loc_14:MapPoint = null;
-            var _loc_6:int = 0;
+            var _loc_5:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = false;
+            var _loc_10:* = false;
+            var _loc_11:* = false;
+            var _loc_12:* = false;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_6:* = 0;
             while (_loc_6 < param1.length)
             {
                 
@@ -110,7 +110,7 @@ package com.ankamagames.atouin.renderers
                 return;
             }
             var _loc_3:* = new Array();
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < param1.length)
             {
                 

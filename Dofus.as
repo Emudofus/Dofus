@@ -1,4 +1,4 @@
-package 
+﻿package 
 {
     import Dofus.*;
     import com.ankamagames.atouin.*;
@@ -6,6 +6,7 @@ package
     import com.ankamagames.berilia.components.*;
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.managers.*;
+    import com.ankamagames.berilia.utils.web.*;
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.console.moduleLogger.*;
     import com.ankamagames.dofus.kernel.*;
@@ -15,6 +16,7 @@ package
     import com.ankamagames.dofus.logic.game.fight.miscs.*;
     import com.ankamagames.dofus.misc.*;
     import com.ankamagames.dofus.misc.interClient.*;
+    import com.ankamagames.dofus.misc.utils.*;
     import com.ankamagames.dofus.misc.utils.errormanager.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.updater.*;
@@ -56,6 +58,9 @@ package
         private var _invokeArguments:Array;
         private var _blockLoading:Boolean;
         private var _initialized:Boolean = false;
+        private var _forcedLang:String;
+        private var _displayState:String;
+        public var REG_LOCAL_CONNECTION_ID:uint = 0;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(Dofus));
         private static var _self:Dofus;
 
@@ -65,9 +70,20 @@ package
             if (!stage)
             {
                 stage = loaderInfo.loader.stage;
+                AirScanner.init(getQualifiedClassName(loaderInfo.loader.parent) == "DofusLoader");
+            }
+            else
+            {
+                AirScanner.init(false);
             }
             _self = this;
             var r:* = stage.stageWidth / stage.stageHeight;
+            var clientDimentionSo:* = CustomSharedObject.getLocal("clientData");
+            if (clientDimentionSo.data != null && clientDimentionSo.data.displayState == NativeWindowDisplayState.MAXIMIZED && Capabilities.os.substr(0, 3) == "Win" && stage.displayState != StageDisplayState["FULL_SCREEN_INTERACTIVE"])
+            {
+                stage.nativeWindow.maximize();
+                this._displayState = NativeWindowDisplayState.MAXIMIZED;
+            }
             if (Screen.mainScreen.bounds.width < Screen.mainScreen.bounds.height)
             {
                 stage.stageWidth = Screen.mainScreen.bounds.width * 0.8;
@@ -86,8 +102,9 @@ package
             }
             else
             {
-                scaleX = 800 / 1280;
-                scaleY = 600 / 1024;
+                clientDimentionSo.close();
+                stage.showDefaultContextMenu = false;
+                Security.allowDomain("*");
             }
             new DofusErrorHandler();
             if (AirScanner.hasAir())
@@ -97,14 +114,22 @@ package
             ErrorManager.registerLoaderInfo(loaderInfo);
             mouseEnabled = false;
             tabChildren = false;
-            try
+            if (AirScanner.hasAir())
             {
-                new AppIdModifier();
+                try
+                {
+                    new AppIdModifier();
+                }
+                catch (e:Error)
+                {
+                }
             }
-            catch (e:Error)
+            if (AirScanner.hasAir())
             {
+                NativeApplication.nativeApplication.addEventListener(Event.EXITING, this.onExiting);
+                NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, this.onCall);
+                stage.nativeWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGING, this.onResize);
             }
-            NativeApplication.nativeApplication.addEventListener(InvokeEvent.INVOKE, this.onCall);
             return;
         }// end function
 
@@ -145,7 +170,7 @@ package
                         parseXML();
                         gameNode = firstChild;
                         upperVersion;
-                        var _loc_4:int = 0;
+                        var _loc_4:* = 0;
                         var _loc_5:* = childNodes;
                         while (_loc_5 in _loc_4)
                         {
@@ -183,7 +208,7 @@ package
                             ignoreWhite = true;
                             parseXML();
                             gameNode = firstChild.firstChild;
-                            var _loc_4:int = 0;
+                            var _loc_4:* = 0;
                             var _loc_5:* = childNodes;
                             while (_loc_5 in _loc_4)
                             {
@@ -244,6 +269,12 @@ package
             return;
         }// end function
 
+        private function onResize(event:NativeWindowDisplayStateEvent) : void
+        {
+            this._displayState = event.afterDisplayState;
+            return;
+        }// end function
+
         public function getUiContainer() : DisplayObjectContainer
         {
             return this._uiContainer;
@@ -269,56 +300,43 @@ package
             return this._instanceId;
         }// end function
 
+        public function get forcedLang() : String
+        {
+            return this._forcedLang;
+        }// end function
+
         public function setDisplayOptions(param1:DofusOptions) : void
         {
             this._doOptions = param1;
             this._doOptions.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onOptionChange);
             this._doOptions.flashQuality = this._doOptions.flashQuality;
+            this._doOptions.fullScreen = this._doOptions.fullScreen;
             return;
         }// end function
 
-        private function onOptionChange(event:PropertyChangeEvent) : void
-        {
-            if (event.propertyName == "flashQuality")
-            {
-                if (event.propertyValue == 0)
-                {
-                    StageShareManager.stage.quality = StageQuality.LOW;
-                }
-                else if (event.propertyValue == 1)
-                {
-                    StageShareManager.stage.quality = StageQuality.MEDIUM;
-                }
-                else if (event.propertyValue == 2)
-                {
-                    StageShareManager.stage.quality = StageQuality.HIGH;
-                }
-            }
-            return;
-        }// end function
-
-        public function init(param1:DisplayObject, param2:uint = 0) : void
+        public function init(param1:DisplayObject, param2:uint = 0, param3:String = null) : void
         {
             if (this._blockLoading)
             {
                 throw new SecurityError("You cannot load Dofus.");
             }
             this._instanceId = param2;
-            var _loc_3:* = new Sprite();
-            _loc_3.name = "catchMouseEventCtr";
-            _loc_3.graphics.beginFill(0);
-            _loc_3.graphics.drawRect(0, 0, StageShareManager.startWidth, StageShareManager.startHeight);
-            _loc_3.graphics.endFill();
-            addChild(_loc_3);
-            var _loc_4:* = CustomSharedObject.getLocal("appVersion");
-            if (!CustomSharedObject.getLocal("appVersion").data.lastBuildVersion || _loc_4.data.lastBuildVersion != BuildInfos.BUILD_REVISION && BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)
+            this._forcedLang = param3;
+            var _loc_4:* = new Sprite();
+            new Sprite().name = "catchMouseEventCtr";
+            _loc_4.graphics.beginFill(0);
+            _loc_4.graphics.drawRect(0, 0, StageShareManager.startWidth, StageShareManager.startHeight);
+            _loc_4.graphics.endFill();
+            addChild(_loc_4);
+            var _loc_5:* = CustomSharedObject.getLocal("appVersion");
+            if (!CustomSharedObject.getLocal("appVersion").data.lastBuildVersion || _loc_5.data.lastBuildVersion != BuildInfos.BUILD_REVISION && BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)
             {
                 this.clearCache(true);
             }
-            _loc_4 = CustomSharedObject.getLocal("appVersion");
-            _loc_4.data.lastBuildVersion = BuildInfos.BUILD_REVISION;
-            _loc_4.flush();
-            _loc_4.close();
+            _loc_5 = CustomSharedObject.getLocal("appVersion");
+            _loc_5.data.lastBuildVersion = BuildInfos.BUILD_REVISION;
+            _loc_5.flush();
+            _loc_5.close();
             SignedFileAdapter.defaultSignatureKey = SignatureKey.fromByte(new Constants.SIGNATURE_KEY_DATA as ByteArray);
             this.initKernel(this.stage, param1);
             this.initWorld();
@@ -338,15 +356,51 @@ package
             return;
         }// end function
 
+        private function onExiting(event:Event) : void
+        {
+            this.saveClientSize();
+            if (WebServiceDataHandler.getInstance().quit())
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                WebServiceDataHandler.getInstance().addEventListener(WebServiceDataHandler.ALL_DATA_SENT, this.quitHandler);
+            }
+            return;
+        }// end function
+
         public function quit() : void
         {
+            if (!WebServiceDataHandler.getInstance().quit())
+            {
+                this.quitHandler();
+            }
+            else
+            {
+                _log.trace("We have data to send to the webservice. waiting...");
+                WebServiceDataHandler.getInstance().addEventListener(WebServiceDataHandler.ALL_DATA_SENT, this.quitHandler);
+                WebServiceDataHandler.getInstance().sendWaitingException();
+            }
+            return;
+        }// end function
+
+        private function quitHandler(event:Event = null) : void
+        {
+            if (event != null)
+            {
+                event.currentTarget.removeEventListener(WebServiceDataHandler.ALL_DATA_SENT, this.quitHandler);
+                _log.trace("Data sent. Good to go. Bye bye");
+            }
             if (Constants.EVENT_MODE)
             {
                 this.reboot();
             }
             else if (AirScanner.hasAir())
             {
-                stage["nativeWindow"].close();
+                stage.nativeWindow.close();
+                if (NativeApplication.nativeApplication.openedWindows.length == 0)
+                {
+                    NativeApplication.nativeApplication.exit(0);
+                }
             }
             return;
         }// end function
@@ -371,7 +425,7 @@ package
             {
                 CustomSharedObject.closeAll();
                 soList = soFolder.getDirectoryListing();
-                var _loc_4:int = 0;
+                var _loc_4:* = 0;
                 var _loc_5:* = soList;
                 do
                 {
@@ -390,6 +444,7 @@ package
                             case fileName == "chat":
                             case fileName == "tiphon":
                             case fileName == "tubul":
+                            case fileName.indexOf("externalNotifications_") == 0:
                             case fileName == "Berilia_binds":
                             case fileName == "maps":
                             case fileName == "logs":
@@ -430,6 +485,7 @@ package
 
         public function reboot() : void
         {
+            this.saveClientSize();
             var _loc_1:* = Kernel.getWorker();
             if (_loc_1)
             {
@@ -492,6 +548,10 @@ package
             var _loc_1:* = BuildInfos.BUILD_TYPE == BuildTypeEnum.DEBUG;
             Berilia.getInstance().verboseException = _loc_1;
             Berilia.getInstance().init(this._uiContainer, _loc_1, BuildInfos.BUILD_REVISION, !_loc_1);
+            if (AirScanner.isStreamingVersion())
+            {
+                Berilia.embedIcons.SLOT_DEFAULT_ICON = EmbedAssets.getBitmap("DefaultBeriliaSlotIcon").bitmapData;
+            }
             var _loc_2:* = new Uri("SharedDefinitions.swf");
             _loc_2.loaderContext = new LoaderContext(false, new ApplicationDomain());
             UiModuleManager.getInstance().sharedDefinitionContainer = _loc_2;
@@ -539,14 +599,47 @@ package
             return;
         }// end function
 
+        private function onOptionChange(event:PropertyChangeEvent) : void
+        {
+            if (event.propertyName == "flashQuality")
+            {
+                if (event.propertyValue == 0)
+                {
+                    StageShareManager.stage.quality = StageQuality.LOW;
+                }
+                else if (event.propertyValue == 1)
+                {
+                    StageShareManager.stage.quality = StageQuality.MEDIUM;
+                }
+                else if (event.propertyValue == 2)
+                {
+                    StageShareManager.stage.quality = StageQuality.HIGH;
+                }
+            }
+            if (event.propertyName == "fullScreen")
+            {
+                StageShareManager.setFullScreen(event.propertyValue, false);
+            }
+            return;
+        }// end function
+
         public function onFps(param1:uint) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (this._fpsDisplay.visible)
             {
                 _loc_2 = RasterizedAnimation.countFrames();
                 this._fpsDisplay.htmlText = "<font color=\'#FFFFFF\'>" + param1 + " fps - " + this._buildType + "\n<font color=\'#B9B6ED\'>" + Memory.humanReadableUsage() + " - r" + BuildInfos.BUILD_REVISION + "\n<font color=\'#92D5D8\'> Anim/Img en cache - " + _loc_2.animations + "/" + _loc_2.frames;
             }
+            return;
+        }// end function
+
+        private function saveClientSize() : void
+        {
+            var _loc_1:* = CustomSharedObject.getLocal("clientData");
+            _loc_1.data.displayState = this._displayState;
+            _loc_1.flush();
+            _loc_1.close();
             return;
         }// end function
 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -85,7 +85,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
             param1.writeShort(this.powerRate);
             param1.writeBoolean(this.overMax);
             param1.writeShort(this.effects.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.effects.length)
             {
                 
@@ -94,7 +94,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.prices.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.prices.length)
             {
                 
@@ -116,15 +116,15 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 
         public function deserializeAs_ExchangeBidHouseInListAddedMessage(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:ObjectEffect = null;
-            var _loc_8:uint = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
             this.itemUID = param1.readInt();
             this.objGenericId = param1.readInt();
             this.powerRate = param1.readShort();
             this.overMax = param1.readBoolean();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -135,7 +135,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

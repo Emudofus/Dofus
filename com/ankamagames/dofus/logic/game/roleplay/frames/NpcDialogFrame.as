@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+﻿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.*;
@@ -6,6 +6,7 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
     import com.ankamagames.dofus.logic.common.actions.*;
     import com.ankamagames.dofus.logic.game.roleplay.actions.*;
     import com.ankamagames.dofus.misc.lists.*;
+    import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.*;
     import com.ankamagames.dofus.network.messages.game.dialog.*;
     import com.ankamagames.jerakine.logger.*;
@@ -34,9 +35,10 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:NpcDialogQuestionMessage = null;
-            var _loc_3:NpcDialogReplyAction = null;
-            var _loc_4:NpcDialogReplyMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             switch(true)
             {
                 case param1 is NpcDialogQuestionMessage:
@@ -60,8 +62,12 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
                 }
                 case param1 is LeaveDialogMessage:
                 {
-                    Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
-                    Kernel.getWorker().removeFrame(this);
+                    _loc_5 = param1 as LeaveDialogMessage;
+                    if (_loc_5.dialogType == DialogTypeEnum.DIALOG_DIALOG)
+                    {
+                        Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
+                        Kernel.getWorker().removeFrame(this);
+                    }
                     return true;
                 }
                 default:

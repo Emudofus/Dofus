@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
     import com.ankamagames.dofus.network.types.game.look.*;
     import com.ankamagames.jerakine.network.*;
@@ -19,10 +19,10 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
             return 391;
         }// end function
 
-        public function initPartyMemberArenaInformations(param1:uint = 0, param2:uint = 0, param3:String = "", param4:EntityLook = null, param5:uint = 0, param6:uint = 0, param7:uint = 0, param8:uint = 0, param9:uint = 0, param10:Boolean = false, param11:int = 0, param12:uint = 0) : PartyMemberArenaInformations
+        public function initPartyMemberArenaInformations(param1:uint = 0, param2:uint = 0, param3:String = "", param4:EntityLook = null, param5:int = 0, param6:Boolean = false, param7:uint = 0, param8:uint = 0, param9:uint = 0, param10:uint = 0, param11:uint = 0, param12:Boolean = false, param13:int = 0, param14:int = 0, param15:int = 0, param16:int = 0, param17:uint = 0, param18:uint = 0) : PartyMemberArenaInformations
         {
-            super.initPartyMemberInformations(param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11);
-            this.rank = param12;
+            super.initPartyMemberInformations(param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13, param14, param15, param16, param17);
+            this.rank = param18;
             return this;
         }// end function
 

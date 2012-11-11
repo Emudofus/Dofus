@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
 
     public class AngleToOrientation extends Object
@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.utils.display
 
         public static function angleToOrientation(param1:Number) : uint
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             switch(true)
             {
                 case param1 > -Math.PI / 8 && param1 <= Math.PI / 8:

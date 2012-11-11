@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.pathfinding
+﻿package com.ankamagames.jerakine.pathfinding
 {
 
     public class CellInfo extends Object

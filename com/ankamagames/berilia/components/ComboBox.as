@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -366,8 +366,8 @@ package com.ankamagames.berilia.components
 
         private function showList(param1:Boolean) : void
         {
-            var _loc_2:IInterfaceListener = null;
-            var _loc_3:IInterfaceListener = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (this._previousState != param1)
             {
                 if (param1)

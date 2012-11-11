@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.data.map.elements
+ï»¿package com.ankamagames.atouin.data.map.elements
 {
     import com.ankamagames.atouin.data.map.*;
     import com.ankamagames.atouin.enums.*;
@@ -28,7 +28,7 @@ package com.ankamagames.atouin.data.map.elements
 
         public function fromRaw(param1:IDataInput, param2:int) : void
         {
-            throw new Error("Cette méthode doit être surchargée !");
+            throw new Error("Cette mÃ©thode doit Ãªtre surchargÃ©e !");
         }// end function
 
         public static function getElementFromType(param1:int, param2:Cell) : BasicElement
@@ -48,7 +48,7 @@ package com.ankamagames.atouin.data.map.elements
                     break;
                 }
             }
-            throw new UnknownElementError("Un élément de type inconnu " + param1 + " a été trouvé sur la cellule " + param2.cellId + "!");
+            throw new UnknownElementError("Un Ã©lÃ©ment de type inconnu " + param1 + " a Ã©tÃ© trouvÃ© sur la cellule " + param2.cellId + "!");
         }// end function
 
     }

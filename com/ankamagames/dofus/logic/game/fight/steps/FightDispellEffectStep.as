@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.fight.managers.*;
     import com.ankamagames.dofus.logic.game.fight.steps.*;
@@ -23,7 +23,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            BuffManager.getInstance().dispellUniqueBuff(this._fighterId, this._boostUID, true, true);
+            BuffManager.getInstance().dispellUniqueBuff(this._fighterId, this._boostUID, true, false, true);
             executeCallbacks();
             return;
         }// end function

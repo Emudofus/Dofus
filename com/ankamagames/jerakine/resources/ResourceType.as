@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources
+﻿package com.ankamagames.jerakine.resources
 {
 
     public class ResourceType extends Object

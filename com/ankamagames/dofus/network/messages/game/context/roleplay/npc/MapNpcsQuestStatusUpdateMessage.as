@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.quest.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
         {
             param1.writeInt(this.mapId);
             param1.writeShort(this.npcsIdsWithQuest.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.npcsIdsWithQuest.length)
             {
                 
@@ -84,7 +84,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.questFlags.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.questFlags.length)
             {
                 
@@ -92,7 +92,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
                 _loc_3 = _loc_3 + 1;
             }
             param1.writeShort(this.npcsIdsWithoutQuest.length);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < this.npcsIdsWithoutQuest.length)
             {
                 
@@ -110,12 +110,12 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 
         public function deserializeAs_MapNpcsQuestStatusUpdateMessage(param1:IDataInput) : void
         {
-            var _loc_8:int = 0;
-            var _loc_9:GameRolePlayNpcQuestFlag = null;
-            var _loc_10:int = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
             this.mapId = param1.readInt();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -124,7 +124,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 
@@ -134,7 +134,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
                 _loc_5 = _loc_5 + 1;
             }
             var _loc_6:* = param1.readUnsignedShort();
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_6)
             {
                 

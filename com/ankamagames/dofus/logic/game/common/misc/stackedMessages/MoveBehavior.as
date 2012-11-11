@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
+﻿package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 {
     import com.ankamagames.atouin.messages.*;
     import com.ankamagames.dofus.kernel.*;
@@ -7,31 +7,30 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
     import com.ankamagames.dofus.logic.game.common.misc.*;
     import com.ankamagames.dofus.logic.game.roleplay.frames.*;
     import com.ankamagames.dofus.logic.game.roleplay.messages.*;
+    import com.ankamagames.dofus.misc.utils.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.jerakine.entities.interfaces.*;
     import com.ankamagames.jerakine.entities.messages.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.positions.*;
-    import flash.display.*;
 
     public class MoveBehavior extends AbstractBehavior
     {
         private var _abstractEntitiesFrame:AbstractEntitiesFrame;
         private var _fakepos:int = -1;
-        private static const CHECKPOINT_CLIP:Class = MoveBehavior_CHECKPOINT_CLIP;
 
         public function MoveBehavior()
         {
             type = NORMAL;
-            sprite = new CHECKPOINT_CLIP() as Sprite;
+            sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP", false);
             isAvailableToStart = true;
             return;
         }// end function
 
         override public function processInputMessage(param1:Message, param2:String) : Boolean
         {
-            var _loc_3:IEntity = null;
-            var _loc_4:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             canBeStacked = false;
             if (this._abstractEntitiesFrame == null)
             {
@@ -78,7 +77,7 @@ package com.ankamagames.dofus.logic.game.common.misc.stackedMessages
 
         override public function processOutputMessage(param1:Message, param2:String) : Boolean
         {
-            var _loc_3:IEntity = null;
+            var _loc_3:* = null;
             if (param1 is CellClickMessage && param2 == ALWAYS)
             {
                 isAvailableToStart = false;

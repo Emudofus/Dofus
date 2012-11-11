@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.guild.tax
+﻿package com.ankamagames.dofus.network.types.game.guild.tax
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.character.*;
@@ -50,7 +50,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
         {
             param1.writeInt(this.collectorId);
             param1.writeShort(this.allyCharactersInformations.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.allyCharactersInformations.length)
             {
                 
@@ -58,7 +58,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.enemyCharactersInformations.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.enemyCharactersInformations.length)
             {
                 
@@ -76,11 +76,11 @@ package com.ankamagames.dofus.network.types.game.guild.tax
 
         public function deserializeAs_TaxCollectorFightersInformation(param1:IDataInput) : void
         {
-            var _loc_6:CharacterMinimalPlusLookInformations = null;
-            var _loc_7:CharacterMinimalPlusLookInformations = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             this.collectorId = param1.readInt();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -90,7 +90,7 @@ package com.ankamagames.dofus.network.types.game.guild.tax
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

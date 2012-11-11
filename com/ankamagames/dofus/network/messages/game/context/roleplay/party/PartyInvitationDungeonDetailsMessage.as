@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -27,11 +27,11 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
             return 6262;
         }// end function
 
-        public function initPartyInvitationDungeonDetailsMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:String = "", param5:uint = 0, param6:Vector.<PartyInvitationMemberInformations> = null, param7:uint = 0, param8:Vector.<Boolean> = null) : PartyInvitationDungeonDetailsMessage
+        public function initPartyInvitationDungeonDetailsMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:String = "", param5:uint = 0, param6:Vector.<PartyInvitationMemberInformations> = null, param7:Vector.<PartyGuestInformations> = null, param8:uint = 0, param9:Vector.<Boolean> = null) : PartyInvitationDungeonDetailsMessage
         {
-            super.initPartyInvitationDetailsMessage(param1, param2, param3, param4, param5, param6);
-            this.dungeonId = param7;
-            this.playersDungeonReady = param8;
+            super.initPartyInvitationDetailsMessage(param1, param2, param3, param4, param5, param6, param7);
+            this.dungeonId = param8;
+            this.playersDungeonReady = param9;
             this._isInitialized = true;
             return this;
         }// end function
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
             }
             param1.writeShort(this.dungeonId);
             param1.writeShort(this.playersDungeonReady.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.playersDungeonReady.length)
             {
                 
@@ -92,7 +92,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 
         public function deserializeAs_PartyInvitationDungeonDetailsMessage(param1:IDataInput) : void
         {
-            var _loc_4:Boolean = false;
+            var _loc_4:* = false;
             super.deserialize(param1);
             this.dungeonId = param1.readShort();
             if (this.dungeonId < 0)
@@ -100,7 +100,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
                 throw new Error("Forbidden value (" + this.dungeonId + ") on element of PartyInvitationDungeonDetailsMessage.dungeonId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

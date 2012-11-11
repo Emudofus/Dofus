@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.managers
+﻿package com.ankamagames.dofus.logic.game.common.managers
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -17,15 +17,15 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public static function getServerMovement(param1:MovementPath) : Vector.<uint>
         {
-            var _loc_5:PathElement = null;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:String = null;
-            var _loc_9:uint = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
             param1.compress();
             var _loc_2:* = new Vector.<uint>;
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             for each (_loc_5 in param1.path)
             {
                 
@@ -51,14 +51,14 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public static function getClientMovement(param1:Vector.<uint>) : MovementPath
         {
-            var _loc_4:PathElement = null;
-            var _loc_5:int = 0;
-            var _loc_6:MapPoint = null;
-            var _loc_7:PathElement = null;
-            var _loc_8:String = null;
-            var _loc_9:PathElement = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_2:* = new MovementPath();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             for each (_loc_5 in param1)
             {
                 

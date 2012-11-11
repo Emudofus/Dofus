@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.types
+﻿package com.ankamagames.dofus.logic.game.roleplay.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;

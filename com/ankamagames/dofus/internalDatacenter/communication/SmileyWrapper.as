@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.communication
+﻿package com.ankamagames.dofus.internalDatacenter.communication
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -10,7 +10,8 @@ package com.ankamagames.dofus.internalDatacenter.communication
     {
         private var _uri:Uri;
         public var id:uint = 0;
-        public var iconId:int;
+        public var iconId:String;
+        public var order:int;
         public var isOkForMultiUse:Boolean = false;
         public var quantity:uint = 1;
         private static var _cache:Array = new Array();
@@ -25,7 +26,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
         {
             if (!this._uri)
             {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|smiley_" + this.id);
+                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|" + this.iconId);
             }
             return this._uri;
         }// end function
@@ -34,7 +35,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
         {
             if (!this._uri)
             {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|smiley_" + this.id);
+                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|" + this.iconId);
             }
             return this._uri;
         }// end function
@@ -107,29 +108,30 @@ package com.ankamagames.dofus.internalDatacenter.communication
         {
             if (!this._uri)
             {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|smiley_" + this.id);
+                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path") + "gfx/smilies/assets.swf|" + this.iconId);
             }
             return this._uri;
         }// end function
 
-        public static function create(param1:uint, param2:uint, param3:Boolean = true) : SmileyWrapper
+        public static function create(param1:uint, param2:String, param3:int, param4:Boolean = true) : SmileyWrapper
         {
-            var _loc_4:SmileyWrapper = null;
-            if (!_cache[param1] || !param3)
+            var _loc_5:* = null;
+            if (!_cache[param1] || !param4)
             {
-                _loc_4 = new SmileyWrapper;
-                _loc_4.id = param1;
-                if (param3)
+                _loc_5 = new SmileyWrapper;
+                _loc_5.id = param1;
+                if (param4)
                 {
-                    _cache[param1] = _loc_4;
+                    _cache[param1] = _loc_5;
                 }
             }
             else
             {
-                _loc_4 = _cache[param1];
+                _loc_5 = _cache[param1];
             }
-            _loc_4.iconId = param2;
-            return _loc_4;
+            _loc_5.iconId = param2;
+            _loc_5.order = param3;
+            return _loc_5;
         }// end function
 
         public static function getSmileyWrapperById(param1:uint) : SmileyWrapper

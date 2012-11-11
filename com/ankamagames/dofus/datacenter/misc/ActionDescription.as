@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.misc
+﻿package com.ankamagames.dofus.datacenter.misc
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -35,8 +35,8 @@ package com.ankamagames.dofus.datacenter.misc
 
         public static function getActionDescriptionByName(param1:String) : ActionDescription
         {
-            var _loc_2:Array = null;
-            var _loc_3:ActionDescription = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!_actionByName)
             {
                 _actionByName = new Array();

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.tooltip
+﻿package com.ankamagames.berilia.types.tooltip
 {
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.berilia.types.graphic.*;
@@ -103,7 +103,7 @@ package com.ankamagames.berilia.types.tooltip
 
         private function makeTooltip() : void
         {
-            var _loc_2:TooltipBlock = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Array();
             for each (_loc_2 in this._blocks)
             {
@@ -126,7 +126,7 @@ package com.ankamagames.berilia.types.tooltip
 
         private function onChunkReady(event:Event) : void
         {
-            var _loc_2:String = this;
+            var _loc_2:* = this;
             var _loc_3:* = this._loadedblock + 1;
             _loc_2._loadedblock = _loc_3;
             this.processCallback();

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.shortcut
+﻿package com.ankamagames.berilia.types.shortcut
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -28,8 +28,8 @@ package com.ankamagames.berilia.types.shortcut
 
         public function toString() : String
         {
-            var _loc_2:String = null;
-            var _loc_1:String = "";
+            var _loc_2:* = null;
+            var _loc_1:* = "";
             if (this.key != null)
             {
                 _loc_1 = this.alt ? ("Alt+") : ("");

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.event
+﻿package com.ankamagames.berilia.types.event
 {
     import com.ankamagames.berilia.uiRender.*;
     import flash.events.*;

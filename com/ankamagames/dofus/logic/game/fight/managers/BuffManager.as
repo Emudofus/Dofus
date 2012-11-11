@@ -1,8 +1,9 @@
-package com.ankamagames.dofus.logic.game.fight.managers
+﻿package com.ankamagames.dofus.logic.game.fight.managers
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.dofus.kernel.*;
+    import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.fight.frames.*;
     import com.ankamagames.dofus.logic.game.fight.types.*;
     import com.ankamagames.dofus.misc.lists.*;
@@ -15,6 +16,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
     public class BuffManager extends Object
     {
         private var _buffs:Array;
+        private var _finishingBuffs:Dictionary;
         public static const INCREMENT_MODE_SOURCE:int = 1;
         public static const INCREMENT_MODE_TARGET:int = 2;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(BuffManager));
@@ -23,6 +25,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
         public function BuffManager()
         {
             this._buffs = new Array();
+            this._finishingBuffs = new Dictionary();
             if (_self)
             {
                 throw new SingletonError();
@@ -42,13 +45,29 @@ package com.ankamagames.dofus.logic.game.fight.managers
             return;
         }// end function
 
+        public function synchronize() : void
+        {
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            for each (_loc_1 in this._buffs)
+            {
+                
+                for each (_loc_2 in _loc_1)
+                {
+                    
+                    _loc_2.undisable();
+                }
+            }
+            return;
+        }// end function
+
         public function incrementDuration(param1:int, param2:int, param3:Boolean = false, param4:int = 1) : void
         {
-            var _loc_7:Array = null;
-            var _loc_8:BasicBuff = null;
-            var _loc_9:Boolean = false;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = false;
             var _loc_5:* = new Array();
-            var _loc_6:Boolean = false;
+            var _loc_6:* = false;
             for each (_loc_7 in this._buffs)
             {
                 
@@ -95,13 +114,14 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function markFinishingBuffs(param1:int, param2:Boolean = false) : void
         {
-            var _loc_3:Boolean = false;
-            var _loc_4:BasicBuff = null;
-            var _loc_5:Boolean = false;
-            var _loc_6:FightBattleFrame = null;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
-            var _loc_9:Effect = null;
+            var _loc_3:* = false;
+            var _loc_4:* = null;
+            var _loc_5:* = false;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             if (this._buffs.hasOwnProperty(String(param1)))
             {
                 _loc_3 = false;
@@ -126,7 +146,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
                             }
                             if (_loc_7 == 1)
                             {
-                                if (_loc_8 == _loc_4.aliveSource)
+                                if (_loc_8 == _loc_4.aliveSource && (_loc_8 != _loc_6.currentPlayerId || !param2))
                                 {
                                     _loc_7 = 2;
                                     _loc_5 = true;
@@ -150,17 +170,30 @@ package com.ankamagames.dofus.logic.game.fight.managers
                                     _loc_5 = true;
                                     continue;
                                 }
-                                if (_loc_8 == param1 && _loc_8 != _loc_6.currentPlayerId)
+                                if (_loc_8 == param1)
                                 {
                                     _loc_7 = 2;
                                     _loc_5 = false;
                                 }
                             }
                         }
-                        if (_loc_5 && (!param2 || _loc_6.currentPlayerId != param1))
+                        if (_loc_5 && !param2)
                         {
                             _loc_4.finishing = true;
                             _loc_9 = Effect.getEffectById(_loc_4.actionId);
+                            if (_loc_4 is StatBuff && param1 != PlayedCharacterManager.getInstance().id)
+                            {
+                                _loc_10 = _loc_4 as StatBuff;
+                                if (_loc_10.statName)
+                                {
+                                    param1 = _loc_10.targetId;
+                                    if (!this._finishingBuffs[param1])
+                                    {
+                                        this._finishingBuffs[param1] = new Array();
+                                    }
+                                    this._finishingBuffs[param1].push(_loc_10);
+                                }
+                            }
                             BasicBuff(_loc_4).onDisabled();
                             _loc_3 = true;
                         }
@@ -176,8 +209,8 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function addBuff(param1:BasicBuff) : void
         {
-            var _loc_2:BasicBuff = null;
-            var _loc_3:BasicBuff = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!this._buffs[param1.targetId])
             {
                 this._buffs[param1.targetId] = new Array();
@@ -213,7 +246,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function updateBuff(param1:BasicBuff) : Boolean
         {
-            var _loc_3:BasicBuff = null;
+            var _loc_3:* = null;
             var _loc_2:* = param1.targetId;
             if (!this._buffs[_loc_2])
             {
@@ -238,13 +271,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function dispell(param1:int, param2:Boolean = false, param3:Boolean = false, param4:Boolean = false) : void
         {
-            var _loc_7:BasicBuff = null;
+            var _loc_7:* = null;
             var _loc_5:* = new Array();
             var _loc_6:* = new Array();
             for each (_loc_7 in this._buffs[param1])
             {
                 
-                if (_loc_7.canBeDispell(param2, param3, param4))
+                if (_loc_7.canBeDispell(param2, int.MIN_VALUE, param4))
                 {
                     KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, _loc_7, param1, "Dispell");
                     _loc_7.onRemoved();
@@ -257,33 +290,33 @@ package com.ankamagames.dofus.logic.game.fight.managers
             return;
         }// end function
 
-        public function dispellSpell(param1:int, param2:uint) : void
+        public function dispellSpell(param1:int, param2:uint, param3:Boolean = false, param4:Boolean = false, param5:Boolean = false) : void
         {
-            var _loc_5:BasicBuff = null;
-            var _loc_6:BasicBuff = null;
-            var _loc_3:* = new Array();
-            var _loc_4:* = new Array();
-            for each (_loc_5 in this._buffs[param1])
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_6:* = new Array();
+            var _loc_7:* = new Array();
+            for each (_loc_8 in this._buffs[param1])
             {
                 
-                if (param2 == _loc_5.castingSpell.spell.id)
+                if (param2 == _loc_8.castingSpell.spell.id && _loc_8.canBeDispell(param3, int.MIN_VALUE, param5))
                 {
-                    _loc_5.onRemoved();
-                    _loc_3.push(_loc_5);
+                    _loc_8.onRemoved();
+                    _loc_6.push(_loc_8);
                     continue;
                 }
-                _loc_4.push(_loc_5);
+                _loc_7.push(_loc_8);
             }
-            this._buffs[param1] = _loc_4;
-            for each (_loc_6 in _loc_3)
+            this._buffs[param1] = _loc_7;
+            for each (_loc_9 in _loc_6)
             {
                 
-                KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, _loc_6, param1, "Dispell");
+                KernelEventsManager.getInstance().processCallback(FightHookList.BuffRemove, _loc_9, param1, "Dispell");
             }
             return;
         }// end function
 
-        public function dispellUniqueBuff(param1:int, param2:int, param3:Boolean = false, param4:Boolean = false, param5:Boolean = false) : void
+        public function dispellUniqueBuff(param1:int, param2:int, param3:Boolean = false, param4:Boolean = false, param5:Boolean = true) : void
         {
             var _loc_6:* = this.getBuffIndex(param1, param2);
             if (this.getBuffIndex(param1, param2) == -1)
@@ -291,10 +324,14 @@ package com.ankamagames.dofus.logic.game.fight.managers
                 return;
             }
             var _loc_7:* = this._buffs[param1][_loc_6];
-            if (this._buffs[param1][_loc_6].canBeDispell(param3, param4, param5))
+            if (this._buffs[param1][_loc_6].canBeDispell(param3, param5 ? (param2) : (int.MIN_VALUE), param4))
             {
                 switch(_loc_7.actionId)
                 {
+                    case 293:
+                    {
+                        break;
+                    }
                     case 788:
                     {
                         break;
@@ -314,48 +351,48 @@ package com.ankamagames.dofus.logic.game.fight.managers
             return;
         }// end function
 
-        public function removeLinkedBuff(param1:int, param2:Boolean = false, param3:Boolean = false, param4:Boolean = false) : Array
+        public function removeLinkedBuff(param1:int, param2:Boolean = false, param3:Boolean = false) : Array
         {
-            var _loc_8:Array = null;
-            var _loc_9:Array = null;
-            var _loc_10:BasicBuff = null;
-            var _loc_5:Array = [];
-            var _loc_6:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            var _loc_7:* = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntityInfos(param1) as GameFightFighterInformations;
-            for each (_loc_8 in this._buffs)
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_4:* = [];
+            var _loc_5:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            var _loc_6:* = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntityInfos(param1) as GameFightFighterInformations;
+            for each (_loc_7 in this._buffs)
             {
                 
-                _loc_9 = new Array();
-                for each (_loc_10 in _loc_8)
+                _loc_8 = new Array();
+                for each (_loc_9 in _loc_7)
                 {
                     
-                    _loc_9.push(_loc_10);
+                    _loc_8.push(_loc_9);
                 }
-                for each (_loc_10 in _loc_9)
+                for each (_loc_9 in _loc_8)
                 {
                     
-                    if (_loc_10.source == param1)
+                    if (_loc_9.source == param1)
                     {
-                        this.dispellUniqueBuff(_loc_10.targetId, _loc_10.id, param2, param3, param4);
-                        if (_loc_5.indexOf(_loc_10.targetId) == -1)
+                        this.dispellUniqueBuff(_loc_9.targetId, _loc_9.id, param2, param3, false);
+                        if (_loc_4.indexOf(_loc_9.targetId) == -1)
                         {
-                            _loc_5.push(_loc_10.targetId);
+                            _loc_4.push(_loc_9.targetId);
                         }
-                        if (param4 && _loc_7.stats.summoned)
+                        if (param3 && _loc_6.stats.summoned)
                         {
-                            _loc_10.aliveSource = _loc_7.stats.summoner;
+                            _loc_9.aliveSource = _loc_6.stats.summoner;
                         }
                     }
                 }
             }
-            return _loc_5;
+            return _loc_4;
         }// end function
 
         public function reaffectBuffs(param1:int) : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:Array = null;
-            var _loc_5:BasicBuff = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_2:* = this.fightEntitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
             if (_loc_2.stats.summoned)
             {
@@ -382,13 +419,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         private function getNextFighter(param1:int) : int
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_2:* = Kernel.getWorker().getFrame(FightBattleFrame) as FightBattleFrame;
             if (_loc_2 == null)
             {
                 return -1;
             }
-            var _loc_3:Boolean = false;
+            var _loc_3:* = false;
             for each (_loc_4 in _loc_2.fightersList)
             {
                 
@@ -420,7 +457,7 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public function getBuff(param1:uint, param2:int) : BasicBuff
         {
-            var _loc_3:BasicBuff = null;
+            var _loc_3:* = null;
             for each (_loc_3 in this._buffs[param2])
             {
                 
@@ -432,6 +469,13 @@ package com.ankamagames.dofus.logic.game.fight.managers
             return null;
         }// end function
 
+        public function getFinishingBuffs(param1:int) : Array
+        {
+            var _loc_2:* = this._finishingBuffs[param1];
+            delete this._finishingBuffs[param1];
+            return _loc_2;
+        }// end function
+
         private function get fightEntitiesFrame() : FightEntitiesFrame
         {
             return Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
@@ -439,8 +483,8 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         private function getBuffIndex(param1:int, param2:int) : int
         {
-            var _loc_3:Object = null;
-            var _loc_4:BasicBuff = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             for (_loc_3 in this._buffs[param1])
             {
                 
@@ -471,9 +515,9 @@ package com.ankamagames.dofus.logic.game.fight.managers
 
         public static function makeBuffFromEffect(param1:AbstractFightDispellableEffect, param2:CastingSpell, param3:uint) : BasicBuff
         {
-            var _loc_4:BasicBuff = null;
-            var _loc_5:FightTemporaryBoostWeaponDamagesEffect = null;
-            var _loc_6:FightTemporarySpellImmunityEffect = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(true)
             {
                 case param1 is FightTemporarySpellBoostEffect:

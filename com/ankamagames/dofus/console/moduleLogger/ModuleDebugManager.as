@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.moduleLogger
+﻿package com.ankamagames.dofus.console.moduleLogger
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -79,7 +79,7 @@ package com.ankamagames.dofus.console.moduleLogger
             _fpsShape.graphics.lineStyle(1, 16777215, 1, true);
             _fpsShape.graphics.moveTo(0, _valuesList[0]);
             var _loc_4:* = _valuesList.length;
-            var _loc_5:int = 0;
+            var _loc_5:* = 0;
             while (++_loc_5 < _loc_4)
             {
                 
@@ -95,7 +95,7 @@ package com.ankamagames.dofus.console.moduleLogger
                 throw new Error();
             }
             _ui = new Sprite();
-            var _loc_3:int = 100;
+            var _loc_3:* = 100;
             _ui.y = 100;
             _ui.x = _loc_3;
             _fpsShape = new Shape();

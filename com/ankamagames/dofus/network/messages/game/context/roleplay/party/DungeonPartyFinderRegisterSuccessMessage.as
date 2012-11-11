@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -63,7 +63,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
         public function serializeAs_DungeonPartyFinderRegisterSuccessMessage(param1:IDataOutput) : void
         {
             param1.writeShort(this.dungeonIds.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.dungeonIds.length)
             {
                 
@@ -85,9 +85,9 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 
         public function deserializeAs_DungeonPartyFinderRegisterSuccessMessage(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

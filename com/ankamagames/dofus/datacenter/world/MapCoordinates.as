@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.world
+﻿package com.ankamagames.dofus.datacenter.world
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;
@@ -39,7 +39,7 @@ package com.ankamagames.dofus.datacenter.world
 
         public function get maps() : Vector.<MapPosition>
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             if (!this._maps)
             {
                 this._maps = new Vector.<MapPosition>(this.mapIds.length, true);

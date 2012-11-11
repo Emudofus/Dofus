@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
     import com.ankamagames.dofus.logic.game.fight.frames.*;
@@ -41,8 +41,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_1:GameFightFighterInformations = null;
-            var _loc_2:int = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             if (this._updateCharacteristicManager)
             {
                 _loc_1 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
@@ -52,6 +52,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
                 {
                     CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().movementPointsCurrent = _loc_1.stats.movementPoints;
                 }
+                FightEntitiesFrame.getCurrentInstance().setLastKnownEntityMovementPoint(_targetId, -this._intValue, true);
                 if (_loc_1.disposition.cellId == -1)
                 {
                     super.executeCallbacks();
@@ -62,17 +63,17 @@ package com.ankamagames.dofus.logic.game.fight.steps
             {
                 if (this._intValue > 0)
                 {
-                    FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_GAINED, [_targetId, Math.abs(this._intValue)], _targetId, castingSpellId);
+                    FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_GAINED, [_targetId, Math.abs(this._intValue)], _targetId, castingSpellId, false, 2);
                 }
                 else if (this._intValue < 0)
                 {
                     if (this._voluntarlyUsed)
                     {
-                        FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_USED, [_targetId, Math.abs(this._intValue)], _targetId, castingSpellId);
+                        FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_USED, [_targetId, Math.abs(this._intValue)], _targetId, castingSpellId, false, 2);
                     }
                     else
                     {
-                        FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_LOST, [_targetId, Math.abs(this._intValue)], _targetId, castingSpellId);
+                        FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_MP_LOST, [_targetId, Math.abs(this._intValue)], _targetId, castingSpellId, false, 2);
                     }
                 }
             }

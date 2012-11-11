@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.types
+﻿package com.ankamagames.dofus.logic.game.fight.types
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.effects.*;
@@ -15,7 +15,6 @@ package com.ankamagames.dofus.logic.game.fight.types
     public class BasicBuff extends Object
     {
         protected var _effect:EffectInstance;
-        private var _effectParameters:Array;
         protected var _disabled:Boolean = false;
         protected var _removed:Boolean = false;
         public var uid:uint;
@@ -32,11 +31,10 @@ package com.ankamagames.dofus.logic.game.fight.types
         public var parentBoostUid:uint;
         public var finishing:Boolean;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(BasicBuff));
-        static var _unicID:uint = 0;
 
         public function BasicBuff(param1:AbstractFightDispellableEffect = null, param2:CastingSpell = null, param3:uint = 0, param4 = null, param5 = null, param6 = null)
         {
-            var _loc_7:FightBattleFrame = null;
+            var _loc_7:* = null;
             if (param1)
             {
                 this.id = param1.uid;
@@ -119,13 +117,13 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         public function get unusableNextTurn() : Boolean
         {
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
             if (this.duration > 1 || this.duration < 0)
             {
                 return false;
@@ -208,21 +206,29 @@ package com.ankamagames.dofus.logic.game.fight.types
             return;
         }// end function
 
-        public function canBeDispell(param1:Boolean = false, param2:Boolean = false, param3:Boolean = false) : Boolean
+        public function canBeDispell(param1:Boolean = false, param2:int = -2.14748e+009, param3:Boolean = false) : Boolean
         {
+            if (param2 == this.id)
+            {
+                return true;
+            }
             switch(this.dispelable)
             {
                 case FightDispellableEnum.DISPELLABLE:
                 {
-                    return !this.critical || param2;
+                    return true;
+                }
+                case FightDispellableEnum.DISPELLABLE_BY_STRONG_DISPEL:
+                {
+                    return param1;
                 }
                 case FightDispellableEnum.DISPELLABLE_BY_DEATH:
                 {
-                    return (!this.critical || param2) && (param3 || param1);
+                    return param3 || param1;
                 }
-                case FightDispellableEnum.NOT_DISPELLABLE:
+                case FightDispellableEnum.REALLY_NOT_DISPELLABLE:
                 {
-                    return (!this.critical || param2) && param1;
+                    return param2 == this.id;
                 }
                 default:
                 {
@@ -240,6 +246,12 @@ package com.ankamagames.dofus.logic.game.fight.types
         public function onDisabled() : void
         {
             this._disabled = true;
+            return;
+        }// end function
+
+        public function undisable() : void
+        {
+            this._disabled = false;
             return;
         }// end function
 
@@ -262,13 +274,13 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         public function equals(param1:BasicBuff, param2:Boolean = false) : Boolean
         {
-            var _loc_5:StateBuff = null;
-            var _loc_6:StateBuff = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (this.targetId != param1.targetId || this.effects.effectId != param1.actionId || this.duration != param1.duration || this.effects.hasOwnProperty("delay") && param1.effects.hasOwnProperty("delay") && this.effects.delay != param1.effects.delay || this.castingSpell.spellRank && !param2 && this.castingSpell.spellRank.id != param1.castingSpell.spellRank.id || !param2 && this.castingSpell.spell.id != param1.castingSpell.spell.id || getQualifiedClassName(this) != getQualifiedClassName(param1) || this.source != param1.source || this.trigger)
             {
                 return false;
             }
-            var _loc_3:Array = [ActionIdConverter.ACTION_BOOST_SPELL_RANGE, ActionIdConverter.ACTION_BOOST_SPELL_RANGEABLE, ActionIdConverter.ACTION_BOOST_SPELL_DMG, ActionIdConverter.ACTION_BOOST_SPELL_HEAL, ActionIdConverter.ACTION_BOOST_SPELL_AP_COST, ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL, ActionIdConverter.ACTION_BOOST_SPELL_CC, ActionIdConverter.ACTION_BOOST_SPELL_CASTOUTLINE, ActionIdConverter.ACTION_BOOST_SPELL_NOLINEOFSIGHT, ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTURN, ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTARGET, ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL_SET, ActionIdConverter.ACTION_BOOST_SPELL_BASE_DMG, ActionIdConverter.ACTION_DEBOOST_SPELL_RANGE, 406, 787, 792, 793, 1017, 1018, 1019, 1035, 1036, 1044, 1045];
+            var _loc_3:* = [ActionIdConverter.ACTION_BOOST_SPELL_RANGE, ActionIdConverter.ACTION_BOOST_SPELL_RANGEABLE, ActionIdConverter.ACTION_BOOST_SPELL_DMG, ActionIdConverter.ACTION_BOOST_SPELL_HEAL, ActionIdConverter.ACTION_BOOST_SPELL_AP_COST, ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL, ActionIdConverter.ACTION_BOOST_SPELL_CC, ActionIdConverter.ACTION_BOOST_SPELL_CASTOUTLINE, ActionIdConverter.ACTION_BOOST_SPELL_NOLINEOFSIGHT, ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTURN, ActionIdConverter.ACTION_BOOST_SPELL_MAXPERTARGET, ActionIdConverter.ACTION_BOOST_SPELL_CAST_INTVL_SET, ActionIdConverter.ACTION_BOOST_SPELL_BASE_DMG, ActionIdConverter.ACTION_DEBOOST_SPELL_RANGE, 406, 787, 792, 793, 1017, 1018, 1019, 1035, 1036, 1044, 1045];
             var _loc_4:* = this.actionId;
             if (this.actionId == 788)
             {
@@ -316,6 +328,13 @@ package com.ankamagames.dofus.logic.game.fight.types
             this.stack.push(param1);
             switch(this.actionId)
             {
+                case 293:
+                {
+                    this.param1 = param1.param1;
+                    this.param2 = this.param2 + param1.param2;
+                    this.param3 = this.param3 + param1.param3;
+                    break;
+                }
                 case 788:
                 {
                     this.param1 = this.param1 + param1.param2;
@@ -341,10 +360,10 @@ package com.ankamagames.dofus.logic.game.fight.types
 
         public function updateParam(param1:int = 0, param2:int = 0, param3:int = 0, param4:int = -1) : void
         {
-            var _loc_8:BasicBuff = null;
-            var _loc_5:int = 0;
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
+            var _loc_8:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             if (param4 == -1)
             {
                 _loc_5 = param1;
@@ -422,6 +441,10 @@ package com.ankamagames.dofus.logic.game.fight.types
         {
             if (!param2 || this.canBeDispell())
             {
+                if (this.duration >= 63)
+                {
+                    return false;
+                }
                 if (this.duration + param1 > 0)
                 {
                     this.duration = this.duration + param1;

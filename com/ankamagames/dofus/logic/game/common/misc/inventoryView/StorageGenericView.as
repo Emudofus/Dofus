@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.items.*;
@@ -30,7 +30,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
         public function initialize(param1:Vector.<ItemWrapper>) : void
         {
-            var _loc_2:ItemWrapper = null;
+            var _loc_2:* = null;
             if (!this._content)
             {
                 this._content = new Vector.<ItemWrapper>;
@@ -131,7 +131,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
         public function modifyItem(param1:ItemWrapper, param2:ItemWrapper, param3:int) : void
         {
-            var _loc_5:ItemWrapper = null;
+            var _loc_5:* = null;
             var _loc_4:* = this.getItemIndex(param1);
             if (this.getItemIndex(param1) != -1)
             {
@@ -140,9 +140,8 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
                 {
                     _loc_5.update(param1.position, param1.objectUID, param1.objectGID, _loc_5.quantity, param1.effectsList);
                     this.updateView();
-                    return;
                 }
-                if (param1.quantity <= param3)
+                else if (param1.quantity <= param3)
                 {
                     this.removeItem(_loc_5, param3);
                 }
@@ -171,12 +170,12 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
         protected function getItemIndex(param1:ItemWrapper, param2:Vector.<ItemWrapper> = null) : int
         {
-            var _loc_4:ItemWrapper = null;
+            var _loc_4:* = null;
             if (param2 == null)
             {
                 param2 = this._content;
             }
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param2.length)
             {
                 
@@ -248,7 +247,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
         public function updateView() : void
         {
-            var _loc_1:ItemWrapper = null;
+            var _loc_1:* = null;
             this._sortFieldCache = this.sortField();
             if (this._sortFieldCache != StorageOptionManager.SORT_FIELD_NONE)
             {

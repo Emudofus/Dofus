@@ -1,4 +1,4 @@
-package org.flintparticles.common.actions
+﻿package org.flintparticles.common.actions
 {
     import org.flintparticles.common.emitters.*;
     import org.flintparticles.common.particles.*;

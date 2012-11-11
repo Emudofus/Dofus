@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay.job
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay.job
 {
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.jerakine.network.*;
@@ -111,7 +111,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.job
             this.playerName = param1.readUTF();
             this.alignmentSide = param1.readByte();
             this.breed = param1.readByte();
-            if (this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Zobal)
+            if (this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Steamer)
             {
                 throw new Error("Forbidden value (" + this.breed + ") on element of JobCrafterDirectoryEntryPlayerInfo.breed.");
             }

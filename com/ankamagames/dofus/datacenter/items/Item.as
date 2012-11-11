@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items
+﻿package com.ankamagames.dofus.datacenter.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.items.criterion.*;
@@ -29,9 +29,12 @@ package com.ankamagames.dofus.datacenter.items
         public var etheral:Boolean;
         public var itemSetId:int;
         public var criteria:String;
+        public var criteriaTarget:String;
         public var hideEffects:Boolean;
         public var enhanceable:Boolean;
+        public var nonUsableOnAnother:Boolean;
         public var appearanceId:uint;
+        public var secretRecipe:Boolean;
         public var recipeIds:Vector.<uint>;
         public var bonusIsSecret:Boolean;
         public var possibleEffects:Vector.<EffectInstance>;
@@ -44,6 +47,7 @@ package com.ankamagames.dofus.datacenter.items
         private var _itemSet:ItemSet;
         private var _appearance:TiphonEntityLook;
         private var _conditions:GroupItemCriterion;
+        private var _conditionsTarget:GroupItemCriterion;
         private var _recipes:Array;
         private static const MODULE:String = "Items";
         private static const SUPERTYPE_NOT_EQUIPABLE:Array = [9, 14, 15, 16, 17, 18, 6, 19, 21, 20, 8, 22];
@@ -125,7 +129,7 @@ package com.ankamagames.dofus.datacenter.items
 
         public function get appearance() : TiphonEntityLook
         {
-            var _loc_1:Appearance = null;
+            var _loc_1:* = null;
             if (!this._appearance)
             {
                 _loc_1 = Appearance.getAppearanceById(this.appearanceId);
@@ -139,9 +143,9 @@ package com.ankamagames.dofus.datacenter.items
 
         public function get recipes() : Array
         {
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
-            var _loc_3:Recipe = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             if (!this._recipes)
             {
                 _loc_1 = this.recipeIds.length;
@@ -221,6 +225,19 @@ package com.ankamagames.dofus.datacenter.items
             return this._conditions;
         }// end function
 
+        public function get targetConditions() : GroupItemCriterion
+        {
+            if (!this.criteriaTarget)
+            {
+                return null;
+            }
+            if (!this._conditionsTarget)
+            {
+                this._conditionsTarget = new GroupItemCriterion(this.criteriaTarget);
+            }
+            return this._conditionsTarget;
+        }// end function
+
         public function copy(param1:Item, param2:Item) : void
         {
             param2.id = param1.id;
@@ -239,11 +256,14 @@ package com.ankamagames.dofus.datacenter.items
             param2.twoHanded = param1.twoHanded;
             param2.etheral = param1.etheral;
             param2.enhanceable = param1.enhanceable;
+            param2.nonUsableOnAnother = param1.nonUsableOnAnother;
             param2.itemSetId = param1.itemSetId;
             param2.criteria = param1.criteria;
+            param2.criteriaTarget = param1.criteriaTarget;
             param2.hideEffects = param1.hideEffects;
             param2.appearanceId = param1.appearanceId;
             param2.recipeIds = param1.recipeIds;
+            param2.secretRecipe = param1.secretRecipe;
             param2.bonusIsSecret = param1.bonusIsSecret;
             param2.possibleEffects = param1.possibleEffects;
             param2.favoriteSubAreas = param1.favoriteSubAreas;

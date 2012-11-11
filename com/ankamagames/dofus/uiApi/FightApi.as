@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -120,11 +120,11 @@ package com.ankamagames.dofus.uiApi
 
         public function getCastingSpellBuffEffects(param1:int, param2:uint) : EffectsWrapper
         {
-            var _loc_5:Spell = null;
-            var _loc_7:BasicBuff = null;
-            var _loc_8:EffectsWrapper = null;
-            var _loc_9:EffectInstance = null;
-            var _loc_10:EffectInstanceInteger = null;
+            var _loc_5:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_3:* = new Array();
             var _loc_4:* = BuffManager.getInstance().getAllBuff(param1);
             var _loc_6:* = new Array();

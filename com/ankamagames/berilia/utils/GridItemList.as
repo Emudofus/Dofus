@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.utils
+﻿package com.ankamagames.berilia.utils
 {
     import com.ankamagames.berilia.components.gridRenderer.*;
 

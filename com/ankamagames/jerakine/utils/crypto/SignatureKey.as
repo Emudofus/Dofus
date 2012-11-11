@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.crypto
+﻿package com.ankamagames.jerakine.utils.crypto
 {
     import com.hurlant.crypto.rsa.*;
     import com.hurlant.math.*;
@@ -23,7 +23,7 @@ package com.ankamagames.jerakine.utils.crypto
 
         public static function fromByte(param1:IDataInput) : SignatureKey
         {
-            var _loc_3:RSAKey = null;
+            var _loc_3:* = null;
             var _loc_2:* = param1.readUTF();
             if (_loc_2 != PUBLIC_KEY_HEADER && _loc_2 != PRIVATE_KEY_HEADER)
             {

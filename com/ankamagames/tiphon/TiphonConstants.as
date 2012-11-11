@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon
+﻿package com.ankamagames.tiphon
 {
 
     public class TiphonConstants extends Object

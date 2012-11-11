@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.types.sequences
+﻿package com.ankamagames.atouin.types.sequences
 {
     import com.ankamagames.atouin.utils.*;
     import com.ankamagames.jerakine.entities.interfaces.*;
@@ -34,7 +34,7 @@ package com.ankamagames.atouin.types.sequences
 
         override public function start() : void
         {
-            var _loc_3:Number = NaN;
+            var _loc_3:* = NaN;
             if (this._targetPoint.equals(this._gfxEntity.position))
             {
                 this.onTweenEnd(null);

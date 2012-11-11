@@ -1,4 +1,4 @@
-package org.flintparticles.twoD.actions
+﻿package org.flintparticles.twoD.actions
 {
     import org.flintparticles.common.actions.*;
     import org.flintparticles.common.emitters.*;

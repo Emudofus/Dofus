@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.managers
+﻿package com.ankamagames.jerakine.managers
 {
     import flash.display.*;
     import flash.filters.*;
@@ -49,7 +49,7 @@ package com.ankamagames.jerakine.managers
 
         public function indexOf(param1:Array, param2:BitmapFilter) : int
         {
-            var _loc_4:BitmapFilter = null;
+            var _loc_4:* = null;
             var _loc_3:* = param1.length;
             while (_loc_3--)
             {
@@ -74,3 +74,20 @@ package com.ankamagames.jerakine.managers
 
     }
 }
+
+import flash.display.*;
+
+import flash.filters.*;
+
+import flash.utils.*;
+
+class PrivateClass extends Object
+{
+
+    function PrivateClass()
+    {
+        return;
+    }// end function
+
+}
+

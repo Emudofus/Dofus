@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types.cache
+﻿package com.ankamagames.tiphon.types.cache
 {
     import __AS3__.vec.*;
     import com.ankamagames.tiphon.types.*;
@@ -20,7 +20,7 @@ package com.ankamagames.tiphon.types.cache
 
         public function getAnimation(param1:int) : ScriptedAnimation
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             if (param1 == 3)
             {
                 _loc_2 = 1;
@@ -47,7 +47,7 @@ package com.ankamagames.tiphon.types.cache
 
         public function pushAnimation(param1:ScriptedAnimation, param2:int) : void
         {
-            var _loc_3:int = 0;
+            var _loc_3:* = 0;
             if (param2 == 3)
             {
                 _loc_3 = 1;

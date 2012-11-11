@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.berilia.managers.*;
@@ -31,27 +31,30 @@ package com.ankamagames.dofus.console.debug
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:Logger = null;
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
-            var _loc_8:String = null;
-            var _loc_9:String = null;
-            var _loc_10:File = null;
-            var _loc_11:* = undefined;
-            var _loc_12:Array = null;
-            var _loc_13:String = null;
-            var _loc_14:Object = null;
-            var _loc_15:* = undefined;
-            var _loc_16:FileStream = null;
-            var _loc_17:ByteArray = null;
-            switch(param2)
+            var log:Logger;
+            var size:uint;
+            var emptySince:uint;
+            var i:uint;
+            var s:String;
+            var managerName:String;
+            var logFile:File;
+            var val:*;
+            var prop:Array;
+            var name:String;
+            var p:Object;
+            var o:*;
+            var fsLog:FileStream;
+            var logContent:ByteArray;
+            var console:* = param1;
+            var cmd:* = param2;
+            var args:* = param3;
+            switch(cmd)
             {
                 case "log":
                 {
-                    _loc_4 = Log.getLogger(getQualifiedClassName(MiscInstructionHandler));
-                    LogLogger.activeLog(param3[0] == "true" || param3[0] == "on");
-                    param1.output("Log set to " + LogLogger.logIsActive());
+                    log = Log.getLogger(getQualifiedClassName(MiscInstructionHandler));
+                    LogLogger.activeLog(args[0] == "true" || args[0] == "on");
+                    console.output("Log set to " + LogLogger.logIsActive());
                     break;
                 }
                 case "newdofus":
@@ -61,23 +64,24 @@ package com.ankamagames.dofus.console.debug
                 }
                 case "i18nsize":
                 {
-                    _loc_5 = 0;
-                    _loc_6 = 0;
-                    _loc_7 = 1;
-                    _loc_8 = "";
+                    size;
+                    emptySince;
+                    i;
+                    s;
                     do
                     {
                         
-                        _loc_8 = I18n.getText(_loc_7++);
-                        if (_loc_8)
+                        i = (i + 1);
+                        s = I18n.getText(i);
+                        if (s)
                         {
-                            _loc_6 = 0;
-                            _loc_5 = _loc_5 + _loc_8.length;
+                            emptySince;
+                            size = size + s.length;
                             continue;
                         }
-                        _loc_6 = _loc_6 + 1;
-                    }while (_loc_6 < 20)
-                    param1.output(_loc_5 + " characters in " + (_loc_7 - 1) + " entries.");
+                        emptySince = (emptySince + 1);
+                    }while (emptySince < 20)
+                    console.output(size + " characters in " + (i - 1) + " entries.");
                     break;
                 }
                 case "clear":
@@ -87,54 +91,60 @@ package com.ankamagames.dofus.console.debug
                 }
                 case "config":
                 {
-                    if (!param3[0])
+                    if (!args[0])
                     {
-                        param1.output("Syntax : /config <manager> [<option>]");
+                        console.output("Syntax : /config <manager> [<option>]");
                         break;
                     }
-                    _loc_9 = param3[0];
-                    if (!OptionManager.getOptionManager(_loc_9))
+                    managerName = args[0];
+                    if (!OptionManager.getOptionManager(managerName))
                     {
-                        param1.output("Unknown manager \'" + _loc_9 + "\').");
+                        console.output("Unknown manager \'" + managerName + "\').");
                         break;
                     }
-                    if (param3[1])
+                    if (args[1])
                     {
-                        if (OptionManager.getOptionManager("atouin")[param3[1]] != null)
+                        if (OptionManager.getOptionManager("atouin")[args[1]] != null)
                         {
-                            _loc_11 = param3[2];
-                            if (_loc_11 == "true")
+                            val = args[2];
+                            if (val == "true")
                             {
-                                _loc_11 = true;
+                                val;
                             }
-                            if (_loc_11 == "false")
+                            if (val == "false")
                             {
-                                _loc_11 = false;
+                                val;
                             }
-                            if (parseInt(_loc_11).toString() == _loc_11)
+                            if (parseInt(val).toString() == val)
                             {
-                                _loc_11 = parseInt(_loc_11);
+                                val = parseInt(val);
                             }
-                            OptionManager.getOptionManager("atouin")[param3[1]] = _loc_11;
+                            OptionManager.getOptionManager("atouin")[args[1]] = val;
                         }
                         else
                         {
-                            param1.output(param3[1] + " not found on AtouinOption");
+                            console.output(args[1] + " not found on AtouinOption");
                         }
                     }
                     else
                     {
-                        _loc_12 = new Array();
-                        for (_loc_13 in OptionManager.getOptionManager("atouin"))
+                        prop = new Array();
+                        var _loc_5:* = 0;
+                        var _loc_6:* = OptionManager.getOptionManager("atouin");
+                        while (_loc_6 in _loc_5)
                         {
                             
-                            _loc_12.push({name:_loc_13, value:OptionManager.getOptionManager("atouin")[_loc_13]});
+                            name = _loc_6[_loc_5];
+                            prop.push({name:name, value:OptionManager.getOptionManager("atouin")[name]});
                         }
-                        _loc_12.sortOn("name");
-                        for each (_loc_14 in _loc_12)
+                        prop.sortOn("name");
+                        var _loc_5:* = 0;
+                        var _loc_6:* = prop;
+                        while (_loc_6 in _loc_5)
                         {
                             
-                            param1.output(" - " + _loc_14.name + " : " + _loc_14.value);
+                            p = _loc_6[_loc_5];
+                            console.output(" - " + p.name + " : " + p.value);
                         }
                     }
                     break;
@@ -146,33 +156,36 @@ package com.ankamagames.dofus.console.debug
                 }
                 case "geteventmodeparams":
                 {
-                    if (param3.length != 2)
+                    if (args.length != 2)
                     {
-                        param1.output("Syntax : /getEventModeParams <login> <password>");
+                        console.output("Syntax : /getEventModeParams <login> <password>");
                         return;
                     }
-                    param1.output(Base64.encode("login:" + param3[0] + ",password:" + param3[1]));
+                    console.output(Base64.encode("login:" + args[0] + ",password:" + args[1]));
                     break;
                 }
                 case "setquality":
                 {
-                    if (param3.length != 1)
+                    if (args.length != 1)
                     {
-                        param1.output("Current stage.quality : [" + StageShareManager.stage.quality + "]");
+                        console.output("Current stage.quality : [" + StageShareManager.stage.quality + "]");
                         return;
                     }
-                    StageShareManager.stage.quality = param3[0];
-                    param1.output("Try set stage.qualitity to [" + param3[0] + "], result : [" + StageShareManager.stage.quality + "]");
+                    StageShareManager.stage.quality = args[0];
+                    console.output("Try set stage.qualitity to [" + args[0] + "], result : [" + StageShareManager.stage.quality + "]");
                     break;
                 }
                 case "lowdefskin":
                 {
-                    for each (_loc_15 in EntitiesManager.getInstance().entities)
+                    var _loc_5:* = 0;
+                    var _loc_6:* = EntitiesManager.getInstance().entities;
+                    while (_loc_6 in _loc_5)
                     {
                         
-                        if (_loc_15 is TiphonSprite)
+                        o = _loc_6[_loc_5];
+                        if (o is TiphonSprite)
                         {
-                            TiphonSprite(_loc_15).setAlternativeSkinIndex(TiphonSprite(_loc_15).getAlternativeSkinIndex() == -1 ? (0) : (-1));
+                            TiphonSprite(o).setAlternativeSkinIndex(TiphonSprite(o).getAlternativeSkinIndex() == -1 ? (0) : (-1));
                         }
                     }
                     break;
@@ -184,14 +197,14 @@ package com.ankamagames.dofus.console.debug
                 }
                 case "savereplaylog":
                 {
-                    _loc_10 = LogFrame.getInstance(false).duplicateLogFile();
-                    if (_loc_10.exists)
+                    logFile = LogFrame.getInstance(false).duplicateLogFile();
+                    if (logFile.exists)
                     {
-                        _loc_16 = new FileStream();
-                        _loc_17 = new ByteArray();
-                        _loc_16.open(_loc_10, FileMode.READ);
-                        _loc_16.readBytes(_loc_17);
-                        File.desktopDirectory.save(_loc_17, "log.d2l");
+                        fsLog = new FileStream();
+                        logContent = new ByteArray();
+                        fsLog.open(logFile, FileMode.READ);
+                        fsLog.readBytes(logContent);
+                        File.desktopDirectory.save(logContent, "log.d2l");
                     }
                     break;
                 }
@@ -201,16 +214,32 @@ package com.ankamagames.dofus.console.debug
                     {
                         this._synchronisationFrameInstance = Kernel.getWorker().getFrame(SynchronisationFrame) as SynchronisationFrame;
                         Kernel.getWorker().removeFrame(this._synchronisationFrameInstance);
-                        param1.output("Synchro sequence disable");
+                        console.output("Synchro sequence disable");
                     }
                     else if (this._synchronisationFrameInstance)
                     {
-                        param1.output("Synchro sequence enable");
+                        console.output("Synchro sequence enable");
                         Kernel.getWorker().addFrame(this._synchronisationFrameInstance);
                     }
                     else
                     {
-                        param1.output("Can\'t enable synchro sequence");
+                        console.output("Can\'t enable synchro sequence");
+                    }
+                    break;
+                }
+                case "throw":
+                {
+                    if (args[0] == "async")
+                    {
+                        setTimeout(function () : void
+            {
+                throw new Error("Test error");
+            }// end function
+            , 100);
+                    }
+                    else
+                    {
+                        throw new Error("Test error");
                     }
                     break;
                 }
@@ -270,6 +299,10 @@ package com.ankamagames.dofus.console.debug
                 {
                     return "Enable/disable synchro sequence";
                 }
+                case "throw":
+                {
+                    return "Throw an exception (test only) option:[async|sync]";
+                }
                 default:
                 {
                     break;
@@ -280,11 +313,16 @@ package com.ankamagames.dofus.console.debug
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
         {
-            var _loc_5:String = null;
-            var _loc_6:String = null;
-            var _loc_4:Array = [];
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_4:* = [];
             switch(param1)
             {
+                case "throw":
+                {
+                    _loc_4 = ["async", "sync"];
+                    break;
+                }
                 case "setquality":
                 {
                     _loc_4 = [StageQuality.LOW, StageQuality.MEDIUM, StageQuality.HIGH, StageQuality.BEST];

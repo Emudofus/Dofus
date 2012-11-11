@@ -1,4 +1,4 @@
-package com.ankamagames.tubul
+﻿package com.ankamagames.tubul
 {
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.types.*;

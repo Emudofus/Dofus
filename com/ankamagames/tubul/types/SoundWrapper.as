@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types
+﻿package com.ankamagames.tubul.types
 {
     import com.ankamagames.tubul.*;
     import com.ankamagames.tubul.events.*;
@@ -57,12 +57,12 @@ package com.ankamagames.tubul.types
 
         public function get position() : Number
         {
-            var _loc_2:SoundChannel = null;
+            var _loc_2:* = null;
             if (this.soundData == null && this.sound == null)
             {
                 return -1;
             }
-            var _loc_1:Number = 0;
+            var _loc_1:* = 0;
             if (this.soundData != null)
             {
                 _loc_1 = Math.round(this.soundData.position / (8 * 44.1)) / 1000;
@@ -197,7 +197,7 @@ package com.ankamagames.tubul.types
 
         public function checkSoundPosition() : void
         {
-            var _loc_1:SoundWrapperEvent = null;
+            var _loc_1:* = null;
             if (this._notify == false)
             {
                 return;

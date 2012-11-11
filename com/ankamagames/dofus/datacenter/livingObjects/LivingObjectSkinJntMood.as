@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.livingObjects
+﻿package com.ankamagames.dofus.datacenter.livingObjects
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;
@@ -26,7 +26,7 @@ package com.ankamagames.dofus.datacenter.livingObjects
                 return 0;
             }
             var _loc_5:* = _loc_4.moods[param2] as Vector.<int>;
-            return (_loc_4.moods[param2] as Vector.<int>)[(param3 - 1)];
+            return (_loc_4.moods[param2] as Vector.<int>)[Math.max(0, (param3 - 1))];
         }// end function
 
         public static function getLivingObjectSkins() : Array

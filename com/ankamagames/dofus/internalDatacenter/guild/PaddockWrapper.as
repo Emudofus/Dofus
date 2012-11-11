@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.guild
+﻿package com.ankamagames.dofus.internalDatacenter.guild
 {
     import com.ankamagames.dofus.network.types.game.paddock.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -20,9 +20,9 @@ package com.ankamagames.dofus.internalDatacenter.guild
 
         public static function create(param1:PaddockInformations) : PaddockWrapper
         {
-            var _loc_3:PaddockBuyableInformations = null;
-            var _loc_4:PaddockAbandonnedInformations = null;
-            var _loc_5:PaddockPrivateInformations = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_2:* = new PaddockWrapper;
             _loc_2.maxOutdoorMount = param1.maxOutdoorMount;
             _loc_2.maxItems = param1.maxItems;
@@ -41,7 +41,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
             if (param1 is PaddockPrivateInformations)
             {
                 _loc_5 = param1 as PaddockPrivateInformations;
-                _loc_2.guildIdentity = GuildWrapper.create(_loc_5.guildInfo.guildId, _loc_5.guildInfo.guildName, _loc_5.guildInfo.guildEmblem, 0);
+                _loc_2.guildIdentity = GuildWrapper.create(_loc_5.guildInfo.guildId, _loc_5.guildInfo.guildName, _loc_5.guildInfo.guildEmblem, 0, true);
             }
             return _loc_2;
         }// end function

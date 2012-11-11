@@ -1,4 +1,4 @@
-package gs.easing
+﻿package gs.easing
 {
 
     public class Linear extends Object

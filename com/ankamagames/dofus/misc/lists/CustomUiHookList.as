@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.lists
+﻿package com.ankamagames.dofus.misc.lists
 {
     import com.ankamagames.berilia.types.data.*;
 
@@ -19,8 +19,8 @@ package com.ankamagames.dofus.misc.lists
         public static const StopCinematic:Hook = new Hook("StopCinematic", false);
         public static const ActivateSound:Hook = new Hook("ActivateSound", false);
         public static const StorageFilterUpdated:Hook = new Hook("StorageFilterUpdated", false);
-        public static const ServerSelected:Hook = new Hook("StorageFilterUpdated", false);
         public static const ClosingInventory:Hook = new Hook("ClosingInventory", false);
+        public static const AddBannerButton:Hook = new Hook("AddBannerButton", false);
 
         public function CustomUiHookList()
         {

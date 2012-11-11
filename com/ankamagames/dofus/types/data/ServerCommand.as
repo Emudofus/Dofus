@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.data
+﻿package com.ankamagames.dofus.types.data
 {
 
     public class ServerCommand extends Object
@@ -27,10 +27,10 @@ package com.ankamagames.dofus.types.data
 
         public static function autoComplete(param1:String) : String
         {
-            var _loc_3:String = null;
-            var _loc_4:String = null;
-            var _loc_5:Boolean = false;
-            var _loc_6:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = false;
+            var _loc_6:* = 0;
             var _loc_2:* = new Array();
             for (_loc_3 in _cmdByName)
             {
@@ -81,7 +81,7 @@ package com.ankamagames.dofus.types.data
 
         public static function getAutoCompletePossibilities(param1:String) : Array
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_2:* = new Array();
             for (_loc_3 in _cmdByName)
             {

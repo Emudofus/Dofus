@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.interactive.skill
+﻿package com.ankamagames.dofus.network.types.game.interactive.skill
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

@@ -1,4 +1,4 @@
-package d2network
+﻿package d2network
 {
 
     public class IgnoredInformations extends AbstractContactInformations

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.character.restriction.*;

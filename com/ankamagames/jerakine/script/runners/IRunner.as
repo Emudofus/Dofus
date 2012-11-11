@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.script.runners
+﻿package com.ankamagames.jerakine.script.runners
 {
 
     public interface IRunner

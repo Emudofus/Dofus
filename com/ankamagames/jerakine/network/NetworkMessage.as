@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.network
+﻿package com.ankamagames.jerakine.network
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.scrambling.*;
@@ -7,11 +7,14 @@ package com.ankamagames.jerakine.network
 
     public class NetworkMessage extends ScramblableElement implements INetworkMessage
     {
+        private var _instance_id:uint;
+        private static var GLOBAL_INSTANCE_ID:uint = 0;
         public static const BIT_RIGHT_SHIFT_LEN_PACKET_ID:uint = 2;
         public static const BIT_MASK:uint = 3;
 
         public function NetworkMessage()
         {
+            this._instance_id = GLOBAL_INSTANCE_ID + 1;
             return;
         }// end function
 
@@ -50,10 +53,15 @@ package com.ankamagames.jerakine.network
             throw new AbstractMethodCallError();
         }// end function
 
+        public function toString() : String
+        {
+            return getQualifiedClassName(this).split("::")[1] + " @" + this._instance_id;
+        }// end function
+
         public static function writePacket(param1:IDataOutput, param2:int, param3:ByteArray) : void
         {
-            var _loc_5:uint = 0;
-            var _loc_6:uint = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             var _loc_4:* = computeTypeLen(param3.length);
             param1.writeShort(subComputeStaticHeader(param2, _loc_4));
             switch(_loc_4)

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.crypto
+﻿package com.ankamagames.jerakine.utils.crypto
 {
     import com.hurlant.crypto.rsa.*;
     import com.hurlant.util.der.*;

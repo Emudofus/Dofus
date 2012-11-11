@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.data.elements
+﻿package com.ankamagames.atouin.data.elements
 {
 
     public class GraphicalElementTypes extends Object

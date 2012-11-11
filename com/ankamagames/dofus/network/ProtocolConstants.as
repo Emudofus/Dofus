@@ -1,11 +1,12 @@
-package com.ankamagames.dofus.network
+﻿package com.ankamagames.dofus.network
 {
 
     public class ProtocolConstants extends Object
     {
         public static const MAP_CELL_COUNT:int = 560;
         public static const MAX_LEVEL:int = 200;
-        public static const MAX_CHAT_LENGTH_CHAT:int = 256;
+        public static const MAX_CHAT_LEN:int = 512;
+        public static const USER_MAX_CHAT_LEN:int = 256;
         public static const MIN_LOGIN_LEN:int = 3;
         public static const MAX_LOGIN_LEN:int = 50;
         public static const MIN_PLAYER_NAME_LEN:int = 2;
@@ -31,6 +32,8 @@ package com.ankamagames.dofus.network
         public static const MAX_DISHONOR:int = 500;
         public static const MAX_SHORTCUT:int = 99;
         public static const MAX_ARENA_RANK:uint = 2300;
+        public static const CHAR_MIN_LEVEL_ARENA:int = 50;
+        public static const CHAR_MIN_LEVEL_RIDE:int = 60;
 
         public function ProtocolConstants()
         {

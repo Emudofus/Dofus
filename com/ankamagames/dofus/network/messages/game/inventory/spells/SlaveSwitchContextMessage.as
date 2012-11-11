@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.spells
+﻿package com.ankamagames.dofus.network.messages.game.inventory.spells
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.character.characteristic.*;
@@ -77,7 +77,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.spells
             param1.writeInt(this.summonerId);
             param1.writeInt(this.slaveId);
             param1.writeShort(this.slaveSpells.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.slaveSpells.length)
             {
                 
@@ -96,11 +96,11 @@ package com.ankamagames.dofus.network.messages.game.inventory.spells
 
         public function deserializeAs_SlaveSwitchContextMessage(param1:IDataInput) : void
         {
-            var _loc_4:SpellItem = null;
+            var _loc_4:* = null;
             this.summonerId = param1.readInt();
             this.slaveId = param1.readInt();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

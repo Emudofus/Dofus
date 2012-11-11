@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.frames
+﻿package com.ankamagames.dofus.logic.game.roleplay.frames
 {
     import com.ankamagames.atouin.messages.*;
     import com.ankamagames.atouin.utils.*;
@@ -58,15 +58,15 @@ package com.ankamagames.dofus.logic.game.roleplay.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:GameMapMovementMessage = null;
-            var _loc_3:IEntity = null;
-            var _loc_4:MovementPath = null;
-            var _loc_5:EntityMovementCompleteMessage = null;
-            var _loc_6:EntityMovementStoppedMessage = null;
-            var _loc_7:TeleportOnSameMapMessage = null;
-            var _loc_8:IEntity = null;
-            var _loc_9:GameMapMovementConfirmMessage = null;
-            var _loc_10:GameMapMovementCancelMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             switch(true)
             {
                 case param1 is GameMapNoMovementMessage:

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.entities.messages
+﻿package com.ankamagames.jerakine.entities.messages
 {
     import com.ankamagames.jerakine.entities.interfaces.*;
 

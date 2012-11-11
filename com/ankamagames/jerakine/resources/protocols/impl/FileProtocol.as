@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.protocols.impl
+﻿package com.ankamagames.jerakine.resources.protocols.impl
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.newCache.*;
@@ -8,43 +8,33 @@ package com.ankamagames.jerakine.resources.protocols.impl
     import flash.filesystem.*;
     import flash.utils.*;
 
-    public class FileProtocol extends AbstractProtocol implements IProtocol, IResourceObserver
+    public class FileProtocol extends AbstractFileProtocol
     {
         static const _log:Logger = Log.getLogger(getQualifiedClassName(FileProtocol));
-        private static var _loadingFile:Dictionary = new Dictionary(true);
-        private static var _singleLoadingFile:Dictionary = new Dictionary(true);
+        public static var localDirectory:String;
 
         public function FileProtocol()
         {
             return;
         }// end function
 
-        public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void
+        override public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void
         {
             if (param6 && (param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0))
             {
-                _singleLoadingFile[param1] = param2;
+                singleLoadingFile[param1] = param2;
                 this.loadDirectly(param1, this, param3, param5);
             }
-            else if (_loadingFile[this.getUrl(param1)])
+            else if (loadingFile[getUrl(param1)])
             {
-                _loadingFile[this.getUrl(param1)].push(param2);
+                loadingFile[getUrl(param1)].push(param2);
             }
             else
             {
-                _loadingFile[this.getUrl(param1)] = [param2];
+                loadingFile[getUrl(param1)] = [param2];
                 this.loadDirectly(param1, this, param3, param5);
             }
             return;
-        }// end function
-
-        private function getUrl(param1:Uri) : String
-        {
-            if (param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0)
-            {
-                return param1.normalizedUri;
-            }
-            return param1.normalizedUriWithoutSubPath;
         }// end function
 
         override protected function loadDirectly(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void
@@ -54,10 +44,10 @@ package com.ankamagames.jerakine.resources.protocols.impl
             return;
         }// end function
 
-        protected function extractPath(param1:String) : String
+        override protected function extractPath(param1:String) : String
         {
-            var _loc_2:String = null;
-            var _loc_3:File = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (param1.indexOf("..") != -1)
             {
                 if (param1.indexOf("./") == 0)
@@ -79,31 +69,27 @@ package com.ankamagames.jerakine.resources.protocols.impl
             {
                 param1 = "file://" + param1.substr(param1.indexOf("\\\\"));
             }
+            if (localDirectory != null && param1.indexOf("./") == 0)
+            {
+                param1 = localDirectory + param1.substr(2);
+            }
             return param1;
         }// end function
 
-        override protected function release() : void
+        override public function onLoaded(param1:Uri, param2:uint, param3) : void
         {
-            if (_adapter)
-            {
-                _adapter.free();
-            }
-            return;
-        }// end function
-
-        public function onLoaded(param1:Uri, param2:uint, param3) : void
-        {
-            var _loc_5:Array = null;
-            var _loc_4:* = _singleLoadingFile[param1];
-            if (_singleLoadingFile[param1])
+            var _loc_5:* = null;
+            _log.trace("onLoaded " + param1);
+            var _loc_4:* = singleLoadingFile[param1];
+            if (singleLoadingFile[param1])
             {
                 _loc_4.onLoaded(param1, param2, param3);
-                delete _singleLoadingFile[param1];
+                delete singleLoadingFile[param1];
             }
-            else if (_loadingFile[this.getUrl(param1)] && _loadingFile[this.getUrl(param1)].length)
+            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
             {
-                _loc_5 = _loadingFile[this.getUrl(param1)];
-                delete _loadingFile[this.getUrl(param1)];
+                _loc_5 = loadingFile[getUrl(param1)];
+                delete loadingFile[getUrl(param1)];
                 for each (_loc_4 in _loc_5)
                 {
                     
@@ -113,19 +99,20 @@ package com.ankamagames.jerakine.resources.protocols.impl
             return;
         }// end function
 
-        public function onFailed(param1:Uri, param2:String, param3:uint) : void
+        override public function onFailed(param1:Uri, param2:String, param3:uint) : void
         {
-            var _loc_5:Array = null;
-            var _loc_4:* = _singleLoadingFile[param1];
-            if (_singleLoadingFile[param1])
+            var _loc_5:* = null;
+            _log.warn("onFailed " + param1);
+            var _loc_4:* = singleLoadingFile[param1];
+            if (singleLoadingFile[param1])
             {
                 _loc_4.onFailed(param1, param2, param3);
-                delete _singleLoadingFile[param1];
+                delete singleLoadingFile[param1];
             }
-            else if (_loadingFile[this.getUrl(param1)] && _loadingFile[this.getUrl(param1)].length)
+            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
             {
-                _loc_5 = _loadingFile[this.getUrl(param1)];
-                delete _loadingFile[this.getUrl(param1)];
+                _loc_5 = loadingFile[getUrl(param1)];
+                delete loadingFile[getUrl(param1)];
                 for each (_loc_4 in _loc_5)
                 {
                     
@@ -135,19 +122,19 @@ package com.ankamagames.jerakine.resources.protocols.impl
             return;
         }// end function
 
-        public function onProgress(param1:Uri, param2:uint, param3:uint) : void
+        override public function onProgress(param1:Uri, param2:uint, param3:uint) : void
         {
-            var _loc_5:Array = null;
-            var _loc_4:* = _singleLoadingFile[param1];
-            if (_singleLoadingFile[param1])
+            var _loc_5:* = null;
+            var _loc_4:* = singleLoadingFile[param1];
+            if (singleLoadingFile[param1])
             {
                 _loc_4.onProgress(param1, param2, param3);
-                delete _singleLoadingFile[param1];
+                delete singleLoadingFile[param1];
             }
-            else if (_loadingFile[this.getUrl(param1)] && _loadingFile[this.getUrl(param1)] && _loadingFile[this.getUrl(param1)].length)
+            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
             {
-                _loc_5 = _loadingFile[this.getUrl(param1)];
-                delete _loadingFile[this.getUrl(param1)];
+                _loc_5 = loadingFile[getUrl(param1)];
+                delete loadingFile[getUrl(param1)];
                 for each (_loc_4 in _loc_5)
                 {
                     

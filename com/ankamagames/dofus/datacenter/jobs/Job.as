@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.jobs
+﻿package com.ankamagames.dofus.datacenter.jobs
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.items.*;
@@ -45,8 +45,8 @@ package com.ankamagames.dofus.datacenter.jobs
 
         public function get tools() : Vector.<Item>
         {
-            var _loc_1:uint = 0;
-            var _loc_2:uint = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             if (!this._tools)
             {
                 _loc_1 = this.toolIds.length;

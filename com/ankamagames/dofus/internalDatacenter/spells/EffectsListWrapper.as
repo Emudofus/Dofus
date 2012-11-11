@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.spells
+﻿package com.ankamagames.dofus.internalDatacenter.spells
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.effects.*;
@@ -20,10 +20,10 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public function EffectsListWrapper(param1:Array)
         {
-            var _loc_2:BasicBuff = null;
-            var _loc_3:EffectInstance = null;
-            var _loc_4:Effect = null;
-            var _loc_5:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             this._categories = new Array();
             for each (_loc_2 in param1)
             {
@@ -38,7 +38,7 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         public function get categories() : Array
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             var _loc_1:* = new Array();
             for (_loc_2 in this._categories)
             {
@@ -64,8 +64,8 @@ package com.ankamagames.dofus.internalDatacenter.spells
 
         private function addBuff(param1:int, param2:BasicBuff) : void
         {
-            var _loc_3:BasicBuff = null;
-            var _loc_4:Effect = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (!this._categories[param1])
             {
                 this._categories[param1] = new Array();

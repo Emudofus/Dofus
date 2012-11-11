@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display
+﻿package com.ankamagames.jerakine.utils.display
 {
     import flash.display.*;
     import flash.events.*;
@@ -18,9 +18,9 @@ package com.ankamagames.jerakine.utils.display
 
         public static function isSingleFrame(param1:DisplayObjectContainer) : Boolean
         {
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:DisplayObjectContainer = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_2:* = param1 as MovieClip;
             if (_loc_2 && _loc_2.totalFrames > 1)
             {
@@ -42,7 +42,7 @@ package com.ankamagames.jerakine.utils.display
 
         public static function stopMovieClip(param1:DisplayObjectContainer) : void
         {
-            var _loc_4:DisplayObject = null;
+            var _loc_4:* = null;
             if (param1 is MovieClip)
             {
                 MovieClip(param1).stop();
@@ -52,7 +52,7 @@ package com.ankamagames.jerakine.utils.display
                     asynchStopDoneCount = _loc_6;
                 }
             }
-            var _loc_2:int = -1;
+            var _loc_2:* = -1;
             var _loc_3:* = param1.numChildren;
             while (++_loc_2 < _loc_3)
             {
@@ -68,11 +68,11 @@ package com.ankamagames.jerakine.utils.display
 
         private static function stopMovieClipASynch(event:Event) : void
         {
-            var _loc_3:Object = null;
-            var _loc_4:Boolean = false;
+            var _loc_3:* = null;
+            var _loc_4:* = false;
             var _loc_5:* = undefined;
-            var _loc_6:DisplayObject = null;
-            var _loc_2:Boolean = true;
+            var _loc_6:* = null;
+            var _loc_2:* = true;
             for (_loc_3 in _asynchClip)
             {
                 

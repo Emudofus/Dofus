@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.managers.*;
@@ -38,24 +38,24 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:MapRunningFightListRequestMessage = null;
-            var _loc_3:MapRunningFightListMessage = null;
-            var _loc_4:Vector.<FightExternalInformations> = null;
-            var _loc_5:MapRunningFightDetailsRequestAction = null;
-            var _loc_6:MapRunningFightDetailsRequestMessage = null;
-            var _loc_7:StopToListenRunningFightRequestMessage = null;
-            var _loc_8:MapRunningFightDetailsMessage = null;
-            var _loc_9:Vector.<String> = null;
-            var _loc_10:Vector.<uint> = null;
-            var _loc_11:JoinAsSpectatorRequestAction = null;
-            var _loc_12:GameFightJoinRequestMessage = null;
-            var _loc_13:JoinFightRequestAction = null;
-            var _loc_14:FightExternalInformations = null;
-            var _loc_15:String = null;
-            var _loc_16:Array = null;
-            var _loc_17:uint = 0;
-            var _loc_18:uint = 0;
-            var _loc_19:Boolean = false;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = 0;
+            var _loc_18:* = 0;
+            var _loc_19:* = false;
             switch(true)
             {
                 case param1 is OpenCurrentFightAction:
@@ -154,10 +154,10 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public static function thirtySixToDecimal(param1:String) : uint
         {
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
-            var _loc_2:uint = 0;
-            var _loc_3:uint = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 

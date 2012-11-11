@@ -1,5 +1,6 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
+    import com.ankamagames.atouin.messages.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.berilia.types.messages.*;
@@ -8,7 +9,10 @@ package com.ankamagames.dofus.logic.common.frames
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.dofus.logic.connection.frames.*;
     import com.ankamagames.dofus.logic.connection.managers.*;
+    import com.ankamagames.dofus.logic.connection.messages.*;
     import com.ankamagames.dofus.misc.utils.*;
+    import com.ankamagames.dofus.network.messages.connection.*;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
@@ -25,6 +29,7 @@ package com.ankamagames.dofus.logic.common.frames
         private var _showContinueButton:Boolean = false;
         private var _startTime:uint;
         private var _waitDone:Boolean;
+        private var _progressRation:Number;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(LoadingModuleFrame));
 
         public function LoadingModuleFrame(param1:Boolean = false)
@@ -42,7 +47,7 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function pushed() : Boolean
         {
-            var _loc_1:Tips = null;
+            var _loc_1:* = null;
             this._waitDone = false;
             this._startTime = getTimer();
             this._loadingScreen = new LoadingScreen(true);
@@ -55,6 +60,14 @@ package com.ankamagames.dofus.logic.common.frames
             this._tipsTimer.addEventListener(TimerEvent.TIMER, this.changeTip);
             this._tipsTimer.start();
             this.changeTip(null);
+            if (UiModuleManager.getInstance().unparsedXmlTotalCount == 0)
+            {
+                this._progressRation = 1 / 2;
+            }
+            else
+            {
+                this._progressRation = 1 / 3;
+            }
             return true;
         }// end function
 
@@ -70,24 +83,24 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:Boolean = false;
-            var _loc_3:ModuleRessourceLoadFailedMessage = null;
-            var _loc_4:String = null;
-            var _loc_5:Array = null;
-            var _loc_6:Number = NaN;
-            var _loc_7:UiModule = null;
+            var _loc_2:* = false;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = NaN;
+            var _loc_7:* = null;
             switch(true)
             {
                 case param1 is ModuleLoadedMessage:
                 {
-                    this._loadingScreen.value = this._loadingScreen.value + 100 / UiModuleManager.getInstance().moduleCount * 0.5;
+                    this._loadingScreen.value = this._loadingScreen.value + 100 / UiModuleManager.getInstance().moduleCount * this._progressRation;
                     _loc_2 = UiModuleManager.getInstance().getModule(ModuleLoadedMessage(param1).moduleName).trusted;
                     this._loadingScreen.log(ModuleLoadedMessage(param1).moduleName + " script loaded " + (_loc_2 ? ("") : ("UNTRUSTED module")), _loc_2 ? (LoadingScreen.IMPORTANT) : (LoadingScreen.WARNING));
                     return true;
                 }
                 case param1 is ModuleExecErrorMessage:
                 {
-                    this._loadingScreen.value = this._loadingScreen.value + 100 / UiModuleManager.getInstance().moduleCount * 0.5;
+                    this._loadingScreen.value = this._loadingScreen.value + 100 / UiModuleManager.getInstance().moduleCount * this._progressRation;
                     this._loadingScreen.log("Error while executing " + ModuleExecErrorMessage(param1).moduleName + "\'s main script :\n" + ModuleExecErrorMessage(param1).stackTrace, LoadingScreen.ERROR);
                     this._showContinueButton = true;
                     return true;
@@ -148,7 +161,7 @@ package com.ankamagames.dofus.logic.common.frames
                         break;
                     }
                     this._loadingScreen.log("Preparsing " + UiXmlParsedMessage(param1).url, LoadingScreen.INFO);
-                    this._loadingScreen.value = this._loadingScreen.value + (_loc_6 - this._lastXmlParsedPrc) * 100 * 0.5;
+                    this._loadingScreen.value = this._loadingScreen.value + (_loc_6 - this._lastXmlParsedPrc) * 100 * this._progressRation;
                     this._lastXmlParsedPrc = _loc_6;
                     return true;
                 }
@@ -156,6 +169,18 @@ package com.ankamagames.dofus.logic.common.frames
                 {
                     this._loadingScreen.log("Error while parsing  " + UiXmlParsedErrorMessage(param1).url + " : " + UiXmlParsedErrorMessage(param1).msg, LoadingScreen.ERROR);
                     return true;
+                }
+                case param1 is MapRenderProgressMessage:
+                {
+                    this._loadingScreen.value = this._loadingScreen.value + MapRenderProgressMessage(param1).percent * this._progressRation;
+                    return true;
+                }
+                case param1 is GameStartingMessage:
+                case param1 is ServersListMessage:
+                case param1 is MapComplementaryInformationsDataMessage:
+                {
+                    Kernel.getWorker().removeFrame(this);
+                    break;
                 }
                 default:
                 {
@@ -194,13 +219,12 @@ package com.ankamagames.dofus.logic.common.frames
                 this._waitDone = true;
                 return;
             }
-            Kernel.getWorker().removeFrame(this);
             this._manageAuthentificationFrame = false;
             Kernel.getWorker().addFrame(new AuthentificationFrame(AuthentificationManager.getInstance().loginValidationAction == null));
             Kernel.getWorker().addFrame(new QueueFrame());
             Kernel.getWorker().addFrame(new GameStartingFrame());
             var _loc_1:* = DisconnectionHandlerFrame.messagesAfterReset.length;
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < _loc_1)
             {
                 

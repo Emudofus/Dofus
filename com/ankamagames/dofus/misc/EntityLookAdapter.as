@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc
+﻿package com.ankamagames.dofus.misc
 {
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.game.look.*;
@@ -14,11 +14,10 @@ package com.ankamagames.dofus.misc
 
         public static function fromNetwork(param1:EntityLook) : TiphonEntityLook
         {
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:SubEntity = null;
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
             var _loc_2:* = new TiphonEntityLook();
             _loc_2.lock();
             _loc_2.setBone(param1.bonesId);
@@ -27,7 +26,11 @@ package com.ankamagames.dofus.misc
                 
                 _loc_2.addSkin(_loc_3);
             }
-            _loc_4 = 0;
+            if (param1.bonesId == 1 || param1.bonesId == 2)
+            {
+                _loc_2.defaultSkin = 1965;
+            }
+            var _loc_4:* = 0;
             while (_loc_4 < param1.indexedColors.length)
             {
                 
@@ -55,16 +58,16 @@ package com.ankamagames.dofus.misc
 
         public static function toNetwork(param1:TiphonEntityLook) : EntityLook
         {
-            var _loc_4:String = null;
-            var _loc_5:Array = null;
-            var _loc_6:String = null;
-            var _loc_7:uint = 0;
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
-            var _loc_11:String = null;
-            var _loc_12:uint = 0;
-            var _loc_13:SubEntity = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
+            var _loc_12:* = 0;
+            var _loc_13:* = null;
             var _loc_2:* = new EntityLook();
             _loc_2.bonesId = param1.getBone();
             _loc_2.skins = param1.getSkins(true);
@@ -98,7 +101,7 @@ package com.ankamagames.dofus.misc
 
         public static function tiphonizeLook(param1) : TiphonEntityLook
         {
-            var _loc_2:TiphonEntityLook = null;
+            var _loc_2:* = null;
             if (param1 is TiphonEntityLook)
             {
                 _loc_2 = param1 as TiphonEntityLook;

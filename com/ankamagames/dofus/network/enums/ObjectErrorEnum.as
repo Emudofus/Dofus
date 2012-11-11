@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.enums
+﻿package com.ankamagames.dofus.network.enums
 {
 
     public class ObjectErrorEnum extends Object
@@ -12,6 +12,8 @@ package com.ankamagames.dofus.network.enums
         public static const LEVEL_TOO_LOW:int = 7;
         public static const LIVING_OBJECT_REFUSED_FOOD:int = 8;
         public static const CANNOT_UNEQUIP:int = 9;
+        public static const CANNOT_EQUIP_HERE:int = 10;
+        public static const CRITERIONS:int = 11;
 
         public function ObjectErrorEnum()
         {

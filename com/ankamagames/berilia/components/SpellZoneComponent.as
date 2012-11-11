@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.types.graphic.*;
@@ -34,12 +34,12 @@ package com.ankamagames.berilia.components
 
         public function setSpellLevel(param1:ICellZoneProvider) : void
         {
-            var _loc_5:Object = null;
+            var _loc_5:* = null;
             this._spellLevel = param1;
             this._spellZoneManager.spellLevel = this._spellLevel;
             var _loc_2:* = this._spellLevel.minimalRange == 0 && this._spellLevel.maximalRange == 0 || this._spellLevel.maximalRange == 63;
-            var _loc_3:Boolean = false;
-            var _loc_4:Boolean = true;
+            var _loc_3:* = false;
+            var _loc_4:* = true;
             for each (_loc_5 in this._spellLevel.spellZoneEffects)
             {
                 
@@ -60,8 +60,8 @@ package com.ankamagames.berilia.components
 
         private function setRange(param1:uint, param2:uint) : void
         {
-            var _loc_3:uint = 0;
-            var _loc_4:IZoneShape = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = null;
             this._minRange = param1;
             this._maxRange = param2;
             this._horizontalCells = this._maxRange + 2 + 1;
@@ -80,7 +80,7 @@ package com.ankamagames.berilia.components
             }
             if (this._horizontalCells % 2 == 0)
             {
-                var _loc_5:String = this;
+                var _loc_5:* = this;
                 var _loc_6:* = this._horizontalCells + 1;
                 _loc_5._horizontalCells = _loc_6;
             }
@@ -116,7 +116,7 @@ package com.ankamagames.berilia.components
 
         public function finalize() : void
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             if (this._infiniteRange)
             {
                 if (this.contains(this._spellZoneManager))
@@ -167,7 +167,7 @@ package com.ankamagames.berilia.components
         private function getCenterCellId(param1:uint) : uint
         {
             var _loc_2:* = param1;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = MapPoint.fromCoords(_loc_2, _loc_3).cellId;
             return MapPoint.fromCoords(_loc_2, _loc_3).cellId;
         }// end function

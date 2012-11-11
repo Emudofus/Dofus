@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.types.sequences
+﻿package com.ankamagames.dofus.types.sequences
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.atouin.managers.*;

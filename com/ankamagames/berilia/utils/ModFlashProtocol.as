@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.utils
+﻿package com.ankamagames.berilia.utils
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.jerakine.newCache.*;
@@ -9,6 +9,8 @@ package com.ankamagames.berilia.utils
 
     public class ModFlashProtocol extends FileFlashProtocol implements IProtocol
     {
+        private var _uri:Uri;
+        private var _observer2:IResourceObserver;
 
         public function ModFlashProtocol()
         {
@@ -19,7 +21,10 @@ package com.ankamagames.berilia.utils
         {
             var _loc_7:* = param1.path.substr(0, param1.path.indexOf("/"));
             var _loc_8:* = UiModuleManager.getInstance().getModulePath(_loc_7) + param1.path.substr(param1.path.indexOf("/"));
-            super.load(new Uri(_loc_8), param2, param3, param4, param5, param6);
+            var _loc_9:* = new Uri(_loc_8);
+            this._uri = param1;
+            this._observer2 = param2;
+            super.load(_loc_9, new ResourceObserverWrapper(this._onLoaded, this._onFailed, this._onProgress), param3, param4, param5, param6);
             return;
         }// end function
 
@@ -29,6 +34,24 @@ package com.ankamagames.berilia.utils
             var _loc_5:* = param1.path.substr(0, param1.path.indexOf("/"));
             var _loc_6:* = UiModuleManager.getInstance().getModulePath(_loc_5) + param1.path.substr(param1.path.indexOf("/"));
             _adapter.com.ankamagames.jerakine.resources.adapters:IAdapter::loadDirectly(param1, extractPath(_loc_6), param2, param3);
+            return;
+        }// end function
+
+        private function _onLoaded(param1:Uri, param2:uint, param3) : void
+        {
+            this._observer2.onLoaded(this._uri, param2, param3);
+            return;
+        }// end function
+
+        private function _onFailed(param1:Uri, param2:String, param3:uint) : void
+        {
+            this._observer2.onFailed(this._uri, param2, param3);
+            return;
+        }// end function
+
+        private function _onProgress(param1:Uri, param2:uint, param3:uint) : void
+        {
+            this._observer2.onProgress(this._uri, param2, param3);
             return;
         }// end function
 

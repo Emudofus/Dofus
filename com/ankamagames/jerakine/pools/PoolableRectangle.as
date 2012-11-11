@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.pools
+﻿package com.ankamagames.jerakine.pools
 {
     import com.ankamagames.jerakine.pools.*;
     import flash.geom.*;

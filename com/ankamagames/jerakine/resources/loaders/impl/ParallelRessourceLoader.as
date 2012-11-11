@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.resources.loaders.impl
+﻿package com.ankamagames.jerakine.resources.loaders.impl
 {
     import com.ankamagames.jerakine.newCache.*;
     import com.ankamagames.jerakine.resources.*;
@@ -26,8 +26,8 @@ package com.ankamagames.jerakine.resources.loaders.impl
 
         public function load(param1, param2:ICache = null, param3:Class = null, param4:Boolean = false) : void
         {
-            var _loc_5:Array = null;
-            var _loc_7:Uri = null;
+            var _loc_5:* = null;
+            var _loc_7:* = null;
             if (param1 is Uri)
             {
                 _loc_5 = [param1];
@@ -40,7 +40,7 @@ package com.ankamagames.jerakine.resources.loaders.impl
             {
                 throw new ArgumentError("URIs must be an array or an Uri instance.");
             }
-            var _loc_6:Boolean = false;
+            var _loc_6:* = false;
             if (this._uris != null)
             {
                 for each (_loc_7 in _loc_5)
@@ -75,7 +75,7 @@ package com.ankamagames.jerakine.resources.loaders.impl
 
         public function cancel() : void
         {
-            var _loc_1:IProtocol = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._loadDictionnary)
             {
                 
@@ -93,8 +93,8 @@ package com.ankamagames.jerakine.resources.loaders.impl
 
         private function loadNextUris() : void
         {
-            var _loc_3:Object = null;
-            var _loc_4:IProtocol = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this._uris.length == 0)
             {
                 this._uris = null;
@@ -102,7 +102,7 @@ package com.ankamagames.jerakine.resources.loaders.impl
             }
             this._currentlyLoading = Math.min(this._maxParallel, this._uris.length);
             var _loc_1:* = this._currentlyLoading;
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < _loc_1)
             {
                 
@@ -124,7 +124,7 @@ package com.ankamagames.jerakine.resources.loaders.impl
 
         private function decrementLoads() : void
         {
-            var _loc_1:String = this;
+            var _loc_1:* = this;
             var _loc_2:* = this._currentlyLoading - 1;
             _loc_1._currentlyLoading = _loc_2;
             if (this._currentlyLoading == 0)

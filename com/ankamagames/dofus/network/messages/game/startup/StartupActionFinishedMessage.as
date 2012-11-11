@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.startup
+﻿package com.ankamagames.dofus.network.messages.game.startup
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.startup
 
         public function serializeAs_StartupActionFinishedMessage(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.success);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.automaticAction);
             param1.writeByte(_loc_2);

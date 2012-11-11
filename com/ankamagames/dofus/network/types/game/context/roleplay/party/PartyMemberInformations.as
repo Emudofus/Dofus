@@ -1,11 +1,11 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay.party
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay.party
 {
-    import com.ankamagames.dofus.network.types.game.character.*;
+    import com.ankamagames.dofus.network.types.game.character.choice.*;
     import com.ankamagames.dofus.network.types.game.look.*;
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
 
-    public class PartyMemberInformations extends CharacterMinimalPlusLookInformations implements INetworkType
+    public class PartyMemberInformations extends CharacterBaseInformations implements INetworkType
     {
         public var lifePoints:uint = 0;
         public var maxLifePoints:uint = 0;
@@ -14,6 +14,10 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
         public var initiative:uint = 0;
         public var pvpEnabled:Boolean = false;
         public var alignmentSide:int = 0;
+        public var worldX:int = 0;
+        public var worldY:int = 0;
+        public var mapId:int = 0;
+        public var subAreaId:uint = 0;
         public static const protocolId:uint = 90;
 
         public function PartyMemberInformations()
@@ -26,16 +30,20 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
             return 90;
         }// end function
 
-        public function initPartyMemberInformations(param1:uint = 0, param2:uint = 0, param3:String = "", param4:EntityLook = null, param5:uint = 0, param6:uint = 0, param7:uint = 0, param8:uint = 0, param9:uint = 0, param10:Boolean = false, param11:int = 0) : PartyMemberInformations
+        public function initPartyMemberInformations(param1:uint = 0, param2:uint = 0, param3:String = "", param4:EntityLook = null, param5:int = 0, param6:Boolean = false, param7:uint = 0, param8:uint = 0, param9:uint = 0, param10:uint = 0, param11:uint = 0, param12:Boolean = false, param13:int = 0, param14:int = 0, param15:int = 0, param16:int = 0, param17:uint = 0) : PartyMemberInformations
         {
-            super.initCharacterMinimalPlusLookInformations(param1, param2, param3, param4);
-            this.lifePoints = param5;
-            this.maxLifePoints = param6;
-            this.prospecting = param7;
-            this.regenRate = param8;
-            this.initiative = param9;
-            this.pvpEnabled = param10;
-            this.alignmentSide = param11;
+            super.initCharacterBaseInformations(param1, param2, param3, param4, param5, param6);
+            this.lifePoints = param7;
+            this.maxLifePoints = param8;
+            this.prospecting = param9;
+            this.regenRate = param10;
+            this.initiative = param11;
+            this.pvpEnabled = param12;
+            this.alignmentSide = param13;
+            this.worldX = param14;
+            this.worldY = param15;
+            this.mapId = param16;
+            this.subAreaId = param17;
             return this;
         }// end function
 
@@ -49,6 +57,10 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
             this.initiative = 0;
             this.pvpEnabled = false;
             this.alignmentSide = 0;
+            this.worldX = 0;
+            this.worldY = 0;
+            this.mapId = 0;
+            this.subAreaId = 0;
             return;
         }// end function
 
@@ -60,7 +72,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
 
         public function serializeAs_PartyMemberInformations(param1:IDataOutput) : void
         {
-            super.serializeAs_CharacterMinimalPlusLookInformations(param1);
+            super.serializeAs_CharacterBaseInformations(param1);
             if (this.lifePoints < 0)
             {
                 throw new Error("Forbidden value (" + this.lifePoints + ") on element lifePoints.");
@@ -88,6 +100,22 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
             param1.writeShort(this.initiative);
             param1.writeBoolean(this.pvpEnabled);
             param1.writeByte(this.alignmentSide);
+            if (this.worldX < -255 || this.worldX > 255)
+            {
+                throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+            }
+            param1.writeShort(this.worldX);
+            if (this.worldY < -255 || this.worldY > 255)
+            {
+                throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+            }
+            param1.writeShort(this.worldY);
+            param1.writeInt(this.mapId);
+            if (this.subAreaId < 0)
+            {
+                throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+            }
+            param1.writeShort(this.subAreaId);
             return;
         }// end function
 
@@ -127,6 +155,22 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.party
             }
             this.pvpEnabled = param1.readBoolean();
             this.alignmentSide = param1.readByte();
+            this.worldX = param1.readShort();
+            if (this.worldX < -255 || this.worldX > 255)
+            {
+                throw new Error("Forbidden value (" + this.worldX + ") on element of PartyMemberInformations.worldX.");
+            }
+            this.worldY = param1.readShort();
+            if (this.worldY < -255 || this.worldY > 255)
+            {
+                throw new Error("Forbidden value (" + this.worldY + ") on element of PartyMemberInformations.worldY.");
+            }
+            this.mapId = param1.readInt();
+            this.subAreaId = param1.readShort();
+            if (this.subAreaId < 0)
+            {
+                throw new Error("Forbidden value (" + this.subAreaId + ") on element of PartyMemberInformations.subAreaId.");
+            }
             return;
         }// end function
 

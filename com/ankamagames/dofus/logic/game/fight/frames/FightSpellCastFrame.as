@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.frames
+﻿package com.ankamagames.dofus.logic.game.fight.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.*;
@@ -68,7 +68,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function FightSpellCastFrame(param1:uint)
         {
-            var _loc_2:SpellWrapper = null;
+            var _loc_2:* = null;
             var _loc_3:* = undefined;
             this._spellId = param1;
             this._cursorData = new LinkedCursorData();
@@ -135,13 +135,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:CellOverMessage = null;
-            var _loc_3:EntityMouseOverMessage = null;
-            var _loc_4:TimelineEntityOverAction = null;
-            var _loc_5:IEntity = null;
-            var _loc_6:CellClickMessage = null;
-            var _loc_7:EntityClickMessage = null;
-            var _loc_8:TimelineEntityClickAction = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             switch(true)
             {
                 case param1 is CellOverMessage:
@@ -188,13 +188,13 @@ package com.ankamagames.dofus.logic.game.fight.frames
                 case param1 is EntityClickMessage:
                 {
                     _loc_7 = param1 as EntityClickMessage;
-                    this.castSpell(_loc_7.entity.position.cellId);
+                    this.castSpell(_loc_7.entity.position.cellId, _loc_7.entity.id);
                     return true;
                 }
                 case param1 is TimelineEntityClickAction:
                 {
                     _loc_8 = param1 as TimelineEntityClickAction;
-                    this.castSpell(_loc_8.cellId);
+                    this.castSpell(0, _loc_8.fighterId);
                     return true;
                 }
                 case param1 is AdjacentMapClickMessage:
@@ -239,8 +239,8 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function refreshTarget(param1:Boolean = false) : void
         {
-            var _loc_5:int = 0;
-            var _loc_6:GameFightFighterInformations = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
             if (this._clearTargetTimer.running)
             {
                 this._clearTargetTimer.reset();
@@ -303,12 +303,12 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function drawRange() : void
         {
-            var _loc_7:Cross = null;
-            var _loc_8:Vector.<uint> = null;
-            var _loc_9:Vector.<uint> = null;
-            var _loc_10:int = 0;
-            var _loc_11:int = 0;
-            var _loc_12:uint = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
             var _loc_1:* = CurrentPlayedFighterManager.getInstance().currentFighterId;
             var _loc_2:* = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc_1) as GameFightFighterInformations;
             var _loc_3:* = _loc_2.disposition.cellId;
@@ -400,24 +400,32 @@ package com.ankamagames.dofus.logic.game.fight.frames
             return;
         }// end function
 
-        private function castSpell(param1:uint) : void
+        private function castSpell(param1:uint, param2:int = 0) : void
         {
-            var _loc_3:GameActionFightCastRequestMessage = null;
-            var _loc_2:* = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
-            if (!_loc_2.myTurn)
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_3:* = Kernel.getWorker().getFrame(FightTurnFrame) as FightTurnFrame;
+            if (!_loc_3 || !_loc_3.myTurn)
             {
                 return;
             }
-            if (this.isValidCell(param1) && _loc_2 && _loc_2.myTurn)
+            if (CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent < this._spellLevel.apCost)
             {
-                if (CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent < this._spellLevel.apCost)
-                {
-                    return;
-                }
+                return;
+            }
+            if (param2 != 0 && !FightEntitiesFrame.getCurrentInstance().entityIsIllusion(param2))
+            {
                 CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent - this._spellLevel.apCost;
-                _loc_3 = new GameActionFightCastRequestMessage();
-                _loc_3.initGameActionFightCastRequestMessage(this._spellId, param1);
-                ConnectionsHandler.getConnection().send(_loc_3);
+                _loc_4 = new GameActionFightCastOnTargetRequestMessage();
+                _loc_4.initGameActionFightCastOnTargetRequestMessage(this._spellId, param2);
+                ConnectionsHandler.getConnection().send(_loc_4);
+            }
+            else if (this.isValidCell(param1))
+            {
+                CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent - this._spellLevel.apCost;
+                _loc_5 = new GameActionFightCastRequestMessage();
+                _loc_5.initGameActionFightCastRequestMessage(this._spellId, param1);
+                ConnectionsHandler.getConnection().send(_loc_5);
             }
             this.cancelCast();
             return;
@@ -472,17 +480,17 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function getSpellZone() : IZone
         {
-            var _loc_2:uint = 0;
-            var _loc_4:EffectInstance = null;
-            var _loc_5:Cross = null;
-            var _loc_6:Square = null;
-            var _loc_7:Cross = null;
-            var _loc_8:Cross = null;
-            var _loc_9:Cross = null;
-            var _loc_10:Cross = null;
-            var _loc_1:uint = 88;
+            var _loc_2:* = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_1:* = 88;
             _loc_2 = 666;
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             if (!this._spellLevel.hasOwnProperty("shape"))
             {
                 for each (_loc_4 in this._spellLevel["effects"])
@@ -601,9 +609,9 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function isValidCell(param1:uint) : Boolean
         {
-            var _loc_2:SpellLevel = null;
-            var _loc_3:IEntity = null;
-            var _loc_4:Boolean = false;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = false;
             if (this._isInfiniteTarget)
             {
                 return true;

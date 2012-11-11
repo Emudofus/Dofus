@@ -1,4 +1,4 @@
-package nochump.util.zip
+﻿package nochump.util.zip
 {
     import flash.utils.*;
 
@@ -115,7 +115,7 @@ package nochump.util.zip
 
         public function write(param1:ByteArray) : void
         {
-            var _loc_2:ByteArray = null;
+            var _loc_2:* = null;
             if (this._entry == null)
             {
                 throw new ZipError("no current ZIP entry");
@@ -206,7 +206,7 @@ package nochump.util.zip
                 throw new ZipError("ZIP file must have at least one entry");
             }
             var _loc_1:* = this._buf.position;
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this._entries.length)
             {
                 

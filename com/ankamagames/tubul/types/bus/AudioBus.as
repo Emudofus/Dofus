@@ -1,4 +1,4 @@
-package com.ankamagames.tubul.types.bus
+﻿package com.ankamagames.tubul.types.bus
 {
     import __AS3__.vec.*;
     import com.*;
@@ -109,7 +109,7 @@ package com.ankamagames.tubul.types.bus
             {
                 this._volumeMax = this._volume;
             }
-            this._log.warn("Bus " + "(" + this.id + ") vol. r�el : " + this.effectiveVolume + " (vol. max : " + this._volumeMax + " / % vol : " + this._volume + ") [" + this.name + "]");
+            this._log.warn("Bus " + "(" + this.id + ") vol. réel : " + this.effectiveVolume + " (vol. max : " + this._volumeMax + " / % vol : " + this._volume + ") [" + this.name + "]");
             this.informSoundsNewVolume();
             return;
         }// end function
@@ -146,7 +146,7 @@ package com.ankamagames.tubul.types.bus
 
         public function clear(param1:VolumeFadeEffect = null) : void
         {
-            var _loc_2:ISound = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._soundVector)
             {
                 
@@ -157,8 +157,8 @@ package com.ankamagames.tubul.types.bus
 
         public function playISound(param1:ISound, param2:Boolean = false, param3:int = -1) : void
         {
-            var _loc_5:ISound = null;
-            var _loc_4:Boolean = false;
+            var _loc_5:* = null;
+            var _loc_4:* = false;
             for each (_loc_5 in this._soundVector)
             {
                 
@@ -181,16 +181,16 @@ package com.ankamagames.tubul.types.bus
 
         public function addISound(param1:ISound) : void
         {
-            var _loc_3:ISound = null;
-            var _loc_4:ISound = null;
-            var _loc_5:IEffect = null;
-            var _loc_6:IAudioBus = null;
-            var _loc_7:ISound = null;
-            var _loc_8:ISound = null;
-            var _loc_9:CacheableResource = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_10:* = undefined;
             param1.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE, this.onSoundComplete, false, EventListenerPriority.MINIMAL, true);
-            var _loc_2:String = "";
+            var _loc_2:* = "";
             for each (_loc_3 in this.soundList)
             {
                 
@@ -257,8 +257,8 @@ package com.ankamagames.tubul.types.bus
 
         public function addEffect(param1:IEffect) : void
         {
-            var _loc_2:IEffect = null;
-            var _loc_3:ISound = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             for each (_loc_2 in this._effects)
             {
                 
@@ -278,9 +278,9 @@ package com.ankamagames.tubul.types.bus
 
         public function removeEffect(param1:IEffect) : void
         {
-            var _loc_3:IEffect = null;
-            var _loc_4:ISound = null;
-            var _loc_2:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_2:* = 0;
             for each (_loc_3 in this._effects)
             {
                 
@@ -301,7 +301,7 @@ package com.ankamagames.tubul.types.bus
 
         public function play() : void
         {
-            var _loc_1:ISound = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._soundVector)
             {
                 
@@ -312,7 +312,7 @@ package com.ankamagames.tubul.types.bus
 
         public function stop() : void
         {
-            var _loc_1:ISound = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._soundVector)
             {
                 
@@ -328,7 +328,7 @@ package com.ankamagames.tubul.types.bus
 
         public function contains(param1:ISound) : Boolean
         {
-            var _loc_2:ISound = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._soundVector)
             {
                 
@@ -383,7 +383,7 @@ package com.ankamagames.tubul.types.bus
                 _log.warn("We tried to remove a non existing sound. Allready removed ? (" + pISound.uri + ")");
             }
             var busState:String;
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             var _loc_5:* = this.soundList;
             while (_loc_5 in _loc_4)
             {
@@ -403,8 +403,8 @@ package com.ankamagames.tubul.types.bus
 
         protected function getOlderSound() : ISound
         {
-            var _loc_1:ISound = null;
-            var _loc_2:ISound = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._soundVector)
             {
                 
@@ -443,7 +443,7 @@ package com.ankamagames.tubul.types.bus
 
         protected function onSoundComplete(event:SoundCompleteEvent) : void
         {
-            var _loc_2:ILocalizedSoundListener = null;
+            var _loc_2:* = null;
             this._eventDispatcher.dispatchEvent(event);
             for each (_loc_2 in Tubul.getInstance().localizedSoundListeners)
             {

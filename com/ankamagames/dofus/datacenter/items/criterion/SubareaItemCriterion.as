@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.world.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -35,7 +35,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get text() : String
         {
-            var _loc_1:String = null;
+            var _loc_1:* = null;
             var _loc_2:* = SubArea.getSubAreaById(_criterionValue);
             if (!_loc_2)
             {

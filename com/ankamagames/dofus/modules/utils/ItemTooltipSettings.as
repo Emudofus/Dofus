@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.modules.utils
+﻿package com.ankamagames.dofus.modules.utils
 {
     import com.ankamagames.berilia.interfaces.*;
 

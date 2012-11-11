@@ -1,4 +1,4 @@
-package com.hurlant.math
+﻿package com.hurlant.math
 {
     import com.hurlant.math.*;
 
@@ -44,8 +44,8 @@ package com.hurlant.math
 
         public function reduce(param1:BigInteger) : void
         {
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
             while (param1.t <= this.mt2)
             {
                 
@@ -53,7 +53,7 @@ package com.hurlant.math
                 _loc_6.t = param1.t + 1;
                 param1.a[++param1.t] = 0;
             }
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.m.t)
             {
                 

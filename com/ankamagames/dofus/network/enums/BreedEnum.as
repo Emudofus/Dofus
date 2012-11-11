@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.enums
+﻿package com.ankamagames.dofus.network.enums
 {
 
     public class BreedEnum extends Object
@@ -18,7 +18,7 @@ package com.ankamagames.dofus.network.enums
         public static const Pandawa:int = 12;
         public static const Roublard:int = 13;
         public static const Zobal:int = 14;
-        public static const XV:int = 15;
+        public static const Steamer:int = 15;
         public static const SUMMONED:int = -1;
         public static const MONSTER:int = -2;
         public static const MONSTER_GROUP:int = -3;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.exchange
+﻿package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.handlers.messages.*;

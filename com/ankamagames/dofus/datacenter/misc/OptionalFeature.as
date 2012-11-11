@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.misc
+﻿package com.ankamagames.dofus.datacenter.misc
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -23,7 +23,7 @@ package com.ankamagames.dofus.datacenter.misc
 
         public static function getOptionalFeatureByKeyword(param1:String) : OptionalFeature
         {
-            var _loc_2:OptionalFeature = null;
+            var _loc_2:* = null;
             if (!_keywords || !_keywords[param1])
             {
                 _keywords = new Dictionary();

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.utils
+﻿package com.ankamagames.dofus.logic.common.utils
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.misc.lists.*;

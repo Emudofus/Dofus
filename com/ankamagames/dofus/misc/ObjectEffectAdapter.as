@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc
+﻿package com.ankamagames.dofus.misc
 {
     import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.dofus.datacenter.effects.instances.*;
@@ -18,12 +18,12 @@ package com.ankamagames.dofus.misc
 
         public static function fromNetwork(param1:ObjectEffect) : EffectInstance
         {
-            var _loc_2:EffectInstance = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:IncarnationLevel = null;
-            var _loc_7:IncarnationLevel = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             if (param1 is ObjectEffectDice && param1.actionId == 669)
             {
                 _loc_2 = new EffectInstanceDate();

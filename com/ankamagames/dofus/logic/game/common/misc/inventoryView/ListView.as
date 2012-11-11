@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -8,7 +8,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
     public class ListView extends Object implements IInventoryView
     {
-        private var _view:Vector.<ItemWrapper>;
+        protected var _view:Vector.<ItemWrapper>;
         protected var _hookLock:IHookLock;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(ListView));
 
@@ -26,7 +26,7 @@ package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 
         public function initialize(param1:Vector.<ItemWrapper>) : void
         {
-            var _loc_2:ItemWrapper = null;
+            var _loc_2:* = null;
             this._view.splice(0, this._view.length);
             for each (_loc_2 in param1)
             {

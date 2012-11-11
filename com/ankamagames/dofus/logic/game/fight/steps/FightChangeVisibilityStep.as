@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.dofus.kernel.*;
@@ -38,8 +38,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_1:uint = 0;
-            var _loc_2:DisplayObject = null;
+            var _loc_1:* = 0;
+            var _loc_2:* = null;
             switch(this._visibilityState)
             {
                 case GameActionFightInvisibilityStateEnum.VISIBLE:
@@ -113,8 +113,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         private function respawnEntity() : DisplayObject
         {
-            var _loc_2:FightEntitiesFrame = null;
-            var _loc_3:IDisplayable = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_1:* = DofusEntities.getEntity(this._entityId) as TiphonSprite;
             if (_loc_1 && _loc_1.parentSprite)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.connection.managers
+﻿package com.ankamagames.dofus.logic.connection.managers
 {
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.logic.common.managers.*;
@@ -40,21 +40,21 @@ package com.ankamagames.dofus.logic.connection.managers
 
         public function savePlayerData() : void
         {
-            var _loc_4:String = null;
-            var _loc_5:Array = null;
-            var _loc_6:String = null;
-            var _loc_7:String = null;
-            var _loc_8:String = null;
-            var _loc_9:Array = null;
-            var _loc_10:String = null;
-            var _loc_11:Object = null;
-            var _loc_12:String = null;
-            var _loc_15:Array = null;
-            var _loc_16:String = null;
-            var _loc_17:RpcServiceManager = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
             arguments = false;
             arguments = Dofus.getInstance().invokeArgs;
-            var _loc_3:String = "";
+            var _loc_3:* = "";
             for each (_loc_4 in arguments)
             {
                 
@@ -150,7 +150,7 @@ package com.ankamagames.dofus.logic.connection.managers
             var _loc_13:* = MD5.hash(_loc_10);
             var _loc_14:* = PlayerManager.getInstance().accountId;
             this._so = CustomSharedObject.getLocal("playerData_" + _loc_14);
-            if (this._so.data && (this._so.data == _loc_13 || arguments.length == 0 && this._so.data.length != 0))
+            if (this._so.data && (this._so.data == _loc_13 || arguments && arguments.length == 0 && this._so.data.length != 0))
             {
                 return;
             }

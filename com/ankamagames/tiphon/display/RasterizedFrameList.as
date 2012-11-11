@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.display
+﻿package com.ankamagames.tiphon.display
 {
 
     public class RasterizedFrameList extends Object

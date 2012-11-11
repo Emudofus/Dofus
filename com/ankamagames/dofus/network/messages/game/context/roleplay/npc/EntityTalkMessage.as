@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -75,7 +75,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
             }
             param1.writeShort(this.textId);
             param1.writeShort(this.parameters.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.parameters.length)
             {
                 
@@ -93,7 +93,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
 
         public function deserializeAs_EntityTalkMessage(param1:IDataInput) : void
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             this.entityId = param1.readInt();
             this.textId = param1.readShort();
             if (this.textId < 0)
@@ -101,7 +101,7 @@ package com.ankamagames.dofus.network.messages.game.context.roleplay.npc
                 throw new Error("Forbidden value (" + this.textId + ") on element of EntityTalkMessage.textId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

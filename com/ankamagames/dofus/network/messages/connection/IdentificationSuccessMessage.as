@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.connection
+﻿package com.ankamagames.dofus.network.messages.connection
 {
     import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.network.utils.*;
@@ -85,7 +85,7 @@ package com.ankamagames.dofus.network.messages.connection
 
         public function serializeAs_IdentificationSuccessMessage(param1:IDataOutput) : void
         {
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.hasRights);
             _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.wasAlreadyConnected);
             param1.writeByte(_loc_2);

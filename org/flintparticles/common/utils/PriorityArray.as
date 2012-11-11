@@ -1,4 +1,4 @@
-package org.flintparticles.common.utils
+﻿package org.flintparticles.common.utils
 {
     import flash.utils.*;
 
@@ -54,7 +54,7 @@ package org.flintparticles.common.utils
         public function add(param1, param2:Number) : uint
         {
             var _loc_3:* = this._values.length;
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_3)
             {
                 
@@ -117,3 +117,20 @@ package org.flintparticles.common.utils
 
     }
 }
+
+import flash.utils.*;
+
+class Pair extends Object
+{
+    private var priority:Number;
+    private var value:Object;
+
+    function Pair(param1:Number, param2)
+    {
+        this.priority = param1;
+        this.value = param2;
+        return;
+    }// end function
+
+}
+

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.quest.*;
@@ -16,7 +16,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showQuest(param1:uint) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             var _loc_2:* = Quest.getQuestById(_questList[param1].id);
             if (_loc_2)
             {
@@ -30,7 +30,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function addQuest(param1:uint) : String
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_2:* = Quest.getQuestById(param1);
             if (_loc_2)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.connection
+﻿package com.ankamagames.dofus.network.messages.connection
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.version.*;
@@ -26,7 +26,7 @@ package com.ankamagames.dofus.network.messages.connection
             return 6119;
         }// end function
 
-        public function initIdentificationAccountForceMessage(param1:Version = null, param2:String = "", param3:String = "", param4:Vector.<int> = null, param5:int = 0, param6:Boolean = false, param7:Boolean = false, param8:Boolean = false, param9:String = "") : IdentificationAccountForceMessage
+        public function initIdentificationAccountForceMessage(param1:VersionExtended = null, param2:String = "", param3:String = "", param4:Vector.<int> = null, param5:int = 0, param6:Boolean = false, param7:Boolean = false, param8:Boolean = false, param9:String = "") : IdentificationAccountForceMessage
         {
             super.initIdentificationMessage(param1, param2, param3, param4, param5, param6, param7, param8);
             this.forcedAccountLogin = param9;

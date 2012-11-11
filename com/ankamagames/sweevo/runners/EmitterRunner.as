@@ -1,4 +1,4 @@
-package com.ankamagames.sweevo.runners
+﻿package com.ankamagames.sweevo.runners
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.script.*;

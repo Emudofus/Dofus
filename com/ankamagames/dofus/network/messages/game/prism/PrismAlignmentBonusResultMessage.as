@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.prism
+﻿package com.ankamagames.dofus.network.messages.game.prism
 {
     import com.ankamagames.dofus.network.types.game.prism.*;
     import com.ankamagames.jerakine.network.*;

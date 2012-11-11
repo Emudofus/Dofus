@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.prism
+﻿package com.ankamagames.dofus.logic.game.common.actions.prism
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

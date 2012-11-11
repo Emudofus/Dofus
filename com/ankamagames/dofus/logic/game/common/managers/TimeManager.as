@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.managers
+﻿package com.ankamagames.dofus.logic.game.common.managers
 {
     import com.ankamagames.dofus.datacenter.misc.*;
     import com.ankamagames.jerakine.data.*;
@@ -83,16 +83,24 @@ package com.ankamagames.dofus.logic.game.common.managers
             return I18n.getUiText("ui.time.dateLetters", [_loc_2[2], _loc_4, _loc_3]);
         }// end function
 
+        public function getDateIG(param1:Number) : Array
+        {
+            var _loc_2:* = this.getDateFromTime(param1);
+            var _loc_3:* = _loc_2[4] + this.dofusTimeYearLag;
+            var _loc_4:* = Month.getMonthById((_loc_2[3] - 1)).name;
+            return [_loc_2[2], _loc_4, _loc_3];
+        }// end function
+
         public function getDuration(param1:Number, param2:Boolean = false, param3:Boolean = false) : String
         {
-            var _loc_4:String = null;
-            var _loc_11:String = null;
-            var _loc_12:String = null;
-            var _loc_13:String = null;
-            var _loc_14:Number = NaN;
-            var _loc_15:String = null;
-            var _loc_16:String = null;
-            var _loc_17:String = null;
+            var _loc_4:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = NaN;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
+            var _loc_17:* = null;
             if (!this._bTextInit)
             {
                 this.initText();
@@ -176,13 +184,13 @@ package com.ankamagames.dofus.logic.game.common.managers
 
         public function getDateFromTime(param1:Number, param2:Boolean = false) : Array
         {
-            var _loc_3:Date = null;
-            var _loc_4:Number = NaN;
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
-            var _loc_7:Number = NaN;
-            var _loc_8:Number = NaN;
-            var _loc_9:Date = null;
+            var _loc_3:* = null;
+            var _loc_4:* = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = null;
             if (param1 == 0)
             {
                 _loc_9 = new Date();

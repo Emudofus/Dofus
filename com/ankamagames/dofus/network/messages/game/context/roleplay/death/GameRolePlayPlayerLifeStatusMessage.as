@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay.death
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.death
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.engine
+﻿package com.ankamagames.tiphon.engine
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -28,12 +28,12 @@ package com.ankamagames.tiphon.engine
 
         public static function init() : void
         {
-            var _loc_6:int = 0;
-            var _loc_7:int = 0;
-            var _loc_8:String = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
             var _loc_1:* = new Array(15, 16, 17, 18, 22, 34, 36, 38, 40, 12, 13, 14);
             var _loc_2:* = new Array("AnimStatique", "AnimMarche", "AnimCourse");
-            var _loc_3:int = -1;
+            var _loc_3:* = -1;
             var _loc_4:* = _loc_1.length;
             var _loc_5:* = _loc_2.length;
             while (++_loc_3 < _loc_4)
@@ -83,10 +83,10 @@ package com.ankamagames.tiphon.engine
 
         public static function getScriptedAnimation(param1:int, param2:String, param3:int) : ScriptedAnimation
         {
-            var _loc_5:ScriptedAnimation = null;
-            var _loc_6:Class = null;
-            var _loc_7:Swl = null;
-            var _loc_8:String = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_4:* = _cacheList[param1 + "_" + param2];
             if (_cacheList[param1 + "_" + param2])
             {
@@ -124,11 +124,11 @@ package com.ankamagames.tiphon.engine
 
         private static function onEnterFrame(event:Event) : void
         {
-            var _loc_2:int = 0;
-            var _loc_3:SpriteCacheInfo = null;
-            var _loc_4:TiphonSprite = null;
-            var _loc_5:String = null;
-            var _loc_6:int = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
             if (_spritesListToRender.length)
             {
                 _loc_2 = getTimer();

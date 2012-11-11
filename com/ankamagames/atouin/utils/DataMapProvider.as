@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.utils
+﻿package com.ankamagames.atouin.utils
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.*;
@@ -15,6 +15,7 @@ package com.ankamagames.atouin.utils
         public var isInFight:Boolean;
         private var _updatedCell:Dictionary;
         private var _specialEffects:Dictionary;
+        private static const TOLERANCE_ELEVATION:int = 11;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(DataMapProvider));
         private static var _self:DataMapProvider;
         private static var _playerClass:Class;
@@ -28,8 +29,8 @@ package com.ankamagames.atouin.utils
 
         public function pointLos(param1:int, param2:int, param3:Boolean = true) : Boolean
         {
-            var _loc_6:Array = null;
-            var _loc_7:IObstacle = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             var _loc_4:* = MapPoint.fromCoords(param1, param2).cellId;
             var _loc_5:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_4]).los;
             if (this._updatedCell[_loc_4] != null)
@@ -60,31 +61,56 @@ package com.ankamagames.atouin.utils
             return CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_3]).farmCell;
         }// end function
 
-        public function pointMov(param1:int, param2:int, param3:Boolean = true) : Boolean
+        public function isChangeZone(param1:uint, param2:uint) : Boolean
         {
-            var _loc_4:uint = 0;
-            var _loc_5:CellData = null;
-            var _loc_6:Boolean = false;
-            var _loc_7:Array = null;
-            var _loc_8:IObstacle = null;
-            if (param2 <= param1 && param2 + param1 >= 0 && param1 - param2 < 2 * AtouinConstants.MAP_HEIGHT && param1 + param2 < 2 * AtouinConstants.MAP_WIDTH)
+            var _loc_3:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param1]);
+            var _loc_4:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param2]);
+            var _loc_5:* = Math.abs(Math.abs(_loc_3.floor) - Math.abs(_loc_4.floor));
+            if (_loc_3.moveZone != _loc_4.moveZone && _loc_5 == 0)
             {
-                _loc_4 = MapPoint.fromCoords(param1, param2).cellId;
-                _loc_5 = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_4]);
-                _loc_6 = _loc_5.mov && (!this.isInFight || !_loc_5.nonWalkableDuringFight);
-                if (this._updatedCell[_loc_4] != null)
+                return true;
+            }
+            return false;
+        }// end function
+
+        public function pointMov(param1:int, param2:int, param3:Boolean = true, param4:int = -1) : Boolean
+        {
+            var _loc_5:* = false;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = false;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            if (MapPoint.isInMap(param1, param2))
+            {
+                _loc_5 = MapDisplayManager.getInstance().getDataMapContainer().dataMap.isUsingNewMovementSystem;
+                _loc_6 = MapPoint.fromCoords(param1, param2).cellId;
+                _loc_7 = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_6]);
+                _loc_8 = _loc_7.mov && (!this.isInFight || !_loc_7.nonWalkableDuringFight);
+                if (this._updatedCell[_loc_6] != null)
                 {
-                    _loc_6 = this._updatedCell[_loc_4];
+                    _loc_8 = this._updatedCell[_loc_6];
+                }
+                if (_loc_8 && _loc_5 && param4 != -1 && param4 != _loc_6)
+                {
+                    _loc_9 = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param4]);
+                    _loc_10 = Math.abs(Math.abs(_loc_7.floor) - Math.abs(_loc_9.floor));
+                    if (_loc_9.moveZone != _loc_7.moveZone && _loc_10 > 0 || _loc_9.moveZone == _loc_7.moveZone && _loc_7.moveZone == 0 && _loc_10 > TOLERANCE_ELEVATION)
+                    {
+                        _loc_8 = false;
+                    }
                 }
                 if (!param3)
                 {
-                    _loc_7 = EntitiesManager.getInstance().getEntitiesOnCell(_loc_4, IObstacle);
-                    if (_loc_7.length)
+                    _loc_11 = EntitiesManager.getInstance().getEntitiesOnCell(_loc_6, IObstacle);
+                    if (_loc_11.length)
                     {
-                        for each (_loc_8 in _loc_7)
+                        for each (_loc_12 in _loc_11)
                         {
                             
-                            if (!IObstacle(_loc_8).canSeeThrough())
+                            if (!IObstacle(_loc_12).canSeeThrough())
                             {
                                 return false;
                             }
@@ -94,9 +120,9 @@ package com.ankamagames.atouin.utils
             }
             else
             {
-                _loc_6 = false;
+                _loc_8 = false;
             }
-            return _loc_6;
+            return _loc_8;
         }// end function
 
         public function pointCanStop(param1:int, param2:int, param3:Boolean = true) : Boolean
@@ -108,8 +134,8 @@ package com.ankamagames.atouin.utils
 
         public function pointWeight(param1:int, param2:int, param3:Boolean = true) : Number
         {
-            var _loc_4:Number = 1;
-            var _loc_5:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[MapPoint.fromCoords(param1, param2).cellId]).speed;
+            var _loc_4:* = 1;
+            var _loc_5:* = this.getCellSpeed(MapPoint.fromCoords(param1, param2).cellId);
             if (param3)
             {
                 if (_loc_5 >= 0)
@@ -155,6 +181,11 @@ package com.ankamagames.atouin.utils
             return _loc_4;
         }// end function
 
+        public function getCellSpeed(param1:uint) : int
+        {
+            return (MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param1] as CellData).speed;
+        }// end function
+
         public function pointSpecialEffects(param1:int, param2:int) : uint
         {
             var _loc_3:* = MapPoint.fromCoords(param1, param2).cellId;
@@ -177,7 +208,7 @@ package com.ankamagames.atouin.utils
 
         public function hasEntity(param1:int, param2:int) : Boolean
         {
-            var _loc_4:IObstacle = null;
+            var _loc_4:* = null;
             var _loc_3:* = EntitiesManager.getInstance().getEntitiesOnCell(MapPoint.fromCoords(param1, param2).cellId, IObstacle);
             if (_loc_3.length)
             {

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.monsters.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -38,8 +38,8 @@ package com.ankamagames.dofus.datacenter.items.criterion
 
         override public function get isRespected() : Boolean
         {
-            var _loc_1:ItemWrapper = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             for each (_loc_1 in InventoryManager.getInstance().realInventory)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.actions.fight
+﻿package com.ankamagames.dofus.network.messages.game.actions.fight
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
@@ -24,10 +24,10 @@ package com.ankamagames.dofus.network.messages.game.actions.fight
             return 6116;
         }// end function
 
-        public function initGameActionFightCloseCombatMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 1, param5:Boolean = false, param6:uint = 0) : GameActionFightCloseCombatMessage
+        public function initGameActionFightCloseCombatMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:int = 0, param5:uint = 1, param6:Boolean = false, param7:uint = 0) : GameActionFightCloseCombatMessage
         {
-            super.initAbstractGameActionFightTargetedAbilityMessage(param1, param2, param3, param4, param5);
-            this.weaponGenericId = param6;
+            super.initAbstractGameActionFightTargetedAbilityMessage(param1, param2, param3, param4, param5, param6);
+            this.weaponGenericId = param7;
             this._isInitialized = true;
             return this;
         }// end function

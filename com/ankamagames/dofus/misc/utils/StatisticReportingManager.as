@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.utils
+﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.logic.common.managers.*;

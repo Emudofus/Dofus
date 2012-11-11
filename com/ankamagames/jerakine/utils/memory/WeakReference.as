@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.memory
+﻿package com.ankamagames.jerakine.utils.memory
 {
     import flash.utils.*;
 

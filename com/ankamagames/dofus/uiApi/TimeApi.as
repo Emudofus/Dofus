@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.types.data.*;
@@ -13,7 +13,7 @@ package com.ankamagames.dofus.uiApi
 
         public function TimeApi()
         {
-            this._log = Log.getLogger(getQualifiedClassName(TimeApi));
+            this._log = Log.getLogger(getQualifiedClassName());
             return;
         }// end function
 
@@ -53,6 +53,21 @@ package com.ankamagames.dofus.uiApi
         public function getDofusDate(param1:Number = 0) : String
         {
             return TimeManager.getInstance().formatDateIG(param1);
+        }// end function
+
+        public function getDofusDay(param1:Number = 0) : int
+        {
+            return TimeManager.getInstance().getDateIG(param1)[0];
+        }// end function
+
+        public function getDofusMonth(param1:Number = 0) : String
+        {
+            return TimeManager.getInstance().getDateIG(param1)[1];
+        }// end function
+
+        public function getDofusYear(param1:Number = 0) : String
+        {
+            return TimeManager.getInstance().getDateIG(param1)[2];
         }// end function
 
         public function getDurationTimeSinceEpoch(param1:Number = 0) : Number

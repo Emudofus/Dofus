@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.items
+﻿package com.ankamagames.dofus.internalDatacenter.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.effects.*;
@@ -89,10 +89,7 @@ package com.ankamagames.dofus.internalDatacenter.items
             if (!_uriLoaderContext)
             {
                 _uriLoaderContext = new LoaderContext();
-                if (AirScanner.hasAir())
-                {
-                    _uriLoaderContext["allowLoadBytesCodeExecution"] = true;
-                }
+                AirScanner.allowByteCodeExecution(_uriLoaderContext, true);
             }
             this._uri.loaderContext = _uriLoaderContext;
             return this._uri;
@@ -115,7 +112,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         override public function update(param1:uint, param2:uint, param3:uint, param4:uint, param5:Vector.<ObjectEffect>) : void
         {
-            var _loc_6:EffectInstance = null;
+            var _loc_6:* = null;
             _mountUtil = PlayedCharacterManager.getInstance().mount;
             if (_mountUtil)
             {
@@ -144,7 +141,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public static function create() : MountWrapper
         {
-            var _loc_2:EffectInstance = null;
+            var _loc_2:* = null;
             var _loc_1:* = new MountWrapper;
             _mountUtil = PlayedCharacterManager.getInstance().mount;
             if (_mountUtil)

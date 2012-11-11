@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.character.creation
+﻿package com.ankamagames.dofus.network.messages.game.character.creation
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

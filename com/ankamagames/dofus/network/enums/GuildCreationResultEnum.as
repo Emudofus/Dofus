@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.enums
+﻿package com.ankamagames.dofus.network.enums
 {
 
     public class GuildCreationResultEnum extends Object
@@ -11,6 +11,7 @@ package com.ankamagames.dofus.network.enums
         public static const GUILD_CREATE_ERROR_LEAVE:uint = 6;
         public static const GUILD_CREATE_ERROR_CANCEL:uint = 7;
         public static const GUILD_CREATE_ERROR_REQUIREMENT_UNMET:uint = 8;
+        public static const GUILD_CREATE_ERROR_EMBLEM_INVALID:uint = 9;
 
         public function GuildCreationResultEnum()
         {

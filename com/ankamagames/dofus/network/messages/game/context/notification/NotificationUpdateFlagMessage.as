@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.notification
+﻿package com.ankamagames.dofus.network.messages.game.context.notification
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.inventory.preset
+﻿package com.ankamagames.dofus.network.types.game.inventory.preset
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -61,7 +61,7 @@ package com.ankamagames.dofus.network.types.game.inventory.preset
             param1.writeByte(this.symbolId);
             param1.writeBoolean(this.mount);
             param1.writeShort(this.objects.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.objects.length)
             {
                 
@@ -79,7 +79,7 @@ package com.ankamagames.dofus.network.types.game.inventory.preset
 
         public function deserializeAs_Preset(param1:IDataInput) : void
         {
-            var _loc_4:PresetItem = null;
+            var _loc_4:* = null;
             this.presetId = param1.readByte();
             if (this.presetId < 0)
             {
@@ -92,7 +92,7 @@ package com.ankamagames.dofus.network.types.game.inventory.preset
             }
             this.mount = param1.readBoolean();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

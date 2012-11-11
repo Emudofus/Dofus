@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.guild
+﻿package com.ankamagames.dofus.internalDatacenter.guild
 {
     import com.ankamagames.dofus.misc.*;
     import com.ankamagames.dofus.network.types.game.character.*;

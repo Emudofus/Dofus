@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.interClient
+﻿package com.ankamagames.dofus.misc.interClient
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.types.*;
@@ -85,7 +85,7 @@ package com.ankamagames.dofus.misc.interClient
 
         public function updateFocusMessage(param1:String) : void
         {
-            _log.debug("Client : " + param1);
+            _log.info("Client : " + param1);
             InterClientManager.getInstance().clientListInfo = param1.split(",");
             InterClientManager.getInstance().updateFocusList();
             return;

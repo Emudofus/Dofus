@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.types.positions
+﻿package com.ankamagames.jerakine.types.positions
 {
     import com.ankamagames.jerakine.interfaces.*;
     import com.ankamagames.jerakine.utils.errors.*;

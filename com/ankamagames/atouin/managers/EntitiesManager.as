@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.managers
+﻿package com.ankamagames.atouin.managers
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.jerakine.entities.interfaces.*;
@@ -62,7 +62,7 @@ package com.ankamagames.atouin.managers
 
         public function getEntityID(param1:IEntity) : int
         {
-            var _loc_2:String = null;
+            var _loc_2:* = null;
             for (_loc_2 in this._entities)
             {
                 
@@ -97,11 +97,11 @@ package com.ankamagames.atouin.managers
 
         public function clearEntities() : void
         {
-            var _loc_2:String = null;
-            var _loc_3:int = 0;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:TiphonSprite = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
             var _loc_1:* = new Array();
             for (_loc_2 in this._entities)
             {
@@ -135,10 +135,10 @@ package com.ankamagames.atouin.managers
             do
             {
                 
-                var _loc_1:String = this;
+                var _loc_1:* = this;
                 var _loc_2:* = this._currentRandomEntity + 1;
                 _loc_1._currentRandomEntity = _loc_2;
-                var _loc_1:String = this;
+                var _loc_1:* = this;
                 _loc_1._currentRandomEntity = this._currentRandomEntity + 1;
             }while (this._entities[++this._currentRandomEntity] != null)
             return this._currentRandomEntity;
@@ -146,7 +146,7 @@ package com.ankamagames.atouin.managers
 
         private function registerInteractions(param1:IInteractive, param2:Boolean) : void
         {
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = param1.enabledInteractions;
             while (_loc_4 > 0)
             {
@@ -159,7 +159,7 @@ package com.ankamagames.atouin.managers
 
         public function registerInteraction(param1:IInteractive, param2:uint, param3:Boolean) : void
         {
-            var _loc_5:String = null;
+            var _loc_5:* = null;
             var _loc_4:* = InteractionsEnum.getEvents(param2);
             for each (_loc_5 in _loc_4)
             {
@@ -179,8 +179,8 @@ package com.ankamagames.atouin.managers
 
         public function getEntityOnCell(param1:uint, param2 = null) : IEntity
         {
-            var _loc_5:IEntity = null;
-            var _loc_6:uint = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
             var _loc_3:* = param2 != null;
             var _loc_4:* = _loc_3 && param2 is Array;
             for each (_loc_5 in this._entities)
@@ -213,11 +213,11 @@ package com.ankamagames.atouin.managers
 
         public function getEntitiesOnCell(param1:uint, param2 = null) : Array
         {
-            var _loc_6:IEntity = null;
-            var _loc_7:uint = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = 0;
             var _loc_3:* = param2 != null;
             var _loc_4:* = _loc_3 && param2 is Array;
-            var _loc_5:Array = [];
+            var _loc_5:* = [];
             for each (_loc_6 in this._entities)
             {
                 
@@ -256,7 +256,7 @@ package com.ankamagames.atouin.managers
 
         private function onPropertyChanged(event:PropertyChangeEvent) : void
         {
-            var _loc_2:IEntity = null;
+            var _loc_2:* = null;
             if (event.propertyName == "transparentOverlayMode")
             {
                 for each (_loc_2 in this._entities)

@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -82,7 +82,7 @@ package com.ankamagames.jerakine.data
             var _loc_4:* = param2.readInt();
             var _loc_5:* = this._innerTypeNames[param3];
             var _loc_6:* = new getDefinitionByName(_loc_5)(_loc_4, true);
-            var _loc_7:uint = 0;
+            var _loc_7:* = 0;
             while (_loc_7 < _loc_4)
             {
                 

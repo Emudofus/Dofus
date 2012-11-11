@@ -1,5 +1,6 @@
-package com.ankamagames.atouin.data.map
+﻿package com.ankamagames.atouin.data.map
 {
+    import com.ankamagames.atouin.*;
     import com.ankamagames.jerakine.logger.*;
     import flash.geom.*;
     import flash.utils.*;
@@ -36,24 +37,45 @@ package com.ankamagames.atouin.data.map
             try
             {
                 this.fixtureId = raw.readInt();
-                _log.debug("  (Fixture) Id : " + this.fixtureId);
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    _log.debug("  (Fixture) Id : " + this.fixtureId);
+                }
                 this.offset = new Point();
                 this.offset.x = raw.readShort();
                 this.offset.y = raw.readShort();
-                _log.debug("  (Fixture) Offset : (" + this.offset.x + ";" + this.offset.y + ")");
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    _log.debug("  (Fixture) Offset : (" + this.offset.x + ";" + this.offset.y + ")");
+                }
                 this.rotation = raw.readShort();
-                _log.debug("  (Fixture) Rotation : " + this.rotation);
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    _log.debug("  (Fixture) Rotation : " + this.rotation);
+                }
                 this.xScale = raw.readShort();
-                _log.debug("  (Fixture) Scale X : " + this.xScale);
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    _log.debug("  (Fixture) Scale X : " + this.xScale);
+                }
                 this.yScale = raw.readShort();
-                _log.debug("  (Fixture) Scale Y : " + this.yScale);
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    _log.debug("  (Fixture) Scale Y : " + this.yScale);
+                }
                 this.redMultiplier = raw.readByte();
                 this.greenMultiplier = raw.readByte();
                 this.blueMultiplier = raw.readByte();
                 this.hue = this.redMultiplier | this.greenMultiplier | this.blueMultiplier;
-                _log.debug("  (Fixture) Hue : 0x" + this.hue.toString(16));
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    _log.debug("  (Fixture) Hue : 0x" + this.hue.toString(16));
+                }
                 this.alpha = raw.readUnsignedByte();
-                _log.debug("  (Fixture) Alpha : " + this.alpha);
+                if (AtouinConstants.DEBUG_FILES_PARSING)
+                {
+                    _log.debug("  (Fixture) Alpha : " + this.alpha);
+                }
             }
             catch (e)
             {

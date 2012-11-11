@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.guild.tax
+﻿package com.ankamagames.dofus.network.messages.game.guild.tax
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.character.*;
@@ -72,7 +72,7 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
             }
             param1.writeDouble(this.fightId);
             param1.writeShort(this.playerInfo.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.playerInfo.length)
             {
                 
@@ -90,14 +90,14 @@ package com.ankamagames.dofus.network.messages.game.guild.tax
 
         public function deserializeAs_GuildFightPlayersEnemiesListMessage(param1:IDataInput) : void
         {
-            var _loc_4:CharacterMinimalPlusLookInformations = null;
+            var _loc_4:* = null;
             this.fightId = param1.readDouble();
             if (this.fightId < 0)
             {
                 throw new Error("Forbidden value (" + this.fightId + ") on element of GuildFightPlayersEnemiesListMessage.fightId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

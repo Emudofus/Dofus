@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.utils
+﻿package com.ankamagames.atouin.utils
 {
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.jerakine.types.positions.*;

@@ -1,12 +1,14 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
+    import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.datacenter.servers.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.dofus.logic.connection.frames.*;
     import com.ankamagames.dofus.logic.game.approach.frames.*;
+    import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.connection.*;
 
     public class ConnectionApi extends Object implements IApi
@@ -44,13 +46,13 @@ package com.ankamagames.dofus.uiApi
 
         public function getAutochosenServer() : GameServerInformations
         {
-            var _loc_4:GameServerInformations = null;
-            var _loc_5:Object = null;
-            var _loc_6:GameServerInformations = null;
-            var _loc_7:Object = null;
-            var _loc_8:int = 0;
-            var _loc_9:GameServerInformations = null;
-            var _loc_10:Object = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_1:* = new Array();
             var _loc_2:* = new Array();
             var _loc_3:* = PlayerManager.getInstance().communityId;
@@ -90,9 +92,12 @@ package com.ankamagames.dofus.uiApi
                     {
                         _loc_8 = _loc_9.completion;
                     }
-                    if (_loc_8 != -1 && _loc_10.population.id == _loc_8 && _loc_9.status == 3 && _loc_10.name.indexOf("Test") == -1)
+                    if (_loc_8 != -1 && _loc_10.population.id == _loc_8 && _loc_9.status == 3)
                     {
-                        _loc_1.push(_loc_9);
+                        if (BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE || _loc_10.name.indexOf("Test") == -1)
+                        {
+                            _loc_1.push(_loc_9);
+                        }
                     }
                 }
                 if (_loc_1.length > 0)

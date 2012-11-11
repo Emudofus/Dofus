@@ -1,4 +1,4 @@
-package org.flintparticles.common.particles
+﻿package org.flintparticles.common.particles
 {
     import flash.geom.*;
     import flash.utils.*;

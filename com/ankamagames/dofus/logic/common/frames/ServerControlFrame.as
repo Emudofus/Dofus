@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.misc.*;
@@ -35,13 +35,13 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:RawDataMessage = null;
-            var _loc_3:Loader = null;
-            var _loc_4:LoaderContext = null;
-            var _loc_5:URLOpenMessage = null;
-            var _loc_6:Url = null;
-            var _loc_7:TrustStatusMessage = null;
-            var _loc_8:URLRequest = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             switch(true)
             {
                 case param1 is RawDataMessage:
@@ -49,10 +49,7 @@ package com.ankamagames.dofus.logic.common.frames
                     _loc_2 = param1 as RawDataMessage;
                     _loc_3 = new Loader();
                     _loc_4 = new LoaderContext(false, ApplicationDomain.currentDomain);
-                    if (AirScanner.hasAir())
-                    {
-                        _loc_4["allowLoadBytesCodeExecution"] = true;
-                    }
+                    AirScanner.allowByteCodeExecution(_loc_4, true);
                     _loc_3.loadBytes(_loc_2.content, _loc_4);
                     return true;
                 }
@@ -77,6 +74,14 @@ package com.ankamagames.dofus.logic.common.frames
                         }
                         case 3:
                         {
+                            return true;
+                        }
+                        case 4:
+                        {
+                            if (HookList[_loc_6.url])
+                            {
+                                KernelEventsManager.getInstance().processCallback(HookList[_loc_6.url]);
+                            }
                             return true;
                         }
                         default:

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.misc.interClient
+﻿package com.ankamagames.dofus.misc.interClient
 {
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.jerakine.logger.*;
@@ -29,6 +29,10 @@ package com.ankamagames.dofus.misc.interClient
 
         public function get flashKey() : String
         {
+            if (!this._identity)
+            {
+                return this.getRandomFlashKey();
+            }
             return this._identity;
         }// end function
 
@@ -120,9 +124,9 @@ package com.ankamagames.dofus.misc.interClient
 
         private function getRandomFlashKey() : String
         {
-            var _loc_1:String = "";
-            var _loc_2:Number = 20;
-            var _loc_3:Number = 0;
+            var _loc_1:* = "";
+            var _loc_2:* = 20;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -134,8 +138,8 @@ package com.ankamagames.dofus.misc.interClient
 
         private function checksum(param1:String) : String
         {
-            var _loc_2:Number = 0;
-            var _loc_3:Number = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < param1.length)
             {
                 

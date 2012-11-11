@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.context.*;
@@ -46,7 +46,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
         {
             param1.writeByte(this.type);
             param1.writeShort(this.coords.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.coords.length)
             {
                 
@@ -64,14 +64,14 @@ package com.ankamagames.dofus.network.types.game.context.roleplay
 
         public function deserializeAs_AtlasPointsInformations(param1:IDataInput) : void
         {
-            var _loc_4:MapCoordinatesExtended = null;
+            var _loc_4:* = null;
             this.type = param1.readByte();
             if (this.type < 0)
             {
                 throw new Error("Forbidden value (" + this.type + ") on element of AtlasPointsInformations.type.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

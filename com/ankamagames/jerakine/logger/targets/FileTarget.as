@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger.targets
+﻿package com.ankamagames.jerakine.logger.targets
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.logger.targets.*;
@@ -87,7 +87,7 @@ package com.ankamagames.jerakine.logger.targets
 
         private static function onSocket(event:Event) : void
         {
-            var _loc_2:LoggerHistoryElement = null;
+            var _loc_2:* = null;
             _connecting = false;
             for each (_loc_2 in _history)
             {

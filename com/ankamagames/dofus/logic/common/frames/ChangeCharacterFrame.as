@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.frames
+﻿package com.ankamagames.dofus.logic.common.frames
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -7,6 +7,7 @@ package com.ankamagames.dofus.logic.common.frames
     import com.ankamagames.dofus.logic.connection.actions.*;
     import com.ankamagames.dofus.logic.connection.managers.*;
     import com.ankamagames.dofus.logic.game.common.frames.*;
+    import com.ankamagames.dofus.misc.utils.errormanager.*;
     import com.ankamagames.dofus.network.messages.game.context.notification.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.messages.*;
@@ -31,22 +32,23 @@ package com.ankamagames.dofus.logic.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:String = null;
-            var _loc_3:ChangeCharacterAction = null;
-            var _loc_4:LoginValidationAction = null;
-            var _loc_5:LoginValidationAction = null;
-            var _loc_6:LoginValidationAction = null;
-            var _loc_7:LoginValidationAction = null;
-            var _loc_8:NotificationListMessage = null;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:int = 0;
-            var _loc_12:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
             switch(true)
             {
                 case param1 is ChangeCharacterAction:
                 {
                     _loc_3 = param1 as ChangeCharacterAction;
+                    WebServiceDataHandler.getInstance().changeCharacter();
                     _loc_2 = XmlConfig.getInstance().getEntry("config.loginMode");
                     _loc_4 = AuthentificationManager.getInstance().loginValidationAction;
                     _loc_5 = LoginValidationAction.create(_loc_4.username, _loc_4.password, true, _loc_3.serverId);

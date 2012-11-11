@@ -1,7 +1,8 @@
-package com.ankamagames.atouin.types
+﻿package com.ankamagames.atouin.types
 {
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import flash.display.*;
 
     dynamic public class AtouinOptions extends OptionManager
@@ -13,15 +14,14 @@ package com.ankamagames.atouin.types
         {
             super("atouin");
             add("groundCacheMode", 1);
-            add("useInsideAutoZoom", false);
+            add("useInsideAutoZoom", AirScanner.isStreamingVersion());
             add("useCacheAsBitmap", true);
             add("useSmooth", true);
             add("frustum", new Frustum(), false);
-            add("useMapScrolling", false);
             add("alwaysShowGrid", false);
             add("debugLayer", false);
             add("showCellIdOnOver", false);
-            add("tweentInterMap", false);
+            add("hideInterMap", AirScanner.isStreamingVersion());
             add("virtualPlayerJump", false);
             add("reloadLoadedMap", false);
             add("hideForeground", false);
@@ -37,6 +37,8 @@ package com.ankamagames.atouin.types
             add("groundOnly", false);
             add("showTransitions", false);
             add("useLowDefSkin", true);
+            add("showProgressBar", AirScanner.isStreamingVersion());
+            add("mapPictoExtension", "png");
             this._container = param1;
             this._handler = param2;
             return;

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import __AS3__.vec.*;
     import com.ankamagames.atouin.enums.*;
@@ -33,7 +33,7 @@ package com.ankamagames.dofus.logic.game.common.frames
         private var _roleplayContextFrame:RoleplayContextFrame;
         private var _keyDown:Boolean = false;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(StackManagementFrame));
-        private static const LIMIT:int = 15;
+        private static const LIMIT:int = 100;
         private static const KEY_CODE:uint = 16;
         private static const BEHAVIOR_LIST:Array = [MoveBehavior, InteractiveElementBehavior, ChangeMapBehavior];
 
@@ -56,9 +56,9 @@ package com.ankamagames.dofus.logic.game.common.frames
             return;
         }// end function
 
-        private function onKeyDown(event:KeyboardEvent) : void
+        public function onKeyDown(event:KeyboardEvent) : void
         {
-            var _loc_2:AddBehaviorToStackAction = null;
+            var _loc_2:* = null;
             if (!this._keyDown && event.keyCode == KEY_CODE)
             {
                 this._keyDown = true;
@@ -70,9 +70,9 @@ package com.ankamagames.dofus.logic.game.common.frames
             return;
         }// end function
 
-        private function onKeyUp(event:KeyboardEvent = null) : void
+        public function onKeyUp(event:KeyboardEvent = null) : void
         {
-            var _loc_3:RemoveBehaviorToStackAction = null;
+            var _loc_3:* = null;
             var _loc_2:* = event == null ? (KEY_CODE) : (event.keyCode);
             if (this._keyDown && _loc_2 == KEY_CODE)
             {
@@ -86,7 +86,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function getInputMessageAlreadyWatched(param1:Vector.<AbstractBehavior>, param2:Class) : AbstractBehavior
         {
-            var _loc_4:AbstractBehavior = null;
+            var _loc_4:* = null;
             var _loc_3:* = getQualifiedClassName(param2);
             for each (_loc_4 in param1)
             {
@@ -101,9 +101,9 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function initStackInputMessages(param1:String) : void
         {
-            var _loc_3:Class = null;
-            var _loc_4:AbstractBehavior = null;
-            var _loc_5:AbstractBehavior = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_2:* = new Vector.<AbstractBehavior>;
             if (this._stackInputMessage != null)
             {
@@ -167,13 +167,13 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:AddBehaviorToStackAction = null;
-            var _loc_3:RemoveBehaviorToStackAction = null;
-            var _loc_4:String = null;
-            var _loc_5:Boolean = false;
-            var _loc_6:Boolean = false;
-            var _loc_7:String = null;
-            var _loc_8:AbstractBehavior = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = false;
+            var _loc_6:* = false;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             if (this._roleplayContextFrame == null)
             {
                 this._roleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
@@ -257,11 +257,11 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function processStackInputMessages(param1:Message) : Boolean
         {
-            var _loc_2:AbstractBehavior = null;
-            var _loc_3:AbstractBehavior = null;
-            var _loc_4:AbstractBehavior = null;
-            var _loc_5:CheckPointEntity = null;
-            var _loc_6:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (this._roleplayContextFrame && !this._roleplayContextFrame.hasWorldInteraction)
             {
                 this.emptyStack();
@@ -344,7 +344,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function getSameInOutputList(param1:AbstractBehavior) : AbstractBehavior
         {
-            var _loc_2:AbstractBehavior = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._stackOutputMessage)
             {
                 
@@ -358,8 +358,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function processStackOutputMessages(param1:Message) : Boolean
         {
-            var _loc_2:AbstractBehavior = null;
-            var _loc_3:Boolean = false;
+            var _loc_2:* = null;
+            var _loc_3:* = false;
             if (this._stackOutputMessage.length > 0)
             {
                 _loc_2 = this._stackOutputMessage[0];
@@ -411,7 +411,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function removeCheckPoint(param1:AbstractBehavior) : void
         {
-            var _loc_2:CheckPointEntity = null;
+            var _loc_2:* = null;
             param1.removeIcon();
             if (this._checkPointList.length > 0)
             {
@@ -431,8 +431,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function emptyStack(param1:Boolean = true) : void
         {
-            var _loc_2:AbstractBehavior = null;
-            var _loc_4:CheckPointEntity = null;
+            var _loc_2:* = null;
+            var _loc_4:* = null;
             if (this._stackOutputMessage.length == 1 && this._stackOutputMessage[0].actionStarted == false)
             {
                 this._stackOutputMessage[0].removeIcon();
@@ -472,8 +472,8 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         private function addBehaviorToInputStack(param1:AbstractBehavior, param2:Boolean = true) : void
         {
-            var _loc_4:String = null;
-            var _loc_5:AbstractBehavior = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_3:* = getQualifiedClassName(param1);
             for each (_loc_5 in this._stackInputMessage)
             {
@@ -493,6 +493,27 @@ package com.ankamagames.dofus.logic.game.common.frames
         public function get priority() : int
         {
             return Priority.HIGHEST;
+        }// end function
+
+        public function get stackInputMessage() : Vector.<AbstractBehavior>
+        {
+            return this._stackInputMessage;
+        }// end function
+
+        public function get stackOutputMessage() : Vector.<AbstractBehavior>
+        {
+            return this._stackOutputMessage;
+        }// end function
+
+        public function get roleplayContextFrame() : RoleplayContextFrame
+        {
+            return this._roleplayContextFrame;
+        }// end function
+
+        public function set roleplayContextFrame(param1:RoleplayContextFrame) : void
+        {
+            this._roleplayContextFrame = param1;
+            return;
         }// end function
 
     }

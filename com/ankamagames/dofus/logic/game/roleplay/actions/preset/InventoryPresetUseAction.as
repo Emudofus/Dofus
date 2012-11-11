@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.roleplay.actions.preset
+﻿package com.ankamagames.dofus.logic.game.roleplay.actions.preset
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

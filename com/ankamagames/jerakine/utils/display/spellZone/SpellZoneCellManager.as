@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.utils.display.spellZone
+﻿package com.ankamagames.jerakine.utils.display.spellZone
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.map.*;
@@ -85,8 +85,8 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         private function setLastSpellCellToNormal() : void
         {
-            var _loc_1:SpellZoneCell = null;
-            var _loc_2:uint = 0;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
             for each (_loc_1 in this.cells)
             {
                 
@@ -104,7 +104,7 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         private function resetCells() : void
         {
-            var _loc_1:SpellZoneCell = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this.cells)
             {
                 
@@ -115,18 +115,18 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         public function show() : void
         {
-            var _loc_1:IZone = null;
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
-            var _loc_8:uint = 0;
-            var _loc_9:IDataMapProvider = null;
-            var _loc_10:uint = 0;
-            var _loc_11:uint = 0;
-            var _loc_12:int = 0;
-            var _loc_13:int = 0;
-            var _loc_14:SpellZoneCell = null;
+            var _loc_1:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
             if (this._spellLevel == null)
             {
                 return;
@@ -215,7 +215,7 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         private function isInSpellArea(param1:SpellZoneCell, param2:Lozenge) : Boolean
         {
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             if (param2 == null)
             {
                 return false;
@@ -234,7 +234,7 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         public function remove() : void
         {
-            var _loc_3:SpellZoneCell = null;
+            var _loc_3:* = null;
             var _loc_1:* = this.cells.length;
             var _loc_2:* = _loc_1;
             while (_loc_2 > 0)
@@ -250,8 +250,8 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         public function setRangedCells(param1:Vector.<uint>) : void
         {
-            var _loc_2:SpellZoneCell = null;
-            var _loc_3:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
             for each (_loc_2 in this.cells)
             {
                 
@@ -269,8 +269,8 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         public function setSpellZone(param1:Vector.<uint>) : void
         {
-            var _loc_2:SpellZoneCell = null;
-            var _loc_3:uint = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
             for each (_loc_2 in this.cells)
             {
                 
@@ -294,8 +294,8 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         public function colorCells(param1:Vector.<uint>, param2:uint, param3:Boolean = false) : void
         {
-            var _loc_4:SpellZoneCell = null;
-            var _loc_5:uint = 0;
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
             for each (_loc_4 in this.cells)
             {
                 
@@ -313,17 +313,17 @@ package com.ankamagames.jerakine.utils.display.spellZone
 
         private function getSpellZone() : IZone
         {
-            var _loc_2:uint = 0;
-            var _loc_3:IDataMapProvider = null;
-            var _loc_4:IZoneShape = null;
-            var _loc_5:IZone = null;
-            var _loc_6:Line = null;
-            var _loc_7:Cross = null;
-            var _loc_8:Square = null;
-            var _loc_9:Cross = null;
-            var _loc_10:int = 0;
-            var _loc_11:int = 0;
-            var _loc_1:uint = 88;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
+            var _loc_1:* = 88;
             _loc_2 = 666;
             for each (_loc_4 in this._spellLevel.spellZoneEffects)
             {

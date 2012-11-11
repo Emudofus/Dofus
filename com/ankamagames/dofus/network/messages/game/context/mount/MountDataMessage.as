@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.mount
+﻿package com.ankamagames.dofus.network.messages.game.context.mount
 {
     import com.ankamagames.dofus.network.types.game.mount.*;
     import com.ankamagames.jerakine.network.*;

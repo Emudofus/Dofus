@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.miscs
+﻿package com.ankamagames.dofus.logic.game.fight.miscs
 {
 
     public class ActionIdConverter extends Object

@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types.look
+﻿package com.ankamagames.tiphon.types.look
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
@@ -21,6 +21,7 @@ package com.ankamagames.tiphon.types.look
         private var _scaleX:Number = 1;
         private var _scaleY:Number = 1;
         private var _subEntities:Array;
+        private var _defaultSkin:int = -1;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonEntityLook));
 
@@ -35,6 +36,42 @@ package com.ankamagames.tiphon.types.look
             return this._skins;
         }// end function
 
+        public function set defaultSkin(param1:int) : void
+        {
+            if (this._defaultSkin != -1 && this._skins)
+            {
+                this._skins.shift();
+            }
+            if (!this._skins)
+            {
+                this._skins = new Vector.<uint>(0, false);
+            }
+            this._defaultSkin = param1;
+            if (!this._skins.length || this._skins[0] != this._defaultSkin)
+            {
+                this._skins.unshift(param1);
+            }
+            return;
+        }// end function
+
+        public function get firstSkin() : uint
+        {
+            if (!this._skins || !this._skins.length)
+            {
+                return 0;
+            }
+            if (this._defaultSkin != -1)
+            {
+                return this._skins[1];
+            }
+            return this._skins[0];
+        }// end function
+
+        public function get defaultSkin() : int
+        {
+            return this._defaultSkin;
+        }// end function
+
         public function getBone() : uint
         {
             return this._bone;
@@ -42,7 +79,7 @@ package com.ankamagames.tiphon.types.look
 
         public function setBone(param1:uint) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (this._bone == param1)
             {
                 return;
@@ -75,7 +112,7 @@ package com.ankamagames.tiphon.types.look
             }
             var _loc_2:* = this._skins.length;
             var _loc_3:* = new Vector.<uint>(_loc_2, true);
-            var _loc_4:uint = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_2)
             {
                 
@@ -87,7 +124,7 @@ package com.ankamagames.tiphon.types.look
 
         public function resetSkins() : void
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             if (!this._skins || this._skins.length == 0)
             {
                 return;
@@ -108,20 +145,27 @@ package com.ankamagames.tiphon.types.look
             return;
         }// end function
 
-        public function addSkin(param1:uint) : void
+        public function addSkin(param1:uint, param2:Boolean = false) : void
         {
-            var _loc_2:Object = null;
+            var _loc_3:* = null;
             if (!this._skins)
             {
                 this._skins = new Vector.<uint>(0, false);
             }
-            this._skins.push(param1);
+            if (!param2)
+            {
+                this._skins.push(param1);
+            }
+            else
+            {
+                this._skins.unshift(param1);
+            }
             if (!this._locked)
             {
-                for (_loc_2 in this._observers)
+                for (_loc_3 in this._observers)
                 {
                     
-                    _loc_2.skinsChanged(this);
+                    _loc_3.skinsChanged(this);
                 }
             }
             else
@@ -133,7 +177,7 @@ package com.ankamagames.tiphon.types.look
 
         public function getColors(param1:Boolean = false) : Array
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             if (!this._colors)
             {
                 return null;
@@ -153,7 +197,7 @@ package com.ankamagames.tiphon.types.look
 
         public function getColor(param1:uint) : DefaultableColor
         {
-            var _loc_2:DefaultableColor = null;
+            var _loc_2:* = null;
             if (!this._colors || !this._colors[param1])
             {
                 _loc_2 = new DefaultableColor();
@@ -170,7 +214,7 @@ package com.ankamagames.tiphon.types.look
 
         public function resetColor(param1:uint) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (!this._colors || !this._colors[param1])
             {
                 return;
@@ -193,7 +237,7 @@ package com.ankamagames.tiphon.types.look
 
         public function resetColors() : void
         {
-            var _loc_1:Object = null;
+            var _loc_1:* = null;
             if (!this._colors)
             {
                 return;
@@ -216,7 +260,7 @@ package com.ankamagames.tiphon.types.look
 
         public function setColor(param1:uint, param2:uint) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             if (!this._colors)
             {
                 this._colors = new Array();
@@ -255,7 +299,7 @@ package com.ankamagames.tiphon.types.look
 
         public function setScaleX(param1:Number) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (this._scaleX == param1)
             {
                 return;
@@ -283,7 +327,7 @@ package com.ankamagames.tiphon.types.look
 
         public function setScaleY(param1:Number) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (this._scaleY == param1)
             {
                 return;
@@ -306,7 +350,7 @@ package com.ankamagames.tiphon.types.look
 
         public function setScales(param1:Number, param2:Number) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             if (this._scaleX == param1 && this._scaleY == param2)
             {
                 return;
@@ -330,10 +374,10 @@ package com.ankamagames.tiphon.types.look
 
         public function getSubEntities(param1:Boolean = false) : Array
         {
-            var _loc_3:String = null;
-            var _loc_4:uint = 0;
-            var _loc_5:String = null;
-            var _loc_6:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = 0;
             if (!this._subEntities)
             {
                 return null;
@@ -363,8 +407,8 @@ package com.ankamagames.tiphon.types.look
 
         public function getSubEntitiesFromCategory(param1:uint) : Array
         {
-            var _loc_3:String = null;
-            var _loc_4:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             if (!this._subEntities)
             {
                 return null;
@@ -394,10 +438,10 @@ package com.ankamagames.tiphon.types.look
 
         public function resetSubEntities() : void
         {
-            var _loc_1:String = null;
-            var _loc_2:String = null;
-            var _loc_3:TiphonEntityLook = null;
-            var _loc_4:Object = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (!this._subEntities)
             {
                 return;
@@ -430,7 +474,7 @@ package com.ankamagames.tiphon.types.look
 
         public function addSubEntity(param1:uint, param2:uint, param3:TiphonEntityLook) : void
         {
-            var _loc_4:Object = null;
+            var _loc_4:* = null;
             if (!this._subEntities)
             {
                 this._subEntities = new Array();
@@ -458,7 +502,7 @@ package com.ankamagames.tiphon.types.look
 
         public function removeSubEntity(param1:uint, param2:uint = 0) : void
         {
-            var _loc_3:Object = null;
+            var _loc_3:* = null;
             if (!this._subEntities || !this._subEntities[param1] || !this._subEntities[param1][param2])
             {
                 return;
@@ -500,11 +544,11 @@ package com.ankamagames.tiphon.types.look
 
         public function unlock(param1:Boolean = false) : void
         {
-            var _loc_2:Object = null;
-            var _loc_3:Object = null;
-            var _loc_4:Object = null;
-            var _loc_5:Object = null;
-            var _loc_6:Object = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (!this._locked)
             {
                 return;
@@ -588,15 +632,15 @@ package com.ankamagames.tiphon.types.look
 
         public function equals(param1:TiphonEntityLook) : Boolean
         {
-            var _loc_2:uint = 0;
-            var _loc_3:String = null;
-            var _loc_4:String = null;
-            var _loc_5:String = null;
-            var _loc_6:String = null;
-            var _loc_7:String = null;
-            var _loc_8:TiphonEntityLook = null;
-            var _loc_9:String = null;
-            var _loc_10:TiphonEntityLook = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             if (this._bone != param1._bone)
             {
                 return false;
@@ -718,6 +762,7 @@ package com.ankamagames.tiphon.types.look
             this.resetSkins();
             this._skinsChangedWhileLocked = true;
             this._skins = param1.getSkins();
+            this._defaultSkin = param1.defaultSkin;
             this.resetSubEntities();
             this._subEntitiesChangedWhileLocked = true;
             this._subEntities = param1.getSubEntities();
@@ -729,7 +774,7 @@ package com.ankamagames.tiphon.types.look
 
         public function boneChanged(param1:TiphonEntityLook) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (!this._locked)
             {
                 for (_loc_2 in this._observers)
@@ -747,7 +792,7 @@ package com.ankamagames.tiphon.types.look
 
         public function skinsChanged(param1:TiphonEntityLook) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (!this._locked)
             {
                 for (_loc_2 in this._observers)
@@ -765,7 +810,7 @@ package com.ankamagames.tiphon.types.look
 
         public function colorsChanged(param1:TiphonEntityLook) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (!this._locked)
             {
                 for (_loc_2 in this._observers)
@@ -783,7 +828,7 @@ package com.ankamagames.tiphon.types.look
 
         public function scalesChanged(param1:TiphonEntityLook) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (!this._locked)
             {
                 for (_loc_2 in this._observers)
@@ -801,7 +846,7 @@ package com.ankamagames.tiphon.types.look
 
         public function subEntitiesChanged(param1:TiphonEntityLook) : void
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             if (!this._locked)
             {
                 for (_loc_2 in this._observers)
@@ -819,12 +864,13 @@ package com.ankamagames.tiphon.types.look
 
         public function clone() : TiphonEntityLook
         {
-            var _loc_2:String = null;
-            var _loc_3:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             var _loc_1:* = new TiphonEntityLook();
             _loc_1._bone = this._bone;
             _loc_1._colors = this._colors ? (this._colors.concat()) : (this._colors);
             _loc_1._skins = this._skins ? (this._skins.concat()) : (this._skins);
+            _loc_1._defaultSkin = this._defaultSkin;
             _loc_1._scaleX = this._scaleX;
             _loc_1._scaleY = this._scaleY;
             if (this._subEntities)

@@ -1,7 +1,8 @@
-package com.ankamagames.dofus.datacenter.spells
+﻿package com.ankamagames.dofus.datacenter.spells
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.effects.instances.*;
+    import com.ankamagames.dofus.datacenter.monsters.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -104,8 +105,8 @@ package com.ankamagames.dofus.datacenter.spells
 
         public function get spellZoneEffects() : Vector.<IZoneShape>
         {
-            var _loc_1:EffectInstanceDice = null;
-            var _loc_2:ZoneEffect = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (!this._spellZoneEffects)
             {
                 this._spellZoneEffects = new Vector.<IZoneShape>;
@@ -121,13 +122,24 @@ package com.ankamagames.dofus.datacenter.spells
 
         public function get canSummon() : Boolean
         {
-            var _loc_1:EffectInstanceDice = null;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             for each (_loc_1 in this.effects)
             {
                 
-                if (_loc_1.effectId == 181 || _loc_1.effectId == 180 || _loc_1.effectId == 1011)
+                if (_loc_1.effectId == 180 || _loc_1.effectId == 1011)
                 {
                     return true;
+                }
+                if (_loc_1.effectId == 181)
+                {
+                    _loc_2 = _loc_1.diceNum;
+                    _loc_3 = Monster.getMonsterById(_loc_2);
+                    if (_loc_3 && _loc_3.useSummonSlot)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -135,13 +147,24 @@ package com.ankamagames.dofus.datacenter.spells
 
         public function get canBomb() : Boolean
         {
-            var _loc_1:EffectInstanceDice = null;
+            var _loc_1:* = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             for each (_loc_1 in this.effects)
             {
                 
                 if (_loc_1.effectId == 1008)
                 {
                     return true;
+                }
+                if (_loc_1.effectId == 181)
+                {
+                    _loc_2 = _loc_1.diceNum;
+                    _loc_3 = Monster.getMonsterById(_loc_2);
+                    if (_loc_3 && _loc_3.useBombSlot)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

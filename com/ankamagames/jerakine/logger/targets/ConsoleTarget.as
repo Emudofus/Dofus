@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.logger.targets
+﻿package com.ankamagames.jerakine.logger.targets
 {
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.logger.*;
@@ -21,7 +21,7 @@ package com.ankamagames.jerakine.logger.targets
 
         override public function logEvent(event:LogEvent) : void
         {
-            var _loc_3:String = null;
+            var _loc_3:* = null;
             var _loc_2:* = "[" + LogLevel.getString(event.level) + "] " + event.message;
             if (this._consoleAvailableSince != 0 && this._consoleAvailableSince < getTimer())
             {

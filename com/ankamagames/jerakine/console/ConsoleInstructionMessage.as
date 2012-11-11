@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.console
+﻿package com.ankamagames.jerakine.console
 {
     import com.ankamagames.jerakine.messages.*;
 
@@ -42,8 +42,8 @@ package com.ankamagames.jerakine.console
 
         public function equals(param1:ConsoleInstructionMessage) : Boolean
         {
-            var _loc_2:Boolean = false;
-            var _loc_3:uint = 0;
+            var _loc_2:* = false;
+            var _loc_3:* = 0;
             _loc_2 = param1.completCmd == this.completCmd && this.args.length == param1.args.length;
             if (_loc_2)
             {

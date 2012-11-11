@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.shortcut
+﻿package com.ankamagames.dofus.network.messages.game.shortcut
 {
     import com.ankamagames.dofus.network.*;
     import com.ankamagames.dofus.network.types.game.shortcut.*;

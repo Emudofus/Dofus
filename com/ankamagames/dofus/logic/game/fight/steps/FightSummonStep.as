@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.kernel.*;
@@ -32,7 +32,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_3:GameFightFighterInformations = null;
+            var _loc_3:* = null;
             var _loc_1:* = DofusEntities.getEntity(this._summonInfos.contextualId) as Sprite;
             _loc_1.visible = true;
             SpellWrapper.refreshAllPlayerSpellHolder(this._summonerId);
@@ -56,7 +56,7 @@ package com.ankamagames.dofus.logic.game.fight.steps
                     PlayedCharacterManager.getInstance().characteristics.lifePoints = _loc_3.stats.lifePoints;
                 }
             }
-            FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_SUMMONED, [this._summonerId, this._summonInfos.contextualId], 0, castingSpellId);
+            FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_SUMMONED, [this._summonerId, this._summonInfos.contextualId], this._summonInfos.contextualId, castingSpellId);
             executeCallbacks();
             return;
         }// end function

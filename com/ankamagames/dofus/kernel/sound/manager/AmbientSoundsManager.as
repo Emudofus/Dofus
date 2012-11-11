@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.kernel.sound.manager
+﻿package com.ankamagames.dofus.kernel.sound.manager
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.ambientSounds.*;
@@ -67,10 +67,10 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function setAmbientSounds(param1:Vector.<AmbientSound>, param2:Vector.<AmbientSound>) : void
         {
-            var _loc_4:AmbientSound = null;
+            var _loc_4:* = null;
             this._ambientSounds = param1;
             this._roleplayMusics = param2;
-            var _loc_3:String = "";
+            var _loc_3:* = "";
             if (this._ambientSounds.length == 0 && this._roleplayMusics.length == 0)
             {
                 _loc_3 = "Ni musique ni ambiance pour cette map ??!!";
@@ -96,9 +96,9 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function selectValidSounds() : void
         {
-            var _loc_2:AmbientSound = null;
-            var _loc_3:int = 0;
-            var _loc_1:int = 0;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_1:* = 0;
             for each (_loc_2 in this._ambientSounds)
             {
                 
@@ -149,15 +149,15 @@ package com.ankamagames.dofus.kernel.sound.manager
 
         public function playMusicAndAmbient() : void
         {
-            var _loc_1:String = null;
-            var _loc_2:Uri = null;
-            var _loc_3:Number = NaN;
-            var _loc_4:VolumeFadeEffect = null;
-            var _loc_5:VolumeFadeEffect = null;
-            var _loc_6:String = null;
-            var _loc_7:Uri = null;
-            var _loc_8:VolumeFadeEffect = null;
-            var _loc_9:VolumeFadeEffect = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             if (!SoundManager.getInstance().manager.soundIsActivate)
             {
                 return;

@@ -1,4 +1,4 @@
-package mx.core
+﻿package mx.core
 {
     import flash.display.*;
     import flash.events.*;
@@ -20,7 +20,7 @@ package mx.core
 
         public function SpriteAsset()
         {
-            var _loc_1:ApplicationDomain = null;
+            var _loc_1:* = null;
             this._measuredWidth = this.width;
             this._measuredHeight = this.height;
             if (FlexVersionClass == null)
@@ -109,7 +109,7 @@ package mx.core
 
         override public function get width() : Number
         {
-            var _loc_1:Point = null;
+            var _loc_1:* = null;
             if (this.layoutFeatures == null)
             {
                 return super.width;
@@ -143,7 +143,7 @@ package mx.core
 
         override public function get height() : Number
         {
-            var _loc_1:Point = null;
+            var _loc_1:* = null;
             if (this.layoutFeatures == null)
             {
                 return super.height;
@@ -375,7 +375,7 @@ package mx.core
 
         public function invalidateLayoutDirection() : void
         {
-            var _loc_2:Boolean = false;
+            var _loc_2:* = false;
             var _loc_1:* = parent;
             while (_loc_1)
             {
@@ -427,8 +427,8 @@ package mx.core
 
         private function initAdvancedLayoutFeatures() : void
         {
-            var _loc_1:ApplicationDomain = null;
-            var _loc_2:IAssetLayoutFeatures = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this.layoutFeaturesClass == null)
             {
                 _loc_1 = ApplicationDomain.currentDomain;

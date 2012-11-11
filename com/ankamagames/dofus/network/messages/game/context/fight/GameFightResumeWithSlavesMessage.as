@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.fight
+﻿package com.ankamagames.dofus.network.messages.game.context.fight
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.context.fight.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.context.fight
         {
             super.serializeAs_GameFightResumeMessage(param1);
             param1.writeShort(this.slavesInfo.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.slavesInfo.length)
             {
                 
@@ -85,10 +85,10 @@ package com.ankamagames.dofus.network.messages.game.context.fight
 
         public function deserializeAs_GameFightResumeWithSlavesMessage(param1:IDataInput) : void
         {
-            var _loc_4:GameFightResumeSlaveInfo = null;
+            var _loc_4:* = null;
             super.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

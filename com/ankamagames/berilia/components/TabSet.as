@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.components.messages.*;
@@ -492,7 +492,7 @@ package com.ankamagames.berilia.components
             this._aLbls[this._nNbTabs] = _loc_3;
             this._aInputs[this._nNbTabs] = _loc_4;
             this._nTotalWidth = this._nTotalWidth + this._nWidthTab;
-            var _loc_9:String = this;
+            var _loc_9:* = this;
             var _loc_10:* = this._nCurrentMaxIndex + 1;
             _loc_9._nCurrentMaxIndex = _loc_10;
             this.replaceTab();
@@ -544,7 +544,7 @@ package com.ankamagames.berilia.components
 
         private function removeTab() : void
         {
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             if (this._nNbTabs > 1)
             {
                 _loc_1 = this._nSelected;
@@ -564,7 +564,7 @@ package com.ankamagames.berilia.components
         private function replaceTab() : void
         {
             var _loc_2:* = undefined;
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             for (_loc_2 in this._aCtrs)
             {
                 
@@ -627,12 +627,12 @@ package com.ankamagames.berilia.components
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_2:MouseClickMessage = null;
-            var _loc_3:MouseRightClickMessage = null;
-            var _loc_4:KeyboardKeyUpMessage = null;
-            var _loc_5:String = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_6:* = undefined;
-            var _loc_7:String = null;
+            var _loc_7:* = null;
             switch(true)
             {
                 case param1 is MouseClickMessage:

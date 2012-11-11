@@ -1,4 +1,4 @@
-package com.hurlant.crypto.prng
+﻿package com.hurlant.crypto.prng
 {
     import flash.utils.*;
 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.guild
+﻿package com.ankamagames.dofus.network.messages.game.guild
 {
     import com.ankamagames.dofus.network.types.game.house.*;
     import com.ankamagames.jerakine.network.*;

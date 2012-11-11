@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.npcs
+﻿package com.ankamagames.dofus.datacenter.npcs
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;

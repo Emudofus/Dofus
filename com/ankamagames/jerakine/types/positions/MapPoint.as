@@ -1,5 +1,6 @@
-package com.ankamagames.jerakine.types.positions
+﻿package com.ankamagames.jerakine.types.positions
 {
+    import __AS3__.vec.*;
     import com.ankamagames.jerakine.map.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.utils.errors.*;
@@ -76,7 +77,11 @@ package com.ankamagames.jerakine.types.positions
 
         public function orientationTo(param1:MapPoint) : uint
         {
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
+            if (this.x == param1.x && this.y == param1.y)
+            {
+                return 1;
+            }
             var _loc_2:* = new Point();
             _loc_2.x = param1.x > this.x ? (1) : (param1.x < this.x ? (-1) : (0));
             _loc_2.y = param1.y > this.y ? (1) : (param1.y < this.y ? (-1) : (0));
@@ -137,8 +142,8 @@ package com.ankamagames.jerakine.types.positions
 
         public function getNearestFreeCell(param1:IDataMapProvider, param2:Boolean = true) : MapPoint
         {
-            var _loc_3:MapPoint = null;
-            var _loc_4:uint = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             while (_loc_4 < 8)
             {
                 
@@ -154,7 +159,7 @@ package com.ankamagames.jerakine.types.positions
 
         public function getNearestCellInDirection(param1:uint) : MapPoint
         {
-            var _loc_2:MapPoint = null;
+            var _loc_2:* = null;
             switch(param1)
             {
                 case 0:
@@ -209,29 +214,60 @@ package com.ankamagames.jerakine.types.positions
             return null;
         }// end function
 
-        public function getNearestFreeCellInDirection(param1:uint, param2:IDataMapProvider, param3:Boolean = true, param4:Boolean = true) : MapPoint
+        public function getNearestFreeCellInDirection(param1:uint, param2:IDataMapProvider, param3:Boolean = true, param4:Boolean = true, param5:Array = null) : MapPoint
         {
-            var _loc_5:MapPoint = null;
-            var _loc_6:uint = 0;
-            do
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_12:* = 0;
+            var _loc_6:* = null;
+            if (param5 == null)
+            {
+                param5 = new Array();
+            }
+            var _loc_7:* = new Vector.<MapPoint>(8, true);
+            var _loc_8:* = new Vector.<int>(8, true);
+            _loc_9 = 0;
+            while (_loc_9 < 8)
             {
                 
-                _loc_5 = this.getNearestCellInDirection(param1);
-                if (_loc_5 && !param2.pointMov(_loc_5._nX, _loc_5._nY, param4))
+                _loc_6 = this.getNearestCellInDirection(_loc_9);
+                if (_loc_6 != null && param5.indexOf(_loc_6.cellId) == -1)
                 {
-                    param1 = param1 + 1;
-                    if (param1 > 7)
+                    _loc_10 = param2.getCellSpeed(_loc_6.cellId);
+                    if (!param2.pointMov(_loc_6._nX, _loc_6._nY, param4, this.cellId))
                     {
-                        param1 = 0;
+                        _loc_10 = -100;
                     }
-                    _loc_5 = null;
+                    _loc_8[_loc_9] = getOrientationsDistance(_loc_9, param1) + (_loc_10 >= 0 ? (5 - _loc_10) : (11 + Math.abs(_loc_10)));
                 }
-            }while (_loc_5 == null && _loc_6++ < 8)
-            if (!_loc_5 && param3 && param2.pointMov(this._nX, this._nY, param4))
+                else
+                {
+                    _loc_8[_loc_9] = 1000;
+                }
+                _loc_7[_loc_9] = _loc_6;
+                _loc_9++;
+            }
+            _loc_6 = null;
+            var _loc_11:* = 0;
+            var _loc_13:* = _loc_8[0];
+            _loc_9 = 1;
+            while (_loc_9 < 8)
+            {
+                
+                _loc_12 = _loc_8[_loc_9];
+                if (_loc_12 < _loc_13 && _loc_7[_loc_9] != null)
+                {
+                    _loc_13 = _loc_12;
+                    _loc_11 = _loc_9;
+                }
+                _loc_9++;
+            }
+            _loc_6 = _loc_7[_loc_11];
+            if (_loc_6 == null && param3 && param2.pointMov(this._nX, this._nY, param4, this.cellId))
             {
                 return this;
             }
-            return _loc_5;
+            return _loc_6;
         }// end function
 
         public function equals(param1:MapPoint) : Boolean
@@ -287,6 +323,11 @@ package com.ankamagames.jerakine.types.positions
             return _loc_3;
         }// end function
 
+        public static function getOrientationsDistance(param1:int, param2:int) : int
+        {
+            return Math.min(Math.abs(param2 - param1), Math.abs(8 - param2 + param1));
+        }// end function
+
         public static function isInMap(param1:int, param2:int) : Boolean
         {
             return param1 + param2 >= 0 && param1 - param2 >= 0 && param1 - param2 < MAP_HEIGHT * 2 && param1 + param2 < MAP_WIDTH * 2;
@@ -294,12 +335,12 @@ package com.ankamagames.jerakine.types.positions
 
         private static function init() : void
         {
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             _bInit = true;
-            var _loc_1:int = 0;
-            var _loc_2:int = 0;
-            var _loc_3:int = 0;
-            var _loc_5:int = 0;
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < MAP_HEIGHT)
             {
                 

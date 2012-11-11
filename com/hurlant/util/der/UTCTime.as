@@ -1,4 +1,4 @@
-package com.hurlant.util.der
+﻿package com.hurlant.util.der
 {
     import com.hurlant.util.der.*;
     import flash.utils.*;

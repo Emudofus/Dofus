@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console
+﻿package com.ankamagames.dofus.console
 {
     import com.ankamagames.dofus.console.common.*;
     import com.ankamagames.dofus.console.debug.*;
@@ -26,7 +26,7 @@ package com.ankamagames.dofus.console
             param1.addHandler("fullscreen", new FullScreenInstructionHandler());
             param1.addHandler("reset", new ResetInstructionHandler());
             param1.addHandler("enterframecount", new EnterFrameInstructionHandler());
-            param1.addHandler(["savereplaylog", "parallelsequenceteststart", "log", "i18nsize", "newdofus", "clear", "config", "clearwebcache", "geteventmodeparams", "setquality", "lowdefskin", "copylog", "synchrosequence"], new MiscInstructionHandler());
+            param1.addHandler(["savereplaylog", "parallelsequenceteststart", "log", "i18nsize", "newdofus", "clear", "config", "clearwebcache", "geteventmodeparams", "setquality", "lowdefskin", "copylog", "synchrosequence", "throw"], new MiscInstructionHandler());
             param1.addHandler(["additem", "looklike"], new TiphonInstructionHandler());
             param1.addHandler(["listinventory", "searchitem", "makeinventory"], new InventoryInstructionHandler());
             param1.addHandler(["enablelogs", "info", "search", "searchmonster", "searchspell", "enablereport", "savereport"], new UtilInstructionHandler());

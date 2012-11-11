@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.items.criterion
+﻿package com.ankamagames.dofus.datacenter.items.criterion
 {
     import com.ankamagames.dofus.datacenter.alignments.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -18,7 +18,7 @@ package com.ankamagames.dofus.datacenter.items.criterion
         {
             var _loc_1:* = AlignmentSide.getAlignmentSideById(int(_criterionValue)).name;
             var _loc_2:* = I18n.getUiText("ui.common.alignment");
-            var _loc_3:String = ":";
+            var _loc_3:* = ":";
             if (_operator.text == ItemCriterionOperator.DIFFERENT)
             {
                 _loc_3 = I18n.getUiText("ui.common.differentFrom") + I18n.getUiText("ui.common.colon");

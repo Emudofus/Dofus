@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.uiApi
+﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.interfaces.*;
@@ -186,7 +186,7 @@ package com.ankamagames.dofus.uiApi
 
         public static function isCreature() : Boolean
         {
-            var _loc_2:Breed = null;
+            var _loc_2:* = null;
             var _loc_1:* = getBone();
             for each (_loc_2 in Breed.getBreeds())
             {
@@ -328,20 +328,20 @@ package com.ankamagames.dofus.uiApi
             return PlayedCharacterManager.getInstance().currentWeapon;
         }// end function
 
-        public static function getExperienceBonusPercent() : uint
+        public static function getExperienceBonusPercent() : int
         {
             return PlayedCharacterManager.getInstance().experiencePercent;
         }// end function
 
         public static function knowSpell(param1:uint) : int
         {
-            var _loc_4:uint = 0;
-            var _loc_6:uint = 0;
-            var _loc_7:SpellWrapper = null;
-            var _loc_8:Boolean = false;
-            var _loc_9:SpellWrapper = null;
-            var _loc_10:uint = 0;
-            var _loc_11:SpellLevel = null;
+            var _loc_4:* = 0;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = false;
+            var _loc_9:* = null;
+            var _loc_10:* = 0;
+            var _loc_11:* = null;
             var _loc_2:* = Spell.getSpellById(param1);
             var _loc_3:* = SpellLevel.getLevelById(param1);
             if (param1 == 0)

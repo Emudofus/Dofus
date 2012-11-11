@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay
 {
     import com.ankamagames.dofus.network.types.game.character.alignment.*;
     import com.ankamagames.dofus.network.types.game.context.*;

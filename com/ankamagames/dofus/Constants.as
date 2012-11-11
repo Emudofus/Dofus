@@ -1,4 +1,4 @@
-package com.ankamagames.dofus
+﻿package com.ankamagames.dofus
 {
     import com.ankamagames.jerakine.cache.*;
     import com.ankamagames.jerakine.types.*;

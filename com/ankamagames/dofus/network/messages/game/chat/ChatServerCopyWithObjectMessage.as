@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.chat
+﻿package com.ankamagames.dofus.network.messages.game.chat
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.data.items.*;
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.messages.game.chat
         {
             super.serializeAs_ChatServerCopyMessage(param1);
             param1.writeShort(this.objects.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.objects.length)
             {
                 
@@ -85,10 +85,10 @@ package com.ankamagames.dofus.network.messages.game.chat
 
         public function deserializeAs_ChatServerCopyWithObjectMessage(param1:IDataInput) : void
         {
-            var _loc_4:ObjectItem = null;
+            var _loc_4:* = null;
             super.deserialize(param1);
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

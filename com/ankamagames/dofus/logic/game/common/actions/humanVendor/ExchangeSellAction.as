@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.humanVendor
+﻿package com.ankamagames.dofus.logic.game.common.actions.humanVendor
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

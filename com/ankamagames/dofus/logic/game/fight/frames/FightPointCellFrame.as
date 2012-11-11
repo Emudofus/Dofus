@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.frames
+﻿package com.ankamagames.dofus.logic.game.fight.frames
 {
     import com.ankamagames.atouin.enums.*;
     import com.ankamagames.atouin.managers.*;
@@ -22,6 +22,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.types.positions.*;
     import com.ankamagames.jerakine.types.zones.*;
+    import com.ankamagames.tiphon.display.*;
     import flash.utils.*;
 
     public class FightPointCellFrame extends Object implements Frame
@@ -48,11 +49,11 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:* = undefined;
-            var _loc_3:CellOverMessage = null;
-            var _loc_4:EntityMouseOverMessage = null;
-            var _loc_5:CellClickMessage = null;
-            var _loc_6:EntityClickMessage = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(true)
             {
                 case param1 is KeyboardKeyUpMessage:
@@ -79,7 +80,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
                 }
                 case param1 is MouseClickMessage:
                 {
-                    if (!(MouseClickMessage(param1).target is GraphicCell))
+                    if (!(MouseClickMessage(param1).target is GraphicCell) && !(MouseClickMessage(param1).target is TiphonSprite))
                     {
                         this.cancelShow();
                     }
@@ -153,7 +154,7 @@ package com.ankamagames.dofus.logic.game.fight.frames
 
         private function showCell(param1:uint) : void
         {
-            var _loc_2:ShowCellRequestMessage = null;
+            var _loc_2:* = null;
             if (this.isValidCell(param1))
             {
                 _loc_2 = new ShowCellRequestMessage();

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.context.roleplay.quest
+﻿package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -53,7 +53,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.quest
             }
             param1.writeShort(this.stepId);
             param1.writeShort(this.objectives.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.objectives.length)
             {
                 
@@ -72,8 +72,8 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 
         public function deserializeAs_QuestActiveDetailedInformations(param1:IDataInput) : void
         {
-            var _loc_4:uint = 0;
-            var _loc_5:QuestObjectiveInformations = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             super.deserialize(param1);
             this.stepId = param1.readShort();
             if (this.stepId < 0)
@@ -81,7 +81,7 @@ package com.ankamagames.dofus.network.types.game.context.roleplay.quest
                 throw new Error("Forbidden value (" + this.stepId + ") on element of QuestActiveDetailedInformations.stepId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.character.alignment
+﻿package com.ankamagames.dofus.network.types.game.character.alignment
 {
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;

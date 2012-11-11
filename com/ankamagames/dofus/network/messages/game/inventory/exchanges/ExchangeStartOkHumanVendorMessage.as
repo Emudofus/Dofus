@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.types.game.data.items.*;
@@ -72,7 +72,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
             }
             param1.writeInt(this.sellerId);
             param1.writeShort(this.objectsInfos.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.objectsInfos.length)
             {
                 
@@ -90,14 +90,14 @@ package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 
         public function deserializeAs_ExchangeStartOkHumanVendorMessage(param1:IDataInput) : void
         {
-            var _loc_4:ObjectItemToSellInHumanVendorShop = null;
+            var _loc_4:* = null;
             this.sellerId = param1.readInt();
             if (this.sellerId < 0)
             {
                 throw new Error("Forbidden value (" + this.sellerId + ") on element of ExchangeStartOkHumanVendorMessage.sellerId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

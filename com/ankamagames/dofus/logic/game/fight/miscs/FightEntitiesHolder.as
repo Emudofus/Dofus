@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.miscs
+﻿package com.ankamagames.dofus.logic.game.fight.miscs
 {
     import com.ankamagames.dofus.logic.game.common.misc.*;
     import com.ankamagames.jerakine.entities.interfaces.*;
@@ -46,7 +46,7 @@ package com.ankamagames.dofus.logic.game.fight.miscs
 
         public function unregistered() : void
         {
-            var _loc_1:IEntity = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._holdedEntities)
             {
                 

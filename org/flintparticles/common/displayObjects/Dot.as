@@ -1,4 +1,4 @@
-package org.flintparticles.common.displayObjects
+﻿package org.flintparticles.common.displayObjects
 {
     import flash.display.*;
 

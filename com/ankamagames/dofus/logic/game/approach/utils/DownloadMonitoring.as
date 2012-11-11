@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.approach.utils
+﻿package com.ankamagames.dofus.logic.game.approach.utils
 {
     import com.ankamagames.dofus.kernel.net.*;
     import com.ankamagames.dofus.kernel.updater.*;
@@ -57,7 +57,7 @@ package com.ankamagames.dofus.logic.game.approach.utils
 
         public function initialize() : void
         {
-            var _loc_1:DownloadGetCurrentSpeedRequestMessage = null;
+            var _loc_1:* = null;
             if (InterClientManager.isMaster())
             {
                 if (!this._initialized)
@@ -100,8 +100,8 @@ package com.ankamagames.dofus.logic.game.approach.utils
 
         private function onTimerEvent(event:TimerEvent) : void
         {
-            var _loc_2:uint = 0;
-            var _loc_3:DownloadSetSpeedRequestMessage = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             if (this._connection == null)
             {
                 this._connection = ConnectionsHandler.getConnection();
@@ -111,7 +111,7 @@ package com.ankamagames.dofus.logic.game.approach.utils
                 if (this._connection)
                 {
                     this._apingSum = this._apingSum + this._connection.latencyAvg;
-                    var _loc_4:String = this;
+                    var _loc_4:* = this;
                     var _loc_5:* = this._apingCount + 1;
                     _loc_4._apingCount = _loc_5;
                 }
@@ -123,7 +123,7 @@ package com.ankamagames.dofus.logic.game.approach.utils
                 {
                     if (this._downloadSpeed > 1)
                     {
-                        var _loc_4:String = this;
+                        var _loc_4:* = this;
                         var _loc_5:* = this._downloadSpeed - 1;
                         _loc_4._downloadSpeed = _loc_5;
                         _log.info("Decrease download speed to " + this._downloadSpeed);
@@ -137,7 +137,7 @@ package com.ankamagames.dofus.logic.game.approach.utils
                 }
                 else if (this._downloadSpeed < 10)
                 {
-                    var _loc_4:String = this;
+                    var _loc_4:* = this;
                     var _loc_5:* = this._downloadSpeed + 1;
                     _loc_4._downloadSpeed = _loc_5;
                     _log.info("Increase download speed to " + this._downloadSpeed);

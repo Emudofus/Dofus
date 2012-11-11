@@ -1,11 +1,11 @@
-package com.ankamagames.dofus.internalDatacenter.items
+﻿package com.ankamagames.dofus.internalDatacenter.items
 {
     import com.ankamagames.dofus.internalDatacenter.communication.*;
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.kernel.*;
+    import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -76,7 +76,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get info1() : String
         {
-            var _loc_1:SpellWrapper = null;
+            var _loc_1:* = null;
             if (this.type == TYPE_ITEM_WRAPPER)
             {
                 return this.quantity.toString();
@@ -91,7 +91,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get timer() : int
         {
-            var _loc_1:EmoteWrapper = null;
+            var _loc_1:* = null;
             if (this.type == TYPE_EMOTE_WRAPPER)
             {
                 _loc_1 = EmoteWrapper.getEmoteWrapperById(this.id);
@@ -102,8 +102,8 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get active() : Boolean
         {
-            var _loc_1:SpellWrapper = null;
-            var _loc_2:RoleplayEmoticonFrame = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (this.type == TYPE_SPELL_WRAPPER)
             {
                 _loc_1 = SpellWrapper.getFirstSpellWrapperById(this.id, this.getCharaId());
@@ -111,7 +111,7 @@ package com.ankamagames.dofus.internalDatacenter.items
             }
             else if (this.type == TYPE_EMOTE_WRAPPER)
             {
-                _loc_2 = Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame;
+                _loc_2 = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
                 return _loc_2.isKnownEmote(this.id);
             }
             return this._active;
@@ -125,7 +125,7 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function get realItem() : ISlotData
         {
-            var _loc_1:ItemWrapper = null;
+            var _loc_1:* = null;
             if (this.type == TYPE_ITEM_WRAPPER)
             {
                 if (this.id != 0)
@@ -313,11 +313,11 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function update(param1:uint, param2:uint, param3:uint = 0, param4:uint = 0) : void
         {
-            var _loc_5:ItemWrapper = null;
-            var _loc_6:RoleplayEmoticonFrame = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             if (this.id != param2 || this.type != param3)
             {
-                var _loc_7:String = null;
+                var _loc_7:* = null;
                 this._uriFullsize = null;
                 this._uri = _loc_7;
             }
@@ -347,13 +347,13 @@ package com.ankamagames.dofus.internalDatacenter.items
             }
             if (this.type == TYPE_PRESET_WRAPPER)
             {
-                var _loc_7:String = null;
+                var _loc_7:* = null;
                 this._uriFullsize = null;
                 this._uri = _loc_7;
             }
             if (param3 == TYPE_EMOTE_WRAPPER)
             {
-                _loc_6 = Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame;
+                _loc_6 = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
                 if (!_loc_6.isKnownEmote(param2))
                 {
                     this.active = false;
@@ -364,12 +364,12 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function getIconUri(param1:Boolean = true) : Uri
         {
-            var _loc_2:ItemWrapper = null;
-            var _loc_3:ItemWrapper = null;
-            var _loc_4:PresetWrapper = null;
-            var _loc_5:SpellWrapper = null;
-            var _loc_6:SmileyWrapper = null;
-            var _loc_7:EmoteWrapper = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             if (this.type != TYPE_SPELL_WRAPPER || this.id != 0)
             {
                 if (param1 && this._uri)
@@ -393,7 +393,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                     }
                     else
                     {
-                        var _loc_8:String = null;
+                        var _loc_8:* = null;
                         this._uriFullsize = null;
                         this._uri = _loc_8;
                     }
@@ -408,7 +408,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                     }
                     else
                     {
-                        var _loc_8:String = null;
+                        var _loc_8:* = null;
                         this._uriFullsize = null;
                         this._uri = _loc_8;
                     }
@@ -424,7 +424,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                 }
                 else
                 {
-                    var _loc_8:String = null;
+                    var _loc_8:* = null;
                     this._uriFullsize = null;
                     this._uri = _loc_8;
                 }
@@ -439,7 +439,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                 }
                 else
                 {
-                    var _loc_8:String = null;
+                    var _loc_8:* = null;
                     this._uriFullsize = null;
                     this._uri = _loc_8;
                 }
@@ -454,7 +454,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                 }
                 else
                 {
-                    var _loc_8:String = null;
+                    var _loc_8:* = null;
                     this._uriFullsize = null;
                     this._uri = _loc_8;
                 }
@@ -469,7 +469,7 @@ package com.ankamagames.dofus.internalDatacenter.items
                 }
                 else
                 {
-                    var _loc_8:String = null;
+                    var _loc_8:* = null;
                     this._uriFullsize = null;
                     this._uri = _loc_8;
                 }
@@ -498,9 +498,9 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public function addHolder(param1:ISlotDataHolder) : void
         {
-            var _loc_2:Array = null;
-            var _loc_3:SpellWrapper = null;
-            var _loc_4:EmoteWrapper = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (this.type == TYPE_SPELL_WRAPPER)
             {
                 _loc_2 = SpellWrapper.getSpellWrappersById(this.id, this.getCharaId());
@@ -542,9 +542,9 @@ package com.ankamagames.dofus.internalDatacenter.items
 
         public static function create(param1:uint, param2:uint, param3:uint = 0, param4:uint = 0) : ShortcutWrapper
         {
-            var _loc_6:ItemWrapper = null;
-            var _loc_7:EmoteWrapper = null;
-            var _loc_8:RoleplayEmoticonFrame = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
             var _loc_5:* = new ShortcutWrapper;
             new ShortcutWrapper.slot = param1;
             _loc_5.id = param2;
@@ -576,7 +576,7 @@ package com.ankamagames.dofus.internalDatacenter.items
             if (param3 == TYPE_EMOTE_WRAPPER)
             {
                 _loc_7 = EmoteWrapper.create(_loc_5.id, _loc_5.slot);
-                _loc_8 = Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame;
+                _loc_8 = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
                 if (_loc_8.isKnownEmote(_loc_5.id))
                 {
                     _loc_5.active = true;

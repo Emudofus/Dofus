@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.internalDatacenter.guild
+﻿package com.ankamagames.dofus.internalDatacenter.guild
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.houses.*;
@@ -19,6 +19,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
         public var skillListIds:Vector.<int>;
         public var worldX:int;
         public var worldY:int;
+        public var subareaId:int;
         public var guildshareParams:uint;
         private var _arrayShareParams:Array;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(GuildHouseWrapper));
@@ -76,7 +77,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
 
         public function get skillListString() : Vector.<String>
         {
-            var _loc_2:int = 0;
+            var _loc_2:* = 0;
             var _loc_1:* = new Vector.<String>;
             for each (_loc_2 in this.skillListIds)
             {
@@ -90,8 +91,8 @@ package com.ankamagames.dofus.internalDatacenter.guild
         {
             this._arrayShareParams = [this.visibleGuildBrief, this.doorSignGuild, this.doorSignOthers, this.allowDoorGuild, this.forbiDoorOthers, this.allowChestOthers, this.forbidChestOthers, this.teleport, this.respawn];
             var _loc_1:* = new Vector.<String>;
-            var _loc_2:uint = 1;
-            var _loc_3:uint = 0;
+            var _loc_2:* = 1;
+            var _loc_3:* = 0;
             while (_loc_3 <= 8)
             {
                 
@@ -116,6 +117,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
             this.skillListIds = param1.skillListIds;
             this.worldX = param1.worldX;
             this.worldY = param1.worldY;
+            this.subareaId = param1.subAreaId;
             this.guildshareParams = param1.guildshareParams;
             return;
         }// end function
@@ -132,6 +134,7 @@ package com.ankamagames.dofus.internalDatacenter.guild
             _loc_2.skillListIds = param1.skillListIds;
             _loc_2.worldX = param1.worldX;
             _loc_2.worldY = param1.worldY;
+            _loc_2.subareaId = param1.subAreaId;
             _loc_2.guildshareParams = param1.guildshareParams;
             return _loc_2;
         }// end function

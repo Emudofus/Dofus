@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.world
+﻿package com.ankamagames.dofus.datacenter.world
 {
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -11,6 +11,10 @@ package com.ankamagames.dofus.datacenter.world
         public var nameId:uint;
         public var mapId:uint;
         public var realMapId:uint;
+        public var x:int;
+        public var y:int;
+        public var outdoor:Boolean;
+        public var subareaId:int;
         private var _name:String;
         private static const MODULE:String = "Hints";
 
@@ -30,7 +34,7 @@ package com.ankamagames.dofus.datacenter.world
 
         public static function getHintById(param1:int) : Hint
         {
-            return GameData.getObject(MODULE, param1) as ;
+            return GameData.getObject(MODULE, param1) as Hint;
         }// end function
 
         public static function getHints() : Array

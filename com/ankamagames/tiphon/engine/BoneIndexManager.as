@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.engine
+﻿package com.ankamagames.tiphon.engine
 {
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.resources.events.*;
@@ -105,7 +105,7 @@ package com.ankamagames.tiphon.engine
 
         public function getAllCustomAnimations(param1:int) : Array
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             var _loc_2:* = this._index[param1];
             if (!_loc_2)
             {
@@ -122,8 +122,8 @@ package com.ankamagames.tiphon.engine
 
         private function onXmlLoaded(event:ResourceLoadedEvent) : void
         {
-            var _loc_5:XML = null;
-            var _loc_6:Uri = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             this._loader.removeEventListener(ResourceLoadedEvent.LOADED, this.onXmlLoaded);
             this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onSubXmlLoaded);
             this._loader.addEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE, this.onAllSubXmlLoaded);
@@ -143,10 +143,10 @@ package com.ankamagames.tiphon.engine
 
         private function onSubXmlLoaded(event:ResourceLoadedEvent) : void
         {
-            var _loc_3:String = null;
-            var _loc_4:XML = null;
-            var _loc_5:XML = null;
-            var _loc_6:Array = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             var _loc_2:* = event.resource as XML;
             for each (_loc_4 in _loc_2..file)
             {

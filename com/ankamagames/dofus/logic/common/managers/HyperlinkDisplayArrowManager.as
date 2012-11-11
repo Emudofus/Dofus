@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+﻿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.types.graphic.*;
@@ -28,9 +28,9 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showArrow(param1:String, param2:String, param3:int = 0, param4:int = 0, param5:int = 5, param6:int = 0) : MovieClip
         {
-            var _loc_9:UiRootContainer = null;
-            var _loc_10:DisplayObject = null;
-            var _loc_11:Rectangle = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
             var _loc_7:* = getArrow(param6 == 1);
             var _loc_8:* = Berilia.getInstance().docMain.getChildAt(param5) as DisplayObjectContainer;
             (Berilia.getInstance().docMain.getChildAt(param5) as DisplayObjectContainer).addChild(_loc_7);
@@ -94,10 +94,10 @@ package com.ankamagames.dofus.logic.common.managers
 
         public static function showMapTransition(param1:int, param2:int, param3:int, param4:int = 0, param5:int = 5, param6:int = 0) : MovieClip
         {
-            var _loc_7:MovieClip = null;
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
-            var _loc_10:uint = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
             _loc_7 = getArrow(param6 == 1);
             DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt(param5)).addChild(_loc_7);
             switch(param2)

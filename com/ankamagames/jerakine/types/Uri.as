@@ -1,6 +1,7 @@
-package com.ankamagames.jerakine.types
+﻿package com.ankamagames.jerakine.types
 {
     import com.ankamagames.jerakine.enum.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.system.*;
     import flash.errors.*;
@@ -17,10 +18,11 @@ package com.ankamagames.jerakine.types
         private var _sum:String;
         private var _loaderContext:LoaderContext;
         private var _secureMode:Boolean;
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(Uri));
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         private static const URI_SYNTAX:RegExp = /^(?:(?P<protocol>[a-z0-9]+)\:\/\/)?(?P<path>[^\|]*)(?|\|)?(?|\/)?(?P<subpath>.*)?$""^(?:(?P<protocol>[a-z0-9]+)\:\/\/)?(?P<path>[^\|]*)(?|\|)?(?|\/)?(?P<subpath>.*)?$/i;
         private static var _useSecureURI:Boolean = false;
-        public static var _os:String = SystemManager.getSingleton().os;
+        public static var _osIsWindows:Boolean = SystemManager.getSingleton().os == OperatingSystem.WINDOWS;
 
         public function Uri(param1:String = null, param2:Boolean = true)
         {
@@ -47,8 +49,8 @@ package com.ankamagames.jerakine.types
 
         public function get path() : String
         {
-            var _loc_1:String = null;
-            if (_os == OperatingSystem.WINDOWS)
+            var _loc_1:* = null;
+            if (_osIsWindows)
             {
                 return this._path;
             }
@@ -62,7 +64,7 @@ package com.ankamagames.jerakine.types
         public function set path(param1:String) : void
         {
             this._path = param1.replace(/\\\"""\\/g, "/");
-            if (_os == OperatingSystem.WINDOWS)
+            if (_osIsWindows)
             {
                 this._path = this._path.replace(/^\/(\/*)""^\/(\/*)/, "\\\\");
             }
@@ -138,10 +140,12 @@ package com.ankamagames.jerakine.types
             switch(this._protocol)
             {
                 case "http":
+                case "httpc":
                 case "file":
                 case "zip":
                 case "upd":
                 case "mod":
+                case "theme":
                 case "d2p":
                 case "d2pOld":
                 case "pak":
@@ -162,10 +166,12 @@ package com.ankamagames.jerakine.types
             switch(this._protocol)
             {
                 case "http":
+                case "httpc":
                 case "file":
                 case "zip":
                 case "upd":
                 case "mod":
+                case "theme":
                 case "d2p":
                 case "d2pOld":
                 case "pak":
@@ -185,10 +191,12 @@ package com.ankamagames.jerakine.types
         {
             var dofusNativePath:String;
             var currentFile:File;
+            var stack:String;
             try
             {
                 dofusNativePath = File.applicationDirectory.nativePath;
                 currentFile = File.applicationDirectory.resolvePath(unescape(this._path));
+                stack = dofusNativePath;
                 while (true)
                 {
                     
@@ -201,11 +209,14 @@ package com.ankamagames.jerakine.types
                     {
                         break;
                     }
+                    stack = stack + (" -> " + currentFile.nativePath);
                 }
             }
             catch (e:Error)
             {
             }
+            _log.debug("URI not secure : " + dofusNativePath);
+            _log.debug("Détails : " + stack);
             return false;
         }// end function
 
@@ -266,7 +277,7 @@ package com.ankamagames.jerakine.types
             }
             if (this._secureMode && _useSecureURI && this._protocol == "file")
             {
-                if (!this.isSecure() && this._path.indexOf("\\\\") != 0 && this._path.indexOf("Dofus 2 Local") == -1 && this._path.indexOf("core-resources") == -1)
+                if (AirScanner.hasAir() && !this.isSecure() && this._path.indexOf("\\\\") != 0 && this._path.indexOf("Dofus 2 Local") == -1 && this._path.indexOf("core-resources") == -1)
                 {
                     throw new ArgumentError("\'" + param1 + "\' is a unsecure URI.");
                 }

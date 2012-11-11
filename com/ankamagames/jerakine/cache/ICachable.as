@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.cache
+﻿package com.ankamagames.jerakine.cache
 {
     import com.ankamagames.jerakine.interfaces.*;
 

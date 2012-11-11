@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.json
+﻿package com.ankamagames.jerakine.json
 {
 
     public class JSONTokenType extends Object

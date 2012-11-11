@@ -1,4 +1,4 @@
-package com.ankamagames.atouin.utils
+ï»¿package com.ankamagames.atouin.utils
 {
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.*;
@@ -30,7 +30,7 @@ package com.ankamagames.atouin.utils
             var errorCallBack:* = param4;
             try
             {
-                _log.info("Hop, on décide de charger la map.");
+                _log.info("Hop, on dÃ©cide de charger la map.");
                 this._map = map;
                 this._callBack = callBack;
                 this._errorCallBack = errorCallBack;
@@ -47,7 +47,7 @@ package com.ankamagames.atouin.utils
                 fileStream.readBytes(rawJPG);
                 fileStream.close();
                 this._loader.loadBytes(rawJPG);
-                _log.info("Le chargement a commencé. MAJ 3");
+                _log.info("Le chargement a commencÃ©. MAJ 3");
             }
             catch (e:Error)
             {
@@ -77,7 +77,7 @@ package com.ankamagames.atouin.utils
                 this._loader.contentLoaderInfo.removeEventListener(Event.INIT, this.onJPGReady);
                 this._loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
                 this._loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, this.onProgress);
-                _log.info("La map vient de finir d\'être chargée.");
+                _log.info("La map vient de finir d\'Ãªtre chargÃ©e.");
                 this._callBack(bitmap);
             }
             catch (e:Error)
@@ -123,7 +123,7 @@ package com.ankamagames.atouin.utils
             }
             else
             {
-                var _loc_2:String = this;
+                var _loc_2:* = this;
                 var _loc_3:* = this._time + 1;
                 _loc_2._time = _loc_3;
             }

@@ -1,4 +1,4 @@
-package org.flintparticles.twoD.initializers
+﻿package org.flintparticles.twoD.initializers
 {
     import flash.geom.*;
     import org.flintparticles.common.emitters.*;
@@ -30,8 +30,8 @@ package org.flintparticles.twoD.initializers
 
         override public function initialize(param1:Emitter, param2:Particle) : void
         {
-            var _loc_5:Number = NaN;
-            var _loc_6:Number = NaN;
+            var _loc_5:* = NaN;
+            var _loc_6:* = NaN;
             var _loc_3:* = Particle2D(param2);
             var _loc_4:* = this._zone.getLocation();
             if (_loc_3.rotation == 0)

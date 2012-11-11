@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.modules.utils
+﻿package com.ankamagames.dofus.modules.utils
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -93,20 +93,20 @@ package com.ankamagames.dofus.modules.utils
 
         private function updateFolderSize(param1:File, param2:String) : void
         {
-            var _loc_5:File = null;
+            var _loc_5:* = null;
             if (this._moduleSizes[param2] == null)
             {
                 this._moduleSizes[param2] = 0;
                 this._moduleFilesNum[param2] = 0;
             }
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             var _loc_4:* = param1.getDirectoryListing();
             for each (_loc_5 in _loc_4)
             {
                 
                 if (_loc_5.isDirectory)
                 {
-                    _loc_3 = _loc_3 + this.updateFolderSize(_loc_5, param2);
+                    this.updateFolderSize(_loc_5, param2);
                     continue;
                 }
                 _loc_3 = _loc_3 + _loc_5.size;

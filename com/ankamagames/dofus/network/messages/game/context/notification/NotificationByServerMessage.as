@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.notification
+﻿package com.ankamagames.dofus.network.messages.game.context.notification
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.network.*;
@@ -74,7 +74,7 @@ package com.ankamagames.dofus.network.messages.game.context.notification
             }
             param1.writeShort(this.id);
             param1.writeShort(this.parameters.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.parameters.length)
             {
                 
@@ -93,14 +93,14 @@ package com.ankamagames.dofus.network.messages.game.context.notification
 
         public function deserializeAs_NotificationByServerMessage(param1:IDataInput) : void
         {
-            var _loc_4:String = null;
+            var _loc_4:* = null;
             this.id = param1.readUnsignedShort();
             if (this.id < 0 || this.id > 65535)
             {
                 throw new Error("Forbidden value (" + this.id + ") on element of NotificationByServerMessage.id.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 

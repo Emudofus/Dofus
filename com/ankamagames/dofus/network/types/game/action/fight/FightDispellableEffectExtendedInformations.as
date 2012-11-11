@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.action.fight
+﻿package com.ankamagames.dofus.network.types.game.action.fight
 {
     import com.ankamagames.dofus.network.*;
     import com.ankamagames.dofus.network.types.game.actions.fight.*;

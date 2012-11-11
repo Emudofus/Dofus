@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.components
+﻿package com.ankamagames.berilia.components
 {
     import __AS3__.vec.*;
     import com.ankamagames.berilia.*;
@@ -7,6 +7,7 @@ package com.ankamagames.berilia.components
     import com.ankamagames.berilia.types.graphic.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.handlers.messages.mouse.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.display.*;
@@ -55,6 +56,7 @@ package com.ankamagames.berilia.components
         private var _lastMouseX:int = 0;
         private var _lastMouseY:int = 0;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(MapViewer));
 
         public function MapViewer()
         {
@@ -129,10 +131,34 @@ package com.ankamagames.berilia.components
             return this._mapContainer.scaleX;
         }// end function
 
+        override public function set width(param1:Number) : void
+        {
+            super.width = param1;
+            if (this.finalized)
+            {
+                this.initMask();
+                this.updateVisibleChunck();
+                this.updateMapElements();
+            }
+            return;
+        }// end function
+
+        override public function set height(param1:Number) : void
+        {
+            super.height = param1;
+            if (this.finalized)
+            {
+                this.initMask();
+                this.updateVisibleChunck();
+                this.updateMapElements();
+            }
+            return;
+        }// end function
+
         public function finalize() : void
         {
-            var _loc_2:Texture = null;
-            var _loc_3:InteractiveObject = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             destroy(this._mapBitmapContainer);
             destroy(this._mapContainer);
             destroy(this._layersContainer);
@@ -165,7 +191,7 @@ package com.ankamagames.berilia.components
             this.processMapInfo();
             this._finalized = true;
             this.updateVisibleChunck();
-            var _loc_1:int = 0;
+            var _loc_1:* = 0;
             while (_loc_1 < numChildren)
             {
                 
@@ -182,7 +208,7 @@ package com.ankamagames.berilia.components
 
         public function addLayer(param1:String) : void
         {
-            var _loc_2:Sprite = null;
+            var _loc_2:* = null;
             if (!this._layers[param1])
             {
                 _loc_2 = new Sprite();
@@ -197,12 +223,12 @@ package com.ankamagames.berilia.components
 
         public function addIcon(param1:String, param2:String, param3, param4:int, param5:int, param6:Number = 1, param7:String = null, param8:Boolean = false, param9:int = -1, param10:Boolean = true) : MapIconElement
         {
-            var _loc_11:Texture = null;
-            var _loc_12:MapIconElement = null;
-            var _loc_13:int = 0;
-            var _loc_14:int = 0;
-            var _loc_15:int = 0;
-            var _loc_16:ColorTransform = null;
+            var _loc_11:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = 0;
+            var _loc_15:* = 0;
+            var _loc_16:* = null;
             if (param3 is String)
             {
                 param3 = new Uri(param3);
@@ -214,7 +240,6 @@ package com.ankamagames.berilia.components
                 _loc_11.mouseChildren = false;
                 _loc_11.scaleX = Math.min(2, param6);
                 _loc_11.scaleY = _loc_11.scaleX;
-                _loc_11.finalize();
                 if (param9 != -1)
                 {
                     _loc_13 = param9 >> 16 & 255;
@@ -235,14 +260,14 @@ package com.ankamagames.berilia.components
 
         public function addAreaShape(param1:String, param2:String, param3:Vector.<int>, param4:uint = 0, param5:Number = 1, param6:uint = 0, param7:Number = 0.4, param8:int = 4) : MapAreaShape
         {
-            var _loc_9:MapAreaShape = null;
-            var _loc_10:Texture = null;
-            var _loc_11:Graphics = null;
-            var _loc_12:int = 0;
-            var _loc_13:int = 0;
-            var _loc_14:MapAreaShape = null;
-            var _loc_15:int = 0;
-            var _loc_16:int = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = 0;
+            var _loc_13:* = 0;
+            var _loc_14:* = null;
+            var _loc_15:* = 0;
+            var _loc_16:* = 0;
             if (this._layers[param1] && param3)
             {
                 _loc_9 = MapAreaShape(MapElement.getElementById(param2, this));
@@ -298,10 +323,10 @@ package com.ankamagames.berilia.components
 
         public function getMapElementsByLayer(param1:String) : Array
         {
-            var _loc_5:MapElement = null;
+            var _loc_5:* = null;
             var _loc_2:* = this._mapElements.length;
             var _loc_3:* = new Array();
-            var _loc_4:int = 0;
+            var _loc_4:* = 0;
             while (_loc_4 < _loc_2)
             {
                 
@@ -317,7 +342,7 @@ package com.ankamagames.berilia.components
 
         public function removeMapElement(param1:MapElement) : void
         {
-            var _loc_3:MapElement = null;
+            var _loc_3:* = null;
             if (!param1)
             {
                 return;
@@ -341,14 +366,14 @@ package com.ankamagames.berilia.components
 
         public function updateMapElements() : void
         {
-            var _loc_1:MapElement = null;
-            var _loc_3:Array = null;
-            var _loc_4:uint = 0;
-            var _loc_5:MapGroupElement = null;
-            var _loc_6:MapIconElement = null;
-            var _loc_7:MapAreaShape = null;
-            var _loc_8:uint = 0;
-            var _loc_9:uint = 0;
+            var _loc_1:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
             this.updateIconSize();
             this.clearLayer();
             var _loc_2:* = new Array();
@@ -444,12 +469,12 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
-        public function moveTo(param1:int, param2:int, param3:uint = 1, param4:uint = 1, param5:Boolean = true, param6:Boolean = true) : void
+        public function moveTo(param1:Number, param2:Number, param3:uint = 1, param4:uint = 1, param5:Boolean = true, param6:Boolean = true) : void
         {
-            var _loc_8:int = 0;
-            var _loc_9:int = 0;
-            var _loc_10:int = 0;
-            var _loc_11:int = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
+            var _loc_11:* = 0;
             var _loc_7:* = this.mapBounds;
             if (this.mapBounds.left > param1)
             {
@@ -480,7 +505,7 @@ package com.ankamagames.berilia.components
             }
             else
             {
-                this._mapContainer.x = (-(param1 * this.mapWidth + this.origineX)) * this._mapContainer.scaleX;
+                this._mapContainer.x = (-(param1 * this.mapWidth + Number(this.origineX))) * this._mapContainer.scaleX;
                 this._mapContainer.y = (-(param2 * this.mapHeight + this.origineY)) * this._mapContainer.scaleY;
             }
             if (this._mapContainer.x < param3 - this._mapBitmapContainer.width)
@@ -506,8 +531,8 @@ package com.ankamagames.berilia.components
 
         public function zoom(param1:Number, param2:Point = null) : void
         {
-            var _loc_3:Rectangle = null;
-            var _loc_4:Point = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             if (param1 > this.maxScale)
             {
                 param1 = this.maxScale;
@@ -559,8 +584,8 @@ package com.ankamagames.berilia.components
 
         public function removeAllMap() : void
         {
-            var _loc_1:Map = null;
-            var _loc_2:MapArea = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             for each (_loc_1 in this._avaibleMap)
             {
                 
@@ -581,8 +606,8 @@ package com.ankamagames.berilia.components
 
         override public function remove() : void
         {
-            var _loc_1:MapElement = null;
-            var _loc_2:Object = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (!__removed)
             {
                 if (this._grid)
@@ -615,17 +640,17 @@ package com.ankamagames.berilia.components
 
         private function updateIcon() : void
         {
-            var _loc_2:Texture = null;
-            var _loc_3:MapIconElement = null;
-            var _loc_8:MapElement = null;
-            var _loc_9:Texture = null;
-            var _loc_10:Number = NaN;
-            var _loc_11:Number = NaN;
-            var _loc_12:Number = NaN;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = NaN;
+            var _loc_11:* = NaN;
+            var _loc_12:* = NaN;
             var _loc_13:* = undefined;
-            var _loc_14:Number = NaN;
-            var _loc_15:Texture = null;
-            var _loc_16:Number = NaN;
+            var _loc_14:* = NaN;
+            var _loc_15:* = null;
+            var _loc_16:* = NaN;
             var _loc_1:* = new Rectangle(0, 0, 1, 1);
             var _loc_4:* = this.visibleMaps;
             var _loc_5:* = new Point(Math.floor(_loc_4.x + _loc_4.width / 2), Math.floor(_loc_4.y + _loc_4.height / 2));
@@ -635,7 +660,7 @@ package com.ankamagames.berilia.components
             {
                 
                 _loc_3 = _loc_8 as MapIconElement;
-                if (!_loc_3 || !_loc_3.follow)
+                if (!_loc_3)
                 {
                     continue;
                 }
@@ -647,8 +672,16 @@ package com.ankamagames.berilia.components
                     continue;
                 }
                 _loc_2.visible = this._layers[_loc_3.layer].visible != false && _loc_4.intersects(_loc_1);
+                if (_loc_2.visible && !_loc_2.finalized)
+                {
+                    _loc_2.finalize();
+                }
+                if (!_loc_3.follow)
+                {
+                    continue;
+                }
                 _loc_14 = Math.floor(Math.sqrt(Math.pow(_loc_5.x - _loc_3.x, 2) + Math.pow(_loc_5.y - _loc_3.y, 2)));
-                if (_loc_2.visible && this._arrowAllocation[_loc_2] && (!_loc_7 || _loc_14 < _loc_6))
+                if (_loc_2.visible && this._arrowAllocation[_loc_2] && _loc_14 < _loc_6)
                 {
                     this._arrowContainer.removeChild(this._arrowAllocation[_loc_2]);
                     this._arrowPool.push(this._arrowAllocation[_loc_2]);
@@ -657,7 +690,7 @@ package com.ankamagames.berilia.components
                     delete this._arrowAllocation[_loc_2];
                     continue;
                 }
-                if (_loc_3.follow && (!_loc_2.parent || _loc_14 >= _loc_6 && _loc_7))
+                if (_loc_3.follow && (!_loc_2.parent || _loc_14 >= _loc_6))
                 {
                     _loc_15 = this.getIconArrow(_loc_2);
                     _loc_15.visible = this._layers[_loc_3.layer].visible;
@@ -730,7 +763,7 @@ package com.ankamagames.berilia.components
 
         private function getIconArrow(param1:Texture) : Texture
         {
-            var _loc_2:Texture = null;
+            var _loc_2:* = null;
             if (this._arrowAllocation[param1])
             {
                 return this._arrowAllocation[param1];
@@ -754,16 +787,16 @@ package com.ankamagames.berilia.components
 
         private function processMapInfo() : void
         {
-            var _loc_1:Map = null;
-            var _loc_3:Number = NaN;
-            var _loc_4:Map = null;
-            var _loc_5:MapArea = null;
+            var _loc_1:* = null;
+            var _loc_3:* = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (!this._avaibleMap.length)
             {
                 return;
             }
             this._lastScaleIconUpdate = -1;
-            var _loc_2:Number = 10000;
+            var _loc_2:* = 10000;
             for each (_loc_4 in this._avaibleMap)
             {
                 
@@ -798,14 +831,14 @@ package com.ankamagames.berilia.components
 
         private function updateVisibleChunck() : void
         {
-            var _loc_3:MapArea = null;
+            var _loc_3:* = null;
             if (!this._currentMap || !this._currentMap.areas)
             {
                 return;
             }
             this.updateIcon();
-            var _loc_1:Array = [];
-            var _loc_2:uint = 100;
+            var _loc_1:* = [];
+            var _loc_2:* = 100;
             this._viewRect.x = (-this._mapContainer.x) / this._mapContainer.scaleX - _loc_2;
             this._viewRect.y = (-this._mapContainer.y) / this._mapContainer.scaleY - _loc_2;
             this._viewRect.width = width / this._mapContainer.scaleX + _loc_2 * 2;
@@ -829,10 +862,12 @@ package com.ankamagames.berilia.components
             return;
         }// end function
 
-        private function initMap() : void
+        private function initMask() : void
         {
-            var _loc_2:Sprite = null;
-            this._mapContainer = new Sprite();
+            if (this._mapContainer.mask)
+            {
+                this._mapContainer.mask.parent.removeChild(this._mapContainer.mask);
+            }
             var _loc_1:* = new Sprite();
             _loc_1.doubleClickEnabled = true;
             _loc_1.graphics.beginFill(7798784, 0.3);
@@ -846,6 +881,14 @@ package com.ankamagames.berilia.components
             }
             addChild(_loc_1);
             this._mapContainer.mask = _loc_1;
+            return;
+        }// end function
+
+        private function initMap() : void
+        {
+            var _loc_1:* = null;
+            this._mapContainer = new Sprite();
+            this.initMask();
             this._mapContainer.addChild(this._mapBitmapContainer);
             this._grid = new Shape();
             this.drawGrid();
@@ -856,11 +899,11 @@ package com.ankamagames.berilia.components
             this.zoom(this.startScale);
             if (this._enable3DMode)
             {
-                _loc_2 = new Sprite();
-                _loc_2.addChild(this._mapContainer);
-                _loc_2.rotationX = -30;
-                _loc_2.doubleClickEnabled = true;
-                addChild(_loc_2);
+                _loc_1 = new Sprite();
+                _loc_1.addChild(this._mapContainer);
+                _loc_1.rotationX = -30;
+                _loc_1.doubleClickEnabled = true;
+                addChild(_loc_1);
             }
             else
             {
@@ -875,9 +918,9 @@ package com.ankamagames.berilia.components
 
         private function drawGrid() : void
         {
-            var _loc_3:uint = 0;
-            var _loc_4:uint = 0;
-            var _loc_5:uint = 0;
+            var _loc_3:* = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             var _loc_1:* = this.origineX % this.mapWidth;
             var _loc_2:* = this.origineY % this.mapHeight;
             if (!this._showGrid)
@@ -913,8 +956,8 @@ package com.ankamagames.berilia.components
 
         private function clearLayer(param1:DisplayObjectContainer = null) : void
         {
-            var _loc_2:DisplayObject = null;
-            var _loc_3:DisplayObjectContainer = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             for each (_loc_3 in this._layers)
             {
                 
@@ -936,8 +979,8 @@ package com.ankamagames.berilia.components
 
         private function updateIconSize() : void
         {
-            var _loc_1:MapIconElement = null;
-            var _loc_2:MapElement = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             if (!this.autoSizeIcon || this._lastScaleIconUpdate == this._mapContainer.scaleX)
             {
                 return;
@@ -960,14 +1003,14 @@ package com.ankamagames.berilia.components
 
         override public function process(param1:Message) : Boolean
         {
-            var _loc_2:MouseOverMessage = null;
-            var _loc_3:MouseOutMessage = null;
-            var _loc_4:MouseDoubleClickMessage = null;
-            var _loc_5:MouseWheelMessage = null;
-            var _loc_6:Number = NaN;
-            var _loc_7:Point = null;
-            var _loc_8:MouseRightClickMessage = null;
-            var _loc_9:MapElement = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = NaN;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             switch(true)
             {
                 case param1 is MouseOverMessage:
@@ -1128,8 +1171,8 @@ package com.ankamagames.berilia.components
 
         private function onMapEnterFrame(event:Event) : void
         {
-            var _loc_4:int = 0;
-            var _loc_5:int = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = 0;
             if (this._draging)
             {
                 if (this._enable3DMode && this._lastMouseX)

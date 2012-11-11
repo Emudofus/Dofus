@@ -1,4 +1,4 @@
-package gs.events
+﻿package gs.events
 {
     import flash.events.*;
 

@@ -1,6 +1,7 @@
-package com.ankamagames.dofus.types
+﻿package com.ankamagames.dofus.types
 {
     import com.ankamagames.dofus.*;
+    import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.jerakine.managers.*;
 
@@ -13,6 +14,7 @@ package com.ankamagames.dofus.types
             add("optimize", false);
             add("cacheMapEnabled", true);
             add("optimizeMultiAccount", true);
+            add("fullScreen", false);
             add("showEveryMonsters", false);
             add("turnPicture", true);
             add("mapCoordinates", true);
@@ -22,7 +24,6 @@ package com.ankamagames.dofus.types
             add("remindTurn", true);
             add("showGlowOverTarget", true);
             add("confirmItemDrop", true);
-            add("confirmBeforeUnknownCraft", true);
             add("switchUiSkin", "dofus1");
             add("allowBannerShortcuts", true);
             add("dofusQuality", 1);
@@ -35,6 +36,7 @@ package com.ankamagames.dofus.types
             add("allowHitAnim", true);
             add("legalAgreementEula", "fr#0");
             add("legalAgreementTou", "fr#0");
+            add("legalAgreementModsTou", "fr#0");
             add("allowLog", BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE);
             add("flashQuality", 2);
             add("cellSelectionOnly", false);
@@ -46,6 +48,11 @@ package com.ankamagames.dofus.types
             add("hideSummonedFighters", false);
             add("mapFilters", 0);
             add("showLogPvDetails", true);
+            add("notificationsAlphaWindows", false);
+            add("notificationsMode", 1);
+            add("notificationsDisplayDuration", 5);
+            add("notificationsMaxNumber", 5);
+            add("notificationsPosition", ExternalNotificationPositionEnum.BOTTOM_RIGHT);
             return;
         }// end function
 

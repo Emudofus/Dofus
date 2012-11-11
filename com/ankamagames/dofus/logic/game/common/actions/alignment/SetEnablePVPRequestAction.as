@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.actions.alignment
+﻿package com.ankamagames.dofus.logic.game.common.actions.alignment
 {
     import com.ankamagames.jerakine.handlers.messages.*;
 

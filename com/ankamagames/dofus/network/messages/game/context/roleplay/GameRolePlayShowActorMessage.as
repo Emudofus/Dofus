@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.context.roleplay
+﻿package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
     import com.ankamagames.dofus.network.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;

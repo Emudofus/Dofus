@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.friend
+﻿package com.ankamagames.dofus.network.types.game.friend
 {
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
@@ -92,7 +92,7 @@ package com.ankamagames.dofus.network.types.game.friend
             }
             this.alignmentSide = param1.readByte();
             this.breed = param1.readByte();
-            if (this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Zobal)
+            if (this.breed < PlayableBreedEnum.Feca || this.breed > PlayableBreedEnum.Steamer)
             {
                 throw new Error("Forbidden value (" + this.breed + ") on element of FriendOnlineInformations.breed.");
             }

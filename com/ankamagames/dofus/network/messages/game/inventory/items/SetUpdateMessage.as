@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.messages.game.inventory.items
+﻿package com.ankamagames.dofus.network.messages.game.inventory.items
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -77,7 +77,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
             }
             param1.writeShort(this.setId);
             param1.writeShort(this.setObjects.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.setObjects.length)
             {
                 
@@ -89,7 +89,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.setEffects.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.setEffects.length)
             {
                 
@@ -108,16 +108,16 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
 
         public function deserializeAs_SetUpdateMessage(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:uint = 0;
-            var _loc_8:ObjectEffect = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = 0;
+            var _loc_8:* = null;
             this.setId = param1.readShort();
             if (this.setId < 0)
             {
                 throw new Error("Forbidden value (" + this.setId + ") on element of SetUpdateMessage.setId.");
             }
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -130,7 +130,7 @@ package com.ankamagames.dofus.network.messages.game.inventory.items
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
     import com.ankamagames.jerakine.types.*;
     import flash.display.*;
@@ -17,8 +17,8 @@ package com.ankamagames.berilia.types.data
 
         public function Map(param1:Number, param2:String, param3:DisplayObjectContainer, param4:uint, param5:uint, param6:uint, param7:uint)
         {
-            var _loc_8:MapArea = null;
-            var _loc_11:uint = 0;
+            var _loc_8:* = null;
+            var _loc_11:* = 0;
             this.areas = [];
             this.zoom = param1;
             this.container = param3;
@@ -29,8 +29,8 @@ package com.ankamagames.berilia.types.data
             param3.doubleClickEnabled = true;
             this.numXChunck = Math.ceil(param4 * param1 / param6);
             this.numYChunck = Math.ceil(param5 * param1 / param7);
-            var _loc_9:uint = 1;
-            var _loc_10:uint = 0;
+            var _loc_9:* = 1;
+            var _loc_10:* = 0;
             while (_loc_10 < this.numYChunck)
             {
                 

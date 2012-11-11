@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.misc
+﻿package com.ankamagames.dofus.logic.game.common.misc
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
@@ -102,8 +102,8 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function initialize(param1:Vector.<ItemWrapper>) : void
         {
-            var _loc_2:ItemWrapper = null;
-            var _loc_3:ItemSet = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             this._itemsDict = new Dictionary();
             for each (_loc_2 in param1)
             {
@@ -119,9 +119,9 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function initializeFromObjectItems(param1:Vector.<ObjectItem>) : void
         {
-            var _loc_3:ObjectItem = null;
-            var _loc_4:ItemWrapper = null;
-            var _loc_5:ItemSet = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             var _loc_2:* = new Vector.<ItemWrapper>;
             this._itemsDict = new Dictionary();
             for each (_loc_3 in param1)
@@ -147,7 +147,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function addItem(param1:ItemWrapper) : void
         {
-            var _loc_3:ItemWrapper = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._itemsDict[param1.objectUID];
             if (_loc_2)
             {
@@ -169,7 +169,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function removeItem(param1:int, param2:int = -1) : void
         {
-            var _loc_4:ItemWrapper = null;
+            var _loc_4:* = null;
             var _loc_3:* = this._itemsDict[param1];
             if (!_loc_3)
             {
@@ -200,7 +200,7 @@ package com.ankamagames.dofus.logic.game.common.misc
             var _loc_3:* = this._itemsDict[param1];
             if (!_loc_3)
             {
-                _log.error("On essaye de modifier la quantit� d\'un objet qui n\'existe pas");
+                _log.error("On essaye de modifier la quantité d\'un objet qui n\'existe pas");
                 return;
             }
             var _loc_4:* = _loc_3.item.clone();
@@ -243,7 +243,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function modifyItem(param1:ItemWrapper) : void
         {
-            var _loc_3:ItemWrapper = null;
+            var _loc_3:* = null;
             var _loc_2:* = this._itemsDict[param1.objectUID];
             if (_loc_2)
             {
@@ -286,7 +286,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function removeAllItemMasks(param1:String) : void
         {
-            var _loc_2:ItemSet = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._itemsDict)
             {
                 
@@ -301,7 +301,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         public function removeAllItemsMasks() : void
         {
-            var _loc_1:ItemSet = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._itemsDict)
             {
                 
@@ -335,7 +335,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         protected function addItemToViews(param1:ItemSet) : void
         {
-            var _loc_2:IInventoryView = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._views)
             {
                 
@@ -349,9 +349,9 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         protected function modifyItemFromViews(param1:ItemSet, param2:ItemWrapper) : void
         {
-            var _loc_4:int = 0;
-            var _loc_5:IInventoryView = null;
-            var _loc_3:int = 0;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_3:* = 0;
             for each (_loc_4 in param1.masks)
             {
                 
@@ -382,7 +382,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         protected function removeItemFromViews(param1:ItemSet) : void
         {
-            var _loc_2:IInventoryView = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._views)
             {
                 
@@ -396,7 +396,7 @@ package com.ankamagames.dofus.logic.game.common.misc
 
         protected function initializeViews(param1:Vector.<ItemWrapper>) : void
         {
-            var _loc_2:IInventoryView = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._views)
             {
                 
@@ -413,6 +413,20 @@ package com.ankamagames.dofus.logic.game.common.misc
 
     }
 }
+
+import __AS3__.vec.*;
+
+import com.ankamagames.dofus.internalDatacenter.items.*;
+
+import com.ankamagames.dofus.logic.game.common.managers.*;
+
+import com.ankamagames.dofus.network.enums.*;
+
+import com.ankamagames.dofus.network.types.game.data.items.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import flash.utils.*;
 
 class ItemSet extends Object
 {

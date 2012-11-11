@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
     import com.ankamagames.dofus.logic.game.fight.frames.*;
@@ -30,8 +30,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_1:GameFightFighterInformations = null;
-            var _loc_2:SerialSequencer = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
             FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_CLOSE_COMBAT, [this._fighterId, this._weaponId, this._critical], this._fighterId, castingSpellId, true);
             if (this._critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
             {

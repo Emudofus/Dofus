@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.fight.steps
+﻿package com.ankamagames.dofus.logic.game.fight.steps
 {
     import com.ankamagames.dofus.logic.game.fight.managers.*;
     import com.ankamagames.dofus.logic.game.fight.miscs.*;
@@ -24,8 +24,8 @@ package com.ankamagames.dofus.logic.game.fight.steps
 
         override public function start() : void
         {
-            var _loc_2:String = null;
-            var _loc_1:Boolean = true;
+            var _loc_2:* = null;
+            var _loc_1:* = true;
             if (this._buff.actionId == ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST)
             {
                 _loc_1 = !BuffManager.getInstance().updateBuff(this._buff);

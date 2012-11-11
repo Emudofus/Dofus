@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.network.types.game.interactive
+﻿package com.ankamagames.dofus.network.types.game.interactive
 {
     import __AS3__.vec.*;
     import com.ankamagames.dofus.network.*;
@@ -58,7 +58,7 @@ package com.ankamagames.dofus.network.types.game.interactive
             param1.writeInt(this.elementId);
             param1.writeInt(this.elementTypeId);
             param1.writeShort(this.enabledSkills.length);
-            var _loc_2:uint = 0;
+            var _loc_2:* = 0;
             while (_loc_2 < this.enabledSkills.length)
             {
                 
@@ -67,7 +67,7 @@ package com.ankamagames.dofus.network.types.game.interactive
                 _loc_2 = _loc_2 + 1;
             }
             param1.writeShort(this.disabledSkills.length);
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < this.disabledSkills.length)
             {
                 
@@ -86,10 +86,10 @@ package com.ankamagames.dofus.network.types.game.interactive
 
         public function deserializeAs_InteractiveElement(param1:IDataInput) : void
         {
-            var _loc_6:uint = 0;
-            var _loc_7:InteractiveElementSkill = null;
-            var _loc_8:uint = 0;
-            var _loc_9:InteractiveElementSkill = null;
+            var _loc_6:* = 0;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_9:* = null;
             this.elementId = param1.readInt();
             if (this.elementId < 0)
             {
@@ -97,7 +97,7 @@ package com.ankamagames.dofus.network.types.game.interactive
             }
             this.elementTypeId = param1.readInt();
             var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:uint = 0;
+            var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
@@ -108,7 +108,7 @@ package com.ankamagames.dofus.network.types.game.interactive
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:uint = 0;
+            var _loc_5:* = 0;
             while (_loc_5 < _loc_4)
             {
                 

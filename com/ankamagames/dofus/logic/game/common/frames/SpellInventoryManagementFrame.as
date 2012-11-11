@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
@@ -43,17 +43,14 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
-            var _loc_2:SpellSetPositionAction = null;
-            var _loc_3:SpellListMessage = null;
-            var _loc_4:SlaveSwitchContextMessage = null;
-            var _loc_5:SpellItem = null;
-            var _loc_6:Breed = null;
-            var _loc_7:Spell = null;
-            var _loc_8:Boolean = false;
-            var _loc_9:SpellItem = null;
-            var _loc_10:SpellWrapper = null;
-            var _loc_11:uint = 0;
-            var _loc_12:SpellItem = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
             switch(true)
             {
                 case param1 is SpellSetPositionAction:
@@ -65,31 +62,22 @@ package com.ankamagames.dofus.logic.game.common.frames
                 {
                     _loc_3 = param1 as SpellListMessage;
                     this._fullSpellList = new Array();
-                    for each (_loc_5 in _loc_3.spells)
+                    _loc_4 = new Array();
+                    for each (_loc_6 in _loc_3.spells)
                     {
                         
-                        this._fullSpellList.push(SpellWrapper.create(_loc_5.position, _loc_5.spellId, _loc_5.spellLevel, true, PlayedCharacterManager.getInstance().id));
+                        this._fullSpellList.push(SpellWrapper.create(_loc_6.position, _loc_6.spellId, _loc_6.spellLevel, true, PlayedCharacterManager.getInstance().id));
+                        _loc_4.push(_loc_6.spellId);
                     }
                     if (_loc_3.spellPrevisualization)
                     {
-                        _loc_6 = Breed.getBreedById(PlayedCharacterManager.getInstance().infos.breed);
-                        for each (_loc_7 in _loc_6.breedSpells)
+                        _loc_7 = Breed.getBreedById(PlayedCharacterManager.getInstance().infos.breed);
+                        for each (_loc_8 in _loc_7.breedSpells)
                         {
                             
-                            _loc_8 = false;
-                            for each (_loc_9 in _loc_3.spells)
+                            if (_loc_4.indexOf(_loc_8.id) == -1)
                             {
-                                
-                                _loc_10 = SpellWrapper.create(_loc_9.position, _loc_9.spellId, _loc_9.spellLevel, false, PlayedCharacterManager.getInstance().id);
-                                _loc_11 = _loc_10.spell.spellLevels[0];
-                                if (_loc_11 == _loc_7.spellLevels[0])
-                                {
-                                    _loc_8 = true;
-                                }
-                            }
-                            if (!_loc_8)
-                            {
-                                this._fullSpellList.push(SpellWrapper.create(-1, _loc_7.id, 1, true, PlayedCharacterManager.getInstance().id));
+                                this._fullSpellList.push(SpellWrapper.create(1, _loc_8.id, 1, true, PlayedCharacterManager.getInstance().id));
                             }
                         }
                     }
@@ -100,15 +88,15 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
                 case param1 is SlaveSwitchContextMessage:
                 {
-                    _loc_4 = param1 as SlaveSwitchContextMessage;
+                    _loc_5 = param1 as SlaveSwitchContextMessage;
                     this._fullSpellList = new Array();
-                    for each (_loc_12 in _loc_4.slaveSpells)
+                    for each (_loc_9 in _loc_5.slaveSpells)
                     {
                         
-                        this._fullSpellList.push(SpellWrapper.create(_loc_12.position, _loc_12.spellId, _loc_12.spellLevel, true, _loc_4.slaveId));
+                        this._fullSpellList.push(SpellWrapper.create(_loc_9.position, _loc_9.spellId, _loc_9.spellLevel, true, _loc_5.slaveId));
                     }
                     PlayedCharacterManager.getInstance().spellsInventory = this._fullSpellList;
-                    CurrentPlayedFighterManager.getInstance().setCharacteristicsInformations(_loc_4.slaveId, _loc_4.slaveStats);
+                    CurrentPlayedFighterManager.getInstance().setCharacteristicsInformations(_loc_5.slaveId, _loc_5.slaveStats);
                     KernelEventsManager.getInstance().processCallback(HookList.SpellList, this._fullSpellList);
                     return true;
                 }

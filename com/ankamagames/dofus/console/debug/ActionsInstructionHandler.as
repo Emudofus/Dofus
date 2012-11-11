@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.debug
+﻿package com.ankamagames.dofus.console.debug
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -73,8 +73,8 @@ package com.ankamagames.dofus.console.debug
                     neededParams;
                     maxParams;
                     paramsTypes;
-                    var _loc_5:int = 0;
-                    var _loc_8:int = 0;
+                    var _loc_5:* = 0;
+                    var _loc_8:* = 0;
                     var _loc_9:* = actionDesc..method;
                     var _loc_7:* = new XMLList("");
                     for each (_loc_10 in _loc_9)
@@ -124,7 +124,7 @@ package com.ankamagames.dofus.console.debug
                     }
                     accessors;
                     longestAccessor;
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = actionDesc..accessor;
                     while (_loc_6 in _loc_5)
                     {
@@ -143,7 +143,7 @@ package com.ankamagames.dofus.console.debug
                     }
                     accessors.sort();
                     console.output("Sending action <b>" + apiAction.name + "</b>:");
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = accessors;
                     while (_loc_6 in _loc_5)
                     {
@@ -197,7 +197,7 @@ package com.ankamagames.dofus.console.debug
                     }
                     actionsList = DofusApiAction.getApiActionsList();
                     foundCount;
-                    var _loc_5:int = 0;
+                    var _loc_5:* = 0;
                     var _loc_6:* = actionsList;
                     while (_loc_6 in _loc_5)
                     {
@@ -210,8 +210,8 @@ package com.ankamagames.dofus.console.debug
                         console.output("    <b>" + a + "</b>");
                         aDesc = describeType(actionsList[a].actionClass);
                         aParams;
-                        var _loc_7:int = 0;
-                        var _loc_10:int = 0;
+                        var _loc_7:* = 0;
+                        var _loc_10:* = 0;
                         var _loc_11:* = aDesc..method;
                         var _loc_9:* = new XMLList("");
                         for each (_loc_12 in _loc_11)
@@ -279,11 +279,11 @@ package com.ankamagames.dofus.console.debug
 
         private function getParams(param1:Array, param2:Array) : Array
         {
-            var _loc_4:String = null;
-            var _loc_5:uint = 0;
-            var _loc_6:String = null;
-            var _loc_7:String = null;
-            var _loc_3:Array = [];
+            var _loc_4:* = null;
+            var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_3:* = [];
             for (_loc_4 in param1)
             {
                 
@@ -323,9 +323,9 @@ package com.ankamagames.dofus.console.debug
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
         {
-            var _loc_5:Array = null;
-            var _loc_6:String = null;
-            var _loc_4:Array = [];
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_4:* = [];
             switch(param1)
             {
                 case "sendaction":

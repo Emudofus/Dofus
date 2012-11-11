@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.logic.common.managers
+ï»¿package com.ankamagames.dofus.logic.common.managers
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.*;
@@ -224,7 +224,7 @@ package com.ankamagames.dofus.logic.common.managers
             }
             catch (e:Error)
             {
-                ErrorManager.addError("Erreur lors du traitement de la réponse web", e);
+                ErrorManager.addError("Erreur lors du traitement de la rÃ©ponse web", e);
                 result.text = I18n.getUiText("ui.secureMode.error.checkCode.503");
                 result.fatal = true;
             }
@@ -270,7 +270,7 @@ package com.ankamagames.dofus.logic.common.managers
             }
             catch (e:Error)
             {
-                ErrorManager.addError("Impossible de créer le fichier de certificat.", e);
+                ErrorManager.addError("Impossible de crÃ©er le fichier de certificat.", e);
             }
             return false;
         }// end function
@@ -324,7 +324,7 @@ package com.ankamagames.dofus.logic.common.managers
 
         private function onServerNotFound(event:IOErrorEvent) : void
         {
-            ErrorManager.addError("Impossible de joindre le web service permettant le déblocage du mode sécurisé : " + event.text);
+            ErrorManager.addError("Impossible de joindre le web service permettant le dÃ©blocage du mode sÃ©curisÃ© : " + event.text);
             var _loc_2:* = new Object();
             _loc_2.error = true;
             _loc_2.fatal = true;

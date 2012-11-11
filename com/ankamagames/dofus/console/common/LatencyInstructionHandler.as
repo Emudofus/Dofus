@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.console.common
+﻿package com.ankamagames.dofus.console.common
 {
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -19,9 +19,9 @@ package com.ankamagames.dofus.console.common
 
         public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
         {
-            var _loc_4:LatencyFrame = null;
-            var _loc_5:BasicPingMessage = null;
-            var _loc_6:IServerConnection = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             switch(param2)
             {
                 case "ping":

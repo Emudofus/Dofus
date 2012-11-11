@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.data
+﻿package com.ankamagames.jerakine.data
 {
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.utils.*;
@@ -22,7 +22,7 @@ package com.ankamagames.jerakine.data
 
         public function init(param1:Array, param2:String) : void
         {
-            var _loc_3:ICensoredDataItem = null;
+            var _loc_3:* = null;
             for each (_loc_3 in param1)
             {
                 

@@ -1,4 +1,4 @@
-package com.ankamagames.tiphon.types
+﻿package com.ankamagames.tiphon.types
 {
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.tiphon.*;
@@ -28,7 +28,7 @@ package com.ankamagames.tiphon.types
         {
             if (!this._swl[param2])
             {
-                var _loc_3:String = this;
+                var _loc_3:* = this;
                 var _loc_4:* = this._swlCount + 1;
                 _loc_3._swlCount = _loc_4;
             }
@@ -46,7 +46,7 @@ package com.ankamagames.tiphon.types
         {
             if (!this._swl[param1.toString()])
             {
-                var _loc_2:String = this;
+                var _loc_2:* = this;
                 var _loc_3:* = this._swlCount + 1;
                 _loc_2._swlCount = _loc_3;
             }
@@ -82,7 +82,7 @@ package com.ankamagames.tiphon.types
         public function getSwl(param1:String = null, param2:Boolean = false) : Swl
         {
             var _loc_3:* = undefined;
-            var _loc_4:Uri = null;
+            var _loc_4:* = null;
             if (param1)
             {
                 _loc_4 = this._isBone ? (BoneIndexManager.getInstance().getBoneFile(this.gfxId, param1)) : (new Uri(TiphonConstants.SWF_SKIN_PATH + this.gfxId + ".swl"));

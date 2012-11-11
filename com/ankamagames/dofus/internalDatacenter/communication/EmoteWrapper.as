@@ -1,9 +1,9 @@
-package com.ankamagames.dofus.internalDatacenter.communication
+﻿package com.ankamagames.dofus.internalDatacenter.communication
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+    import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -82,7 +82,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
 
         public function get active() : Boolean
         {
-            var _loc_1:* = Kernel.getWorker().getFrame(RoleplayEmoticonFrame) as RoleplayEmoticonFrame;
+            var _loc_1:* = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
             return _loc_1.isKnownEmote(this.id);
         }// end function
 
@@ -191,7 +191,7 @@ package com.ankamagames.dofus.internalDatacenter.communication
 
         public static function refreshAllEmoteHolders() : void
         {
-            var _loc_1:EmoteWrapper = null;
+            var _loc_1:* = null;
             for each (_loc_1 in _cache)
             {
                 

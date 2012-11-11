@@ -1,8 +1,9 @@
-package com.ankamagames.berilia.types.data
+﻿package com.ankamagames.berilia.types.data
 {
+    import com.ankamagames.berilia.interfaces.*;
     import com.ankamagames.berilia.utils.errors.*;
 
-    public class UiData extends Object
+    public class UiData extends Object implements IModuleUtil
     {
         private var _name:String;
         private var _file:String;

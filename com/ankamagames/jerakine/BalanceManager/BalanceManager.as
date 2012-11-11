@@ -1,4 +1,4 @@
-package com.ankamagames.jerakine.BalanceManager
+﻿package com.ankamagames.jerakine.BalanceManager
 {
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.BalanceManager.events.*;
@@ -11,7 +11,7 @@ package com.ankamagames.jerakine.BalanceManager
 
         public function BalanceManager(param1:Array = null)
         {
-            var _loc_2:Object = null;
+            var _loc_2:* = null;
             this.init();
             if (param1 != null)
             {
@@ -31,7 +31,7 @@ package com.ankamagames.jerakine.BalanceManager
 
         public function getItemNbCall(param1:Object) : int
         {
-            var _loc_2:BalancedObject = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._balancedObjects)
             {
                 
@@ -45,7 +45,7 @@ package com.ankamagames.jerakine.BalanceManager
 
         public function setItemBalance(param1:Object, param2:uint) : void
         {
-            var _loc_3:BalancedObject = null;
+            var _loc_3:* = null;
             for each (_loc_3 in this._balancedObjects)
             {
                 
@@ -82,10 +82,10 @@ package com.ankamagames.jerakine.BalanceManager
 
         public function callItem() : Object
         {
-            var _loc_4:BalancedObject = null;
+            var _loc_4:* = null;
             var _loc_1:* = Math.random() * 10000;
-            var _loc_2:uint = 0;
-            var _loc_3:Object = null;
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
             if (this._balancedObjects.length == 0)
             {
                 return _loc_3;
@@ -122,7 +122,7 @@ package com.ankamagames.jerakine.BalanceManager
                 }
                 _loc_2 = _loc_2 + 1;
             }
-            var _loc_6:String = this;
+            var _loc_6:* = this;
             var _loc_7:* = this._nbCall + 1;
             _loc_6._nbCall = _loc_7;
             this.balanceItems();
@@ -131,7 +131,7 @@ package com.ankamagames.jerakine.BalanceManager
 
         public function removeItem(param1:Object) : void
         {
-            var _loc_2:BalancedObject = null;
+            var _loc_2:* = null;
             for each (_loc_2 in this._balancedObjects)
             {
                 
@@ -147,7 +147,7 @@ package com.ankamagames.jerakine.BalanceManager
 
         public function reset() : void
         {
-            var _loc_1:BalancedObject = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._balancedObjects)
             {
                 
@@ -159,11 +159,11 @@ package com.ankamagames.jerakine.BalanceManager
 
         private function balanceItems() : void
         {
-            var _loc_1:BalancedObject = null;
-            var _loc_2:BalancedObject = null;
-            var _loc_3:Number = NaN;
-            var _loc_4:BalancedObject = null;
-            var _loc_5:BalancedObject = null;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = NaN;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             if (this._nbCall == 0)
             {
                 for each (_loc_1 in this._balancedObjects)
@@ -202,7 +202,7 @@ package com.ankamagames.jerakine.BalanceManager
 
         private function resetBalance() : void
         {
-            var _loc_1:BalancedObject = null;
+            var _loc_1:* = null;
             for each (_loc_1 in this._balancedObjects)
             {
                 

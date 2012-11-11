@@ -1,8 +1,9 @@
-package com.ankamagames.dofus.logic.game.common.frames
+﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.misc.lists.*;
+    import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
@@ -37,6 +38,7 @@ package com.ankamagames.dofus.logic.game.common.frames
 
         public function process(param1:Message) : Boolean
         {
+            var _loc_2:* = null;
             switch(true)
             {
                 case param1 is ExchangeMountStableErrorMessage:
@@ -45,7 +47,11 @@ package com.ankamagames.dofus.logic.game.common.frames
                 }
                 case param1 is ExchangeLeaveMessage:
                 {
-                    Kernel.getWorker().removeFrame(this);
+                    _loc_2 = param1 as ExchangeLeaveMessage;
+                    if (_loc_2.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
+                    {
+                        Kernel.getWorker().removeFrame(this);
+                    }
                     return true;
                 }
                 default:

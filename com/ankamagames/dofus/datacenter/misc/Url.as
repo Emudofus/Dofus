@@ -1,4 +1,4 @@
-package com.ankamagames.dofus.datacenter.misc
+﻿package com.ankamagames.dofus.datacenter.misc
 {
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.dofus.logic.connection.managers.*;
@@ -24,8 +24,8 @@ package com.ankamagames.dofus.datacenter.misc
 
         public function get variables() : Object
         {
-            var _loc_3:Array = null;
-            var _loc_4:String = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
             var _loc_1:* = new URLVariables();
             var _loc_2:* = this.param.split(",");
             for each (_loc_4 in _loc_2)
