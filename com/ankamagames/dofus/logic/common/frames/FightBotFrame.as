@@ -25,6 +25,7 @@
     import com.ankamagames.jerakine.entities.messages.*;
     import com.ankamagames.jerakine.handlers.messages.mouse.*;
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.pools.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.types.positions.*;
     import com.ankamagames.jerakine.utils.errors.*;
@@ -381,11 +382,11 @@
             }
             if (this._lastElemOver)
             {
-                _loc_12 = new MouseOutMessage(this._lastElemOver, new MouseEvent(MouseEvent.MOUSE_OUT));
+                _loc_12 = GenericPool.get(MouseOutMessage, this._lastElemOver, new MouseEvent(MouseEvent.MOUSE_OUT));
                 Kernel.getWorker().process(_loc_12);
             }
             var _loc_8:* = _loc_6[Math.floor(_loc_6.length * Math.random())];
-            var _loc_9:* = new MouseOverMessage(_loc_8, new MouseEvent(MouseEvent.MOUSE_OVER));
+            var _loc_9:* = GenericPool.get(MouseOverMessage, _loc_8, new MouseEvent(MouseEvent.MOUSE_OVER));
             Kernel.getWorker().process(_loc_9);
             this._lastElemOver = _loc_8;
             return;

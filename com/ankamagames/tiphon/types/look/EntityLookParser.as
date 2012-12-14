@@ -29,11 +29,12 @@
             var _loc_20:* = 0;
             var _loc_21:* = null;
             var _loc_22:* = null;
-            var _loc_23:* = null;
+            var _loc_23:* = 0;
             var _loc_24:* = null;
             var _loc_25:* = null;
-            var _loc_26:* = 0;
+            var _loc_26:* = null;
             var _loc_27:* = 0;
+            var _loc_28:* = 0;
             var _loc_4:* = new TiphonEntityLook();
             new TiphonEntityLook().lock();
             var _loc_5:* = CURRENT_FORMAT_VERSION;
@@ -129,20 +130,31 @@
                     _loc_20 = _loc_20 + 1;
                 }
                 _loc_19 = _loc_19.substr(0, (_loc_19.length - 1));
-                _loc_21 = _loc_19.split(",");
+                _loc_21 = [];
+                while (true)
+                {
+                    
+                    _loc_23 = _loc_19.indexOf("}");
+                    if (_loc_23 == -1)
+                    {
+                        break;
+                    }
+                    _loc_21.push(_loc_19.substr(0, (_loc_23 + 1)));
+                    _loc_19 = _loc_19.substr((_loc_23 + 1));
+                }
                 for each (_loc_22 in _loc_21)
                 {
                     
-                    _loc_23 = _loc_22.substring(0, _loc_22.indexOf("="));
-                    _loc_24 = _loc_22.substr((_loc_22.indexOf("=") + 1));
-                    _loc_25 = _loc_23.split("@");
-                    if (_loc_25.length != 2)
+                    _loc_24 = _loc_22.substring(0, _loc_22.indexOf("="));
+                    _loc_25 = _loc_22.substr((_loc_22.indexOf("=") + 1));
+                    _loc_26 = _loc_24.split("@");
+                    if (_loc_26.length != 2)
                     {
                         throw new Error("Malformed subentity binding in an Entity Look string.");
                     }
-                    _loc_26 = parseInt(_loc_25[0], _loc_6);
-                    _loc_27 = parseInt(_loc_25[1], _loc_6);
-                    _loc_4.addSubEntity(_loc_26, _loc_27, EntityLookParser.fromString(_loc_24, _loc_5, _loc_6));
+                    _loc_27 = parseInt(_loc_26[0], _loc_6);
+                    _loc_28 = parseInt(_loc_26[1], _loc_6);
+                    _loc_4.addSubEntity(_loc_27, _loc_28, EntityLookParser.fromString(_loc_25, _loc_5, _loc_6));
                 }
             }
             _loc_4.unlock(true);

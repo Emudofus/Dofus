@@ -455,7 +455,7 @@
                 _loc_4 = _loc_3 as IDisplayable;
                 if (_loc_4)
                 {
-                    _loc_4.remove();
+                    _loc_4.com.ankamagames.jerakine.entities.interfaces:IDisplayable::remove();
                 }
                 _loc_5 = _loc_3 as TiphonSprite;
                 if (_loc_5)

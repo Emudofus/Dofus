@@ -4,6 +4,7 @@
     import com.ankamagames.jerakine.handlers.messages.mouse.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.pools.*;
     import com.ankamagames.jerakine.utils.display.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import com.ankamagames.jerakine.utils.memory.*;
@@ -122,7 +123,7 @@
 
         private function onDoubleClick(event:MouseEvent) : void
         {
-            this._handler.process(new MouseDoubleClickMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseDoubleClickMessage, event.target, event));
             this._lastDoucleClick = getTimer();
             return;
         }// end function
@@ -138,37 +139,37 @@
             }
             else if (_loc_2 - this._lastSingleClick < DOUBLE_CLICK_DELAY)
             {
-                this._handler.process(new MouseDoubleClickMessage(InteractiveObject(event.target), event));
+                this._handler.process(GenericPool.get(MouseDoubleClickMessage, event.target, event));
                 this._lastDoucleClick = _loc_2;
             }
             else
             {
-                this._handler.process(new MouseClickMessage(InteractiveObject(event.target), event));
+                this._handler.process(GenericPool.get(MouseClickMessage, event.target, event));
             }
             return;
         }// end function
 
         private function onMouseWheel(event:MouseEvent) : void
         {
-            this._handler.process(new MouseWheelMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseWheelMessage, event.target, event));
             return;
         }// end function
 
         private function onMouseOver(event:MouseEvent) : void
         {
-            this._handler.process(new MouseOverMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseOverMessage, event.target, event));
             return;
         }// end function
 
         private function onMouseOut(event:MouseEvent) : void
         {
-            this._handler.process(new MouseOutMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseOutMessage, event.target, event));
             return;
         }// end function
 
         private function onMiddleClick(event:MouseEvent) : void
         {
-            this._handler.process(new MouseMiddleClickMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseMiddleClickMessage, event.target, event));
             return;
         }// end function
 
@@ -176,17 +177,17 @@
         {
             if (this._lastTarget != null && this._lastTarget.object != event.target)
             {
-                this._handler.process(new MouseRightClickOutsideMessage(InteractiveObject(this._lastTarget.object), event));
+                this._handler.process(GenericPool.get(MouseRightClickOutsideMessage, this._lastTarget.object, event));
             }
             this._lastTarget = new WeakReference(event.target);
-            this._handler.process(new MouseRightClickMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseRightClickMessage, event.target, event));
             return;
         }// end function
 
         private function onMouseDown(event:MouseEvent) : void
         {
             this._lastTarget = new WeakReference(event.target);
-            this._handler.process(new MouseDownMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseDownMessage, event.target, event));
             return;
         }// end function
 
@@ -194,10 +195,10 @@
         {
             if (this._lastTarget != null && this._lastTarget.object != event.target)
             {
-                this._handler.process(new MouseReleaseOutsideMessage(InteractiveObject(this._lastTarget.object), event));
+                this._handler.process(GenericPool.get(MouseReleaseOutsideMessage, this._lastTarget.object, event));
             }
             FocusHandler.getInstance().setFocus(InteractiveObject(event.target));
-            this._handler.process(new MouseUpMessage(InteractiveObject(event.target), event));
+            this._handler.process(GenericPool.get(MouseUpMessage, event.target, event));
             return;
         }// end function
 
@@ -219,7 +220,7 @@
             {
                 this._appleKeyboardEvent = null;
             }
-            this._handler.process(new KeyboardKeyDownMessage(FocusHandler.getInstance().getFocus(), event));
+            this._handler.process(GenericPool.get(KeyboardKeyDownMessage, FocusHandler.getInstance().getFocus(), event));
             return;
         }// end function
 
@@ -229,11 +230,11 @@
             {
                 if (event.keyCode == 15 && this._appleKeyboardEvent)
                 {
-                    this._handler.process(new KeyboardKeyUpMessage(FocusHandler.getInstance().getFocus(), this._appleKeyboardEvent));
+                    this._handler.process(GenericPool.get(KeyboardKeyUpMessage, FocusHandler.getInstance().getFocus(), this._appleKeyboardEvent));
                 }
                 this._appleDown = false;
             }
-            this._handler.process(new KeyboardKeyUpMessage(FocusHandler.getInstance().getFocus(), event));
+            this._handler.process(GenericPool.get(KeyboardKeyUpMessage, FocusHandler.getInstance().getFocus(), event));
             return;
         }// end function
 

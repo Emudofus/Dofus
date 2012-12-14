@@ -1,7 +1,11 @@
 ﻿package com.ankamagames.dofus.logic.common.managers
 {
+    import com.ankamagames.berilia.enums.*;
     import com.ankamagames.berilia.managers.*;
+    import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.dofus.misc.lists.*;
+    import com.ankamagames.jerakine.data.*;
+    import flash.geom.*;
     import flash.net.*;
 
     public class HyperlinkURLManager extends Object
@@ -27,6 +31,14 @@
         public static function chatWarning() : void
         {
             KernelEventsManager.getInstance().processCallback(ChatHookList.ChatWarning);
+            return;
+        }// end function
+
+        public static function rollOver(param1:int, param2:int, param3:String, param4:uint, param5:String) : void
+        {
+            var _loc_6:* = new Rectangle(param1, param2, 10, 10);
+            var _loc_7:* = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.url"));
+            TooltipManager.show(_loc_7, _loc_6, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
             return;
         }// end function
 

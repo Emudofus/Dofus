@@ -447,7 +447,7 @@
                         ErrorManager.addError("Une erreur est survenu dans la fonction unload() de l\'interface " + ui.name + " du module " + (ui.uiModule ? (ui.uiModule.id) : ("???")));
                     }
                 }
-                if (ui.transmitFocus && (!StageShareManager.stage.focus || !(StageShareManager.stage.focus is TextField)))
+                if (ui.transmitFocus && (!StageShareManager.stage.focus || !(StageShareManager.stage.focus is TextField || StageShareManager.stage.focus is ChatTextContainer)))
                 {
                     StageShareManager.stage.focus = topUi == null ? (StageShareManager.stage) : (InteractiveObject(topUi));
                 }
@@ -582,7 +582,7 @@
                         topUi = u;
                     }
                 }
-                if (!StageShareManager.stage.focus || ui.transmitFocus && !(StageShareManager.stage.focus is TextField))
+                if (!StageShareManager.stage.focus || ui.transmitFocus && !(StageShareManager.stage.focus is TextField || StageShareManager.stage.focus is ChatTextContainer))
                 {
                     StageShareManager.stage.focus = topUi == null ? (StageShareManager.stage) : (InteractiveObject(topUi));
                 }

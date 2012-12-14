@@ -1,5 +1,8 @@
 ﻿package com.ankamagames.dofus.console.debug
 {
+    import com.ankamagames.berilia.managers.*;
+    import com.ankamagames.berilia.types.data.*;
+    import com.ankamagames.dofus.datacenter.sounds.*;
     import com.ankamagames.dofus.kernel.sound.*;
     import com.ankamagames.dofus.kernel.sound.manager.*;
     import com.ankamagames.jerakine.console.*;
@@ -120,6 +123,20 @@
                     RegConnectionManager.getInstance().send(ProtocolEnum.CLEAR_CACHE);
                     break;
                 }
+                case "adduisoundelement":
+                {
+                    if (param3.length < 4)
+                    {
+                        param1.output("4 parameters needed");
+                        return;
+                    }
+                    if (!UiSoundManager.getInstance().getUi(param3[0]))
+                    {
+                        UiSoundManager.getInstance().registerUi(param3[0]);
+                    }
+                    UiSoundManager.getInstance().registerUiElement(param3[0], param3[1], param3[2], param3[3]);
+                    break;
+                }
                 default:
                 {
                     break;
@@ -150,7 +167,64 @@
 
         public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
         {
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            switch(param1)
+            {
+                case "adduisoundelement":
+                {
+                    if (param2 == 0)
+                    {
+                        return this.getUiList(param3 && param3.length ? (param3[0]) : (null));
+                    }
+                    if (param2 == 2)
+                    {
+                        _loc_4 = param3 && param3.length > 2 ? (param3[2].toLowerCase()) : ("");
+                        _loc_5 = [];
+                        _loc_6 = SoundUiHook.getSoundUiHooks();
+                        for each (_loc_7 in _loc_6)
+                        {
+                            
+                            if (_loc_7.name.toLowerCase().indexOf(_loc_4) != -1)
+                            {
+                                _loc_5.push(_loc_7.name);
+                            }
+                        }
+                        return _loc_5;
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
             return [];
+        }// end function
+
+        private function getUiList(param1:String = null) : Array
+        {
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            param1 = param1.toLowerCase();
+            var _loc_2:* = [];
+            var _loc_3:* = UiModuleManager.getInstance().getModules();
+            for each (_loc_4 in _loc_3)
+            {
+                
+                for each (_loc_5 in _loc_4.uis)
+                {
+                    
+                    if (!param1 || _loc_5.name.toLowerCase().indexOf(param1) != -1)
+                    {
+                        _loc_2.push(_loc_5.name);
+                    }
+                }
+            }
+            _loc_2.sort();
+            return _loc_2;
         }// end function
 
         private function getParams(param1:Array, param2:Array) : Array

@@ -1,9 +1,9 @@
 ﻿package com.ankamagames.dofus.datacenter.items
 {
     import __AS3__.vec.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.items.criterion.*;
     import com.ankamagames.dofus.datacenter.jobs.*;
-    import com.ankamagames.dofus.datacenter.misc.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;

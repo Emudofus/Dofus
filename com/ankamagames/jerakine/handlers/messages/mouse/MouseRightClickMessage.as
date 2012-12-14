@@ -6,10 +6,18 @@
     public class MouseRightClickMessage extends MouseMessage
     {
 
-        public function MouseRightClickMessage(param1:InteractiveObject, param2:MouseEvent)
+        public function MouseRightClickMessage()
         {
-            super(param1, param2);
             return;
+        }// end function
+
+        public static function create(param1:InteractiveObject, param2:MouseEvent, param3:MouseMessage = null) : MouseRightClickMessage
+        {
+            if (!param3)
+            {
+                param3 = new MouseRightClickMessage;
+            }
+            return MouseMessage.create(param1, param2, param3) as MouseRightClickMessage;
         }// end function
 
     }

@@ -72,22 +72,25 @@
             this.processInvokeArgs();
             if (this._dispatchModuleHook)
             {
-                _loc_1 = OptionManager.getOptionManager("dofus")["legalAgreementEula"];
-                _loc_2 = OptionManager.getOptionManager("dofus")["legalAgreementTou"];
-                _loc_3 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.eula").length;
-                _loc_4 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
-                _loc_5 = new Array();
-                if (_loc_1 != _loc_3)
+                if (!AirScanner.isStreamingVersion())
                 {
-                    _loc_5.push("eula");
-                }
-                if (_loc_2 != _loc_4)
-                {
-                    _loc_5.push("tou");
-                }
-                if (_loc_5.length > 0)
-                {
-                    KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired, _loc_5);
+                    _loc_1 = OptionManager.getOptionManager("dofus")["legalAgreementEula"];
+                    _loc_2 = OptionManager.getOptionManager("dofus")["legalAgreementTou"];
+                    _loc_3 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.eula").length;
+                    _loc_4 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + (I18n.getUiText("ui.legal.tou1") + I18n.getUiText("ui.legal.tou2")).length;
+                    _loc_5 = new Array();
+                    if (_loc_1 != _loc_3)
+                    {
+                        _loc_5.push("eula");
+                    }
+                    if (_loc_2 != _loc_4)
+                    {
+                        _loc_5.push("tou");
+                    }
+                    if (_loc_5.length > 0)
+                    {
+                        KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired, _loc_5);
+                    }
                 }
                 KernelEventsManager.getInstance().processCallback(HookList.AuthentificationStart);
             }
@@ -155,6 +158,9 @@
             var _loc_39:* = null;
             var _loc_40:* = 0;
             var _loc_41:* = null;
+            var _loc_42:* = null;
+            var _loc_43:* = null;
+            var _loc_44:* = null;
             switch(true)
             {
                 case param1 is LoginValidationAction:
@@ -297,6 +303,21 @@
                     if (PlayerManager.getInstance().hasRights)
                     {
                         PartManager.getInstance().checkAndDownload("admin");
+                    }
+                    if (PlayerManager.getInstance().hasRights)
+                    {
+                        PartManager.getInstance().checkAndDownload("admin");
+                        _loc_42 = OptionManager.getOptionManager("dofus")["legalAgreementModsTou"];
+                        _loc_43 = XmlConfig.getInstance().getEntry("config.lang.current") + "#" + I18n.getUiText("ui.legal.modstou").length;
+                        _loc_44 = new Array();
+                        if (_loc_42 != _loc_43)
+                        {
+                            _loc_44.push("modstou");
+                        }
+                        if (_loc_44.length > 0)
+                        {
+                            KernelEventsManager.getInstance().processCallback(HookList.AgreementsRequired, _loc_44);
+                        }
                     }
                     StoreUserDataManager.getInstance().savePlayerData();
                     Kernel.getWorker().removeFrame(this);

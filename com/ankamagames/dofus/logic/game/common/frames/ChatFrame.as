@@ -15,7 +15,6 @@
     import com.ankamagames.dofus.datacenter.notifications.*;
     import com.ankamagames.dofus.datacenter.npcs.*;
     import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.internalDatacenter.communication.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.kernel.*;
@@ -59,7 +58,6 @@
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.misc.*;
-    import com.ankamagames.jerakine.utils.system.*;
     import flash.utils.*;
 
     public class ChatFrame extends Object implements Frame
@@ -67,8 +65,9 @@
         private var _aChannels:Array;
         private var _aDisallowedChannels:Array;
         private var _aMessagesByChannel:Array;
+        private var _aParagraphesByChannel:Array;
         private var _msgUId:uint = 0;
-        private var _maxMessagesStored:uint = 100;
+        private var _maxMessagesStored:uint = 40;
         private var _aCensoredWords:Dictionary;
         private var _smileyMood:int = -1;
         private var _options:ChatOptions;
@@ -112,15 +111,18 @@
             this._aChannels = ChatChannel.getChannels();
             this._aDisallowedChannels = new Array();
             this._aMessagesByChannel = new Array();
+            this._aParagraphesByChannel = new Array();
             this._aSmilies = new Array();
             this._aCensoredWords = new Dictionary();
             for (_loc_1 in this._aChannels)
             {
                 
                 this._aMessagesByChannel[this._aChannels[_loc_1].id] = new Array();
+                this._aParagraphesByChannel[this._aChannels[_loc_1].id] = new Array();
             }
             this._aMessagesByChannel[RED_CHANNEL_ID] = new Array();
-            ConsolesManager.registerConsole("chat", new ConsoleHandler(Kernel.getWorker(), false), new ChatConsoleInstructionRegistrar());
+            this._aParagraphesByChannel[RED_CHANNEL_ID] = new Array();
+            ConsolesManager.registerConsole("chat", new ConsoleHandler(Kernel.getWorker(), false, true), new ChatConsoleInstructionRegistrar());
             for each (_loc_2 in Smiley.getSmileys())
             {
                 
@@ -207,6 +209,12 @@
             return this._aSmilies;
         }// end function
 
+        public function set maxMessagesStored(param1:int) : void
+        {
+            this._maxMessagesStored = param1;
+            return;
+        }// end function
+
         public function get maxMessagesStored() : int
         {
             return this._maxMessagesStored;
@@ -245,6 +253,8 @@
             var newContent:Array;
             var thinking:Boolean;
             var cscwomsg:ChatServerCopyWithObjectMessage;
+            var numItemc:int;
+            var listItemc:Vector.<ItemWrapper>;
             var cscmsg:ChatServerCopyMessage;
             var timsg:TextInformationMessage;
             var param:Array;
@@ -308,6 +318,8 @@
             var objectsAndExp:String;
             var nmmsg:MailStatusMessage;
             var msmsg:MailStatusMessage;
+            var chans:Array;
+            var indTabChan:int;
             var charas:CharacterCharacteristicsInformations;
             var infos:CharacterBaseInformations;
             var variables:Array;
@@ -340,6 +352,7 @@
             var tooltipContent:String;
             var thinkBubble:ThinkBubble;
             var bubble:ChatBubble;
+            var oic:ObjectItem;
             var iTimsg:*;
             var channel:uint;
             var timestamp:Number;
@@ -490,6 +503,15 @@
                             
                             variable = _loc_4[_loc_3];
                             content = content.replace(new RegExp(variable, "g"), guilde);
+                        }
+                        variables = I18n.getUiText("ui.chat.variable.achievement").split(",");
+                        var _loc_3:* = 0;
+                        var _loc_4:* = variables;
+                        while (_loc_4 in _loc_3)
+                        {
+                            
+                            variable = _loc_4[_loc_3];
+                            content = content.replace(new RegExp(variable, "g"), I18n.getUiText("ui.chat.variable.achievementResult", [PlayedCharacterManager.getInstance().achievementPoints, PlayedCharacterManager.getInstance().achievementPercent]));
                         }
                     }
                     charTempL = String.fromCharCode(2);
@@ -739,19 +761,19 @@
                 case msg is ChatServerCopyWithObjectMessage:
                 {
                     cscwomsg = msg as ChatServerCopyWithObjectMessage;
-                    numItem = cscwomsg.objects.length;
-                    listItem = new Vector.<ItemWrapper>(numItem);
+                    numItemc = cscwomsg.objects.length;
+                    listItemc = new Vector.<ItemWrapper>(numItemc);
                     i;
-                    while (i < numItem)
+                    while (i < numItemc)
                     {
                         
-                        oi = cscwomsg.objects[i];
-                        listItem[i] = ItemWrapper.create(oi.position, oi.objectUID, oi.objectGID, oi.quantity, oi.effects);
+                        oic = cscwomsg.objects[i];
+                        listItemc[i] = ItemWrapper.create(oic.position, oic.objectUID, oic.objectGID, oic.quantity, oic.effects, false);
                         i = (i + 1);
                     }
                     content = this.checkCensored(cscwomsg.content, cscwomsg.channel, PlayerManager.getInstance().accountId, PlayedCharacterManager.getInstance().infos.name)[0];
-                    this.saveMessage(cscwomsg.channel, cscwomsg.content, content, this.getRealTimestamp(cscwomsg.timestamp), cscwomsg.fingerprint, 0, "", listItem, cscwomsg.receiverName, cscwomsg.receiverId);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.ChatServerCopyWithObject, cscwomsg.channel, cscwomsg.receiverName, content, this.getRealTimestamp(cscwomsg.timestamp), cscwomsg.fingerprint, cscwomsg.receiverId, listItem);
+                    this.saveMessage(cscwomsg.channel, cscwomsg.content, content, this.getRealTimestamp(cscwomsg.timestamp), cscwomsg.fingerprint, 0, "", listItemc, cscwomsg.receiverName, cscwomsg.receiverId);
+                    KernelEventsManager.getInstance().processCallback(ChatHookList.ChatServerCopyWithObject, cscwomsg.channel, cscwomsg.receiverName, content, this.getRealTimestamp(cscwomsg.timestamp), cscwomsg.fingerprint, cscwomsg.receiverId, listItemc);
                     return true;
                 }
                 case msg is ChatServerCopyMessage:
@@ -827,10 +849,6 @@
                         }
                         this.saveMessage(channel, null, msgContent, timestamp);
                         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, msgContent, channel, timestamp, false);
-                        if (AirScanner.hasAir() && timsg.msgId == 224)
-                        {
-                            KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.MEMBER_CONNECTION, [params[0]]);
-                        }
                     }
                     else
                     {
@@ -1127,19 +1145,21 @@
                     notice = "{player," + bwimsg.characterName + "}";
                     if (bwimsg.position == GameHierarchyEnum.MODERATOR)
                     {
-                        notice = notice + (" (<b><font color=\'" + XmlConfig.getInstance().getEntry("colors.hierarchy.moderator").replace("0x", "#") + "\'>" + I18n.getUiText("ui.common.moderator") + "</font></b>)");
+                        notice = notice + ("(" + HtmlManager.addTag(I18n.getUiText("ui.common.moderator"), HtmlManager.SPAN, {color:XmlConfig.getInstance().getEntry("colors.hierarchy.moderator"), bold:true}) + ")");
                     }
                     else if (bwimsg.position == GameHierarchyEnum.GAMEMASTER_PADAWAN)
                     {
-                        notice = notice + (" (<b><font color=\'" + XmlConfig.getInstance().getEntry("colors.hierarchy.gamemaster_padawan").replace("0x", "#") + "\'>" + I18n.getUiText("ui.common.gameMasterAssistant") + "</font></b>)");
+                        notice = notice + ("(" + HtmlManager.addTag(I18n.getUiText("ui.common.gameMasterAssistant"), HtmlManager.SPAN, {color:XmlConfig.getInstance().getEntry("colors.hierarchy.gamemaster_padawan"), bold:true}) + ")");
                     }
                     else if (bwimsg.position == GameHierarchyEnum.GAMEMASTER)
                     {
-                        notice = notice + (" (<b><font color=\'" + XmlConfig.getInstance().getEntry("colors.hierarchy.gamemaster").replace("0x", "#") + "\'>" + I18n.getUiText("ui.common.gameMaster") + "</font></b>)");
+                        notice = notice + ("(" + HtmlManager.addTag(I18n.getUiText("ui.common.gameMasterAssistant"), HtmlManager.SPAN, {color:XmlConfig.getInstance().getEntry("colors.hierarchy.gamemaster_padawan"), bold:true}) + ")");
                     }
                     else if (bwimsg.position == GameHierarchyEnum.ADMIN)
                     {
-                        notice = notice + (" (<b><font color=\'" + XmlConfig.getInstance().getEntry("colors.hierarchy.administrator").replace("0x", "#") + "\'>" + I18n.getUiText("ui.common.administrator") + "</font></b>)");
+                        notice = notice + "(";
+                        notice = notice + HtmlManager.addTag(I18n.getUiText("ui.common.administrator"), HtmlManager.SPAN, {color:XmlConfig.getInstance().getEntry("colors.hierarchy.administrator"), bold:true});
+                        notice = notice + ")";
                     }
                     text = I18n.getUiText("ui.common.whois", [bwimsg.accountNickname, notice, areaName]);
                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, text, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, this.getTimestamp());
@@ -1247,6 +1267,20 @@
                     KernelEventsManager.getInstance().processCallback(ChatHookList.MailStatus, false, msmsg.unread, msmsg.total);
                     break;
                 }
+                case msg is ClearChatAction:
+                {
+                    chans = (msg as ClearChatAction).channel;
+                    var _loc_3:* = 0;
+                    var _loc_4:* = chans;
+                    while (_loc_4 in _loc_3)
+                    {
+                        
+                        indTabChan = _loc_4[_loc_3];
+                        this._aMessagesByChannel[indTabChan] = new Array();
+                        this._aParagraphesByChannel[indTabChan] = new Array();
+                    }
+                    return true;
+                }
                 default:
                 {
                     break;
@@ -1268,6 +1302,11 @@
         public function getMessages() : Array
         {
             return this._aMessagesByChannel;
+        }// end function
+
+        public function getParagraphes() : Array
+        {
+            return this._aParagraphesByChannel;
         }// end function
 
         public function get options() : ChatOptions
@@ -1386,7 +1425,6 @@
                 while (_loc_17 < _loc_16)
                 {
                     
-                    this._aMessagesByChannel[param1].shift();
                     _loc_15 = _loc_15 + 1;
                     _loc_17 = _loc_17 + 1;
                 }
@@ -1395,6 +1433,30 @@
             var _loc_19:* = this._msgUId + 1;
             _loc_18._msgUId = _loc_19;
             KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage, param1, _loc_15);
+            return;
+        }// end function
+
+        public function addParagraphToHistory(param1:int, param2:Object) : void
+        {
+            if (param2 != null)
+            {
+                param2.id = this._msgUId;
+                this._aParagraphesByChannel[param1].push(param2);
+            }
+            return;
+        }// end function
+
+        public function removeLinesFromHistory(param1:int, param2:int) : void
+        {
+            var _loc_3:* = 0;
+            _loc_3 = 0;
+            while (_loc_3 < param1)
+            {
+                
+                this._aMessagesByChannel[param2].shift();
+                this._aParagraphesByChannel[param2].shift();
+                _loc_3++;
+            }
             return;
         }// end function
 
@@ -1526,7 +1588,7 @@
                 _loc_31 = this.needToFormateUrl(_loc_12);
                 if (_loc_31.formate)
                 {
-                    _loc_30 = _loc_30 + ("[<a href=\'event:chatLinkRelease," + _loc_31.url + "," + param3 + "," + param4 + "\'><u><b>" + _loc_31.url + "</b></u></a>]");
+                    _loc_30 = _loc_30 + HtmlManager.addLink("[" + _loc_31.url + "]", "event:chatLinkRelease," + _loc_31.url + "," + param3 + "," + param4, {bold:true});
                     _loc_8 = true;
                 }
                 if (_loc_30 == "")
@@ -1541,7 +1603,7 @@
             if (_loc_13 > 0)
             {
                 _loc_32 = I18n.getUiText("ui.popup.warning");
-                _loc_14[0] = _loc_5 + " [<font color=\"" + XmlConfig.getInstance().getEntry("colors.hyperlink.warning").replace("0x", "#") + "\"><u><b><a href=\'event:chatWarning\'>" + I18n.getUiText("ui.popup.warning") + "</a></b></u></font>]";
+                _loc_14[0] = _loc_5 + " [" + HtmlManager.addLink(I18n.getUiText("ui.popup.warning"), "event:chatWarning", {color:XmlConfig.getInstance().getEntry("colors.hyperlink.warning")}) + "]";
                 _loc_14[1] = _loc_5 + " [" + _loc_32 + "]";
             }
             else
@@ -1615,8 +1677,6 @@ import com.ankamagames.dofus.datacenter.notifications.*;
 import com.ankamagames.dofus.datacenter.npcs.*;
 
 import com.ankamagames.dofus.datacenter.world.*;
-
-import com.ankamagames.dofus.externalnotification.enums.*;
 
 import com.ankamagames.dofus.internalDatacenter.communication.*;
 
@@ -1703,8 +1763,6 @@ import com.ankamagames.jerakine.messages.*;
 import com.ankamagames.jerakine.types.*;
 
 import com.ankamagames.jerakine.utils.misc.*;
-
-import com.ankamagames.jerakine.utils.system.*;
 
 import flash.utils.*;
 
@@ -1786,13 +1844,13 @@ class Notification extends Object
         return;
     }// end function
 
-    public function setTimer(param1:uint, param2:Boolean = false, param3:Boolean = false) : void
+    public function setTimer(param1:uint, param2:Boolean = false, param3:Boolean = false, param4:Boolean = true) : void
     {
         this._duration = param1 * 1000;
         this.startTime = 0;
         this.pauseOnOver = param2;
         this.blockCallbackOnTimerEnds = param3;
-        this.notifyUser = true;
+        this.notifyUser = param4;
         return;
     }// end function
 
@@ -1828,8 +1886,6 @@ import com.ankamagames.dofus.datacenter.notifications.*;
 import com.ankamagames.dofus.datacenter.npcs.*;
 
 import com.ankamagames.dofus.datacenter.world.*;
-
-import com.ankamagames.dofus.externalnotification.enums.*;
 
 import com.ankamagames.dofus.internalDatacenter.communication.*;
 
@@ -1917,19 +1973,19 @@ import com.ankamagames.jerakine.types.*;
 
 import com.ankamagames.jerakine.utils.misc.*;
 
-import com.ankamagames.jerakine.utils.system.*;
-
 import flash.utils.*;
 
 class Smiley extends Object
 {
-    public var pictoId:int;
+    public var pictoId:String;
+    public var triggers:Vector.<String>;
     public var position:int;
+    public var currentTrigger:String;
 
-    function Smiley(param1:int, param2:int) : void
+    function Smiley(param1:String) : void
     {
         this.pictoId = param1;
-        this.position = param2;
+        this.position = -1;
         return;
     }// end function
 

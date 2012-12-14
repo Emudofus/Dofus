@@ -88,7 +88,7 @@
                     }
                 }
                 TrapZoneTile(this._aZoneTile[_loc_6]).drawStroke(_loc_9, _loc_11, _loc_10, _loc_12);
-                TrapZoneTile(this._aZoneTile[_loc_6]).display();
+                TrapZoneTile(this._aZoneTile[_loc_6]).display(this.strata);
                 _loc_6++;
             }
             while (_loc_6 < this._aZoneTile.length)

@@ -70,7 +70,10 @@
                 while (_loc_2 < this.listSprites.length)
                 {
                     
-                    this.listSprites[_loc_2].visible = param1;
+                    if (this.listSprites[_loc_2] != null)
+                    {
+                        this.listSprites[_loc_2].visible = param1;
+                    }
                     _loc_2 = _loc_2 + 1;
                 }
             }

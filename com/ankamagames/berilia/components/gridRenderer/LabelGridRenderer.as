@@ -64,7 +64,7 @@
             return;
         }// end function
 
-        public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
+        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
         {
             var _loc_5:* = new Label();
             new Label().mouseEnabled = true;
@@ -86,17 +86,14 @@
             {
                 _loc_5.css = this._cssUri;
             }
-            if (param4)
-            {
-                this.updateBackground(_loc_5, param2, param3);
-            }
+            this.updateBackground(_loc_5, param2, param3);
             _loc_5.finalize();
             _loc_5.addEventListener(MouseEvent.MOUSE_OVER, this.onRollOver);
             _loc_5.addEventListener(MouseEvent.MOUSE_OUT, this.onRollOut);
             return _loc_5;
         }// end function
 
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
+        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
         {
             var _loc_6:* = null;
             if (param3 is Label)
@@ -110,16 +107,18 @@
                 {
                     _loc_6.text = param1.label;
                 }
-                if (param5)
-                {
-                    this.updateBackground(_loc_6, param2, param4);
-                }
+                this.updateBackground(_loc_6, param2, param4);
             }
             else
             {
                 this._log.warn("Can\'t update, " + param3.name + " is not a Label component");
             }
             return;
+        }// end function
+
+        public function getDataLength(param1, param2:Boolean) : uint
+        {
+            return 1;
         }// end function
 
         public function remove(param1:DisplayObject) : void

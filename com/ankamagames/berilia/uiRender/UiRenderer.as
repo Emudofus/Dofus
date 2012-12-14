@@ -166,7 +166,13 @@
             return;
         }// end function
 
-        private function makeChilds(param1:Array, param2:GraphicContainer) : void
+        public function postInit(param1:UiRootContainer) : void
+        {
+            this._scUi = param1;
+            return;
+        }// end function
+
+        public function makeChilds(param1:Array, param2:GraphicContainer) : void
         {
             var ie:InstanceEvent;
             var ge:GraphicElement;
@@ -347,7 +353,7 @@
                 {
                     gc.bgColor = parseInt(LangManager.getInstance().replaceKey(be.properties["bgColor"]));
                 }
-                else if (this._uiDef.debug)
+                else if (this._uiDef && this._uiDef.debug)
                 {
                     gc.bgColor = Math.round(Math.random() * 16777215);
                 }
@@ -420,6 +426,7 @@
                 }
                 _loc_2[_loc_3] = param1.properties[_loc_3];
             }
+            InternalComponentAccess.setProperty(_loc_2, "_uiRootContainer", this._scUi);
             return _loc_2 as Sprite;
         }// end function
 
@@ -429,6 +436,7 @@
             var _loc_4:* = null;
             var _loc_2:* = getDefinitionByName(param1.className) as Class;
             _loc_3 = new _loc_2 as UIComponent;
+            InternalComponentAccess.setProperty(_loc_3, "_uiRootContainer", this._scUi);
             for (_loc_4 in param1.properties)
             {
                 

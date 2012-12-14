@@ -23,33 +23,32 @@
 
         public static function getLogger(param1:String) : Logger
         {
-            var xmlLoader:URLLoader;
-            var logger:LogLogger;
-            var category:* = param1;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             if (!_initializing)
             {
                 _initializing = true;
                 _tempTarget = new TemporaryBufferTarget();
                 addTarget(_tempTarget);
-                xmlLoader = new URLLoader();
-                xmlLoader.addEventListener(Event.COMPLETE, completeHandler);
-                xmlLoader.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-                xmlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+                _loc_2 = new URLLoader();
+                _loc_2.addEventListener(Event.COMPLETE, completeHandler);
+                _loc_2.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+                _loc_2.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
                 try
                 {
-                    xmlLoader.load(new URLRequest("log4as.xml"));
+                    _loc_2.load(new URLRequest("log4as.xml"));
                 }
                 catch (e:Error)
                 {
                 }
             }
-            if (_loggers[category] != null)
+            if (_loggers[param1] != null)
             {
-                return _loggers[category];
+                return _loggers[param1];
             }
-            logger = new LogLogger(category);
-            _loggers[category] = logger;
-            return logger;
+            _loc_3 = new LogLogger(param1);
+            _loggers[param1] = _loc_3;
+            return _loc_3;
         }// end function
 
         public static function addTarget(param1:LoggingTarget) : void

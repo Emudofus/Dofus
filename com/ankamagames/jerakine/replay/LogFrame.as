@@ -125,8 +125,7 @@
 
         public function process(param1:Message) : Boolean
         {
-            var o:DisplayObject;
-            var msg:* = param1;
+            var _loc_2:* = null;
             if (!_logEnable)
             {
                 return false;
@@ -135,35 +134,35 @@
             {
                 switch(true)
                 {
-                    case msg is INetworkMessage:
+                    case param1 is INetworkMessage:
                     {
-                        this._log(LogTypeEnum.NETWORK_IN, msg);
+                        this._log(LogTypeEnum.NETWORK_IN, param1);
                         break;
                     }
-                    case msg is ILogableMessage:
+                    case param1 is ILogableMessage:
                     {
-                        this._log(LogTypeEnum.MESSAGE, msg);
+                        this._log(LogTypeEnum.MESSAGE, param1);
                         break;
                     }
-                    case msg is MouseMessage:
+                    case param1 is MouseMessage:
                     {
-                        if (MouseMessage(msg).target is ICustomUnicNameGetter)
+                        if (MouseMessage(param1).target is ICustomUnicNameGetter)
                         {
-                            this._log(LogTypeEnum.MOUSE, new MouseInteraction(ICustomUnicNameGetter(MouseMessage(msg).target).customUnicName, getQualifiedClassName(msg), MouseMessage(msg).mouseEvent.stageX, MouseMessage(msg).mouseEvent.stageY));
+                            this._log(LogTypeEnum.MOUSE, new MouseInteraction(ICustomUnicNameGetter(MouseMessage(param1).target).customUnicName, getQualifiedClassName(param1), MouseMessage(param1).mouseEvent.stageX, MouseMessage(param1).mouseEvent.stageY));
                         }
                         else
                         {
-                            o = MouseMessage(msg).target;
-                            if (o != null)
+                            _loc_2 = MouseMessage(param1).target;
+                            if (_loc_2 != null)
                             {
-                                while (o.parent && !(o is ICustomUnicNameGetter))
+                                while (_loc_2.parent && !(_loc_2 is ICustomUnicNameGetter))
                                 {
                                     
-                                    o = o.parent;
+                                    _loc_2 = _loc_2.parent;
                                 }
-                                if (o is ICustomUnicNameGetter)
+                                if (_loc_2 is ICustomUnicNameGetter)
                                 {
-                                    this._log(LogTypeEnum.MOUSE, new MouseInteraction(ICustomUnicNameGetter(o).customUnicName, getQualifiedClassName(msg), MouseMessage(msg).mouseEvent.stageX, MouseMessage(msg).mouseEvent.stageY));
+                                    this._log(LogTypeEnum.MOUSE, new MouseInteraction(ICustomUnicNameGetter(_loc_2).customUnicName, getQualifiedClassName(param1), MouseMessage(param1).mouseEvent.stageX, MouseMessage(param1).mouseEvent.stageY));
                                 }
                             }
                         }

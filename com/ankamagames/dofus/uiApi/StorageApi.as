@@ -7,6 +7,8 @@
     import com.ankamagames.dofus.datacenter.livingObjects.*;
     import com.ankamagames.dofus.datacenter.mounts.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
+    import com.ankamagames.dofus.kernel.*;
+    import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;
     import com.ankamagames.dofus.network.enums.*;
@@ -229,6 +231,18 @@
         {
             InventoryManager.getInstance().bankInventory.releaseHooks();
             return;
+        }// end function
+
+        public static function dracoTurkyInventoryWeight() : uint
+        {
+            var _loc_1:* = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+            return _loc_1.inventoryWeight;
+        }// end function
+
+        public static function dracoTurkyMaxInventoryWeight() : uint
+        {
+            var _loc_1:* = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+            return _loc_1.inventoryMaxWeight;
         }// end function
 
         public static function getStorageTypes(param1:int) : Array

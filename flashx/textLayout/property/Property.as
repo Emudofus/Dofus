@@ -27,7 +27,7 @@
         public static const UPPER_LIMIT:String = "upperLimit";
         public static const ALL_LIMITS:String = "allLimits";
         static const nullStyleObject:Object = new Object();
-        private static var prototypeFactory:Function = @%@function ()@%@28355@%@;
+        private static var prototypeFactory:Function = @%@function ()@%@29387@%@;
 
         public function Property(param1:String, param2, param3:Boolean, param4:Vector.<String>)
         {

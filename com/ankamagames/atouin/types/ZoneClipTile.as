@@ -173,7 +173,7 @@
                     this.x = _loc_9.x + _loc_9.width / 2;
                     this.y = _loc_9.y + _loc_9.height / 2;
                     no_z_render_strata.addChild(this);
-                    if (!Atouin.getInstance().selectionContainer.contains(no_z_render_strata))
+                    if (Atouin.getInstance().selectionContainer != null && !Atouin.getInstance().selectionContainer.contains(no_z_render_strata))
                     {
                         Atouin.getInstance().selectionContainer.addChildAt(no_z_render_strata, 0);
                     }

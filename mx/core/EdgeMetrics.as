@@ -7,7 +7,7 @@
         public var left:Number;
         public var right:Number;
         public var top:Number;
-        static const VERSION:String = "4.1.0.16076";
+        static const VERSION:String = "4.6.0.23201";
         public static const EMPTY:EdgeMetrics = new EdgeMetrics(0, 0, 0, 0);
 
         public function EdgeMetrics(param1:Number = 0, param2:Number = 0, param3:Number = 0, param4:Number = 0)

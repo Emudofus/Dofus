@@ -66,6 +66,12 @@
 
         public function Dofus()
         {
+            var r:Number;
+            var mainWindow:NativeWindow;
+            var chromeWidth:Number;
+            var chromeHeight:Number;
+            var clientDimentionSo:CustomSharedObject;
+            var osId:String;
             var stage:* = this.stage;
             if (!stage)
             {
@@ -77,32 +83,51 @@
                 AirScanner.init(false);
             }
             _self = this;
-            var r:* = stage.stageWidth / stage.stageHeight;
-            var clientDimentionSo:* = CustomSharedObject.getLocal("clientData");
-            if (clientDimentionSo.data != null && clientDimentionSo.data.displayState == NativeWindowDisplayState.MAXIMIZED && Capabilities.os.substr(0, 3) == "Win" && stage.displayState != StageDisplayState["FULL_SCREEN_INTERACTIVE"])
-            {
-                stage.nativeWindow.maximize();
-                this._displayState = NativeWindowDisplayState.MAXIMIZED;
-            }
-            if (Screen.mainScreen.bounds.width < Screen.mainScreen.bounds.height)
-            {
-                stage.stageWidth = Screen.mainScreen.bounds.width * 0.8;
-                stage.stageHeight = stage.stageWidth / r;
-            }
-            else
-            {
-                stage.stageHeight = Screen.mainScreen.bounds.height * 0.8;
-                stage.stageWidth = r * stage.stageHeight;
-            }
             if (AirScanner.hasAir())
             {
+                r = stage.stageWidth / stage.stageHeight;
+                mainWindow = stage.nativeWindow;
+                chromeWidth = mainWindow.width - stage.stageWidth;
+                chromeHeight = mainWindow.height - stage.stageHeight;
+                StageShareManager.chrome.x = chromeWidth;
+                StageShareManager.chrome.y = chromeHeight;
+                clientDimentionSo = CustomSharedObject.getLocal("clientData");
+                osId = Capabilities.os.substr(0, 3);
+                if (clientDimentionSo.data != null && clientDimentionSo.data.displayState == NativeWindowDisplayState.MAXIMIZED && osId == "Win" && stage.displayState != StageDisplayState["FULL_SCREEN_INTERACTIVE"])
+                {
+                    stage.nativeWindow.maximize();
+                    this._displayState = NativeWindowDisplayState.MAXIMIZED;
+                }
+                if (Screen.mainScreen.bounds.width < Screen.mainScreen.bounds.height)
+                {
+                    if (osId == "Win")
+                    {
+                        mainWindow.width = Screen.mainScreen.bounds.width * 0.8 + chromeWidth;
+                        mainWindow.height = (mainWindow.width - chromeWidth) / r + chromeHeight;
+                    }
+                    else
+                    {
+                        stage.stageWidth = Screen.mainScreen.bounds.width * 0.8;
+                        stage.stageHeight = stage.stageWidth / r;
+                    }
+                }
+                else if (osId == "Win")
+                {
+                    mainWindow.height = Screen.mainScreen.bounds.height * 0.8 + chromeHeight;
+                    mainWindow.width = r * (mainWindow.height - chromeHeight) + chromeWidth;
+                }
+                else
+                {
+                    stage.stageHeight = Screen.mainScreen.bounds.height * 0.8;
+                    stage.stageWidth = r * stage.stageHeight;
+                }
+                clientDimentionSo.close();
                 stage["nativeWindow"].x = (Screen.mainScreen.bounds.width - stage.stageWidth) / 2;
                 stage["nativeWindow"].y = (Screen.mainScreen.bounds.height - stage.stageHeight) / 2;
                 stage["nativeWindow"].visible = true;
             }
             else
             {
-                clientDimentionSo.close();
                 stage.showDefaultContextMenu = false;
                 Security.allowDomain("*");
             }
@@ -445,6 +470,7 @@
                             case fileName == "tiphon":
                             case fileName == "tubul":
                             case fileName.indexOf("externalNotifications_") == 0:
+                            case fileName == "averagePrices":
                             case fileName == "Berilia_binds":
                             case fileName == "maps":
                             case fileName == "logs":
@@ -550,7 +576,7 @@
             Berilia.getInstance().init(this._uiContainer, _loc_1, BuildInfos.BUILD_REVISION, !_loc_1);
             if (AirScanner.isStreamingVersion())
             {
-                Berilia.embedIcons.SLOT_DEFAULT_ICON = EmbedAssets.getBitmap("DefaultBeriliaSlotIcon").bitmapData;
+                Berilia.embedIcons.SLOT_DEFAULT_ICON = EmbedAssets.getBitmap("DefaultBeriliaSlotIcon", true).bitmapData;
             }
             var _loc_2:* = new Uri("SharedDefinitions.swf");
             _loc_2.loaderContext = new LoaderContext(false, new ApplicationDomain());

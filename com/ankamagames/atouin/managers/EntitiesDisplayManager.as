@@ -45,7 +45,14 @@
             {
                 throw new AtouinError("Entities implementing IDisplayable should extends DisplayObject.");
             }
-            this._dStrataRef[oEntity] = strata;
+            if (this._dStrataRef[oEntity] != null)
+            {
+                strata = this._dStrataRef[oEntity];
+            }
+            else
+            {
+                this._dStrataRef[oEntity] = strata;
+            }
             if (!cellCoords)
             {
                 return;

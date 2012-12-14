@@ -32,6 +32,8 @@
         public static const SORT_FIELD_NAME:int = 1;
         public static const SORT_FIELD_WEIGHT:int = 2;
         public static const SORT_FIELD_QUANTITY:int = 3;
+        public static const SORT_FIELD_AVERAGEPRICE_ASCENDING:int = 6;
+        public static const SORT_FIELD_AVERAGEPRICE_DESCENDING:int = 7;
         private static var _singleton:StorageOptionManager;
 
         public function StorageOptionManager()

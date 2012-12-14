@@ -65,18 +65,24 @@
                     while (_loc_4 < _loc_3.listSprites.length)
                     {
                         
-                        _loc_1 = _loc_3.listSprites[_loc_4];
-                        if (_loc_1)
+                        if (!(_loc_3.listSprites[_loc_4] is Sprite))
                         {
-                            _loc_1.cacheAsBitmap = false;
-                            _loc_2 = Sprite(_loc_1.parent);
-                            if (_loc_2)
+                        }
+                        else
+                        {
+                            _loc_1 = _loc_3.listSprites[_loc_4];
+                            if (_loc_1)
                             {
-                                _loc_2.removeChild(_loc_1);
-                                delete _loc_3.listSprites[_loc_4];
-                                if (!_loc_2.numChildren)
+                                _loc_1.cacheAsBitmap = false;
+                                _loc_2 = Sprite(_loc_1.parent);
+                                if (_loc_2)
                                 {
-                                    _loc_2.parent.removeChild(_loc_2);
+                                    _loc_2.removeChild(_loc_1);
+                                    delete _loc_3.listSprites[_loc_4];
+                                    if (!_loc_2.numChildren)
+                                    {
+                                        _loc_2.parent.removeChild(_loc_2);
+                                    }
                                 }
                             }
                         }

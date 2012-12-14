@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.datacenter.breeds
 {
     import __AS3__.vec.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
@@ -29,8 +30,6 @@
         public var breedSpellsId:Vector.<uint>;
         public var maleColors:Vector.<uint>;
         public var femaleColors:Vector.<uint>;
-        public var alternativeMaleSkin:Vector.<uint>;
-        public var alternativeFemaleSkin:Vector.<uint>;
         private var _shortName:String;
         private var _longName:String;
         private var _description:String;
@@ -222,24 +221,21 @@
         {
             var _loc_3:* = null;
             var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
+            var _loc_5:* = null;
             var _loc_2:* = 0;
             if (!_skinsForBreed.length)
             {
                 for each (_loc_4 in getBreeds())
                 {
                     
-                    for each (_loc_5 in _loc_4.alternativeMaleSkin)
-                    {
-                        
-                        _skinsForBreed[_loc_5.toString()] = _loc_4.id;
-                    }
-                    for each (_loc_6 in _loc_4.alternativeFemaleSkin)
-                    {
-                        
-                        _skinsForBreed[_loc_6.toString()] = _loc_4.id;
-                    }
+                    _loc_5 = _loc_4.maleLook.split("|")[1];
+                    _loc_5 = _loc_5.split(",")[0];
+                    _skinsForBreed[_loc_5] = _loc_4.id;
+                    _skinsForBreed[SkinMapping.getSkinMappingById(int(_loc_5)).lowDefId] = _loc_4.id;
+                    _loc_5 = _loc_4.femaleLook.split("|")[1];
+                    _loc_5 = _loc_5.split(",")[0];
+                    _skinsForBreed[_loc_5] = _loc_4.id;
+                    _skinsForBreed[SkinMapping.getSkinMappingById(int(_loc_5)).lowDefId] = _loc_4.id;
                 }
             }
             for (_loc_3 in _skinsForBreed)

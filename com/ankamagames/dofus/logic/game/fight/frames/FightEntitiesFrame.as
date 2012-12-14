@@ -5,6 +5,7 @@
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.berilia.components.*;
     import com.ankamagames.berilia.managers.*;
+    import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.dofus.datacenter.world.*;
     import com.ankamagames.dofus.internalDatacenter.house.*;
     import com.ankamagames.dofus.internalDatacenter.world.*;
@@ -20,7 +21,9 @@
     import com.ankamagames.dofus.logic.game.fight.managers.*;
     import com.ankamagames.dofus.logic.game.fight.miscs.*;
     import com.ankamagames.dofus.logic.game.fight.steps.*;
+    import com.ankamagames.dofus.logic.game.fight.types.*;
     import com.ankamagames.dofus.misc.lists.*;
+    import com.ankamagames.dofus.misc.utils.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.game.actions.fight.*;
     import com.ankamagames.dofus.network.messages.game.context.*;
@@ -56,8 +59,6 @@
         private var _entitiesNumber:Dictionary;
         private var _lastKnownPosition:Dictionary;
         private var _lastKnownMovementPoint:Dictionary;
-        private static const TEAM_CIRCLE_CLIP:Class = FightEntitiesFrame_TEAM_CIRCLE_CLIP;
-        private static const SWORDS_CLIP:Class = FightEntitiesFrame_SWORDS_CLIP;
         private static const TEAM_CIRCLE_COLOR_1:uint = 255;
         private static const TEAM_CIRCLE_COLOR_2:uint = 16711680;
 
@@ -184,7 +185,7 @@
                     _loc_7 = this.addOrUpdateActor(getEntityInfos(_loc_6.characterId) as GameFightFighterInformations);
                     if (_loc_6.isReady)
                     {
-                        _loc_24 = new SWORDS_CLIP() as Sprite;
+                        _loc_24 = EmbedAssets.getSprite("SWORDS_CLIP");
                         _loc_7.addBackground("readySwords", _loc_24);
                     }
                     else
@@ -645,49 +646,63 @@
         {
             var _loc_5:* = 0;
             var _loc_6:* = null;
-            var _loc_7:* = 0;
+            var _loc_7:* = null;
             var _loc_8:* = null;
             var _loc_9:* = null;
             var _loc_10:* = null;
+            var _loc_11:* = 0;
+            var _loc_12:* = null;
+            var _loc_13:* = null;
+            var _loc_14:* = null;
+            var _loc_4:* = param1.contextualId;
             if (param3)
             {
                 _loc_5 = 0;
                 while (_loc_5 < param3.length)
                 {
                     
-                    _loc_6 = param3[_loc_5].statName;
-                    if (_loc_6 && param1.stats.hasOwnProperty(_loc_6))
+                    _loc_6 = BuffManager.getInstance().getAllBuff(_loc_4);
+                    for each (_loc_7 in _loc_6)
                     {
-                        param1.stats[_loc_6] = param1.stats[_loc_6] - param3[_loc_5].delta;
+                        
+                        if (_loc_7.id == param3[_loc_5].id)
+                        {
+                            _loc_8 = param3[_loc_5] as StatBuff;
+                            _loc_9 = _loc_8.statName;
+                            _loc_10 = Effect.getEffectById(_loc_8.actionId);
+                            if (_loc_9 && param1.stats.hasOwnProperty(_loc_9) && _loc_10.active)
+                            {
+                                param1.stats[_loc_9] = param1.stats[_loc_9] - param3[_loc_5].delta;
+                            }
+                        }
                     }
                     _loc_5++;
                 }
             }
-            var _loc_4:* = param1.contextualId;
             if (param1.alive)
             {
-                _loc_7 = -1;
-                _loc_8 = _entities[param1.contextualId] as GameFightFighterInformations;
-                if (_loc_8)
+                _loc_11 = -1;
+                _loc_12 = _entities[param1.contextualId] as GameFightFighterInformations;
+                if (_loc_12)
                 {
-                    _loc_7 = _loc_8.stats.invisibilityState;
+                    _loc_11 = _loc_12.stats.invisibilityState;
                 }
-                if (_loc_7 == GameActionFightInvisibilityStateEnum.INVISIBLE && param1.stats.invisibilityState == _loc_7)
+                if (_loc_11 == GameActionFightInvisibilityStateEnum.INVISIBLE && param1.stats.invisibilityState == _loc_11)
                 {
                     registerActor(param1);
                     return;
                 }
-                if (_loc_8 != param1)
+                if (_loc_12 != param1)
                 {
                     registerActor(param1);
                 }
-                _loc_9 = this.addOrUpdateActor(param1, param2);
-                if (param1.stats.invisibilityState != GameActionFightInvisibilityStateEnum.VISIBLE && param1.stats.invisibilityState != _loc_7)
+                _loc_13 = this.addOrUpdateActor(param1, param2);
+                if (param1.stats.invisibilityState != GameActionFightInvisibilityStateEnum.VISIBLE && param1.stats.invisibilityState != _loc_11)
                 {
-                    _loc_10 = new FightChangeVisibilityStep(_loc_4, param1.stats.invisibilityState);
-                    _loc_10.start();
+                    _loc_14 = new FightChangeVisibilityStep(_loc_4, param1.stats.invisibilityState);
+                    _loc_14.start();
                 }
-                this.addCircleToFighter(_loc_9, param1.teamId == TeamEnum.TEAM_DEFENDER ? (TEAM_CIRCLE_COLOR_1) : (TEAM_CIRCLE_COLOR_2));
+                this.addCircleToFighter(_loc_13, param1.teamId == TeamEnum.TEAM_DEFENDER ? (TEAM_CIRCLE_COLOR_1) : (TEAM_CIRCLE_COLOR_2));
             }
             else
             {
@@ -720,7 +735,7 @@
         private function addCircleToFighter(param1:AnimatedCharacter, param2:uint) : void
         {
             var _loc_3:* = new Sprite();
-            var _loc_4:* = new TEAM_CIRCLE_CLIP() as Sprite;
+            var _loc_4:* = EmbedAssets.getSprite("TEAM_CIRCLE_CLIP");
             _loc_3.addChild(_loc_4);
             var _loc_5:* = new ColorTransform();
             new ColorTransform().color = param2;
@@ -982,6 +997,8 @@ import com.ankamagames.berilia.components.*;
 
 import com.ankamagames.berilia.managers.*;
 
+import com.ankamagames.dofus.datacenter.effects.*;
+
 import com.ankamagames.dofus.datacenter.world.*;
 
 import com.ankamagames.dofus.internalDatacenter.house.*;
@@ -1012,7 +1029,11 @@ import com.ankamagames.dofus.logic.game.fight.miscs.*;
 
 import com.ankamagames.dofus.logic.game.fight.steps.*;
 
+import com.ankamagames.dofus.logic.game.fight.types.*;
+
 import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.misc.utils.*;
 
 import com.ankamagames.dofus.network.enums.*;
 

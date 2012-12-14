@@ -70,6 +70,28 @@
                 Log.exitIfNoConfigFile = false;
                 this._localSaveReport = true;
             }
+            else
+            {
+                this.removeDebugFile();
+            }
+            return;
+        }// end function
+
+        private function removeDebugFile() : void
+        {
+            var debugFile:File;
+            try
+            {
+                debugFile = this.getDebugFile();
+                if (debugFile && debugFile.exists)
+                {
+                    debugFile.deleteFile();
+                }
+            }
+            catch (e:Error)
+            {
+                _log.info("Impossible de supprimer le fichier de debug : " + e.message);
+            }
             return;
         }// end function
 
@@ -144,7 +166,7 @@
             var fs:FileStream;
             try
             {
-                debugFile = File.applicationDirectory.resolvePath("META-INF/AIR/debug");
+                debugFile = this.getDebugFile();
                 debugFile = new File(debugFile.nativePath);
                 fs = new FileStream();
                 fs.open(debugFile, FileMode.WRITE);
@@ -156,6 +178,30 @@
                 _log.error("Impossible de créer le fichier debug dans " + debugFile.nativePath + "\nErreur:\n" + e.message);
             }
             return;
+        }// end function
+
+        private function getDebugFile() : File
+        {
+            var _loc_1:* = null;
+            switch(this.getOs())
+            {
+                case OperatingSystem.MAC_OS:
+                {
+                    _loc_1 = File.applicationDirectory.resolvePath("../Resources/META-INF/AIR/debug");
+                    break;
+                }
+                case OperatingSystem.WINDOWS:
+                {
+                    _loc_1 = File.applicationDirectory.resolvePath("META-INF/AIR/debug");
+                    break;
+                }
+                default:
+                {
+                    return null;
+                    break;
+                }
+            }
+            return new File(_loc_1.nativePath);
         }// end function
 
         public function activeSOS() : void
@@ -249,9 +295,9 @@ n	t	t	t	t	t</logging>")("<logging>
             var realStacktrace:String;
             var tmp:Array;
             var line:String;
+            var exception:DataExceptionModel;
             var buttons:Array;
             var popup:SystemPopupUI;
-            var exception:DataExceptionModel;
             var e:* = event;
             var txt:* = e.text;
             error = e.error;
@@ -287,6 +333,14 @@ n	t	t	t	t	t</logging>")("<logging>
                 report = new ErrorReport(reportInfo, _logBuffer);
             }
             _lastError = getTimer();
+            if (this._sendErrorToWebservice)
+            {
+                exception = WebServiceDataHandler.getInstance().createNewException(reportInfo, e.errorType);
+                if (exception != null)
+                {
+                    WebServiceDataHandler.getInstance().saveException(exception);
+                }
+            }
             if (e.showPopup)
             {
                 buttons;
@@ -325,14 +379,6 @@ n	t	t	t	t	t</logging>")("<logging>
                 }
                 popup.buttons = buttons;
                 popup.show();
-            }
-            if (this._sendErrorToWebservice)
-            {
-                exception = WebServiceDataHandler.getInstance().createNewException(reportInfo, e.errorType);
-                if (exception != null)
-                {
-                    WebServiceDataHandler.getInstance().saveException(exception);
-                }
             }
             return;
         }// end function
@@ -591,6 +637,24 @@ n	t	t	t	t	t</logging>")("<logging>
         public function get sendErrorToWebservice() : Boolean
         {
             return this._sendErrorToWebservice;
+        }// end function
+
+        private function getOs() : String
+        {
+            var _loc_1:* = Capabilities.os;
+            if (_loc_1 == OperatingSystem.LINUX)
+            {
+                return OperatingSystem.LINUX;
+            }
+            if (_loc_1.substr(0, OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
+            {
+                return OperatingSystem.MAC_OS;
+            }
+            if (_loc_1.substr(0, OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
+            {
+                return OperatingSystem.WINDOWS;
+            }
+            return null;
         }// end function
 
         public static function get manualActivation() : Boolean

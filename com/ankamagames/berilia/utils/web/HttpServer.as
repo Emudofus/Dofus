@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.berilia.utils.web
 {
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.events.*;
     import flash.filesystem.*;
@@ -12,6 +13,7 @@
         private var _usedPort:uint;
         private var _rootPath:String;
         private static var _self:HttpServer;
+        private static const _log:Logger = Log.getLogger(getQualifiedClassName(HttpServer));
 
         public function HttpServer()
         {
@@ -48,7 +50,7 @@
                     this._server.bind(currentPort, "127.0.0.1");
                     this._server.listen();
                     this._usedPort = currentPort;
-                    trace("Listening on port " + currentPort + "...\n");
+                    _log.fatal("Listening on port " + currentPort + "...\n");
                     return true;
                 }
                 catch (e:Error)
@@ -62,6 +64,7 @@
 
         public function getUrlTo(param1:String) : String
         {
+            _log.fatal("getting url to : http://localhost:" + this._usedPort + "/" + param1);
             return "http://localhost:" + this._usedPort + "/" + param1;
         }// end function
 
@@ -78,6 +81,7 @@
                 this._server.removeEventListener(Event.CONNECT, this.onConnect);
                 this._server.close();
                 trace("Server closed");
+                _log.warn("Server closed");
             }
             return;
         }// end function

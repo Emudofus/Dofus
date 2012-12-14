@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.jerakine.utils.misc
 {
     import __AS3__.vec.*;
+    import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
     import flash.utils.*;
 
@@ -297,6 +298,47 @@
                 _loc_5 = _loc_5.slice(0, _loc_5.length - param3.length);
             }
             return _loc_5;
+        }// end function
+
+        public static function kamasToString(param1:Number, param2:String = "-") : String
+        {
+            if (param2 == "-")
+            {
+                param2 = I18n.getUiText("ui.common.short.kama", []);
+            }
+            var _loc_3:* = formateIntToString(param1);
+            if (param2 == "")
+            {
+                return _loc_3;
+            }
+            return _loc_3 + " " + param2;
+        }// end function
+
+        public static function stringToKamas(param1:String, param2:String = "-") : int
+        {
+            var _loc_3:* = null;
+            var _loc_4:* = param1;
+            do
+            {
+                
+                _loc_3 = _loc_4;
+                _loc_4 = _loc_3.replace(" ", "");
+            }while (_loc_3 != _loc_4)
+            do
+            {
+                
+                _loc_3 = _loc_4;
+                _loc_4 = _loc_3.replace(" ", "");
+            }while (_loc_3 != _loc_4)
+            if (param2 == "-")
+            {
+                param2 = I18n.getUiText("ui.common.short.kama", []);
+            }
+            if (_loc_3.substr(_loc_3.length - param2.length) == param2)
+            {
+                _loc_3 = _loc_3.substr(0, _loc_3.length - param2.length);
+            }
+            return int(_loc_3);
         }// end function
 
         public static function formateIntToString(param1:Number) : String

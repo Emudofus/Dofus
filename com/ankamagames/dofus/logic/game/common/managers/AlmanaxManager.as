@@ -33,7 +33,7 @@
             }
             var _loc_1:* = StoreDataManager.getInstance().getSetData(this._ds, "cacheDate", new Date(2000));
             var _loc_2:* = new Date();
-            if (_loc_1.day != _loc_2.day || _loc_2.time - _loc_1.time > 7200000)
+            if (_loc_1.day != _loc_2.day || _loc_2.time - _loc_1.time > 120000)
             {
                 if (BuildInfos.BUILD_TYPE >= BuildTypeEnum.INTERNAL)
                 {
@@ -44,11 +44,12 @@
                     this._rpcService = new RpcServiceManager("http://api.ankama.com/krosmoz/event.json", "json");
                 }
                 this._rpcService.addEventListener(Event.COMPLETE, this.onData);
-                this._rpcService.addEventListener(RpcEvent.ERROR, this.onError);
+                this._rpcService.addEventListener(RpcEvent.EVENT_ERROR, this.onError);
                 this._rpcService.callMethod("GetEvent", [LangManager.getInstance().getEntry("config.lang.current")]);
             }
             else
             {
+                StoreDataManager.getInstance().registerClass(new AlmanaxEvent());
                 this._currentEvent = StoreDataManager.getInstance().getData(this._ds, "currentEvent");
                 this._currentMonth = StoreDataManager.getInstance().getData(this._ds, "currentMonth");
                 this._currentZodiac = StoreDataManager.getInstance().getData(this._ds, "currentZodiac");

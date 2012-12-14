@@ -12,7 +12,6 @@
     {
         private var _textBlock:TextBlock;
         private var _terminatorSpan:SpanElement;
-        private var _interactiveChildrenCount:int;
         private static var _defaultTabStops:Vector.<TabStop>;
         private static const defaultTabWidth:int = 48;
         private static const defaultTabCount:int = 20;
@@ -20,13 +19,7 @@
         public function ParagraphElement()
         {
             this._terminatorSpan = null;
-            this._interactiveChildrenCount = 0;
             return;
-        }// end function
-
-        function get _interactiveChildrenCount() : int
-        {
-            return this._interactiveChildrenCount;
         }// end function
 
         function createTextBlock() : void
@@ -329,7 +322,7 @@
             var _loc_4:* = null;
             if (param1 == 0 && (param2 == -1 || param2 >= (textLength - 1)) && this._textBlock)
             {
-                if (this._textBlock.content && this._textBlock.content.rawText)
+                if (this._textBlock.content)
                 {
                     _loc_4 = this._textBlock.content.rawText;
                     return _loc_4.substring(0, (_loc_4.length - 1));
@@ -461,11 +454,7 @@
             else
             {
                 _loc_10 = new EastAsianJustifier(_computedFormat.locale, _loc_3, _loc_4);
-                if (Configuration.versionIsAtLeast(10, 3) && _loc_10.hasOwnProperty("composeTrailingIdeographicSpaces"))
-                {
-                    _loc_10.composeTrailingIdeographicSpaces = true;
-                }
-                this._textBlock.textJustifier = _loc_10 as EastAsianJustifier;
+                this._textBlock.textJustifier = _loc_10;
                 this._textBlock.baselineZero = getLeadingBasis(this.getEffectiveLeadingModel());
             }
             this._textBlock.bidiLevel = _computedFormat.direction == Direction.LTR ? (0) : (1);
@@ -599,27 +588,6 @@
         function getEffectiveJustificationStyle() : String
         {
             return this.computedFormat.justificationStyle == FormatValue.AUTO ? (LocaleUtil.justificationStyle(this.computedFormat.locale)) : (this.computedFormat.justificationStyle);
-        }// end function
-
-        function incInteractiveChildrenCount() : void
-        {
-            var _loc_1:* = this;
-            var _loc_2:* = this._interactiveChildrenCount + 1;
-            _loc_1._interactiveChildrenCount = _loc_2;
-            return;
-        }// end function
-
-        function decInteractiveChildrenCount() : void
-        {
-            var _loc_1:* = this;
-            var _loc_2:* = this._interactiveChildrenCount - 1;
-            _loc_1._interactiveChildrenCount = _loc_2;
-            return;
-        }// end function
-
-        function hasInteractiveChildren() : Boolean
-        {
-            return this._interactiveChildrenCount != 0;
         }// end function
 
         private static function initializeDefaultTabStops() : void

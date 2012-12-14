@@ -43,6 +43,7 @@
         private var _disableAnimation:Boolean = false;
         private var _useCache:Boolean = true;
         private var _roundCornerRadius:uint = 0;
+        private var _playOnce:Boolean = false;
         private var _bitmap:Bitmap;
         private var _showLoadingError:Boolean = true;
         public var defaultBitmapData:BitmapData;
@@ -248,8 +249,8 @@
                 {
                     mv.stop();
                 }
-                this._gotoFrame = value;
             }
+            this._gotoFrame = value;
             return;
         }// end function
 
@@ -485,6 +486,21 @@
             return;
         }// end function
 
+        public function get playOnce() : Boolean
+        {
+            return this._playOnce;
+        }// end function
+
+        public function set playOnce(param1:Boolean) : void
+        {
+            if (this._child && this._child is MovieClip)
+            {
+                MovieClip(this._child).addFrameScript((MovieClip(this._child).totalFrames - 1), param1 ? (this.stopAllAnimation) : (null));
+            }
+            this._playOnce = param1;
+            return;
+        }// end function
+
         public function finalize() : void
         {
             this.reload();
@@ -508,6 +524,7 @@
             this._gotoFrame = null;
             this._loader = null;
             this._startBounds = null;
+            this._playOnce = false;
             return;
         }// end function
 
@@ -636,6 +653,7 @@
             {
                 this.gotoAndStop = "0";
             }
+            this.playOnce = this._playOnce;
             if (this._autoGrid)
             {
                 rec = new Rectangle(this._startedWidth / 3, int(this._startedHeight / 3), this._startedWidth / 3, int(this._startedHeight / 3));
@@ -751,9 +769,11 @@
                 }
                 this._bitmap = null;
             }
+            this._loader.removeEventListener(ResourceLoadedEvent.LOADED, this.onLoaded);
+            this._loader.removeEventListener(ResourceErrorEvent.ERROR, this.onFailed);
             this._loader = null;
             var pattern:* = /\/(_[0-9]*_\/)""\/(_[0-9]*_\/)/i;
-            if (this._uri == null || !AirScanner.isStreamingVersion() && this._uri.path != rle.uri.path && this._uri.normalizedUri != rle.uri.path)
+            if (this._uri == null || this._uri.path != rle.uri.path && this._uri.normalizedUri != rle.uri.path)
             {
                 this.rle_uri_path = rle.uri.path;
                 return;

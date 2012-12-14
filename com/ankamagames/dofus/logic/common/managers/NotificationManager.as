@@ -60,10 +60,10 @@
             return;
         }// end function
 
-        public function addTimerToNotification(param1:uint, param2:uint, param3:Boolean = false, param4:Boolean = false) : void
+        public function addTimerToNotification(param1:uint, param2:uint, param3:Boolean = false, param4:Boolean = false, param5:Boolean = true) : void
         {
-            var _loc_5:* = this.getNotification(param1);
-            this.getNotification(param1).setTimer(param2, param3, param4);
+            var _loc_6:* = this.getNotification(param1);
+            this.getNotification(param1).setTimer(param2, param3, param4, param5);
             return;
         }// end function
 
@@ -243,13 +243,13 @@ class Notification extends Object
         return;
     }// end function
 
-    public function setTimer(param1:uint, param2:Boolean = false, param3:Boolean = false) : void
+    public function setTimer(param1:uint, param2:Boolean = false, param3:Boolean = false, param4:Boolean = true) : void
     {
         this._duration = param1 * 1000;
         this.startTime = 0;
         this.pauseOnOver = param2;
         this.blockCallbackOnTimerEnds = param3;
-        this.notifyUser = true;
+        this.notifyUser = param4;
         return;
     }// end function
 

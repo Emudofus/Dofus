@@ -17,15 +17,15 @@
 
         function updateAllControllers() : Boolean;
 
-        function updateToController(param1:int = 2147483647) : Boolean;
+        function updateToController(param1:int = 2.14748e+009) : Boolean;
 
         function setFocus(param1:int, param2:Boolean = false) : void;
 
         function compose() : Boolean;
 
-        function composeToPosition(param1:int = 2147483647) : Boolean;
+        function composeToPosition(param1:int = 2.14748e+009) : Boolean;
 
-        function composeToController(param1:int = 2147483647) : Boolean;
+        function composeToController(param1:int = 2.14748e+009) : Boolean;
 
         function get numControllers() : int;
 

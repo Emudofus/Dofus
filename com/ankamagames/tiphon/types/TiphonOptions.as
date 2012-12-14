@@ -11,7 +11,7 @@
             add("pointsOverhead", 2);
             add("aura", true);
             add("alwaysShowAuraOnFront", false);
-            add("creaturesMode", 25);
+            add("creaturesMode", 20);
             return;
         }// end function
 

@@ -1,12 +1,16 @@
 ﻿package com.ankamagames.dofus.logic.common.managers
 {
+    import com.ankamagames.berilia.enums.*;
     import com.ankamagames.berilia.factories.*;
     import com.ankamagames.berilia.managers.*;
+    import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.roleplay.frames.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
+    import com.ankamagames.jerakine.data.*;
+    import flash.geom.*;
 
     public class HyperlinkShowPlayerMenuManager extends Object
     {
@@ -67,6 +71,14 @@
             }
             ChatAutocompleteNameManager.getInstance().addEntry(param1, _loc_6);
             return param1;
+        }// end function
+
+        public static function rollOverPlayer(param1:int, param2:int, param3:String, param4:int = 0, param5:Number = 0, param6:String = null, param7:uint = 0) : void
+        {
+            var _loc_8:* = new Rectangle(param1, param2, 10, 10);
+            var _loc_9:* = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.player"));
+            TooltipManager.show(_loc_9, _loc_8, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
+            return;
         }// end function
 
     }

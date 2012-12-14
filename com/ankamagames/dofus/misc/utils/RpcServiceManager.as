@@ -13,6 +13,7 @@
         private var _request:URLRequest;
         private var _service:String;
         private var _params:Object;
+        private var _method:String;
         private var _result:Object;
         private var _type:String;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(RpcServiceManager));
@@ -44,10 +45,12 @@
             }
             if (_loc_2)
             {
+                dispatchEvent(new RpcEvent(RpcEvent.EVENT_DATA, this._method, this._result));
                 dispatchEvent(event);
             }
             else
             {
+                dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR, this._method, this._result));
                 dispatchEvent(new Event(SERVER_ERROR));
             }
             return;
@@ -158,6 +161,7 @@
         public function callMethod(param1:String, param2) : void
         {
             var _loc_3:* = null;
+            this._method = param1;
             this._params = param2;
             if (this._request == null || this._loader == null)
             {
@@ -224,7 +228,7 @@
         private function onError(event:Event) : void
         {
             dispatchEvent(event);
-            dispatchEvent(new RpcEvent());
+            dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR, this._method, null));
             return;
         }// end function
 

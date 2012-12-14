@@ -144,7 +144,7 @@
             Berilia.getInstance().strataLow.addChild(param1);
             var _loc_2:* = IDisplayable(param1.referedEntity).absoluteBounds;
             param1.x = (_loc_2.x + _loc_2.width / 2 - param1.width / 2 - StageShareManager.stageOffsetX) / StageShareManager.stageScaleX;
-            param1.y = (_loc_2.y + _loc_2.height - Math.min(MAX_ENTITY_HEIGHT, _loc_2.height) + param1.height - StageShareManager.stageOffsetY) / StageShareManager.stageScaleY;
+            param1.y = (_loc_2.y - param1.height - StageShareManager.stageOffsetY) / StageShareManager.stageScaleY;
             param1.alpha = 0;
             if (this._bEnterFrameNeeded)
             {

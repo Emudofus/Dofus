@@ -280,54 +280,6 @@
             return;
         }// end function
 
-        public function get columnBreakBefore()
-        {
-            return this._format ? (this._format.columnBreakBefore) : (undefined);
-        }// end function
-
-        public function set columnBreakBefore(param1) : void
-        {
-            this.writableTextLayoutFormat().columnBreakBefore = param1;
-            this.formatChanged();
-            return;
-        }// end function
-
-        public function get columnBreakAfter()
-        {
-            return this._format ? (this._format.columnBreakAfter) : (undefined);
-        }// end function
-
-        public function set columnBreakAfter(param1) : void
-        {
-            this.writableTextLayoutFormat().columnBreakAfter = param1;
-            this.formatChanged();
-            return;
-        }// end function
-
-        public function get containerBreakBefore()
-        {
-            return this._format ? (this._format.containerBreakBefore) : (undefined);
-        }// end function
-
-        public function set containerBreakBefore(param1) : void
-        {
-            this.writableTextLayoutFormat().containerBreakBefore = param1;
-            this.formatChanged();
-            return;
-        }// end function
-
-        public function get containerBreakAfter()
-        {
-            return this._format ? (this._format.containerBreakAfter) : (undefined);
-        }// end function
-
-        public function set containerBreakAfter(param1) : void
-        {
-            this.writableTextLayoutFormat().containerBreakAfter = param1;
-            this.formatChanged();
-            return;
-        }// end function
-
         public function get color()
         {
             return this._format ? (this._format.color) : (undefined);

@@ -143,7 +143,6 @@
         {
             var _loc_4:* = null;
             var _loc_6:* = null;
-            trace("File loaded: " + param1);
             if (param1.fileType == "swf" && param1.tag != null && param1.tag is Uri)
             {
                 _loc_4 = param1.tag;

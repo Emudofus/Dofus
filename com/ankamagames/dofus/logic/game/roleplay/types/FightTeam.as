@@ -1,8 +1,10 @@
 ﻿package com.ankamagames.dofus.logic.game.roleplay.types
 {
+    import com.ankamagames.dofus.misc.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.game.context.*;
     import com.ankamagames.dofus.network.types.game.context.fight.*;
+    import com.ankamagames.dofus.types.entities.*;
     import com.ankamagames.jerakine.entities.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
     import flash.utils.*;
@@ -22,6 +24,7 @@
             this.teamType = param2;
             this.teamEntity = param3;
             this.teamInfos = param4;
+            this.look = EntityLookAdapter.toNetwork((param3 as AnimatedCharacter).look);
             this.teamOptions = new Array();
             this.teamOptions[FightOptionsEnum.FIGHT_OPTION_ASK_FOR_HELP] = param5.isAskingForHelp;
             this.teamOptions[FightOptionsEnum.FIGHT_OPTION_SET_CLOSED] = param5.isClosed;

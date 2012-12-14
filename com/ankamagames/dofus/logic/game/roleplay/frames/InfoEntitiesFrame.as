@@ -736,6 +736,10 @@
             var _loc_6:* = null;
             var _loc_7:* = null;
             var _loc_2:* = DofusEntities.getEntity(param1) as TiphonSprite;
+            if (_loc_2 == null)
+            {
+                return null;
+            }
             var _loc_3:* = _loc_2.getSlot("Tete");
             if (_loc_3)
             {

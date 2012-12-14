@@ -32,7 +32,7 @@
         private var YDU:Array;
         private var UDU:Array;
         private var VDU:Array;
-        static const VERSION:String = "4.1.0.16076";
+        static const VERSION:String = "4.6.0.23201";
         private static const CONTENT_TYPE:String = "image/jpeg";
 
         public function JPEGEncoder(param1:Number = 50)

@@ -48,7 +48,5 @@
 
         function get inlineGraphicResolverFunction() : Function;
 
-        function get cursorFunction() : Function;
-
     }
 }

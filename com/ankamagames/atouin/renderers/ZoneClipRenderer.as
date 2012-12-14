@@ -115,6 +115,20 @@
 
         private function onPropertyChanged(event:PropertyChangeEvent) : void
         {
+            var _loc_2:* = 0;
+            var _loc_3:* = null;
+            if (event.propertyName == "transparentOverlayMode")
+            {
+                _loc_2 = 0;
+                while (_loc_2 < this._aZoneTile.length)
+                {
+                    
+                    _loc_3 = this._aZoneTile[_loc_2];
+                    _loc_3.remove();
+                    _loc_3.display();
+                    _loc_2++;
+                }
+            }
             return;
         }// end function
 

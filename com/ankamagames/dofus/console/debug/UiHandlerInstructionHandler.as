@@ -1,16 +1,22 @@
 ﻿package com.ankamagames.dofus.console.debug
 {
+    import avmplus.*;
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
+    import com.ankamagames.berilia.types.graphic.*;
     import com.ankamagames.dofus.console.moduleLogger.*;
     import com.ankamagames.dofus.misc.lists.*;
     import com.ankamagames.dofus.misc.utils.*;
     import com.ankamagames.jerakine.console.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.managers.*;
+    import com.ankamagames.jerakine.utils.misc.*;
 
     public class UiHandlerInstructionHandler extends Object implements ConsoleInstructionHandler
     {
+        private var _uiInspector:UiInspector;
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(UiHandlerInstructionHandler));
 
         public function UiHandlerInstructionHandler()
         {
@@ -25,11 +31,13 @@
             var _loc_7:* = null;
             var _loc_8:* = false;
             var _loc_9:* = false;
-            var _loc_10:* = 0;
+            var _loc_10:* = null;
             var _loc_11:* = null;
-            var _loc_12:* = null;
+            var _loc_12:* = 0;
             var _loc_13:* = null;
             var _loc_14:* = null;
+            var _loc_15:* = null;
+            var _loc_16:* = null;
             switch(param2)
             {
                 case "loadui":
@@ -40,22 +48,22 @@
                 {
                     if (param3.length == 0)
                     {
-                        _loc_10 = 0;
-                        _loc_11 = [];
-                        for (_loc_12 in Berilia.getInstance().uiList)
+                        _loc_12 = 0;
+                        _loc_13 = [];
+                        for (_loc_14 in Berilia.getInstance().uiList)
                         {
                             
-                            if (Berilia.getInstance().uiList[_loc_12].name != "Console")
+                            if (Berilia.getInstance().uiList[_loc_14].name != "Console")
                             {
-                                _loc_11.push(Berilia.getInstance().uiList[_loc_12].name);
+                                _loc_13.push(Berilia.getInstance().uiList[_loc_14].name);
                             }
                         }
-                        for each (_loc_12 in _loc_11)
+                        for each (_loc_14 in _loc_13)
                         {
                             
-                            Berilia.getInstance().unloadUi(_loc_12);
+                            Berilia.getInstance().unloadUi(_loc_14);
                         }
-                        param1.output(_loc_11.length + " UI were unload");
+                        param1.output(_loc_13.length + " UI were unload");
                         break;
                     }
                     if (Berilia.getInstance().unloadUi(param3[0]))
@@ -86,10 +94,10 @@
                 }
                 case "uilist":
                 {
-                    for (_loc_13 in Berilia.getInstance().uiList)
+                    for (_loc_15 in Berilia.getInstance().uiList)
                     {
                         
-                        param1.output(" - " + _loc_13);
+                        param1.output(" - " + _loc_15);
                     }
                     break;
                 }
@@ -130,7 +138,7 @@
                     _loc_7 = UiModuleManager.getInstance().getModule(param3[0]);
                     if (_loc_7)
                     {
-                        _loc_14 = new ModuleScriptAnalyzer(_loc_7);
+                        _loc_16 = new ModuleScriptAnalyzer(_loc_7);
                     }
                     else
                     {
@@ -156,10 +164,93 @@
                     }
                     break;
                 }
+                case "uiinspector":
+                {
+                    if (!this._uiInspector)
+                    {
+                        this._uiInspector = new UiInspector();
+                    }
+                    this._uiInspector.enable = !this._uiInspector.enable;
+                    if (this._uiInspector.enable)
+                    {
+                        param1.output("UI Inspector is ON.\n Use Ctrl-C to save the last hovered element informations.");
+                    }
+                    else
+                    {
+                        param1.output("UI Inspector is OFF.");
+                    }
+                    break;
+                }
+                case "inspectuielementsos":
+                case "inspectuielement":
+                {
+                    if (param3.length == 0)
+                    {
+                        param1.output(param2 + " need at least one argument (" + param2 + " uiName [uiElementName])");
+                        break;
+                    }
+                    _loc_10 = Berilia.getInstance().getUi(param3[0]);
+                    if (!_loc_10)
+                    {
+                        param1.output("UI " + param3[0] + " not found (use /uilist to grab current displayed UI list)");
+                        break;
+                    }
+                    if (param3.length == 1)
+                    {
+                        this.inspectUiElement(_loc_10, param2 == "inspectuielementsos" ? (null) : (param1));
+                        break;
+                    }
+                    _loc_11 = _loc_10.getElement(param3[1]);
+                    if (!_loc_11)
+                    {
+                        param1.output("UI Element " + param3[0] + " not found on UI " + param3[0] + "(use /uiinspector to view elements names)");
+                        break;
+                    }
+                    this.inspectUiElement(_loc_11, param2 == "inspectuielementsos" ? (null) : (param1));
+                    break;
+                }
                 default:
                 {
                     break;
                 }
+            }
+            return;
+        }// end function
+
+        private function inspectUiElement(param1:GraphicContainer, param2:ConsoleHandler) : void
+        {
+            var txt:String;
+            var property:String;
+            var type:String;
+            var target:* = param1;
+            var console:* = param2;
+            var properties:* = DescribeTypeCache.getVariables(target).concat();
+            properties.sort();
+            var _loc_4:* = 0;
+            var _loc_5:* = properties;
+            while (_loc_5 in _loc_4)
+            {
+                
+                property = _loc_5[_loc_4];
+                try
+                {
+                    type = target[property] != null ? (getQualifiedClassName(target[property]).split("::").pop()) : ("?");
+                    if (type == "Array")
+                    {
+                        type = type + (", len: " + target[property].length);
+                    }
+                    txt = property + " (" + type + ") : " + target[property];
+                }
+                catch (e:Error)
+                {
+                    txt = property + " (?) : <Exception throw by getter>";
+                }
+                if (!console)
+                {
+                    _log.info(txt);
+                    continue;
+                }
+                console.output(txt);
             }
             return;
         }// end function
@@ -207,6 +298,18 @@
                 case "modulelist":
                 {
                     return "Display activated modules.";
+                }
+                case "uiinspector":
+                {
+                    return "Display a tooltip over each interactive UI element";
+                }
+                case "inspectuielement":
+                {
+                    return "Display the property list of an UI element (UI or Component), usage /inspectuielement uiName (elementName)";
+                }
+                case "inspectuielementsos":
+                {
+                    return "Display the property list of an UI element (UI or Component) to SOS, usage /inspectuielement uiName (elementName)";
                 }
                 default:
                 {

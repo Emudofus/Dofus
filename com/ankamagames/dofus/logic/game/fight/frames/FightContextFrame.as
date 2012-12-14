@@ -259,8 +259,8 @@
             var _loc_8:* = null;
             var _loc_9:* = null;
             var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = 0;
+            var _loc_11:* = 0;
+            var _loc_12:* = null;
             var _loc_13:* = null;
             var _loc_14:* = null;
             var _loc_15:* = null;
@@ -271,8 +271,8 @@
             var _loc_20:* = null;
             var _loc_21:* = null;
             var _loc_22:* = null;
-            var _loc_23:* = null;
-            var _loc_24:* = 0;
+            var _loc_23:* = 0;
+            var _loc_24:* = null;
             var _loc_25:* = null;
             var _loc_26:* = null;
             var _loc_27:* = null;
@@ -291,8 +291,8 @@
             var _loc_40:* = null;
             var _loc_41:* = null;
             var _loc_42:* = null;
-            var _loc_43:* = null;
-            var _loc_44:* = 0;
+            var _loc_43:* = 0;
+            var _loc_44:* = null;
             var _loc_45:* = null;
             var _loc_46:* = null;
             var _loc_47:* = 0;
@@ -343,21 +343,24 @@
                 case param1 is MapLoadedMessage:
                 {
                     MapDisplayManager.getInstance().getDataMapContainer().setTemporaryAnimatedElementState(false);
-                    _loc_2 = new MapInformationsRequestMessage();
-                    _loc_2.initMapInformationsRequestMessage(MapDisplayManager.getInstance().currentMapPoint.mapId);
-                    ConnectionsHandler.getConnection().send(_loc_2);
+                    if (PlayedCharacterManager.getInstance().isSpectator)
+                    {
+                        _loc_44 = new MapInformationsRequestMessage();
+                        _loc_44.initMapInformationsRequestMessage(MapDisplayManager.getInstance().currentMapPoint.mapId);
+                        ConnectionsHandler.getConnection().send(_loc_44);
+                    }
                     return false;
                 }
                 case param1 is GameFightStartingMessage:
                 {
-                    _loc_3 = param1 as GameFightStartingMessage;
+                    _loc_2 = param1 as GameFightStartingMessage;
                     TooltipManager.hideAll();
                     Atouin.getInstance().cancelZoom();
                     KernelEventsManager.getInstance().processCallback(HookList.StartZoom, false);
                     MapDisplayManager.getInstance().activeIdentifiedElements(false);
                     FightEventsHelper.reset();
-                    KernelEventsManager.getInstance().processCallback(HookList.GameFightStarting, _loc_3.fightType);
-                    this.fightType = _loc_3.fightType;
+                    KernelEventsManager.getInstance().processCallback(HookList.GameFightStarting, _loc_2.fightType);
+                    this.fightType = _loc_2.fightType;
                     CurrentPlayedFighterManager.getInstance().currentFighterId = PlayedCharacterManager.getInstance().id;
                     CurrentPlayedFighterManager.getInstance().getSpellCastManager().currentTurn = 0;
                     SoundManager.getInstance().manager.prepareFightMusic();
@@ -366,30 +369,30 @@
                 }
                 case param1 is CurrentMapMessage:
                 {
-                    _loc_4 = param1 as CurrentMapMessage;
+                    _loc_3 = param1 as CurrentMapMessage;
                     ConnectionsHandler.pause();
                     Kernel.getWorker().pause();
                     if (TacticModeManager.getInstance().tacticModeActivated)
                     {
                         TacticModeManager.getInstance().hide();
                     }
-                    _loc_5 = new WorldPointWrapper(_loc_4.mapId);
+                    _loc_4 = new WorldPointWrapper(_loc_3.mapId);
                     KernelEventsManager.getInstance().processCallback(HookList.StartZoom, false);
-                    Atouin.getInstance().initPreDisplay(_loc_5);
+                    Atouin.getInstance().initPreDisplay(_loc_4);
                     Atouin.getInstance().clearEntities();
-                    if (_loc_4.mapKey && _loc_4.mapKey.length)
+                    if (_loc_3.mapKey && _loc_3.mapKey.length)
                     {
                         _loc_45 = XmlConfig.getInstance().getEntry("config.maps.encryptionKey");
                         if (!_loc_45)
                         {
-                            _loc_45 = _loc_4.mapKey;
+                            _loc_45 = _loc_3.mapKey;
                         }
-                        _loc_6 = Hex.toArray(Hex.fromString(_loc_45));
+                        _loc_5 = Hex.toArray(Hex.fromString(_loc_45));
                     }
-                    this._currentMapRenderId = Atouin.getInstance().display(_loc_5, _loc_6);
+                    this._currentMapRenderId = Atouin.getInstance().display(_loc_4, _loc_5);
                     _log.info("Ask map render for fight #" + this._currentMapRenderId);
-                    PlayedCharacterManager.getInstance().currentMap = _loc_5;
-                    KernelEventsManager.getInstance().processCallback(HookList.CurrentMap, _loc_4.mapId);
+                    PlayedCharacterManager.getInstance().currentMap = _loc_4;
+                    KernelEventsManager.getInstance().processCallback(HookList.CurrentMap, _loc_3.mapId);
                     return true;
                 }
                 case param1 is MapsLoadingCompleteMessage:
@@ -402,41 +405,41 @@
                     Atouin.getInstance().showWorld(true);
                     Atouin.getInstance().displayGrid(true);
                     Atouin.getInstance().cellOverEnabled = true;
-                    _loc_7 = new GameContextReadyMessage();
-                    _loc_7.initGameContextReadyMessage(MapDisplayManager.getInstance().currentMapPoint.mapId);
-                    ConnectionsHandler.getConnection().send(_loc_7);
+                    _loc_6 = new GameContextReadyMessage();
+                    _loc_6.initGameContextReadyMessage(MapDisplayManager.getInstance().currentMapPoint.mapId);
+                    ConnectionsHandler.getConnection().send(_loc_6);
                     Kernel.getWorker().resume();
                     ConnectionsHandler.resume();
                     break;
                 }
                 case param1 is GameFightResumeMessage:
                 {
-                    _loc_8 = param1 as GameFightResumeMessage;
+                    _loc_7 = param1 as GameFightResumeMessage;
                     this.tacticModeHandler();
-                    PlayedCharacterManager.getInstance().currentSummonedCreature = _loc_8.summonCount;
-                    this._battleFrame.turnsCount = _loc_8.gameTurn - 1;
-                    CurrentPlayedFighterManager.getInstance().getSpellCastManager().currentTurn = _loc_8.gameTurn - 1;
-                    KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated, (_loc_8.gameTurn - 1));
+                    PlayedCharacterManager.getInstance().currentSummonedCreature = _loc_7.summonCount;
+                    this._battleFrame.turnsCount = _loc_7.gameTurn - 1;
+                    CurrentPlayedFighterManager.getInstance().getSpellCastManager().currentTurn = _loc_7.gameTurn - 1;
+                    KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated, (_loc_7.gameTurn - 1));
                     if (param1 is GameFightResumeWithSlavesMessage)
                     {
                         _loc_46 = param1 as GameFightResumeWithSlavesMessage;
-                        _loc_9 = _loc_46.slavesInfo;
+                        _loc_8 = _loc_46.slavesInfo;
                     }
                     else
                     {
-                        _loc_9 = new Vector.<GameFightResumeSlaveInfo>;
+                        _loc_8 = new Vector.<GameFightResumeSlaveInfo>;
                     }
-                    _loc_10 = new GameFightResumeSlaveInfo();
-                    _loc_10.spellCooldowns = _loc_8.spellCooldowns;
-                    _loc_10.slaveId = PlayedCharacterManager.getInstance().id;
-                    _loc_9.unshift(_loc_10);
-                    _loc_11 = CurrentPlayedFighterManager.getInstance();
-                    _loc_12 = _loc_9.length;
+                    _loc_9 = new GameFightResumeSlaveInfo();
+                    _loc_9.spellCooldowns = _loc_7.spellCooldowns;
+                    _loc_9.slaveId = PlayedCharacterManager.getInstance().id;
+                    _loc_8.unshift(_loc_9);
+                    _loc_10 = CurrentPlayedFighterManager.getInstance();
+                    _loc_11 = _loc_8.length;
                     _loc_47 = 0;
-                    while (_loc_47 < _loc_12)
+                    while (_loc_47 < _loc_11)
                     {
                         
-                        _loc_48 = _loc_9[_loc_47];
+                        _loc_48 = _loc_8[_loc_47];
                         _loc_49 = _loc_48.spellCooldowns.length;
                         _loc_50 = 0;
                         while (_loc_50 < _loc_49)
@@ -447,7 +450,7 @@
                             if (_loc_52)
                             {
                                 _loc_53 = SpellLevel.getLevelById(_loc_52.spell.spellLevels[(_loc_52.spellLevel - 1)]);
-                                _loc_54 = _loc_11.getSpellCastManagerById(_loc_48.slaveId);
+                                _loc_54 = _loc_10.getSpellCastManagerById(_loc_48.slaveId);
                                 _loc_54.castSpell(_loc_52.id, _loc_52.spellLevel, [], false);
                                 _loc_55 = _loc_53.minCastInterval;
                                 if (_loc_51.cooldown != 63)
@@ -487,38 +490,38 @@
                                         _loc_55 = _loc_55 - _loc_56.getTotalBonus(_loc_56.castInterval);
                                     }
                                 }
-                                _loc_54.getSpellManagerBySpellId(_loc_52.id).forceLastCastTurn((_loc_8.gameTurn - 1) + _loc_51.cooldown - _loc_55);
+                                _loc_54.getSpellManagerBySpellId(_loc_52.id).forceLastCastTurn((_loc_7.gameTurn - 1) + _loc_51.cooldown - _loc_55);
                             }
                             _loc_50++;
                         }
                         _loc_47++;
                     }
-                    _loc_13 = [];
-                    for each (_loc_59 in _loc_8.effects)
+                    _loc_12 = [];
+                    for each (_loc_59 in _loc_7.effects)
                     {
                         
-                        if (!_loc_13[_loc_59.effect.targetId])
+                        if (!_loc_12[_loc_59.effect.targetId])
                         {
-                            _loc_13[_loc_59.effect.targetId] = [];
+                            _loc_12[_loc_59.effect.targetId] = [];
                         }
-                        _loc_14 = _loc_13[_loc_59.effect.targetId];
-                        if (!_loc_14[_loc_59.effect.turnDuration])
+                        _loc_13 = _loc_12[_loc_59.effect.targetId];
+                        if (!_loc_13[_loc_59.effect.turnDuration])
                         {
-                            _loc_14[_loc_59.effect.turnDuration] = [];
+                            _loc_13[_loc_59.effect.turnDuration] = [];
                         }
-                        _loc_15 = _loc_14[_loc_59.effect.turnDuration];
-                        _loc_16 = _loc_15[_loc_59.effect.spellId];
-                        if (!_loc_16)
+                        _loc_14 = _loc_13[_loc_59.effect.turnDuration];
+                        _loc_15 = _loc_14[_loc_59.effect.spellId];
+                        if (!_loc_15)
                         {
-                            _loc_16 = new CastingSpell();
-                            _loc_16.casterId = _loc_59.sourceId;
-                            _loc_16.spell = Spell.getSpellById(_loc_59.effect.spellId);
-                            _loc_15[_loc_59.effect.spellId] = _loc_16;
+                            _loc_15 = new CastingSpell();
+                            _loc_15.casterId = _loc_59.sourceId;
+                            _loc_15.spell = Spell.getSpellById(_loc_59.effect.spellId);
+                            _loc_14[_loc_59.effect.spellId] = _loc_15;
                         }
-                        _loc_60 = BuffManager.makeBuffFromEffect(_loc_59.effect, _loc_16, _loc_59.actionId);
+                        _loc_60 = BuffManager.makeBuffFromEffect(_loc_59.effect, _loc_15, _loc_59.actionId);
                         BuffManager.getInstance().addBuff(_loc_60);
                     }
-                    for each (_loc_61 in _loc_8.marks)
+                    for each (_loc_61 in _loc_7.marks)
                     {
                         
                         _loc_62 = Spell.getSpellById(_loc_61.markSpellId);
@@ -538,42 +541,42 @@
                 }
                 case param1 is GameFightUpdateTeamMessage:
                 {
-                    _loc_17 = param1 as GameFightUpdateTeamMessage;
-                    PlayedCharacterManager.getInstance().teamId = _loc_17.team.teamId;
+                    _loc_16 = param1 as GameFightUpdateTeamMessage;
+                    PlayedCharacterManager.getInstance().teamId = _loc_16.team.teamId;
                     return true;
                 }
                 case param1 is GameFightSpectateMessage:
                 {
-                    _loc_18 = param1 as GameFightSpectateMessage;
+                    _loc_17 = param1 as GameFightSpectateMessage;
                     this.tacticModeHandler();
-                    this._battleFrame.turnsCount = _loc_18.gameTurn - 1;
-                    KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated, (_loc_18.gameTurn - 1));
-                    _loc_19 = [];
-                    for each (_loc_65 in _loc_18.effects)
+                    this._battleFrame.turnsCount = _loc_17.gameTurn - 1;
+                    KernelEventsManager.getInstance().processCallback(FightHookList.TurnCountUpdated, (_loc_17.gameTurn - 1));
+                    _loc_18 = [];
+                    for each (_loc_65 in _loc_17.effects)
                     {
                         
-                        if (!_loc_19[_loc_65.effect.targetId])
+                        if (!_loc_18[_loc_65.effect.targetId])
                         {
-                            _loc_19[_loc_65.effect.targetId] = [];
+                            _loc_18[_loc_65.effect.targetId] = [];
                         }
-                        _loc_20 = _loc_19[_loc_65.effect.targetId];
-                        if (!_loc_20[_loc_65.effect.turnDuration])
+                        _loc_19 = _loc_18[_loc_65.effect.targetId];
+                        if (!_loc_19[_loc_65.effect.turnDuration])
                         {
-                            _loc_20[_loc_65.effect.turnDuration] = [];
+                            _loc_19[_loc_65.effect.turnDuration] = [];
                         }
-                        _loc_21 = _loc_20[_loc_65.effect.turnDuration];
-                        _loc_22 = _loc_21[_loc_65.effect.spellId];
-                        if (!_loc_22)
+                        _loc_20 = _loc_19[_loc_65.effect.turnDuration];
+                        _loc_21 = _loc_20[_loc_65.effect.spellId];
+                        if (!_loc_21)
                         {
-                            _loc_22 = new CastingSpell();
-                            _loc_22.casterId = _loc_65.sourceId;
-                            _loc_22.spell = Spell.getSpellById(_loc_65.effect.spellId);
-                            _loc_21[_loc_65.effect.spellId] = _loc_22;
+                            _loc_21 = new CastingSpell();
+                            _loc_21.casterId = _loc_65.sourceId;
+                            _loc_21.spell = Spell.getSpellById(_loc_65.effect.spellId);
+                            _loc_20[_loc_65.effect.spellId] = _loc_21;
                         }
-                        _loc_66 = BuffManager.makeBuffFromEffect(_loc_65.effect, _loc_22, _loc_65.actionId);
+                        _loc_66 = BuffManager.makeBuffFromEffect(_loc_65.effect, _loc_21, _loc_65.actionId);
                         BuffManager.getInstance().addBuff(_loc_66);
                     }
-                    for each (_loc_67 in _loc_18.marks)
+                    for each (_loc_67 in _loc_17.marks)
                     {
                         
                         _loc_68 = Spell.getSpellById(_loc_67.markSpellId);
@@ -593,9 +596,9 @@
                 }
                 case param1 is INetworkMessage && INetworkMessage(param1).getMessageId() == GameFightJoinMessage.protocolId:
                 {
-                    _loc_23 = param1 as GameFightJoinMessage;
-                    preFightIsActive = !_loc_23.isFightStarted;
-                    this.fightType = _loc_23.fightType;
+                    _loc_22 = param1 as GameFightJoinMessage;
+                    preFightIsActive = !_loc_22.isFightStarted;
+                    this.fightType = _loc_22.fightType;
                     Kernel.getWorker().addFrame(this._entitiesFrame);
                     if (preFightIsActive)
                     {
@@ -607,20 +610,20 @@
                         Kernel.getWorker().addFrame(this._battleFrame);
                         KernelEventsManager.getInstance().processCallback(HookList.GameFightStart);
                     }
-                    PlayedCharacterManager.getInstance().isSpectator = _loc_23.isSpectator;
+                    PlayedCharacterManager.getInstance().isSpectator = _loc_22.isSpectator;
                     PlayedCharacterManager.getInstance().isFighting = true;
-                    _loc_24 = _loc_23.timeMaxBeforeFightStart;
-                    if (_loc_24 == 0 && preFightIsActive)
+                    _loc_23 = _loc_22.timeMaxBeforeFightStart;
+                    if (_loc_23 == 0 && preFightIsActive)
                     {
-                        _loc_24 = -1;
+                        _loc_23 = -1;
                     }
-                    KernelEventsManager.getInstance().processCallback(HookList.GameFightJoin, _loc_23.canBeCancelled, _loc_23.canSayReady, _loc_23.isSpectator, _loc_24, _loc_23.fightType);
+                    KernelEventsManager.getInstance().processCallback(HookList.GameFightJoin, _loc_22.canBeCancelled, _loc_22.canSayReady, _loc_22.isSpectator, _loc_23, _loc_22.fightType);
                     return true;
                 }
                 case param1 is GameActionFightCarryCharacterMessage:
                 {
-                    _loc_25 = param1 as GameActionFightCarryCharacterMessage;
-                    if (this._lastEffectEntity && this._lastEffectEntity.object.id == _loc_25.targetId)
+                    _loc_24 = param1 as GameActionFightCarryCharacterMessage;
+                    if (this._lastEffectEntity && this._lastEffectEntity.object.id == _loc_24.targetId)
                     {
                         this.process(new EntityMouseOutMessage(this._lastEffectEntity.object as IInteractive));
                     }
@@ -639,65 +642,65 @@
                 }
                 case param1 is CellOutMessage:
                 {
-                    _loc_26 = param1 as CellOutMessage;
-                    for each (_loc_71 in EntitiesManager.getInstance().getEntitiesOnCell(_loc_26.cellId))
+                    _loc_25 = param1 as CellOutMessage;
+                    for each (_loc_71 in EntitiesManager.getInstance().getEntitiesOnCell(_loc_25.cellId))
                     {
                         
                         if (_loc_71 is AnimatedCharacter)
                         {
-                            _loc_27 = _loc_71 as AnimatedCharacter;
+                            _loc_26 = _loc_71 as AnimatedCharacter;
                             break;
                         }
                     }
-                    if (_loc_27)
+                    if (_loc_26)
                     {
                         TooltipManager.hide();
                         TooltipManager.hide("fighter");
-                        this.outEntity(_loc_27.id);
+                        this.outEntity(_loc_26.id);
                     }
                     currentCell = -1;
                     return true;
                 }
                 case param1 is CellOverMessage:
                 {
-                    _loc_28 = param1 as CellOverMessage;
-                    for each (_loc_72 in EntitiesManager.getInstance().getEntitiesOnCell(_loc_28.cellId))
+                    _loc_27 = param1 as CellOverMessage;
+                    for each (_loc_72 in EntitiesManager.getInstance().getEntitiesOnCell(_loc_27.cellId))
                     {
                         
                         if (_loc_72 is AnimatedCharacter && !(_loc_72 as AnimatedCharacter).isMoving)
                         {
-                            _loc_29 = _loc_72 as AnimatedCharacter;
+                            _loc_28 = _loc_72 as AnimatedCharacter;
                             break;
                         }
                     }
-                    if (_loc_29)
+                    if (_loc_28)
                     {
-                        this.overEntity(_loc_29.id);
+                        this.overEntity(_loc_28.id);
                     }
-                    currentCell = _loc_28.cellId;
+                    currentCell = _loc_27.cellId;
                     return true;
                 }
                 case param1 is EntityMouseOverMessage:
                 {
-                    _loc_30 = param1 as EntityMouseOverMessage;
-                    currentCell = _loc_30.entity.position.cellId;
-                    this.overEntity(_loc_30.entity.id);
+                    _loc_29 = param1 as EntityMouseOverMessage;
+                    currentCell = _loc_29.entity.position.cellId;
+                    this.overEntity(_loc_29.entity.id);
                     return true;
                 }
                 case param1 is EntityMouseOutMessage:
                 {
-                    _loc_31 = param1 as EntityMouseOutMessage;
+                    _loc_30 = param1 as EntityMouseOutMessage;
                     TooltipManager.hide();
                     TooltipManager.hide("fighter");
                     currentCell = -1;
-                    this.outEntity(_loc_31.entity.id);
+                    this.outEntity(_loc_30.entity.id);
                     return true;
                 }
                 case param1 is TimelineEntityOverAction:
                 {
-                    _loc_32 = param1 as TimelineEntityOverAction;
-                    this.overEntity(_loc_32.targetId, _loc_32.showRange);
-                    timelineOverEntityId = _loc_32.targetId;
+                    _loc_31 = param1 as TimelineEntityOverAction;
+                    this.overEntity(_loc_31.targetId, _loc_31.showRange);
+                    timelineOverEntityId = _loc_31.targetId;
                     return true;
                 }
                 case param1 is TimelineEntityOutAction:
@@ -709,7 +712,7 @@
                 }
                 case param1 is TogglePointCellAction:
                 {
-                    _loc_33 = param1 as TogglePointCellAction;
+                    _loc_32 = param1 as TogglePointCellAction;
                     if (Kernel.getWorker().contains(FightPointCellFrame))
                     {
                         KernelEventsManager.getInstance().processCallback(HookList.ShowCell);
@@ -723,7 +726,7 @@
                 }
                 case param1 is GameFightEndMessage:
                 {
-                    _loc_34 = param1 as GameFightEndMessage;
+                    _loc_33 = param1 as GameFightEndMessage;
                     if (TacticModeManager.getInstance().tacticModeActivated)
                     {
                         TacticModeManager.getInstance().hide(true);
@@ -743,7 +746,7 @@
                     PlayedCharacterManager.getInstance().isFighting = false;
                     SpellWrapper.removeAllSpellWrapperBut(PlayedCharacterManager.getInstance().id, SecureCenter.ACCESS_KEY);
                     SpellWrapper.resetAllCoolDown(PlayedCharacterManager.getInstance().id, SecureCenter.ACCESS_KEY);
-                    if (_loc_34.results == null)
+                    if (_loc_33.results == null)
                     {
                         KernelEventsManager.getInstance().processCallback(FightHookList.SpectatorWantLeave);
                     }
@@ -755,7 +758,7 @@
                         _loc_74 = new Vector.<FightResultEntryWrapper>;
                         _loc_75 = 0;
                         _loc_77 = new Vector.<FightResultEntryWrapper>;
-                        for each (_loc_78 in _loc_34.results)
+                        for each (_loc_78 in _loc_33.results)
                         {
                             
                             switch(true)
@@ -857,9 +860,9 @@
                         }
                         _loc_79 = new Object();
                         _loc_79.results = _loc_74;
-                        _loc_79.ageBonus = _loc_34.ageBonus;
-                        _loc_79.sizeMalus = _loc_34.lootShareLimitMalus;
-                        _loc_79.duration = _loc_34.duration;
+                        _loc_79.ageBonus = _loc_33.ageBonus;
+                        _loc_79.sizeMalus = _loc_33.lootShareLimitMalus;
+                        _loc_79.duration = _loc_33.duration;
                         _loc_79.challenges = this.challengesList;
                         _loc_79.turns = this._battleFrame.turnsCount;
                         _loc_79.fightType = this._fightType;
@@ -871,16 +874,16 @@
                 }
                 case param1 is ChallengeTargetsListRequestAction:
                 {
-                    _loc_35 = param1 as ChallengeTargetsListRequestAction;
-                    _loc_36 = new ChallengeTargetsListRequestMessage();
-                    _loc_36.initChallengeTargetsListRequestMessage(_loc_35.challengeId);
-                    ConnectionsHandler.getConnection().send(_loc_36);
+                    _loc_34 = param1 as ChallengeTargetsListRequestAction;
+                    _loc_35 = new ChallengeTargetsListRequestMessage();
+                    _loc_35.initChallengeTargetsListRequestMessage(_loc_34.challengeId);
+                    ConnectionsHandler.getConnection().send(_loc_35);
                     return true;
                 }
                 case param1 is ChallengeTargetsListMessage:
                 {
-                    _loc_37 = param1 as ChallengeTargetsListMessage;
-                    for each (_loc_86 in _loc_37.targetCells)
+                    _loc_36 = param1 as ChallengeTargetsListMessage;
+                    for each (_loc_86 in _loc_36.targetCells)
                     {
                         
                         if (_loc_86 != -1)
@@ -892,53 +895,53 @@
                 }
                 case param1 is ChallengeInfoMessage:
                 {
-                    _loc_38 = param1 as ChallengeInfoMessage;
-                    _loc_39 = this.getChallengeById(_loc_38.challengeId);
-                    if (!_loc_39)
+                    _loc_37 = param1 as ChallengeInfoMessage;
+                    _loc_38 = this.getChallengeById(_loc_37.challengeId);
+                    if (!_loc_38)
                     {
-                        _loc_39 = new ChallengeWrapper();
-                        this.challengesList.push(_loc_39);
+                        _loc_38 = new ChallengeWrapper();
+                        this.challengesList.push(_loc_38);
                     }
-                    _loc_39.id = _loc_38.challengeId;
-                    _loc_39.targetId = _loc_38.targetId;
-                    _loc_39.baseXpBonus = _loc_38.baseXpBonus;
-                    _loc_39.extraXpBonus = _loc_38.extraXpBonus;
-                    _loc_39.baseDropBonus = _loc_38.baseDropBonus;
-                    _loc_39.extraDropBonus = _loc_38.extraDropBonus;
-                    _loc_39.result = 0;
+                    _loc_38.id = _loc_37.challengeId;
+                    _loc_38.targetId = _loc_37.targetId;
+                    _loc_38.baseXpBonus = _loc_37.baseXpBonus;
+                    _loc_38.extraXpBonus = _loc_37.extraXpBonus;
+                    _loc_38.baseDropBonus = _loc_37.baseDropBonus;
+                    _loc_38.extraDropBonus = _loc_37.extraDropBonus;
+                    _loc_38.result = 0;
                     KernelEventsManager.getInstance().processCallback(FightHookList.ChallengeInfoUpdate, this.challengesList);
                     return true;
                 }
                 case param1 is ChallengeTargetUpdateMessage:
                 {
-                    _loc_40 = param1 as ChallengeTargetUpdateMessage;
-                    _loc_39 = this.getChallengeById(_loc_40.challengeId);
-                    if (_loc_39 == null)
+                    _loc_39 = param1 as ChallengeTargetUpdateMessage;
+                    _loc_38 = this.getChallengeById(_loc_39.challengeId);
+                    if (_loc_38 == null)
                     {
-                        _log.warn("Got a challenge result with no corresponding challenge (challenge id " + _loc_40.challengeId + "), skipping.");
+                        _log.warn("Got a challenge result with no corresponding challenge (challenge id " + _loc_39.challengeId + "), skipping.");
                         return false;
                     }
-                    _loc_39.targetId = _loc_40.targetId;
+                    _loc_38.targetId = _loc_39.targetId;
                     KernelEventsManager.getInstance().processCallback(FightHookList.ChallengeInfoUpdate, this.challengesList);
                     return true;
                 }
                 case param1 is ChallengeResultMessage:
                 {
-                    _loc_41 = param1 as ChallengeResultMessage;
-                    _loc_39 = this.getChallengeById(_loc_41.challengeId);
-                    if (!_loc_39)
+                    _loc_40 = param1 as ChallengeResultMessage;
+                    _loc_38 = this.getChallengeById(_loc_40.challengeId);
+                    if (!_loc_38)
                     {
-                        _log.warn("Got a challenge result with no corresponding challenge (challenge id " + _loc_41.challengeId + "), skipping.");
+                        _log.warn("Got a challenge result with no corresponding challenge (challenge id " + _loc_40.challengeId + "), skipping.");
                         return false;
                     }
-                    _loc_39.result = _loc_41.success ? (1) : (2);
+                    _loc_38.result = _loc_40.success ? (1) : (2);
                     KernelEventsManager.getInstance().processCallback(FightHookList.ChallengeInfoUpdate, this.challengesList);
                     return true;
                 }
                 case param1 is MapObstacleUpdateMessage:
                 {
-                    _loc_42 = param1 as MapObstacleUpdateMessage;
-                    for each (_loc_87 in _loc_42.obstacles)
+                    _loc_41 = param1 as MapObstacleUpdateMessage;
+                    for each (_loc_87 in _loc_41.obstacles)
                     {
                         
                         InteractiveCellManager.getInstance().updateCell(_loc_87.obstacleCellId, _loc_87.state == MapObstacleStateEnum.OBSTACLE_OPENED);
@@ -947,25 +950,25 @@
                 }
                 case param1 is GameActionFightNoSpellCastMessage:
                 {
-                    _loc_43 = param1 as GameActionFightNoSpellCastMessage;
-                    if (_loc_43.spellLevelId != 0 || !PlayedCharacterManager.getInstance().currentWeapon)
+                    _loc_42 = param1 as GameActionFightNoSpellCastMessage;
+                    if (_loc_42.spellLevelId != 0 || !PlayedCharacterManager.getInstance().currentWeapon)
                     {
-                        if (_loc_43.spellLevelId == 0)
+                        if (_loc_42.spellLevelId == 0)
                         {
                             _loc_89 = Spell.getSpellById(0).spellLevels[0];
                             _loc_88 = SpellLevel.getLevelById(_loc_89);
                         }
                         else
                         {
-                            _loc_88 = SpellLevel.getLevelById(_loc_43.spellLevelId);
+                            _loc_88 = SpellLevel.getLevelById(_loc_42.spellLevelId);
                         }
-                        _loc_44 = _loc_88.apCost;
+                        _loc_43 = _loc_88.apCost;
                     }
                     else
                     {
-                        _loc_44 = PlayedCharacterManager.getInstance().currentWeapon.apCost;
+                        _loc_43 = PlayedCharacterManager.getInstance().currentWeapon.apCost;
                     }
-                    CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent + _loc_44;
+                    CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().actionPointsCurrent + _loc_43;
                     return true;
                 }
                 case param1 is ShowTacticModeAction:

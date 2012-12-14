@@ -14,6 +14,7 @@
         private static var _apiClass:Array = new Array();
         private static var _apiInstance:Array = new Array();
         private static var _apiData:Array = new Array();
+        private static var _isComplexFctCache:Dictionary = new Dictionary();
 
         public function ApiBinder()
         {
@@ -218,7 +219,7 @@
                         {
                             api[method.@name] = createDepreciatedMethod(apiRef[method.@name], method.@name, help);
                         }
-                        else if (boxing)
+                        else if (boxing && !isComplexFct(method))
                         {
                             api[method.@name] = SecureCenter.secure(apiRef[method.@name]);
                         }
@@ -264,6 +265,33 @@
                 _log.error("Api [" + name + "] is not avaible");
             }
             return null;
+        }// end function
+
+        private static function isComplexFct(param1:XML) : Boolean
+        {
+            var _loc_4:* = null;
+            var _loc_2:* = param1.@declaredBy + "_" + param1.@name;
+            if (_isComplexFctCache[_loc_2] != null)
+            {
+                return _isComplexFctCache[_loc_2];
+            }
+            var _loc_3:* = ["int", "uint", "Number", "Boolean", "String", "void"];
+            if (_loc_3.indexOf(param1.@returnType.toString()) == -1)
+            {
+                _isComplexFctCache[_loc_2] = false;
+                return false;
+            }
+            for each (_loc_4 in param1..parameter..@type)
+            {
+                
+                if (_loc_3.indexOf(_loc_4) == -1)
+                {
+                    _isComplexFctCache[_loc_2] = false;
+                    return false;
+                }
+            }
+            _isComplexFctCache[_loc_2] = true;
+            return true;
         }// end function
 
         private static function createDepreciatedMethod(param1:Function, param2:String, param3:String) : Function

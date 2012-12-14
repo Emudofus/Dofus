@@ -16,8 +16,9 @@
             param1.addHandler("version", new VersionInstructionHandler());
             param1.addHandler("mapid", new DisplayMapInstructionHandler());
             param1.addHandler(["savereplaylog"], new MiscInstructionHandler());
-            param1.addHandler(["loadui", "unloadui", "clearuicache", "useuicache", "uilist", "reloadui", "modulelist"], new UiHandlerInstructionHandler());
+            param1.addHandler(["uiinspector", "inspectuielement", "loadui", "unloadui", "clearuicache", "useuicache", "uilist", "reloadui", "modulelist"], new UiHandlerInstructionHandler());
             param1.addHandler(["sendaction", "listactions", "sendhook"], new ActionsInstructionHandler());
+            param1.addHandler(["adduisoundelement"], new SoundInstructionHandler());
             return;
         }// end function
 

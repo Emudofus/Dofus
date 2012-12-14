@@ -3,6 +3,7 @@
     import __AS3__.vec.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.pools.*;
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
     import com.ankamagames.jerakine.utils.display.*;
     import com.ankamagames.jerakine.utils.misc.*;
@@ -275,8 +276,11 @@
                     _log.warn("Queued message: " + _loc_3);
                     continue;
                 }
-                _log.info("Process " + _loc_3);
                 this.processMessage(_loc_3);
+                if (_loc_3 is Poolable)
+                {
+                    GenericPool.free(_loc_3 as Poolable);
+                }
                 this.processFramesInAndOut();
                 _loc_1 = _loc_1 + 1;
             }
@@ -301,12 +305,8 @@
                     break;
                 }
             }
-            if (DEBUG_MESSAGES && _loc_2)
-            {
-                _log.info("Message " + param1 + " processed by " + getQualifiedClassName(_loc_3).split("::")[1] + " (at frame " + FrameIdManager.frameId + ")");
-            }
             this._processingMessage = false;
-            if (!_loc_2 && !(param1 is DiscardableMessage))
+            if (!_loc_2 && !(param1 is DiscardableMessage) && getQualifiedClassName(param1).indexOf("MapContainer") == -1)
             {
                 _log.warn("Discarded message: " + param1 + " (at frame " + FrameIdManager.frameId + ")");
             }

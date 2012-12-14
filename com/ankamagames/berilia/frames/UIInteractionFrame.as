@@ -15,6 +15,7 @@
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.pools.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.utils.display.*;
     import com.ankamagames.jerakine.utils.misc.*;
@@ -64,6 +65,7 @@
             var _loc_14:* = null;
             var _loc_15:* = null;
             var _loc_16:* = null;
+            var _loc_17:* = null;
             this._isProcessingDirectInteraction = false;
             this.currentDo = null;
             switch(true)
@@ -136,6 +138,10 @@
                             this.processRegisteredUiEvent(param1, _loc_5);
                             break;
                         }
+                        if (this.currentDo)
+                        {
+                            UiSoundManager.getInstance().fromUiElement(this.currentDo as GraphicContainer, EventEnums.convertMsgToFct(getQualifiedClassName(param1)));
+                        }
                         this.currentDo = this.currentDo.parent;
                     }
                     if (param1 is MouseClickMessage)
@@ -144,7 +150,7 @@
                     }
                     if (param1 is MouseDoubleClickMessage && !_loc_6)
                     {
-                        _loc_11 = new MouseClickMessage(_loc_2.target as InteractiveObject, new MouseEvent(MouseEvent.CLICK));
+                        _loc_11 = GenericPool.get(MouseClickMessage, _loc_2.target as InteractiveObject, new MouseEvent(MouseEvent.CLICK));
                         Berilia.getInstance().handler.process(_loc_11);
                     }
                     this.hierarchy = null;
@@ -192,6 +198,8 @@
                             
                             Berilia.getInstance().handler.process(_loc_14);
                         }
+                        _loc_15 = EventEnums.convertMsgToFct(getQualifiedClassName(param1));
+                        UiSoundManager.getInstance().fromUiElement(_loc_7.target as GraphicContainer, _loc_15);
                         this.currentDo = _loc_7.target;
                         while (this.currentDo != null)
                         {
@@ -310,7 +318,7 @@
                                     break;
                                 }
                             }
-                            if (_loc_16)
+                            if (_loc_17)
                             {
                             }
                         }

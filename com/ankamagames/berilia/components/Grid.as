@@ -55,11 +55,17 @@
         protected var _totalSlotByCol:uint;
         protected var _avaibleSpaceX:uint;
         protected var _avaibleSpaceY:uint;
+        protected var _hiddenRow:uint = 0;
+        protected var _hiddenCol:uint = 0;
+        protected var _mask:Shape;
+        public var keyboardIndexHandler:Function;
+        public var silent:Boolean;
         private static var _include_XmlUiGridRenderer:XmlUiGridRenderer = null;
         private static var _include_LabelGridRenderer:LabelGridRenderer = null;
         private static var _include_SlotGridRenderer:SlotGridRenderer = null;
         private static var _include_EntityGridRenderer:EntityGridRenderer = null;
         private static var _include_InlineXmlGridRender:InlineXmlGridRender = null;
+        private static var _include_MultiGridRenderer:MultiGridRenderer = null;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         static const _log:Logger = Log.getLogger(getQualifiedClassName(Grid));
         public static const AUTOSELECT_NONE:int = 0;
@@ -436,6 +442,36 @@
             return;
         }// end function
 
+        public function get hiddenRow() : uint
+        {
+            return this._hiddenRow;
+        }// end function
+
+        public function get hiddenCol() : uint
+        {
+            return this._hiddenCol;
+        }// end function
+
+        public function set hiddenRow(param1:uint) : void
+        {
+            this._hiddenRow = param1;
+            if (this.finalized)
+            {
+                this.finalize();
+            }
+            return;
+        }// end function
+
+        public function set hiddenCol(param1:uint) : void
+        {
+            this._hiddenCol = param1;
+            if (this.finalized)
+            {
+                this.finalize();
+            }
+            return;
+        }// end function
+
         public function renderModificator(param1:Array, param2:Object) : Array
         {
             var _loc_3:* = null;
@@ -552,6 +588,21 @@
                     removeChild(this._scrollBarH);
                     this._scrollBarH.max = 0;
                     this._scrollBarH.finalize();
+                }
+            }
+            if (this._hiddenCol || this._hiddenRow)
+            {
+                if (!this._mask)
+                {
+                    this._mask = new Shape();
+                }
+                if (this._mask.width != width || this._mask.height != height)
+                {
+                    this._mask.graphics.clear();
+                    this._mask.graphics.beginFill(16776960);
+                    this._mask.graphics.drawRect(0, 0, width, height);
+                    addChild(this._mask);
+                    mask = this._mask;
                 }
             }
             this._finalized = true;
@@ -829,12 +880,12 @@
                 }
             }
             var _loc_3:* = 0;
-            var _loc_5:* = 0;
-            while (_loc_5 < this._slotByCol)
+            var _loc_5:* = -this._hiddenRow;
+            while (_loc_5 < this._slotByCol + this._hiddenRow)
             {
                 
-                _loc_7 = 0;
-                while (_loc_7 < this._slotByRow)
+                _loc_7 = -this._hiddenCol;
+                while (_loc_7 < this._slotByRow + this._hiddenCol)
                 {
                     
                     _loc_2 = _loc_7 + this._pageXOffset * this._slotByCol + _loc_5 * this._totalSlotByRow + this._pageYOffset * this._slotByRow;
@@ -878,9 +929,9 @@
                     _loc_1.y = _loc_5 * this._slotHeight + _loc_5 * (this._avaibleSpaceY - this._slotByCol * this._slotHeight) / this._slotByCol;
                     addChild(_loc_1);
                     _loc_3 = _loc_3 + 1;
-                    _loc_7 = _loc_7 + 1;
+                    _loc_7++;
                 }
-                _loc_5 = _loc_5 + 1;
+                _loc_5++;
             }
             while (this._items[_loc_3])
             {
@@ -942,14 +993,14 @@
                 {
                     _loc_7[_loc_5.index] = _loc_5;
                 }
-                _loc_3 = _loc_3 + 1;
+                _loc_3++;
             }
-            _loc_4 = 0;
-            while (_loc_4 < this._slotByCol)
+            _loc_4 = -this._hiddenRow;
+            while (_loc_4 < this._slotByCol + this._hiddenRow)
             {
                 
-                _loc_3 = 0;
-                while (_loc_3 < this._slotByRow)
+                _loc_3 = -this._hiddenCol;
+                while (_loc_3 < this._slotByRow + this._hiddenCol)
                 {
                     
                     _loc_10 = this._totalSlotByRow * _loc_4 + _loc_3 + this._pageXOffset;
@@ -984,9 +1035,9 @@
                     {
                         _loc_5.container.x = Math.floor(_loc_5.index % this._totalSlotByRow - param1) * (this._slotWidth + (this._avaibleSpaceX - this._slotByRow * this._slotWidth) / this._slotByRow);
                     }
-                    _loc_3 = _loc_3 + 1;
+                    _loc_3++;
                 }
-                _loc_4 = _loc_4 + 1;
+                _loc_4++;
             }
             return;
         }// end function
@@ -1016,7 +1067,7 @@
                         this._renderer.update(this._dataProvider[_loc_3], _loc_3, _loc_5.container, false);
                     }
                 }
-                Berilia.getInstance().handler.process(new SelectItemMessage(this, param2, _loc_3 != this._nSelectedIndex));
+                this.dispatchMessage(new SelectItemMessage(this, param2, _loc_3 != this._nSelectedIndex));
             }
             else
             {
@@ -1052,7 +1103,7 @@
                     param1++;
                 }
                 this.moveTo(this._nSelectedIndex);
-                Berilia.getInstance().handler.process(new SelectItemMessage(this, param2, _loc_3 != this._nSelectedIndex));
+                this.dispatchMessage(new SelectItemMessage(this, param2, _loc_3 != this._nSelectedIndex));
             }
             return;
         }// end function
@@ -1251,7 +1302,8 @@
             var _loc_6:* = null;
             var _loc_7:* = null;
             var _loc_8:* = null;
-            var _loc_9:* = false;
+            var _loc_9:* = 0;
+            var _loc_10:* = 0;
             switch(true)
             {
                 case param1 is MouseRightClickMessage:
@@ -1262,7 +1314,7 @@
                     {
                         if (UIEventManager.getInstance().isRegisteredInstance(this, ItemRightClickMessage))
                         {
-                            Berilia.getInstance().handler.process(new ItemRightClickMessage(this, _loc_2));
+                            this.dispatchMessage(new ItemRightClickMessage(this, _loc_2));
                         }
                     }
                     break;
@@ -1275,7 +1327,7 @@
                     {
                         if (UIEventManager.getInstance().isRegisteredInstance(this, ItemRollOverMessage))
                         {
-                            Berilia.getInstance().handler.process(new ItemRollOverMessage(this, _loc_2));
+                            this.dispatchMessage(new ItemRollOverMessage(this, _loc_2));
                         }
                     }
                     break;
@@ -1288,7 +1340,7 @@
                     {
                         if (UIEventManager.getInstance().isRegisteredInstance(this, ItemRollOutMessage))
                         {
-                            Berilia.getInstance().handler.process(new ItemRollOutMessage(this, _loc_2));
+                            this.dispatchMessage(new ItemRollOutMessage(this, _loc_2));
                         }
                     }
                     break;
@@ -1311,7 +1363,7 @@
                             {
                                 if (UIEventManager.getInstance().isRegisteredInstance(this, SelectEmptyItemMessage))
                                 {
-                                    Berilia.getInstance().handler.process(new SelectEmptyItemMessage(this, SelectMethodEnum.CLICK));
+                                    this.dispatchMessage(new SelectEmptyItemMessage(this, SelectMethodEnum.CLICK));
                                 }
                                 this.setSelectedIndex(-1, SelectMethodEnum.CLICK);
                             }
@@ -1342,38 +1394,38 @@
                     _loc_2 = this.getGridItem(_loc_7.target);
                     if (this._items && this._items[0] is GridItem && GridItem(this._items[0]).container is Slot && !_loc_2)
                     {
-                        this.getNearestSlot(_loc_7.mouseEvent).process(_loc_7);
+                        this.dispatchMessage(_loc_7, this.getNearestSlot(_loc_7.mouseEvent));
                     }
                     break;
                 }
                 case param1 is KeyboardKeyDownMessage:
                 {
                     _loc_8 = param1 as KeyboardKeyDownMessage;
-                    _loc_9 = false;
+                    _loc_10 = -1;
                     switch(_loc_8.keyboardEvent.keyCode)
                     {
                         case Keyboard.UP:
                         {
-                            this.setSelectedIndex(this.selectedIndex - this._totalSlotByRow, SelectMethodEnum.UP_ARROW);
-                            _loc_9 = true;
+                            _loc_9 = this.selectedIndex - this._totalSlotByRow;
+                            _loc_10 = SelectMethodEnum.UP_ARROW;
                             break;
                         }
                         case Keyboard.DOWN:
                         {
-                            this.setSelectedIndex(this.selectedIndex + this._totalSlotByRow, SelectMethodEnum.DOWN_ARROW);
-                            _loc_9 = true;
+                            _loc_9 = this.selectedIndex + this._totalSlotByRow;
+                            _loc_10 = SelectMethodEnum.DOWN_ARROW;
                             break;
                         }
                         case Keyboard.RIGHT:
                         {
-                            this.setSelectedIndex((this.selectedIndex + 1), SelectMethodEnum.RIGHT_ARROW);
-                            _loc_9 = true;
+                            _loc_9 = this.selectedIndex + 1;
+                            _loc_10 = SelectMethodEnum.RIGHT_ARROW;
                             break;
                         }
                         case Keyboard.LEFT:
                         {
-                            this.setSelectedIndex((this.selectedIndex - 1), SelectMethodEnum.LEFT_ARROW);
-                            _loc_9 = true;
+                            _loc_9 = this.selectedIndex - 1;
+                            _loc_10 = SelectMethodEnum.LEFT_ARROW;
                             break;
                         }
                         default:
@@ -1381,8 +1433,13 @@
                             break;
                         }
                     }
-                    if (_loc_9)
+                    if (_loc_10 != -1)
                     {
+                        if (this.keyboardIndexHandler != null)
+                        {
+                            _loc_9 = this.keyboardIndexHandler(this.selectedIndex, _loc_9);
+                        }
+                        this.setSelectedIndex(_loc_9, _loc_10);
                         this.moveTo(this.selectedIndex);
                         return true;
                     }
@@ -1394,6 +1451,19 @@
                 }
             }
             return false;
+        }// end function
+
+        private function dispatchMessage(param1:Message, param2:MessageHandler = null) : void
+        {
+            if (!this.silent)
+            {
+                if (!param2)
+                {
+                    param2 = Berilia.getInstance().handler;
+                }
+                param2.process(param1);
+            }
+            return;
         }// end function
 
     }

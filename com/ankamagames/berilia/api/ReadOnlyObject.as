@@ -87,6 +87,11 @@
                     }
                     return this._object + "";
                 }
+                case "getBounds":
+                {
+                    var _loc_4:* = this._object;
+                    return _loc_4.this._object[](SecureCenter.unsecure([0]));
+                }
                 case "hasOwnProperty":
                 {
                     return CallWithParameters.callR(this._object.hasOwnProperty, );

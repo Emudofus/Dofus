@@ -9,6 +9,7 @@
     import com.ankamagames.atouin.managers.*;
     import com.ankamagames.atouin.types.*;
     import com.ankamagames.atouin.types.events.*;
+    import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.resources.adapters.impl.*;
@@ -72,24 +73,47 @@
         private var _downloadTimer:Timer;
         private var _fileToLoad:uint;
         private var _fileLoaded:uint;
-        private var _bitmapForegroundContainer:Sprite;
-        private var _foregroundIndex:int;
+        private var _cancelRender:Boolean;
+        private var _bitmapForegroundContainer:Bitmap;
         private var _layersData:Array;
         private var _tacticModeActivated:Boolean = false;
+        private var colorTransform:ColorTransform;
+        private var _m:Matrix;
+        private var _srcRect:Rectangle;
+        private var _destPoint:Point;
+        private var _ceilBitmapData:BitmapData;
+        private var _clTrans:ColorTransform;
         public static var MEMORY_LOG_1:Dictionary = new Dictionary(true);
         public static var MEMORY_LOG_2:Dictionary = new Dictionary(true);
         static const _log:Logger = Log.getLogger(getQualifiedClassName(MapRenderer));
         public static var cachedAsBitmapElement:Array = new Array();
         public static var boundingBoxElements:Array;
+        private static var _bitmapOffsetPoint:Point;
+        private static var _groundGlobalScaleRatio:Number;
 
         public function MapRenderer(param1:DisplayObjectContainer, param2:Elements)
         {
+            var _loc_4:* = undefined;
             this._bitmapsGfx = [];
             this._swfGfx = [];
             this._swfApplicationDomain = new Array();
             this._hideForeground = Atouin.getInstance().options.hideForeground;
             this._downloadTimer = new Timer(1);
+            this.colorTransform = new ColorTransform();
+            this._m = new Matrix();
+            this._srcRect = new Rectangle();
+            this._destPoint = new Point();
+            this._clTrans = new ColorTransform();
             this._container = param1;
+            if (isNaN(_groundGlobalScaleRatio))
+            {
+                _loc_4 = XmlConfig.getInstance().getEntry("config.gfx.world.scaleRatio");
+                _groundGlobalScaleRatio = _loc_4 == null ? (1) : (parseFloat(_loc_4));
+            }
+            if (_bitmapOffsetPoint == null)
+            {
+                _bitmapOffsetPoint = StageShareManager.stage.localToGlobal(new Point(this._container.x, this._container.y));
+            }
             this._elements = param2;
             this._icm = InteractiveCellManager.getInstance();
             this._gfxPath = Atouin.getInstance().options.elementsPath;
@@ -151,6 +175,7 @@
             var _loc_16:* = null;
             var _loc_17:* = null;
             var _loc_18:* = 0;
+            this._cancelRender = false;
             this._downloadTimer.reset();
             this._gfxMemorySize = 0;
             this._fileLoaded = 0;
@@ -324,6 +349,9 @@
 
         public function unload() : void
         {
+            this._cancelRender = true;
+            this._gfxLoader.cancel();
+            this._swfLoader.cancel();
             RasterizedAnimation.optimize(1);
             while (cachedAsBitmapElement.length)
             {
@@ -410,12 +438,12 @@
         {
             var layerCtr:DisplayObjectContainer;
             var cellInteractionCtr:DisplayObjectContainer;
-            var cellCtr:CellContainer;
+            var groundLayerCtr:Bitmap;
+            var cellCtr:ICellContainer;
             var cellPnt:Point;
             var cellDisabled:Boolean;
             var hideFg:Boolean;
             var skipLayer:Boolean;
-            var groundLayerCtr:Sprite;
             var groundLayer:Boolean;
             var i:uint;
             var nbCell:uint;
@@ -423,17 +451,23 @@
             var layer:Layer;
             var endCell:Cell;
             var t:ColorTransform;
+            var reelBmpDt:BitmapData;
+            var m:Matrix;
+            var tmp:Bitmap;
+            var tsJpeg:uint;
             this._downloadTimer.stop();
             if (this._progressBarCtr.parent)
             {
                 this._progressBarCtr.parent.removeChild(this._progressBarCtr);
             }
             this._pictoAsBitmap = Atouin.getInstance().options.useCacheAsBitmap;
+            groundLayerCtr = new Bitmap(new BitmapData(StageShareManager.startWidth * _groundGlobalScaleRatio, StageShareManager.startHeight * _groundGlobalScaleRatio, false, this._map.backgroundColor), "auto", true);
+            groundLayerCtr.x = groundLayerCtr.x - _bitmapOffsetPoint.x;
             var aInteractiveCell:* = new Array();
             dispatchEvent(new RenderMapEvent(RenderMapEvent.MAP_RENDER_START, false, false, this._map.id, this._renderId));
             if (!this._hasGroundJPG)
             {
-                this.renderFixture(this._map.backgroundFixtures);
+                this.renderFixture(this._map.backgroundFixtures, groundLayerCtr);
             }
             InteractiveCellManager.getInstance().initManager();
             EntitiesManager.getInstance().initManager();
@@ -449,26 +483,17 @@
                 
                 layer = _loc_3[_loc_2];
                 layerId = layer.layerId;
-                if (layer.layerId == Layer.LAYER_ADDITIONAL_GROUND && groundLayerCtr)
-                {
-                    layerCtr = groundLayerCtr;
-                }
-                else
+                if (layer.layerId == Layer.LAYER_DECOR)
                 {
                     layerCtr = this._dataMapContainer.getLayer(layerId);
                 }
-                if (groundLayerCtr == null)
-                {
-                    groundLayerCtr = layerCtr as Sprite;
-                    groundLayer;
-                }
                 else
                 {
-                    groundLayer;
+                    layerCtr;
                 }
-                layerCtr.mouseEnabled = false;
+                groundLayer = layerCtr == null;
                 hideFg = layerId && this._hideForeground;
-                skipLayer = groundOnly && groundLayerCtr != layerCtr;
+                skipLayer = groundOnly;
                 if (layer.cellsCount == 0)
                 {
                 }
@@ -505,17 +530,24 @@
                         {
                             i = (i + 1);
                         }
-                        cellCtr = new CellContainer(currentCellId);
-                        cellCtr.layerId = layerId;
+                        if (groundLayer)
+                        {
+                            cellCtr = new BitmapCellContainer(currentCellId);
+                        }
+                        else
+                        {
+                            cellCtr = new CellContainer(currentCellId);
+                        }
+                        cellCtr.com.ankamagames.atouin.types:ICellContainer::layerId = layerId;
                         cellCtr.mouseEnabled = false;
                         if (cell)
                         {
                             cellPnt = cell.pixelCoords;
-                            var _loc_4:* = int(Math.round(cellPnt.x));
-                            cellCtr.startX = int(Math.round(cellPnt.x));
+                            var _loc_4:* = int(Math.round(cellPnt.x)) * (cellCtr is CellContainer ? (_groundGlobalScaleRatio) : (1));
+                            cellCtr.startX = int(Math.round(cellPnt.x)) * (cellCtr is CellContainer ? (_groundGlobalScaleRatio) : (1));
                             cellCtr.x = _loc_4;
-                            var _loc_4:* = int(Math.round(cellPnt.y));
-                            cellCtr.startY = int(Math.round(cellPnt.y));
+                            var _loc_4:* = int(Math.round(cellPnt.y)) * (cellCtr is CellContainer ? (_groundGlobalScaleRatio) : (1));
+                            cellCtr.startY = int(Math.round(cellPnt.y)) * (cellCtr is CellContainer ? (_groundGlobalScaleRatio) : (1));
                             cellCtr.y = _loc_4;
                             if (!skipLayer)
                             {
@@ -536,14 +568,21 @@
                             cellCtr.startY = cellPnt.y;
                             cellCtr.y = _loc_4;
                         }
-                        layerCtr.addChild(cellCtr);
-                        this._dataMapContainer.getCellReference(currentCellId).addSprite(cellCtr);
+                        if (!groundLayer)
+                        {
+                            layerCtr.addChild(cellCtr as DisplayObject);
+                        }
+                        else if (!this._hasGroundJPG && groundLayer)
+                        {
+                            this.drawGround(groundLayerCtr, cellCtr as BitmapCellContainer);
+                        }
+                        this._dataMapContainer.getCellReference(currentCellId).addSprite(cellCtr as DisplayObject);
                         this._dataMapContainer.getCellReference(currentCellId).x = cellCtr.x;
                         this._dataMapContainer.getCellReference(currentCellId).y = cellCtr.y;
                         this._dataMapContainer.getCellReference(currentCellId).isDisabled = cellDisabled;
                         if (layerId == Layer.LAYER_DECOR)
                         {
-                            this._dataMapContainer.getCellReference(currentCellId).heightestDecor = cellCtr;
+                            this._dataMapContainer.getCellReference(currentCellId).heightestDecor = cellCtr as Sprite;
                         }
                         if (!aInteractiveCell[currentCellId])
                         {
@@ -560,19 +599,41 @@
                         }
                         lastCellId = currentCellId;
                     }
-                    layerCtr.mouseEnabled = false;
+                    if (!groundLayer)
+                    {
+                        layerCtr.mouseEnabled = false;
+                    }
                     if (this._debugLayer)
                     {
                         t = new ColorTransform();
                         t.color = Math.random() * 16777215;
                         layerCtr.transform.colorTransform = t;
                     }
-                    this._container.addChild(layerCtr);
+                    if (!groundLayer)
+                    {
+                        var _loc_4:* = 1 / _groundGlobalScaleRatio;
+                        layerCtr.scaleY = 1 / _groundGlobalScaleRatio;
+                        layerCtr.scaleX = _loc_4;
+                        this._container.addChild(layerCtr);
+                    }
+                    else if (!this._hasGroundJPG && groundLayer)
+                    {
+                        reelBmpDt = new BitmapData(AtouinConstants.RESOLUTION_HIGH_QUALITY.x, AtouinConstants.RESOLUTION_HIGH_QUALITY.y, false, this._map.backgroundColor);
+                        m = new Matrix();
+                        m.scale(1 / _groundGlobalScaleRatio, 1 / _groundGlobalScaleRatio);
+                        reelBmpDt.lock();
+                        reelBmpDt.draw(groundLayerCtr.bitmapData, m, null, null, null, true);
+                        reelBmpDt.unlock();
+                        tmp = new Bitmap(reelBmpDt, "auto", true);
+                        tmp.x = -_bitmapOffsetPoint.x;
+                        this._container.addChild(tmp);
+                    }
                     if (!this._skipGroundCache && !this._hasGroundJPG && layerId == Layer.LAYER_GROUND)
                     {
                         try
                         {
-                            DataGroundMapManager.saveGroundMap(this._container, this._map);
+                            tsJpeg = getTimer();
+                            DataGroundMapManager.saveGroundMap(groundLayerCtr.bitmapData, this._map);
                         }
                         catch (e:Error)
                         {
@@ -582,15 +643,17 @@
                     }
                 }
             }while (_loc_3 in _loc_2)
-            this.renderFixture(this._map.foregroundFixtures);
+            this._bitmapForegroundContainer = new Bitmap(new BitmapData(StageShareManager.startWidth, StageShareManager.startHeight, true, this._map.backgroundColor), "auto", true);
+            this._bitmapForegroundContainer.x = -_bitmapOffsetPoint.x;
+            this.renderFixture(this._map.foregroundFixtures, this._bitmapForegroundContainer);
+            this._bitmapForegroundContainer.visible = !this._tacticModeActivated;
+            this._container.addChild(this._bitmapForegroundContainer);
             if (!this._hasGroundJPG)
             {
                 groundLayerCtr.cacheAsBitmap = true;
             }
-            groundLayerCtr.mouseChildren = false;
-            groundLayerCtr.mouseEnabled = false;
             var selectionContainer:* = new Sprite();
-            this._container.addChildAt(selectionContainer, (this._container.getChildIndex(groundLayerCtr) + 1));
+            this._container.addChild(selectionContainer);
             selectionContainer.mouseEnabled = false;
             selectionContainer.mouseChildren = false;
             if (!this._hasGroundJPG || this._groundIsLoaded)
@@ -615,6 +678,76 @@
             return;
         }// end function
 
+        private function drawGround(param1:Bitmap, param2:BitmapCellContainer) : void
+        {
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            var _loc_6:* = false;
+            var _loc_7:* = 0;
+            var _loc_3:* = param1.bitmapData;
+            var _loc_8:* = param2.numChildren;
+            _loc_3.lock();
+            _loc_7 = 0;
+            while (_loc_7 < _loc_8)
+            {
+                
+                if (!(param2.bitmaps[_loc_7] is BitmapData))
+                {
+                    _log.error("Attention, un élément non bitmap tente d\'être ajouter au sol " + param2.bitmaps[_loc_7]);
+                }
+                else
+                {
+                    _loc_5 = param2.bitmaps[_loc_7];
+                    _loc_4 = param2.datas[_loc_7];
+                    if (_loc_5 == null || _loc_4 == null)
+                    {
+                    }
+                    else
+                    {
+                        if (param2.colorTransforms[_loc_7] != null)
+                        {
+                            _loc_6 = true;
+                            this.colorTransform.redMultiplier = param2.colorTransforms[_loc_7].red;
+                            this.colorTransform.greenMultiplier = param2.colorTransforms[_loc_7].green;
+                            this.colorTransform.blueMultiplier = param2.colorTransforms[_loc_7].blue;
+                            this.colorTransform.alphaMultiplier = param2.colorTransforms[_loc_7].alpha;
+                        }
+                        else
+                        {
+                            _loc_6 = false;
+                        }
+                        this._destPoint.x = _loc_4.x + param2.x;
+                        if (_groundGlobalScaleRatio != 1)
+                        {
+                            this._destPoint.x = this._destPoint.x * _groundGlobalScaleRatio;
+                        }
+                        this._destPoint.x = this._destPoint.x + _bitmapOffsetPoint.x;
+                        this._destPoint.y = _loc_4.y + param2.y;
+                        if (_groundGlobalScaleRatio != 1)
+                        {
+                            this._destPoint.y = this._destPoint.y * _groundGlobalScaleRatio;
+                        }
+                        this._srcRect.width = _loc_5.width;
+                        this._srcRect.height = _loc_5.height;
+                        if (_loc_4.scaleX != 1 || _loc_4.scaleY != 1 || _loc_6)
+                        {
+                            this._m.identity();
+                            this._m.scale(_loc_4.scaleX, _loc_4.scaleY);
+                            this._m.translate(this._destPoint.x, this._destPoint.y);
+                            _loc_3.draw(_loc_5, this._m, this.colorTransform, null, null, false);
+                        }
+                        else
+                        {
+                            _loc_3.copyPixels(_loc_5, this._srcRect, this._destPoint);
+                        }
+                    }
+                }
+                _loc_7++;
+            }
+            _loc_3.unlock();
+            return;
+        }// end function
+
         private function groundMapLoaded(param1:Bitmap) : void
         {
             this._groundIsLoaded = true;
@@ -625,6 +758,7 @@
             }
             if (!this._tacticModeActivated)
             {
+                param1.x = param1.x - _bitmapOffsetPoint.x;
                 this._container.addChildAt(param1, 0);
             }
             param1.smoothing = true;
@@ -643,9 +777,11 @@
             return;
         }// end function
 
-        private function addCellBitmapsElements(param1:Cell, param2:CellContainer, param3:Boolean = false, param4:Boolean = false) : Boolean
+        private function addCellBitmapsElements(param1:Cell, param2:ICellContainer, param3:Boolean = false, param4:Boolean = false) : Boolean
         {
-            var elementDo:DisplayObject;
+            var elementDo:Object;
+            var data:VisualData;
+            var colors:Object;
             var ge:GraphicalElement;
             var ed:GraphicalElementData;
             var bounds:Rectangle;
@@ -662,6 +798,7 @@
             var ie:Object;
             var namedSprite:Sprite;
             var elementDOC:DisplayObjectContainer;
+            var bmp:Bitmap;
             var shape:Shape;
             var cell:* = param1;
             var cellCtr:* = param2;
@@ -677,6 +814,7 @@
             while (i < nbElements)
             {
                 
+                data = new VisualData();
                 element = lsElements[i];
                 switch(element.elementType)
                 {
@@ -703,6 +841,11 @@
                                     }
                                     else if (this._map.getGfxCount(ged.gfxId) > 1)
                                     {
+                                        if (ASwf(objectInfo).content == null)
+                                        {
+                                            _log.fatal("Impossible d\'afficher le picto " + ged.gfxId + " (format swf), le swf est probablement compilé en AS2");
+                                            break;
+                                        }
                                         ra = new RasterizedAnimation(ASwf(objectInfo).content as MovieClip, String(ged.gfxId));
                                         ra.gotoAndStop("1");
                                         ra.smoothing = true;
@@ -720,40 +863,42 @@
                                             }
                                         }
                                     }
-                                    elementDo.scaleX = 1;
-                                    elementDo.x = 0;
-                                    elementDo.y = 0;
+                                    data.scaleX = 1;
+                                    var _loc_6:* = 0;
+                                    data.y = 0;
+                                    data.x = _loc_6;
+                                }
+                                else if (ground)
+                                {
+                                    elementDo = this._bitmapsGfx[ged.gfxId];
                                 }
                                 else
                                 {
                                     elementDo = new MapGfxBitmap(this._bitmapsGfx[ged.gfxId], "never", this._useSmooth, ge.identifier);
-                                    if (!ground)
+                                    elementDo.cacheAsBitmap = this._pictoAsBitmap;
+                                    if (this._pictoAsBitmap)
                                     {
-                                        elementDo.cacheAsBitmap = this._pictoAsBitmap;
-                                        if (this._pictoAsBitmap)
-                                        {
-                                            cachedAsBitmapElement.push(elementDo);
-                                        }
+                                        cachedAsBitmapElement.push(elementDo);
                                     }
                                 }
-                                elementDo.x = elementDo.x - ged.origin.x;
-                                elementDo.y = elementDo.y - ged.origin.y;
+                                data.x = data.x - ged.origin.x;
+                                data.y = data.y - ged.origin.y;
                                 if (ged.horizontalSymmetry)
                                 {
-                                    elementDo.scaleX = elementDo.scaleX * -1;
+                                    data.scaleX = data.scaleX * -1;
                                     if (ged is AnimatedGraphicalElementData)
                                     {
-                                        elementDo.x = elementDo.x + ASwf(this._swfGfx[ged.gfxId]).loaderWidth;
+                                        data.x = data.x + ASwf(this._swfGfx[ged.gfxId]).loaderWidth;
                                     }
                                     else
                                     {
-                                        elementDo.x = elementDo.x + elementDo.width;
+                                        data.x = data.x + elementDo.width;
                                     }
                                 }
                                 if (ged is BoundingBoxGraphicalElementData)
                                 {
                                     disabled;
-                                    elementDo.alpha = 0;
+                                    data.alpha = 0;
                                     boundingBoxElements[ge.identifier] = true;
                                 }
                                 if (elementDo is InteractiveObject)
@@ -764,7 +909,7 @@
                                         (elementDo as DisplayObjectContainer).mouseChildren = false;
                                     }
                                 }
-                                if (ed is BlendedGraphicalElementData)
+                                if (ed is BlendedGraphicalElementData && elementDo.hasOwnProperty("blendMode"))
                                 {
                                     elementDo.blendMode = (ed as BlendedGraphicalElementData).blendMode;
                                     elementDo.cacheAsBitmap = false;
@@ -800,7 +945,7 @@
                                 }
                                 if (eed.horizontalSymmetry)
                                 {
-                                    ts.scaleX = ts.scaleX * -1;
+                                    data.scaleX = data.scaleX * -1;
                                 }
                                 this._dataMapContainer.addAnimatedElement(ts, eed);
                                 elementDo = ts;
@@ -827,26 +972,28 @@
                                 break;
                             }
                         }
-                        if (!elementDo)
+                        if (elementDo == null)
                         {
                             _log.warn("A graphical element was missed (Element ID " + ge.elementId + "; Cell " + ge.cell.cellId + ").");
                             break;
                         }
                         if (!ge.colorMultiplicator.isOne())
                         {
-                            elementDo.transform.colorTransform = new ColorTransform(ge.colorMultiplicator.red / 255, ge.colorMultiplicator.green / 255, ge.colorMultiplicator.blue / 255, elementDo.alpha);
+                            colors;
                         }
                         if (transparent)
                         {
-                            elementDo.alpha = 0.5;
+                            data.alpha = 0.5;
                         }
                         if (ge.identifier > 0)
                         {
                             if (!(elementDo is InteractiveObject) || elementDo is DisplayObjectContainer)
                             {
-                                namedSprite = new SpriteWrapper(elementDo, ge.identifier);
+                                namedSprite = new SpriteWrapper(elementDo as DisplayObject, ge.identifier);
                                 namedSprite.alpha = elementDo.alpha;
                                 elementDo.alpha = 1;
+                                elementDo.transform.colorTransform = new ColorTransform(colors.red, colors.green, colors.blue, colors.alpha);
+                                colors;
                                 elementDo = namedSprite;
                             }
                             mouseChildren;
@@ -863,8 +1010,8 @@
                             ie.sprite = elementDo;
                             ie.position = MapPoint.fromCellId(cell.cellId);
                         }
-                        elementDo.x = Math.round(elementDo.x + (AtouinConstants.CELL_HALF_WIDTH + ge.pixelOffset.x));
-                        elementDo.y = Math.round(elementDo.y + (AtouinConstants.CELL_HALF_HEIGHT - ge.altitude * 10 + ge.pixelOffset.y));
+                        data.x = data.x + Math.round(AtouinConstants.CELL_HALF_WIDTH + ge.pixelOffset.x);
+                        data.y = data.y + Math.round(AtouinConstants.CELL_HALF_HEIGHT - ge.altitude * 10 + ge.pixelOffset.y);
                         break;
                     }
                     default:
@@ -874,14 +1021,21 @@
                 }
                 if (elementDo)
                 {
-                    cellCtr.addChild(elementDo);
+                    cellCtr.addFakeChild(elementDo, data, colors);
                 }
                 else if (element.elementType != ElementTypesEnum.SOUND)
                 {
-                    shape = new Shape();
-                    shape.graphics.beginFill(13369548);
-                    shape.graphics.drawRect(0, 0, AtouinConstants.CELL_WIDTH, AtouinConstants.CELL_HEIGHT);
-                    cellCtr.addChild(shape);
+                    if (this._ceilBitmapData == null)
+                    {
+                        this._ceilBitmapData = new BitmapData(AtouinConstants.CELL_WIDTH, AtouinConstants.CELL_HEIGHT, false, 13369548);
+                        shape = new Shape();
+                        shape.graphics.beginFill(13369548);
+                        shape.graphics.drawRect(0, 0, AtouinConstants.CELL_WIDTH, AtouinConstants.CELL_HEIGHT);
+                        shape.graphics.endFill();
+                        this._ceilBitmapData.draw(shape);
+                    }
+                    bmp = new Bitmap(this._ceilBitmapData);
+                    cellCtr.addFakeChild(bmp, null, null);
                 }
                 i = (i + 1);
             }
@@ -901,59 +1055,47 @@
             return disabled;
         }// end function
 
-        private function renderFixture(param1:Array) : void
+        private function renderFixture(param1:Array, param2:Bitmap) : void
         {
-            var _loc_3:* = null;
             var _loc_4:* = null;
             var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            if (!param1 || param1.length == 0)
+            var _loc_6:* = NaN;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_9:* = NaN;
+            if (param1 == null || param1.length == 0)
             {
                 return;
             }
-            var _loc_2:* = OptionManager.getOptionManager("atouin").useSmooth;
-            this._bitmapForegroundContainer = new Sprite();
-            this._bitmapForegroundContainer.x = AtouinConstants.CELL_HALF_WIDTH;
-            this._bitmapForegroundContainer.y = AtouinConstants.CELL_HEIGHT;
-            for each (_loc_3 in param1)
+            var _loc_3:* = OptionManager.getOptionManager("atouin").useSmooth;
+            for each (_loc_5 in param1)
             {
                 
-                _loc_4 = new Bitmap(this._bitmapsGfx[_loc_3.fixtureId]);
-                _loc_4.alpha = _loc_3.alpha / 255;
-                _loc_5 = new Matrix();
-                _loc_5.translate((-_loc_4.width) / 2, (-_loc_4.height) / 2);
-                _loc_5.scale(_loc_3.xScale / 1000, _loc_3.yScale / 1000);
-                _loc_5.rotate(_loc_3.rotation / 100 * (Math.PI / 180));
-                _loc_5.translate(_loc_3.offset.x, _loc_3.offset.y);
-                _loc_5.translate(_loc_4.width / 2, _loc_4.height / 2);
-                _loc_6 = new Transform(_loc_4);
-                _loc_6.matrix = _loc_5;
-                _loc_4.smoothing = _loc_2;
-                if (_loc_3.redMultiplier || _loc_3.greenMultiplier || _loc_3.blueMultiplier)
+                _loc_4 = this._bitmapsGfx[_loc_5.fixtureId];
+                _loc_6 = _loc_4.width;
+                _loc_7 = _loc_4.height;
+                _loc_8 = _loc_6 * 0.5;
+                _loc_9 = _loc_7 * 0.5;
+                this._m.identity();
+                this._m.translate(-_loc_8, -_loc_9);
+                this._m.scale(_loc_5.xScale / 1000, _loc_5.yScale / 1000);
+                this._m.rotate(_loc_5.rotation / 100 * (Math.PI / 180));
+                this._m.translate(_loc_5.offset.x + _bitmapOffsetPoint.x + _loc_8 + AtouinConstants.CELL_HALF_WIDTH, _loc_5.offset.y + AtouinConstants.CELL_HEIGHT + _loc_9);
+                param2.bitmapData.lock();
+                if (_loc_5.redMultiplier || _loc_5.greenMultiplier || _loc_5.blueMultiplier || _loc_5.alpha != 1)
                 {
-                    _loc_7 = new ColorTransform();
-                    _loc_7.redMultiplier = _loc_3.redMultiplier / 128 + 1;
-                    _loc_7.greenMultiplier = _loc_3.greenMultiplier / 128 + 1;
-                    _loc_7.blueMultiplier = _loc_3.blueMultiplier / 128 + 1;
-                    _loc_7.alphaMultiplier = _loc_4.alpha;
-                    _loc_8 = new Transform(_loc_4);
-                    _loc_8.colorTransform = _loc_7;
-                    _loc_4.transform = _loc_8;
+                    this._clTrans.redMultiplier = _loc_5.redMultiplier / 128 + 1;
+                    this._clTrans.greenMultiplier = _loc_5.greenMultiplier / 128 + 1;
+                    this._clTrans.blueMultiplier = _loc_5.blueMultiplier / 128 + 1;
+                    this._clTrans.alphaMultiplier = _loc_5.alpha / 255;
+                    param2.bitmapData.draw(_loc_4, this._m, this._clTrans, null, null, _loc_3);
                 }
-                _log.trace(_loc_4.scaleX + " / " + _loc_4.scaleY);
-                this._bitmapForegroundContainer.addChild(_loc_4);
+                else
+                {
+                    param2.bitmapData.draw(_loc_4, this._m, null, null, null, _loc_3);
+                }
+                param2.bitmapData.unlock();
             }
-            this._bitmapForegroundContainer.mouseEnabled = false;
-            this._bitmapForegroundContainer.mouseChildren = false;
-            this._bitmapForegroundContainer.cacheAsBitmap = this._pictoAsBitmap;
-            if (this._pictoAsBitmap)
-            {
-                cachedAsBitmapElement.push(this._bitmapForegroundContainer);
-            }
-            this._container.addChild(this._bitmapForegroundContainer);
-            this._bitmapForegroundContainer.visible = !this._tacticModeActivated;
             return;
         }// end function
 
@@ -964,6 +1106,10 @@
 
         private function onAllGfxLoaded(event:ResourceLoaderProgressEvent) : void
         {
+            if (this._cancelRender)
+            {
+                return;
+            }
             var _loc_2:* = this;
             var _loc_3:* = this._loadedGfxListCount + 1;
             _loc_2._loadedGfxListCount = _loc_3;
@@ -979,6 +1125,10 @@
 
         private function onBitmapGfxLoaded(event:ResourceLoadedEvent) : void
         {
+            if (this._cancelRender)
+            {
+                return;
+            }
             var _loc_2:* = this;
             var _loc_3:* = this._fileLoaded + 1;
             _loc_2._fileLoaded = _loc_3;
@@ -1019,3 +1169,79 @@
 
     }
 }
+
+import com.ankamagames.atouin.*;
+
+import com.ankamagames.atouin.data.elements.*;
+
+import com.ankamagames.atouin.data.elements.subtypes.*;
+
+import com.ankamagames.atouin.data.map.*;
+
+import com.ankamagames.atouin.data.map.elements.*;
+
+import com.ankamagames.atouin.enums.*;
+
+import com.ankamagames.atouin.managers.*;
+
+import com.ankamagames.atouin.types.*;
+
+import com.ankamagames.atouin.types.events.*;
+
+import com.ankamagames.jerakine.data.*;
+
+import com.ankamagames.jerakine.logger.*;
+
+import com.ankamagames.jerakine.managers.*;
+
+import com.ankamagames.jerakine.resources.adapters.impl.*;
+
+import com.ankamagames.jerakine.resources.events.*;
+
+import com.ankamagames.jerakine.resources.loaders.*;
+
+import com.ankamagames.jerakine.script.*;
+
+import com.ankamagames.jerakine.types.*;
+
+import com.ankamagames.jerakine.types.positions.*;
+
+import com.ankamagames.jerakine.utils.display.*;
+
+import com.ankamagames.jerakine.utils.system.*;
+
+import com.ankamagames.sweevo.runners.*;
+
+import com.ankamagames.tiphon.display.*;
+
+import com.ankamagames.tiphon.types.look.*;
+
+import flash.display.*;
+
+import flash.events.*;
+
+import flash.geom.*;
+
+import flash.system.*;
+
+import flash.utils.*;
+
+import org.flintparticles.twoD.renderers.*;
+
+class VisualData extends Object
+{
+    public var scaleX:Number = 1;
+    public var scaleY:Number = 1;
+    public var x:Number = 0;
+    public var y:Number = 0;
+    public var width:Number = 0;
+    public var height:Number = 0;
+    public var alpha:Number = 1;
+
+    function VisualData()
+    {
+        return;
+    }// end function
+
+}
+

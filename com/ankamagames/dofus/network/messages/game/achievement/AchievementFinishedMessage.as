@@ -6,7 +6,8 @@
     public class AchievementFinishedMessage extends NetworkMessage implements INetworkMessage
     {
         private var _isInitialized:Boolean = false;
-        public var achievementId:uint = 0;
+        public var id:uint = 0;
+        public var finishedlevel:uint = 0;
         public static const protocolId:uint = 6208;
 
         public function AchievementFinishedMessage()
@@ -24,16 +25,18 @@
             return 6208;
         }// end function
 
-        public function initAchievementFinishedMessage(param1:uint = 0) : AchievementFinishedMessage
+        public function initAchievementFinishedMessage(param1:uint = 0, param2:uint = 0) : AchievementFinishedMessage
         {
-            this.achievementId = param1;
+            this.id = param1;
+            this.finishedlevel = param2;
             this._isInitialized = true;
             return this;
         }// end function
 
         override public function reset() : void
         {
-            this.achievementId = 0;
+            this.id = 0;
+            this.finishedlevel = 0;
             this._isInitialized = false;
             return;
         }// end function
@@ -60,11 +63,16 @@
 
         public function serializeAs_AchievementFinishedMessage(param1:IDataOutput) : void
         {
-            if (this.achievementId < 0)
+            if (this.id < 0)
             {
-                throw new Error("Forbidden value (" + this.achievementId + ") on element achievementId.");
+                throw new Error("Forbidden value (" + this.id + ") on element id.");
             }
-            param1.writeShort(this.achievementId);
+            param1.writeShort(this.id);
+            if (this.finishedlevel < 0 || this.finishedlevel > 200)
+            {
+                throw new Error("Forbidden value (" + this.finishedlevel + ") on element finishedlevel.");
+            }
+            param1.writeShort(this.finishedlevel);
             return;
         }// end function
 
@@ -76,10 +84,15 @@
 
         public function deserializeAs_AchievementFinishedMessage(param1:IDataInput) : void
         {
-            this.achievementId = param1.readShort();
-            if (this.achievementId < 0)
+            this.id = param1.readShort();
+            if (this.id < 0)
             {
-                throw new Error("Forbidden value (" + this.achievementId + ") on element of AchievementFinishedMessage.achievementId.");
+                throw new Error("Forbidden value (" + this.id + ") on element of AchievementFinishedMessage.id.");
+            }
+            this.finishedlevel = param1.readShort();
+            if (this.finishedlevel < 0 || this.finishedlevel > 200)
+            {
+                throw new Error("Forbidden value (" + this.finishedlevel + ") on element of AchievementFinishedMessage.finishedlevel.");
             }
             return;
         }// end function

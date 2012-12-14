@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.jerakine.managers
 {
+    import by.blooddy.crypto.*;
     import com.ankamagames.jerakine.*;
     import com.ankamagames.jerakine.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -303,18 +304,18 @@
 
         public function reset() : void
         {
-            var s:CustomSharedObject;
+            var _loc_1:* = null;
             var _loc_2:* = 0;
             var _loc_3:* = this._aSharedObjectCache;
             do
             {
                 
-                s = _loc_3[_loc_2];
-                s.clear();
+                _loc_1 = _loc_3[_loc_2];
+                _loc_1.clear();
                 try
                 {
-                    s.flush();
-                    s.close();
+                    _loc_1.flush();
+                    _loc_1.close();
                 }
                 catch (e:Error)
                 {

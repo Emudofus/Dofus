@@ -68,7 +68,6 @@
             {
                 this._groundIsLoaded = true;
                 bitmap = this._loader.content as Bitmap;
-                bitmap.x = -20;
                 if (this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY || this._map.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY)
                 {
                     bitmap.width = AtouinConstants.RESOLUTION_HIGH_QUALITY.x;

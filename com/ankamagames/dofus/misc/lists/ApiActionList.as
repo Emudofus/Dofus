@@ -12,6 +12,7 @@
     import com.ankamagames.dofus.logic.game.common.actions.quest.*;
     import com.ankamagames.dofus.logic.game.common.actions.roleplay.*;
     import com.ankamagames.dofus.logic.game.common.actions.spectator.*;
+    import com.ankamagames.dofus.logic.game.common.actions.tinsel.*;
     import com.ankamagames.dofus.logic.game.fight.actions.*;
     import com.ankamagames.dofus.logic.game.roleplay.actions.*;
     import com.ankamagames.dofus.logic.game.roleplay.actions.preset.*;
@@ -23,6 +24,7 @@
         public static const BasicSwitchMode:DofusApiAction = new DofusApiAction("BasicSwitchMode", BasicSwitchModeAction);
         public static const ChatCommand:DofusApiAction = new DofusApiAction("ChatCommand", ChatCommandAction);
         public static const ChatLoaded:DofusApiAction = new DofusApiAction("ChatLoaded", ChatLoadedAction);
+        public static const ClearChat:DofusApiAction = new DofusApiAction("ClearChat", ClearChatAction);
         public static const AuthorizedCommand:DofusApiAction = new DofusApiAction("AuthorizedCommand", AuthorizedCommandAction);
         public static const LoginValidation:DofusApiAction = new DofusApiAction("LoginValidation", LoginValidationAction);
         public static const LoginValidationWithTicket:DofusApiAction = new DofusApiAction("LoginValidationWithTicket", LoginValidationWithTicketAction);
@@ -44,6 +46,7 @@
         public static const CharacterSelection:DofusApiAction = new DofusApiAction("CharacterSelection", CharacterSelectionAction);
         public static const CharacterRecolorSelection:DofusApiAction = new DofusApiAction("CharacterRecolorSelection", CharacterRecolorSelectionAction);
         public static const CharacterRenameSelection:DofusApiAction = new DofusApiAction("CharacterRenameSelection", CharacterRenameSelectionAction);
+        public static const CharacterRelookSelection:DofusApiAction = new DofusApiAction("CharacterRelookSelection", CharacterRelookSelectionAction);
         public static const GameContextQuit:DofusApiAction = new DofusApiAction("GameContextQuit", GameContextQuitAction);
         public static const OpenCurrentFight:DofusApiAction = new DofusApiAction("OpenCurrentFight", OpenCurrentFightAction);
         public static const OpenMainMenu:DofusApiAction = new DofusApiAction("OpenMainMenu", OpenMainMenuAction);
@@ -133,6 +136,9 @@
         public static const QuestInfosRequest:DofusApiAction = new DofusApiAction("QuestInfosRequest", QuestInfosRequestAction);
         public static const QuestListRequest:DofusApiAction = new DofusApiAction("QuestListRequest", QuestListRequestAction);
         public static const QuestStartRequest:DofusApiAction = new DofusApiAction("QuestStartRequest", QuestStartRequestAction);
+        public static const AchievementDetailedListRequest:DofusApiAction = new DofusApiAction("AchievementDetailedListRequest", AchievementDetailedListRequestAction);
+        public static const AchievementDetailsRequest:DofusApiAction = new DofusApiAction("AchievementDetailsRequest", AchievementDetailsRequestAction);
+        public static const AchievementRewardRequest:DofusApiAction = new DofusApiAction("AchievementRewardRequest", AchievementRewardRequestAction);
         public static const QuestObjectiveValidation:DofusApiAction = new DofusApiAction("QuestObjectiveValidation", QuestObjectiveValidationAction);
         public static const GuidedModeReturnRequest:DofusApiAction = new DofusApiAction("GuidedModeReturnRequest", GuidedModeReturnRequestAction);
         public static const GuidedModeQuitRequest:DofusApiAction = new DofusApiAction("GuidedModeQuitRequest", GuidedModeQuitRequestAction);
@@ -161,6 +167,9 @@
         public static const KrosmasterInventoryRequest:DofusApiAction = new DofusApiAction("KrosmasterInventoryRequest", KrosmasterInventoryRequestAction);
         public static const KrosmasterTransferRequest:DofusApiAction = new DofusApiAction("KrosmasterTransferRequest", KrosmasterTransferRequestAction);
         public static const KrosmasterPlayingStatus:DofusApiAction = new DofusApiAction("KrosmasterPlayingStatus", KrosmasterPlayingStatusAction);
+        public static const TitlesAndOrnamentsListRequest:DofusApiAction = new DofusApiAction("TitlesAndOrnamentsListRequest", TitlesAndOrnamentsListRequestAction);
+        public static const TitleSelectRequest:DofusApiAction = new DofusApiAction("TitleSelectRequest", TitleSelectRequestAction);
+        public static const OrnamentSelectRequest:DofusApiAction = new DofusApiAction("OrnamentSelectRequest", OrnamentSelectRequestAction);
 
         public function ApiActionList()
         {

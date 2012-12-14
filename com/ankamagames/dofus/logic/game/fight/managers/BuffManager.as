@@ -1,7 +1,6 @@
 ﻿package com.ankamagames.dofus.logic.game.fight.managers
 {
     import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.effects.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.fight.frames.*;
@@ -121,7 +120,6 @@
             var _loc_7:* = 0;
             var _loc_8:* = 0;
             var _loc_9:* = null;
-            var _loc_10:* = null;
             if (this._buffs.hasOwnProperty(String(param1)))
             {
                 _loc_3 = false;
@@ -180,18 +178,17 @@
                         if (_loc_5 && !param2)
                         {
                             _loc_4.finishing = true;
-                            _loc_9 = Effect.getEffectById(_loc_4.actionId);
                             if (_loc_4 is StatBuff && param1 != PlayedCharacterManager.getInstance().id)
                             {
-                                _loc_10 = _loc_4 as StatBuff;
-                                if (_loc_10.statName)
+                                _loc_9 = _loc_4 as StatBuff;
+                                if (_loc_9.statName)
                                 {
-                                    param1 = _loc_10.targetId;
+                                    param1 = _loc_9.targetId;
                                     if (!this._finishingBuffs[param1])
                                     {
                                         this._finishingBuffs[param1] = new Array();
                                     }
-                                    this._finishingBuffs[param1].push(_loc_10);
+                                    this._finishingBuffs[param1].push(_loc_4);
                                 }
                             }
                             BasicBuff(_loc_4).onDisabled();

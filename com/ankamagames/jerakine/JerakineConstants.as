@@ -1,14 +1,21 @@
 ﻿package com.ankamagames.jerakine
 {
+    import by.blooddy.crypto.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.utils.misc.*;
+    import com.hurlant.crypto.symmetric.*;
 
     public class JerakineConstants extends Object
     {
         private var _include_IDataContainer:IDataContainer = null;
         private var _include_AsyncJPGEncoder:AsyncJPGEncoder = null;
+        private static var _include_SHA:SHA256 = null;
+        private static var _include_MD5:MD5 = null;
+        private static var _include_AES:AESKey = null;
+        private static var _include_ECBMode:ECBMode = null;
+        private static var _include_Base64:Base64 = null;
         public static const LOADERS_POOL_INITIAL_SIZE:int = 5;
         public static const LOADERS_POOL_GROW_SIZE:int = 5;
         public static const LOADERS_POOL_WARN_LIMIT:int = 50;

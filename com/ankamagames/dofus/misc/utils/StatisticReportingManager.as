@@ -1,12 +1,12 @@
 ﻿package com.ankamagames.dofus.misc.utils
 {
+    import by.blooddy.crypto.*;
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.events.*;
     import flash.net.*;
@@ -32,34 +32,32 @@
 
         public function report(param1:String, param2:String) : Boolean
         {
-            var oldValue:String;
-            var urlRequest:URLRequest;
-            var urlLoader:URLLoader;
-            var key:* = param1;
-            var value:* = param2;
-            if (!key)
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
+            if (!param1)
             {
                 return false;
             }
             try
             {
-                oldValue = StoreDataManager.getInstance().getData(this._dt, key);
-                if (oldValue && oldValue == value)
+                _loc_3 = StoreDataManager.getInstance().getData(this._dt, param1);
+                if (_loc_3 && _loc_3 == param2)
                 {
                     return false;
                 }
-                urlRequest = new URLRequest(WEB_SERVICE);
-                urlRequest.method = URLRequestMethod.POST;
-                urlRequest.data = new URLVariables();
-                urlRequest.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
-                urlRequest.data.version = BuildInfos.BUILD_TYPE;
-                urlRequest.data.key = key;
-                urlRequest.data.value = value;
-                urlLoader = new URLLoader();
-                urlLoader.addEventListener(Event.COMPLETE, this.onSended);
-                urlLoader.addEventListener(IOErrorEvent.IO_ERROR, this.onSendError);
-                urlLoader.load(urlRequest);
-                StoreDataManager.getInstance().setData(this._dt, key, value);
+                _loc_4 = new URLRequest(WEB_SERVICE);
+                _loc_4.method = URLRequestMethod.POST;
+                _loc_4.data = new URLVariables();
+                _loc_4.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
+                _loc_4.data.version = BuildInfos.BUILD_TYPE;
+                _loc_4.data.key = param1;
+                _loc_4.data.value = param2;
+                _loc_5 = new URLLoader();
+                _loc_5.addEventListener(Event.COMPLETE, this.onSended);
+                _loc_5.addEventListener(IOErrorEvent.IO_ERROR, this.onSendError);
+                _loc_5.load(_loc_4);
+                StoreDataManager.getInstance().setData(this._dt, param1, param2);
                 return true;
             }
             catch (e:Error)

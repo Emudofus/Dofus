@@ -7,6 +7,7 @@
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import com.ankamagames.jerakine.utils.files.*;
+    import flash.text.*;
     import flash.utils.*;
 
     public class FontManager extends Object
@@ -86,6 +87,15 @@
         public function getFontClassName(param1:String) : String
         {
             return this._fonts[param1].classname;
+        }// end function
+
+        public function getFontClassRenderingMode(param1:String) : String
+        {
+            if (this._fonts[param1].embedAsCff)
+            {
+                return AntiAliasType.ADVANCED;
+            }
+            return AntiAliasType.NORMAL;
         }// end function
 
         private function onFileLoaded(event:ResourceLoadedEvent) : void

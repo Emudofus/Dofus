@@ -41,11 +41,10 @@
 
         override public function start() : void
         {
-            var _loc_1:* = null;
             var _loc_2:* = 0;
+            var _loc_1:* = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
             if (this._updateCharacteristicManager)
             {
-                _loc_1 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_targetId) as GameFightFighterInformations;
                 _loc_2 = _loc_1.stats.movementPoints;
                 _loc_1.stats.movementPoints = _loc_1.stats.movementPoints + this._intValue;
                 if (CurrentPlayedFighterManager.getInstance().currentFighterId == _targetId)
@@ -56,7 +55,6 @@
                 if (_loc_1.disposition.cellId == -1)
                 {
                     super.executeCallbacks();
-                    return;
                 }
             }
             if (this._showChatmessage)
@@ -77,7 +75,10 @@
                     }
                 }
             }
-            super.start();
+            if (_loc_1.disposition.cellId != -1)
+            {
+                super.start();
+            }
             return;
         }// end function
 

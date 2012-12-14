@@ -13,14 +13,12 @@
 
         public static function showCell(... args) : void
         {
-            args = new activation;
-            var sq:SerialSequencer;
-            var args:* = args;
+            args = null;
             try
             {
-                sq = new SerialSequencer();
-                addStep(new AddGfxEntityStep(645, [int(Math.random() * length)]));
-                start();
+                args = new SerialSequencer();
+                args.addStep(new AddGfxEntityStep(645, args[int(Math.random() * args.length)]));
+                args.start();
             }
             catch (e:Error)
             {

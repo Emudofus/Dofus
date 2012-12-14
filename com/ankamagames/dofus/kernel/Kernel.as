@@ -11,6 +11,7 @@
     import com.ankamagames.berilia.utils.*;
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.console.moduleLogger.*;
+    import com.ankamagames.dofus.datacenter.sounds.*;
     import com.ankamagames.dofus.externalnotification.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.internalDatacenter.spells.*;
@@ -105,44 +106,47 @@
 
         public function postInit() : void
         {
-            var _loc_2:* = 0;
+            var _loc_2:* = null;
             var _loc_3:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
+            var _loc_6:* = null;
             this.initCaches();
             XmlConfig.getInstance().init(LangManager.getInstance().getCategory("config"));
             if (XmlConfig.getInstance().getEntry("config.buildType"))
             {
-                _loc_2 = -1;
-                _loc_3 = XmlConfig.getInstance().getEntry("config.buildType");
-                switch(_loc_3.toLowerCase())
+                _loc_4 = -1;
+                _loc_5 = XmlConfig.getInstance().getEntry("config.buildType");
+                switch(_loc_5.toLowerCase())
                 {
                     case "debug":
                     {
-                        _loc_2 = BuildTypeEnum.DEBUG;
+                        _loc_4 = BuildTypeEnum.DEBUG;
                         break;
                     }
                     case "internal":
                     {
-                        _loc_2 = BuildTypeEnum.INTERNAL;
+                        _loc_4 = BuildTypeEnum.INTERNAL;
                         break;
                     }
                     case "testing":
                     {
-                        _loc_2 = BuildTypeEnum.TESTING;
+                        _loc_4 = BuildTypeEnum.TESTING;
                         break;
                     }
                     case "alpha":
                     {
-                        _loc_2 = BuildTypeEnum.ALPHA;
+                        _loc_4 = BuildTypeEnum.ALPHA;
                         break;
                     }
                     case "beta":
                     {
-                        _loc_2 = BuildTypeEnum.BETA;
+                        _loc_4 = BuildTypeEnum.BETA;
                         break;
                     }
                     case "release":
                     {
-                        _loc_2 = BuildTypeEnum.RELEASE;
+                        _loc_4 = BuildTypeEnum.RELEASE;
                         break;
                     }
                     default:
@@ -150,9 +154,9 @@
                         break;
                     }
                 }
-                if (_loc_2 != -1 && _loc_2 < BuildInfos.BUILD_TYPE)
+                if (_loc_4 != -1 && _loc_4 < BuildInfos.BUILD_TYPE)
                 {
-                    BuildInfos.BUILD_TYPE = _loc_2;
+                    BuildInfos.BUILD_TYPE = _loc_4;
                 }
             }
             BuildInfos.BUILD_VERSION.buildType = BuildInfos.BUILD_TYPE;
@@ -164,8 +168,20 @@
             Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_MARCHE);
             Tiphon.getInstance().addRasterizeAnimation(AnimationEnum.ANIM_STATIQUE);
             AlmanaxManager.getInstance();
-            var _loc_1:* = LangManager.getInstance().getStringEntry("config.lang.usingIME").split(",");
-            if (_loc_1.indexOf(LangManager.getInstance().getStringEntry("config.lang.current")) != -1)
+            UiSoundManager.getInstance().playSound = SoundManager.getInstance().manager.playUISound;
+            var _loc_1:* = SoundUi.getSoundUis();
+            for each (_loc_2 in _loc_1)
+            {
+                
+                UiSoundManager.getInstance().registerUi(_loc_2.uiName, _loc_2.openFile, _loc_2.closeFile);
+                for each (_loc_6 in _loc_2.subElements)
+                {
+                    
+                    UiSoundManager.getInstance().registerUiElement(_loc_2.uiName, _loc_6.name, _loc_6.hook, _loc_6.file);
+                }
+            }
+            _loc_3 = LangManager.getInstance().getStringEntry("config.lang.usingIME").split(",");
+            if (_loc_3.indexOf(LangManager.getInstance().getStringEntry("config.lang.current")) != -1)
             {
                 Berilia.getInstance().useIME = true;
             }

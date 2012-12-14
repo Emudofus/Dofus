@@ -27,16 +27,16 @@
             return 92;
         }// end function
 
-        public function initFriendOnlineInformations(param1:uint = 0, param2:String = "", param3:uint = 99, param4:uint = 0, param5:String = "", param6:uint = 0, param7:int = 0, param8:int = 0, param9:Boolean = false, param10:BasicGuildInformations = null, param11:int = 0) : FriendOnlineInformations
+        public function initFriendOnlineInformations(param1:uint = 0, param2:String = "", param3:uint = 99, param4:uint = 0, param5:int = 0, param6:String = "", param7:uint = 0, param8:int = 0, param9:int = 0, param10:Boolean = false, param11:BasicGuildInformations = null, param12:int = 0) : FriendOnlineInformations
         {
-            super.initFriendInformations(param1, param2, param3, param4);
-            this.playerName = param5;
-            this.level = param6;
-            this.alignmentSide = param7;
-            this.breed = param8;
-            this.sex = param9;
-            this.guildInfo = param10;
-            this.moodSmileyId = param11;
+            super.initFriendInformations(param1, param2, param3, param4, param5);
+            this.playerName = param6;
+            this.level = param7;
+            this.alignmentSide = param8;
+            this.breed = param9;
+            this.sex = param10;
+            this.guildInfo = param11;
+            this.moodSmileyId = param12;
             return this;
         }// end function
 

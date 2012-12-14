@@ -60,7 +60,7 @@
                     
                     _loc_7 = new Selection();
                     _loc_7.color = new Color(_loc_6.cellColor);
-                    _loc_7.renderer = new TrapZoneRenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
+                    _loc_7.renderer = new TrapZoneRenderer(PlacementStrataEnums.STRATA_GLYPH);
                     if (_loc_6.cellsType == GameActionMarkCellsTypeEnum.CELLS_CROSS)
                     {
                         _loc_7.zone = new Cross(0, _loc_6.zoneSize, DataMapProvider.getInstance());

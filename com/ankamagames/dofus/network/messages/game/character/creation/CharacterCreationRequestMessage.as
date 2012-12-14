@@ -12,6 +12,7 @@
         public var breed:int = 0;
         public var sex:Boolean = false;
         public var colors:Vector.<int>;
+        public var cosmeticId:uint = 0;
         public static const protocolId:uint = 160;
 
         public function CharacterCreationRequestMessage()
@@ -30,12 +31,13 @@
             return 160;
         }// end function
 
-        public function initCharacterCreationRequestMessage(param1:String = "", param2:int = 0, param3:Boolean = false, param4:Vector.<int> = null) : CharacterCreationRequestMessage
+        public function initCharacterCreationRequestMessage(param1:String = "", param2:int = 0, param3:Boolean = false, param4:Vector.<int> = null, param5:uint = 0) : CharacterCreationRequestMessage
         {
             this.name = param1;
             this.breed = param2;
             this.sex = param3;
             this.colors = param4;
+            this.cosmeticId = param5;
             this._isInitialized = true;
             return this;
         }// end function
@@ -46,6 +48,7 @@
             this.breed = 0;
             this.sex = false;
             this.colors = new Vector.<int>(5, true);
+            this.cosmeticId = 0;
             this._isInitialized = false;
             return;
         }// end function
@@ -82,6 +85,11 @@
                 param1.writeInt(this.colors[_loc_2]);
                 _loc_2 = _loc_2 + 1;
             }
+            if (this.cosmeticId < 0)
+            {
+                throw new Error("Forbidden value (" + this.cosmeticId + ") on element cosmeticId.");
+            }
+            param1.writeInt(this.cosmeticId);
             return;
         }// end function
 
@@ -106,6 +114,11 @@
                 
                 this.colors[_loc_2] = param1.readInt();
                 _loc_2 = _loc_2 + 1;
+            }
+            this.cosmeticId = param1.readInt();
+            if (this.cosmeticId < 0)
+            {
+                throw new Error("Forbidden value (" + this.cosmeticId + ") on element of CharacterCreationRequestMessage.cosmeticId.");
             }
             return;
         }// end function

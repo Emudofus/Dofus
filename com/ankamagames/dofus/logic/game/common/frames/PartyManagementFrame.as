@@ -4,6 +4,7 @@
     import com.ankamagames.berilia.factories.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.datacenter.world.*;
+    import com.ankamagames.dofus.externalnotification.*;
     import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.internalDatacenter.people.*;
     import com.ankamagames.dofus.kernel.*;
@@ -12,14 +13,20 @@
     import com.ankamagames.dofus.logic.game.common.actions.party.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.common.messages.*;
+    import com.ankamagames.dofus.logic.game.common.types.*;
     import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+    import com.ankamagames.dofus.logic.game.roleplay.types.*;
     import com.ankamagames.dofus.misc.lists.*;
+    import com.ankamagames.dofus.misc.utils.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.game.context.fight.*;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
+    import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.party.*;
     import com.ankamagames.dofus.network.messages.game.interactive.meeting.*;
     import com.ankamagames.dofus.network.types.game.character.alignment.*;
+    import com.ankamagames.dofus.network.types.game.context.fight.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
     import com.ankamagames.dofus.types.enums.*;
@@ -60,6 +67,8 @@
         private var _dungeonFighters:Vector.<DungeonPartyFinderPlayer>;
         private var _lastFightType:int = -1;
         public var allMemberFollowPlayerId:uint = 0;
+        private var _partyFightsInformations:Dictionary;
+        private var _partyFightNotification:Array;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(PartyManagementFrame));
 
         public function PartyManagementFrame()
@@ -73,7 +82,9 @@
             this._dungeonFighters = new Vector.<DungeonPartyFinderPlayer>;
             this._dicRegen = new Dictionary();
             this._dicRegenArena = new Dictionary();
-            this._currentInvitations = new Dictionary();
+            this._currentInvitations = new Dictionary(true);
+            this._partyFightsInformations = new Dictionary();
+            this._partyFightNotification = new Array();
             this._timerRegen = new Timer(1000);
             this._timerRegen.addEventListener(TimerEvent.TIMER, this.onTimerTick);
             return;
@@ -266,6 +277,7 @@
             var ttbomsg:TeleportToBuddyOfferMessage;
             var buddyName:String;
             var dungeonName:String;
+            var notifyUser:Boolean;
             var ttbomsgNid:uint;
             var ttbcmsg:TeleportToBuddyCloseMessage;
             var ttbaa:TeleportToBuddyAnswerAction;
@@ -299,6 +311,9 @@
             var grpaupimsg:GameRolePlayArenaUpdatePlayerInfosMessage;
             var gfjmsg:GameFightJoinMessage;
             var femsg:FightEndingMessage;
+            var grpcm:GameRolePlayRemoveChallengeMessage;
+            var notificationId:String;
+            var fightNotificationIndex:int;
             var piarmsg:PartyInvitationArenaRequestMessage;
             var pirmsg:PartyInvitationRequestMessage;
             var pidgrmsg:PartyInvitationDungeonRequestMessage;
@@ -318,6 +333,31 @@
             var djId:int;
             var allyId:int;
             var commonMod:Object;
+            var pemifmmsg:PartyMemberInFightMessage;
+            var fightCause:String;
+            var fightId:int;
+            var memberName:String;
+            var fightMapId:int;
+            var fightInformation:PartyFightInformationsData;
+            var channel:uint;
+            var timestamp:Number;
+            var params:Array;
+            var partyFightMsg:String;
+            var fightTeamLeaderId:int;
+            var entitiesFrame:RoleplayEntitiesFrame;
+            var fight:Fight;
+            var team:FightTeam;
+            var fightTeamMember:FightTeamMemberInformations;
+            var foundLeader:Boolean;
+            var mcidm:MapComplementaryInformationsDataMessage;
+            var mapId:uint;
+            var partyFight:PartyFightInformationsData;
+            var mapFight:FightCommonInformations;
+            var foundFight:Boolean;
+            var fti:FightTeamInformations;
+            var teamMember:FightTeamMemberInformations;
+            var leaderId:int;
+            var fightTeams:Vector.<FightTeamInformations>;
             var msg:* = param1;
             switch(true)
             {
@@ -370,7 +410,7 @@
                         textInvitationKey;
                         extNotifType = ExternalNotificationTypeEnum.GROUP_INVITATION;
                     }
-                    if (AirScanner.hasAir())
+                    if (AirScanner.hasAir() && extNotifType > 0 && ExternalNotificationManager.getInstance().canAddExternalNotification(extNotifType))
                     {
                         KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, extNotifType, [pimsg.fromName]);
                     }
@@ -1165,8 +1205,14 @@
                         }
                     }
                     dungeonName = Dungeon.getDungeonById(ttbomsg.dungeonId).name;
+                    notifyUser;
+                    if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.DUNGEON_TELEPORT))
+                    {
+                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.DUNGEON_TELEPORT, [buddyName, dungeonName]);
+                        notifyUser = ExternalNotificationManager.getInstance().notificationNotify(ExternalNotificationTypeEnum.DUNGEON_TELEPORT);
+                    }
                     ttbomsgNid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"), I18n.getUiText("ui.party.teleportProposition", [buddyName, dungeonName]), NotificationTypeEnum.PRIORITY_INVITATION, "teleportProposition");
-                    NotificationManager.getInstance().addTimerToNotification(ttbomsgNid, ttbomsg.timeLeft);
+                    NotificationManager.getInstance().addTimerToNotification(ttbomsgNid, ttbomsg.timeLeft, false, false, notifyUser);
                     NotificationManager.getInstance().addButtonToNotification(ttbomsgNid, I18n.getUiText("ui.common.refuse"), "TeleportToBuddyAnswer", [ttbomsg.dungeonId, ttbomsg.buddyId, false], false, 130);
                     NotificationManager.getInstance().addButtonToNotification(ttbomsgNid, I18n.getUiText("ui.common.accept"), "TeleportToBuddyAnswer", [ttbomsg.dungeonId, ttbomsg.buddyId, true], false, 130);
                     NotificationManager.getInstance().addCallbackToNotification(ttbomsgNid, "TeleportToBuddyAnswer", [ttbomsg.dungeonId, ttbomsg.buddyId, false]);
@@ -1370,7 +1416,7 @@
                     NotificationManager.getInstance().addButtonToNotification(grpafpmsgNid, I18n.getUiText("ui.common.accept"), "ArenaFightAnswer", [grpafpmsg.fightId, true], true, 130);
                     NotificationManager.getInstance().addCallbackToNotification(grpafpmsgNid, "ArenaFightAnswer", [grpafpmsg.fightId, false]);
                     NotificationManager.getInstance().sendNotification(grpafpmsgNid);
-                    if (AirScanner.hasAir())
+                    if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.KOLO_FIGHT))
                     {
                         KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.KOLO_FIGHT);
                     }
@@ -1424,12 +1470,13 @@
                 case msg is GameFightJoinMessage:
                 {
                     gfjmsg = msg as GameFightJoinMessage;
-                    if (gfjmsg.fightType == FightTypeEnum.FIGHT_TYPE_PVP_ARENA)
+                    if (gfjmsg.fightType == FightTypeEnum.FIGHT_TYPE_PVP_ARENA && !gfjmsg.isSpectator)
                     {
                         this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT;
                         this._isArenaRegistered = false;
                         KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate, this._isArenaRegistered, this._arenaCurrentStatus);
                     }
+                    this.cleanPartyFightNotifications();
                     return false;
                 }
                 case msg is FightEndingMessage:
@@ -1453,12 +1500,197 @@
                     }
                     return true;
                 }
+                case msg is PartyMemberInFightMessage:
+                {
+                    if (!PlayedCharacterManager.getInstance().isFighting)
+                    {
+                        pemifmmsg = msg as PartyMemberInFightMessage;
+                        switch(pemifmmsg.reason)
+                        {
+                            case 1:
+                            {
+                                fightCause = I18n.getUiText("ui.party.memberStartFight.monsterAttack");
+                                break;
+                            }
+                            case 2:
+                            {
+                                fightCause = I18n.getUiText("ui.party.memberStartFight.playerAttack");
+                                break;
+                            }
+                            case 3:
+                            {
+                                fightCause = I18n.getUiText("ui.party.memberStartFight.attackPlayer");
+                                break;
+                            }
+                            default:
+                            {
+                                fightCause = I18n.getUiText("ui.party.memberStartFight.unknownReason");
+                                break;
+                                break;
+                            }
+                        }
+                        fightId = pemifmmsg.fightId;
+                        memberName = pemifmmsg.memberName;
+                        fightMapId = pemifmmsg.fightMap.mapId;
+                        fightInformation = new PartyFightInformationsData(fightMapId, fightId, memberName, pemifmmsg.memberId, pemifmmsg.secondsBeforeFightStart);
+                        fightInformation.timeUntilFightbegin.addEventListener(TimerEvent.TIMER_COMPLETE, this.onFightStartTimerComplete);
+                        fightInformation.timeUntilFightbegin.start();
+                        if (!this._partyFightsInformations[fightMapId])
+                        {
+                            this._partyFightsInformations[fightMapId] = new Array();
+                        }
+                        this._partyFightsInformations[fightMapId].push(fightInformation);
+                        channel = ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO;
+                        timestamp = TimeManager.getInstance().getTimestamp();
+                        params = new Array();
+                        params.push(memberName);
+                        params.push(fightMapId);
+                        partyFightMsg = ParamsDecoder.applyParams(fightCause, params);
+                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, partyFightMsg, channel, timestamp, false);
+                        if (PlayedCharacterManager.getInstance().currentMap.mapId == fightMapId)
+                        {
+                            entitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+                            fight = entitiesFrame.fights[fightInformation.fightId];
+                            foundLeader;
+                            var _loc_3:* = 0;
+                            var _loc_4:* = fight.teams;
+                            while (_loc_4 in _loc_3)
+                            {
+                                
+                                team = _loc_4[_loc_3];
+                                var _loc_5:* = 0;
+                                var _loc_6:* = team.teamInfos.teamMembers;
+                                while (_loc_6 in _loc_5)
+                                {
+                                    
+                                    fightTeamMember = _loc_6[_loc_5];
+                                    if (fightTeamMember.id == fightInformation.memberId)
+                                    {
+                                        fightTeamLeaderId = team.teamInfos.leaderId;
+                                        foundLeader;
+                                        break;
+                                    }
+                                    if (foundLeader)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            this.createPartyFightNotification(fightMapId, fightInformation, fightTeamLeaderId);
+                        }
+                        if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.PARTY_FIGHT_START))
+                        {
+                            KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.PARTY_FIGHT_START, [memberName, fightMapId]);
+                        }
+                    }
+                    return true;
+                }
+                case msg is MapComplementaryInformationsDataMessage:
+                {
+                    this.cleanPartyFightNotifications();
+                    if (this._partyFightsInformations)
+                    {
+                        mcidm = msg as MapComplementaryInformationsDataMessage;
+                        mapId = mcidm.mapId;
+                        foundFight;
+                        leaderId;
+                        if (this._partyFightsInformations[mapId])
+                        {
+                            var _loc_3:* = 0;
+                            var _loc_4:* = this._partyFightsInformations[mapId];
+                            while (_loc_4 in _loc_3)
+                            {
+                                
+                                partyFight = _loc_4[_loc_3];
+                                var _loc_5:* = 0;
+                                var _loc_6:* = mcidm.fights;
+                                while (_loc_6 in _loc_5)
+                                {
+                                    
+                                    mapFight = _loc_6[_loc_5];
+                                    if (mapFight.fightId == partyFight.fightId)
+                                    {
+                                        foundFight;
+                                        fightTeams = mapFight.fightTeams;
+                                        var _loc_7:* = 0;
+                                        var _loc_8:* = fightTeams;
+                                        while (_loc_8 in _loc_7)
+                                        {
+                                            
+                                            fti = _loc_8[_loc_7];
+                                            var _loc_9:* = 0;
+                                            var _loc_10:* = fti.teamMembers;
+                                            while (_loc_10 in _loc_9)
+                                            {
+                                                
+                                                teamMember = _loc_10[_loc_9];
+                                                if (teamMember.id == partyFight.memberId)
+                                                {
+                                                    leaderId = fti.leaderId;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                if (foundFight)
+                                {
+                                    this.createPartyFightNotification(mapId, partyFight, leaderId);
+                                    continue;
+                                }
+                                this.deletePartyFightInformation(mapId, partyFight);
+                            }
+                        }
+                    }
+                    return false;
+                }
+                case msg is GameRolePlayRemoveChallengeMessage:
+                {
+                    grpcm = msg as GameRolePlayRemoveChallengeMessage;
+                    fightNotificationIndex = this._partyFightNotification.indexOf("partyFight" + grpcm.fightId);
+                    if (fightNotificationIndex > -1)
+                    {
+                        NotificationManager.getInstance().closeNotification(this._partyFightNotification[fightNotificationIndex], false);
+                    }
+                    return false;
+                }
                 default:
                 {
                     break;
                 }
             }
             return false;
+        }// end function
+
+        private function cleanPartyFightNotifications() : void
+        {
+            var _loc_1:* = null;
+            if (this._partyFightNotification.length > 0)
+            {
+                for each (_loc_1 in this._partyFightNotification)
+                {
+                    
+                    NotificationManager.getInstance().closeNotification(_loc_1, false);
+                }
+                this._partyFightNotification = new Array();
+            }
+            return;
+        }// end function
+
+        private function createPartyFightNotification(param1:uint, param2:PartyFightInformationsData, param3:int) : void
+        {
+            var _loc_4:* = I18n.getUiText("ui.party.joinTeamFightQuestion");
+            var _loc_5:* = new Array();
+            new Array().push(param2.memberName);
+            var _loc_6:* = ParamsDecoder.applyParams(_loc_4, _loc_5);
+            var _loc_7:* = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.party.teamFightTitle"), _loc_6, NotificationTypeEnum.PRIORITY_INVITATION, "partyFight" + param2.fightId);
+            var _loc_8:* = new Date();
+            var _loc_9:* = (param2.fightStartDate - _loc_8.getTime()) / 1000;
+            NotificationManager.getInstance().addTimerToNotification(_loc_7, _loc_9, false);
+            NotificationManager.getInstance().addButtonToNotification(_loc_7, I18n.getUiText("ui.common.join"), "JoinFightRequest", [param2.fightId, param3], true, 130);
+            this._partyFightNotification.push("partyFight" + param2.fightId);
+            NotificationManager.getInstance().sendNotification(_loc_7);
+            return;
         }// end function
 
         public function pulled() : Boolean
@@ -1636,6 +1868,40 @@
             return;
         }// end function
 
+        private function onFightStartTimerComplete(event:TimerEvent) : void
+        {
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            for (_loc_2 in this._partyFightsInformations)
+            {
+                
+                for each (_loc_3 in this._partyFightsInformations[_loc_2])
+                {
+                    
+                    if (_loc_3.timeUntilFightbegin == event.currentTarget)
+                    {
+                        this.deletePartyFightInformation(_loc_2, _loc_3);
+                        return;
+                    }
+                }
+            }
+            return;
+        }// end function
+
+        private function deletePartyFightInformation(param1:Object, param2:PartyFightInformationsData) : void
+        {
+            param2.timeUntilFightbegin.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onFightStartTimerComplete);
+            if (this._partyFightsInformations[param1].length > 1)
+            {
+                this._partyFightsInformations[param1].splice(this._partyFightsInformations[param1].indexOf(param2));
+            }
+            else
+            {
+                delete this._partyFightsInformations[param1];
+            }
+            return;
+        }// end function
+
         public function teleportWantedFunction() : void
         {
             var _loc_1:* = new TeleportBuddiesAnswerAction();
@@ -1663,6 +1929,8 @@ import com.ankamagames.berilia.managers.*;
 
 import com.ankamagames.dofus.datacenter.world.*;
 
+import com.ankamagames.dofus.externalnotification.*;
+
 import com.ankamagames.dofus.externalnotification.enums.*;
 
 import com.ankamagames.dofus.internalDatacenter.people.*;
@@ -1679,13 +1947,23 @@ import com.ankamagames.dofus.logic.game.common.managers.*;
 
 import com.ankamagames.dofus.logic.game.common.messages.*;
 
+import com.ankamagames.dofus.logic.game.common.types.*;
+
 import com.ankamagames.dofus.logic.game.roleplay.frames.*;
 
+import com.ankamagames.dofus.logic.game.roleplay.types.*;
+
 import com.ankamagames.dofus.misc.lists.*;
+
+import com.ankamagames.dofus.misc.utils.*;
 
 import com.ankamagames.dofus.network.enums.*;
 
 import com.ankamagames.dofus.network.messages.game.context.fight.*;
+
+import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
+
+import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.*;
 
 import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.*;
 
@@ -1694,6 +1972,8 @@ import com.ankamagames.dofus.network.messages.game.context.roleplay.party.*;
 import com.ankamagames.dofus.network.messages.game.interactive.meeting.*;
 
 import com.ankamagames.dofus.network.types.game.character.alignment.*;
+
+import com.ankamagames.dofus.network.types.game.context.fight.*;
 
 import com.ankamagames.dofus.network.types.game.context.roleplay.*;
 

@@ -64,7 +64,7 @@
             {
                 throw new Error("Forbidden value (" + this.challengeId + ") on element challengeId.");
             }
-            param1.writeByte(this.challengeId);
+            param1.writeShort(this.challengeId);
             return;
         }// end function
 
@@ -76,7 +76,7 @@
 
         public function deserializeAs_ChallengeTargetsListRequestMessage(param1:IDataInput) : void
         {
-            this.challengeId = param1.readByte();
+            this.challengeId = param1.readShort();
             if (this.challengeId < 0)
             {
                 throw new Error("Forbidden value (" + this.challengeId + ") on element of ChallengeTargetsListRequestMessage.challengeId.");

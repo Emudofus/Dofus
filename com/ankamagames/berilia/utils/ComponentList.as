@@ -21,6 +21,7 @@
         public static const videoPlayer:VideoPlayer = null;
         public static const webBrowser:WebBrowser = null;
         public static const chatComponent:ChatComponent = null;
+        public static const swfApplication:SwfApplication = null;
 
         public function ComponentList()
         {

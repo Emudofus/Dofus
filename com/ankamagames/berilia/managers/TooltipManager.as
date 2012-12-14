@@ -62,11 +62,16 @@
                     _tooltipsStrata[param5] = _loc_19.display.strata;
                     Berilia.getInstance().uiList[param5] = _loc_19.display;
                     DisplayObjectContainer(Berilia.getInstance().docMain.getChildAt((StrataEnum.STRATA_TOOLTIP + 1))).addChild(_loc_19.display);
-                    _loc_19.display.x = 0;
-                    _loc_19.display.y = 0;
-                    _loc_19.display.scaleX = param16;
-                    _loc_19.display.scaleY = param16;
-                    _loc_19.display.uiClass.main(new TooltipProperties(_loc_19, param4, getTargetRect(param2), param6, param7, param8, SecureCenter.secure(param1), param12, param16));
+                    if (_loc_19 != null && _loc_19.display != null)
+                    {
+                        var _loc_20:* = 0;
+                        _loc_19.display.y = 0;
+                        _loc_19.display.x = _loc_20;
+                        var _loc_20:* = param16;
+                        _loc_19.display.scaleY = param16;
+                        _loc_19.display.scaleX = _loc_20;
+                        _loc_19.display.uiClass.main(new TooltipProperties(_loc_19, param4, getTargetRect(param2), param6, param7, param8, SecureCenter.secure(param1), param12, param16));
+                    }
                     return _loc_19;
                 }
             }
@@ -162,7 +167,7 @@
             return;
         }// end function
 
-        private static function onTooltipReady(param1:Tooltip, param2:UiModule, param3:String, param4, param5, param6:Boolean, param7:uint, param8:uint, param9:int, param10:String, param11:int, param12:Object, param13:int) : void
+        private static function onTooltipReady(param1:Tooltip, param2:UiModule, param3:String, param4, param5, param6:Boolean, param7:uint, param8:uint, param9:int, param10:String, param11:int, param12:Object, param13:Number) : void
         {
             var _loc_16:* = null;
             var _loc_17:* = null;
@@ -185,6 +190,14 @@
                     }
                     param1.display.cached = true;
                     param1.display.cacheAsBitmap = true;
+                    if (param1.display.scale != param13)
+                    {
+                        param1.display.scale = param13;
+                    }
+                }
+                else
+                {
+                    param1.display.scale = param13;
                 }
             }
             return;

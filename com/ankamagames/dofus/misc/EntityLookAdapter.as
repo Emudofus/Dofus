@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.dofus.misc
 {
+    import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.game.look.*;
     import com.ankamagames.tiphon.types.look.*;
@@ -70,7 +71,7 @@
             var _loc_13:* = null;
             var _loc_2:* = new EntityLook();
             _loc_2.bonesId = param1.getBone();
-            _loc_2.skins = param1.getSkins(true);
+            _loc_2.skins = param1.getSkins(false, false);
             var _loc_3:* = param1.getColors(true);
             for (_loc_4 in _loc_3)
             {
@@ -102,6 +103,7 @@
         public static function tiphonizeLook(param1) : TiphonEntityLook
         {
             var _loc_2:* = null;
+            param1 = SecureCenter.unsecure(param1);
             if (param1 is TiphonEntityLook)
             {
                 _loc_2 = param1 as TiphonEntityLook;
@@ -119,6 +121,7 @@
 
         public static function getRiderLook(param1) : TiphonEntityLook
         {
+            param1 = SecureCenter.unsecure(param1);
             var _loc_2:* = tiphonizeLook(param1);
             var _loc_3:* = _loc_2.clone();
             var _loc_4:* = _loc_3.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);

@@ -15,6 +15,7 @@
     public class LibrariesManager extends EventDispatcher
     {
         private var _aResources:Dictionary;
+        private var _aResourceLoadFail:Dictionary;
         private var _aResourcesUri:Array;
         private var _aResourceStates:Array;
         private var _aWaiting:Array;
@@ -38,6 +39,7 @@
             this._libCurrentlyUsed = new Dictionary(true);
             this.name = param1;
             this._aResources = new Dictionary();
+            this._aResourceLoadFail = new Dictionary();
             this._aResourceStates = new Array();
             this._aWaiting = new Array();
             this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
@@ -180,6 +182,11 @@
             return _loc_3 && _loc_3.getSwl() != null;
         }// end function
 
+        public function hasError(param1:uint) : Boolean
+        {
+            return this._aResourceLoadFail[param1];
+        }// end function
+
         public function hasResource(param1:uint, param2:String = null) : Boolean
         {
             var _loc_3:* = this._aResources[param1];
@@ -244,7 +251,6 @@
             var _loc_4:* = 0;
             var _loc_2:* = event.uri.tag.id == null ? (event.uri.tag) : (event.uri.tag.id);
             _log.info("Loaded " + event.uri);
-            trace(this._aResources[_loc_2]);
             GraphicLibrary(this._aResources[_loc_2]).addSwl(event.resource, event.uri.uri);
             if (this._aWaiting[_loc_2] && this._aWaiting[_loc_2]["ok"])
             {
@@ -266,9 +272,10 @@
             var _loc_3:* = null;
             var _loc_4:* = 0;
             var _loc_5:* = 0;
-            var _loc_2:* = event.uri.tag;
+            var _loc_2:* = isNaN(event.uri.tag) ? (event.uri.tag.id) : (event.uri.tag);
             _log.error("Unable to load " + event.uri + " (" + event.errorMsg + ")");
             delete this._aResources[_loc_2];
+            this._aResourceLoadFail[_loc_2] = true;
             this.addResource(_loc_2, _uri);
             if (this._aWaiting[_loc_2])
             {

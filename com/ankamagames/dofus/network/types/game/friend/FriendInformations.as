@@ -7,6 +7,7 @@
     {
         public var playerState:uint = 99;
         public var lastConnection:uint = 0;
+        public var achievementPoints:int = 0;
         public static const protocolId:uint = 78;
 
         public function FriendInformations()
@@ -19,11 +20,12 @@
             return 78;
         }// end function
 
-        public function initFriendInformations(param1:uint = 0, param2:String = "", param3:uint = 99, param4:uint = 0) : FriendInformations
+        public function initFriendInformations(param1:uint = 0, param2:String = "", param3:uint = 99, param4:uint = 0, param5:int = 0) : FriendInformations
         {
             super.initAbstractContactInformations(param1, param2);
             this.playerState = param3;
             this.lastConnection = param4;
+            this.achievementPoints = param5;
             return this;
         }// end function
 
@@ -32,6 +34,7 @@
             super.reset();
             this.playerState = 99;
             this.lastConnection = 0;
+            this.achievementPoints = 0;
             return;
         }// end function
 
@@ -50,6 +53,7 @@
                 throw new Error("Forbidden value (" + this.lastConnection + ") on element lastConnection.");
             }
             param1.writeInt(this.lastConnection);
+            param1.writeInt(this.achievementPoints);
             return;
         }// end function
 
@@ -72,6 +76,7 @@
             {
                 throw new Error("Forbidden value (" + this.lastConnection + ") on element of FriendInformations.lastConnection.");
             }
+            this.achievementPoints = param1.readInt();
             return;
         }// end function
 

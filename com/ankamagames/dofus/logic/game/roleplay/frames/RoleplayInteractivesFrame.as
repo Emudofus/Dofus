@@ -441,6 +441,11 @@
             return _loc_1;
         }// end function
 
+        public function getInteractiveActionTimer(param1) : Timer
+        {
+            return this._interactiveActionTimers[param1];
+        }// end function
+
         private function registerInteractive(param1:InteractiveElement, param2:int) : void
         {
             var _loc_6:* = false;

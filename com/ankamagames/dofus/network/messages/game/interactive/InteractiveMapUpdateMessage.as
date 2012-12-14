@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.network.messages.game.interactive
 {
     import __AS3__.vec.*;
+    import com.ankamagames.dofus.network.*;
     import com.ankamagames.dofus.network.types.game.interactive.*;
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
@@ -68,7 +69,8 @@
             while (_loc_2 < this.interactiveElements.length)
             {
                 
-                (this.interactiveElements[_loc_2] as InteractiveElement).serializeAs_InteractiveElement(param1);
+                param1.writeShort((this.interactiveElements[_loc_2] as InteractiveElement).getTypeId());
+                (this.interactiveElements[_loc_2] as InteractiveElement).serialize(param1);
                 _loc_2 = _loc_2 + 1;
             }
             return;
@@ -82,15 +84,17 @@
 
         public function deserializeAs_InteractiveMapUpdateMessage(param1:IDataInput) : void
         {
-            var _loc_4:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             var _loc_2:* = param1.readUnsignedShort();
             var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
-                _loc_4 = new InteractiveElement();
-                _loc_4.deserialize(param1);
-                this.interactiveElements.push(_loc_4);
+                _loc_4 = param1.readUnsignedShort();
+                _loc_5 = ProtocolTypeManager.getInstance(InteractiveElement, _loc_4);
+                _loc_5.deserialize(param1);
+                this.interactiveElements.push(_loc_5);
                 _loc_3 = _loc_3 + 1;
             }
             return;

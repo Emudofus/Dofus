@@ -239,6 +239,7 @@
                     _loc_4 = getQualifiedClassName(param1).split("::")[1];
                     if (this._stopMessages.indexOf(_loc_4) != -1)
                     {
+                        _log.error("Just catched a stop message: " + _loc_4);
                         this.emptyStack();
                         return false;
                     }

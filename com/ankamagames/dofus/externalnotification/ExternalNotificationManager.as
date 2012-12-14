@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.externalnotification
 {
     import __AS3__.vec.*;
+    import by.blooddy.crypto.*;
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.data.*;
@@ -16,8 +17,9 @@
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.types.events.*;
-    import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.display.*;
+    import com.ankamagames.jerakine.utils.misc.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import flash.desktop.*;
     import flash.display.*;
     import flash.events.*;
@@ -36,14 +38,14 @@
         private var _showMode:int;
         private var _notificationsPosition:int = -1;
         private var _maxNotifications:int;
-        private var _notificationsWidth:Number;
-        private var _notificationsHeight:Number;
         private var _timeoutDuration:Number;
-        private var _replaceHeight:Number;
-        private var _startCoordinates:Point;
+        private var _startCoordinatesY:Number;
+        private var _startCoordinatesX:Number;
+        private var _nativeWinOpts:NativeWindowInitOptions;
         private var _dataStoreType:DataStoreType;
+        private var _optionChangedFromOtherClient:Boolean;
         private const NOTIFICATION_SPACING:Number = 10;
-        private const NB_EVENTS_TYPES:int = 31;
+        private const NB_EVENTS_TYPES:int = 35;
         private const MODULE_NAME:String = "Ankama_GameUiCore";
         private const UI_NAME:String = "externalnotification";
         private const CONNECTION_ID:String = "_externalNotifications";
@@ -51,15 +53,21 @@
         private var _isMaster:Boolean;
         private var _masterConnection:LocalConnection;
         private var _slaveConnection:LocalConnection;
-        private var _slavesIds:Vector.<String>;
+        private var _slavesIds:Array;
         private var dofusHasFocus:Boolean;
+        private const WINDOWS_KEY:int = 91;
+        private var _windowsStartMenuOpened:Boolean;
+        private var _clientWasClicked:Boolean;
+        private var _checkBeforeActivateTimeoutId:uint;
+        private var _timeOut:Timer;
+        private var _buffer:Vector.<ExternalNotificationRequest>;
+        private var _playSound:Boolean;
         private static const DEBUG:Boolean = false;
         private static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalNotificationManager));
         private static var _instance:ExternalNotificationManager;
 
         public function ExternalNotificationManager(param1:PrivateClass)
         {
-            this._startCoordinates = new Point(25, 50);
             return;
         }// end function
 
@@ -74,54 +82,61 @@
             return;
         }// end function
 
-        public function getNotificationValue(param1:int) : int
+        public function canAddExternalNotification(param1:int) : Boolean
         {
-            var _loc_3:* = null;
+            return this.notificationsEnabled && !this.isExternalNotificationTypeIgnored(param1);
+        }// end function
+
+        public function getNotificationOptions(param1:int) : Object
+        {
             var _loc_4:* = null;
-            this.log("getNotificationValue " + param1);
-            var _loc_2:* = StoreDataManager.getInstance().getSetData(this._dataStoreType, "notificationsEvent" + param1, -1);
-            if (_loc_2 == -1)
+            var _loc_5:* = null;
+            var _loc_2:* = StoreDataManager.getInstance().getData(this._dataStoreType, "notificationsEvent" + param1);
+            var _loc_3:* = _loc_2 && !_loc_2.hasOwnProperty("active") && !_loc_2.hasOwnProperty("sound") && !_loc_2.hasOwnProperty("multi") && !_loc_2.hasOwnProperty("notify");
+            if (!_loc_2 || _loc_3)
             {
-                _loc_3 = ExternalNotification.getExternalNotifications();
-                _loc_2 = 0;
-                for each (_loc_4 in _loc_3)
+                _loc_4 = ExternalNotification.getExternalNotifications();
+                _loc_2 = new Object();
+                for each (_loc_5 in _loc_4)
                 {
                     
-                    if (ExternalNotificationTypeEnum[_loc_4.name] == param1)
+                    if (ExternalNotificationTypeEnum[_loc_5.name] == param1)
                     {
-                        if (_loc_4.defaultEnable == true)
-                        {
-                            _loc_2 = _loc_2 + 1;
-                        }
-                        if (_loc_4.defaultSound == true)
-                        {
-                            _loc_2 = _loc_2 + 2;
-                        }
-                        if (_loc_4.defaultMultiAccount == true)
-                        {
-                            _loc_2 = _loc_2 + 4;
-                        }
+                        _loc_2.active = _loc_5.defaultEnable;
+                        _loc_2.sound = _loc_5.defaultSound;
+                        _loc_2.notify = _loc_5.defaultNotify;
+                        _loc_2.multi = _loc_5.defaultMultiAccount;
                         break;
                     }
                 }
-                this.setNotificationValue(param1, _loc_2);
+                this.setNotificationOptions(param1, _loc_2);
             }
             return _loc_2;
         }// end function
 
-        public function setNotificationValue(param1:int, param2:int) : void
+        public function setNotificationOptions(param1:int, param2:Object) : void
         {
-            var _loc_3:* = false;
-            var _loc_4:* = false;
-            this.log("setNotificationValue " + param1 + " " + param2);
-            StoreDataManager.getInstance().setData(this._dataStoreType, "notificationsEvent" + param1, param2);
+            var multiaccountChanged:Boolean;
+            var pNotificationType:* = param1;
+            var pOptions:* = param2;
+            StoreDataManager.getInstance().setData(this._dataStoreType, "notificationsEvent" + pNotificationType, pOptions);
             if (this._initialized)
             {
-                _loc_3 = (param2 & 4) > 0;
-                _loc_4 = this._notificationsOptions[param1].multiaccount != _loc_3;
-                this.setNotificationOptions(param1, param2);
-                if (_loc_4)
+                multiaccountChanged = this._notificationsOptions[pNotificationType].multi != pOptions.multi;
+                this.updateNotificationOptions(pNotificationType, pOptions);
+                if (multiaccountChanged)
                 {
+                    if (!this._isMaster)
+                    {
+                        try
+                        {
+                            this.becomeMaster(this._slavesIds);
+                        }
+                        catch (ae:ArgumentError)
+                        {
+                            log("there\'s already a master");
+                        }
+                    }
                     this.synchronizeMultiAccountOptions();
                 }
             }
@@ -135,7 +150,6 @@
 
         private function setOptionValue(param1:String, param2) : void
         {
-            this.log("setOptionValue " + param1 + " " + param2);
             OptionManager.getOptionManager("dofus")[param1] = param2;
             return;
         }// end function
@@ -163,7 +177,6 @@
 
         private function initDataStoreType() : void
         {
-            this.log("init datastoretype");
             var _loc_1:* = "externalNotifications_" + MD5.hash(PlayerManager.getInstance().nickname);
             if (!this._dataStoreType || this._dataStoreType.category != _loc_1)
             {
@@ -174,13 +187,20 @@
 
         public function init() : void
         {
-            this.log("ExternalNotificationManager init");
+            this._timeOut = new Timer(50);
+            this._timeOut.addEventListener(TimerEvent.TIMER, this.processRequests);
+            this._buffer = new Vector.<ExternalNotificationRequest>;
+            this._startCoordinatesX = 25;
+            this._startCoordinatesY = 50;
+            this._nativeWinOpts = new NativeWindowInitOptions();
+            this._nativeWinOpts.systemChrome = NativeWindowSystemChrome.NONE;
+            this._nativeWinOpts.type = NativeWindowType.LIGHTWEIGHT;
+            this._nativeWinOpts.resizable = false;
+            this._nativeWinOpts.transparent = true;
             this.initDataStoreType();
             this._notificationsList = new Vector.<ExternalNotificationWindow>(0);
             this._notificationsOptions = new Dictionary();
-            this._notificationsWidth = 346;
-            this._notificationsHeight = 90;
-            this._replaceHeight = this._notificationsHeight + this.NOTIFICATION_SPACING;
+            this._slavesIds = new Array();
             this.setNotificationsMode(this.getOptionValue("notificationsMode"));
             this.setDisplayDuration(this.getOptionValue("notificationsDisplayDuration"));
             this.setMaxNotifications(this.getOptionValue("notificationsMaxNumber"));
@@ -188,7 +208,7 @@
             while (i <= this.NB_EVENTS_TYPES)
             {
                 
-                this.setNotificationOptions(i, this.getNotificationValue(i));
+                this.updateNotificationOptions(i, this.getNotificationOptions(i));
                 i = (i + 1);
             }
             this.setNotificationsPosition(this.getOptionValue("notificationsPosition"));
@@ -210,12 +230,15 @@
             {
                 becomeSlave();
             }
-            this.log("is master:" + this._isMaster);
             this._clientWindow.addEventListener(Event.ACTIVATE, this.onWindowActivate);
             this._clientWindow.addEventListener(Event.DEACTIVATE, this.onWindowDeactivate);
             this._clientWindow.addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE, this.onDisplayStateChange);
             this._clientWindow.addEventListener(Event.CLOSING, this.onClientClosing);
             this._clientWindow.addEventListener(Event.CLOSE, this.onClientClose);
+            if (Capabilities.os.toLowerCase().indexOf("windows") != -1)
+            {
+                StageShareManager.stage.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+            }
             this._notificationsEnabled = this._clientWindow.active ? (false) : (true);
             this._initialized = true;
             return;
@@ -223,7 +246,6 @@
 
         public function reset() : void
         {
-            this.log("reset");
             this.removeAllListeners();
             this._clientWindow.removeEventListener(Event.CLOSE, this.onClientClose);
             this.closeAllNotifications();
@@ -245,11 +267,13 @@
 
         private function removeAllListeners() : void
         {
+            this._timeOut.removeEventListener(TimerEvent.TIMER, this.processRequests);
             OptionManager.getOptionManager("dofus").removeEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onPropertyChanged);
             this._clientWindow.removeEventListener(Event.ACTIVATE, this.onWindowActivate);
             this._clientWindow.removeEventListener(Event.DEACTIVATE, this.onWindowDeactivate);
             this._clientWindow.removeEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE, this.onDisplayStateChange);
             this._clientWindow.removeEventListener(Event.CLOSING, this.onClientClosing);
+            StageShareManager.stage.removeEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
             return;
         }// end function
 
@@ -270,7 +294,12 @@
 
         private function onWindowActivate(event:Event) : void
         {
-            this.log("window activate " + this._clientId + " " + this._clientWindow.active);
+            if (this._windowsStartMenuOpened)
+            {
+                this._windowsStartMenuOpened = false;
+                this._checkBeforeActivateTimeoutId = setTimeout(this.checkBeforeActivate, 500);
+                return;
+            }
             this._notificationsEnabled = false;
             if (!this._isMaster)
             {
@@ -281,7 +310,6 @@
 
         private function onWindowDeactivate(event:Event) : void
         {
-            this.log("window deactivate " + this._clientId + " " + this._clientWindow.active);
             if (this._showMode == ExternalNotificationModeEnum.FOCUS_LOST_DOFUS || this._showMode == ExternalNotificationModeEnum.FOCUS_LOST_OTHER)
             {
                 this._notificationsEnabled = true;
@@ -293,9 +321,25 @@
             return;
         }// end function
 
+        private function checkBeforeActivate() : void
+        {
+            clearTimeout(this._checkBeforeActivateTimeoutId);
+            StageShareManager.stage.removeEventListener(MouseEvent.CLICK, this.onClick);
+            if (this._clientWasClicked)
+            {
+                this.onWindowActivate(null);
+                this._clientWasClicked = false;
+            }
+            else
+            {
+                StageShareManager.stage.dispatchEvent(new Event(Event.DEACTIVATE));
+                StageShareManager.stage.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+            }
+            return;
+        }// end function
+
         private function onDisplayStateChange(event:NativeWindowDisplayStateEvent) : void
         {
-            this.log("display state change " + event.afterDisplayState);
             if (event.afterDisplayState == NativeWindowDisplayState.MINIMIZED)
             {
                 if (this._showMode == ExternalNotificationModeEnum.FOCUS_LOST_MINIMIZE)
@@ -312,7 +356,6 @@
 
         private function onClientClosing(event:Event) : void
         {
-            this.log("on window closing");
             this.removeAllListeners();
             this._showMode = ExternalNotificationModeEnum.DISABLED;
             if (this._isMaster)
@@ -332,7 +375,6 @@
 
         private function onClientClose(event:Event) : void
         {
-            this.log("on window close " + this._notificationsList.length);
             this._clientWindow.removeEventListener(Event.CLOSE, this.onClientClose);
             if (this._isMaster)
             {
@@ -341,41 +383,63 @@
             return;
         }// end function
 
+        private function onKeyDown(event:KeyboardEvent) : void
+        {
+            if (event.keyCode == this.WINDOWS_KEY)
+            {
+                this._windowsStartMenuOpened = true;
+                this._clientWasClicked = false;
+                StageShareManager.stage.addEventListener(MouseEvent.CLICK, this.onClick);
+            }
+            return;
+        }// end function
+
+        private function onClick(event:MouseEvent) : void
+        {
+            this._clientWasClicked = true;
+            return;
+        }// end function
+
+        private function onMouseOver(event:MouseEvent) : void
+        {
+            StageShareManager.stage.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+            StageShareManager.stage.dispatchEvent(new Event(Event.ACTIVATE));
+            return;
+        }// end function
+
         public function updateDofusFocus(param1:String, param2:Boolean) : void
         {
-            this.log("updateDofusFocus " + param1 + " " + param2);
-            this.log("master active : " + this._clientWindow.active);
+            if (this._clientWindow.active && param2)
+            {
+                this._clientWindow.dispatchEvent(new Event(Event.DEACTIVATE));
+            }
             this.dofusHasFocus = param2;
             if (this._slavesIds.indexOf(param1) == -1)
             {
                 this._slavesIds.push(param1);
+                this.sendToSlaves("updateClientsIds", this._slavesIds);
             }
-            this.log("dofusHasFocus : " + this.dofusHasFocus);
             return;
         }// end function
 
         private function takeFocus() : void
         {
-            this.log("takeFocus " + this._clientId + " active:" + this._clientWindow.active + " focus:" + this._clientWindow.stage.focus);
-            this._clientWindow.alwaysInFront = true;
-            this._clientWindow.orderToFront();
-            this._clientWindow.alwaysInFront = false;
-            if (this._clientWindow.displayState == NativeWindowDisplayState.MINIMIZED)
-            {
-                this._clientWindow.activate();
-            }
-            else
-            {
-                NativeApplication.nativeApplication.activate(NativeApplication.nativeApplication.openedWindows[0]);
-            }
+            NativeApplication.nativeApplication.activate();
+            this._clientWindow.activate();
             return;
         }// end function
 
-        private function removeFocus() : void
+        private function toFront() : void
         {
-            this.log("removeFocus " + this._clientId + " active:" + this._clientWindow.active + " focus:" + this._clientWindow.stage.focus);
-            this._clientWindow.stage.focus = null;
-            this._clientWindow.dispatchEvent(new Event(Event.DEACTIVATE, false, false));
+            this._clientWindow.alwaysInFront = true;
+            this._clientWindow.orderToFront();
+            this._clientWindow.alwaysInFront = false;
+            return;
+        }// end function
+
+        public function notifyUser(param1:Boolean = true) : void
+        {
+            SystemManager.getSingleton().notifyUser(param1);
             return;
         }// end function
 
@@ -389,6 +453,11 @@
             return this._clientId;
         }// end function
 
+        public function get otherClientsIds() : Array
+        {
+            return this._slavesIds;
+        }// end function
+
         public function get showMode() : int
         {
             return this._showMode;
@@ -396,18 +465,7 @@
 
         public function get notificationsEnabled() : Boolean
         {
-            this.log("notificationsEnabled ? " + this._clientId + " " + this._showMode + " " + this._clientWindow.active);
             return this._showMode == ExternalNotificationModeEnum.DISABLED ? (false) : (this._notificationsEnabled);
-        }// end function
-
-        public function get windowHeight() : Number
-        {
-            return this._notificationsHeight;
-        }// end function
-
-        public function get windowWidth() : Number
-        {
-            return this._notificationsWidth;
         }// end function
 
         private function getExternalNotification(param1:String, param2:String) : ExternalNotificationWindow
@@ -426,7 +484,6 @@
                     }
                 }
             }
-            this.log("getExternalNotification " + param1 + " " + param2 + " " + _loc_3);
             return _loc_3;
         }// end function
 
@@ -434,7 +491,6 @@
         {
             var _loc_2:* = null;
             var _loc_3:* = null;
-            this.log("getExternalNotifications " + param1);
             if (this._notificationsList.length > 0)
             {
                 _loc_2 = new Vector.<ExternalNotificationWindow>(0);
@@ -451,16 +507,16 @@
             return _loc_2;
         }// end function
 
-        public function updateProperty(param1:String, param2, param3) : void
+        public function updateProperty(param1:String, param2) : void
         {
-            var _loc_4:* = new PropertyChangeEvent(OptionManager.getOptionManager("dofus"), param1, param2, param3);
-            this.onPropertyChanged(_loc_4, true);
+            this._optionChangedFromOtherClient = true;
+            this.setOptionValue(param1, param2);
+            this._optionChangedFromOtherClient = false;
             return;
         }// end function
 
-        private function onPropertyChanged(event:PropertyChangeEvent, param2:Boolean = false) : void
+        private function onPropertyChanged(event:PropertyChangeEvent) : void
         {
-            this.log("onPropertyChanged " + param2 + " " + event.propertyName + " " + event.propertyValue + " " + event.propertyOldValue);
             if (event.propertyValue == event.propertyOldValue)
             {
                 return;
@@ -489,33 +545,42 @@
                 }
                 default:
                 {
+                    return;
                     break;
                 }
             }
-            this.setOptionValue(event.propertyName, event.propertyValue);
             if (!this._isMaster)
             {
-                if (!param2)
+                try
                 {
-                    this.sendToMaster("updateProperty", event.propertyName, event.propertyValue, event.propertyOldValue);
+                    this.becomeMaster(this._slavesIds);
+                }
+                catch (ae:ArgumentError)
+                {
+                }
+            }
+            if (!this._isMaster)
+            {
+                if (!this._optionChangedFromOtherClient)
+                {
+                    this.sendToMaster("updateProperty", event.propertyName, event.propertyValue);
                 }
             }
             else
             {
-                this.sendToSlaves("updateProperty", event.propertyName, event.propertyValue, event.propertyOldValue);
+                this.sendToSlaves("updateProperty", event.propertyName, event.propertyValue);
             }
             return;
         }// end function
 
         private function synchronizeMultiAccountOptions() : void
         {
-            this.log("synchronizeMultiAccountOptions " + this._clientId);
             var _loc_1:* = new Array();
             var _loc_2:* = 1;
             while (_loc_2 <= this.NB_EVENTS_TYPES)
             {
                 
-                _loc_1.push(this._notificationsOptions[_loc_2].multiaccount);
+                _loc_1.push(this._notificationsOptions[_loc_2].multi);
                 _loc_2++;
             }
             if (!this._isMaster)
@@ -531,7 +596,6 @@
 
         public function updateAllMultiAccountOptions(param1:Array) : void
         {
-            this.log("updateAllMultiAccountOptions " + param1);
             var _loc_2:* = 1;
             while (_loc_2 <= this.NB_EVENTS_TYPES)
             {
@@ -548,35 +612,26 @@
 
         private function updateMultiAccountOption(param1:int, param2:Boolean) : void
         {
-            this.log("updateMultiAccountOption " + param1 + " " + param2);
-            var _loc_3:* = 0;
-            if (!this._notificationsOptions[param1].ignored)
-            {
-                _loc_3 = _loc_3 + 1;
-            }
-            if (this._notificationsOptions[param1].sound)
-            {
-                _loc_3 = _loc_3 + 2;
-            }
-            this._notificationsOptions[param1].multiaccount = param2;
-            if (this._notificationsOptions[param1].multiaccount)
-            {
-                _loc_3 = _loc_3 + 4;
-            }
-            StoreDataManager.getInstance().setData(this._dataStoreType, "notificationsEvent" + param1, _loc_3);
+            this._notificationsOptions[param1].multi = param2;
+            StoreDataManager.getInstance().setData(this._dataStoreType, "notificationsEvent" + param1, this._notificationsOptions[param1]);
             return;
         }// end function
 
-        public function setNotificationOptions(param1:int, param2:int) : void
+        public function updateNotificationOptions(param1:int, param2:Object) : void
         {
-            this.log("setNotificationOptions " + param1 + " " + param2);
-            this._notificationsOptions[param1] = {ignored:(param2 & 1) == 0, sound:(param2 & 2) > 0, multiaccount:(param2 & 4) > 0};
+            if (!this._notificationsOptions[param1])
+            {
+                this._notificationsOptions[param1] = new Object();
+            }
+            this._notificationsOptions[param1].active = param2.active;
+            this._notificationsOptions[param1].sound = param2.sound;
+            this._notificationsOptions[param1].multi = param2.multi;
+            this._notificationsOptions[param1].notify = param2.notify;
             return;
         }// end function
 
         public function setNotificationsPosition(param1:int) : void
         {
-            this.log("change notificationsPosition from " + this._notificationsPosition + " to " + param1);
             if (this._notificationsPosition != -1 && this._notificationsList.length > 0 && this._notificationsPosition != param1)
             {
                 this.changeNotificationsPosition(param1);
@@ -588,36 +643,42 @@
         public function setMaxNotifications(param1:int) : void
         {
             this._maxNotifications = param1;
-            this.log("change maxNotifications to " + param1);
             return;
         }// end function
 
         public function setNotificationsMode(param1:int) : void
         {
             this._showMode = param1;
-            this.log("change notificationsMode to " + param1);
             return;
         }// end function
 
         public function setDisplayDuration(param1:Number) : void
         {
             this._timeoutDuration = param1 * 1000;
-            this.log("change notificationsDisplayDuration to " + this._timeoutDuration);
             return;
         }// end function
 
         public function isExternalNotificationTypeIgnored(param1:int) : Boolean
         {
             var _loc_2:* = this._notificationsOptions[param1];
-            this.log("isExternalNotificationTypeIgnored " + param1 + " " + _loc_2.ignored);
-            return _loc_2.ignored;
+            return !_loc_2.active;
         }// end function
 
         private function ignoreExternalNotificationType(param1:int) : void
         {
             var _loc_2:* = this._notificationsOptions[param1];
-            _loc_2.ignored = true;
+            _loc_2.active = false;
             return;
+        }// end function
+
+        public function notificationPlaySound(param1:int) : Boolean
+        {
+            return param1 != ExternalNotificationTypeEnum.NONE ? (this._notificationsOptions[param1].sound) : (true);
+        }// end function
+
+        public function notificationNotify(param1:int) : Boolean
+        {
+            return param1 != ExternalNotificationTypeEnum.NONE ? (this._notificationsOptions[param1].notify) : (false);
         }// end function
 
         private function initLocalConnection(param1:LocalConnection) : void
@@ -640,7 +701,6 @@
 
         private function onConnectionError(event:AsyncErrorEvent) : void
         {
-            this.log("onConnectionError " + event.error.getStackTrace());
             return;
         }// end function
 
@@ -651,7 +711,6 @@
 
         private function onConnectionSecurityError(event:SecurityErrorEvent) : void
         {
-            this.log("onConnectionSecurityError " + event);
             return;
         }// end function
 
@@ -663,7 +722,6 @@
             }
             catch (ae:ArgumentError)
             {
-                log("master connection close fail");
             }
             return;
         }// end function
@@ -676,94 +734,92 @@
             }
             catch (ae:ArgumentError)
             {
-                log("slave connection close fail");
             }
             return;
         }// end function
 
         private function sendToMaster(param1:String, ... args) : void
         {
-            args = new activation;
-            var argArray:Array;
-            var pMethodName:* = param1;
-            var pArgs:* = args;
+            args = null;
             try
             {
-                argArray = [this.CONNECTION_ID, ].concat();
-                this.log("try " +  + " " + );
-                this._masterConnection.send.apply(this, );
+                args = [this.CONNECTION_ID, param1].concat(args);
+                this._masterConnection.send.apply(this, args);
             }
             catch (e:Error)
             {
-                log("send fail");
             }
             return;
         }// end function
 
         private function sendToSlave(param1:String, param2:String, ... args) : void
         {
-            args = new activation;
-            var argArray:Array;
-            var len:int;
-            var i:int;
-            var params:*;
-            var len2:int;
-            var j:int;
-            var pSlaveId:* = param1;
-            var pMethodName:* = param2;
-            var pArgs:* = args;
+            args = null;
             try
             {
-                argArray = [this.CONNECTION_ID + "." + , ].concat();
-                len = length;
-                i;
-                while ( < )
-                {
-                    
-                    params = [];
-                    if ( is Array)
-                    {
-                        splice(, 1);
-                        len2 = length;
-                        j;
-                        while ( < )
-                        {
-                            
-                            splice( + , 0, []);
-                            j = ( + 1);
-                        }
-                    }
-                    i = ( + 1);
-                }
-                this.log("try " +  + " " +  + " " + );
-                this._slaveConnection.send.apply(this, );
+                args = [this.CONNECTION_ID + "." + param1, param2].concat(args);
+                this._slaveConnection.send.apply(this, args);
             }
             catch (e:Error)
             {
-                log("send fail");
             }
             return;
         }// end function
 
         private function sendToSlaves(param1:String, ... args) : void
         {
-            args = null;
-            this.log("sendToSlaves " + param1 + " " + args);
-            for each (args in this._slavesIds)
+            var _loc_5:* = null;
+            var _loc_6:* = undefined;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            args = args.length;
+            var _loc_4:* = 0;
+            while (_loc_4 < args)
             {
                 
-                this.sendToSlave(args, param1, args);
+                _loc_6 = args[_loc_4];
+                if (_loc_6 is Array)
+                {
+                    args.splice(_loc_4, 1);
+                    _loc_7 = _loc_6.length;
+                    _loc_8 = 0;
+                    while (_loc_8 < _loc_7)
+                    {
+                        
+                        args.splice(_loc_4 + _loc_8, 0, _loc_6[_loc_8]);
+                        _loc_8++;
+                    }
+                }
+                _loc_4++;
+            }
+            for each (_loc_5 in this._slavesIds)
+            {
+                
+                this.sendToSlave(_loc_5, param1, args);
             }
             return;
         }// end function
 
-        private function becomeMaster() : void
+        private function becomeMaster(param1:Array = null) : void
         {
+            var _loc_2:* = null;
             this._masterConnection.client = getInstance();
             this._masterConnection.connect(this.CONNECTION_ID);
+            if (param1)
+            {
+                param1.splice(param1.indexOf(this._clientId), 1);
+                if (param1 != this._slavesIds)
+                {
+                    this._slavesIds = new Array();
+                    for each (_loc_2 in param1)
+                    {
+                        
+                        this._slavesIds.push(_loc_2);
+                    }
+                }
+            }
+            this.closeSlaveConnection();
             this._clientId = "master";
-            this._slavesIds = new Vector.<String>(0);
-            this.log("becomeMaster");
             this._isMaster = true;
             return;
         }// end function
@@ -773,7 +829,6 @@
             this._clientId = "slave" + Math.floor(Math.random() * 100000000);
             this._slaveConnection.client = getInstance();
             this._slaveConnection.connect(this.CONNECTION_ID + "." + this._clientId);
-            this.log("becomeSlave " + this._clientId);
             this._isMaster = false;
             this.sendToMaster("updateDofusFocus", this._clientId, this._clientWindow.active);
             return;
@@ -782,9 +837,9 @@
         public function unregisterSlave(param1:String) : void
         {
             var _loc_3:* = null;
-            this.log("unregisterSlave " + param1);
             this.updateDofusFocus(param1, false);
             this._slavesIds.splice(this._slavesIds.indexOf(param1), 1);
+            this.sendToSlaves("updateClientsIds", this._slavesIds);
             var _loc_2:* = this.getExternalNotifications(param1);
             if (_loc_2)
             {
@@ -797,94 +852,179 @@
             return;
         }// end function
 
-        public function handleNotificationRequest(param1:Object) : void
+        public function updateClientsIds(param1:Array) : void
         {
-            var req:ExternalNotificationRequest;
-            var pExtNotifRequest:* = param1;
-            this.log("handleNotificationRequest " + pExtNotifRequest);
-            if (!this._isMaster)
+            var _loc_2:* = null;
+            this._slavesIds = new Array();
+            for each (_loc_2 in param1)
             {
-                try
+                
+                if (this._slavesIds.indexOf(_loc_2) == -1)
                 {
-                    this.log("slave try to become master");
-                    this.becomeMaster();
-                    this.closeSlaveConnection();
+                    this._slavesIds.push(_loc_2);
                 }
-                catch (ae:ArgumentError)
+            }
+            return;
+        }// end function
+
+        public function handleNotificationRequest(param1:Object, param2:Boolean = false) : void
+        {
+            var _loc_3:* = null;
+            var _loc_4:* = false;
+            if (param1 is String)
+            {
+                _loc_3 = ExternalNotificationRequest.createFromJSONString(param1 as String);
+            }
+            else
+            {
+                _loc_3 = param1 as ExternalNotificationRequest;
+            }
+            if (this._clientId == _loc_3.clientId && _loc_3.showMode != ExternalNotificationModeEnum.ALWAYS)
+            {
+                _loc_4 = this.dofusHasFocus;
+                if (!_loc_4 && this._clientWindow.active)
                 {
-                    log("there\'s already a master");
-                    sendToMaster("handleNotificationRequest", JSON.encode(pExtNotifRequest));
-                    log("send external notification request to master");
+                    _loc_4 = true;
+                }
+                if (_loc_3.showMode == ExternalNotificationModeEnum.FOCUS_LOST_OTHER && _loc_4)
+                {
                     return;
                 }
             }
-            if (pExtNotifRequest is String)
+            if (this._isMaster && _loc_3.notificationType != ExternalNotificationTypeEnum.NONE)
             {
-                req = ExternalNotificationRequest.createFromJSONString(pExtNotifRequest as String);
+                if (this._notificationsOptions[_loc_3.notificationType].multi == false && this.isNotificationDuplicated(_loc_3.clientId, _loc_3.notificationType))
+                {
+                    return;
+                }
             }
-            else
-            {
-                req = pExtNotifRequest as ExternalNotificationRequest;
-            }
-            if (this._notificationsOptions[req.notificationType].multiaccount == false && this.isNotificationDuplicated(req.clientId, req.notificationType))
-            {
-                this.log("notification request ignored because of multiaccount option");
-                return;
-            }
-            this.log("client has focus:" + this._clientWindow.active + " dofus has focus:" + this.dofusHasFocus);
-            var focus:* = this.dofusHasFocus;
-            if (!focus && this._clientWindow.active)
-            {
-                focus;
-            }
-            this.log("focus:" + focus + " showMode:" + this._showMode + " req showMode:" + req.showMode);
-            if (this._showMode == ExternalNotificationModeEnum.FOCUS_LOST_OTHER && focus)
-            {
-                this.log("notification request ignored because of focus mode");
-                return;
-            }
-            var mod:* = UiModuleManager.getInstance().getModule(this.MODULE_NAME);
-            var ctr:* = Berilia.getInstance().loadUi(mod, mod.uis[this.UI_NAME], req.instanceId, [req.title, req.iconId, req.iconBgColorId, req.message, req.css, req.cssClass], false, 1, false, null);
-            this.createExternalNotification(req.notificationType, req.clientId, req.id, ctr);
+            this._buffer.push(_loc_3);
+            this._timeOut.reset();
+            this._timeOut.start();
             return;
         }// end function
 
-        public function handleFocusRequest(param1:String) : void
+        public function processRequest(param1:ExternalNotificationRequest) : void
         {
-            this.log("handleFocusRequest " + param1 + " " + this._clientId);
+            var _loc_2:* = UiModuleManager.getInstance().getModule(this.MODULE_NAME);
+            var _loc_3:* = Berilia.getInstance().loadUi(_loc_2, _loc_2.uis[param1.uiName], param1.instanceId, param1.displayData);
+            var _loc_4:* = new ExternalNotificationWindow(param1.notificationType, param1.clientId, param1.id, _loc_3, this._nativeWinOpts, param1.hookName, param1.hookParams);
+            this._notificationsList.push(_loc_4);
+            this.setNotificationCoordinates(_loc_4);
+            this.showExternalNotification(_loc_4);
+            if (this._playSound)
+            {
+                switch(param1.uiName)
+                {
+                    case "achievementNotification":
+                    {
+                        SoundManager.getInstance().manager.playUISound(UISoundEnum.ACHIEVEMENT_UNLOCKED);
+                        break;
+                    }
+                    default:
+                    {
+                        if (param1.playSound)
+                        {
+                            SoundManager.getInstance().manager.playUISound(UISoundEnum.POPUP_INFO);
+                        }
+                        break;
+                        break;
+                    }
+                }
+                this._playSound = false;
+            }
+            if (param1.notify)
+            {
+                if (param1.clientId != this._clientId)
+                {
+                    this.sendToSlave(param1.clientId, "notifyUser");
+                }
+                else
+                {
+                    this.notifyUser();
+                }
+            }
+            return;
+        }// end function
+
+        private function processRequests(event:TimerEvent) : void
+        {
+            var bufferLen:int;
+            var i:int;
+            var pEvent:* = event;
+            bufferLen = this._buffer.length;
+            var maxLen:* = bufferLen > this._maxNotifications ? (this._maxNotifications) : (bufferLen);
+            if (this._isMaster)
+            {
+                this._playSound = true;
+                i;
+                while (i < maxLen)
+                {
+                    
+                    this.processRequest(this._buffer[bufferLen - maxLen + i]);
+                    i = (i + 1);
+                }
+                this._timeOut.stop();
+                this._buffer.length = 0;
+            }
+            else
+            {
+                try
+                {
+                    this.becomeMaster(this.otherClientsIds);
+                    this.processRequests(null);
+                }
+                catch (ae:ArgumentError)
+                {
+                    if (bufferLen > _maxNotifications)
+                    {
+                        _buffer = _buffer.slice((bufferLen - 1) - _maxNotifications, (bufferLen - 1));
+                    }
+                    sendToMaster("handleNotificationRequest", JSON.encode(_buffer.pop()));
+                    if (_buffer.length == 0)
+                    {
+                        _timeOut.stop();
+                    }
+                }
+            }
+            return;
+        }// end function
+
+        public function handleFocusRequest(param1:String, param2:String = null, param3:Array = null) : void
+        {
+            var _loc_4:* = null;
             if (param1 != this._clientId)
             {
-                this.removeFocus();
-                this.sendToSlave(param1, "handleFocusRequest", param1);
+                this.sendToSlave(param1, "handleFocusRequest", param1, param2, param3);
             }
             else
             {
-                this.takeFocus();
+                if (this._clientWindow.displayState != NativeWindowDisplayState.MINIMIZED)
+                {
+                    this.takeFocus();
+                    this.toFront();
+                }
+                else
+                {
+                    this._clientWindow.restore();
+                }
+                if (param2 && param3)
+                {
+                    _loc_4 = Hook.getHookByName(param2);
+                    if (_loc_4)
+                    {
+                        CallWithParameters.call(KernelEventsManager.getInstance().processCallback, new Array(_loc_4).concat(param3));
+                    }
+                }
             }
-            return;
-        }// end function
-
-        private function createExternalNotification(param1:int, param2:String, param3:String, param4:Object) : void
-        {
-            this.log("createExternalNotification " + param2 + " " + param3 + " " + param4 + " " + param4.name);
-            var _loc_5:* = this.getNotificationCoordinates(this._notificationsPosition, this._notificationsList.length);
-            var _loc_6:* = new ExternalNotificationWindow(param1, param2, param3, param4, this._notificationsWidth, this._notificationsHeight, _loc_5);
-            this._notificationsList.push(_loc_6);
-            _loc_6.order = this._notificationsList.length;
-            this.showExternalNotification(_loc_6);
             return;
         }// end function
 
         private function showExternalNotification(param1:ExternalNotificationWindow) : void
         {
-            this.log("showExternalNotification " + param1.clientId + " " + param1.id);
             param1.show();
-            if (this._notificationsOptions[param1.notificationType].sound == true)
-            {
-                SoundManager.getInstance().manager.playUISound(UISoundEnum.POPUP_INFO);
-            }
             param1.timeoutId = setTimeout(this.destroyExternalNotification, this._timeoutDuration, param1);
-            var _loc_2:* = this.isTopPosition(this._notificationsPosition) ? (param1.y > Capabilities.screenResolutionY - this._notificationsHeight) : (param1.y < 0);
+            var _loc_2:* = this.isTopPosition(this._notificationsPosition) ? (param1.y > Capabilities.screenResolutionY - param1.contentHeight) : (param1.y < 0);
             if (this._notificationsList.length > this._maxNotifications || _loc_2)
             {
                 this.destroyExternalNotification(this._notificationsList[0]);
@@ -894,10 +1034,10 @@
 
         public function closeExternalNotification(param1:String, param2:String, param3:Boolean = false) : void
         {
-            this.log("closeExternalNotification " + param1 + " " + param2 + " " + param3);
             var _loc_4:* = this.getExternalNotification(param1, param2);
             if (param3)
             {
+                this._clientWindow.visible = false;
                 _loc_4.addEventListener(Event.CLOSE, this.onExternalNotificationWindowClose);
             }
             this.destroyExternalNotification(_loc_4);
@@ -908,38 +1048,60 @@
         {
             var _loc_2:* = event.currentTarget as ExternalNotificationWindow;
             _loc_2.removeEventListener(Event.CLOSE, this.onExternalNotificationWindowClose);
-            this.log("onExternalNotificationWindowClose " + _loc_2.closed);
-            this.handleFocusRequest(_loc_2.clientId);
+            this.handleFocusRequest(_loc_2.clientId, _loc_2.hookName, _loc_2.hookParams);
+            this._clientWindow.visible = true;
             return;
         }// end function
 
-        private function getNotificationCoordinates(param1:int, param2:uint) : Point
+        public function resetNotificationDisplayTimeout(param1:String, param2:String) : void
         {
-            var _loc_3:* = new Point();
-            switch(param1)
+            var _loc_3:* = this.getExternalNotification(param1, param2);
+            clearTimeout(_loc_3.timeoutId);
+            _loc_3.timeoutId = setTimeout(this.destroyExternalNotification, this._timeoutDuration, _loc_3);
+            return;
+        }// end function
+
+        private function setNotificationCoordinates(param1:ExternalNotificationWindow) : void
+        {
+            var _loc_3:* = NaN;
+            var _loc_4:* = NaN;
+            var _loc_2:* = this._notificationsList.indexOf(param1);
+            switch(this._notificationsPosition)
             {
                 case ExternalNotificationPositionEnum.BOTTOM_RIGHT:
                 {
-                    _loc_3.x = Capabilities.screenResolutionX - this._notificationsWidth - this._startCoordinates.x;
-                    _loc_3.y = Capabilities.screenResolutionY - this._notificationsHeight - this._startCoordinates.y;
+                    _loc_3 = Capabilities.screenResolutionX - param1.contentWidth - this._startCoordinatesX;
+                    if (_loc_2 == 0)
+                    {
+                        _loc_4 = Capabilities.screenResolutionY - param1.contentHeight - this._startCoordinatesY;
+                    }
                     break;
                 }
                 case ExternalNotificationPositionEnum.BOTTOM_LEFT:
                 {
-                    _loc_3.x = this._startCoordinates.x;
-                    _loc_3.y = Capabilities.screenResolutionY - this._notificationsHeight - this._startCoordinates.y;
+                    _loc_3 = this._startCoordinatesX;
+                    if (_loc_2 == 0)
+                    {
+                        _loc_4 = Capabilities.screenResolutionY - param1.contentHeight - this._startCoordinatesY;
+                    }
                     break;
                 }
                 case ExternalNotificationPositionEnum.TOP_RIGHT:
                 {
-                    _loc_3.x = Capabilities.screenResolutionX - this._notificationsWidth - this._startCoordinates.x;
-                    _loc_3.y = this._startCoordinates.y;
+                    _loc_3 = Capabilities.screenResolutionX - param1.contentWidth - this._startCoordinatesX;
+                    if (_loc_2 == 0)
+                    {
+                        _loc_4 = this._startCoordinatesY;
+                    }
                     break;
                 }
                 case ExternalNotificationPositionEnum.TOP_LEFT:
                 {
-                    _loc_3.x = this._startCoordinates.x;
-                    _loc_3.y = this._startCoordinates.y;
+                    _loc_3 = this._startCoordinatesX;
+                    if (_loc_2 == 0)
+                    {
+                        _loc_4 = this._startCoordinatesY;
+                    }
                     break;
                 }
                 default:
@@ -947,32 +1109,30 @@
                     break;
                 }
             }
-            if (this._notificationsList.length > 0)
+            if (_loc_2 > 0)
             {
-                if (this.isTopPosition(param1))
+                if (this.isTopPosition(this._notificationsPosition))
                 {
-                    _loc_3.y = _loc_3.y + (this._notificationsHeight + this.NOTIFICATION_SPACING) * param2;
+                    _loc_4 = this._notificationsList[(_loc_2 - 1)].y + (this._notificationsList[(_loc_2 - 1)].height + this.NOTIFICATION_SPACING);
                 }
                 else
                 {
-                    _loc_3.y = _loc_3.y - (this._notificationsHeight + this.NOTIFICATION_SPACING) * param2;
+                    _loc_4 = this._notificationsList[(_loc_2 - 1)].y - (param1.contentHeight + this.NOTIFICATION_SPACING);
                 }
             }
-            return _loc_3;
+            param1.bounds = new Rectangle(_loc_3, _loc_4, param1.contentWidth, param1.contentHeight);
+            return;
         }// end function
 
         private function changeNotificationsPosition(param1:int) : void
         {
-            var _loc_4:* = null;
-            this.log("changeNotificationsPosition " + param1);
             var _loc_2:* = this._notificationsList.length;
+            this._notificationsPosition = param1;
             var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
-                _loc_4 = this.getNotificationCoordinates(param1, _loc_3);
-                this._notificationsList[_loc_3].x = _loc_4.x;
-                this._notificationsList[_loc_3].y = _loc_4.y;
+                this.setNotificationCoordinates(this._notificationsList[_loc_3]);
                 _loc_3++;
             }
             return;
@@ -980,49 +1140,31 @@
 
         private function destroyExternalNotification(param1:ExternalNotificationWindow, param2:Boolean = true) : void
         {
-            var _loc_3:* = null;
             var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            this.log("destroyExternalnotification " + param1.instanceId + " " + param1.order + " " + param2);
+            var _loc_6:* = NaN;
             clearTimeout(param1.timeoutId);
             param1.destroy();
-            this._notificationsList.splice(this._notificationsList.indexOf(param1), 1);
+            var _loc_3:* = this._notificationsList.length;
+            var _loc_5:* = this._notificationsList.indexOf(param1);
             if (param2)
             {
-                if (this._notificationsList.length > 0)
+                if (this._notificationsList.length > 0 && _loc_5 != (_loc_3 - 1))
                 {
+                    _loc_6 = param1.height + this.NOTIFICATION_SPACING;
                     if (this.isTopPosition(this._notificationsPosition))
                     {
-                        for each (_loc_3 in this._notificationsList)
-                        {
-                            
-                            if (_loc_3.order > param1.order)
-                            {
-                                _loc_3.y = _loc_3.y - this._replaceHeight;
-                            }
-                        }
+                        _loc_6 = -_loc_6;
                     }
-                    else
-                    {
-                        for each (_loc_3 in this._notificationsList)
-                        {
-                            
-                            if (_loc_3.order > param1.order)
-                            {
-                                _loc_3.y = _loc_3.y + this._replaceHeight;
-                            }
-                        }
-                    }
-                    _loc_4 = this._notificationsList.length;
-                    _loc_5 = 0;
-                    while (_loc_5 < _loc_4)
+                    _loc_4 = _loc_3 - 1;
+                    while (_loc_4 > _loc_5)
                     {
                         
-                        this._notificationsList[_loc_5].order = _loc_5 + 1;
-                        _loc_5++;
+                        this._notificationsList[_loc_4].y = this._notificationsList[_loc_4].y + _loc_6;
+                        _loc_4 = _loc_4 - 1;
                     }
                 }
             }
+            this._notificationsList.splice(_loc_5, 1);
             return;
         }// end function
 
@@ -1039,6 +1181,8 @@
 }
 
 import __AS3__.vec.*;
+
+import by.blooddy.crypto.*;
 
 import com.ankamagames.berilia.*;
 
@@ -1070,9 +1214,11 @@ import com.ankamagames.jerakine.types.enums.*;
 
 import com.ankamagames.jerakine.types.events.*;
 
-import com.ankamagames.jerakine.utils.crypto.*;
-
 import com.ankamagames.jerakine.utils.display.*;
+
+import com.ankamagames.jerakine.utils.misc.*;
+
+import com.ankamagames.jerakine.utils.system.*;
 
 import flash.desktop.*;
 

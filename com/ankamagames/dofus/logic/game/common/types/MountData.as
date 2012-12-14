@@ -20,75 +20,69 @@
 
         public static function makeMountData(param1:MountClientData, param2:Boolean = true, param3:uint = 0) : Object
         {
-            var mountData:Object;
-            var ability:uint;
-            var nEffect:int;
-            var i:int;
-            var o:* = param1;
-            var cache:* = param2;
-            var xpRatio:* = param3;
-            if (_dictionary_cache[o.id] && cache)
+            var _loc_4:* = null;
+            var _loc_7:* = 0;
+            var _loc_8:* = 0;
+            var _loc_9:* = 0;
+            if (_dictionary_cache[param1.id] && param2)
             {
-                mountData = getMountFromCache(o.id);
+                _loc_4 = getMountFromCache(param1.id);
             }
             else
             {
-                mountData = CopyObject.copyObject(o, ["behaviors", "ancestor"]);
-                _dictionary_cache[mountData.id] = mountData;
+                _loc_4 = CopyObject.copyObject(param1, ["behaviors", "ancestor"]);
+                _dictionary_cache[_loc_4.id] = _loc_4;
             }
-            var mount:* = Mount.getMountById(o.model);
-            if (!o.name)
+            var _loc_5:* = Mount.getMountById(param1.model);
+            if (!param1.name)
             {
-                mountData.name = I18n.getUiText("ui.common.noName");
+                _loc_4.name = I18n.getUiText("ui.common.noName");
             }
-            mountData.id = o.id;
-            mountData.model = o.model;
-            mountData.description = mount.name;
-            mountData.level = o.level;
-            mountData.experience = o.experience;
-            mountData.experienceForLevel = o.experienceForLevel;
-            mountData.experienceForNextLevel = o.experienceForNextLevel;
-            mountData.xpRatio = xpRatio;
+            _loc_4.id = param1.id;
+            _loc_4.model = param1.model;
+            _loc_4.description = _loc_5.name;
+            _loc_4.level = param1.level;
+            _loc_4.experience = param1.experience;
+            _loc_4.experienceForLevel = param1.experienceForLevel;
+            _loc_4.experienceForNextLevel = param1.experienceForNextLevel;
+            _loc_4.xpRatio = param3;
             try
             {
-                mountData.entityLook = TiphonEntityLook.fromString(mount.look);
-                mountData.colors = mountData.entityLook.getColors();
+                _loc_4.entityLook = TiphonEntityLook.fromString(_loc_5.look);
+                _loc_4.colors = _loc_4.entityLook.getColors();
             }
             catch (e:Error)
             {
             }
-            var a:* = o.ancestor.concat();
-            a.unshift(o.model);
-            mountData.ancestor = makeParent(a, 0, -1, 0);
-            mountData.ability = new Array();
-            var _loc_5:* = 0;
-            var _loc_6:* = o.behaviors;
-            while (_loc_6 in _loc_5)
+            var _loc_6:* = param1.ancestor.concat();
+            param1.ancestor.concat().unshift(param1.model);
+            _loc_4.ancestor = makeParent(_loc_6, 0, -1, 0);
+            _loc_4.ability = new Array();
+            for each (_loc_7 in param1.behaviors)
             {
                 
-                ability = _loc_6[_loc_5];
-                mountData.ability.push(MountBehavior.getMountBehaviorById(ability));
+                _loc_4.ability.push(MountBehavior.getMountBehaviorById(_loc_7));
             }
-            mountData.effectList = new Array();
-            nEffect = o.effectList.length;
-            i;
-            while (i < nEffect)
+            _loc_4.effectList = new Array();
+            _loc_8 = param1.effectList.length;
+            _loc_9 = 0;
+            while (_loc_9 < _loc_8)
             {
                 
-                mountData.effectList.push(ObjectEffectAdapter.fromNetwork(o.effectList[i]));
-                i = (i + 1);
+                _loc_4.effectList.push(ObjectEffectAdapter.fromNetwork(param1.effectList[_loc_9]));
+                _loc_9++;
             }
-            mountData.isRideable = o.isRideable;
-            mountData.stamina = o.stamina;
-            mountData.energy = o.energy;
-            mountData.maturity = o.maturity;
-            mountData.serenity = o.serenity;
-            mountData.love = o.love;
-            mountData.fecondationTime = o.fecondationTime;
-            mountData.isFecondationReady = o.isFecondationReady;
-            mountData.reproductionCount = o.reproductionCount;
-            mountData.boostLimiter = o.boostLimiter;
-            return mountData;
+            _loc_4.isRideable = param1.isRideable;
+            _loc_4.stamina = param1.stamina;
+            _loc_4.energy = param1.energy;
+            _loc_4.maturity = param1.maturity;
+            _loc_4.serenity = param1.serenity;
+            _loc_4.love = param1.love;
+            _loc_4.fecondationTime = param1.fecondationTime;
+            _loc_4.isFecondationReady = param1.isFecondationReady;
+            _loc_4.reproductionCount = param1.reproductionCount;
+            _loc_4.boostLimiter = param1.boostLimiter;
+            return _loc_4;
         }// end function
 
         public static function getMountFromCache(param1:uint) : Object

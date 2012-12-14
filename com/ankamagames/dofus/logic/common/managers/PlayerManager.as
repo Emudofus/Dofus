@@ -8,7 +8,6 @@
     {
         public var accountId:uint;
         public var communityId:uint;
-        public var server:Server;
         public var hasRights:Boolean;
         public var nickname:String;
         public var subscriptionEndDate:Number;
@@ -16,6 +15,9 @@
         public var adminStatus:int;
         public var passkey:String;
         public var accountCreation:Number;
+        private var _server:Server;
+        public var serverCommunityId:int = -1;
+        public var serverLang:String;
         private static var _self:PlayerManager;
 
         public function PlayerManager()
@@ -25,6 +27,28 @@
                 throw new SingletonError("PlayerManager is a singleton and should not be instanciated directly.");
             }
             return;
+        }// end function
+
+        public function set server(param1:Server) : void
+        {
+            this._server = param1;
+            return;
+        }// end function
+
+        public function get server() : Server
+        {
+            if (this._server)
+            {
+                if (this.serverCommunityId > -1)
+                {
+                    this._server.communityId = this.serverCommunityId;
+                }
+                if (this.serverLang != "")
+                {
+                    this._server.language = this.serverLang;
+                }
+            }
+            return this._server;
         }// end function
 
         public function destroy() : void

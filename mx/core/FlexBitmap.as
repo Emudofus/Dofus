@@ -5,14 +5,11 @@
 
     public class FlexBitmap extends Bitmap
     {
-        static const VERSION:String = "4.1.0.16076";
+        static const VERSION:String = "4.6.0.23201";
 
         public function FlexBitmap(param1:BitmapData = null, param2:String = "auto", param3:Boolean = false)
         {
-            var bitmapData:* = param1;
-            var pixelSnapping:* = param2;
-            var smoothing:* = param3;
-            super(bitmapData, pixelSnapping, smoothing);
+            super(param1, param2, param3);
             try
             {
                 name = NameUtil.createUniqueName(this);

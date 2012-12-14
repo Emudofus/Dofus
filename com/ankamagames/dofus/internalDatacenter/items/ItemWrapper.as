@@ -414,6 +414,23 @@
             return super.name;
         }// end function
 
+        public function get isTradeable() : Boolean
+        {
+            var _loc_2:* = null;
+            var _loc_1:* = true;
+            for each (_loc_2 in this.effects)
+            {
+                
+                if (_loc_2.effectId == 981 || _loc_2.effectId == 982 || _loc_2.effectId == 983)
+                {
+                    _loc_1 = false;
+                    break;
+                }
+            }
+            _loc_1 = category == 3 ? (false) : (_loc_1);
+            return _loc_1;
+        }// end function
+
         public function update(param1:uint, param2:uint, param3:uint, param4:uint, param5:Vector.<ObjectEffect>) : void
         {
             if (this.objectGID != param3 || this.effectsList != param5)

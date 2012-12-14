@@ -7,6 +7,7 @@
     import com.ankamagames.dofus.internalDatacenter.items.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.frames.*;
+    import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.quest.*;
     import com.ankamagames.jerakine.logger.*;
     import flash.utils.*;
@@ -143,6 +144,39 @@
         public function getNotificationList() : Array
         {
             return QuestFrame.notificationList;
+        }// end function
+
+        public function getFinishedAchievementsIds() : Vector.<uint>
+        {
+            return this.getQuestFrame().finishedAchievementsIds;
+        }// end function
+
+        public function isAchievementFinished(param1:int) : Boolean
+        {
+            return this.getQuestFrame().finishedAchievementsIds.indexOf(param1) != -1;
+        }// end function
+
+        public function getAchievementKamasReward(param1:Achievement, param2:int = 0) : Number
+        {
+            if (param2 == 0)
+            {
+                param2 = PlayedCharacterManager.getInstance().infos.level;
+            }
+            return param1.getKamasReward(param2);
+        }// end function
+
+        public function getAchievementExperienceReward(param1:Achievement, param2:int = 0) : Number
+        {
+            if (param2 == 0)
+            {
+                param2 = PlayedCharacterManager.getInstance().infos.level;
+            }
+            return param1.getExperienceReward(param2, PlayedCharacterManager.getInstance().experiencePercent);
+        }// end function
+
+        public function getRewardableAchievements() : Vector.<AchievementRewardable>
+        {
+            return this.getQuestFrame().rewardableAchievements;
         }// end function
 
         private function getQuestFrame() : QuestFrame

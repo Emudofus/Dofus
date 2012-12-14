@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.logic.game.approach.frames
 {
     import __AS3__.vec.*;
+    import by.blooddy.crypto.*;
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.berilia.types.messages.*;
@@ -59,6 +60,7 @@
         private var _charactersList:Array;
         private var _charactersToRecolorList:Array;
         private var _charactersToRenameList:Array;
+        private var _charactersToRelookList:Array;
         private var _giftList:Array;
         private var _kernel:KernelEventsManager;
         private var _gmaf:LoadingModuleFrame;
@@ -76,6 +78,7 @@
             this._charactersList = new Array();
             this._charactersToRecolorList = new Array();
             this._charactersToRenameList = new Array();
+            this._charactersToRelookList = new Array();
             this._giftList = new Array();
             this._kernel = KernelEventsManager.getInstance();
             this._lc = new LoaderContext(false, ApplicationDomain.currentDomain);
@@ -110,6 +113,7 @@
 
         public function pushed() : Boolean
         {
+            SecureModeManager.getInstance().checkMigrate();
             AirScanner.allowByteCodeExecution(this._lc, true);
             Kernel.getWorker().addFrame(new MiscFrame());
             return true;
@@ -122,6 +126,7 @@
             var characterId:int;
             var characterColors:Array;
             var characterName:String;
+            var characterHead:int;
             var recolors:Vector.<int>;
             var isReplay:Boolean;
             var parts:Vector.<uint>;
@@ -145,6 +150,7 @@
             var cnsrmsg:CharacterNameSuggestionRequestMessage;
             var cnssmsg:CharacterNameSuggestionSuccessMessage;
             var cnsfmsg:CharacterNameSuggestionFailureMessage;
+            var crlsa:CharacterRelookSelectionAction;
             var bTutorial:Boolean;
             var cssmsg:CharacterSelectedSuccessMessage;
             var flashKeyMsg:ClientKeyMessage;
@@ -160,8 +166,10 @@
             var cclMsg:ConsoleCommandsListMessage;
             var atmsg:AuthenticationTicketMessage;
             var clwrmsg:CharactersListWithModificationsMessage;
-            var ctri:CharacterToRecolorInformation;
-            var ctrid:uint;
+            var ctrci:CharacterToRecolorInformation;
+            var ctrni:uint;
+            var ctrli:CharacterToRelookInformation;
+            var ctrid:int;
             var charColors:Array;
             var num:int;
             var i:int;
@@ -180,8 +188,12 @@
             var person:Object;
             var crwrnrmsg:CharacterReplayWithRenameRequestMessage;
             var cswrnmsg:CharacterSelectionWithRenameMessage;
+            var person2:Object;
+            var crwrlrmsg:CharacterReplayWithRelookRequestMessage;
+            var cswrlmsg:CharacterSelectionWithRelookMessage;
             var charToColor:*;
             var charToRename2:Object;
+            var charToRelook:Object;
             var firstSelection:Boolean;
             var cfsmsg:CharacterFirstSelectionMessage;
             var crrmsg:CharacterReplayRequestMessage;
@@ -252,14 +264,14 @@
                         while (_loc_4 in _loc_3)
                         {
                             
-                            ctri = _loc_4[_loc_3];
+                            ctrci = _loc_4[_loc_3];
                             charColors = new Array(-1, -1, -1, -1, -1);
-                            num = ctri.colors.length;
+                            num = ctrci.colors.length;
                             i;
                             while (i < num)
                             {
                                 
-                                uIndexedColor = ctri.colors[i];
+                                uIndexedColor = ctrci.colors[i];
                                 uIndex = (uIndexedColor >> 24) - 1;
                                 uColor = uIndexedColor & 16777215;
                                 if (uIndex > -1 && uIndex < charColors.length)
@@ -268,15 +280,23 @@
                                 }
                                 i = (i + 1);
                             }
-                            this._charactersToRecolorList[ctri.id] = {id:ctri.id, colors:charColors};
+                            this._charactersToRecolorList[ctrci.id] = {id:ctrci.id, colors:charColors};
                         }
                         var _loc_3:* = 0;
                         var _loc_4:* = clwrmsg.charactersToRename;
                         while (_loc_4 in _loc_3)
                         {
                             
-                            ctrid = _loc_4[_loc_3];
-                            this._charactersToRenameList.push(ctrid);
+                            ctrni = _loc_4[_loc_3];
+                            this._charactersToRenameList.push(ctrni);
+                        }
+                        var _loc_3:* = 0;
+                        var _loc_4:* = clwrmsg.charactersToRelook;
+                        while (_loc_4 in _loc_3)
+                        {
+                            
+                            ctrli = _loc_4[_loc_3];
+                            this._charactersToRelookList[ctrli.id] = ctrli;
                         }
                         var _loc_3:* = 0;
                         var _loc_4:* = clwrmsg.unusableCharacters;
@@ -401,7 +421,7 @@
                         
                         colors.push(-1);
                     }
-                    ccmsg.initCharacterCreationRequestMessage(cca.name, cca.breed, cca.sex, colors);
+                    ccmsg.initCharacterCreationRequestMessage(cca.name, cca.breed, cca.sex, colors, cca.head);
                     ConnectionsHandler.getConnection().send(ccmsg);
                     return true;
                 }
@@ -415,7 +435,7 @@
                 {
                     cda = msg as CharacterDeletionAction;
                     cdrmsg = new CharacterDeletionRequestMessage();
-                    cdrmsg.initCharacterDeletionRequestMessage(cda.id, MD5.hex_md5(cda.id + "~" + cda.answer));
+                    cdrmsg.initCharacterDeletionRequestMessage(cda.id, MD5.hash(cda.id + "~" + cda.answer));
                     ConnectionsHandler.getConnection().send(cdrmsg);
                     return true;
                 }
@@ -577,6 +597,54 @@
                     }
                     return true;
                 }
+                case msg is CharacterRelookSelectionAction:
+                {
+                    crlsa = msg as CharacterRelookSelectionAction;
+                    if (PlayerManager.getInstance().server.gameTypeId == 1)
+                    {
+                        var _loc_3:* = 0;
+                        var _loc_4:* = this._charactersList;
+                        while (_loc_4 in _loc_3)
+                        {
+                            
+                            person2 = _loc_4[_loc_3];
+                            if (person2.id == crlsa.characterId)
+                            {
+                                if (person2.deathState == 1)
+                                {
+                                    isReplay;
+                                    continue;
+                                }
+                                if (person2.deathState == 0)
+                                {
+                                    isReplay;
+                                    continue;
+                                }
+                                _log.error("perso dans les limbes !!");
+                                this.commonMod.openPopup(I18n.getUiText("ui.common.error"), I18n.getUiText("ui.common.cantSelectThisCharacterLimb"), [I18n.getUiText("ui.common.ok")]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        isReplay;
+                    }
+                    characterId = crlsa.characterId;
+                    characterHead = crlsa.characterHead;
+                    if (isReplay)
+                    {
+                        crwrlrmsg = new CharacterReplayWithRelookRequestMessage();
+                        crwrlrmsg.initCharacterReplayWithRelookRequestMessage(characterId, characterHead);
+                        ConnectionsHandler.getConnection().send(crwrlrmsg);
+                    }
+                    else
+                    {
+                        cswrlmsg = new CharacterSelectionWithRelookMessage();
+                        cswrlmsg.initCharacterSelectionWithRelookMessage(characterId, characterHead);
+                        ConnectionsHandler.getConnection().send(cswrlmsg);
+                    }
+                    return true;
+                }
                 case msg is CharacterDeselectionAction:
                 {
                     this._requestedCharacterId = 0;
@@ -632,6 +700,21 @@
                             }
                         }
                         this._kernel.processCallback(HookList.CharacterCreationStart, new Array("rename", charToRename2));
+                    }
+                    else if (this._charactersToRelookList[characterId])
+                    {
+                        var _loc_3:* = 0;
+                        var _loc_4:* = this._charactersList;
+                        while (_loc_4 in _loc_3)
+                        {
+                            
+                            perso = _loc_4[_loc_3];
+                            if (perso.id == characterId)
+                            {
+                                charToRelook = perso;
+                            }
+                        }
+                        this._kernel.processCallback(HookList.CharacterCreationStart, new Array("relook", charToRelook, this._charactersToRelookList[characterId].cosmeticId));
                     }
                     else
                     {
@@ -717,10 +800,12 @@
                     Kernel.getWorker().addFrame(new HouseFrame());
                     Kernel.getWorker().addFrame(new EmoticonFrame());
                     Kernel.getWorker().addFrame(new QuestFrame());
+                    Kernel.getWorker().addFrame(new TinselFrame());
                     Kernel.getWorker().addFrame(new PartyManagementFrame());
                     Kernel.getWorker().addFrame(new ProtectPishingFrame());
                     Kernel.getWorker().addFrame(new StackManagementFrame());
                     Kernel.getWorker().addFrame(new ExternalGameFrame());
+                    Kernel.getWorker().addFrame(new AveragePricesFrame());
                     Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(GameStartingFrame));
                     Kernel.getWorker().resume();
                     ConnectionsHandler.resume();

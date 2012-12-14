@@ -32,6 +32,7 @@
             this._dispatchProgress = param4;
             this.prepareLoader();
             var _loc_5:* = new URLRequest(param2);
+            new URLRequest(param2).requestHeaders = [new URLRequestHeader("pragma", "no-cache")];
             this._ldr.load(_loc_5);
             return;
         }// end function

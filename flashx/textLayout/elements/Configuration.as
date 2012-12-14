@@ -28,7 +28,6 @@
         private var _scrollMouseWheelMultiplier:Number;
         private var _flowComposerClass:Class;
         private var _inlineGraphicResolverFunction:Function;
-        private var _cursorFunction:Function;
         private var _immutableClone:IConfiguration;
         static const playerEnablesArgoFeatures:Boolean = versionIsAtLeast(10, 1);
         static const playerEnablesSpicyFeatures:Boolean = versionIsAtLeast(10, 2) && new Sprite().hasOwnProperty("needsSoftKeyboard");
@@ -115,7 +114,6 @@
             _loc_1.scrollMouseWheelMultiplier = this._scrollMouseWheelMultiplier;
             _loc_1.flowComposerClass = this._flowComposerClass;
             _loc_1._inlineGraphicResolverFunction = this._inlineGraphicResolverFunction;
-            _loc_1._cursorFunction = this._cursorFunction;
             return _loc_1;
         }// end function
 
@@ -367,18 +365,6 @@
             return;
         }// end function
 
-        public function get cursorFunction() : Function
-        {
-            return this._cursorFunction;
-        }// end function
-
-        public function set cursorFunction(param1:Function) : void
-        {
-            this._cursorFunction = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
-
         static function versionIsAtLeast(param1:int, param2:int) : Boolean
         {
             var _loc_3:* = Capabilities.version.split(" ")[1].split(",");
@@ -388,11 +374,6 @@
         static function get debugCodeEnabled() : Boolean
         {
             return false;
-        }// end function
-
-        static function getCursorString(param1:IConfiguration, param2:String) : String
-        {
-            return param1.cursorFunction == null ? (param2) : (param1.cursorFunction(param2));
         }// end function
 
     }

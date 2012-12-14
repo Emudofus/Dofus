@@ -46,12 +46,12 @@
             {
                 case ItemCriterionOperator.EQUAL:
                 {
-                    _loc_1 = I18n.getUiText("ui.tooltip.beInSubarea") + I18n.getUiText("ui.common.colon") + _loc_3;
+                    _loc_1 = I18n.getUiText("ui.tooltip.beInSubarea", [_loc_3]);
                     break;
                 }
                 case ItemCriterionOperator.DIFFERENT:
                 {
-                    _loc_1 = I18n.getUiText("ui.tooltip.dontBeInSubarea") + I18n.getUiText("ui.common.colon") + _loc_3;
+                    _loc_1 = I18n.getUiText("ui.tooltip.dontBeInSubarea", [_loc_3]);
                     break;
                 }
                 default:

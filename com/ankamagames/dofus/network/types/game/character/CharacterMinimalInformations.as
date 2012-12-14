@@ -3,9 +3,8 @@
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
 
-    public class CharacterMinimalInformations extends Object implements INetworkType
+    public class CharacterMinimalInformations extends AbstractCharacterInformation implements INetworkType
     {
-        public var id:uint = 0;
         public var level:uint = 0;
         public var name:String = "";
         public static const protocolId:uint = 110;
@@ -15,28 +14,28 @@
             return;
         }// end function
 
-        public function getTypeId() : uint
+        override public function getTypeId() : uint
         {
             return 110;
         }// end function
 
         public function initCharacterMinimalInformations(param1:uint = 0, param2:uint = 0, param3:String = "") : CharacterMinimalInformations
         {
-            this.id = param1;
+            super.initAbstractCharacterInformation(param1);
             this.level = param2;
             this.name = param3;
             return this;
         }// end function
 
-        public function reset() : void
+        override public function reset() : void
         {
-            this.id = 0;
+            super.reset();
             this.level = 0;
             this.name = "";
             return;
         }// end function
 
-        public function serialize(param1:IDataOutput) : void
+        override public function serialize(param1:IDataOutput) : void
         {
             this.serializeAs_CharacterMinimalInformations(param1);
             return;
@@ -44,11 +43,7 @@
 
         public function serializeAs_CharacterMinimalInformations(param1:IDataOutput) : void
         {
-            if (this.id < 0)
-            {
-                throw new Error("Forbidden value (" + this.id + ") on element id.");
-            }
-            param1.writeInt(this.id);
+            super.serializeAs_AbstractCharacterInformation(param1);
             if (this.level < 1 || this.level > 200)
             {
                 throw new Error("Forbidden value (" + this.level + ") on element level.");
@@ -58,7 +53,7 @@
             return;
         }// end function
 
-        public function deserialize(param1:IDataInput) : void
+        override public function deserialize(param1:IDataInput) : void
         {
             this.deserializeAs_CharacterMinimalInformations(param1);
             return;
@@ -66,11 +61,7 @@
 
         public function deserializeAs_CharacterMinimalInformations(param1:IDataInput) : void
         {
-            this.id = param1.readInt();
-            if (this.id < 0)
-            {
-                throw new Error("Forbidden value (" + this.id + ") on element of CharacterMinimalInformations.id.");
-            }
+            super.deserialize(param1);
             this.level = param1.readUnsignedByte();
             if (this.level < 1 || this.level > 200)
             {

@@ -29,6 +29,7 @@
         private var _lastSent:uint;
         private var _timeoutTimer:Timer;
         private var _lagometer:ILagometer;
+        private var _sendSequenceId:uint = 0;
         public static var disabled:Boolean;
         public static var disabledIn:Boolean;
         public static var disabledOut:Boolean;
@@ -116,6 +117,11 @@
             return this._lagometer;
         }// end function
 
+        public function get sendSequenceId() : uint
+        {
+            return this._sendSequenceId;
+        }// end function
+
         override public function connect(param1:String, param2:int) : void
         {
             if (this._connecting || disabled || disabledIn && disabledOut)
@@ -156,10 +162,6 @@
                     this._outputBuffer.push(param1);
                 }
                 return;
-            }
-            if (this._lagometer)
-            {
-                this._lagometer.ping();
             }
             this.lowSend(param1);
             return;
@@ -260,10 +262,6 @@
         {
             var msg:INetworkMessage;
             var src:* = param1;
-            if (this._lagometer)
-            {
-                this._lagometer.pong();
-            }
             var count:uint;
             try
             {
@@ -281,6 +279,10 @@
                     }
                     if (msg != null && !(msg is INetworkDataContainerMessage))
                     {
+                        if (this._lagometer)
+                        {
+                            this._lagometer.pong(msg);
+                        }
                         if (!this._pause)
                         {
                             if (DEBUG_DATA)
@@ -363,6 +365,13 @@
             param1.pack(this);
             this._latestSent = getTimer();
             this._lastSent = getTimer();
+            var _loc_3:* = this;
+            var _loc_4:* = this._sendSequenceId + 1;
+            _loc_3._sendSequenceId = _loc_4;
+            if (this._lagometer)
+            {
+                this._lagometer.ping(param1);
+            }
             if (param2)
             {
                 flush();
@@ -475,6 +484,7 @@
             flush();
             this._inputBuffer = new ByteArray();
             this._outputBuffer = new Array();
+            this._handler.process(new ConnectedMessage());
             return;
         }// end function
 

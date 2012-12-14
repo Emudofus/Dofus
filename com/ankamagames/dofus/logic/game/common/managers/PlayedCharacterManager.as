@@ -49,6 +49,8 @@
         public var teamId:int = 0;
         public var isSpectator:Boolean = false;
         public var experiencePercent:int = 0;
+        public var achievementPoints:int = 0;
+        public var achievementPercent:int = 0;
         private static var _self:PlayedCharacterManager;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayedCharacterManager));
 

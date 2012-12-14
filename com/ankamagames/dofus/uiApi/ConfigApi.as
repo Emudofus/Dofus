@@ -28,6 +28,7 @@
 
         public function ConfigApi()
         {
+            this.init();
             return;
         }// end function
 
@@ -107,14 +108,14 @@
             return _loc_2.isOptionalFeatureActive(param1);
         }// end function
 
-        public function getExternalNotificationValue(param1:int) : int
+        public function getExternalNotificationOptions(param1:int) : Object
         {
-            return ExternalNotificationManager.getInstance().getNotificationValue(param1);
+            return ExternalNotificationManager.getInstance().getNotificationOptions(param1);
         }// end function
 
-        public function setExternalNotificationValue(param1:int, param2:int) : void
+        public function setExternalNotificationOptions(param1:int, param2:Object) : void
         {
-            ExternalNotificationManager.getInstance().setNotificationValue(param1, param2);
+            ExternalNotificationManager.getInstance().setNotificationOptions(param1, param2);
             return;
         }// end function
 

@@ -7,15 +7,19 @@
     import com.ankamagames.dofus.logic.common.frames.*;
     import com.ankamagames.dofus.network.*;
     import com.ankamagames.dofus.network.enums.*;
+    import com.ankamagames.dofus.network.messages.common.basic.*;
     import com.ankamagames.dofus.network.messages.handshake.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.network.*;
     import com.ankamagames.jerakine.types.enums.*;
+    import flash.events.*;
     import flash.utils.*;
 
     public class HandshakeFrame extends Object implements Frame
     {
+        private var _timeOutTimer:Timer;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(HandshakeFrame));
 
         public function HandshakeFrame()
@@ -39,6 +43,10 @@
             var _loc_3:* = null;
             var _loc_4:* = null;
             ConnectionsHandler.hasReceivedMsg = true;
+            if (param1 is INetworkMessage && this._timeOutTimer)
+            {
+                this._timeOutTimer.stop();
+            }
             switch(true)
             {
                 case param1 is ProtocolRequired:
@@ -62,6 +70,13 @@
                     Kernel.getWorker().removeFrame(this);
                     return true;
                 }
+                case param1 is ConnectedMessage:
+                {
+                    this._timeOutTimer = new Timer(3000, 1);
+                    this._timeOutTimer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimeOut);
+                    this._timeOutTimer.start();
+                    return true;
+                }
                 default:
                 {
                     break;
@@ -70,8 +85,20 @@
             return false;
         }// end function
 
+        public function onTimeOut(event:TimerEvent) : void
+        {
+            var _loc_2:* = new BasicPingMessage();
+            _loc_2.initBasicPingMessage(true);
+            ConnectionsHandler.getConnection().send(_loc_2);
+            return;
+        }// end function
+
         public function pulled() : Boolean
         {
+            if (this._timeOutTimer)
+            {
+                this._timeOutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onTimeOut);
+            }
             return true;
         }// end function
 

@@ -1,11 +1,12 @@
 ﻿package com.ankamagames.jerakine.handlers.messages
 {
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.pools.*;
     import com.ankamagames.jerakine.utils.display.*;
     import flash.display.*;
     import flash.events.*;
 
-    public class HumanInputMessage extends Object implements Message, DiscardableMessage
+    public class HumanInputMessage extends Object implements Message, DiscardableMessage, Poolable
     {
         protected var _target:InteractiveObject;
         protected var _nativeEvent:Event;
@@ -14,11 +15,8 @@
         private var _actions:Array;
         public var bubbling:Boolean;
 
-        public function HumanInputMessage(param1:InteractiveObject, param2:Event)
+        public function HumanInputMessage()
         {
-            this._target = param1;
-            this._nativeEvent = param2;
-            this._frameId = FrameIdManager.frameId;
             return;
         }// end function
 
@@ -56,6 +54,13 @@
             return this._actions;
         }// end function
 
+        public function free() : void
+        {
+            this._target = null;
+            this._nativeEvent = null;
+            return;
+        }// end function
+
         public function addAction(param1:Action) : void
         {
             if (this._actions == null)
@@ -64,6 +69,18 @@
             }
             this._actions.push(param1);
             return;
+        }// end function
+
+        public static function create(param1:InteractiveObject, param2:Event, param3:HumanInputMessage = null) : HumanInputMessage
+        {
+            if (!param3)
+            {
+                param3 = new HumanInputMessage;
+            }
+            param3._target = param1;
+            param3._nativeEvent = param2;
+            param3._frameId = FrameIdManager.frameId;
+            return param3;
         }// end function
 
     }

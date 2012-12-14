@@ -119,11 +119,15 @@
 
         public function get fileType() : String
         {
+            var _loc_1:* = 0;
+            var _loc_2:* = 0;
             if (!this._subpath || this._subpath.length == 0 || this._subpath.indexOf(".") == -1)
             {
-                return this._path.substr((this._path.lastIndexOf(".") + 1));
+                _loc_1 = this._path.lastIndexOf(".");
+                _loc_2 = this._path.indexOf("?");
+                return this._path.substr((_loc_1 + 1), _loc_2 != -1 ? (_loc_2 - _loc_1 - 1) : (int.MAX_VALUE));
             }
-            return this._subpath.substr((this._subpath.lastIndexOf(".") + 1));
+            return this._subpath.substr((this._subpath.lastIndexOf(".") + 1), this._subpath.indexOf("?") != -1 ? (this._subpath.indexOf("?")) : (int.MAX_VALUE));
         }// end function
 
         public function get fileName() : String
@@ -140,6 +144,7 @@
             switch(this._protocol)
             {
                 case "http":
+                case "https":
                 case "httpc":
                 case "file":
                 case "zip":
@@ -166,6 +171,7 @@
             switch(this._protocol)
             {
                 case "http":
+                case "https":
                 case "httpc":
                 case "file":
                 case "zip":
@@ -189,34 +195,34 @@
 
         public function isSecure() : Boolean
         {
-            var dofusNativePath:String;
-            var currentFile:File;
-            var stack:String;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
             try
             {
-                dofusNativePath = File.applicationDirectory.nativePath;
-                currentFile = File.applicationDirectory.resolvePath(unescape(this._path));
-                stack = dofusNativePath;
+                _loc_1 = File.applicationDirectory.nativePath;
+                _loc_2 = File.applicationDirectory.resolvePath(unescape(this._path));
+                _loc_3 = _loc_1;
                 while (true)
                 {
                     
-                    if (currentFile.nativePath == dofusNativePath)
+                    if (_loc_2.nativePath == _loc_1)
                     {
                         return true;
                     }
-                    currentFile = currentFile.parent;
-                    if (!currentFile)
+                    _loc_2 = _loc_2.parent;
+                    if (!_loc_2)
                     {
                         break;
                     }
-                    stack = stack + (" -> " + currentFile.nativePath);
+                    _loc_3 = _loc_3 + (" -> " + _loc_2.nativePath);
                 }
             }
             catch (e:Error)
             {
             }
-            _log.debug("URI not secure : " + dofusNativePath);
-            _log.debug("Détails : " + stack);
+            _log.debug("URI not secure : " + _loc_1);
+            _log.debug("Détails : " + _loc_3);
             return false;
         }// end function
 

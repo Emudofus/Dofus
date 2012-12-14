@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.misc.utils.errormanager
 {
     import __AS3__.vec.*;
+    import by.blooddy.crypto.*;
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
@@ -9,7 +10,6 @@
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.logger.targets.*;
     import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.events.*;
     import flash.utils.*;
@@ -352,6 +352,8 @@
 
 import __AS3__.vec.*;
 
+import by.blooddy.crypto.*;
+
 import com.ankamagames.dofus.*;
 
 import com.ankamagames.dofus.kernel.*;
@@ -367,8 +369,6 @@ import com.ankamagames.jerakine.logger.*;
 import com.ankamagames.jerakine.logger.targets.*;
 
 import com.ankamagames.jerakine.messages.*;
-
-import com.ankamagames.jerakine.utils.crypto.*;
 
 import com.ankamagames.jerakine.utils.errors.*;
 

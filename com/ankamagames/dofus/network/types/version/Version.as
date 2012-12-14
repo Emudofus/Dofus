@@ -68,11 +68,11 @@
                 throw new Error("Forbidden value (" + this.release + ") on element release.");
             }
             param1.writeByte(this.release);
-            if (this.revision < 0 || this.revision > 65535)
+            if (this.revision < 0)
             {
                 throw new Error("Forbidden value (" + this.revision + ") on element revision.");
             }
-            param1.writeShort(this.revision);
+            param1.writeInt(this.revision);
             if (this.patch < 0)
             {
                 throw new Error("Forbidden value (" + this.patch + ") on element patch.");
@@ -105,8 +105,8 @@
             {
                 throw new Error("Forbidden value (" + this.release + ") on element of Version.release.");
             }
-            this.revision = param1.readUnsignedShort();
-            if (this.revision < 0 || this.revision > 65535)
+            this.revision = param1.readInt();
+            if (this.revision < 0)
             {
                 throw new Error("Forbidden value (" + this.revision + ") on element of Version.revision.");
             }

@@ -837,9 +837,9 @@
             return;
         }// end function
 
-        public function onWheel(event:MouseEvent) : void
+        public function onWheel(param1:Object, param2:Boolean = true) : void
         {
-            this._nCurrentPos = this._nCurrentPos - this._nScrollStep * (event.delta * this._nScrollSpeed);
+            this._nCurrentPos = this._nCurrentPos - this._nScrollStep * (param1.delta * this._nScrollSpeed);
             if (this._nCurrentPos > this._nBoxPosMax)
             {
                 this._nCurrentPos = Math.floor(this._nBoxPosMax);
@@ -849,7 +849,10 @@
                 this._nCurrentPos = this._nBoxPosMin;
             }
             this.updateDisplayFromCurrentPos();
-            dispatchEvent(new Event(Event.CHANGE));
+            if (param2)
+            {
+                dispatchEvent(new Event(Event.CHANGE));
+            }
             return;
         }// end function
 

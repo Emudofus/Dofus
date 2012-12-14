@@ -26,10 +26,10 @@
             return 6119;
         }// end function
 
-        public function initIdentificationAccountForceMessage(param1:VersionExtended = null, param2:String = "", param3:String = "", param4:Vector.<int> = null, param5:int = 0, param6:Boolean = false, param7:Boolean = false, param8:Boolean = false, param9:String = "") : IdentificationAccountForceMessage
+        public function initIdentificationAccountForceMessage(param1:VersionExtended = null, param2:String = "", param3:Vector.<int> = null, param4:int = 0, param5:Boolean = false, param6:Boolean = false, param7:Boolean = false, param8:String = "") : IdentificationAccountForceMessage
         {
-            super.initIdentificationMessage(param1, param2, param3, param4, param5, param6, param7, param8);
-            this.forcedAccountLogin = param9;
+            super.initIdentificationMessage(param1, param2, param3, param4, param5, param6, param7);
+            this.forcedAccountLogin = param8;
             this._isInitialized = true;
             return this;
         }// end function

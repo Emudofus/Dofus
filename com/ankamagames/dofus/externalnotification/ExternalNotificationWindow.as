@@ -4,7 +4,6 @@
     import com.ankamagames.jerakine.handlers.*;
     import com.ankamagames.jerakine.logger.*;
     import flash.display.*;
-    import flash.geom.*;
     import flash.utils.*;
 
     public class ExternalNotificationWindow extends NativeWindow
@@ -12,32 +11,32 @@
         private var _notificationType:int;
         private var _id:String;
         private var _clientId:String;
+        private var _contentWidth:Number;
+        private var _contentHeight:Number;
+        private var _hookName:String;
+        private var _hookParams:Array;
         public var timeoutId:uint;
-        public var order:int;
         private static const DEBUG:Boolean = false;
         private static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalNotificationWindow));
 
-        public function ExternalNotificationWindow(param1:int, param2:String, param3:String, param4:Object, param5:Number, param6:Number, param7:Point)
+        public function ExternalNotificationWindow(param1:int, param2:String, param3:String, param4:Object, param5:NativeWindowInitOptions, param6:String = null, param7:Array = null)
         {
-            log("new ExternalNotificationWindow " + param4);
             this._notificationType = param1;
             this._id = param3;
             this._clientId = param2;
-            var _loc_8:* = new NativeWindowInitOptions();
-            new NativeWindowInitOptions().systemChrome = NativeWindowSystemChrome.NONE;
-            _loc_8.type = NativeWindowType.LIGHTWEIGHT;
-            _loc_8.resizable = false;
-            _loc_8.transparent = true;
-            super(_loc_8);
+            this._hookName = param6;
+            this._hookParams = param7;
+            super(param5);
             visible = false;
             alwaysInFront = true;
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
-            bounds = new Rectangle(param7.x, param7.y, param5, param6);
+            this._contentWidth = param4.contentWidth;
+            this._contentHeight = param4.contentHeight;
             HumanInputHandler.getInstance().registerListeners(stage);
-            var _loc_9:* = new Sprite();
+            var _loc_8:* = new Sprite();
             new Sprite().addChild(param4 as DisplayObject);
-            stage.addChild(_loc_9);
+            stage.addChild(_loc_8);
             return;
         }// end function
 
@@ -61,16 +60,34 @@
             return this._clientId + "#" + this._id;
         }// end function
 
+        public function get contentWidth() : Number
+        {
+            return this._contentWidth;
+        }// end function
+
+        public function get contentHeight() : Number
+        {
+            return this._contentHeight;
+        }// end function
+
+        public function get hookName() : String
+        {
+            return this._hookName;
+        }// end function
+
+        public function get hookParams() : Array
+        {
+            return this._hookParams;
+        }// end function
+
         public function show() : void
         {
-            log("window show");
             visible = true;
             return;
         }// end function
 
         public function destroy() : void
         {
-            log("externalnotification window " + this.id + " destroy");
             HumanInputHandler.getInstance().unregisterListeners(stage);
             visible = false;
             Berilia.getInstance().unloadUi(this.instanceId);

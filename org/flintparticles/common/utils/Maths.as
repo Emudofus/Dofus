@@ -3,8 +3,8 @@
 
     public class Maths extends Object
     {
-        private static const RADTODEG:Number = 180 / Math.PI;
-        private static const DEGTORAD:Number = Math.PI / 180;
+        private static const RADTODEG:Number = 57.2958;
+        private static const DEGTORAD:Number = 0.0174533;
 
         public function Maths()
         {

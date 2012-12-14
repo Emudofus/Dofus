@@ -11,7 +11,7 @@
         private var _textfieldEnabled:Boolean;
         private var _bindable:Boolean;
         private var _category:ShortcutCategory;
-        private var _unicID:uint;
+        private var _unicID:uint = 0;
         private var _visible:Boolean;
         private var _disable:Boolean;
         public var defaultBind:Bind;

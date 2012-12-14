@@ -4,6 +4,7 @@
     import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.jerakine.managers.*;
+    import com.ankamagames.jerakine.utils.system.*;
 
     dynamic public class DofusOptions extends OptionManager
     {
@@ -26,8 +27,8 @@
             add("confirmItemDrop", true);
             add("switchUiSkin", "dofus1");
             add("allowBannerShortcuts", true);
-            add("dofusQuality", 1);
-            add("askForQualitySelection", true);
+            add("dofusQuality", AirScanner.isStreamingVersion() ? (2) : (1));
+            add("askForQualitySelection", !AirScanner.isStreamingVersion());
             add("showNotifications", true);
             add("showUsedPaPm", false);
             add("largeTooltipDelay", 600);
@@ -37,7 +38,7 @@
             add("legalAgreementEula", "fr#0");
             add("legalAgreementTou", "fr#0");
             add("legalAgreementModsTou", "fr#0");
-            add("allowLog", BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE);
+            add("allowLog", BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE && !AirScanner.isStreamingVersion());
             add("flashQuality", 2);
             add("cellSelectionOnly", false);
             add("orderFighters", false);
@@ -46,7 +47,7 @@
             add("showMovementDistance", false);
             add("hideDeadFighters", true);
             add("hideSummonedFighters", false);
-            add("mapFilters", 0);
+            add("mapFilters", 478);
             add("showLogPvDetails", true);
             add("notificationsAlphaWindows", false);
             add("notificationsMode", 1);

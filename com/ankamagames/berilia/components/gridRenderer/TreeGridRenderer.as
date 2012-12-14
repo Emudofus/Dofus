@@ -85,13 +85,14 @@
             return;
         }// end function
 
-        public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
+        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
         {
             var _loc_5:* = null;
+            var _loc_6:* = null;
             _loc_5 = new Sprite();
             _loc_5.mouseEnabled = false;
             this._indexRef[_loc_5] = param1;
-            var _loc_6:* = param1;
+            _loc_6 = param1;
             var _loc_7:* = new Texture();
             new Texture().mouseEnabled = true;
             _loc_7.width = 10;
@@ -156,10 +157,7 @@
             {
                 _loc_8.css = this._cssUri;
             }
-            if (param4)
-            {
-                this.updateBackground(_loc_5, param2, param3);
-            }
+            this.updateBackground(_loc_5, param2, param3);
             _loc_8.addEventListener(MouseEvent.MOUSE_OVER, this.onRollOver);
             _loc_8.addEventListener(MouseEvent.MOUSE_OUT, this.onRollOut);
             _loc_7.addEventListener(MouseEvent.CLICK, this.onRelease);
@@ -169,7 +167,12 @@
             return _loc_5;
         }// end function
 
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
+        public function getDataLength(param1, param2:Boolean) : uint
+        {
+            return 1;
+        }// end function
+
+        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
         {
             var _loc_6:* = null;
             var _loc_7:* = null;
@@ -207,10 +210,8 @@
                     _loc_8.width = this._grid.slotWidth - _loc_8.x;
                     if (param1 && param1.value.hasOwnProperty("css"))
                     {
-                        this._log.debug("hasOwnProperty " + param1.value.css);
                         if (param1.value.css is String)
                         {
-                            this._log.debug("string");
                             if (!this._uriRef[param1.value.css])
                             {
                                 this._uriRef[param1.value.css] = new Uri(param1.value.css);
@@ -224,7 +225,6 @@
                     }
                     else
                     {
-                        this._log.debug("not hasOwnProperty ");
                         _loc_8.css = this._cssUri;
                     }
                     _loc_8.text = _loc_6.label;
@@ -235,10 +235,7 @@
                     _loc_8.text = "";
                     _loc_7.uri = null;
                 }
-                if (param5)
-                {
-                    this.updateBackground(param3 as Sprite, param2, param4);
-                }
+                this.updateBackground(param3 as Sprite, param2, param4);
             }
             else
             {

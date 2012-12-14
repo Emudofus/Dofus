@@ -14,6 +14,7 @@
         public var descriptionId:uint;
         public var defaultEnable:Boolean;
         public var defaultSound:Boolean;
+        public var defaultNotify:Boolean;
         public var defaultMultiAccount:Boolean;
         public var name:String;
         public var messageId:uint;

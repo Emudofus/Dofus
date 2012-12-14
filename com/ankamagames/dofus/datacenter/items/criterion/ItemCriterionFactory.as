@@ -126,6 +126,11 @@
                     _loc_2 = new ObjectItemCriterion(param1);
                     break;
                 }
+                case "Po":
+                {
+                    _loc_2 = new AreaItemCriterion(param1);
+                    break;
+                }
                 case "Pp":
                 case "PP":
                 {
@@ -226,6 +231,11 @@
                 case "SI":
                 {
                     _loc_2 = new ServerItemCriterion(param1);
+                    break;
+                }
+                case "Sy":
+                {
+                    _loc_2 = new CommunityItemCriterion(param1);
                     break;
                 }
                 case "Pq":

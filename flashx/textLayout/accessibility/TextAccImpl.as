@@ -102,6 +102,7 @@
 
         protected function eventHandler(event:Event) : void
         {
+            var event:* = event;
             switch(event.type)
             {
                 case CompositionCompleteEvent.COMPOSITION_COMPLETE:

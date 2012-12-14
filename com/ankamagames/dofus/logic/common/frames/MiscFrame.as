@@ -1,10 +1,12 @@
 ﻿package com.ankamagames.dofus.logic.common.frames
 {
     import __AS3__.vec.*;
+    import by.blooddy.crypto.*;
     import com.ankamagames.atouin.*;
     import com.ankamagames.berilia.*;
     import com.ankamagames.berilia.managers.*;
     import com.ankamagames.dofus.kernel.net.*;
+    import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.dofus.misc.lists.*;
     import com.ankamagames.dofus.network.messages.game.approach.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.*;
@@ -13,7 +15,6 @@
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.display.*;
     import flash.display.*;
     import flash.filesystem.*;
@@ -32,7 +33,7 @@
 
         public function isOptionalFeatureActive(param1:uint) : Boolean
         {
-            if (this._optionalAuthorizedFeatures.indexOf(param1) > -1)
+            if (this._optionalAuthorizedFeatures && this._optionalAuthorizedFeatures.indexOf(param1) > -1)
             {
                 return true;
             }
@@ -68,6 +69,7 @@
             var filenameHash:String;
             var cfmsg:CheckFileMessage;
             var sofmsg:ServerOptionalFeaturesMessage;
+            var ssmsg:ServerSettingsMessage;
             var ahm:AccountHouseMessage;
             var file:File;
             var featureId:int;

@@ -1,7 +1,9 @@
 ﻿package com.ankamagames.berilia.components
 {
     import com.ankamagames.berilia.*;
+    import com.ankamagames.jerakine.handlers.messages.mouse.*;
     import com.ankamagames.jerakine.logger.*;
+    import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.*;
     import flash.events.*;
     import flash.utils.*;
@@ -201,6 +203,15 @@
             _tText.removeEventListener(MouseEvent.MOUSE_WHEEL, this.onTextWheel);
             super.remove();
             return;
+        }// end function
+
+        override public function process(param1:Message) : Boolean
+        {
+            if (param1 is MouseWheelMessage && (this._sbScrollBar && this._sbScrollBar.visible))
+            {
+                return true;
+            }
+            return super.process(param1);
         }// end function
 
         private function updateScrollBar(param1:Boolean = false) : void

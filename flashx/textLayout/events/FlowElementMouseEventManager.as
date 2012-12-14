@@ -4,8 +4,6 @@
     import flash.events.*;
     import flash.geom.*;
     import flash.ui.*;
-    import flash.utils.*;
-    import flashx.textLayout.container.*;
     import flashx.textLayout.elements.*;
     import flashx.textLayout.formats.*;
     import flashx.textLayout.utils.*;
@@ -77,118 +75,65 @@
             return;
         }// end function
 
-        public function updateHitTests(param1:Number, param2:Rectangle, param3:TextFlow, param4:int, param5:int, param6:ContainerController, param7:Boolean = false) : void
+        public function updateHitTests(param1:Number, param2:Rectangle, param3:TextFlow, param4:int, param5:int, param6:Boolean = false) : void
         {
+            var _loc_7:* = null;
             var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_11:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
+            var _loc_10:* = null;
+            var _loc_12:* = null;
+            var _loc_13:* = 0;
+            var _loc_14:* = 0;
             var _loc_15:* = null;
             var _loc_16:* = null;
             var _loc_17:* = null;
-            var _loc_18:* = 0;
-            var _loc_19:* = 0;
-            var _loc_20:* = null;
-            var _loc_21:* = null;
-            var _loc_22:* = NaN;
-            var _loc_23:* = NaN;
-            var _loc_24:* = null;
-            var _loc_25:* = false;
-            var _loc_26:* = NaN;
-            var _loc_27:* = null;
-            var _loc_28:* = null;
-            this._needsCtrlKey = param7;
-            var _loc_10:* = [];
+            this._needsCtrlKey = param6;
+            var _loc_9:* = [];
             if (param3.interactiveObjectCount != 0 && param4 != param5)
             {
-                _loc_13 = param6.interactiveObjects;
-                for each (_loc_14 in _loc_13)
-                {
-                    
-                    _loc_15 = _loc_14 as FlowElement;
-                    if (_loc_15 && _loc_15.getAbsoluteStart() < param5 && _loc_15.getAbsoluteStart() + _loc_15.textLength >= param4)
-                    {
-                        _loc_10.push(_loc_14);
-                    }
-                }
-                _loc_16 = param6.oldInteractiveObjects;
-                for each (_loc_14 in _loc_16)
-                {
-                    
-                    _loc_15 = _loc_14 as FlowElement;
-                    if (_loc_15 && _loc_15.getAbsoluteStart() < param5 && _loc_15.getAbsoluteStart() + _loc_15.textLength >= param4)
-                    {
-                        _loc_10.push(_loc_14);
-                        _loc_13[_loc_14] = _loc_14;
-                    }
-                }
+                this.collectElements(param3, param4, param5, _loc_9);
             }
-            var _loc_12:* = 0;
-            if (_loc_10.length != 0)
+            var _loc_11:* = 0;
+            if (_loc_9.length != 0)
             {
-                _loc_11 = {};
-                for each (_loc_17 in _loc_10)
+                _loc_10 = {};
+                for each (_loc_12 in _loc_9)
                 {
                     
-                    _loc_18 = _loc_17.getAbsoluteStart();
-                    _loc_19 = Math.min(_loc_18 + _loc_17.textLength, param5);
-                    _loc_20 = _loc_17.getTextFlow();
-                    if (_loc_20)
+                    _loc_13 = _loc_12.getAbsoluteStart();
+                    _loc_14 = Math.min(_loc_13 + _loc_12.textLength, param5);
+                    _loc_15 = GeometryUtil.getHighlightBounds(new TextRange(_loc_12.getTextFlow(), _loc_13, _loc_14));
+                    for each (_loc_8 in _loc_15)
                     {
-                        _loc_21 = GeometryUtil.getHighlightBounds(new TextRange(_loc_20, _loc_18, _loc_19));
-                        for each (_loc_9 in _loc_21)
+                        
+                        _loc_7 = _loc_8.rect;
+                        _loc_7.x = param2.x + _loc_8.textLine.x + _loc_7.x + param1;
+                        _loc_7.y = param2.y + _loc_8.textLine.y + _loc_7.y;
+                        _loc_7 = _loc_7.intersection(param2);
+                        if (!_loc_7.isEmpty())
                         {
-                            
-                            _loc_8 = _loc_9.rect;
-                            _loc_22 = param2.x;
-                            _loc_23 = param2.y;
-                            _loc_24 = _loc_17.computedFormat.blockProgression;
-                            _loc_25 = false;
-                            _loc_25 = _loc_24 == BlockProgression.RL && (param6.horizontalScrollPolicy == ScrollPolicy.OFF && param6.verticalScrollPolicy == ScrollPolicy.OFF);
-                            if (_loc_25)
+                            _loc_7.x = int(_loc_7.x);
+                            _loc_7.y = int(_loc_7.y);
+                            _loc_7.width = int(_loc_7.width);
+                            _loc_7.height = int(_loc_7.height);
+                            _loc_16 = _loc_7.toString();
+                            _loc_17 = _loc_10[_loc_16];
+                            if (!_loc_17 || _loc_17.owner != _loc_12)
                             {
-                                _loc_26 = param6.measureWidth ? (param2.width) : (param6.compositionWidth);
-                                _loc_22 = param2.x - _loc_26 + param6.horizontalScrollPosition + param2.width;
-                            }
-                            if (_loc_24 == BlockProgression.TB)
-                            {
-                                _loc_22 = 0;
-                                _loc_23 = 0;
-                            }
-                            else
-                            {
-                                _loc_23 = 0;
-                            }
-                            _loc_8.x = _loc_22 + _loc_9.textLine.x + _loc_8.x + param1;
-                            _loc_8.y = _loc_23 + _loc_9.textLine.y + _loc_8.y;
-                            _loc_8 = _loc_8.intersection(param2);
-                            if (!_loc_8.isEmpty())
-                            {
-                                _loc_8.x = int(_loc_8.x);
-                                _loc_8.y = int(_loc_8.y);
-                                _loc_8.width = int(_loc_8.width);
-                                _loc_8.height = int(_loc_8.height);
-                                _loc_27 = _loc_8.toString();
-                                _loc_28 = _loc_11[_loc_27];
-                                if (!_loc_28 || _loc_28.owner != _loc_17)
-                                {
-                                    _loc_11[_loc_27] = {rect:_loc_8, owner:_loc_17};
-                                    _loc_12++;
-                                }
+                                _loc_10[_loc_16] = {rect:_loc_7, owner:_loc_12};
+                                _loc_11++;
                             }
                         }
                     }
                 }
             }
-            if (_loc_12 > 0)
+            if (_loc_11 > 0)
             {
                 if (!this._hitTests)
                 {
                     this.startHitTests();
                 }
-                this._hitRects = _loc_11;
-                this._hitTests = new HitTestArea(_loc_11);
+                this._hitRects = _loc_10;
+                this._hitTests = new HitTestArea(_loc_10);
             }
             else
             {
@@ -569,7 +514,7 @@
                     }
                     else
                     {
-                        Mouse.cursor = Configuration.getCursorString(_loc_2.configuration, MouseCursor.AUTO);
+                        Mouse.cursor = MouseCursor.AUTO;
                     }
                 }
                 Mouse.hide();

@@ -73,6 +73,7 @@
         private static const FIGHT_CURSOR:int = 3;
         private static const NPC_CURSOR:int = 1;
         private static const INTERACTIVE_CURSOR_OFFSET:Point = new Point(0, 0);
+        private static const COLLECTABLE_INTERACTIVE_ACTION_ID:uint = 1;
 
         public function RoleplayWorldFrame()
         {
@@ -204,6 +205,9 @@
             var _loc_69:* = null;
             var _loc_70:* = null;
             var _loc_71:* = null;
+            var _loc_72:* = null;
+            var _loc_73:* = false;
+            var _loc_74:* = null;
             switch(true)
             {
                 case param1 is CellClickMessage:
@@ -616,6 +620,29 @@
                             _loc_71 = _loc_71 + (Skill.getSkillById(_loc_30.skillId).name + "\n");
                         }
                         _loc_69.disabledSkills = _loc_71;
+                        _loc_69.isCollectable = _loc_31.actionId == COLLECTABLE_INTERACTIVE_ACTION_ID;
+                        if (_loc_69.isCollectable)
+                        {
+                            _loc_73 = true;
+                            _loc_74 = _loc_29 as InteractiveElementWithAgeBonus;
+                            if (_loc_29.enabledSkills.length > 0)
+                            {
+                                _loc_72 = Skill.getSkillById(_loc_29.enabledSkills[0].skillId);
+                                if (_loc_72.parentJobId == 1)
+                                {
+                                    _loc_73 = false;
+                                }
+                            }
+                            else if (!_loc_74)
+                            {
+                                _loc_73 = false;
+                            }
+                            if (_loc_73)
+                            {
+                                _loc_69.collectSkill = _loc_72;
+                                _loc_69.ageBonus = _loc_74 ? (_loc_74.ageBonus) : (0);
+                            }
+                        }
                         _loc_26 = _loc_69;
                         _loc_27 = "interactiveElement";
                         _loc_28 = "InteractiveElementCache";

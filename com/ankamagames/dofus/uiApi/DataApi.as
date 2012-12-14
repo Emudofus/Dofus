@@ -6,6 +6,7 @@
     import com.ankamagames.dofus.datacenter.abuse.*;
     import com.ankamagames.dofus.datacenter.alignments.*;
     import com.ankamagames.dofus.datacenter.almanax.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.datacenter.effects.*;
@@ -24,6 +25,7 @@
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.dofus.datacenter.world.*;
     import com.ankamagames.dofus.internalDatacenter.almanax.*;
+    import com.ankamagames.dofus.internalDatacenter.appearance.*;
     import com.ankamagames.dofus.internalDatacenter.communication.*;
     import com.ankamagames.dofus.internalDatacenter.guild.*;
     import com.ankamagames.dofus.internalDatacenter.house.*;
@@ -96,6 +98,16 @@
             return Breed.getBreeds();
         }// end function
 
+        public function getHead(param1:int) : Head
+        {
+            return Head.getHeadById(param1);
+        }// end function
+
+        public function getHeads() : Array
+        {
+            return Head.getHeads();
+        }// end function
+
         public function getSpell(param1:int) : Spell
         {
             return Spell.getSpellById(param1);
@@ -125,6 +137,16 @@
         public function getJobWrapper(param1:uint) : JobWrapper
         {
             return JobWrapper.create(param1);
+        }// end function
+
+        public function getTitleWrapper(param1:uint) : TitleWrapper
+        {
+            return TitleWrapper.create(param1);
+        }// end function
+
+        public function getOrnamentWrapper(param1:uint) : OrnamentWrapper
+        {
+            return OrnamentWrapper.create(param1);
         }// end function
 
         public function getSpellLevel(param1:int) : SpellLevel
@@ -482,7 +504,7 @@
             return InfoMessage.getInfoMessages();
         }// end function
 
-        public function getSmilies() : Array
+        public function getSmiliesWrapperForPlayers() : Array
         {
             var _loc_3:* = null;
             var _loc_4:* = null;
@@ -508,6 +530,11 @@
         public function getSmiley(param1:uint) : Smiley
         {
             return Smiley.getSmileyById(param1);
+        }// end function
+
+        public function getAllSmiley() : Array
+        {
+            return Smiley.getSmileys();
         }// end function
 
         public function getTaxCollectorName(param1:uint) : TaxCollectorName
@@ -573,6 +600,46 @@
         public function getQuestStep(param1:int) : QuestStep
         {
             return QuestStep.getQuestStepById(param1);
+        }// end function
+
+        public function getAchievement(param1:int) : Achievement
+        {
+            return Achievement.getAchievementById(param1);
+        }// end function
+
+        public function getAchievements() : Array
+        {
+            return Achievement.getAchievements();
+        }// end function
+
+        public function getAchievementCategory(param1:int) : AchievementCategory
+        {
+            return AchievementCategory.getAchievementCategoryById(param1);
+        }// end function
+
+        public function getAchievementCategories() : Array
+        {
+            return AchievementCategory.getAchievementCategories();
+        }// end function
+
+        public function getAchievementReward(param1:int) : AchievementReward
+        {
+            return AchievementReward.getAchievementRewardById(param1);
+        }// end function
+
+        public function getAchievementRewards() : Array
+        {
+            return AchievementReward.getAchievementRewards();
+        }// end function
+
+        public function getAchievementObjective(param1:int) : AchievementObjective
+        {
+            return AchievementObjective.getAchievementObjectiveById(param1);
+        }// end function
+
+        public function getAchievementObjectives() : Array
+        {
+            return AchievementObjective.getAchievementObjectives();
         }// end function
 
         public function getHouse(param1:int) : House
@@ -675,6 +742,36 @@
             return Pack.getPackById(param1);
         }// end function
 
+        public function getTitle(param1:uint) : Title
+        {
+            return Title.getTitleById(param1);
+        }// end function
+
+        public function getTitles() : Array
+        {
+            return Title.getAllTitle();
+        }// end function
+
+        public function getTitleCategory(param1:uint) : TitleCategory
+        {
+            return TitleCategory.getTitleCategoryById(param1);
+        }// end function
+
+        public function getTitleCategories() : Array
+        {
+            return TitleCategory.getTitleCategories();
+        }// end function
+
+        public function getOrnament(param1:uint) : Ornament
+        {
+            return Ornament.getOrnamentById(param1);
+        }// end function
+
+        public function getOrnaments() : Array
+        {
+            return Ornament.getAllOrnaments();
+        }// end function
+
         public function getOptionalFeatureByKeyword(param1:String) : OptionalFeature
         {
             return OptionalFeature.getOptionalFeatureByKeyword(param1);
@@ -730,6 +827,8 @@ import com.ankamagames.dofus.datacenter.alignments.*;
 
 import com.ankamagames.dofus.datacenter.almanax.*;
 
+import com.ankamagames.dofus.datacenter.appearance.*;
+
 import com.ankamagames.dofus.datacenter.breeds.*;
 
 import com.ankamagames.dofus.datacenter.communication.*;
@@ -765,6 +864,8 @@ import com.ankamagames.dofus.datacenter.spells.*;
 import com.ankamagames.dofus.datacenter.world.*;
 
 import com.ankamagames.dofus.internalDatacenter.almanax.*;
+
+import com.ankamagames.dofus.internalDatacenter.appearance.*;
 
 import com.ankamagames.dofus.internalDatacenter.communication.*;
 
@@ -804,13 +905,15 @@ import flash.utils.*;
 
 class Smiley extends Object
 {
-    public var pictoId:int;
+    public var pictoId:String;
+    public var triggers:Vector.<String>;
     public var position:int;
+    public var currentTrigger:String;
 
-    function Smiley(param1:int, param2:int) : void
+    function Smiley(param1:String) : void
     {
         this.pictoId = param1;
-        this.position = param2;
+        this.position = -1;
         return;
     }// end function
 

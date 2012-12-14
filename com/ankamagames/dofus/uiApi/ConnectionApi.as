@@ -62,7 +62,7 @@
                 _loc_5 = Server.getServerById(_loc_4.id);
                 if (_loc_5)
                 {
-                    if (_loc_5.communityId == _loc_3)
+                    if (_loc_5.communityId == _loc_3 || (_loc_3 == 1 || _loc_3 == 2) && (_loc_5.communityId == 1 || _loc_5.communityId == 2))
                     {
                         _loc_2.push(_loc_4);
                     }

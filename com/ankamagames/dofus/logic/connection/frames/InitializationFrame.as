@@ -8,7 +8,7 @@
     import com.ankamagames.berilia.types.messages.*;
     import com.ankamagames.berilia.utils.errors.*;
     import com.ankamagames.dofus.*;
-    import com.ankamagames.dofus.datacenter.breeds.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.misc.*;
     import com.ankamagames.dofus.internalDatacenter.communication.*;
     import com.ankamagames.dofus.internalDatacenter.fight.*;
@@ -311,6 +311,7 @@
             ApiBinder.addApi("Capture", CaptureApi);
             ApiBinder.addApi("Notification", NotificationApi);
             ApiBinder.addApi("ExternalNotification", ExternalNotificationApi);
+            ApiBinder.addApi("AveragePrices", AveragePricesApi);
             TooltipsFactory.registerAssoc(String, "text");
             TooltipsFactory.registerAssoc(TextTooltipInfo, "textInfo");
             TooltipsFactory.registerAssoc(SpellWrapper, "spell");
@@ -362,21 +363,24 @@
             HyperlinkFactory.registerProtocol("ui", HyperlinkDisplayArrowManager.showArrow);
             HyperlinkFactory.registerProtocol("spell", HyperlinkSpellManager.showSpell, HyperlinkSpellManager.getSpellName);
             HyperlinkFactory.registerProtocol("cell", HyperlinkShowCellManager.showCell);
-            HyperlinkFactory.registerProtocol("entity", HyperlinkShowEntityManager.showEntity);
-            HyperlinkFactory.registerProtocol("recipe", HyperlinkShowRecipeManager.showRecipe, HyperlinkShowRecipeManager.getRecipeName);
-            HyperlinkFactory.registerProtocol("player", HyperlinkShowPlayerMenuManager.showPlayerMenu, HyperlinkShowPlayerMenuManager.getPlayerName, null, false);
+            HyperlinkFactory.registerProtocol("entity", HyperlinkShowEntityManager.showEntity, null, null, true, HyperlinkShowEntityManager.rollOver);
+            HyperlinkFactory.registerProtocol("recipe", HyperlinkShowRecipeManager.showRecipe, HyperlinkShowRecipeManager.getRecipeName, null, true, HyperlinkShowRecipeManager.rollOver);
+            HyperlinkFactory.registerProtocol("player", HyperlinkShowPlayerMenuManager.showPlayerMenu, HyperlinkShowPlayerMenuManager.getPlayerName, null, false, HyperlinkShowPlayerMenuManager.rollOverPlayer);
             HyperlinkFactory.registerProtocol("account", HyperlinkShowAccountMenuManager.showAccountMenu);
             HyperlinkFactory.registerProtocol("item", HyperlinkItemManager.showItem, HyperlinkItemManager.getItemName);
-            HyperlinkFactory.registerProtocol("map", HyperlinkMapPosition.showPosition, HyperlinkMapPosition.getText);
-            HyperlinkFactory.registerProtocol("chatitem", HyperlinkItemManager.showChatItem, null, HyperlinkItemManager.duplicateChatHyperlink);
-            HyperlinkFactory.registerProtocol("openSocial", HyperlinkSocialManager.openSocial);
-            HyperlinkFactory.registerProtocol("chatLinkRelease", HyperlinkURLManager.chatLinkRelease);
+            HyperlinkFactory.registerProtocol("map", HyperlinkMapPosition.showPosition, HyperlinkMapPosition.getText, null, true, HyperlinkMapPosition.rollOver);
+            HyperlinkFactory.registerProtocol("chatitem", HyperlinkItemManager.showChatItem, null, HyperlinkItemManager.duplicateChatHyperlink, true, HyperlinkItemManager.rollOver);
+            HyperlinkFactory.registerProtocol("openSocial", HyperlinkSocialManager.openSocial, null, null, true, HyperlinkSocialManager.rollOver);
+            HyperlinkFactory.registerProtocol("chatLinkRelease", HyperlinkURLManager.chatLinkRelease, null, null, true, HyperlinkURLManager.rollOver);
             HyperlinkFactory.registerProtocol("chatWarning", HyperlinkURLManager.chatWarning);
             HyperlinkFactory.registerProtocol("npc", HyperlinkShowNpcManager.showNpc);
             HyperlinkFactory.registerProtocol("monster", HyperlinkShowMonsterManager.showMonster, HyperlinkShowMonsterManager.getMonsterName);
-            HyperlinkFactory.registerProtocol("monsterFight", HyperlinkShowMonsterFightManager.showEntity);
-            HyperlinkFactory.registerProtocol("spellEffectArea", HyperlinkSpellManager.showSpellArea);
-            HyperlinkFactory.registerProtocol("chatquest", HyperlinkShowQuestManager.showQuest, null, null);
+            HyperlinkFactory.registerProtocol("monsterFight", HyperlinkShowMonsterFightManager.showEntity, null, null, true, HyperlinkShowMonsterFightManager.rollOver);
+            HyperlinkFactory.registerProtocol("spellEffectArea", HyperlinkSpellManager.showSpellArea, null, null, true, HyperlinkSpellManager.rollOver);
+            HyperlinkFactory.registerProtocol("chatquest", HyperlinkShowQuestManager.showQuest, null, null, true, HyperlinkShowQuestManager.rollOver);
+            HyperlinkFactory.registerProtocol("chatachievement", HyperlinkShowAchievementManager.showAchievement, HyperlinkShowAchievementManager.getAchievementName, null, true, HyperlinkShowAchievementManager.rollOver);
+            HyperlinkFactory.registerProtocol("chattitle", HyperlinkShowTitleManager.showTitle, null, null, true, HyperlinkShowTitleManager.rollOver);
+            HyperlinkFactory.registerProtocol("chatornament", HyperlinkShowOrnamentManager.showOrnament, null, null, true, HyperlinkShowOrnamentManager.rollOver);
             return;
         }// end function
 
@@ -438,24 +442,11 @@
                 }
                 DofusApiAction.updateInfo();
                 CensoredContentManager.getInstance().init(CensoredContent.getCensoredContents(), XmlConfig.getInstance().getEntry("config.lang.current"));
-                _loc_8 = Breed.getBreeds();
+                _loc_8 = SkinMapping.getSkinMappings();
                 for each (_loc_9 in _loc_8)
                 {
                     
-                    _loc_7 = 1;
-                    while (_loc_7 < _loc_9.alternativeFemaleSkin.length)
-                    {
-                        
-                        Skin.addAlternativeSkin(_loc_9.alternativeFemaleSkin[0], _loc_9.alternativeFemaleSkin[_loc_7]);
-                        _loc_7 = _loc_7 + 1;
-                    }
-                    _loc_7 = 1;
-                    while (_loc_7 < _loc_9.alternativeMaleSkin.length)
-                    {
-                        
-                        Skin.addAlternativeSkin(_loc_9.alternativeMaleSkin[0], _loc_9.alternativeMaleSkin[_loc_7]);
-                        _loc_7 = _loc_7 + 1;
-                    }
+                    Skin.addAlternativeSkin(_loc_9.id, _loc_9.lowDefId);
                 }
                 _log.info("Initialization frame end");
                 Constants.EVENT_MODE = LangManager.getInstance().getEntry("config.eventMode") == "true";

@@ -215,25 +215,27 @@
             var _loc_67:* = null;
             var _loc_68:* = null;
             var _loc_69:* = null;
-            var _loc_70:* = 0;
-            var _loc_71:* = null;
+            var _loc_70:* = null;
+            var _loc_71:* = 0;
             var _loc_72:* = null;
             var _loc_73:* = null;
             var _loc_74:* = null;
-            var _loc_75:* = false;
+            var _loc_75:* = null;
             var _loc_76:* = false;
-            var _loc_77:* = null;
+            var _loc_77:* = false;
             var _loc_78:* = null;
             var _loc_79:* = null;
             var _loc_80:* = null;
-            var _loc_81:* = 0;
+            var _loc_81:* = null;
             var _loc_82:* = null;
-            var _loc_83:* = null;
+            var _loc_83:* = 0;
             var _loc_84:* = null;
-            var _loc_85:* = 0;
+            var _loc_85:* = null;
             var _loc_86:* = null;
-            var _loc_87:* = null;
-            var _loc_88:* = 0;
+            var _loc_87:* = 0;
+            var _loc_88:* = null;
+            var _loc_89:* = null;
+            var _loc_90:* = 0;
             switch(true)
             {
                 case param1 is GameActionFightCloseCombatMessage:
@@ -319,30 +321,31 @@
                     if (_loc_2.sourceId != _loc_9.id && _loc_10 && !this._castingSpell.isCriticalFail)
                     {
                         _loc_66 = false;
-                        for each (_loc_67 in _loc_9.spellsInventory)
+                        for each (_loc_68 in _loc_9.spellsInventory)
                         {
                             
-                            if (_loc_67.id == _loc_2.spellId)
+                            if (_loc_68.id == _loc_2.spellId)
                             {
                                 _loc_66 = true;
+                                _loc_67 = _loc_68.spellLevelInfos;
                                 break;
                             }
                         }
                         if (_loc_66)
                         {
-                            _loc_68 = Spell.getSpellById(_loc_2.spellId);
-                            _loc_69 = SpellLevel.getLevelById(_loc_68.spellLevels[(_loc_2.spellLevel - 1)]);
-                            if (_loc_69.globalCooldown)
+                            _loc_69 = Spell.getSpellById(_loc_2.spellId);
+                            _loc_70 = SpellLevel.getLevelById(_loc_69.spellLevels[(_loc_2.spellLevel - 1)]);
+                            if (_loc_70.globalCooldown)
                             {
-                                if (_loc_69.globalCooldown == -1)
+                                if (_loc_70.globalCooldown == -1)
                                 {
-                                    _loc_70 = _loc_69.minCastInterval;
+                                    _loc_71 = _loc_67.minCastInterval;
                                 }
                                 else
                                 {
-                                    _loc_70 = _loc_69.globalCooldown;
+                                    _loc_71 = _loc_70.globalCooldown;
                                 }
-                                this.pushSpellCooldownVariationStep(_loc_9.id, 0, _loc_2.spellId, _loc_70);
+                                this.pushSpellCooldownVariationStep(_loc_9.id, 0, _loc_2.spellId, _loc_71);
                             }
                         }
                     }
@@ -445,52 +448,56 @@
                     _loc_20 = param1 as GameActionFightSummonMessage;
                     if (_loc_20.actionId == 1024 || _loc_20.actionId == 1097)
                     {
-                        _loc_71 = new GameFightShowFighterRandomStaticPoseMessage();
-                        _loc_71.initGameFightShowFighterRandomStaticPoseMessage(_loc_20.summon);
-                        Kernel.getWorker().getFrame(FightEntitiesFrame).process(_loc_71);
-                        _loc_72 = DofusEntities.getEntity(_loc_20.summon.contextualId) as Sprite;
-                        _loc_72.visible = false;
+                        _loc_72 = new GameFightShowFighterRandomStaticPoseMessage();
+                        _loc_72.initGameFightShowFighterRandomStaticPoseMessage(_loc_20.summon);
+                        Kernel.getWorker().getFrame(FightEntitiesFrame).process(_loc_72);
+                        _loc_73 = DofusEntities.getEntity(_loc_20.summon.contextualId) as Sprite;
+                        _loc_73.visible = false;
                         this.pushVisibilityStep(_loc_20.summon.contextualId, true);
                     }
                     else
                     {
-                        _loc_73 = new GameFightShowFighterMessage();
-                        _loc_73.initGameFightShowFighterMessage(_loc_20.summon);
-                        Kernel.getWorker().getFrame(FightEntitiesFrame).process(_loc_73);
-                        _loc_74 = DofusEntities.getEntity(_loc_20.summon.contextualId) as Sprite;
-                        _loc_74.visible = false;
+                        _loc_74 = new GameFightShowFighterMessage();
+                        _loc_74.initGameFightShowFighterMessage(_loc_20.summon);
+                        Kernel.getWorker().getFrame(FightEntitiesFrame).process(_loc_74);
+                        _loc_75 = DofusEntities.getEntity(_loc_20.summon.contextualId) as Sprite;
+                        _loc_75.visible = false;
                         this.pushSummonStep(_loc_20.sourceId, _loc_20.summon);
                         if (_loc_20.sourceId == PlayedCharacterManager.getInstance().id && _loc_20.actionId != 185)
                         {
-                            _loc_75 = false;
                             _loc_76 = false;
+                            _loc_77 = false;
                             if (_loc_20.actionId == 1008)
                             {
-                                _loc_75 = true;
+                                _loc_76 = true;
                             }
                             else
                             {
-                                _loc_77 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc_20.summon.contextualId);
-                                _loc_75 = false;
-                                _loc_78 = _loc_77 as GameFightMonsterInformations;
-                                if (_loc_78)
+                                _loc_78 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc_20.summon.contextualId);
+                                _loc_76 = false;
+                                _loc_79 = _loc_78 as GameFightMonsterInformations;
+                                if (_loc_79)
                                 {
-                                    _loc_79 = Monster.getMonsterById(_loc_78.creatureGenericId);
-                                    if (_loc_79 && _loc_79.useBombSlot)
-                                    {
-                                        _loc_75 = true;
-                                    }
-                                    if (_loc_79 && _loc_79.useSummonSlot)
+                                    _loc_80 = Monster.getMonsterById(_loc_79.creatureGenericId);
+                                    if (_loc_80 && _loc_80.useBombSlot)
                                     {
                                         _loc_76 = true;
                                     }
+                                    if (_loc_80 && _loc_80.useSummonSlot)
+                                    {
+                                        _loc_77 = true;
+                                    }
+                                }
+                                else
+                                {
+                                    _loc_81 = _loc_78 as GameFightCharacterInformations;
                                 }
                             }
-                            if (_loc_76)
+                            if (_loc_77 || _loc_81)
                             {
                                 PlayedCharacterManager.getInstance().addSummonedCreature();
                             }
-                            else if (_loc_75)
+                            else if (_loc_76)
                             {
                                 PlayedCharacterManager.getInstance().addSummonedBomb();
                             }
@@ -534,15 +541,15 @@
                 {
                     _loc_26 = param1 as GameActionFightLeaveMessage;
                     _loc_27 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-                    for each (_loc_80 in _loc_27)
+                    for each (_loc_82 in _loc_27)
                     {
                         
-                        if (_loc_80 is GameFightFighterInformations)
+                        if (_loc_82 is GameFightFighterInformations)
                         {
-                            _loc_81 = (_loc_80 as GameFightFighterInformations).stats.summoner;
-                            if (_loc_81 == _loc_26.targetId)
+                            _loc_83 = (_loc_82 as GameFightFighterInformations).stats.summoner;
+                            if (_loc_83 == _loc_26.targetId)
                             {
-                                this.pushDeathStep(_loc_80.contextualId);
+                                this.pushDeathStep(_loc_82.contextualId);
                             }
                         }
                     }
@@ -550,15 +557,15 @@
                     _loc_28 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc_26.targetId);
                     if (_loc_28 is GameFightMonsterInformations)
                     {
-                        _loc_82 = _loc_28 as GameFightMonsterInformations;
-                        if (_loc_82.stats.summoner == PlayedCharacterManager.getInstance().id)
+                        _loc_84 = _loc_28 as GameFightMonsterInformations;
+                        if (_loc_84.stats.summoner == PlayedCharacterManager.getInstance().id)
                         {
-                            _loc_83 = Monster.getMonsterById(_loc_82.creatureGenericId);
-                            if (_loc_83.useSummonSlot)
+                            _loc_85 = Monster.getMonsterById(_loc_84.creatureGenericId);
+                            if (_loc_85.useSummonSlot)
                             {
                                 PlayedCharacterManager.getInstance().removeSummonedCreature();
                             }
-                            if (_loc_83.useBombSlot)
+                            if (_loc_85.useBombSlot)
                             {
                                 PlayedCharacterManager.getInstance().removeSummonedBomb();
                             }
@@ -571,15 +578,15 @@
                     _loc_29 = param1 as GameActionFightDeathMessage;
                     _log.fatal("GameActionFightDeathMessage");
                     _loc_30 = FightEntitiesFrame.getCurrentInstance().getEntitiesDictionnary();
-                    for each (_loc_84 in _loc_30)
+                    for each (_loc_86 in _loc_30)
                     {
                         
-                        if (_loc_84 is GameFightFighterInformations)
+                        if (_loc_86 is GameFightFighterInformations)
                         {
-                            _loc_85 = (_loc_84 as GameFightFighterInformations).stats.summoner;
-                            if (_loc_85 == _loc_29.targetId)
+                            _loc_87 = (_loc_86 as GameFightFighterInformations).stats.summoner;
+                            if (_loc_87 == _loc_29.targetId)
                             {
-                                this.pushDeathStep(_loc_84.contextualId);
+                                this.pushDeathStep(_loc_86.contextualId);
                             }
                         }
                     }
@@ -617,16 +624,16 @@
                     _loc_35 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc_29.targetId);
                     if (_loc_35 is GameFightMonsterInformations)
                     {
-                        _loc_86 = _loc_35 as GameFightMonsterInformations;
-                        _loc_86.alive = false;
-                        if (_loc_86.stats.summoner == PlayedCharacterManager.getInstance().id)
+                        _loc_88 = _loc_35 as GameFightMonsterInformations;
+                        _loc_88.alive = false;
+                        if (_loc_88.stats.summoner == PlayedCharacterManager.getInstance().id)
                         {
-                            _loc_83 = Monster.getMonsterById(_loc_86.creatureGenericId);
-                            if (_loc_83.useSummonSlot)
+                            _loc_85 = Monster.getMonsterById(_loc_88.creatureGenericId);
+                            if (_loc_85.useSummonSlot)
                             {
                                 PlayedCharacterManager.getInstance().removeSummonedCreature();
                             }
-                            if (_loc_83.useBombSlot)
+                            if (_loc_85.useBombSlot)
                             {
                                 PlayedCharacterManager.getInstance().removeSummonedBomb();
                             }
@@ -638,8 +645,8 @@
                         (_loc_35 as GameFightFighterInformations).alive = false;
                         if ((_loc_35 as GameFightFighterInformations).stats.summoner != 0)
                         {
-                            _loc_87 = _loc_35 as GameFightFighterInformations;
-                            if (_loc_87.stats.summoner == PlayedCharacterManager.getInstance().id)
+                            _loc_89 = _loc_35 as GameFightFighterInformations;
+                            if (_loc_89.stats.summoner == PlayedCharacterManager.getInstance().id)
                             {
                                 PlayedCharacterManager.getInstance().removeSummonedCreature();
                                 SpellWrapper.refreshAllPlayerSpellHolder(PlayedCharacterManager.getInstance().id);
@@ -798,8 +805,8 @@
                     {
                         case _loc_57 is FightTemporaryBoostEffect:
                         {
-                            _loc_88 = _loc_55.actionId;
-                            if (_loc_88 != ActionIdConverter.ACTION_CHARACTER_MAKE_INVISIBLE && _loc_88 != ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST && _loc_88 != ActionIdConverter.ACTION_CHARACTER_CHANGE_LOOK && _loc_88 != ActionIdConverter.ACTION_CHARACTER_CHANGE_COLOR && _loc_88 != ActionIdConverter.ACTION_CHARACTER_ADD_APPEARANCE && _loc_88 != ActionIdConverter.ACTION_FIGHT_SET_STATE)
+                            _loc_90 = _loc_55.actionId;
+                            if (_loc_90 != ActionIdConverter.ACTION_CHARACTER_MAKE_INVISIBLE && _loc_90 != ActionIdConverter.ACTION_CHARACTER_UPDATE_BOOST && _loc_90 != ActionIdConverter.ACTION_CHARACTER_CHANGE_LOOK && _loc_90 != ActionIdConverter.ACTION_CHARACTER_CHANGE_COLOR && _loc_90 != ActionIdConverter.ACTION_CHARACTER_ADD_APPEARANCE && _loc_90 != ActionIdConverter.ACTION_FIGHT_SET_STATE)
                             {
                                 this.pushTemporaryBoostStep(_loc_55.effect.targetId, _loc_58.effects.description, _loc_58.effects.duration, _loc_58.effects.durationString);
                             }

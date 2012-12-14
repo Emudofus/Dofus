@@ -14,6 +14,7 @@
     import com.ankamagames.dofus.datacenter.npcs.*;
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.dofus.datacenter.world.*;
+    import com.ankamagames.dofus.externalnotification.*;
     import com.ankamagames.dofus.externalnotification.enums.*;
     import com.ankamagames.dofus.internalDatacenter.communication.*;
     import com.ankamagames.dofus.internalDatacenter.guild.*;
@@ -884,13 +885,19 @@
                 case param1 is GameRolePlayPlayerFightFriendlyAnsweredMessage:
                 {
                     _loc_53 = param1 as GameRolePlayPlayerFightFriendlyAnsweredMessage;
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightFriendlyAnswered, _loc_53.accept);
+                    if (this._currentWaitingFightId == _loc_53.fightId)
+                    {
+                        KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightFriendlyAnswered, _loc_53.accept);
+                    }
                     return true;
                 }
                 case param1 is GameRolePlayFightRequestCanceledMessage:
                 {
                     _loc_54 = param1 as GameRolePlayFightRequestCanceledMessage;
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightFriendlyAnswered, false);
+                    if (this._currentWaitingFightId == _loc_54.fightId)
+                    {
+                        KernelEventsManager.getInstance().processCallback(RoleplayHookList.PlayerFightFriendlyAnswered, false);
+                    }
                     return true;
                 }
                 case param1 is GameRolePlayPlayerFightFriendlyRequestedMessage:
@@ -1004,11 +1011,11 @@
                     }
                     else if (_loc_42 == _loc_60.defenderId)
                     {
-                        if (AirScanner.hasAir())
+                        KernelEventsManager.getInstance().processCallback(HookList.PlayerAggression, _loc_60.attackerId, GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_loc_60.attackerId)).name);
+                        if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.ATTACK))
                         {
                             KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.ATTACK, [GameRolePlayNamedActorInformations(this._entitiesFrame.getEntityInfos(_loc_60.attackerId)).name]);
                         }
-                        SystemManager.getSingleton().notifyUser();
                         SpeakingItemManager.getInstance().triggerEvent(SpeakingItemManager.SPEAK_TRIGGER_AGRESSED);
                     }
                     return true;
@@ -1580,6 +1587,8 @@ import com.ankamagames.dofus.datacenter.npcs.*;
 import com.ankamagames.dofus.datacenter.spells.*;
 
 import com.ankamagames.dofus.datacenter.world.*;
+
+import com.ankamagames.dofus.externalnotification.*;
 
 import com.ankamagames.dofus.externalnotification.enums.*;
 

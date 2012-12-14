@@ -22,7 +22,7 @@
         public function MoveBehavior()
         {
             type = NORMAL;
-            sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP", false);
+            sprite = EmbedAssets.getSprite("CHECKPOINT_CLIP");
             isAvailableToStart = true;
             return;
         }// end function

@@ -113,7 +113,7 @@
                 this._state = param1;
                 this.restoreSnapshot(StatesEnum.STATE_NORMAL);
             }
-            else if (this.changingStateData[param1])
+            else if (this.changingStateData != null && this.changingStateData[param1])
             {
                 this._snapshot[this._state] = new Array();
                 if (this._state != StatesEnum.STATE_NORMAL)

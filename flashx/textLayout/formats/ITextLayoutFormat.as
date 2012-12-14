@@ -8,14 +8,6 @@
 
         function getStyle(param1:String);
 
-        function get columnBreakBefore();
-
-        function get columnBreakAfter();
-
-        function get containerBreakBefore();
-
-        function get containerBreakAfter();
-
         function get color();
 
         function get backgroundColor();

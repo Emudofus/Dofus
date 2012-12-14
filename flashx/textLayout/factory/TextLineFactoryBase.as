@@ -165,8 +165,7 @@
             var _loc_4:* = param2 ? (_loc_3.userData - _loc_3.textBlockBeginIndex) : (0);
             var _loc_5:* = _loc_3.getAtomIndexAtCharIndex(param1 - _loc_4);
             var _loc_6:* = _loc_3.getAtomTextBlockBeginIndex(_loc_5) + _loc_4;
-            _loc_3.flushAtomData();
-            return _loc_6;
+            return _loc_3.getAtomTextBlockBeginIndex(_loc_5) + _loc_4;
         }// end function
 
         function createFlowComposer() : IFlowComposer

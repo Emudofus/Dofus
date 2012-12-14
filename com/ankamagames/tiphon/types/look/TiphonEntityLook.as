@@ -100,7 +100,7 @@
             return;
         }// end function
 
-        public function getSkins(param1:Boolean = false) : Vector.<uint>
+        public function getSkins(param1:Boolean = false, param2:Boolean = true) : Vector.<uint>
         {
             if (!this._skins)
             {
@@ -110,16 +110,21 @@
             {
                 return this._skins;
             }
-            var _loc_2:* = this._skins.length;
-            var _loc_3:* = new Vector.<uint>(_loc_2, true);
+            var _loc_3:* = this._skins.length;
             var _loc_4:* = 0;
-            while (_loc_4 < _loc_2)
+            if (!param2 && this._defaultSkin != -1)
+            {
+                _loc_4 = 1;
+            }
+            var _loc_5:* = new Vector.<uint>(_loc_3, true);
+            var _loc_6:* = _loc_4;
+            while (_loc_6 < _loc_3)
             {
                 
-                _loc_3[_loc_4] = this._skins[_loc_4];
-                _loc_4 = _loc_4 + 1;
+                _loc_5[_loc_6 - _loc_4] = this._skins[_loc_6];
+                _loc_6 = _loc_6 + 1;
             }
-            return _loc_3;
+            return _loc_5;
         }// end function
 
         public function resetSkins() : void

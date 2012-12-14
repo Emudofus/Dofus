@@ -112,7 +112,7 @@
             return;
         }// end function
 
-        public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
+        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
         {
             var _loc_5:* = SecureCenter.unsecure(param1);
             var _loc_6:* = new Slot();
@@ -183,7 +183,7 @@
             return true;
         }// end function
 
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
+        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
         {
             var _loc_6:* = null;
             if (param3 is Slot)
@@ -213,6 +213,11 @@
                 this._log.warn("Can\'t update, " + param3.name + " is not a Slot component");
             }
             return;
+        }// end function
+
+        public function getDataLength(param1, param2:Boolean) : uint
+        {
+            return 1;
         }// end function
 
         public function remove(param1:DisplayObject) : void

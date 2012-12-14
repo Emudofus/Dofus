@@ -57,9 +57,9 @@
             return;
         }// end function
 
-        public function addTimerToNotification(param1:uint, param2:uint, param3:Boolean = false, param4:Boolean = false) : void
+        public function addTimerToNotification(param1:uint, param2:uint, param3:Boolean = false, param4:Boolean = false, param5:Boolean = true) : void
         {
-            NotificationManager.getInstance().addTimerToNotification(param1, param2, param3, param4);
+            NotificationManager.getInstance().addTimerToNotification(param1, param2, param3, param4, param5);
             return;
         }// end function
 

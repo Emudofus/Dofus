@@ -11,76 +11,95 @@
     public class TooltipPlacer extends Object
     {
         static var _log:Logger = Log.getLogger(getQualifiedClassName(TooltipPlacer));
+        private static const _anchors:Array = [];
+        private static var _init:Boolean;
 
         public function TooltipPlacer()
         {
             return;
         }// end function
 
+        private static function init() : void
+        {
+            var _loc_2:* = 0;
+            var _loc_3:* = 0;
+            if (_init)
+            {
+                return;
+            }
+            _init = true;
+            var _loc_1:* = [LocationEnum.POINT_TOPLEFT, LocationEnum.POINT_TOP, LocationEnum.POINT_TOPRIGHT, LocationEnum.POINT_LEFT, LocationEnum.POINT_CENTER, LocationEnum.POINT_RIGHT, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_BOTTOMRIGHT];
+            for each (_loc_2 in _loc_1)
+            {
+                
+                for each (_loc_3 in _loc_1)
+                {
+                    
+                    _anchors.push({p1:_loc_2, p2:_loc_3});
+                }
+            }
+            return;
+        }// end function
+
+        private static function getAnchors() : Array
+        {
+            init();
+            return _anchors.concat();
+        }// end function
+
         public static function place(param1:DisplayObject, param2:IRectangle, param3:uint = 6, param4:uint = 0, param5:int = 3) : void
         {
-            var _loc_9:* = 0;
-            var _loc_10:* = 0;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
             var _loc_11:* = null;
             var _loc_12:* = null;
             var _loc_13:* = null;
             var _loc_14:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
             var _loc_6:* = false;
-            var _loc_7:* = [LocationEnum.POINT_TOPLEFT, LocationEnum.POINT_TOP, LocationEnum.POINT_TOPRIGHT, LocationEnum.POINT_LEFT, LocationEnum.POINT_CENTER, LocationEnum.POINT_RIGHT, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_BOTTOM, LocationEnum.POINT_BOTTOMRIGHT];
-            var _loc_8:* = new Array();
-            for each (_loc_9 in _loc_7)
-            {
-                
-                for each (_loc_10 in _loc_7)
-                {
-                    
-                    _loc_8.push({p1:_loc_9, p2:_loc_10});
-                }
-            }
+            var _loc_7:* = param1.getBounds(param1);
+            var _loc_8:* = getAnchors();
             while (!_loc_6)
             {
                 
-                _loc_11 = new Point(param2.x, param2.y);
-                _loc_12 = new Point(param1.x, param1.y);
-                _loc_13 = new Rectangle2(param1.x, param1.y, param1.width, param1.height);
-                processAnchor(_loc_12, _loc_13, param3);
-                processAnchor(_loc_11, param2, param4);
-                _loc_14 = makeOffset(param3, param5);
-                _loc_11.x = _loc_11.x - (_loc_12.x - _loc_14.x);
-                _loc_11.y = _loc_11.y - (_loc_12.y - _loc_14.y);
-                _loc_15 = new Rectangle2(_loc_11.x, _loc_11.y, param1.width, param1.height);
-                if (_loc_15.y < 0)
+                _loc_9 = new Point(param2.x, param2.y);
+                _loc_10 = new Point(param1.x, param1.y);
+                _loc_11 = new Rectangle2(param1.x, param1.y, param1.width, param1.height);
+                processAnchor(_loc_10, _loc_11, param3);
+                processAnchor(_loc_9, param2, param4);
+                _loc_12 = makeOffset(param3, param5);
+                _loc_9.x = _loc_9.x - (_loc_10.x - _loc_12.x + _loc_7.left);
+                _loc_9.y = _loc_9.y - (_loc_10.y - _loc_12.y);
+                _loc_13 = new Rectangle2(_loc_9.x, _loc_9.y, _loc_11.width, _loc_11.height);
+                if (_loc_13.y < 0)
                 {
-                    _loc_15.y = 0;
+                    _loc_13.y = 0;
                 }
-                if (_loc_15.x < 0)
+                if (_loc_13.x < 0)
                 {
-                    _loc_15.x = 0;
+                    _loc_13.x = 0;
                 }
-                if (_loc_15.y + _loc_15.height > StageShareManager.startHeight)
+                if (_loc_13.y + _loc_13.height > StageShareManager.startHeight)
                 {
-                    _loc_15.y = _loc_15.y - (_loc_15.height + _loc_15.y - StageShareManager.startHeight);
+                    _loc_13.y = _loc_13.y - (_loc_13.height + _loc_13.y - StageShareManager.startHeight);
                 }
-                if (_loc_15.x + _loc_15.width > StageShareManager.startWidth)
+                if (_loc_13.x + _loc_13.width > StageShareManager.startWidth)
                 {
-                    _loc_15.x = _loc_15.x - (_loc_15.width + _loc_15.x - StageShareManager.startWidth);
+                    _loc_13.x = _loc_13.x - (_loc_13.width + _loc_13.x - StageShareManager.startWidth);
                 }
-                _loc_6 = !hitTest(_loc_15, param2);
+                _loc_6 = !hitTest(_loc_13, param2);
                 if (!_loc_6)
                 {
-                    _loc_16 = _loc_8.shift();
-                    if (!_loc_16)
+                    _loc_14 = _loc_8.shift();
+                    if (!_loc_14)
                     {
                         break;
                     }
-                    param3 = _loc_16.p1;
-                    param4 = _loc_16.p2;
+                    param3 = _loc_14.p1;
+                    param4 = _loc_14.p2;
                 }
             }
-            param1.x = _loc_15.x;
-            param1.y = _loc_15.y;
+            param1.x = _loc_13.x;
+            param1.y = _loc_13.y;
             return;
         }// end function
 

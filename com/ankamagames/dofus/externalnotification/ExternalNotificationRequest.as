@@ -6,27 +6,29 @@
     {
         private var _notificationType:int;
         private var _clientId:String;
+        private var _otherClientsIds:Array;
         private var _id:String;
         private var _showMode:int;
-        private var _title:String;
-        private var _iconId:int;
-        private var _iconBgColorId:String;
-        private var _message:String;
-        private var _css:String;
-        private var _cssClass:String;
+        private var _hookName:String;
+        private var _hookParams:Array;
+        private var _uiName:String;
+        private var _displayData:Object;
+        private var _playSound:Boolean;
+        private var _notify:Boolean;
 
-        public function ExternalNotificationRequest(param1:int, param2:String, param3:String, param4:int, param5:String, param6:int, param7:String, param8:String, param9:String, param10:String)
+        public function ExternalNotificationRequest(param1:int, param2:String, param3:Array, param4:String, param5:int, param6:String, param7:Object, param8:Boolean, param9:Boolean, param10:String = null, param11:Array = null)
         {
             this._notificationType = param1;
             this._clientId = param2;
-            this._id = param3;
-            this._showMode = param4;
-            this._title = param5;
-            this._iconId = param6;
-            this._iconBgColorId = param7;
-            this._message = param8;
-            this._css = param9;
-            this._cssClass = param10;
+            this._otherClientsIds = param3;
+            this._id = param4;
+            this._showMode = param5;
+            this._uiName = param6;
+            this._displayData = param7;
+            this._playSound = param8;
+            this._notify = param9;
+            this._hookName = param10;
+            this._hookParams = param11;
             return;
         }// end function
 
@@ -45,6 +47,11 @@
             return this._clientId;
         }// end function
 
+        public function get otherClientsIds() : Array
+        {
+            return this._otherClientsIds;
+        }// end function
+
         public function get id() : String
         {
             return this._id;
@@ -55,40 +62,40 @@
             return this._showMode;
         }// end function
 
-        public function get title() : String
+        public function get uiName() : String
         {
-            return this._title;
+            return this._uiName;
         }// end function
 
-        public function get iconId() : int
+        public function get displayData() : Object
         {
-            return this._iconId;
+            return this._displayData;
         }// end function
 
-        public function get iconBgColorId() : String
+        public function get hookName() : String
         {
-            return this._iconBgColorId;
+            return this._hookName;
         }// end function
 
-        public function get message() : String
+        public function get hookParams() : Array
         {
-            return this._message;
+            return this._hookParams;
         }// end function
 
-        public function get css() : String
+        public function get playSound() : Boolean
         {
-            return this._css;
+            return this._playSound;
         }// end function
 
-        public function get cssClass() : String
+        public function get notify() : Boolean
         {
-            return this._cssClass;
+            return this._notify;
         }// end function
 
         public static function createFromJSONString(param1:String) : ExternalNotificationRequest
         {
             var _loc_2:* = JSON.decode(param1);
-            var _loc_3:* = new ExternalNotificationRequest(_loc_2.notificationType, _loc_2.clientId, _loc_2.id, _loc_2.showMode, _loc_2.title, _loc_2.iconId, _loc_2.iconBgColorId, _loc_2.message, _loc_2.css, _loc_2.cssClass);
+            var _loc_3:* = new ExternalNotificationRequest(_loc_2.notificationType, _loc_2.clientId, _loc_2.otherClientsIds, _loc_2.id, _loc_2.showMode, _loc_2.uiName, _loc_2.displayData, _loc_2.playSound, _loc_2.notify, _loc_2.hookName, _loc_2.hookParams);
             return _loc_3;
         }// end function
 

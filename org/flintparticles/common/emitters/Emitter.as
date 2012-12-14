@@ -89,10 +89,10 @@
         {
             if (isNaN(param2))
             {
-                param2 = param1.getDefaultPriority();
+                param2 = param1.org.flintparticles.common.actions:Action::getDefaultPriority();
             }
             this._actions.add(param1, param2);
-            param1.addedToEmitter(this);
+            param1.org.flintparticles.common.actions:Action::addedToEmitter(this);
             return;
         }// end function
 
@@ -100,7 +100,7 @@
         {
             if (this._actions.remove(param1))
             {
-                param1.removedFromEmitter(this);
+                param1.org.flintparticles.common.actions:Action::removedFromEmitter(this);
             }
             return;
         }// end function
@@ -237,7 +237,7 @@
 
         protected function createParticle() : Particle
         {
-            var _loc_1:* = this._particleFactory.createParticle();
+            var _loc_1:* = this._particleFactory.org.flintparticles.common.particles:ParticleFactory::createParticle();
             var _loc_2:* = this._initializers.length;
             this.initParticle(_loc_1);
             var _loc_3:* = 0;

@@ -252,7 +252,7 @@
             addChild(this._list);
             this._listTexture.mouseEnabled = false;
             this._list.mouseEnabled = false;
-            this._mainContainer = this._list.renderer.render(null, 0, false, false);
+            this._mainContainer = this._list.renderer.render(null, 0, false);
             this._mainContainer.x = this._list.x;
             if (this.autoCenter)
             {
@@ -275,7 +275,7 @@
                 }
                 case param1 is SelectItemMessage:
                 {
-                    this._list.renderer.update(this._list.selectedItem, 0, this._mainContainer, false, false);
+                    this._list.renderer.update(this._list.selectedItem, 0, this._mainContainer, false);
                     switch(SelectItemMessage(param1).selectMethod)
                     {
                         case SelectMethodEnum.UP_ARROW:

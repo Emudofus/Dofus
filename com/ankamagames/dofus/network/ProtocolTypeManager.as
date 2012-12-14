@@ -1,6 +1,5 @@
 ﻿package com.ankamagames.dofus.network
 {
-    import com.ankamagames.dofus.network.types.game.achievement.*;
     import com.ankamagames.dofus.network.types.game.actions.fight.*;
     import com.ankamagames.dofus.network.types.game.character.choice.*;
     import com.ankamagames.dofus.network.types.game.context.*;
@@ -94,9 +93,6 @@
             StoreDataManager.getInstance().registerClass(new ShortcutSpell(), true, true);
             StoreDataManager.getInstance().registerClass(new ShortcutEmote(), true, true);
             StoreDataManager.getInstance().registerClass(new ShortcutSmiley(), true, true);
-            StoreDataManager.getInstance().registerClass(new Achievement(), true, true);
-            StoreDataManager.getInstance().registerClass(new AchievementStartedPercent(), true, true);
-            StoreDataManager.getInstance().registerClass(new AchievementStartedValue(), true, true);
             StoreDataManager.getInstance().registerClass(new IgnoredInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new IgnoredOnlineInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendInformations(), true, true);
@@ -105,6 +101,8 @@
             StoreDataManager.getInstance().registerClass(new FriendSpouseOnlineInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new InteractiveElementSkill(), true, true);
             StoreDataManager.getInstance().registerClass(new InteractiveElementNamedSkill(), true, true);
+            StoreDataManager.getInstance().registerClass(new InteractiveElement(), true, true);
+            StoreDataManager.getInstance().registerClass(new InteractiveElementWithAgeBonus(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyMemberInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new PartyMemberArenaInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new SkillActionDescription(), true, true);
@@ -155,7 +153,12 @@
             StoreDataManager.getInstance().registerClass(new GameRolePlayTaxCollectorInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new GameRolePlayPrismInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new HumanInformations(), true, true);
-            StoreDataManager.getInstance().registerClass(new HumanWithGuildInformations(), true, true);
+            StoreDataManager.getInstance().registerClass(new HumanOption(), true, true);
+            StoreDataManager.getInstance().registerClass(new HumanOptionOrnament(), true, true);
+            StoreDataManager.getInstance().registerClass(new HumanOptionFollowers(), true, true);
+            StoreDataManager.getInstance().registerClass(new HumanOptionGuild(), true, true);
+            StoreDataManager.getInstance().registerClass(new HumanOptionTitle(), true, true);
+            StoreDataManager.getInstance().registerClass(new HumanOptionEmote(), true, true);
             StoreDataManager.getInstance().registerClass(new TaxCollectorInformations(), true, true);
             StoreDataManager.getInstance().registerClass(new TaxCollectorInformationsInWaitForHelpState(), true, true);
             StoreDataManager.getInstance().registerClass(new GroupMonsterStaticInformations(), true, true);
@@ -223,9 +226,6 @@
         _typesTypes[368] = ShortcutSpell;
         _typesTypes[389] = ShortcutEmote;
         _typesTypes[388] = ShortcutSmiley;
-        _typesTypes[363] = Achievement;
-        _typesTypes[362] = AchievementStartedPercent;
-        _typesTypes[361] = AchievementStartedValue;
         _typesTypes[106] = IgnoredInformations;
         _typesTypes[105] = IgnoredOnlineInformations;
         _typesTypes[78] = FriendInformations;
@@ -234,6 +234,8 @@
         _typesTypes[93] = FriendSpouseOnlineInformations;
         _typesTypes[219] = InteractiveElementSkill;
         _typesTypes[220] = InteractiveElementNamedSkill;
+        _typesTypes[80] = InteractiveElement;
+        _typesTypes[398] = InteractiveElementWithAgeBonus;
         _typesTypes[90] = PartyMemberInformations;
         _typesTypes[391] = PartyMemberArenaInformations;
         _typesTypes[102] = SkillActionDescription;
@@ -284,7 +286,12 @@
         _typesTypes[148] = GameRolePlayTaxCollectorInformations;
         _typesTypes[161] = GameRolePlayPrismInformations;
         _typesTypes[157] = HumanInformations;
-        _typesTypes[153] = HumanWithGuildInformations;
+        _typesTypes[406] = HumanOption;
+        _typesTypes[411] = HumanOptionOrnament;
+        _typesTypes[410] = HumanOptionFollowers;
+        _typesTypes[409] = HumanOptionGuild;
+        _typesTypes[408] = HumanOptionTitle;
+        _typesTypes[407] = HumanOptionEmote;
         _typesTypes[167] = TaxCollectorInformations;
         _typesTypes[166] = TaxCollectorInformationsInWaitForHelpState;
         _typesTypes[140] = GroupMonsterStaticInformations;

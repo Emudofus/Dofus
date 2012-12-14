@@ -143,7 +143,6 @@
 
         private function onSocketClose(event:Event) : void
         {
-            var e:* = event;
             this._socketAvaible = false;
             _log.error("The socket has been closed");
             try

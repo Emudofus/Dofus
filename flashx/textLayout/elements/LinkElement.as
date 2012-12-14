@@ -316,12 +316,10 @@
             if (param2 == ModelChange.ELEMENT_ADDED)
             {
                 param1.incInteractiveObjectCount();
-                getParagraph().incInteractiveChildrenCount();
             }
             else if (param2 == ModelChange.ELEMENT_REMOVAL)
             {
                 param1.decInteractiveObjectCount();
-                getParagraph().decInteractiveChildrenCount();
             }
             super.appendElementsForDelayedUpdate(param1, param2);
             return;

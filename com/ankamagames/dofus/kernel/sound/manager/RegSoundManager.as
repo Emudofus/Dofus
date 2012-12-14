@@ -276,6 +276,10 @@
             {
                 return;
             }
+            if (param4 is TiphonSprite && TiphonSprite(param4).parentSprite && TiphonSprite(param4).parentSprite.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_PET, 0))
+            {
+                return;
+            }
             var _loc_5:* = 0;
             var _loc_6:* = 0;
             var _loc_7:* = -1;

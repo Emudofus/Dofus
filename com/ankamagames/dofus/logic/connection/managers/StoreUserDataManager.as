@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.dofus.logic.connection.managers
 {
+    import by.blooddy.crypto.*;
     import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.logic.common.managers.*;
     import com.ankamagames.dofus.misc.interClient.*;
@@ -7,7 +8,6 @@
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import com.hurlant.util.*;
     import flash.events.*;

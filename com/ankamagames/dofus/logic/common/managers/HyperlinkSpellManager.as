@@ -1,6 +1,8 @@
 ﻿package com.ankamagames.dofus.logic.common.managers
 {
+    import com.ankamagames.berilia.enums.*;
     import com.ankamagames.berilia.managers.*;
+    import com.ankamagames.berilia.types.data.*;
     import com.ankamagames.dofus.internalDatacenter.spells.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.logic.game.fight.frames.*;
@@ -71,6 +73,14 @@
                 _zoneTimer = null;
             }
             SpellZoneManager.getInstance().removeSpellZone();
+            return;
+        }// end function
+
+        public static function rollOver(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:int) : void
+        {
+            var _loc_8:* = new Rectangle(param1, param2, 10, 10);
+            var _loc_9:* = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.showSpellZone"));
+            TooltipManager.show(_loc_9, _loc_8, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
             return;
         }// end function
 

@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.atouin.managers
 {
+    import by.blooddy.crypto.image.*;
     import com.ankamagames.atouin.*;
     import com.ankamagames.atouin.data.map.*;
     import com.ankamagames.atouin.enums.*;
@@ -21,6 +22,7 @@
         private static const JPEG_HIGH_QUALITY:uint = 80;
         private static const JPEG_MEDIUM_QUALITY:uint = 70;
         private static const JPEG_LOW_QUALITY:uint = 60;
+        private static var _currentQuality:Object;
         private static var _mask:Shape;
         private static var _currentDiskUsed:Number = 0;
         private static var _jpgEncoder:AsyncJPGEncoder;
@@ -30,6 +32,8 @@
         private static var _processing:Boolean = false;
         private static var _directory:File;
         private static var _currentMapId:int = -1;
+        private static var buffer:BitmapData;
+        private static var _m:Matrix = new Matrix();
 
         public function DataGroundMapManager()
         {
@@ -85,39 +89,48 @@
             return;
         }// end function
 
-        public static function saveGroundMap(param1:DisplayObjectContainer, param2:Map) : void
+        public static function saveGroundMap(param1:BitmapData, param2:Map) : void
         {
-            var _loc_4:* = null;
-            FpsManager.getInstance().startTracking("groundMap", 10621692);
-            var _loc_3:* = new Matrix();
-            if (param2.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_MEDIUM_QUALITY)
+            var _loc_3:* = null;
+            _m.identity();
+            switch(param2.groundCacheCurrentlyUsed)
             {
-                _loc_4 = new BitmapData(AtouinConstants.RESOLUTION_MEDIUM_QUALITY.x, AtouinConstants.RESOLUTION_MEDIUM_QUALITY.y, false, 0);
-                _loc_3.tx = 20;
-                _loc_3.scale(0.75, 0.75);
+                case GroundCache.GROUND_CACHE_LOW_QUALITY:
+                {
+                    _loc_3 = AtouinConstants.RESOLUTION_LOW_QUALITY;
+                    _m.scale(0.5, 0.5);
+                    break;
+                }
+                case GroundCache.GROUND_CACHE_MEDIUM_QUALITY:
+                {
+                    _loc_3 = AtouinConstants.RESOLUTION_MEDIUM_QUALITY;
+                    _m.scale(0.75, 0.75);
+                    break;
+                }
+                case GroundCache.GROUND_CACHE_HIGH_QUALITY:
+                {
+                    _loc_3 = AtouinConstants.RESOLUTION_HIGH_QUALITY;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
-            else if (param2.groundCacheCurrentlyUsed == GroundCache.GROUND_CACHE_LOW_QUALITY)
+            FpsManager.getInstance().startTracking("groundMap", 10621692);
+            if (param1.width != _loc_3.x || param1.height != _loc_3.y)
             {
-                _loc_4 = new BitmapData(AtouinConstants.RESOLUTION_LOW_QUALITY.x, AtouinConstants.RESOLUTION_LOW_QUALITY.y, false, 0);
-                _loc_3.tx = 20;
-                _loc_3.scale(0.5, 0.5);
+                if (buffer == null || buffer.width != AtouinConstants.RESOLUTION_HIGH_QUALITY.x || buffer.height != AtouinConstants.RESOLUTION_HIGH_QUALITY.y)
+                {
+                    buffer = new BitmapData(_loc_3.x, _loc_3.y, false, 16711680);
+                }
+                buffer.draw(param1, _m);
+                _bitmapDataList.push(buffer, param2);
             }
             else
             {
-                _loc_4 = new BitmapData(AtouinConstants.RESOLUTION_HIGH_QUALITY.x, AtouinConstants.RESOLUTION_HIGH_QUALITY.y, false, 0);
-                _loc_3.tx = 20;
+                _bitmapDataList.push(param1, param2);
             }
-            if (!_mask)
-            {
-                _mask = new Shape();
-                _mask.graphics.beginFill(16711680, 0);
-                _mask.graphics.drawRect(-20, -20, 1320, 1064);
-                _mask.graphics.endFill();
-            }
-            param1.addChildAt(_mask, 0);
-            _loc_4.draw(param1, _loc_3);
-            param1.removeChild(_mask);
-            _bitmapDataList.push(_loc_4, param2);
             process();
             FpsManager.getInstance().stopTracking("groundMap");
             return;
@@ -218,6 +231,8 @@
             var bitmapData:BitmapData;
             var map:Map;
             var file:File;
+            var t:uint;
+            var res:ByteArray;
             if (!_processing && _bitmapDataList.length)
             {
                 _processing = true;
@@ -235,7 +250,10 @@
                 {
                     _log.info("Le fichier est locké " + file.nativePath);
                 }
-                _jpgEncoder.encode(bitmapData, jpgGenerated, map);
+                t = getTimer();
+                res = JPEGEncoder.encode(bitmapData, _currentQuality);
+                trace("Encodage " + bitmapData.width + " x " + bitmapData.height + " : " + (getTimer() - t) + " ms");
+                jpgGenerated(res, map);
             }
             return;
         }// end function
@@ -269,7 +287,7 @@
                         break;
                     }
                 }
-                _jpgEncoder = new AsyncJPGEncoder(_loc_2);
+                _currentQuality = _loc_2;
             }
             return;
         }// end function

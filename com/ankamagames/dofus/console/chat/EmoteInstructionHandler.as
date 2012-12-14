@@ -6,7 +6,6 @@
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.emote.*;
     import com.ankamagames.jerakine.console.*;
-    import com.ankamagames.jerakine.data.*;
 
     public class EmoteInstructionHandler extends Object implements ConsoleInstructionHandler
     {
@@ -31,7 +30,7 @@
 
         public function getHelp(param1:String) : String
         {
-            return I18n.getUiText("ui.chat.console.help.emote", [Emoticon.getEmoticonById(this.getEmoteId(param1)).name]);
+            return null;
         }// end function
 
         private function getEmoteId(param1:String) : uint

@@ -19,7 +19,6 @@
 
         public function GroupItemCriterion(param1:String)
         {
-            var _loc_4:* = null;
             this._criterionTextForm = param1;
             this._cleanCriterionTextForm = this._criterionTextForm;
             if (!param1)
@@ -27,21 +26,8 @@
                 return;
             }
             this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm, " ", "");
-            this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm, "(", "");
-            this._cleanCriterionTextForm = StringUtils.replace(this._cleanCriterionTextForm, ")", "");
-            var _loc_2:* = this._cleanCriterionTextForm.indexOf("PX");
-            if (_loc_2 == 0)
-            {
-                this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(_loc_2 + 4);
-            }
-            else if (_loc_2 > 1)
-            {
-                _loc_4 = this._cleanCriterionTextForm.slice(0, (_loc_2 - 1));
-                _loc_4 = _loc_4 + this._cleanCriterionTextForm.slice(_loc_2 + 4);
-                this._cleanCriterionTextForm = _loc_4;
-            }
-            var _loc_3:* = StringUtils.getDelimitedText(this._cleanCriterionTextForm, "(", ")", true);
-            if (_loc_3.length > 0 && _loc_3[0] == this._cleanCriterionTextForm)
+            var _loc_2:* = StringUtils.getDelimitedText(this._cleanCriterionTextForm, "(", ")", true);
+            if (_loc_2.length > 0 && _loc_2[0] == this._cleanCriterionTextForm)
             {
                 this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(1);
                 this._cleanCriterionTextForm = this._cleanCriterionTextForm.slice(0, (this._cleanCriterionTextForm.length - 1));
@@ -346,6 +332,11 @@
                 }
             }
             return _loc_2;
+        }// end function
+
+        public function get operators() : Vector.<String>
+        {
+            return this._operators;
         }// end function
 
         public static function create(param1:Vector.<IItemCriterion>, param2:Vector.<String>) : GroupItemCriterion

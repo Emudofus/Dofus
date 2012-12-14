@@ -4,6 +4,7 @@
     import com.ankamagames.dofus.datacenter.alignments.*;
     import com.ankamagames.dofus.datacenter.almanax.*;
     import com.ankamagames.dofus.datacenter.ambientSounds.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
     import com.ankamagames.dofus.datacenter.challenges.*;
     import com.ankamagames.dofus.datacenter.communication.*;
@@ -46,6 +47,7 @@
         public static const spellType:SpellType = null;
         public static const spellState:SpellState = null;
         public static const breed:Breed = null;
+        public static const head:Head = null;
         public static const superArea:SuperArea = null;
         public static const area:Area = null;
         public static const wolrdMap:WorldMap = null;
@@ -102,12 +104,17 @@
         public static const questObjectiveMultiFightMonster:QuestObjectiveMultiFightMonster = null;
         public static const questObjectiveFreeForm:QuestObjectiveFreeForm = null;
         public static const questObjectiveGoToNpc:QuestObjectiveGoToNpc = null;
+        public static const achievement:Achievement = null;
+        public static const achievementCategory:AchievementCategory = null;
+        public static const achievementObjective:AchievementObjective = null;
+        public static const achievementReward:AchievementReward = null;
         public static const mount:Mount = null;
         public static const mountBehavior:MountBehavior = null;
         public static const mountRideFood:RideFood = null;
         public static const pet:Pet = null;
         public static const document:Document = null;
         public static const appearance:Appearance = null;
+        public static const skinMapping:SkinMapping = null;
         public static const speakingItemsTrigger:SpeakingItemsTrigger = null;
         public static const speakingItemText:SpeakingItemText = null;
         public static const livingObjectSkinJntMood:LivingObjectSkinJntMood = null;
@@ -117,6 +124,8 @@
         public static const optionalFeature:OptionalFeature = null;
         public static const censoredWord:CensoredWord = null;
         public static const title:Title = null;
+        public static const titleCategory:TitleCategory = null;
+        public static const ornament:Ornament = null;
         public static const dungeon:Dungeon = null;
         public static const url:Url = null;
         public static const miniBoss:MonsterMiniBoss = null;
@@ -126,6 +135,9 @@
         public static const typeAction:TypeAction = null;
         public static const externalNotification:ExternalNotification = null;
         public static const almanaxCalendar:AlmanaxCalendar = null;
+        public static const soundUi:SoundUi = null;
+        public static const soundUiElement:SoundUiElement = null;
+        public static const soundUiHook:SoundUiHook = null;
 
         public function GameDataList()
         {

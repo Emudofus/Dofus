@@ -14,6 +14,8 @@
         private var _failed:Boolean;
         private var _elementsMap:Dictionary;
         private var _jpgMap:Dictionary;
+        private var _elementsIndex:Dictionary;
+        private var _rawData:IDataInput;
         private static var _self:Elements;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(Elements));
 
@@ -38,7 +40,7 @@
 
         public function getElementData(param1:int) : GraphicalElementData
         {
-            return GraphicalElementData(this._elementsMap[param1]);
+            return this._elementsMap[param1] ? (GraphicalElementData(this._elementsMap[param1])) : (this.readElement(param1));
         }// end function
 
         public function isJpg(param1:uint) : Boolean
@@ -49,10 +51,9 @@
         public function fromRaw(param1:IDataInput) : void
         {
             var header:int;
+            var skypLen:uint;
             var i:int;
             var edId:int;
-            var edType:int;
-            var ed:GraphicalElementData;
             var gfxCount:int;
             var gfxId:int;
             var raw:* = param1;
@@ -63,6 +64,7 @@
                 {
                     throw new DataFormatError("Unknown file format");
                 }
+                this._rawData = raw;
                 this.fileVersion = raw.readByte();
                 if (AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
                 {
@@ -74,19 +76,27 @@
                     _log.debug("Elements count : " + this.elementsCount);
                 }
                 this._elementsMap = new Dictionary();
+                this._elementsIndex = new Dictionary();
+                skypLen;
                 i;
                 while (i < this.elementsCount)
                 {
                     
-                    edId = raw.readInt();
-                    edType = raw.readByte();
-                    ed = GraphicalElementFactory.getGraphicalElementData(edId, edType);
-                    if (AtouinConstants.DEBUG_FILES_PARSING_ELEMENTS)
+                    if (this.fileVersion >= 9)
                     {
-                        _log.debug("Element data at index " + i + " :");
+                        skypLen = raw.readUnsignedShort();
                     }
-                    ed.fromRaw(raw, this.fileVersion);
-                    this._elementsMap[edId] = ed;
+                    edId = raw.readInt();
+                    if (this.fileVersion <= 8)
+                    {
+                        this._elementsIndex[edId] = raw["position"];
+                        this.readElement(edId);
+                    }
+                    else
+                    {
+                        this._elementsIndex[edId] = raw["position"];
+                        raw["position"] = raw["position"] + (skypLen - 4);
+                    }
                     i = (i + 1);
                 }
                 if (this.fileVersion >= 8)
@@ -110,6 +120,16 @@
                 throw e;
             }
             return;
+        }// end function
+
+        private function readElement(param1:uint) : GraphicalElementData
+        {
+            this._rawData["position"] = this._elementsIndex[param1];
+            var _loc_2:* = this._rawData.readByte();
+            var _loc_3:* = GraphicalElementFactory.getGraphicalElementData(param1, _loc_2);
+            _loc_3.fromRaw(this._rawData, this.fileVersion);
+            this._elementsMap[param1] = _loc_3;
+            return _loc_3;
         }// end function
 
         public static function getInstance() : Elements

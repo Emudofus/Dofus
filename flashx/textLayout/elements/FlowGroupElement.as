@@ -58,17 +58,13 @@
             var _loc_8:* = 0;
             var _loc_9:* = 0;
             var _loc_4:* = super.getText();
-            if (param2 == -1 || param2 > textLength)
+            if (param2 == -1)
             {
                 param2 = textLength;
             }
-            if (param1 < 0)
-            {
-                param1 = 0;
-            }
             var _loc_5:* = param1;
             var _loc_6:* = this.findChildIndexAtPosition(param1);
-            while (_loc_6 >= 0 && _loc_6 < this._numChildren && _loc_5 < param2)
+            while (_loc_6 < this._numChildren && _loc_5 < param2)
             {
                 
                 _loc_7 = this.getChildAt(_loc_6);

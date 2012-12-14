@@ -23,6 +23,7 @@
     import com.ankamagames.jerakine.entities.messages.*;
     import com.ankamagames.jerakine.handlers.messages.mouse.*;
     import com.ankamagames.jerakine.messages.*;
+    import com.ankamagames.jerakine.pools.*;
     import com.ankamagames.jerakine.types.enums.*;
     import com.ankamagames.jerakine.types.positions.*;
     import com.ankamagames.jerakine.utils.errors.*;
@@ -44,6 +45,8 @@
         private var _lastEntityOver:IInteractive;
         private var _wait:Boolean;
         private var _changeMap:Boolean = true;
+        private var ttSentence:int = 0;
+        private var limit:int = 100;
         private static var _self:DebugBotFrame;
 
         public function DebugBotFrame()
@@ -60,12 +63,12 @@
             return;
         }// end function
 
-        public function set enableChatMessagesBot(param1:Boolean) : void
+        public function enableChatMessagesBot(param1:Boolean, param2:int = 500) : void
         {
             if (param1)
             {
                 this._changeMap = false;
-                this._chatTimer = new Timer(500);
+                this._chatTimer = new Timer(param2);
                 this._chatTimer.addEventListener(TimerEvent.TIMER, this.sendChatMessage);
             }
             else if (this._chatTimer)
@@ -355,11 +358,11 @@
             }
             if (this._lastElemOver)
             {
-                _loc_12 = new MouseOutMessage(this._lastElemOver, new MouseEvent(MouseEvent.MOUSE_OUT));
+                _loc_12 = GenericPool.get(MouseOutMessage, this._lastElemOver, new MouseEvent(MouseEvent.MOUSE_OUT));
                 Kernel.getWorker().process(_loc_12);
             }
             var _loc_8:* = _loc_6[Math.floor(_loc_6.length * Math.random())];
-            var _loc_9:* = new MouseOverMessage(_loc_8, new MouseEvent(MouseEvent.MOUSE_OVER));
+            var _loc_9:* = GenericPool.get(MouseOverMessage, _loc_8, new MouseEvent(MouseEvent.MOUSE_OVER));
             Kernel.getWorker().process(_loc_9);
             this._lastElemOver = _loc_8;
             return;
@@ -367,13 +370,30 @@
 
         private function sendChatMessage(event:TimerEvent) : void
         {
+            var _loc_5:* = 0;
+            var _loc_6:* = 0;
             var _loc_2:* = Math.random() * 16777215;
             var _loc_3:* = new Vector.<String>;
-            _loc_3[0] = "salut <span style=\"color:#" + (Math.random() * 16777215).toString(8) + "\">je suis la</span> et la";
-            _loc_3[1] = "i\'m batman :)";
+            _loc_3[0] = "Test html: salut <span style=\"color:#" + (Math.random() * 16777215).toString(8) + "\">je suis la</span> et la";
+            _loc_3[1] = "i\'m batman";
             _loc_3[2] = HtmlManager.addLink("i\'m a link now, awesome !!", "");
+            _loc_3[3] = ":( sd :p :) fdg dfg f";
+            _loc_3[4] = "je suis <u>underlineeeeeee</u> et moi <b>BOLD</b>" + "\nEt un retour a la ligne, un !!";
+            _loc_3[5] = "*test de texte italic via la commande*";
             var _loc_4:* = _loc_3[Math.floor(Math.random() * _loc_3.length)];
+            var _loc_7:* = this;
+            var _loc_8:* = this.ttSentence + 1;
+            _loc_7.ttSentence = _loc_8;
             KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_4, ChatActivableChannelsEnum.CHANNEL_GLOBAL);
+            if (this.ttSentence > (this.limit + 1))
+            {
+                var _loc_7:* = this;
+                var _loc_8:* = this.ttSentence - 1;
+                _loc_7.ttSentence = _loc_8;
+                _loc_5 = 0;
+                _loc_6 = 1;
+                KernelEventsManager.getInstance().processCallback(ChatHookList.NewMessage, _loc_5, _loc_6);
+            }
             return;
         }// end function
 

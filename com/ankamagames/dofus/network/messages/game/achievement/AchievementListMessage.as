@@ -1,7 +1,6 @@
 ﻿package com.ankamagames.dofus.network.messages.game.achievement
 {
     import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
     import com.ankamagames.dofus.network.types.game.achievement.*;
     import com.ankamagames.jerakine.network.*;
     import flash.utils.*;
@@ -9,14 +8,14 @@
     public class AchievementListMessage extends NetworkMessage implements INetworkMessage
     {
         private var _isInitialized:Boolean = false;
-        public var startedAchievements:Vector.<Achievement>;
         public var finishedAchievementsIds:Vector.<uint>;
+        public var rewardableAchievements:Vector.<AchievementRewardable>;
         public static const protocolId:uint = 6205;
 
         public function AchievementListMessage()
         {
-            this.startedAchievements = new Vector.<Achievement>;
             this.finishedAchievementsIds = new Vector.<uint>;
+            this.rewardableAchievements = new Vector.<AchievementRewardable>;
             return;
         }// end function
 
@@ -30,18 +29,18 @@
             return 6205;
         }// end function
 
-        public function initAchievementListMessage(param1:Vector.<Achievement> = null, param2:Vector.<uint> = null) : AchievementListMessage
+        public function initAchievementListMessage(param1:Vector.<uint> = null, param2:Vector.<AchievementRewardable> = null) : AchievementListMessage
         {
-            this.startedAchievements = param1;
-            this.finishedAchievementsIds = param2;
+            this.finishedAchievementsIds = param1;
+            this.rewardableAchievements = param2;
             this._isInitialized = true;
             return this;
         }// end function
 
         override public function reset() : void
         {
-            this.startedAchievements = new Vector.<Achievement>;
             this.finishedAchievementsIds = new Vector.<uint>;
+            this.rewardableAchievements = new Vector.<AchievementRewardable>;
             this._isInitialized = false;
             return;
         }// end function
@@ -68,25 +67,24 @@
 
         public function serializeAs_AchievementListMessage(param1:IDataOutput) : void
         {
-            param1.writeShort(this.startedAchievements.length);
+            param1.writeShort(this.finishedAchievementsIds.length);
             var _loc_2:* = 0;
-            while (_loc_2 < this.startedAchievements.length)
+            while (_loc_2 < this.finishedAchievementsIds.length)
             {
                 
-                param1.writeShort((this.startedAchievements[_loc_2] as Achievement).getTypeId());
-                (this.startedAchievements[_loc_2] as Achievement).serialize(param1);
+                if (this.finishedAchievementsIds[_loc_2] < 0)
+                {
+                    throw new Error("Forbidden value (" + this.finishedAchievementsIds[_loc_2] + ") on element 1 (starting at 1) of finishedAchievementsIds.");
+                }
+                param1.writeShort(this.finishedAchievementsIds[_loc_2]);
                 _loc_2 = _loc_2 + 1;
             }
-            param1.writeShort(this.finishedAchievementsIds.length);
+            param1.writeShort(this.rewardableAchievements.length);
             var _loc_3:* = 0;
-            while (_loc_3 < this.finishedAchievementsIds.length)
+            while (_loc_3 < this.rewardableAchievements.length)
             {
                 
-                if (this.finishedAchievementsIds[_loc_3] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.finishedAchievementsIds[_loc_3] + ") on element 2 (starting at 1) of finishedAchievementsIds.");
-                }
-                param1.writeShort(this.finishedAchievementsIds[_loc_3]);
+                (this.rewardableAchievements[_loc_3] as AchievementRewardable).serializeAs_AchievementRewardable(param1);
                 _loc_3 = _loc_3 + 1;
             }
             return;
@@ -102,16 +100,17 @@
         {
             var _loc_6:* = 0;
             var _loc_7:* = null;
-            var _loc_8:* = 0;
             var _loc_2:* = param1.readUnsignedShort();
             var _loc_3:* = 0;
             while (_loc_3 < _loc_2)
             {
                 
-                _loc_6 = param1.readUnsignedShort();
-                _loc_7 = ProtocolTypeManager.getInstance(Achievement, _loc_6);
-                _loc_7.deserialize(param1);
-                this.startedAchievements.push(_loc_7);
+                _loc_6 = param1.readShort();
+                if (_loc_6 < 0)
+                {
+                    throw new Error("Forbidden value (" + _loc_6 + ") on elements of finishedAchievementsIds.");
+                }
+                this.finishedAchievementsIds.push(_loc_6);
                 _loc_3 = _loc_3 + 1;
             }
             var _loc_4:* = param1.readUnsignedShort();
@@ -119,12 +118,9 @@
             while (_loc_5 < _loc_4)
             {
                 
-                _loc_8 = param1.readShort();
-                if (_loc_8 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_8 + ") on elements of finishedAchievementsIds.");
-                }
-                this.finishedAchievementsIds.push(_loc_8);
+                _loc_7 = new AchievementRewardable();
+                _loc_7.deserialize(param1);
+                this.rewardableAchievements.push(_loc_7);
                 _loc_5 = _loc_5 + 1;
             }
             return;

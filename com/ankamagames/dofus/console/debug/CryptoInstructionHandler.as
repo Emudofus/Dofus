@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.dofus.console.debug
 {
+    import by.blooddy.crypto.*;
     import com.ankamagames.jerakine.console.*;
     import com.ankamagames.jerakine.utils.crypto.*;
     import flash.utils.*;

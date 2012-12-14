@@ -130,7 +130,8 @@
             while (_loc_4 < this.interactiveElements.length)
             {
                 
-                (this.interactiveElements[_loc_4] as InteractiveElement).serializeAs_InteractiveElement(param1);
+                param1.writeShort((this.interactiveElements[_loc_4] as InteractiveElement).getTypeId());
+                (this.interactiveElements[_loc_4] as InteractiveElement).serialize(param1);
                 _loc_4 = _loc_4 + 1;
             }
             param1.writeShort(this.statedElements.length);
@@ -172,10 +173,11 @@
             var _loc_15:* = null;
             var _loc_16:* = 0;
             var _loc_17:* = null;
-            var _loc_18:* = null;
+            var _loc_18:* = 0;
             var _loc_19:* = null;
             var _loc_20:* = null;
             var _loc_21:* = null;
+            var _loc_22:* = null;
             this.subAreaId = param1.readShort();
             if (this.subAreaId < 0)
             {
@@ -214,9 +216,10 @@
             while (_loc_7 < _loc_6)
             {
                 
-                _loc_18 = new InteractiveElement();
-                _loc_18.deserialize(param1);
-                this.interactiveElements.push(_loc_18);
+                _loc_18 = param1.readUnsignedShort();
+                _loc_19 = ProtocolTypeManager.getInstance(InteractiveElement, _loc_18);
+                _loc_19.deserialize(param1);
+                this.interactiveElements.push(_loc_19);
                 _loc_7 = _loc_7 + 1;
             }
             var _loc_8:* = param1.readUnsignedShort();
@@ -224,9 +227,9 @@
             while (_loc_9 < _loc_8)
             {
                 
-                _loc_19 = new StatedElement();
-                _loc_19.deserialize(param1);
-                this.statedElements.push(_loc_19);
+                _loc_20 = new StatedElement();
+                _loc_20.deserialize(param1);
+                this.statedElements.push(_loc_20);
                 _loc_9 = _loc_9 + 1;
             }
             var _loc_10:* = param1.readUnsignedShort();
@@ -234,9 +237,9 @@
             while (_loc_11 < _loc_10)
             {
                 
-                _loc_20 = new MapObstacle();
-                _loc_20.deserialize(param1);
-                this.obstacles.push(_loc_20);
+                _loc_21 = new MapObstacle();
+                _loc_21.deserialize(param1);
+                this.obstacles.push(_loc_21);
                 _loc_11 = _loc_11 + 1;
             }
             var _loc_12:* = param1.readUnsignedShort();
@@ -244,9 +247,9 @@
             while (_loc_13 < _loc_12)
             {
                 
-                _loc_21 = new FightCommonInformations();
-                _loc_21.deserialize(param1);
-                this.fights.push(_loc_21);
+                _loc_22 = new FightCommonInformations();
+                _loc_22.deserialize(param1);
+                this.fights.push(_loc_22);
                 _loc_13 = _loc_13 + 1;
             }
             return;

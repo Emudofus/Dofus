@@ -1,6 +1,5 @@
 ﻿package flashx.textLayout.compose
 {
-    import __AS3__.vec.*;
     import flash.text.engine.*;
     import flashx.textLayout.container.*;
     import flashx.textLayout.formats.*;
@@ -19,9 +18,7 @@
         private var _left:Edge;
         private var _right:Edge;
         private var _maxWidth:Number;
-        private const EDGE_CACHE_MAX:int = 6;
         private var _verticalText:Boolean;
-        private static var edgeCache:Vector.<Edge>;
 
         public function Parcel(param1:Boolean, param2:Number, param3:Number, param4:Number, param5:Number, param6:ContainerController, param7:int)
         {
@@ -53,36 +50,18 @@
                 _loc_8 = param2;
                 this._maxWidth = param4;
             }
-            this._left = this.allocateEdge(_loc_8);
-            this._right = this.allocateEdge(_loc_8 + this._maxWidth);
+            if (this._maxWidth <= 0)
+            {
+                throw new Error("Malformed column");
+            }
+            this._left = new Edge(_loc_8);
+            this._right = new Edge(_loc_8 + this._maxWidth);
             return this;
         }// end function
 
         function releaseAnyReferences() : void
         {
             this._controller = null;
-            this.deallocateEdge(this._left);
-            this.deallocateEdge(this._right);
-            return;
-        }// end function
-
-        private function allocateEdge(param1:Number) : Edge
-        {
-            if (!edgeCache)
-            {
-                edgeCache = new Vector.<Edge>;
-            }
-            var _loc_2:* = edgeCache.length > 0 ? (edgeCache.pop()) : (new Edge());
-            _loc_2.initialize(param1);
-            return _loc_2;
-        }// end function
-
-        private function deallocateEdge(param1:Edge) : void
-        {
-            if (edgeCache.length < this.EDGE_CACHE_MAX)
-            {
-                edgeCache.push(param1);
-            }
             return;
         }// end function
 
@@ -264,8 +243,6 @@
     }
 }
 
-import __AS3__.vec.*;
-
 import flash.text.engine.*;
 
 import flashx.textLayout.container.*;
@@ -277,16 +254,10 @@ class Edge extends Object
     private var _xbase:Number;
     private var _spanList:Vector.<Span>;
 
-    function Edge()
-    {
-        this._spanList = new Vector.<Span>;
-        return;
-    }// end function
-
-    public function initialize(param1:Number) : void
+    function Edge(param1:Number)
     {
         this._xbase = param1;
-        this._spanList.length = 0;
+        this._spanList = new Vector.<Span>;
         return;
     }// end function
 

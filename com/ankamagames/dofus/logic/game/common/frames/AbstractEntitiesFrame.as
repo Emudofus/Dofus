@@ -8,6 +8,7 @@
     import com.ankamagames.dofus.datacenter.breeds.*;
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.datacenter.monsters.*;
+    import com.ankamagames.dofus.datacenter.mounts.*;
     import com.ankamagames.dofus.internalDatacenter.world.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.sound.*;
@@ -47,10 +48,11 @@
     {
         protected var _entities:Dictionary;
         protected var _creaturesMode:Boolean = false;
-        protected var _creaturesLimit:uint;
+        protected var _creaturesLimit:int = -1;
         protected var _humanNumber:uint = 0;
         protected var _playerIsOnRide:Boolean = false;
         protected var _customAnimModifier:IAnimationModifier;
+        protected var _skinModifier:ISkinModifier;
         protected var _untargetableEntities:Boolean = false;
         protected var _interactiveElements:Vector.<InteractiveElement>;
         protected var _currentSubAreaId:uint;
@@ -62,6 +64,7 @@
         public function AbstractEntitiesFrame()
         {
             this._customAnimModifier = new CustomAnimStatiqueAnimationModifier();
+            this._skinModifier = new BreedSkinModifier();
             return;
         }// end function
 
@@ -214,6 +217,7 @@
                         _loc_3.addAnimationModifier(this._customAnimModifier);
                     }
                 }
+                _loc_3.skinModifier = this._skinModifier;
                 if (param1.contextualId == PlayedCharacterManager.getInstance().id)
                 {
                     if (PlayedCharacterManager.getInstance().infos.entityLook != EntityLookAdapter.toNetwork(_loc_5))
@@ -226,10 +230,20 @@
             else
             {
                 _loc_4 = false;
-                var _loc_7:* = this;
-                var _loc_8:* = this._humanNumber - 1;
-                _loc_7._humanNumber = _loc_8;
-                this.updateActorLook(param1.contextualId, param1.look, true);
+                if (this._humanNumber > 0)
+                {
+                    var _loc_7:* = this;
+                    var _loc_8:* = this._humanNumber - 1;
+                    _loc_7._humanNumber = _loc_8;
+                }
+                if (this._creaturesMode && param1 is GameRolePlayMerchantInformations)
+                {
+                    _loc_3.look.updateFrom(_loc_5);
+                }
+                else
+                {
+                    this.updateActorLook(param1.contextualId, param1.look, true);
+                }
             }
             if (param1 is GameRolePlayHumanoidInformations)
             {
@@ -323,7 +337,7 @@
                     }
                     else
                     {
-                        _loc_5 = this.getLook(param2);
+                        _loc_5 = this.getLook(param2, param1);
                     }
                 }
                 else if (this._creaturesFightMode && _loc_6 is GameFightTaxCollectorInformations)
@@ -359,7 +373,7 @@
                     }
                     else
                     {
-                        _loc_5 = this.getLook(param2);
+                        _loc_5 = this.getLook(param2, param1);
                     }
                 }
                 else if (this._creaturesFightMode && this._entities[param1] is GameFightMutantInformations)
@@ -482,9 +496,12 @@
                 _loc_2.destroy();
             }
             this.updateCreaturesLimit();
-            var _loc_3:* = this;
-            var _loc_4:* = this._humanNumber - 1;
-            _loc_3._humanNumber = _loc_4;
+            if (this._humanNumber > 0)
+            {
+                var _loc_3:* = this;
+                var _loc_4:* = this._humanNumber - 1;
+                _loc_3._humanNumber = _loc_4;
+            }
             delete this._entities[param1];
             if (this.switchPokemonMode())
             {
@@ -496,7 +513,7 @@
         protected function switchPokemonMode() : Boolean
         {
             var _loc_1:* = null;
-            if (this._creaturesMode != (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._humanNumber >= this._creaturesLimit))
+            if (this._creaturesLimit > -1 && this._creaturesMode != (!Kernel.getWorker().getFrame(FightEntitiesFrame) && this._creaturesLimit < 50 && this._humanNumber >= this._creaturesLimit))
             {
                 _log.debug("human number: " + this._humanNumber + ", creature limit: " + this._creaturesLimit + " => " + this._creaturesMode);
                 _loc_1 = SwitchCreatureModeAction.create(!this._creaturesMode);
@@ -506,70 +523,88 @@
             return false;
         }// end function
 
-        protected function getLook(param1:EntityLook) : TiphonEntityLook
+        protected function getLook(param1:EntityLook, param2:int = -1) : TiphonEntityLook
         {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
+            var _loc_5:* = null;
             var _loc_6:* = 0;
-            var _loc_2:* = EntityLookAdapter.fromNetwork(param1);
-            var _loc_3:* = _loc_2;
+            var _loc_7:* = null;
+            var _loc_8:* = 0;
+            var _loc_3:* = EntityLookAdapter.fromNetwork(param1);
+            var _loc_4:* = _loc_3;
             if (this._creaturesMode || this._creaturesFightMode)
             {
-                _loc_5 = 0;
-                if (this.isBoneCorrect(_loc_2.getBone()))
+                _loc_6 = 0;
+                _loc_7 = MountBone.getMountBonesIds();
+                if (this.isBoneCorrect(_loc_3.getBone()))
                 {
-                    _loc_5 = Breed.getBreedFromSkin(_loc_2.firstSkin).id;
-                }
-                else if (_loc_2.getBone() == 639 || _loc_2.getBone() == 1824 || _loc_2.getBone() == 1659 || _loc_2.getBone() == 1834 || _loc_2.getBone() == 1792)
-                {
-                    _loc_4 = TiphonUtility.getLookWithoutMount(_loc_2);
-                    if (_loc_4 != _loc_2)
+                    if (param2 != -1 && this._entities[param2].hasOwnProperty("breed"))
                     {
-                        if (this.isBoneCorrect(_loc_4.getBone()))
+                        _loc_6 = this._entities[param2].breed;
+                    }
+                    else
+                    {
+                        _loc_6 = Breed.getBreedFromSkin(_loc_3.firstSkin).id;
+                    }
+                }
+                else if (_loc_7.indexOf(_loc_3.getBone()) != -1)
+                {
+                    _loc_5 = TiphonUtility.getLookWithoutMount(_loc_3);
+                    if (_loc_5 != _loc_3)
+                    {
+                        if (this.isBoneCorrect(_loc_5.getBone()))
                         {
-                            _loc_5 = Breed.getBreedFromSkin(_loc_4.firstSkin).id;
+                            if (param2 != -1 && this._entities[param2].hasOwnProperty("breed"))
+                            {
+                                _loc_6 = this._entities[param2].breed;
+                            }
+                            else
+                            {
+                                _loc_6 = Breed.getBreedFromSkin(_loc_5.firstSkin).id;
+                            }
                         }
                     }
                 }
-                if (_loc_5 == 0)
+                if (_loc_6 == 0)
                 {
-                    _loc_6 = _loc_4 ? (_loc_4.getBone()) : (_loc_2.getBone());
-                    switch(_loc_6)
+                    if (param2 != -1 && this._entities[param2].hasOwnProperty("breed"))
                     {
-                        case 453:
+                        _loc_6 = this._entities[param2].breed;
+                    }
+                    else
+                    {
+                        _loc_8 = _loc_5 ? (_loc_5.getBone()) : (_loc_3.getBone());
+                        switch(_loc_8)
                         {
-                            _loc_5 = 12;
-                            break;
-                        }
-                        case 893:
-                        {
-                            _loc_5 = 10;
-                            break;
-                        }
-                        case 706:
-                        case 1504:
-                        case 1509:
-                        {
-                            return this.getFightPokemonLook(param1, false, false, true, false);
-                        }
-                        case 923:
-                        {
-                        }
-                        default:
-                        {
-                            return _loc_4 ? (_loc_4) : (_loc_2);
-                            break;
+                            case 453:
+                            {
+                                _loc_6 = 12;
+                                break;
+                            }
+                            case 706:
+                            case 1504:
+                            case 1509:
+                            {
+                                return this.getFightPokemonLook(param1, false, false, true, false);
+                            }
+                            case 923:
+                            {
+                            }
+                            default:
+                            {
+                                return _loc_5 ? (_loc_5) : (_loc_3);
+                                break;
+                            }
                         }
                     }
                 }
-                _loc_3.setBone(Breed.getBreedById(_loc_5).creatureBonesId);
-                _loc_3.setScales(0.9, 0.9);
+                _loc_4.setBone(Breed.getBreedById(_loc_6).creatureBonesId);
+                _loc_4.setScales(0.9, 0.9);
             }
             else if (!OptionManager.getOptionManager("tiphon").aura)
             {
-                _loc_3.removeSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
+                _loc_4.removeSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_BASE_FOREGROUND);
             }
-            return _loc_3;
+            return _loc_4;
         }// end function
 
         private function isBoneCorrect(param1:int) : Boolean
@@ -650,7 +685,7 @@
         {
             var _loc_1:* = NaN;
             this._creaturesLimit = OptionManager.getOptionManager("tiphon").creaturesMode;
-            if (this._creaturesMode)
+            if (this._creaturesMode && this._creaturesLimit > 0)
             {
                 _loc_1 = this._creaturesLimit * 20 / 100;
                 this._creaturesLimit = Math.ceil(this._creaturesLimit - _loc_1);

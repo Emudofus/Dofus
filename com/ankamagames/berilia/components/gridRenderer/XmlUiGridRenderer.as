@@ -82,7 +82,7 @@
             return;
         }// end function
 
-        public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
+        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
         {
             var _loc_5:* = this._grid.getUi();
             this._uiCtr = new UiRootContainer(StageShareManager.stage, _loc_5.uiModule.uis[this._sUiName], this._ctr);
@@ -93,15 +93,12 @@
             {
                 throw new BeriliaError("Ui [" + this._sUiName + "] does not exit in module [" + this._uiCtr.uiModule.id + "] (grid parameter name [" + this._sUiName + "])");
             }
-            if (param4)
-            {
-                this.updateBackground(this._uiCtr, param2);
-            }
+            this.updateBackground(this._uiCtr, param2);
             this._berilia.loadUiInside(_loc_5.uiModule.uis[this._sUiName], this._uiCtr.name, this._uiCtr, new GridScriptProperties(param1, param3, this._grid));
             return this._uiCtr;
         }// end function
 
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
+        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
         {
             if (param3 is UiRootContainer)
             {
@@ -109,16 +106,13 @@
                 {
                     if (Object(UiRootContainer(param3).uiClass).data != null || param1 != null)
                     {
-                        if (param5)
-                        {
-                            this.updateBackground(UiRootContainer(param3), param2);
-                        }
+                        this.updateBackground(UiRootContainer(param3), param2);
                         Object(UiRootContainer(param3).uiClass).update(SecureCenter.secure(param1), param4);
                     }
                 }
                 else
                 {
-                    this._dWaitingUpdate[param3] = new WaitingUpdate(param1, param2, param3, param4, param5);
+                    this._dWaitingUpdate[param3] = new WaitingUpdate(param1, param2, param3, param4, true);
                 }
             }
             else
@@ -126,6 +120,11 @@
                 this._log.warn("Can\'t update, " + param3.name + " is not a SecureUi");
             }
             return;
+        }// end function
+
+        public function getDataLength(param1, param2:Boolean) : uint
+        {
+            return 1;
         }// end function
 
         public function remove(param1:DisplayObject) : void

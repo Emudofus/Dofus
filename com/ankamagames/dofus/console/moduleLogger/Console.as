@@ -277,19 +277,19 @@
 
         private function saveData() : void
         {
-            var data:Object;
+            var _loc_1:* = null;
             try
             {
-                data = new Object();
+                _loc_1 = new Object();
                 if (this._filterUI)
                 {
-                    data.filter = this._filterUI.getCurrentOptions();
+                    _loc_1.filter = this._filterUI.getCurrentOptions();
                 }
-                data.showHook = this._showHook;
-                data.showUI = this._showUI;
-                data.showAction = this._showAction;
-                data.showShortcut = this._showShortcut;
-                StoreDataManager.getInstance().setData(Constants.DATASTORE_MODULE_DEBUG, "console_pref", data);
+                _loc_1.showHook = this._showHook;
+                _loc_1.showUI = this._showUI;
+                _loc_1.showAction = this._showAction;
+                _loc_1.showShortcut = this._showShortcut;
+                StoreDataManager.getInstance().setData(Constants.DATASTORE_MODULE_DEBUG, "console_pref", _loc_1);
             }
             catch (e:Error)
             {

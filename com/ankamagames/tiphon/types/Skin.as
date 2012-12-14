@@ -40,7 +40,7 @@
             for each (_loc_2 in this._aSkinPartOrdered)
             {
                 
-                _loc_1 = _loc_1 && Tiphon.skinLibrary.isLoaded(_loc_2);
+                _loc_1 = _loc_1 && (Tiphon.skinLibrary.isLoaded(_loc_2) || Tiphon.skinLibrary.hasError(_loc_2));
             }
             return _loc_1;
         }// end function

@@ -20,6 +20,8 @@
         private static var _fightEvents:Vector.<FightEvent> = new Vector.<FightEvent>;
         private static var _events:Vector.<Vector.<FightEvent>> = new Vector.<Vector.<FightEvent>>;
         private static var _joinedEvents:Vector.<FightEvent>;
+        private static var sysApi:SystemApi = new SystemApi();
+        public static var _detailsActive:Boolean;
 
         public function FightEventsHelper()
         {
@@ -34,28 +36,28 @@
             return;
         }// end function
 
-        public static function sendFightEvent(param1:String, param2:Array, param3:int, param4:int, param5:Boolean = false, param6:int = 0) : void
+        public static function sendFightEvent(param1:String, param2:Array, param3:int, param4:int, param5:Boolean = false, param6:int = 0, param7:int = 1) : void
         {
-            var _loc_8:* = null;
             var _loc_9:* = null;
-            var _loc_7:* = new FightEvent(param1, param2, param3, param6, param4);
-            if (param1)
-            {
-                _fightEvents.push(_loc_7);
-            }
+            var _loc_10:* = null;
+            var _loc_8:* = new FightEvent(param1, param2, param3, param6, param4, _fightEvents.length, param7);
             if (param5)
             {
-                sendFightLogToChat(_loc_7);
+                sendFightLogToChat(_loc_8);
             }
             else
             {
+                if (param1)
+                {
+                    _fightEvents.splice(0, 0, _loc_8);
+                }
                 if (_joinedEvents && _joinedEvents.length > 0)
                 {
                     if (_joinedEvents[0].name == FightEventEnum.FIGHTER_GOT_TACKLED)
                     {
                         if (param1 == FightEventEnum.FIGHTER_MP_LOST || param1 == FightEventEnum.FIGHTER_AP_LOST)
                         {
-                            _joinedEvents.push(_loc_7);
+                            _joinedEvents.splice(0, 0, _loc_8);
                             return;
                         }
                         if (param1 == FightEventEnum.FIGHTER_VISIBILITY_CHANGED)
@@ -63,18 +65,18 @@
                         }
                         else
                         {
-                            _loc_8 = _joinedEvents.shift();
-                            for each (_loc_9 in _joinedEvents)
+                            _loc_9 = _joinedEvents.shift();
+                            for each (_loc_10 in _joinedEvents)
                             {
                                 
-                                if (_loc_9.name == FightEventEnum.FIGHTER_AP_LOST)
+                                if (_loc_10.name == FightEventEnum.FIGHTER_AP_LOST)
                                 {
-                                    _loc_8.params[1] = _loc_9.params[1];
+                                    _loc_9.params[1] = _loc_10.params[1];
                                     continue;
                                 }
-                                _loc_8.params[2] = _loc_9.params[1];
+                                _loc_9.params[2] = _loc_10.params[1];
                             }
-                            addFightText(_loc_8);
+                            addFightText(_loc_9);
                             _joinedEvents = null;
                         }
                     }
@@ -82,12 +84,12 @@
                 else if (param1 == FightEventEnum.FIGHTER_GOT_TACKLED)
                 {
                     _joinedEvents = new Vector.<FightEvent>;
-                    _joinedEvents.push(_loc_7);
+                    _joinedEvents.push(_loc_8);
                     return;
                 }
                 if (param1)
                 {
-                    addFightText(_loc_7);
+                    addFightText(_loc_8);
                 }
             }
             return;
@@ -135,94 +137,101 @@
             return;
         }// end function
 
-        private static function sendEvents(event:Event) : void
+        private static function sendEvents(event:Event = null) : void
         {
-            var _loc_2:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = false;
-            var _loc_13:* = null;
-            var _loc_14:* = 0;
-            var _loc_15:* = null;
+            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME, sendEvents);
             sendFightEvent(null, null, 0, -1);
             sendAllFightEvents();
-            var _loc_3:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            var _loc_4:* = _loc_3 ? (_loc_3.getEntitiesDictionnary()) : (new Dictionary());
-            var _loc_5:* = PlayedCharacterManager.getInstance().teamId;
-            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME, sendEvents);
-            var _loc_6:* = getTargetsWhoDiesAfterALifeLoss();
-            var _loc_7:* = new Dictionary();
+            var _loc_2:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            var _loc_3:* = _loc_2 ? (_loc_2.getEntitiesDictionnary()) : (new Dictionary());
+            _detailsActive = sysApi.getOption("showLogPvDetails", "dofus");
+            groupAllEventsForDisplay(_loc_3);
+            return;
+        }// end function
+
+        public static function groupAllEventsForDisplay(param1:Dictionary) : void
+        {
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = 0;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_2:* = PlayedCharacterManager.getInstance().teamId;
+            var _loc_3:* = getTargetsWhoDiesAfterALifeLoss();
+            var _loc_4:* = new Dictionary();
             while (_events.length > 0)
             {
                 
-                _loc_8 = _events[0];
-                if (_loc_8 == null || _loc_8.length == 0)
+                _loc_5 = _events[0];
+                if (_loc_5 == null || _loc_5.length == 0)
                 {
                     _events.splice(0, 1);
                     continue;
                 }
-                _loc_9 = _loc_8[0];
-                _loc_10 = extractTargetsId(_loc_8);
-                if ((_loc_9.name == FightEventEnum.FIGHTER_LIFE_LOSS || _loc_9.name == FightEventEnum.FIGHTER_LIFE_GAIN) && groupByTeam(_loc_5, _loc_10, _loc_8, _loc_4))
-                {
-                    _events.splice(_events.indexOf(_loc_8), 1);
-                    continue;
-                }
-                _loc_7 = groupFightEventsByTarget(_loc_8);
-                _loc_11 = new SystemApi();
-                _loc_12 = _loc_11.getOption("showLogPvDetails", "dofus");
-                for (_loc_13 in _loc_7)
+                _loc_6 = _loc_5[0];
+                _loc_7 = extractTargetsId(_loc_5);
+                _loc_4 = groupFightEventsByTarget(_loc_5);
+                for (_loc_8 in _loc_4)
                 {
                     
-                    _loc_9 = _loc_7[_loc_13][0];
-                    if (_loc_7[_loc_13].length > 1 && (_loc_9.name == FightEventEnum.FIGHTER_LIFE_LOSS || _loc_9.name == FightEventEnum.FIGHTER_LIFE_GAIN || _loc_9.name == FightEventEnum.FIGHTER_SHIELD_LOSS))
+                    _loc_6 = _loc_4[_loc_8][0];
+                    if (_loc_4[_loc_8].length > 1 && (_loc_6.name == FightEventEnum.FIGHTER_LIFE_LOSS || _loc_6.name == FightEventEnum.FIGHTER_LIFE_GAIN || _loc_6.name == FightEventEnum.FIGHTER_SHIELD_LOSS))
                     {
-                        switch(_loc_9.name)
+                        switch(_loc_6.name)
                         {
                             case FightEventEnum.FIGHTER_LIFE_LOSS:
                             case FightEventEnum.FIGHTER_SHIELD_LOSS:
                             {
-                                _loc_14 = -1;
+                                _loc_9 = -1;
                                 break;
                             }
                             case FightEventEnum.FIGHTER_LIFE_GAIN:
                             {
-                                _loc_14 = 1;
-                                break;
                             }
                             default:
                             {
+                                _loc_9 = 1;
+                                break;
                                 break;
                             }
                         }
-                        groupByElements(_loc_7[_loc_13], _loc_14, _loc_12, _loc_6.indexOf(_loc_9.targetId) != -1, _loc_9.castingSpellId);
-                        for each (_loc_15 in _loc_7[_loc_13])
+                        groupByElements(_loc_4[_loc_8], _loc_9, _detailsActive, _loc_3.indexOf(_loc_6.targetId) != -1, _loc_6.castingSpellId);
+                        for each (_loc_10 in _loc_4[_loc_8])
                         {
                             
-                            _loc_8.splice(_loc_8.indexOf(_loc_15), 1);
+                            _loc_5.splice(_loc_5.indexOf(_loc_10), 1);
                         }
                         continue;
                     }
-                    for each (_loc_9 in _loc_7[_loc_13])
+                    _loc_11 = _loc_5.concat();
+                    for each (_loc_6 in _loc_11)
                     {
                         
-                        if (!(_loc_9.name == FightEventEnum.FIGHTER_DEATH && _loc_6.indexOf(_loc_9.targetId) != -1))
+                        if (_loc_6.name == FightEventEnum.FIGHTER_DEATH && _loc_3.indexOf(_loc_6.targetId) != -1)
                         {
-                            sendFightLogToChat(_loc_9, null, _loc_12, _loc_9.name == FightEventEnum.FIGHTER_LIFE_LOSS && _loc_6.indexOf(_loc_9.targetId) != -1);
+                            _loc_5.splice(_loc_5.indexOf(_loc_6), 1);
                         }
-                        _loc_8.splice(_loc_8.indexOf(_loc_9), 1);
                     }
+                    groupByTeam(_loc_2, _loc_7, _loc_5, param1, _loc_3);
+                    _loc_11 = _loc_5.concat();
+                    for each (_loc_6 in _loc_11)
+                    {
+                        
+                        sendFightLogToChat(_loc_6, "", null, _detailsActive, _loc_6.name == FightEventEnum.FIGHTER_LIFE_LOSS && _loc_3.indexOf(_loc_6.targetId) != -1);
+                        _loc_5.splice(_loc_5.indexOf(_loc_6), 1);
+                    }
+                    _loc_11 = null;
                 }
             }
             return;
         }// end function
 
-        public static function extractTargetsId(param1:Vector.<FightEvent>) : Array
+        public static function extractTargetsId(param1:Vector.<FightEvent>) : Vector.<int>
         {
             var _loc_3:* = null;
-            var _loc_2:* = new Array();
+            var _loc_2:* = new Vector.<int>;
             for each (_loc_3 in param1)
             {
                 
@@ -232,6 +241,22 @@
                 }
             }
             return _loc_2;
+        }// end function
+
+        public static function extractGroupableTargets(param1:Vector.<FightEvent>) : Vector.<FightEvent>
+        {
+            var _loc_4:* = null;
+            var _loc_2:* = param1[0];
+            var _loc_3:* = new Vector.<FightEvent>;
+            for each (_loc_4 in param1)
+            {
+                
+                if (needToGroupFightEventsData(getNumberOfParametersToCheck(_loc_2), _loc_4, _loc_2))
+                {
+                    _loc_3.push(_loc_4);
+                }
+            }
+            return _loc_3;
         }// end function
 
         public static function groupFightEventsByTarget(param1:Vector.<FightEvent>) : Dictionary
@@ -344,51 +369,129 @@
             return;
         }// end function
 
-        private static function groupByTeam(param1:int, param2:Array, param3:Vector.<FightEvent>, param4:Dictionary) : Boolean
+        private static function groupByTeam(param1:int, param2:Vector.<int>, param3:Vector.<FightEvent>, param4:Dictionary, param5:Vector.<int>) : Boolean
         {
-            var _loc_6:* = null;
-            var _loc_5:* = param3[0];
-            for each (_loc_6 in param3)
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_10:* = null;
+            var _loc_11:* = null;
+            var _loc_12:* = undefined;
+            if (param3.length == 0)
+            {
+                return false;
+            }
+            var _loc_6:* = param3.concat();
+            while (_loc_6.length > 1)
             {
                 
-                if (!needToGroupFightEventsData(getNumberOfParametersToCheck(_loc_5), _loc_6, _loc_5))
+                _loc_9 = getGroupedListEvent(_loc_6);
+                if (_loc_9.length <= 1)
                 {
-                    return false;
+                    continue;
+                }
+                _loc_8 = new Vector.<int>;
+                for each (_loc_7 in _loc_9)
+                {
+                    
+                    _loc_8.push(_loc_7.targetId);
+                }
+                _loc_10 = _loc_9[0];
+                _loc_11 = groupEntitiesByTeam(param1, _loc_8, param4);
+                switch(_loc_11)
+                {
+                    case "all":
+                    case "allies":
+                    case "enemies":
+                    {
+                        removeEventFromEventsList(param3, _loc_9);
+                        if (_loc_10.name == "fighterLifeLoss" && param5.indexOf(_loc_9[0].targetId) != -1)
+                        {
+                            sendFightLogToChat(_loc_10, _loc_11, null, true, true);
+                        }
+                        else
+                        {
+                            sendFightLogToChat(_loc_10, _loc_11);
+                        }
+                        break;
+                    }
+                    case "other":
+                    {
+                        removeEventFromEventsList(param3, _loc_9);
+                        if (_loc_10.name == "fighterLifeLoss" && param5.indexOf(_loc_9[0].targetId) != -1)
+                        {
+                            sendFightLogToChat(_loc_10, null, _loc_8, true, true);
+                        }
+                        else
+                        {
+                            sendFightLogToChat(_loc_10, null, _loc_8);
+                        }
+                        break;
+                    }
+                    case "none":
+                    {
+                        break;
+                    }
+                    default:
+                    {
+                        for each (_loc_12 in param4)
+                        {
+                            
+                            if (_loc_11.indexOf("allies") != -1 && _loc_12.teamId == param1 || _loc_11.indexOf("enemies") != -1 && _loc_12.teamId != param1)
+                            {
+                                _loc_8.splice(_loc_8.indexOf(_loc_12.contextualId), 1);
+                            }
+                        }
+                        removeEventFromEventsList(param3, _loc_9);
+                        if (_loc_10.name == "fighterLifeLoss" && param5.indexOf(_loc_9[0].targetId) != -1)
+                        {
+                            sendFightLogToChat(_loc_10, _loc_11, _loc_8, true, true);
+                        }
+                        else
+                        {
+                            sendFightLogToChat(_loc_10, _loc_11, _loc_8);
+                        }
+                        break;
+                        break;
+                    }
                 }
             }
-            switch(groupEntitiesByTeam(param1, param2, param4))
-            {
-                case "all":
-                {
-                    param2["all"] = true;
-                    break;
-                }
-                case "allies":
-                {
-                    param2["allies"] = true;
-                    break;
-                }
-                case "enemies":
-                {
-                    param2["enemies"] = true;
-                    break;
-                }
-                case "none":
-                {
-                    return false;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            sendFightLogToChat(_loc_5, param2);
-            return true;
+            return false;
         }// end function
 
-        public static function groupEntitiesByTeam(param1:int, param2:Array, param3:Dictionary) : String
+        public static function getGroupedListEvent(param1:Vector.<FightEvent>) : Vector.<FightEvent>
+        {
+            var _loc_4:* = null;
+            var _loc_2:* = param1[0];
+            var _loc_3:* = new Vector.<FightEvent>;
+            _loc_3.push(_loc_2);
+            for each (_loc_4 in param1)
+            {
+                
+                if (_loc_3.indexOf(_loc_4) == -1 && needToGroupFightEventsData(getNumberOfParametersToCheck(_loc_2), _loc_4, _loc_2))
+                {
+                    _loc_3.push(_loc_4);
+                }
+            }
+            removeEventFromEventsList(param1, _loc_3);
+            return _loc_3;
+        }// end function
+
+        public static function removeEventFromEventsList(param1:Vector.<FightEvent>, param2:Vector.<FightEvent>) : void
+        {
+            var _loc_3:* = null;
+            for each (_loc_3 in param2)
+            {
+                
+                param1.splice(param1.indexOf(_loc_3), 1);
+            }
+            return;
+        }// end function
+
+        public static function groupEntitiesByTeam(param1:int, param2:Vector.<int>, param3:Dictionary) : String
         {
             var _loc_8:* = null;
+            var _loc_9:* = null;
             var _loc_4:* = 0;
             var _loc_5:* = 0;
             var _loc_6:* = 0;
@@ -396,6 +499,10 @@
             for each (_loc_8 in param3)
             {
                 
+                if (_loc_8 == null)
+                {
+                    continue;
+                }
                 if (_loc_8.teamId == param1)
                 {
                     _loc_6++;
@@ -414,19 +521,32 @@
                     _loc_5++;
                 }
             }
+            _loc_9 = "";
             if (_loc_6 == _loc_4 && _loc_7 == _loc_5)
             {
                 return "all";
             }
             if (_loc_4 > 1 && _loc_4 == _loc_6)
             {
-                return "allies";
+                _loc_9 = _loc_9 + ((_loc_9 != "" ? (",") : ("")) + "allies");
+                if (_loc_5 > 0 && _loc_5 < _loc_7)
+                {
+                    _loc_9 = _loc_9 + ",other";
+                }
             }
             if (_loc_5 > 1 && _loc_5 == _loc_7)
             {
-                return "enemies";
+                _loc_9 = _loc_9 + ((_loc_9 != "" ? (",") : ("")) + "enemies");
+                if (_loc_4 > 0 && _loc_4 < _loc_6)
+                {
+                    _loc_9 = _loc_9 + ",other";
+                }
             }
-            return "none";
+            if (_loc_9 == "" && param2.length > 1)
+            {
+                _loc_9 = _loc_9 + ((_loc_9 != "" ? (",") : ("")) + "other");
+            }
+            return _loc_9 == "" ? ("none") : (_loc_9);
         }// end function
 
         private static function getNumberOfParametersToCheck(event:FightEvent) : int
@@ -442,7 +562,11 @@
         private static function needToGroupFightEventsData(param1:int, param2:FightEvent, param3:FightEvent) : Boolean
         {
             var _loc_4:* = 0;
-            _loc_4 = 1;
+            if (param2.castingSpellId != param3.castingSpellId)
+            {
+                return false;
+            }
+            _loc_4 = param2.firstParamToCheck;
             while (_loc_4 < param1)
             {
                 
@@ -473,18 +597,18 @@
             return;
         }// end function
 
-        private static function sendFightLogToChat(event:FightEvent, param2:Array = null, param3:Boolean = true, param4:Boolean = false) : void
+        private static function sendFightLogToChat(event:FightEvent, param2:String = "", param3:Vector.<int> = null, param4:Boolean = true, param5:Boolean = false) : void
         {
-            var _loc_5:* = param4 ? ("fightLifeLossAndDeath") : (event.name);
-            var _loc_6:* = event.params;
-            if (param3)
+            var _loc_6:* = event.name == FightEventEnum.FIGHTER_LIFE_LOSS && param5 ? ("fightLifeLossAndDeath") : (event.name);
+            var _loc_7:* = event.params;
+            if (param4)
             {
                 if (event.name == FightEventEnum.FIGHTER_LIFE_LOSS || event.name == FightEventEnum.FIGHTER_SHIELD_LOSS)
                 {
-                    _loc_6[1] = formateColorsForFightDamages("-" + _loc_6[1], _loc_6[2]);
+                    _loc_7[1] = formateColorsForFightDamages("-" + _loc_7[1], _loc_7[2]);
                 }
             }
-            KernelEventsManager.getInstance().processCallback(HookList.FightText, _loc_5, _loc_6, param2);
+            KernelEventsManager.getInstance().processCallback(HookList.FightText, _loc_6, _loc_7, param3, param2);
             return;
         }// end function
 
@@ -538,7 +662,7 @@
             }
             if (_loc_4 != "")
             {
-                _loc_3 = "<font color=\'" + _loc_4.replace("0x", "#") + "\'>" + param1 + "</font>";
+                _loc_3 = HtmlManager.addTag(param1, HtmlManager.SPAN, {color:_loc_4});
             }
             else
             {

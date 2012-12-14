@@ -6,10 +6,18 @@
     public class MouseMiddleClickMessage extends MouseMessage
     {
 
-        public function MouseMiddleClickMessage(param1:InteractiveObject, param2:MouseEvent)
+        public function MouseMiddleClickMessage()
         {
-            super(param1, param2);
             return;
+        }// end function
+
+        public static function create(param1:InteractiveObject, param2:MouseEvent, param3:MouseMessage = null) : MouseMiddleClickMessage
+        {
+            if (!param3)
+            {
+                param3 = new MouseMiddleClickMessage;
+            }
+            return MouseMessage.create(param1, param2, param3) as MouseMiddleClickMessage;
         }// end function
 
     }

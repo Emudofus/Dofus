@@ -254,7 +254,7 @@
         {
             if (!this.canBind(param1))
             {
-                _log.error(param1.toString() + " cannot be bind.");
+                com.ankamagames.berilia.managers:GenericEventsManager::_log.error(param1.toString() + " cannot be bind.");
                 return;
             }
             this.removeBind(param1);
@@ -469,7 +469,6 @@
                 }
             }
             this._aRegisterKey.push(_loc_2);
-            _log.debug("add " + _loc_2);
             StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS, "registeredKeys", this._aRegisterKey, true);
             return;
         }// end function
@@ -566,12 +565,12 @@
                     {
                         continue;
                     }
+                    continue;
                 }
-                else if (!_loc_8)
+                if (!_loc_8)
                 {
                     this._aRegisterKey.push(_loc_4);
                 }
-                _log.debug("add " + _loc_4);
             }
             StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_BINDS, "registeredKeys", this._aRegisterKey, true);
             return;
@@ -592,12 +591,11 @@
 
         public function keyboardFileAllLoaded(event:ResourceLoaderProgressEvent) : void
         {
-            var locale:String;
-            var e:* = event;
+            var _loc_2:* = null;
             try
             {
-                locale = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_BINDS, "locale", LangManager.getInstance().getEntry("config.binds.current"));
-                this.changeKeyboard(locale);
+                _loc_2 = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_BINDS, "locale", LangManager.getInstance().getEntry("config.binds.current"));
+                this.changeKeyboard(_loc_2);
             }
             catch (e:Error)
             {

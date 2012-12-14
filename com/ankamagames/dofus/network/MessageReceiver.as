@@ -74,6 +74,7 @@
     import com.ankamagames.dofus.network.messages.game.social.*;
     import com.ankamagames.dofus.network.messages.game.startup.*;
     import com.ankamagames.dofus.network.messages.game.subscriber.*;
+    import com.ankamagames.dofus.network.messages.game.tinsel.*;
     import com.ankamagames.dofus.network.messages.handshake.*;
     import com.ankamagames.dofus.network.messages.queues.*;
     import com.ankamagames.dofus.network.messages.secure.*;
@@ -163,6 +164,7 @@
             StoreDataManager.getInstance().registerClass(new BasicTimeMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AlmanachCalendarDateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new BasicNoOperationMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new BasicAckMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new SystemMessageDisplayMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TextInformationMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new OnConnectionEventMessage(), true, true);
@@ -196,6 +198,7 @@
             StoreDataManager.getInstance().registerClass(new DebugClearHighlightCellsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DebugInClientMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DisplayNumericalValueMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new DisplayNumericalValueWithAgeBonusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new CurrentMapMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new TeleportOnSameMapMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MapFightCountMessage(), true, true);
@@ -347,8 +350,13 @@
             StoreDataManager.getInstance().registerClass(new ChallengeResultMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ChallengeDungeonStackedBonusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AchievementListMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new AchievementUpdateMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AchievementDetailsMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AchievementDetailedListMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new AchievementFinishedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AchievementFinishedInformationMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AchievementRewardSuccessMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new AchievementRewardErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new FriendGuildWarnOnAchievementCompleteStateMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonEnteredMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonLeftMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DungeonKeyRingMessage(), true, true);
@@ -398,7 +406,7 @@
             StoreDataManager.getInstance().registerClass(new DungeonPartyFinderRegisterErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new SpouseStatusMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendsListMessage(), true, true);
-            StoreDataManager.getInstance().registerClass(new FriendsListWithSpouseMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new SpouseInformationsMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendAddFailureMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendAddedMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new FriendUpdateMessage(), true, true);
@@ -644,6 +652,14 @@
             StoreDataManager.getInstance().registerClass(new LockableStateUpdateHouseDoorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new LockableStateUpdateStorageMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new DocumentReadingBeginMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new TitlesAndOrnamentsListMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new TitleGainedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new TitleLostMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new OrnamentGainedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new TitleSelectedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new TitleSelectErrorMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new OrnamentSelectedMessage(), true, true);
+            StoreDataManager.getInstance().registerClass(new OrnamentSelectErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ContactLookMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new ContactLookErrorMessage(), true, true);
             StoreDataManager.getInstance().registerClass(new MailStatusMessage(), true, true);
@@ -712,6 +728,7 @@
         _messagesTypes[175] = BasicTimeMessage;
         _messagesTypes[6341] = AlmanachCalendarDateMessage;
         _messagesTypes[176] = BasicNoOperationMessage;
+        _messagesTypes[6362] = BasicAckMessage;
         _messagesTypes[189] = SystemMessageDisplayMessage;
         _messagesTypes[780] = TextInformationMessage;
         _messagesTypes[5726] = OnConnectionEventMessage;
@@ -745,6 +762,7 @@
         _messagesTypes[2002] = DebugClearHighlightCellsMessage;
         _messagesTypes[6028] = DebugInClientMessage;
         _messagesTypes[5808] = DisplayNumericalValueMessage;
+        _messagesTypes[6361] = DisplayNumericalValueWithAgeBonusMessage;
         _messagesTypes[220] = CurrentMapMessage;
         _messagesTypes[6048] = TeleportOnSameMapMessage;
         _messagesTypes[210] = MapFightCountMessage;
@@ -896,8 +914,13 @@
         _messagesTypes[6019] = ChallengeResultMessage;
         _messagesTypes[6151] = ChallengeDungeonStackedBonusMessage;
         _messagesTypes[6205] = AchievementListMessage;
-        _messagesTypes[6207] = AchievementUpdateMessage;
+        _messagesTypes[6378] = AchievementDetailsMessage;
+        _messagesTypes[6358] = AchievementDetailedListMessage;
         _messagesTypes[6208] = AchievementFinishedMessage;
+        _messagesTypes[6381] = AchievementFinishedInformationMessage;
+        _messagesTypes[6376] = AchievementRewardSuccessMessage;
+        _messagesTypes[6375] = AchievementRewardErrorMessage;
+        _messagesTypes[6383] = FriendGuildWarnOnAchievementCompleteStateMessage;
         _messagesTypes[6152] = DungeonEnteredMessage;
         _messagesTypes[6149] = DungeonLeftMessage;
         _messagesTypes[6299] = DungeonKeyRingMessage;
@@ -947,7 +970,7 @@
         _messagesTypes[6243] = DungeonPartyFinderRegisterErrorMessage;
         _messagesTypes[6265] = SpouseStatusMessage;
         _messagesTypes[4002] = FriendsListMessage;
-        _messagesTypes[5931] = FriendsListWithSpouseMessage;
+        _messagesTypes[6356] = SpouseInformationsMessage;
         _messagesTypes[5600] = FriendAddFailureMessage;
         _messagesTypes[5599] = FriendAddedMessage;
         _messagesTypes[5924] = FriendUpdateMessage;
@@ -1193,6 +1216,14 @@
         _messagesTypes[5668] = LockableStateUpdateHouseDoorMessage;
         _messagesTypes[5669] = LockableStateUpdateStorageMessage;
         _messagesTypes[5675] = DocumentReadingBeginMessage;
+        _messagesTypes[6367] = TitlesAndOrnamentsListMessage;
+        _messagesTypes[6364] = TitleGainedMessage;
+        _messagesTypes[6371] = TitleLostMessage;
+        _messagesTypes[6368] = OrnamentGainedMessage;
+        _messagesTypes[6366] = TitleSelectedMessage;
+        _messagesTypes[6373] = TitleSelectErrorMessage;
+        _messagesTypes[6369] = OrnamentSelectedMessage;
+        _messagesTypes[6370] = OrnamentSelectErrorMessage;
         _messagesTypes[5934] = ContactLookMessage;
         _messagesTypes[6045] = ContactLookErrorMessage;
         _messagesTypes[6275] = MailStatusMessage;

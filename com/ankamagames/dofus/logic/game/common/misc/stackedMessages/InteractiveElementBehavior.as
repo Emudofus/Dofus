@@ -134,6 +134,7 @@
         {
             var _loc_4:* = 0;
             var _loc_5:* = null;
+            var _loc_6:* = 0;
             var _loc_3:* = false;
             if (param1 is InteractiveUseEndedMessage)
             {
@@ -162,7 +163,8 @@
                     this.stopAction();
                     _loc_3 = true;
                     actionStarted = true;
-                    _log.debug("Distance: " + _loc_5.position.distanceTo(position) + " > " + _loc_4);
+                    _loc_6 = _loc_5.position.distanceTo(position);
+                    _log.debug("Distance: " + _loc_6 + " > " + _loc_4);
                 }
             }
             return _loc_3;

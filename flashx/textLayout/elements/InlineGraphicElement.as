@@ -39,7 +39,7 @@
         static const rotationPropertyDefinition:Property = Property.NewEnumStringProperty("rotation", TextRotation.ROTATE_0, false, null, TextRotation.ROTATE_0, TextRotation.ROTATE_90, TextRotation.ROTATE_180, TextRotation.ROTATE_270);
         static const floatPropertyDefinition:Property = Property.NewEnumStringProperty("float", Float.NONE, false, null, Float.NONE, Float.LEFT, Float.RIGHT, Float.START, Float.END);
 
-        public function InlineGraphicElement()
+        public function InlineGraphicElement(param1:String = "")
         {
             this.okToUpdateHeightAndWidth = false;
             this._measuredWidth = 0;
@@ -48,7 +48,7 @@
             this.internalSetHeight(undefined);
             this._graphicStatus = InlineGraphicElementStatus.LOAD_PENDING;
             setTextLength(1);
-            _text = graphicElementText;
+            _text = param1 == "" ? (graphicElementText) : (param1);
             return;
         }// end function
 
@@ -128,7 +128,7 @@
             var _loc_1:* = getTextFlow();
             if (!_loc_1)
             {
-                return this.elementHeight;
+                return this.elementWidth;
             }
             var _loc_2:* = _loc_1.computedFormat.blockProgression == BlockProgression.RL ? (getEffectivePaddingLeft() + getEffectivePaddingRight()) : (getEffectivePaddingTop() + getEffectivePaddingBottom());
             return this.elementHeight + _loc_2;
@@ -428,20 +428,13 @@
             var _loc_2:* = this.graphic;
             this._measuredWidth = _loc_2.width;
             this._measuredHeight = _loc_2.height;
-            if (this.graphic is Loader && Loader(this.graphic).content != null && Loader(this.graphic).content.hasOwnProperty("setActualSize") && (!this.widthIsComputed() || !this.heightIsComputed()))
+            if (!this.widthIsComputed())
             {
-                Object(Loader(this.graphic).content).setActualSize(this.elementWidth, this.elementHeight);
+                _loc_2.width = this.elementWidth;
             }
-            else
+            if (!this.heightIsComputed())
             {
-                if (!this.widthIsComputed())
-                {
-                    _loc_2.width = this.elementWidth;
-                }
-                if (!this.heightIsComputed())
-                {
-                    _loc_2.height = this.elementHeight;
-                }
+                _loc_2.height = this.elementHeight;
             }
             if (event is IOErrorEvent)
             {
@@ -500,7 +493,6 @@
         {
             var source:Object;
             var elem:DisplayObject;
-            var cILGStatus:String;
             var inlineGraphicResolver:Function;
             var loader:Loader;
             var myPattern:RegExp;
@@ -527,7 +519,6 @@
                             source = this.inlineGraphicResolver(this);
                         }
                     }
-                    cILGStatus;
                     if (source is String || source is URLRequest)
                     {
                         this.okToUpdateHeightAndWidth = false;
@@ -556,33 +547,31 @@
                             }
                             this.setGraphic(loader);
                             this.changeGraphicStatus(LOAD_INITIATED);
-                            cILGStatus = LOAD_INITIATED;
                         }
                         catch (e:Error)
                         {
                             removeDefaultLoadHandlers(loader);
                             elem = new Shape();
                             changeGraphicStatus(NULL_GRAPHIC);
-                            cILGStatus = NULL_GRAPHIC;
                         }
                     }
                     else if (source is Class)
                     {
                         cls = source as Class;
                         elem = DisplayObject(new cls);
-                        cILGStatus = EMBED_LOADED;
+                        this.changeGraphicStatus(EMBED_LOADED);
                     }
                     else if (source is DisplayObject)
                     {
                         elem = DisplayObject(source);
-                        cILGStatus = DISPLAY_OBJECT;
+                        this.changeGraphicStatus(DISPLAY_OBJECT);
                     }
                     else
                     {
                         elem = new Shape();
-                        cILGStatus = NULL_GRAPHIC;
+                        this.changeGraphicStatus(NULL_GRAPHIC);
                     }
-                    if (cILGStatus != LOAD_INITIATED)
+                    if (this._graphicStatus != LOAD_INITIATED)
                     {
                         this.okToUpdateHeightAndWidth = true;
                         this._measuredWidth = elem ? (elem.width) : (0);
@@ -622,10 +611,6 @@
                             elem.height = Number(this.height);
                         }
                         this.setGraphic(elem);
-                        if (cILGStatus != null)
-                        {
-                            this.changeGraphicStatus(cILGStatus);
-                        }
                     }
                 }
             }
@@ -668,22 +653,23 @@
 
         function stop(param1:Boolean) : Boolean
         {
-            var _loc_2:* = null;
+            var loader:Loader;
+            var okToUnloadGraphics:* = param1;
             if (this._graphicStatus == OPEN_RECEIVED || this._graphicStatus == LOAD_INITIATED)
             {
-                _loc_2 = this.graphic as Loader;
+                loader = this.graphic as Loader;
                 try
                 {
-                    _loc_2.close();
+                    loader.close();
                 }
                 catch (e:Error)
                 {
                 }
-                this.removeDefaultLoadHandlers(_loc_2);
+                this.removeDefaultLoadHandlers(loader);
             }
             if (this._graphicStatus != DISPLAY_OBJECT)
             {
-                if (param1)
+                if (okToUnloadGraphics)
                 {
                     recursiveShutDownGraphic(this.graphic);
                     this.setGraphic(null);

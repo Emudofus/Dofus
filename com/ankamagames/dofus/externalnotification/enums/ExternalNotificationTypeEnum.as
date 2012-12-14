@@ -3,6 +3,7 @@
 
     public class ExternalNotificationTypeEnum extends Object
     {
+        public static const NONE:int = -1;
         public static const FRIEND_CONNECTION:int = 1;
         public static const MEMBER_CONNECTION:int = 2;
         public static const GROUP_INVITATION:int = 3;
@@ -34,6 +35,10 @@
         public static const ANKABOX_MSG:int = 29;
         public static const INACTIVITY_WARNING:int = 30;
         public static const TAXCOLLECTOR_ATTACK:int = 31;
+        public static const PARTY_FIGHT_START:int = 32;
+        public static const DUNGEON_TELEPORT:int = 33;
+        public static const FIGHT_JOIN:int = 34;
+        public static const GUILD_INVITATION:int = 35;
 
         public function ExternalNotificationTypeEnum()
         {

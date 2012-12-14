@@ -12,10 +12,10 @@
         public var event:Array;
         public var properties:Array;
         public var className:String;
-        public var cachedWidth:int = 2.14748e+009;
-        public var cachedHeight:int = 2.14748e+009;
-        public var cachedX:int = 2.14748e+009;
-        public var cachedY:int = 2.14748e+009;
+        public var cachedWidth:int = 2147483647;
+        public var cachedHeight:int = 2147483647;
+        public var cachedX:int = 2147483647;
+        public var cachedY:int = 2147483647;
 
         public function BasicElement()
         {

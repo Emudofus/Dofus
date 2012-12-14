@@ -9,6 +9,7 @@
         public static const import_LabelGridRenderer:LabelGridRenderer = null;
         public static const import_TreeGridRenderer:TreeGridRenderer = null;
         public static const import_EntityGridRenderer:EntityGridRenderer = null;
+        public static const import_MultiGridRenderer:MultiGridRenderer = null;
 
         public function GridItemList()
         {

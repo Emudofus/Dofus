@@ -6,10 +6,18 @@
     public class MouseReleaseOutsideMessage extends MouseMessage
     {
 
-        public function MouseReleaseOutsideMessage(param1:InteractiveObject, param2:MouseEvent)
+        public function MouseReleaseOutsideMessage()
         {
-            super(param1, param2);
             return;
+        }// end function
+
+        public static function create(param1:InteractiveObject, param2:MouseEvent, param3:MouseMessage = null) : MouseReleaseOutsideMessage
+        {
+            if (!param3)
+            {
+                param3 = new MouseReleaseOutsideMessage;
+            }
+            return MouseMessage.create(param1, param2, param3) as MouseReleaseOutsideMessage;
         }// end function
 
     }

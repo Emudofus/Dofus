@@ -34,19 +34,19 @@
 
         public function destroy() : void
         {
-            var mfs:*;
+            var _loc_1:* = undefined;
             this._module = null;
             var _loc_2:* = 0;
             var _loc_3:* = this._openedFiles;
             do
             {
                 
-                mfs = _loc_3[_loc_2];
-                if (mfs)
+                _loc_1 = _loc_3[_loc_2];
+                if (_loc_1)
                 {
                     try
                     {
-                        mfs.close();
+                        _loc_1.close();
                     }
                     catch (e:Error)
                     {

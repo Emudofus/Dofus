@@ -148,7 +148,7 @@
             return _loc_2;
         }// end function
 
-        public function canCastThisSpell(param1:uint, param2:uint, param3:int = 2.14748e+009) : Boolean
+        public function canCastThisSpell(param1:uint, param2:uint, param3:int = 2147483647) : Boolean
         {
             var _loc_6:* = null;
             var _loc_8:* = null;

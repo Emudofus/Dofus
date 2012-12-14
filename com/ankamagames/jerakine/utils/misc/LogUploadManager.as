@@ -1,7 +1,6 @@
 ﻿package com.ankamagames.jerakine.utils.misc
 {
     import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.crypto.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import com.ankamagames.jerakine.utils.system.*;
     import flash.events.*;
@@ -14,7 +13,6 @@
     {
         private var _so:CustomSharedObject;
         private var _loader:URLLoader;
-        private var _base64Encoder:Base64Async;
         private var _targetedFile:File;
         private static var _self:LogUploadManager;
         private static var mega:uint = Math.pow(2, 20);
@@ -74,10 +72,6 @@
             _loc_4.write(_loc_2);
             _loc_4.closeEntry();
             _loc_4.finish();
-            this._base64Encoder = new Base64Async();
-            this._base64Encoder.addEventListener(Event.COMPLETE, this.onEncodeEnd);
-            this._base64Encoder.addEventListener(ProgressEvent.PROGRESS, this.onEncodeProgress);
-            this._base64Encoder.encodeByteArray(_loc_4.byteArray);
             var _loc_6:* = new SystemPopupUI("uploadLogFileProgress");
             new SystemPopupUI("uploadLogFileProgress").modal = true;
             _loc_6.title = "Envoi du fichier de log";
@@ -118,9 +112,7 @@
             var _loc_2:* = new URLRequest("http://www.ankama.com/stats/dofusconfiguration");
             _loc_2.data = new URLVariables();
             _loc_2.data.account = "test";
-            _loc_2.data.file = this._base64Encoder.encodedOutput;
             _loc_2.method = URLRequestMethod.POST;
-            this._base64Encoder = null;
             this._loader = new URLLoader();
             this._loader.addEventListener(IOErrorEvent.IO_ERROR, this.onUploadError);
             this._loader.addEventListener(Event.COMPLETE, this.onUploadEnd);

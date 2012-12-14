@@ -21,6 +21,7 @@
             add("alwaysShowGrid", false);
             add("debugLayer", false);
             add("showCellIdOnOver", false);
+            add("tweentInterMap", false);
             add("hideInterMap", AirScanner.isStreamingVersion());
             add("virtualPlayerJump", false);
             add("reloadLoadedMap", false);

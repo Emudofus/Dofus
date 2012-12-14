@@ -3,6 +3,7 @@
     import com.ankamagames.jerakine.utils.system.*;
     import flash.display.*;
     import flash.events.*;
+    import flash.geom.*;
 
     public class StageShareManager extends Object
     {
@@ -14,6 +15,7 @@
         private static var _customMouseX:int = -77777;
         private static var _customMouseY:int = -77777;
         private static var _setQualityIsEnable:Boolean;
+        private static var _chrome:Point = new Point();
 
         public function StageShareManager()
         {
@@ -38,6 +40,16 @@
 
         public static function get windowScale() : Number
         {
+            var _loc_1:* = NaN;
+            var _loc_2:* = NaN;
+            var _loc_3:* = NaN;
+            if (AirScanner.hasAir())
+            {
+                _loc_1 = (stage.nativeWindow.width - chrome.x) / startWidth;
+                _loc_2 = (stage.nativeWindow.height - chrome.y) / startHeight;
+                _loc_3 = Math.min(_loc_1, _loc_2);
+                return _loc_3;
+            }
             return Math.min(stage.stageWidth / startWidth, stage.stageHeight / startHeight);
         }// end function
 
@@ -169,6 +181,17 @@
                     }
                 }
             }
+            return;
+        }// end function
+
+        public static function get chrome() : Point
+        {
+            return _chrome;
+        }// end function
+
+        public static function set chrome(param1:Point) : void
+        {
+            _chrome = param1;
             return;
         }// end function
 

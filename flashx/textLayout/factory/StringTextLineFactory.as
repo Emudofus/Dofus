@@ -280,7 +280,6 @@
                 }
                 _loc_4 = param1.getAtomTextBlockEndIndex(_loc_5);
             }
-            param1.flushAtomData();
             return _loc_4;
         }// end function
 

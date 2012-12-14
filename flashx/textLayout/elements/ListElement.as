@@ -8,7 +8,7 @@
     {
         static const LIST_MARKER_FORMAT_NAME:String = "listMarkerFormat";
         static const constantListStyles:Object = {none:"", disc:"•", circle:"◦", square:"■", box:"□", check:"✓", diamond:"◆", hyphen:"⁃"};
-        private static const romanDigitFunction:Vector.<Function> = ListElement.Vector.<Function>([@%@function ()@%@30415@%@, @%@function ()@%@30416@%@, @%@function ()@%@30417@%@, @%@function ()@%@30418@%@, @%@function ()@%@30419@%@, @%@function ()@%@30420@%@, @%@function ()@%@30421@%@, @%@function ()@%@30422@%@, @%@function ()@%@30423@%@, @%@function ()@%@30424@%@]);
+        private static const romanDigitFunction:Vector.<Function> = ListElement.Vector.<Function>([@%@function ()@%@31585@%@, @%@function ()@%@31586@%@, @%@function ()@%@31587@%@, @%@function ()@%@31588@%@, @%@function ()@%@31589@%@, @%@function ()@%@31590@%@, @%@function ()@%@31591@%@, @%@function ()@%@31592@%@, @%@function ()@%@31593@%@, @%@function ()@%@31594@%@]);
         private static const upperRomanData:Vector.<String> = ListElement.Vector.<String>(["I", "V", "X", "L", "C", "D", "M"]);
         private static const lowerRomanData:Vector.<String> = ListElement.Vector.<String>(["i", "v", "x", "l", "c", "d", "m"]);
         static const cjkEarthlyBranchData:Vector.<int> = ListElement.Vector.<int>([23376, 19985, 23493, 21359, 36784, 24051, 21320, 26410, 30003, 37193, 25100, 20133]);

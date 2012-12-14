@@ -144,7 +144,7 @@
         public function getKamasReward(param1:int) : int
         {
             var _loc_2:* = this.kamasScaleWithPlayerLevel ? (param1) : (this.optimalLevel);
-            return (Math.pow(_loc_2, 2) + 20 * _loc_2 - 20) * this.kamasRatio * this.duration * 2;
+            return (Math.pow(_loc_2, 2) + 20 * _loc_2 - 20) * this.kamasRatio * this.duration;
         }// end function
 
         public function getExperienceReward(param1:int, param2:int) : int
@@ -161,7 +161,7 @@
 
         private function getFixeExperienceReward(param1:int) : int
         {
-            return param1 * Math.pow(100 + 2 * param1, 2) / 10 * this.duration * this.xpRatio;
+            return param1 * Math.pow(100 + 2 * param1, 2) / 20 * this.duration * this.xpRatio;
         }// end function
 
         public static function getQuestStepById(param1:int) : QuestStep

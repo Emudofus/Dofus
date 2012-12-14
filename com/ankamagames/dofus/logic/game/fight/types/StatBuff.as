@@ -236,7 +236,8 @@
         private function decrementStats() : void
         {
             var _loc_1:* = 0;
-            var _loc_3:* = 0;
+            var _loc_3:* = null;
+            var _loc_4:* = 0;
             if (PlayedCharacterManager.getInstance().id == targetId)
             {
                 if (PlayedCharacterManager.getInstance().characteristics.hasOwnProperty(this._statName))
@@ -272,13 +273,21 @@
                     case "lifePoints":
                     case "lifePointsMalus":
                     {
-                        if (PlayedCharacterManager.getInstance().characteristics.lifePoints > this.delta)
+                        _loc_3 = PlayedCharacterManager.getInstance().characteristics;
+                        if (_loc_3.lifePoints > this.delta)
                         {
-                            PlayedCharacterManager.getInstance().characteristics.lifePoints = PlayedCharacterManager.getInstance().characteristics.lifePoints - this.delta;
+                            if (_loc_3.maxLifePoints >= _loc_3.lifePoints - this.delta)
+                            {
+                                _loc_3.lifePoints = _loc_3.lifePoints - this.delta;
+                            }
+                            else
+                            {
+                                _loc_3.lifePoints = _loc_3.maxLifePoints;
+                            }
                         }
                         else
                         {
-                            PlayedCharacterManager.getInstance().characteristics.lifePoints = 0;
+                            _loc_3.lifePoints = 0;
                         }
                         break;
                     }
@@ -333,12 +342,12 @@
                 case "globalResistPercentBonus":
                 case "globalResistPercentMalus":
                 {
-                    _loc_3 = this.statName == "globalResistPercentMalus" ? (-1) : (1);
-                    _loc_2.stats["neutralElementResistPercent"] = _loc_2.stats["neutralElementResistPercent"] - this.delta * _loc_3;
-                    _loc_2.stats["airElementResistPercent"] = _loc_2.stats["airElementResistPercent"] - this.delta * _loc_3;
-                    _loc_2.stats["waterElementResistPercent"] = _loc_2.stats["waterElementResistPercent"] - this.delta * _loc_3;
-                    _loc_2.stats["earthElementResistPercent"] = _loc_2.stats["earthElementResistPercent"] - this.delta * _loc_3;
-                    _loc_2.stats["fireElementResistPercent"] = _loc_2.stats["fireElementResistPercent"] - this.delta * _loc_3;
+                    _loc_4 = this.statName == "globalResistPercentMalus" ? (-1) : (1);
+                    _loc_2.stats["neutralElementResistPercent"] = _loc_2.stats["neutralElementResistPercent"] - this.delta * _loc_4;
+                    _loc_2.stats["airElementResistPercent"] = _loc_2.stats["airElementResistPercent"] - this.delta * _loc_4;
+                    _loc_2.stats["waterElementResistPercent"] = _loc_2.stats["waterElementResistPercent"] - this.delta * _loc_4;
+                    _loc_2.stats["earthElementResistPercent"] = _loc_2.stats["earthElementResistPercent"] - this.delta * _loc_4;
+                    _loc_2.stats["fireElementResistPercent"] = _loc_2.stats["fireElementResistPercent"] - this.delta * _loc_4;
                     break;
                 }
                 case "agility":

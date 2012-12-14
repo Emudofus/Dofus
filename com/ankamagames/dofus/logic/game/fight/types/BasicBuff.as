@@ -206,7 +206,7 @@
             return;
         }// end function
 
-        public function canBeDispell(param1:Boolean = false, param2:int = -2.14748e+009, param3:Boolean = false) : Boolean
+        public function canBeDispell(param1:Boolean = false, param2:int = -2147483648, param3:Boolean = false) : Boolean
         {
             if (param2 == this.id)
             {

@@ -21,14 +21,16 @@
         private var _isLoadingFilelist:Boolean = false;
         private var _dataLoading:Dictionary;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(HttpCacheProtocol));
-        private static const CACHE_FILE:String = "streamingFilelist.d2s";
+        private static const LIMITE_ATTEMPT_FOR_DOWNLOAD:uint = 2;
         private static const CACHE_FORMAT_VERSION:String = "1.0";
         private static const CACHE_FORMAT_TYPE:String = "D2S";
+        private static var _cacheFilesDirectory:String;
         private static var _cachedFileData:Dictionary;
         private static var _calcCachedFileData:Dictionary = new Dictionary(true);
         private static var _pathCrcList:Dictionary = new Dictionary();
         private static var _httpDataToLoad:Vector.<Object> = new Vector.<Object>;
         private static var _fileDataToLoad:Vector.<Object> = new Vector.<Object>;
+        private static var _attemptToDownloadFile:Dictionary = new Dictionary(true);
         private static var _totalCrcTime:int = 0;
 
         public function HttpCacheProtocol()
@@ -47,7 +49,14 @@
 
         public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void
         {
-            this._serverRootDir = XmlConfig.getInstance().getEntry("config.root.path");
+            if (this._serverRootDir == null)
+            {
+                this._serverRootDir = XmlConfig.getInstance().getEntry("config.root.path");
+            }
+            if (_cacheFilesDirectory == "")
+            {
+                _cacheFilesDirectory = XmlConfig.getInstance().getEntry("config.streaming.filelists.directory");
+            }
             if (_cachedFileData == null)
             {
                 this.loadCacheFile();
@@ -94,39 +103,47 @@
             var _loc_3:* = null;
             var _loc_4:* = 0;
             var _loc_5:* = 0;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
             this._isLoadingFilelist = true;
-            var _loc_1:* = new File(File.applicationDirectory + File.separator + CACHE_FILE);
-            if (_loc_1.exists)
+            var _loc_1:* = new File(File.applicationDirectory + File.separator + _cacheFilesDirectory);
+            if (_loc_1.exists && _loc_1.isDirectory)
             {
-                _loc_2 = new ByteArray();
-                _loc_3 = new FileStream();
-                _loc_3.open(_loc_1, FileMode.READ);
-                _loc_3.readBytes(_loc_2, 0, 4);
-                _loc_2.readByte();
-                if (_loc_2.readMultiByte(3, "utf-8") != CACHE_FORMAT_TYPE)
-                {
-                    throw new Error("Format du fichier incorrect !!");
-                }
-                _loc_2.clear();
-                _loc_3.readBytes(_loc_2, 0, 4);
-                _loc_2.readByte();
-                if (_loc_2.readMultiByte(3, "utf-8") != CACHE_FORMAT_VERSION)
-                {
-                    throw new Error("Version du format de fichier incorrect !!");
-                }
                 _cachedFileData = new Dictionary();
-                while (_loc_3.bytesAvailable)
+                _loc_2 = new ByteArray();
+                _loc_7 = _loc_1.getDirectoryListing();
+                for each (_loc_6 in _loc_7)
                 {
                     
-                    _loc_4 = _loc_3.readInt();
-                    _loc_5 = _loc_3.readInt();
-                    _cachedFileData[_loc_4] = _loc_5;
+                    _loc_2.clear();
+                    _loc_3 = new FileStream();
+                    _loc_3.open(_loc_6, FileMode.READ);
+                    _loc_3.readBytes(_loc_2, 0, 4);
+                    _loc_2.readByte();
+                    if (_loc_2.readMultiByte(3, "utf-8") != CACHE_FORMAT_TYPE)
+                    {
+                        throw new Error("Format du fichier incorrect !!");
+                    }
+                    _loc_2.clear();
+                    _loc_3.readBytes(_loc_2, 0, 4);
+                    _loc_2.readByte();
+                    if (_loc_2.readMultiByte(3, "utf-8") != CACHE_FORMAT_VERSION)
+                    {
+                        throw new Error("Version du format de fichier incorrect !!");
+                    }
+                    while (_loc_3.bytesAvailable)
+                    {
+                        
+                        _loc_4 = _loc_3.readInt();
+                        _loc_5 = _loc_3.readInt();
+                        _cachedFileData[_loc_4] = _loc_5;
+                    }
+                    _loc_3.close();
                 }
-                _loc_3.close();
             }
             else
             {
-                _log.fatal("streamingfilelist null");
+                _log.fatal("Impossible de charger les fichiers de streaming !!");
             }
             this._isLoadingFilelist = false;
             if (_httpDataToLoad.length > 0)
@@ -161,6 +178,7 @@
                 return;
             }
             var _loc_5:* = this.getLocalPath(param1);
+            trace("load file " + _loc_5);
             var _loc_6:* = new File(_loc_5);
             if (new File(_loc_5).exists)
             {
@@ -200,17 +218,23 @@
                 {
                     _log.debug(param1.path + " mise a jour necessaire");
                     this._dataLoading[param1] = {uri:param1, observer:param2, dispatchProgress:param3, adapter:param4};
-                    this._parent.initAdapter(param1, BinaryAdapter);
-                    this._parent.adapter.loadDirectly(param1, "http://" + param1.path, new ResourceObserverWrapper(this.onRemoteFileLoaded, this.onRemoteFileFailed, this.onRemoteFileProgress), param3);
+                    this.loadDirectlyUri(param1, param3);
                 }
             }
             else
             {
                 _log.debug(param1 + " inexistant");
                 this._dataLoading[param1] = {uri:param1, observer:param2, dispatchProgress:param3, adapter:param4};
-                this._parent.initAdapter(param1, BinaryAdapter);
-                this._parent.adapter.loadDirectly(param1, "http://" + param1.path, new ResourceObserverWrapper(this.onRemoteFileLoaded, this.onRemoteFileFailed, this.onRemoteFileProgress), param3);
+                this.loadDirectlyUri(param1, param3);
             }
+            return;
+        }// end function
+
+        private function loadDirectlyUri(param1:Uri, param2:Boolean) : void
+        {
+            _attemptToDownloadFile[param1] = _attemptToDownloadFile[param1] == null ? (1) : ((_attemptToDownloadFile[param1] + 1));
+            this._parent.initAdapter(param1, BinaryAdapter);
+            this._parent.adapter.loadDirectly(param1, "http://" + param1.path, new ResourceObserverWrapper(this.onRemoteFileLoaded, this.onRemoteFileFailed, this.onRemoteFileProgress), param2);
             return;
         }// end function
 
@@ -244,7 +268,7 @@
             return param1 != null;
         }// end function
 
-        private function getLocalPath(param1:Uri) : String
+        public function getLocalPath(param1:Uri) : String
         {
             var _loc_2:* = param1.normalizedUri.split("|")[0];
             _loc_2 = _loc_2.replace(this._serverRootDir, "");
@@ -259,7 +283,12 @@
 
         private function onRemoteFileFailed(param1:Uri, param2:String, param3:uint) : void
         {
-            trace(param1.path + " failed");
+            _log.warn(param1.path + ": download failed (" + param2 + ")");
+            if (_attemptToDownloadFile[param1] != null && _attemptToDownloadFile[param1] <= LIMITE_ATTEMPT_FOR_DOWNLOAD)
+            {
+                _log.warn(param1.path + ": try again");
+                this.loadDirectlyUri(param1, this._dataLoading[param1].dispatchProgress);
+            }
             return;
         }// end function
 
@@ -270,9 +299,8 @@
 
         private function loadFromParent(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void
         {
-            var _loc_5:* = null;
             var _loc_6:* = null;
-            _loc_5 = param1;
+            var _loc_5:* = param1;
             if (param1.fileType == "swf")
             {
                 param1 = new Uri(this.getLocalPath(param1));
@@ -337,6 +365,12 @@
         public function free() : void
         {
             this._parent.free();
+            return;
+        }// end function
+
+        public function set serverRootDir(param1:String) : void
+        {
+            this._serverRootDir = param1;
             return;
         }// end function
 

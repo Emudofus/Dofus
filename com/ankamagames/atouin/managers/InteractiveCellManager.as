@@ -147,7 +147,7 @@
             while (_loc_11 < _loc_8.numChildren && ++_loc_9 < _loc_10)
             {
                 
-                if (_loc_12.cellId <= CellContainer(_loc_8.getChildAt(_loc_11)).cellId)
+                if (_loc_12 != null && _loc_12.cellId <= CellContainer(_loc_8.getChildAt(_loc_11)).cellId)
                 {
                     _loc_3 = _loc_2[_loc_9];
                     _loc_4 = this._aCells[_loc_9];
@@ -341,6 +341,7 @@
                 _loc_9 = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[parseInt(_loc_2.name)]);
                 _loc_7 = _loc_7 + ("\nID de zone : " + _loc_9.moveZone);
                 _loc_7 = _loc_7 + ("\nHauteur : " + _loc_9.floor + " px");
+                _loc_7 = _loc_7 + ("\nSpeed : " + _loc_9.speed);
                 DebugToolTip.getInstance().text = _loc_7;
                 _loc_10 = SelectionManager.getInstance().getSelection("infoOverCell");
                 if (!_loc_10)

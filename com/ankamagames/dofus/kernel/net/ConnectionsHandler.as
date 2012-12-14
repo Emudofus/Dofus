@@ -162,7 +162,10 @@
         public static function resume() : void
         {
             _log.debug("Resume connection");
-            _currentConnection.resume();
+            if (_currentConnection)
+            {
+                _currentConnection.resume();
+            }
             Kernel.getWorker().process(new ConnectionResumedMessage());
             return;
         }// end function

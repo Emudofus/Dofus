@@ -46,6 +46,7 @@
     import com.ankamagames.jerakine.utils.misc.*;
     import com.ankamagames.jerakine.utils.system.*;
     import com.ankamagames.tiphon.types.look.*;
+    import flash.desktop.*;
     import flash.events.*;
     import flash.filesystem.*;
     import flash.net.*;
@@ -853,7 +854,7 @@
             var _loc_10:* = PlayerManager.getInstance().server.id;
             this._log.debug("goToCheckLink : " + param1 + " " + _loc_5 + " " + _loc_7 + " " + _loc_9 + " " + _loc_10);
             var _loc_11:* = param1 + _loc_5 + "" + _loc_7 + "" + _loc_6 + param3 + _loc_9.toString() + _loc_10.toString();
-            var _loc_12:* = MD5.hex_hmac_md5(">:fIZ?vfU0sDM_9j", _loc_11);
+            var _loc_12:* = AdvancedMd5.hex_hmac_md5(">:fIZ?vfU0sDM_9j", _loc_11);
             var _loc_13:* = "{\"url\":\"" + param1 + "\",\"click_account\":" + _loc_5 + ",\"from_account\":" + _loc_7 + ",\"click_name\":\"" + _loc_6 + "\",\"from_name\":\"" + _loc_8 + "\",\"game\":" + _loc_9 + ",\"server\":" + _loc_10 + ",\"hmac\":\"" + _loc_12 + "\"}";
             var _loc_14:* = new ByteArray();
             new ByteArray().writeUTFBytes(_loc_13);
@@ -1000,10 +1001,9 @@
 
         public function getAccountId(param1:String) : int
         {
-            var playerName:* = param1;
             try
             {
-                return AccountManager.getInstance().getAccountId(playerName);
+                return AccountManager.getInstance().getAccountId(param1);
             }
             catch (error:Error)
             {
@@ -1049,6 +1049,13 @@
         public function getNickname() : String
         {
             return PlayerManager.getInstance().nickname;
+        }// end function
+
+        public function copyToClipboard(param1:String) : void
+        {
+            Clipboard.generalClipboard.clear();
+            Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, param1);
+            return;
         }// end function
 
         private function getAnkamaPortalUrlParams() : URLVariables

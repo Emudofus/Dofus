@@ -117,6 +117,11 @@
             return this.socialFrame.isIgnored(param1);
         }// end function
 
+        public function getAccountName(param1:String) : String
+        {
+            return param1;
+        }// end function
+
         public function getWarnOnFriendConnec() : Boolean
         {
             return this.socialFrame.warnFriendConnec;
@@ -130,6 +135,11 @@
         public function getWarnWhenFriendOrGuildMemberLvlUp() : Boolean
         {
             return this.socialFrame.warnWhenFriendOrGuildMemberLvlUp;
+        }// end function
+
+        public function getWarnWhenFriendOrGuildMemberAchieve() : Boolean
+        {
+            return this.socialFrame.warnWhenFriendOrGuildMemberAchieve;
         }// end function
 
         public function getSpouse() : SpouseWrapper

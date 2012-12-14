@@ -18,7 +18,7 @@
             param1.addHandler(["crc32", "md5"], new CryptoInstructionHandler());
             param1.addHandler(["displaymap", "displaymapdebug", "getmapcoord", "getmapid", "testatouin", "mapid", "showcellid", "playerjump", "showtransitions", "groundcache"], new DisplayMapInstructionHandler());
             param1.addHandler(["clearscene", "clearentities"], new ClearSceneInstructionHandler());
-            param1.addHandler(["modulelist", "loadui", "unloadui", "clearuicache", "setuiscale", "useuicache", "uilist", "reloadui", "fps", "getmoduleinfo", "chatoutput"], new UiHandlerInstructionHandler());
+            param1.addHandler(["uiinspector", "inspectuielement", "inspectuielementsos", "modulelist", "loadui", "unloadui", "clearuicache", "setuiscale", "useuicache", "uilist", "reloadui", "fps", "getmoduleinfo", "chatoutput"], new UiHandlerInstructionHandler());
             param1.addHandler(["dtd", "componentdtd", "shortcutsdtd", "kerneleventdtd"], new DtdInstructionHandler());
             param1.addHandler("cleartexturecache", new ClearTextureCacheInstructionHandler());
             param1.addHandler("connectionstatus", new ConnectionInstructionHandler());
@@ -37,7 +37,7 @@
             param1.addHandler(["sendaction", "listactions", "sendhook"], new ActionsInstructionHandler());
             param1.addHandler(["debuglos", "tracepath", "debugcellsinline"], new IAInstructionHandler());
             param1.addHandler(["setspellscriptparam", "setspellscript"], new FightInstructionHandler());
-            param1.addHandler(["playmusic", "stopmusic", "playambiance", "stopambiance", "addsoundinplaylist", "stopplaylist", "playplaylist", "activesounds"], new SoundInstructionHandler());
+            param1.addHandler(["playmusic", "stopmusic", "playambiance", "stopambiance", "addsoundinplaylist", "stopplaylist", "playplaylist", "activesounds", "adduisoundelement"], new SoundInstructionHandler());
             param1.addHandler(["floodlivingobject"], new LivingObjectInstructionHandler());
             param1.addHandler(["partdebug", "partlist", "partinfo", "updaterspeed", "downloadpart"], new UpdaterInstructionHandler());
             param1.addHandler(["getuid"], new SystemInstructionHandler());

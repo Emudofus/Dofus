@@ -77,7 +77,6 @@
                 if (this.hasActiveEventMirror())
                 {
                     param1.incInteractiveObjectCount();
-                    getParagraph().incInteractiveChildrenCount();
                 }
             }
             else if (param2 == ModelChange.ELEMENT_REMOVAL)
@@ -85,7 +84,6 @@
                 if (this.hasActiveEventMirror())
                 {
                     param1.decInteractiveObjectCount();
-                    getParagraph().decInteractiveChildrenCount();
                 }
             }
             super.appendElementsForDelayedUpdate(param1, param2);
@@ -657,110 +655,6 @@
             return _loc_3;
         }// end function
 
-        private static function translateColor(param1:String) : Number
-        {
-            var _loc_2:* = NaN;
-            switch(param1.toLowerCase())
-            {
-                case ColorName.BLACK:
-                {
-                    _loc_2 = 0;
-                    break;
-                }
-                case ColorName.BLUE:
-                {
-                    _loc_2 = 255;
-                    break;
-                }
-                case ColorName.GREEN:
-                {
-                    _loc_2 = 32768;
-                    break;
-                }
-                case ColorName.GRAY:
-                {
-                    _loc_2 = 8421504;
-                    break;
-                }
-                case ColorName.SILVER:
-                {
-                    _loc_2 = 12632256;
-                    break;
-                }
-                case ColorName.LIME:
-                {
-                    _loc_2 = 65280;
-                    break;
-                }
-                case ColorName.OLIVE:
-                {
-                    _loc_2 = 8421376;
-                    break;
-                }
-                case ColorName.WHITE:
-                {
-                    _loc_2 = 16777215;
-                    break;
-                }
-                case ColorName.YELLOW:
-                {
-                    _loc_2 = 16776960;
-                    break;
-                }
-                case ColorName.MAROON:
-                {
-                    _loc_2 = 8388608;
-                    break;
-                }
-                case ColorName.NAVY:
-                {
-                    _loc_2 = 128;
-                    break;
-                }
-                case ColorName.RED:
-                {
-                    _loc_2 = 16711680;
-                    break;
-                }
-                case ColorName.PURPLE:
-                {
-                    _loc_2 = 8388736;
-                    break;
-                }
-                case ColorName.TEAL:
-                {
-                    _loc_2 = 32896;
-                    break;
-                }
-                case ColorName.FUCHSIA:
-                {
-                    _loc_2 = 16711935;
-                    break;
-                }
-                case ColorName.AQUA:
-                {
-                    _loc_2 = 65535;
-                    break;
-                }
-                case ColorName.MAGENTA:
-                {
-                    _loc_2 = 16711935;
-                    break;
-                }
-                case ColorName.CYAN:
-                {
-                    _loc_2 = 65535;
-                    break;
-                }
-                default:
-                {
-                    break;
-                    break;
-                }
-            }
-            return _loc_2;
-        }// end function
-
         static function computeElementFormatHelper(param1:ITextLayoutFormat, param2:ParagraphElement, param3:ISWFContext) : ElementFormat
         {
             var _loc_7:* = null;
@@ -768,7 +662,7 @@
             new ElementFormat().alignmentBaseline = param1.alignmentBaseline;
             _loc_4.alpha = Number(param1.textAlpha);
             _loc_4.breakOpportunity = param1.breakOpportunity;
-            _loc_4.color = param1.color is String ? (translateColor(param1.color)) : (uint(param1.color));
+            _loc_4.color = uint(param1.color);
             _loc_4.dominantBaseline = resolveDomBaseline(param1, param2);
             _loc_4.digitCase = param1.digitCase;
             _loc_4.digitWidth = param1.digitWidth;

@@ -92,7 +92,6 @@
                 if (this.hasActiveEventMirror())
                 {
                     param1.incInteractiveObjectCount();
-                    getParagraph().incInteractiveChildrenCount();
                 }
             }
             else if (param2 == ModelChange.ELEMENT_REMOVAL)
@@ -100,7 +99,6 @@
                 if (this.hasActiveEventMirror())
                 {
                     param1.decInteractiveObjectCount();
-                    getParagraph().decInteractiveChildrenCount();
                 }
             }
             super.appendElementsForDelayedUpdate(param1, param2);

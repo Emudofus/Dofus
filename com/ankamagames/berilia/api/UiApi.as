@@ -31,11 +31,14 @@
     {
         private var _module:UiModule;
         private var _currentUi:UiRootContainer;
+        private var oldTextureUri:String;
+        private var oldTextureBounds:Rectangle;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         public static const _log:Logger = Log.getLogger(getQualifiedClassName(UiApi));
 
         public function UiApi()
         {
+            this.oldTextureBounds = new Rectangle();
             MEMORY_LOG[this] = 1;
             return;
         }// end function
@@ -484,15 +487,15 @@
             return new Uri(param1);
         }// end function
 
-        public function showTooltip(param1, param2, param3:Boolean = false, param4:String = "standard", param5:uint = 0, param6:uint = 2, param7:int = 3, param8:String = null, param9:Class = null, param10:Object = null, param11:String = null, param12:Boolean = false, param13:int = 4) : void
+        public function showTooltip(param1, param2, param3:Boolean = false, param4:String = "standard", param5:uint = 0, param6:uint = 2, param7:int = 3, param8:String = null, param9:Class = null, param10:Object = null, param11:String = null, param12:Boolean = false, param13:int = 4, param14:Number = 1) : void
         {
-            var _loc_14:* = null;
+            var _loc_15:* = null;
             if (this._currentUi)
             {
-                _loc_14 = TooltipManager.show(param1, param2, this._module, param3, param4, param5, param6, param7, true, param8, param9, param10, param11, param12, param13);
-                if (_loc_14)
+                _loc_15 = TooltipManager.show(param1, param2, this._module, param3, param4, param5, param6, param7, true, param8, param9, param10, param11, param12, param13, param14);
+                if (_loc_15)
                 {
-                    _loc_14.uiModuleName = this._currentUi.name;
+                    _loc_15.uiModuleName = this._currentUi.name;
                 }
             }
             return;
@@ -626,6 +629,57 @@
         public function useIME() : Boolean
         {
             return Berilia.getInstance().useIME;
+        }// end function
+
+        private function getInitBounds(param1:Texture) : Rectangle
+        {
+            var _loc_2:* = null;
+            if (this.oldTextureUri == null || this.oldTextureUri != param1.uri.toString())
+            {
+                _loc_2 = (param1.child as DisplayObjectContainer).getChildByName("bg") as MovieClip;
+                this.oldTextureBounds.width = _loc_2.width;
+                this.oldTextureBounds.height = _loc_2.height;
+                this.oldTextureUri = param1.uri.toString();
+            }
+            return this.oldTextureBounds;
+        }// end function
+
+        public function buildOrnamentTooltipFrom(param1:Texture, param2:Rectangle) : void
+        {
+            var _loc_6:* = null;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
+            var _loc_3:* = this.getInitBounds(param1);
+            var _loc_4:* = param1.child as DisplayObjectContainer;
+            var _loc_5:* = this.addPart("bg", _loc_4, param2, _loc_3.x, _loc_3.y) as MovieClip;
+            if (this.addPart("bg", _loc_4, param2, _loc_3.x, _loc_3.y) as MovieClip)
+            {
+                _loc_6 = _loc_5.getBounds(_loc_5);
+                _loc_7 = (param2.width - _loc_6.left + (_loc_6.right - 160)) / _loc_6.width;
+                _loc_8 = (param2.height - _loc_6.top + (_loc_6.bottom - 40)) / _loc_6.height;
+                _loc_5.x = _loc_5.x + ((-_loc_6.left) * _loc_7 + _loc_6.left);
+                _loc_5.y = _loc_5.y + ((-_loc_6.top) * _loc_8 + _loc_6.top);
+                _loc_5.scale9Grid = new Rectangle(80, 20, 1, 1);
+                _loc_5.width = _loc_3.width * _loc_7;
+                _loc_5.height = _loc_3.height * _loc_8;
+            }
+            this.addPart("top", _loc_4, param2, param2.width / 2, 0);
+            this.addPart("picto", _loc_4, param2, param2.width / 2, 0);
+            this.addPart("right", _loc_4, param2, param2.width, param2.height / 2);
+            this.addPart("bottom", _loc_4, param2, param2.width / 2, (param2.height - 1));
+            this.addPart("left", _loc_4, param2, 0, param2.height / 2);
+            return;
+        }// end function
+
+        private function addPart(param1:String, param2:DisplayObjectContainer, param3:Rectangle, param4:int, param5:int) : DisplayObject
+        {
+            var _loc_6:* = param2.getChildByName(param1);
+            if (param2.getChildByName(param1) != null)
+            {
+                _loc_6.x = param3.x + param4;
+                _loc_6.y = param3.y + param5;
+            }
+            return _loc_6;
         }// end function
 
         public function replaceParams(param1:String, param2:Array, param3:String = "%") : String

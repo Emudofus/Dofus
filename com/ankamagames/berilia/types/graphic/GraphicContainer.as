@@ -48,7 +48,7 @@
         private var _nLastHeight:int;
         private var _shResizeBorder:Shape;
         private var _bUseSimpleResize:Boolean = true;
-        private var _uiRootContainer:UiRootContainer;
+        var _uiRootContainer:UiRootContainer;
         private var _dropValidatorFunction:Function;
         private var _processDropFunction:Function;
         private var _removeDropSourceFunction:Function;
@@ -574,7 +574,7 @@
                 _loc_2 = this.getUi();
                 if (_loc_2 != null)
                 {
-                    _loc_3 = new MouseClickMessage(_loc_2.getElement(this._sLinkedTo), MouseClickMessage(param1).mouseEvent);
+                    _loc_3 = GenericPool.get(MouseClickMessage, _loc_2.getElement(this._sLinkedTo), MouseClickMessage(param1).mouseEvent);
                     _loc_2.getElement(this._sLinkedTo).process(_loc_3);
                 }
             }
@@ -847,33 +847,32 @@
 
         private function onEnterFrame(event:Event) : void
         {
-            var e:* = event;
-            var w:* = this._nStartWidth + StageShareManager.mouseX - this._nMouseX;
-            var h:* = this._nStartHeight + StageShareManager.mouseY - this._nMouseY;
+            var _loc_2:* = this._nStartWidth + StageShareManager.mouseX - this._nMouseX;
+            var _loc_3:* = this._nStartHeight + StageShareManager.mouseY - this._nMouseY;
             if (this.minSize != null)
             {
-                if (!isNaN(this.minSize.x) && w < this.minSize.x)
+                if (!isNaN(this.minSize.x) && _loc_2 < this.minSize.x)
                 {
-                    w = this.minSize.x;
+                    _loc_2 = this.minSize.x;
                 }
-                if (!isNaN(this.minSize.y) && h < this.minSize.y)
+                if (!isNaN(this.minSize.y) && _loc_3 < this.minSize.y)
                 {
-                    h = this.minSize.y;
+                    _loc_3 = this.minSize.y;
                 }
             }
             if (this.maxSize != null)
             {
-                if (!isNaN(this.maxSize.x) && w > this.maxSize.x)
+                if (!isNaN(this.maxSize.x) && _loc_2 > this.maxSize.x)
                 {
-                    w = this.maxSize.x;
+                    _loc_2 = this.maxSize.x;
                 }
-                if (!isNaN(this.maxSize.y) && h > this.maxSize.y)
+                if (!isNaN(this.maxSize.y) && _loc_3 > this.maxSize.y)
                 {
-                    h = this.maxSize.y;
+                    _loc_3 = this.maxSize.y;
                 }
             }
-            this.width = w;
-            this.height = h;
+            this.width = _loc_2;
+            this.height = _loc_3;
             if (this._nLastWidth != this.width || this._nLastHeight != this.height)
             {
                 if (this._bUseSimpleResize)

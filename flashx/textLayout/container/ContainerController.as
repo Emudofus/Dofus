@@ -50,8 +50,6 @@
         private var _updateStart:int;
         private var _composedFloats:Array;
         private var _floatsInContainer:Array;
-        private var _interactiveObjects:Dictionary;
-        private var _oldInteractiveObjects:Array;
         private var _shapeChildren:Array;
         private var _format:FlowValueHolder;
         private var _containerRoot:DisplayObject;
@@ -67,8 +65,6 @@
 
         public function ContainerController(param1:Sprite, param2:Number = 100, param3:Number = 100)
         {
-            this._interactiveObjects = new Dictionary(true);
-            this._oldInteractiveObjects = new Array();
             this.initialize(param1, param2, param3);
             return;
         }// end function
@@ -76,16 +72,6 @@
         function get allListenersAttached() : Boolean
         {
             return this._allListenersAttached;
-        }// end function
-
-        function get interactiveObjects() : Dictionary
-        {
-            return this._interactiveObjects;
-        }// end function
-
-        function get oldInteractiveObjects() : Array
-        {
-            return this._oldInteractiveObjects;
         }// end function
 
         function get hasScrollRect() : Boolean
@@ -378,6 +364,12 @@
             return;
         }// end function
 
+        function updateLength(param1:int, param2:int) : void
+        {
+            this.setTextLengthOnly(this._textLength + param2);
+            return;
+        }// end function
+
         public function isDamaged() : Boolean
         {
             return this.flowComposer.isDamaged(this.absoluteStart + this._textLength);
@@ -407,128 +399,42 @@
             return;
         }// end function
 
-        function gatherVisibleLines(param1:String, param2:Boolean) : void
+        private function gatherVisibleLines(param1:String, param2:Boolean) : void
         {
-            var _loc_3:* = NaN;
-            var _loc_4:* = NaN;
-            var _loc_5:* = NaN;
-            var _loc_6:* = NaN;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            var _loc_10:* = 0;
-            var _loc_11:* = null;
-            var _loc_12:* = 0;
-            var _loc_13:* = 0;
-            var _loc_14:* = null;
             var _loc_15:* = null;
-            var _loc_16:* = 0;
-            var _loc_17:* = 0;
-            var _loc_18:* = 0;
-            var _loc_19:* = undefined;
-            var _loc_20:* = null;
-            if (this._textLength != 0)
+            var _loc_16:* = null;
+            var _loc_3:* = this._measureWidth ? (this._contentWidth) : (this._compositionWidth);
+            var _loc_4:* = this._measureHeight ? (this._contentHeight) : (this._compositionHeight);
+            var _loc_5:* = param1 == BlockProgression.RL ? (this._xScroll - _loc_3) : (this._xScroll);
+            var _loc_6:* = this._yScroll;
+            var _loc_7:* = Twips.roundTo(_loc_5);
+            var _loc_8:* = Twips.roundTo(_loc_6);
+            var _loc_9:* = Twips.to(_loc_3);
+            var _loc_10:* = Twips.to(_loc_4);
+            var _loc_11:* = this.flowComposer;
+            var _loc_12:* = this.flowComposer.findLineIndexAtPosition(this.absoluteStart);
+            var _loc_13:* = _loc_11.findLineIndexAtPosition(this.absoluteStart + this._textLength - 1);
+            var _loc_14:* = _loc_12;
+            while (_loc_14 <= _loc_13)
             {
-                _loc_3 = this._measureWidth ? (this._contentWidth) : (this._compositionWidth);
-                _loc_4 = this._measureHeight ? (this._contentHeight) : (this._compositionHeight);
-                _loc_5 = param1 == BlockProgression.RL ? (this._xScroll - _loc_3) : (this._xScroll);
-                _loc_6 = this._yScroll;
-                _loc_7 = Twips.roundTo(_loc_5);
-                _loc_8 = Twips.roundTo(_loc_6);
-                _loc_9 = Twips.to(_loc_3);
-                _loc_10 = Twips.to(_loc_4);
-                _loc_11 = this.flowComposer;
-                _loc_12 = _loc_11.findLineIndexAtPosition(this.absoluteStart);
-                _loc_13 = _loc_11.findLineIndexAtPosition(this.absoluteStart + this._textLength - 1);
-                if (this.columnCount == 1)
+                
+                _loc_15 = _loc_11.getLineAt(_loc_14);
+                if (_loc_15 == null || _loc_15.controller != this)
                 {
-                    _loc_14 = _loc_11.getLineAt(_loc_12);
-                    _loc_15 = this.testLineVisible(param1, _loc_7, _loc_8, _loc_9, _loc_10, _loc_14, null) as TextLine;
-                    _loc_12++;
-                    if (_loc_15)
-                    {
-                        if (param2)
-                        {
-                            _loc_14.createShape(param1, _loc_15);
-                        }
-                        this._linesInView.push(_loc_15);
-                    }
-                    else
-                    {
-                        _loc_17 = _loc_13;
-                        while (_loc_12 <= _loc_17)
-                        {
-                            
-                            _loc_18 = (_loc_12 + _loc_17) / 2;
-                            _loc_14 = _loc_11.getLineAt(_loc_18);
-                            _loc_19 = this.testLineVisible(param1, _loc_7, _loc_8, _loc_9, _loc_10, _loc_14, null);
-                            _loc_15 = _loc_19 as TextLine;
-                            if (_loc_15)
-                            {
-                                _loc_20 = _loc_11.getLineAt((_loc_18 - 1));
-                                if (!(this.testLineVisible(param1, _loc_7, _loc_8, _loc_9, _loc_10, _loc_20, null) is TextLine))
-                                {
-                                    if (param2)
-                                    {
-                                        _loc_14.createShape(param1, _loc_15);
-                                    }
-                                    this._linesInView.push(_loc_15);
-                                    _loc_12 = _loc_18 + 1;
-                                    break;
-                                }
-                                _loc_19 = -1;
-                            }
-                            if (_loc_19 < 0 || _loc_19 == 2)
-                            {
-                                _loc_17 = _loc_18 - 1;
-                                continue;
-                            }
-                            _loc_12 = _loc_18 + 1;
-                        }
-                    }
-                    _loc_16 = _loc_12;
-                    while (_loc_16 <= _loc_13)
-                    {
-                        
-                        _loc_14 = _loc_11.getLineAt(_loc_16);
-                        _loc_15 = this.testLineVisible(param1, _loc_7, _loc_8, _loc_9, _loc_10, _loc_14, null) as TextLine;
-                        if (!_loc_15)
-                        {
-                            break;
-                        }
-                        if (param2)
-                        {
-                            _loc_14.createShape(param1, _loc_15);
-                        }
-                        this._linesInView.push(_loc_15);
-                        _loc_16++;
-                    }
                 }
                 else
                 {
-                    _loc_16 = _loc_12;
-                    while (_loc_16 <= _loc_13)
+                    _loc_16 = this.isLineVisible(param1, _loc_7, _loc_8, _loc_9, _loc_10, _loc_15, null);
+                    if (_loc_16)
                     {
-                        
-                        _loc_14 = _loc_11.getLineAt(_loc_16);
-                        if (_loc_14 == null || _loc_14.controller != this)
+                        if (param2)
                         {
+                            _loc_15.createShape(param1, _loc_16);
                         }
-                        else
-                        {
-                            _loc_15 = this.oldTestLineVisible(param1, _loc_7, _loc_8, _loc_9, _loc_10, _loc_14, null);
-                            if (_loc_15)
-                            {
-                                if (param2)
-                                {
-                                    _loc_14.createShape(param1, _loc_15);
-                                }
-                                this._linesInView.push(_loc_15);
-                            }
-                        }
-                        _loc_16++;
+                        this._linesInView.push(_loc_16);
                     }
                 }
+                _loc_14++;
             }
             this._updateStart = this.absoluteStart;
             return;
@@ -1732,27 +1638,28 @@
 
         function getContainerController(param1:DisplayObject) : ContainerController
         {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = null;
+            var flowComposer:IFlowComposer;
+            var i:int;
+            var controller:ContainerController;
+            var container:* = param1;
             try
             {
-                while (param1)
+                while (container)
                 {
                     
-                    _loc_2 = this.flowComposer;
-                    _loc_3 = 0;
-                    while (_loc_3 < _loc_2.numControllers)
+                    flowComposer = this.flowComposer;
+                    i;
+                    while (i < flowComposer.numControllers)
                     {
                         
-                        _loc_4 = _loc_2.getControllerAt(_loc_3);
-                        if (_loc_4.container == param1)
+                        controller = flowComposer.getControllerAt(i);
+                        if (controller.container == container)
                         {
-                            return _loc_4;
+                            return controller;
                         }
-                        _loc_3++;
+                        i = (i + 1);
                     }
-                    param1 = param1.parent;
+                    container = container.parent;
                 }
             }
             catch (e:Error)
@@ -2353,7 +2260,7 @@
             scratchRectangle.top = this._contentTop;
             scratchRectangle.width = this._contentWidth;
             scratchRectangle.height = this._contentHeight;
-            this._mouseEventManager.updateHitTests(this.effectiveBlockProgression == BlockProgression.RL && this._hasScrollRect ? (this._contentWidth) : (0), scratchRectangle, _loc_9, _loc_11 ? (_loc_11.absoluteStart) : (this._absoluteStart), _loc_12 ? (_loc_12.absoluteStart + _loc_12.textLength - 1) : (this._absoluteStart), this, _loc_10);
+            this._mouseEventManager.updateHitTests(this.effectiveBlockProgression == BlockProgression.RL && this._hasScrollRect ? (this._contentWidth) : (0), scratchRectangle, _loc_9, _loc_11 ? (_loc_11.absoluteStart) : (this._absoluteStart), _loc_12 ? (_loc_12.absoluteStart + _loc_12.textLength - 1) : (this._absoluteStart), _loc_10);
             this._updateStart = this._rootElement.textLength;
             if (this._measureWidth || this._measureHeight)
             {
@@ -2420,8 +2327,11 @@
                 {
                     
                     _loc_17 = _loc_17 - 1;
-                    _loc_4 = this._composedFloats[_loc_17];
-                    _loc_18 = this._floatsInContainer.indexOf(_loc_4.graphic);
+                    _loc_4 = this._composedFloats[(_loc_17 - 1)];
+                    if (_loc_4 != null)
+                    {
+                        _loc_18 = this._floatsInContainer.indexOf(_loc_4.graphic);
+                    }
                 }
                 _loc_18++;
                 _loc_23 = 0;
@@ -2521,7 +2431,7 @@
                     _loc_30 = this._floatsInContainer[_loc_18++];
                     if (_loc_30.parent)
                     {
-                        this.removeInlineGraphicElement(_loc_4.parent, _loc_30.parent);
+                        this.removeInlineGraphicElement(this._container, _loc_30.parent);
                     }
                     continue;
                 }
@@ -2553,9 +2463,9 @@
             {
                 
                 _loc_5 = this._floatsInContainer[_loc_18++];
-                if (_loc_5.parent && _loc_3.indexOf(_loc_5) < 0)
+                if (_loc_5.parent)
                 {
-                    this.removeInlineGraphicElement(_loc_5.parent.parent, _loc_5.parent);
+                    this.removeInlineGraphicElement(this._container, _loc_5.parent);
                 }
             }
             this._floatsInContainer = _loc_3;
@@ -2616,7 +2526,7 @@
                 }
                 _loc_6++;
             }
-            if (_loc_5 && (_loc_5.lastLine == _loc_4 || this.flowComposer.getControllerAt((this.flowComposer.numControllers - 1)) == this))
+            if (_loc_5)
             {
                 this.releaseLinesInBlock(_loc_5);
             }
@@ -2724,16 +2634,13 @@
 
         protected function addInlineGraphicElement(param1:DisplayObjectContainer, param2:DisplayObject, param3:int) : void
         {
-            if (param1)
-            {
-                param1.addChildAt(param2, param3);
-            }
+            param1.addChildAt(param2, param3);
             return;
         }// end function
 
         protected function removeInlineGraphicElement(param1:DisplayObjectContainer, param2:DisplayObject) : void
         {
-            if (param1 && param2.parent == param1)
+            if (param2.parent == param1)
             {
                 param1.removeChild(param2);
             }
@@ -2792,10 +2699,6 @@
                 _loc_7 = this.effectiveBlockProgression == BlockProgression.RL ? (-_loc_3) : (0);
                 _loc_8 = this.horizontalScrollPosition + _loc_7;
                 _loc_9 = this.verticalScrollPosition;
-                if (!this._hasScrollRect)
-                {
-                    this._container.scrollRect = null;
-                }
                 if (this.textLength == 0 || _loc_8 == 0 && _loc_9 == 0 && this._contentLeft >= _loc_7 && this._contentTop >= 0 && _loc_1 <= _loc_4 && _loc_2 <= _loc_6)
                 {
                     if (this._hasScrollRect)
@@ -2815,54 +2718,6 @@
                 }
             }
             this.attachTransparentBackgroundForHit(false);
-            return;
-        }// end function
-
-        public function get columnBreakBefore()
-        {
-            return this._format ? (this._format.columnBreakBefore) : (undefined);
-        }// end function
-
-        public function set columnBreakBefore(param1) : void
-        {
-            this.writableTextLayoutFormat().columnBreakBefore = param1;
-            this.formatChanged();
-            return;
-        }// end function
-
-        public function get columnBreakAfter()
-        {
-            return this._format ? (this._format.columnBreakAfter) : (undefined);
-        }// end function
-
-        public function set columnBreakAfter(param1) : void
-        {
-            this.writableTextLayoutFormat().columnBreakAfter = param1;
-            this.formatChanged();
-            return;
-        }// end function
-
-        public function get containerBreakBefore()
-        {
-            return this._format ? (this._format.containerBreakBefore) : (undefined);
-        }// end function
-
-        public function set containerBreakBefore(param1) : void
-        {
-            this.writableTextLayoutFormat().containerBreakBefore = param1;
-            this.formatChanged();
-            return;
-        }// end function
-
-        public function get containerBreakAfter()
-        {
-            return this._format ? (this._format.containerBreakAfter) : (undefined);
-        }// end function
-
-        public function set containerBreakAfter(param1) : void
-        {
-            this.writableTextLayoutFormat().containerBreakAfter = param1;
-            this.formatChanged();
             return;
         }// end function
 
@@ -3771,78 +3626,7 @@
             return this._format;
         }// end function
 
-        function testLineVisible(param1:String, param2:int, param3:int, param4:int, param5:int, param6:TextFlowLine, param7:TextLine)
-        {
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = 0;
-            var _loc_12:* = null;
-            if (param6.controller == null)
-            {
-                _loc_9 = this.textFlow.getElementsByTypeName("img");
-                _loc_11 = 0;
-                while (_loc_11 < _loc_9.length)
-                {
-                    
-                    _loc_10 = _loc_9[_loc_11] as InlineGraphicElement;
-                    if (_loc_10 && _loc_10.getAbsoluteStart() < param6.absoluteStart)
-                    {
-                        if (param1 == BlockProgression.TB)
-                        {
-                            if (_loc_10.height == undefined || _loc_10.height == "auto")
-                            {
-                                return 2;
-                            }
-                        }
-                        else if (_loc_10.width == undefined || _loc_10.width == "auto")
-                        {
-                            return 2;
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    _loc_11++;
-                }
-            }
-            if (param6.controller != this)
-            {
-                return param6.absoluteStart < this.absoluteStart ? (-1) : (1);
-            }
-            if (!param6.hasLineBounds())
-            {
-                if (!param7)
-                {
-                    param7 = param6.getTextLine(true);
-                }
-                param6.createShape(param1, param7);
-                if (param7.numChildren == 0)
-                {
-                    if (param1 == BlockProgression.TB)
-                    {
-                        param6.cacheLineBounds(param1, param7.x, param7.y - param7.ascent, param7.textWidth, param7.textHeight);
-                    }
-                    else
-                    {
-                        param6.cacheLineBounds(param1, param7.x - param7.descent, param7.y, param7.textHeight, param7.textWidth);
-                    }
-                }
-                else
-                {
-                    _loc_12 = this.getPlacedTextLineBounds(param7);
-                    if (param7.hasGraphicElement)
-                    {
-                        _loc_12 = this.computeLineBoundsWithGraphics(param6, param7, _loc_12);
-                    }
-                    param6.cacheLineBounds(param1, _loc_12.x, _loc_12.y, _loc_12.width, _loc_12.height);
-                }
-            }
-            var _loc_8:* = param1 == BlockProgression.TB ? (this._measureHeight) : (this._measureWidth) ? (0) : (param6.testLineVisible(param1, param2, param3, param4, param5));
-            return (param1 == BlockProgression.TB ? (this._measureHeight) : (this._measureWidth) ? (0) : (param6.testLineVisible(param1, param2, param3, param4, param5))) == 0 ? (param7 ? (param7) : (param6.getTextLine(true))) : (_loc_8);
-        }// end function
-
-        function oldTestLineVisible(param1:String, param2:int, param3:int, param4:int, param5:int, param6:TextFlowLine, param7:TextLine) : TextLine
+        function isLineVisible(param1:String, param2:int, param3:int, param4:int, param5:int, param6:TextFlowLine, param7:TextLine) : TextLine
         {
             var _loc_8:* = null;
             if (!param6.hasLineBounds())
@@ -3873,7 +3657,7 @@
                     param6.cacheLineBounds(param1, _loc_8.x, _loc_8.y, _loc_8.width, _loc_8.height);
                 }
             }
-            if ((param1 == BlockProgression.TB ? (this._measureHeight) : (this._measureWidth)) || param6.oldTestLineVisible(param1, param2, param3, param4, param5))
+            if ((param1 == BlockProgression.TB ? (this._measureHeight) : (this._measureWidth)) || param6.isLineVisible(param1, param2, param3, param4, param5))
             {
                 return param7 ? (param7) : (param6.getTextLine(true));
             }

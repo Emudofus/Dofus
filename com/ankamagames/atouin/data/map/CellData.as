@@ -18,7 +18,7 @@
         private var _red:Boolean;
         private var _blue:Boolean;
         private var _farmCell:Boolean;
-        private var _visible:Object;
+        private var _visible:Boolean;
         private var _nonWalkableDuringRP:Boolean;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(CellData));
 

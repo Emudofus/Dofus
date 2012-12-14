@@ -4,7 +4,7 @@
 
     final public class ListItemElement extends ContainerFormattedElement
     {
-        var _listNumberHint:int = 2147483647;
+        var _listNumberHint:int = 2.14748e+009;
 
         public function ListItemElement()
         {
@@ -107,114 +107,6 @@
                 this._listNumberHint = this._listNumberHint + (_loc_3 && _loc_3.hasOwnProperty("ordered") ? (_loc_3.ordered) : (1));
             }
             return this._listNumberHint;
-        }// end function
-
-        override function getEffectivePaddingLeft() : Number
-        {
-            if (getTextFlow().computedFormat.blockProgression == BlockProgression.TB)
-            {
-                if (computedFormat.paddingLeft == FormatValue.AUTO)
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return 0;
-                }
-                else
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.paddingLeft + computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return computedFormat.paddingLeft;
-                }
-            }
-            else
-            {
-                return 0;
-            }
-        }// end function
-
-        override function getEffectivePaddingTop() : Number
-        {
-            if (getTextFlow().computedFormat.blockProgression == BlockProgression.RL)
-            {
-                if (computedFormat.paddingTop == FormatValue.AUTO)
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return 0;
-                }
-                else
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.paddingTop + computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return computedFormat.paddingTop;
-                }
-            }
-            else
-            {
-                return 0;
-            }
-        }// end function
-
-        override function getEffectivePaddingRight() : Number
-        {
-            if (getTextFlow().computedFormat.blockProgression == BlockProgression.TB)
-            {
-                if (computedFormat.paddingRight == FormatValue.AUTO)
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return 0;
-                }
-                else
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.paddingRight + computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return computedFormat.paddingRight;
-                }
-            }
-            else
-            {
-                return 0;
-            }
-        }// end function
-
-        override function getEffectivePaddingBottom() : Number
-        {
-            if (getTextFlow().computedFormat.blockProgression == BlockProgression.RL)
-            {
-                if (computedFormat.paddingBottom == FormatValue.AUTO)
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return 0;
-                }
-                else
-                {
-                    if (computedFormat.listMarkerFormat !== undefined && computedFormat.listMarkerFormat.paragraphStartIndent !== undefined)
-                    {
-                        return computedFormat.paddingBottom + computedFormat.listMarkerFormat.paragraphStartIndent;
-                    }
-                    return computedFormat.paddingBottom;
-                }
-            }
-            else
-            {
-                return 0;
-            }
         }// end function
 
     }

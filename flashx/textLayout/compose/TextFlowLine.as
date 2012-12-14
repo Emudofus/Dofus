@@ -410,24 +410,7 @@
             return;
         }// end function
 
-        function testLineVisible(param1:String, param2:int, param3:int, param4:int, param5:int) : int
-        {
-            if (param1 == BlockProgression.RL)
-            {
-                if (this._boundsRightTW >= param2 && this._boundsLeftTW < param2 + param4)
-                {
-                    return 0;
-                }
-                return param2 < this._boundsRightTW ? (1) : (-1);
-            }
-            if (this._boundsRightTW >= param3 && this._boundsLeftTW < param3 + param5)
-            {
-                return 0;
-            }
-            return param3 < this._boundsRightTW ? (-1) : (1);
-        }// end function
-
-        function oldTestLineVisible(param1:String, param2:int, param3:int, param4:int, param5:int) : Boolean
+        function isLineVisible(param1:String, param2:int, param3:int, param4:int, param5:int) : Boolean
         {
             if (param1 == BlockProgression.RL)
             {
@@ -782,10 +765,6 @@
             {
                 
                 _loc_7.pushSelectionBlock(_loc_12);
-            }
-            if (_loc_10)
-            {
-                _loc_10.flushAtomData();
             }
             return _loc_7;
         }// end function
@@ -1417,7 +1396,6 @@
                     setRectangleValues(_loc_16, !_loc_9 ? (_loc_16.x + _loc_16.width) : (_loc_16.x), _loc_16.y, _loc_19, _loc_16.height);
                 }
             }
-            _loc_6.flushAtomData();
             return _loc_16;
         }// end function
 
@@ -2102,7 +2080,6 @@ class NumberLineFactory extends StringTextLineFactory
                 _loc_5++;
             }
         }
-        param1.flushAtomData();
         return _loc_4 > _loc_3 ? (_loc_4 - _loc_3) : (0);
     }// end function
 

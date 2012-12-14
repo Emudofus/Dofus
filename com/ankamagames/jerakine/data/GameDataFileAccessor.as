@@ -200,16 +200,16 @@
 
         public function close() : void
         {
-            var stream:FileStream;
+            var _loc_1:* = null;
             var _loc_2:* = 0;
             var _loc_3:* = this._streams;
             do
             {
                 
-                stream = _loc_3[_loc_2];
+                _loc_1 = _loc_3[_loc_2];
                 try
                 {
-                    stream.close();
+                    _loc_1.close();
                 }
                 catch (e:Error)
                 {

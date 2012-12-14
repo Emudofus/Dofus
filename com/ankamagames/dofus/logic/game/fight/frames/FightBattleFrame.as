@@ -34,7 +34,6 @@
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.sequencer.*;
     import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.system.*;
     import flash.events.*;
     import flash.utils.*;
     import gs.*;
@@ -181,7 +180,7 @@
                     }
                     else
                     {
-                        this.gameFightSynchronize(_loc_3.fighters);
+                        this.gameFightSynchronize(_loc_3.fighters, false);
                     }
                     return true;
                 }
@@ -231,7 +230,6 @@
                     _loc_8 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(_loc_4.id) as GameFightFighterInformations;
                     if (_loc_4.id == _loc_5 && _loc_8 && _loc_8.alive || this._playingSlaveEntity)
                     {
-                        SystemManager.getSingleton().notifyUser();
                         CurrentPlayedFighterManager.getInstance().currentFighterId = _loc_4.id;
                         if (_loc_7.playSoundAtTurnStart())
                         {
@@ -695,7 +693,7 @@
             return;
         }// end function
 
-        private function gameFightSynchronize(param1:Vector.<GameFightFighterInformations>, param2 = true) : void
+        private function gameFightSynchronize(param1:Vector.<GameFightFighterInformations>, param2:Boolean = true) : void
         {
             var _loc_6:* = null;
             var _loc_3:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
@@ -714,7 +712,7 @@
                     {
                         BuffManager.getInstance().markFinishingBuffs(_loc_6.contextualId, true);
                     }
-                    _loc_3.updateFighter(_loc_6, null);
+                    _loc_3.updateFighter(_loc_6, null, BuffManager.getInstance().getFinishingBuffs(_loc_6.contextualId));
                 }
             }
             return;

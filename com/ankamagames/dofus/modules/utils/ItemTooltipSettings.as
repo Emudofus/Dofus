@@ -8,6 +8,7 @@
         private var _effects:Boolean;
         private var _conditions:Boolean;
         private var _description:Boolean;
+        private var _averagePrice:Boolean;
 
         public function ItemTooltipSettings()
         {
@@ -15,6 +16,7 @@
             this._effects = true;
             this._conditions = true;
             this._description = true;
+            this._averagePrice = true;
             return;
         }// end function
 
@@ -59,6 +61,17 @@
         public function set description(param1:Boolean) : void
         {
             this._description = param1;
+            return;
+        }// end function
+
+        public function get averagePrice() : Boolean
+        {
+            return this._averagePrice;
+        }// end function
+
+        public function set averagePrice(param1:Boolean) : void
+        {
+            this._averagePrice = param1;
             return;
         }// end function
 

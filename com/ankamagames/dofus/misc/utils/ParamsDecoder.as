@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.misc.utils
 {
     import com.ankamagames.dofus.datacenter.alignments.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
     import com.ankamagames.dofus.datacenter.challenges.*;
     import com.ankamagames.dofus.datacenter.communication.*;
@@ -132,6 +133,9 @@
             var _loc_22:* = null;
             var _loc_23:* = null;
             var _loc_24:* = null;
+            var _loc_25:* = null;
+            var _loc_26:* = null;
+            var _loc_27:* = null;
             var _loc_4:* = "";
             _loc_5 = int(Number(param2.substr(1))) - 1;
             if (param1 == "")
@@ -147,8 +151,8 @@
                         _loc_6 = Item.getItemById(param3[_loc_5]);
                         if (_loc_6)
                         {
-                            _loc_24 = ItemWrapper.create(0, 0, param3[_loc_5], 0, null, false);
-                            _loc_4 = HyperlinkItemManager.newChatItem(_loc_24);
+                            _loc_27 = ItemWrapper.create(0, 0, param3[_loc_5], 0, null, false);
+                            _loc_4 = HyperlinkItemManager.newChatItem(_loc_27);
                         }
                         else
                         {
@@ -199,12 +203,12 @@
                         }
                         break;
                     }
-                    case "$spell":
+                    case "$achievement":
                     {
-                        _loc_10 = Spell.getSpellById(param3[_loc_5]);
+                        _loc_10 = Achievement.getAchievementById(param3[_loc_5]);
                         if (_loc_10)
                         {
-                            _loc_4 = _loc_10.name;
+                            _loc_4 = HyperlinkShowAchievementManager.addAchievement(_loc_10.id);
                         }
                         else
                         {
@@ -213,12 +217,12 @@
                         }
                         break;
                     }
-                    case "$spellState":
+                    case "$title":
                     {
-                        _loc_11 = SpellState.getSpellStateById(param3[_loc_5]);
+                        _loc_11 = Title.getTitleById(param3[_loc_5]);
                         if (_loc_11)
                         {
-                            _loc_4 = _loc_11.name;
+                            _loc_4 = HyperlinkShowTitleManager.addTitle(_loc_11.id);
                         }
                         else
                         {
@@ -227,12 +231,12 @@
                         }
                         break;
                     }
-                    case "$breed":
+                    case "$ornament":
                     {
-                        _loc_12 = Breed.getBreedById(param3[_loc_5]);
+                        _loc_12 = Ornament.getOrnamentById(param3[_loc_5]);
                         if (_loc_12)
                         {
-                            _loc_4 = _loc_12.shortName;
+                            _loc_4 = HyperlinkShowOrnamentManager.addOrnament(_loc_12.id);
                         }
                         else
                         {
@@ -241,9 +245,9 @@
                         }
                         break;
                     }
-                    case "$area":
+                    case "$spell":
                     {
-                        _loc_13 = Area.getAreaById(param3[_loc_5]);
+                        _loc_13 = Spell.getSpellById(param3[_loc_5]);
                         if (_loc_13)
                         {
                             _loc_4 = _loc_13.name;
@@ -255,9 +259,9 @@
                         }
                         break;
                     }
-                    case "$subarea":
+                    case "$spellState":
                     {
-                        _loc_14 = SubArea.getSubAreaById(param3[_loc_5]);
+                        _loc_14 = SpellState.getSpellStateById(param3[_loc_5]);
                         if (_loc_14)
                         {
                             _loc_4 = _loc_14.name;
@@ -269,19 +273,12 @@
                         }
                         break;
                     }
-                    case "$map":
+                    case "$breed":
                     {
-                        _loc_15 = MapPosition.getMapPositionById(param3[_loc_5]);
+                        _loc_15 = Breed.getBreedById(param3[_loc_5]);
                         if (_loc_15)
                         {
-                            if (_loc_15.name)
-                            {
-                                _loc_4 = _loc_15.name;
-                            }
-                            else
-                            {
-                                _loc_4 = "{map," + int(_loc_15.posX) + "," + int(_loc_15.posY) + "}";
-                            }
+                            _loc_4 = _loc_15.shortName;
                         }
                         else
                         {
@@ -290,9 +287,9 @@
                         }
                         break;
                     }
-                    case "$emote":
+                    case "$area":
                     {
-                        _loc_16 = Emoticon.getEmoticonById(param3[_loc_5]);
+                        _loc_16 = Area.getAreaById(param3[_loc_5]);
                         if (_loc_16)
                         {
                             _loc_4 = _loc_16.name;
@@ -304,9 +301,9 @@
                         }
                         break;
                     }
-                    case "$monster":
+                    case "$subarea":
                     {
-                        _loc_17 = Monster.getMonsterById(param3[_loc_5]);
+                        _loc_17 = SubArea.getSubAreaById(param3[_loc_5]);
                         if (_loc_17)
                         {
                             _loc_4 = _loc_17.name;
@@ -318,12 +315,19 @@
                         }
                         break;
                     }
-                    case "$monsterRace":
+                    case "$map":
                     {
-                        _loc_18 = MonsterRace.getMonsterRaceById(param3[_loc_5]);
+                        _loc_18 = MapPosition.getMapPositionById(param3[_loc_5]);
                         if (_loc_18)
                         {
-                            _loc_4 = _loc_18.name;
+                            if (_loc_18.name)
+                            {
+                                _loc_4 = _loc_18.name;
+                            }
+                            else
+                            {
+                                _loc_4 = "{map," + int(_loc_18.posX) + "," + int(_loc_18.posY) + "}";
+                            }
                         }
                         else
                         {
@@ -332,9 +336,9 @@
                         }
                         break;
                     }
-                    case "$monsterSuperRace":
+                    case "$emote":
                     {
-                        _loc_19 = MonsterSuperRace.getMonsterSuperRaceById(param3[_loc_5]);
+                        _loc_19 = Emoticon.getEmoticonById(param3[_loc_5]);
                         if (_loc_19)
                         {
                             _loc_4 = _loc_19.name;
@@ -346,9 +350,9 @@
                         }
                         break;
                     }
-                    case "$challenge":
+                    case "$monster":
                     {
-                        _loc_20 = Challenge.getChallengeById(param3[_loc_5]);
+                        _loc_20 = Monster.getMonsterById(param3[_loc_5]);
                         if (_loc_20)
                         {
                             _loc_4 = _loc_20.name;
@@ -360,9 +364,9 @@
                         }
                         break;
                     }
-                    case "$alignment":
+                    case "$monsterRace":
                     {
-                        _loc_21 = AlignmentSide.getAlignmentSideById(param3[_loc_5]);
+                        _loc_21 = MonsterRace.getMonsterRaceById(param3[_loc_5]);
                         if (_loc_21)
                         {
                             _loc_4 = _loc_21.name;
@@ -374,12 +378,54 @@
                         }
                         break;
                     }
+                    case "$monsterSuperRace":
+                    {
+                        _loc_22 = MonsterSuperRace.getMonsterSuperRaceById(param3[_loc_5]);
+                        if (_loc_22)
+                        {
+                            _loc_4 = _loc_22.name;
+                        }
+                        else
+                        {
+                            _log.error(param1 + " " + param3[_loc_5] + " introuvable");
+                            _loc_4 = "";
+                        }
+                        break;
+                    }
+                    case "$challenge":
+                    {
+                        _loc_23 = Challenge.getChallengeById(param3[_loc_5]);
+                        if (_loc_23)
+                        {
+                            _loc_4 = _loc_23.name;
+                        }
+                        else
+                        {
+                            _log.error(param1 + " " + param3[_loc_5] + " introuvable");
+                            _loc_4 = "";
+                        }
+                        break;
+                    }
+                    case "$alignment":
+                    {
+                        _loc_24 = AlignmentSide.getAlignmentSideById(param3[_loc_5]);
+                        if (_loc_24)
+                        {
+                            _loc_4 = _loc_24.name;
+                        }
+                        else
+                        {
+                            _log.error(param1 + " " + param3[_loc_5] + " introuvable");
+                            _loc_4 = "";
+                        }
+                        break;
+                    }
                     case "$stat":
                     {
-                        _loc_22 = I18n.getUiText("ui.item.characteristics").split(",");
-                        if (_loc_22[param3[_loc_5]])
+                        _loc_25 = I18n.getUiText("ui.item.characteristics").split(",");
+                        if (_loc_25[param3[_loc_5]])
                         {
-                            _loc_4 = _loc_22[param3[_loc_5]];
+                            _loc_4 = _loc_25[param3[_loc_5]];
                         }
                         else
                         {
@@ -390,10 +436,10 @@
                     }
                     case "$dungeon":
                     {
-                        _loc_23 = Dungeon.getDungeonById(param3[_loc_5]);
-                        if (_loc_23)
+                        _loc_26 = Dungeon.getDungeonById(param3[_loc_5]);
+                        if (_loc_26)
                         {
-                            _loc_4 = _loc_23.name;
+                            _loc_4 = _loc_26.name;
                         }
                         else
                         {

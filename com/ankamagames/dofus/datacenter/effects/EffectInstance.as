@@ -1,12 +1,12 @@
 ﻿package com.ankamagames.dofus.datacenter.effects
 {
     import com.ankamagames.dofus.datacenter.alignments.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.communication.*;
     import com.ankamagames.dofus.datacenter.documents.*;
     import com.ankamagames.dofus.datacenter.effects.instances.*;
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.datacenter.jobs.*;
-    import com.ankamagames.dofus.datacenter.misc.*;
     import com.ankamagames.dofus.datacenter.monsters.*;
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.dofus.types.enums.*;

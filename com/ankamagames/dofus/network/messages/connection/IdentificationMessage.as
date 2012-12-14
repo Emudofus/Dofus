@@ -11,7 +11,6 @@
         private var _isInitialized:Boolean = false;
         public var version:VersionExtended;
         public var lang:String = "";
-        public var login:String = "";
         public var credentials:Vector.<int>;
         public var serverId:int = 0;
         public var autoconnect:Boolean = false;
@@ -36,16 +35,15 @@
             return 4;
         }// end function
 
-        public function initIdentificationMessage(param1:VersionExtended = null, param2:String = "", param3:String = "", param4:Vector.<int> = null, param5:int = 0, param6:Boolean = false, param7:Boolean = false, param8:Boolean = false) : IdentificationMessage
+        public function initIdentificationMessage(param1:VersionExtended = null, param2:String = "", param3:Vector.<int> = null, param4:int = 0, param5:Boolean = false, param6:Boolean = false, param7:Boolean = false) : IdentificationMessage
         {
             this.version = param1;
             this.lang = param2;
-            this.login = param3;
-            this.credentials = param4;
-            this.serverId = param5;
-            this.autoconnect = param6;
-            this.useCertificate = param7;
-            this.useLoginToken = param8;
+            this.credentials = param3;
+            this.serverId = param4;
+            this.autoconnect = param5;
+            this.useCertificate = param6;
+            this.useLoginToken = param7;
             this._isInitialized = true;
             return this;
         }// end function
@@ -53,7 +51,6 @@
         override public function reset() : void
         {
             this.version = new VersionExtended();
-            this.login = "";
             this.credentials = new Vector.<int>;
             this.serverId = 0;
             this.autoconnect = false;
@@ -92,7 +89,6 @@
             param1.writeByte(_loc_2);
             this.version.serializeAs_VersionExtended(param1);
             param1.writeUTF(this.lang);
-            param1.writeUTF(this.login);
             param1.writeShort(this.credentials.length);
             var _loc_3:* = 0;
             while (_loc_3 < this.credentials.length)
@@ -121,7 +117,6 @@
             this.version = new VersionExtended();
             this.version.deserialize(param1);
             this.lang = param1.readUTF();
-            this.login = param1.readUTF();
             var _loc_3:* = param1.readUnsignedShort();
             var _loc_4:* = 0;
             while (_loc_4 < _loc_3)

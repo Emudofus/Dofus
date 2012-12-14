@@ -6,9 +6,9 @@
 
         public function ILagometer();
 
-        function ping() : void;
+        function ping(param1:INetworkMessage = null) : void;
 
-        function pong() : void;
+        function pong(param1:INetworkMessage = null) : void;
 
         function stop() : void;
 

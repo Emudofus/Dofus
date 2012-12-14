@@ -81,7 +81,36 @@
             return _loc_2[param1];
         }// end function
 
+        public function getParagraphByChannel(param1:uint) : Array
+        {
+            var _loc_2:* = this.chatFrame.getParagraphes();
+            return _loc_2[param1];
+        }// end function
+
         public function getMessagesStoredMax() : uint
+        {
+            return this.chatFrame.maxMessagesStored;
+        }// end function
+
+        public function addParagraphToHistory(param1:int, param2:Object) : void
+        {
+            this.chatFrame.addParagraphToHistory(param1, param2);
+            return;
+        }// end function
+
+        public function removeLinesFromHistory(param1:int, param2:int) : void
+        {
+            this.chatFrame.removeLinesFromHistory(param1, param2);
+            return;
+        }// end function
+
+        public function setMaxMessagesStored(param1:int) : void
+        {
+            this.chatFrame.maxMessagesStored = param1;
+            return;
+        }// end function
+
+        public function getMaxMessagesStored() : int
         {
             return this.chatFrame.maxMessagesStored;
         }// end function
@@ -165,6 +194,12 @@
         public function getAutocompletion(param1:String, param2:int) : String
         {
             return ChatAutocompleteNameManager.getInstance().autocomplete(param1, param2);
+        }// end function
+
+        public function changeCssHandler(param1:String) : void
+        {
+            HtmlManager.changeCssHandler(param1);
+            return;
         }// end function
 
         public function logChat(param1:String) : void

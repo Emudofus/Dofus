@@ -12,7 +12,7 @@
         private var layoutFeatures:IAssetLayoutFeatures;
         private var _height:Number;
         private var _layoutDirection:String = "ltr";
-        static const VERSION:String = "4.1.0.16076";
+        static const VERSION:String = "4.6.0.23201";
         private static var FlexVersionClass:Class;
         private static var MatrixUtilClass:Class;
 
@@ -378,7 +378,7 @@
                 
                 if (_loc_1 is ILayoutDirectionElement)
                 {
-                    _loc_2 = this._layoutDirection != null && this._layoutDirection != ILayoutDirectionElement(_loc_1).layoutDirection;
+                    _loc_2 = this._layoutDirection != null && ILayoutDirectionElement(_loc_1).layoutDirection != null && this._layoutDirection != ILayoutDirectionElement(_loc_1).layoutDirection;
                     if (_loc_2 && this.layoutFeatures == null)
                     {
                         this.initAdvancedLayoutFeatures();

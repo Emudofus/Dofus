@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.dofus.datacenter.communication
 {
+    import __AS3__.vec.*;
     import com.ankamagames.jerakine.data.*;
     import com.ankamagames.jerakine.interfaces.*;
     import com.ankamagames.jerakine.logger.*;
@@ -11,6 +12,7 @@
         public var order:uint;
         public var gfxId:String;
         public var forPlayers:Boolean;
+        public var triggers:Vector.<String>;
         private static const MODULE:String = "Smileys";
         static const _log:Logger = Log.getLogger(getQualifiedClassName(Smiley));
 

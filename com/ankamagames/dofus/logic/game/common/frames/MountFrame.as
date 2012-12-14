@@ -31,6 +31,8 @@
         private var _mountXpRatio:uint;
         private var _stableList:Array;
         private var _paddockList:Array;
+        private var _inventoryWeight:uint;
+        private var _inventoryMaxWeight:uint;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(MountFrame));
         public static const MAX_XP_RATIO:uint = 90;
 
@@ -383,6 +385,8 @@
                 case param1 is ExchangeWeightMessage:
                 {
                     _loc_32 = param1 as ExchangeWeightMessage;
+                    this._inventoryWeight = _loc_32.currentWeight;
+                    this._inventoryMaxWeight = _loc_32.maxWeight;
                     KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeWeight, _loc_32.currentWeight, _loc_32.maxWeight);
                     return true;
                 }
@@ -551,6 +555,16 @@
         public function pulled() : Boolean
         {
             return true;
+        }// end function
+
+        public function get inventoryWeight() : uint
+        {
+            return this._inventoryWeight;
+        }// end function
+
+        public function get inventoryMaxWeight() : uint
+        {
+            return this._inventoryMaxWeight;
         }// end function
 
     }

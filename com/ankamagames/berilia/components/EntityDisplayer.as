@@ -493,6 +493,7 @@
             }
             if (!this._entity.height || !this.autoSize)
             {
+                Berilia.getInstance().handler.process(new EntityReadyMessage(InteractiveObject(this)));
                 return;
             }
             if (this._view != null)

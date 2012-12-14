@@ -6,7 +6,7 @@
     {
         private var _measuredHeight:Number;
         private var _measuredWidth:Number;
-        static const VERSION:String = "4.1.0.16076";
+        static const VERSION:String = "4.6.0.23201";
 
         public function ButtonAsset()
         {

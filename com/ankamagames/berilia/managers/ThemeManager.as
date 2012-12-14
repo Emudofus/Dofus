@@ -12,6 +12,7 @@
     import com.ankamagames.jerakine.resources.protocols.*;
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.errors.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import flash.filesystem.*;
     import flash.utils.*;
 
@@ -37,7 +38,14 @@
             this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
             this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onLoadError, false, 0, true);
             this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onLoad, false, 0, true);
-            ProtocolFactory.addProtocol("theme", ThemeProtocol);
+            if (AirScanner.isStreamingVersion())
+            {
+                ProtocolFactory.addProtocol("theme", ThemeFlashProtocol);
+            }
+            else
+            {
+                ProtocolFactory.addProtocol("theme", ThemeProtocol);
+            }
             return;
         }// end function
 
@@ -116,6 +124,7 @@
 
         public function applyTheme(param1:String) : void
         {
+            var _loc_2:* = null;
             if (this._dtFileToLoad == this._themeCount)
             {
                 if (this._themeNames.length == 0)
@@ -132,9 +141,10 @@
                         UiRenderManager.getInstance().clearCache();
                     }
                     this._currentTheme = param1;
-                    LangManager.getInstance().setEntry("config.ui.skin", LangManager.getInstance().getEntry("config.ui.common.themes") + param1 + "/", "string");
-                    XmlConfig.getInstance().setEntry("config.ui.skin", LangManager.getInstance().getEntry("config.ui.common.themes") + param1 + "/");
-                    LangManager.getInstance().loadFile(LangManager.getInstance().getEntry("config.ui.skin") + "colors.xml");
+                    _loc_2 = LangManager.getInstance().getEntry("config.ui.common.themes") + param1 + "/";
+                    LangManager.getInstance().setEntry("config.ui.skin", _loc_2, "string");
+                    XmlConfig.getInstance().setEntry("config.ui.skin", _loc_2);
+                    LangManager.getInstance().loadFile(_loc_2 + "colors.xml");
                 }
             }
             else

@@ -30,76 +30,64 @@
 
         public static function getVariables(param1:Object, param2:Boolean = false, param3:Boolean = true) : Array
         {
-            var variables:Array;
-            var description:XML;
-            var variableNode:XML;
-            var key:String;
-            var accessorNode:XML;
-            var o:* = param1;
-            var onlyVar:* = param2;
-            var useCache:* = param3;
-            var className:* = getQualifiedClassName(o);
-            if (useCache)
+            var _loc_5:* = null;
+            var _loc_6:* = null;
+            var _loc_7:* = null;
+            var _loc_8:* = null;
+            var _loc_9:* = null;
+            var _loc_4:* = getQualifiedClassName(param1);
+            if (param3)
             {
-                if (onlyVar && _variables[className])
+                if (param2 && _variables[_loc_4])
                 {
-                    return _variables[className];
+                    return _variables[_loc_4];
                 }
-                if (!onlyVar && _variablesAndAccessor[className])
+                if (!param2 && _variablesAndAccessor[_loc_4])
                 {
-                    return _variablesAndAccessor[className];
+                    return _variablesAndAccessor[_loc_4];
                 }
             }
-            variables = new Array();
-            description = typeDescription(o, useCache);
-            if (description.@isDynamic.toString() == "true" || o is Proxy)
+            _loc_5 = new Array();
+            _loc_6 = typeDescription(param1, param3);
+            if (_loc_6.@isDynamic.toString() == "true" || param1 is Proxy)
             {
                 try
                 {
-                    var _loc_5:* = 0;
-                    var _loc_6:* = o;
-                    while (_loc_6 in _loc_5)
+                    for (_loc_8 in param1)
                     {
                         
-                        key = _loc_6[_loc_5];
-                        variables.push(key);
+                        _loc_5.push(_loc_8);
                     }
                 }
                 catch (e:Error)
                 {
                 }
             }
-            var _loc_5:* = 0;
-            var _loc_6:* = description..variable;
-            while (_loc_6 in _loc_5)
+            for each (_loc_7 in _loc_6..variable)
             {
                 
-                variableNode = _loc_6[_loc_5];
-                variables.push(variableNode.@name.toString());
+                _loc_5.push(_loc_7.@name.toString());
             }
-            if (!onlyVar)
+            if (!param2)
             {
-                var _loc_5:* = 0;
-                var _loc_6:* = description..accessor;
-                while (_loc_6 in _loc_5)
+                for each (_loc_9 in _loc_6..accessor)
                 {
                     
-                    accessorNode = _loc_6[_loc_5];
-                    variables.push(accessorNode.@name.toString());
+                    _loc_5.push(_loc_9.@name.toString());
                 }
             }
-            if (useCache)
+            if (param3)
             {
-                if (onlyVar)
+                if (param2)
                 {
-                    _variables[className] = variables;
+                    _variables[_loc_4] = _loc_5;
                 }
                 else
                 {
-                    _variablesAndAccessor[className] = variables;
+                    _variablesAndAccessor[_loc_4] = _loc_5;
                 }
             }
-            return variables;
+            return _loc_5;
         }// end function
 
         public static function getTags(param1:Object) : Dictionary

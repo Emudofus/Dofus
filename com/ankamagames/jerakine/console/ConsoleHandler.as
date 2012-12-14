@@ -12,13 +12,15 @@
         private var _handlers:Dictionary;
         private var _outputHandler:MessageHandler;
         private var _displayExecutionTime:Boolean;
+        private var _hideCommandsWithoutHelp:Boolean;
         static const _log:Logger = Log.getLogger(getQualifiedClassName(ConsoleHandler));
 
-        public function ConsoleHandler(param1:MessageHandler, param2:Boolean = true)
+        public function ConsoleHandler(param1:MessageHandler, param2:Boolean = true, param3:Boolean = false)
         {
             this._outputHandler = param1;
             this._handlers = new Dictionary();
             this._displayExecutionTime = param2;
+            this._hideCommandsWithoutHelp = param3;
             this._handlers["help"] = this;
             return;
         }// end function
@@ -103,6 +105,7 @@
             var _loc_4:* = null;
             var _loc_5:* = null;
             var _loc_6:* = null;
+            var _loc_7:* = null;
             switch(param2)
             {
                 case "help":
@@ -120,15 +123,19 @@
                         for each (_loc_5 in _loc_4)
                         {
                             
-                            param1.output("  - <b>" + _loc_5 + "</b>: " + (this._handlers[_loc_5] as ConsoleInstructionHandler).getHelp(_loc_5));
+                            _loc_6 = (this._handlers[_loc_5] as ConsoleInstructionHandler).getHelp(_loc_5);
+                            if (_loc_6 || !this._hideCommandsWithoutHelp)
+                            {
+                                param1.output("  - <b>" + _loc_5 + "</b>: " + _loc_6);
+                            }
                         }
                     }
                     else
                     {
-                        _loc_6 = this._handlers[param3[0]];
-                        if (_loc_6)
+                        _loc_7 = this._handlers[param3[0]];
+                        if (_loc_7)
                         {
-                            param1.output("<b>" + _loc_5 + "</b>: " + _loc_6.getHelp(param3[0]));
+                            param1.output("<b>" + _loc_5 + "</b>: " + _loc_7.getHelp(param3[0]));
                         }
                         else
                         {

@@ -3,7 +3,6 @@
     import flash.display.*;
     import flash.geom.*;
     import flash.text.engine.*;
-    import flash.utils.*;
     import flashx.textLayout.container.*;
     import flashx.textLayout.elements.*;
     import flashx.textLayout.formats.*;
@@ -67,7 +66,6 @@
         private var _alignLines:Array;
         protected var _curParcel:Parcel;
         protected var _curParcelStart:int;
-        protected var _curInteractiveObjects:Dictionary = null;
         protected var _measuring:Boolean;
         protected var _curLine:TextFlowLine;
         protected var _previousLine:TextLine;
@@ -156,14 +154,13 @@
         {
             var _loc_3:* = null;
             var _loc_4:* = false;
-            var _loc_8:* = null;
+            var _loc_7:* = NaN;
+            var _loc_8:* = NaN;
             var _loc_9:* = NaN;
             var _loc_10:* = NaN;
-            var _loc_11:* = NaN;
+            var _loc_11:* = null;
             var _loc_12:* = NaN;
             var _loc_13:* = null;
-            var _loc_14:* = NaN;
-            var _loc_15:* = null;
             var _loc_5:* = 0;
             if (param2 != this._curElementStart + this._curElementOffset)
             {
@@ -171,72 +168,44 @@
                 _loc_3 = param1.getChildAt(_loc_5);
                 param2 = param2 + _loc_3.parentRelativeStart;
             }
-            var _loc_6:* = this._textFlow.findLeaf((this._startComposePosition - 1));
-            if (this._textFlow.findLeaf((this._startComposePosition - 1)))
-            {
-                _loc_8 = _loc_6.getParagraph();
-                if (_loc_8 && _loc_8 != this._curElement.getParagraph())
-                {
-                    if (_loc_8.paddingBottom != undefined)
-                    {
-                        this._parcelList.addTotalDepth(_loc_8.paddingBottom);
-                    }
-                }
-            }
-            var _loc_7:* = param2 == this._curElementStart + this._curElementOffset;
+            var _loc_6:* = param2 == this._curElementStart + this._curElementOffset;
             while (_loc_5 < param1.numChildren && (param2 <= this._stopComposePos || !this.parcelList.atLast()))
             {
                 
                 _loc_3 = param1.getChildAt(_loc_5);
                 if (_loc_3.computedFormat.clearFloats != ClearFloats.NONE)
                 {
-                    _loc_14 = this._curParcel.applyClear(_loc_3.computedFormat.clearFloats, this._parcelList.totalDepth, _loc_3.computedFormat.direction);
-                    this._parcelList.addTotalDepth(_loc_14);
+                    _loc_12 = this._curParcel.applyClear(_loc_3.computedFormat.clearFloats, this._parcelList.totalDepth, _loc_3.computedFormat.direction);
+                    this._parcelList.addTotalDepth(_loc_12);
                     this._verticalSpaceCarried = 0;
                 }
                 if (this._blockProgression == BlockProgression.RL)
                 {
-                    _loc_9 = _loc_3.getEffectivePaddingTop();
-                    _loc_10 = _loc_3.getEffectivePaddingBottom();
-                    _loc_11 = _loc_3.getEffectivePaddingRight();
-                    _loc_12 = _loc_3.getEffectivePaddingLeft();
+                    _loc_7 = _loc_3.getEffectivePaddingTop();
+                    _loc_8 = _loc_3.getEffectivePaddingBottom();
+                    _loc_9 = _loc_3.getEffectivePaddingRight();
+                    _loc_10 = _loc_3.getEffectivePaddingLeft();
                 }
                 else
                 {
-                    _loc_9 = _loc_3.getEffectivePaddingLeft();
-                    _loc_10 = _loc_3.getEffectivePaddingRight();
-                    _loc_11 = _loc_3.getEffectivePaddingTop();
-                    _loc_12 = _loc_3.getEffectivePaddingBottom();
+                    _loc_7 = _loc_3.getEffectivePaddingLeft();
+                    _loc_8 = _loc_3.getEffectivePaddingRight();
+                    _loc_9 = _loc_3.getEffectivePaddingTop();
+                    _loc_10 = _loc_3.getEffectivePaddingBottom();
                 }
-                this._parcelList.pushLeftMargin(_loc_9);
-                this._parcelList.pushRightMargin(_loc_10);
-                if (_loc_7 && _loc_11 > this._verticalSpaceCarried)
+                this._parcelList.pushLeftMargin(_loc_7);
+                this._parcelList.pushRightMargin(_loc_8);
+                if (_loc_6 && _loc_9 > this._verticalSpaceCarried)
                 {
-                    this._parcelList.addTotalDepth(_loc_11 - this._verticalSpaceCarried);
+                    this._parcelList.addTotalDepth(_loc_9 - this._verticalSpaceCarried);
                 }
-                this._verticalSpaceCarried = Math.max(_loc_11, 0);
-                _loc_13 = _loc_3 as ParagraphElement;
-                if (_loc_13)
+                this._verticalSpaceCarried = Math.max(_loc_9, 0);
+                _loc_11 = _loc_3 as ParagraphElement;
+                if (_loc_11)
                 {
-                    if (!this._atColumnStart && _loc_13.computedFormat.columnBreakBefore == BreakStyle.ALWAYS)
-                    {
-                        this.advanceToNextParcel();
-                    }
-                    if (!(this._atColumnStart && this._parcelList.currentParcel != null && this._parcelList.currentParcel.columnIndex == 0) && _loc_13.computedFormat.containerBreakBefore == BreakStyle.ALWAYS)
-                    {
-                        this.advanceToNextContainer();
-                    }
-                    if (!this.composeParagraphElement(_loc_13, param2))
+                    if (!this.composeParagraphElement(_loc_11, param2))
                     {
                         return false;
-                    }
-                    if (!(this._atColumnStart && this._parcelList.currentParcel != null && this._parcelList.currentParcel.columnIndex == 0) && _loc_13.computedFormat.containerBreakAfter == BreakStyle.ALWAYS)
-                    {
-                        this.advanceToNextContainer();
-                    }
-                    if (!this._atColumnStart && _loc_13.computedFormat.columnBreakAfter == BreakStyle.ALWAYS)
-                    {
-                        this.advanceToNextParcel();
                     }
                 }
                 else if (_loc_3 is ListElement)
@@ -249,10 +218,10 @@
                 }
                 else if (_loc_3 is ListItemElement)
                 {
-                    _loc_15 = this._listItemElement;
+                    _loc_13 = this._listItemElement;
                     this._listItemElement = _loc_3 as ListItemElement;
                     _loc_4 = this.composeBlockElement(FlowGroupElement(_loc_3), param2);
-                    this._listItemElement = _loc_15;
+                    this._listItemElement = _loc_13;
                     if (!_loc_4)
                     {
                         return false;
@@ -262,15 +231,15 @@
                 {
                     return false;
                 }
-                if (_loc_12 > this._verticalSpaceCarried)
+                if (_loc_10 > this._verticalSpaceCarried)
                 {
-                    this._parcelList.addTotalDepth(_loc_12 - this._verticalSpaceCarried);
+                    this._parcelList.addTotalDepth(_loc_10 - this._verticalSpaceCarried);
                 }
-                this._verticalSpaceCarried = Math.max(_loc_12, 0);
-                this._parcelList.popLeftMargin(_loc_9);
-                this._parcelList.popRightMargin(_loc_10);
+                this._verticalSpaceCarried = Math.max(_loc_10, 0);
+                this._parcelList.popLeftMargin(_loc_7);
+                this._parcelList.popRightMargin(_loc_8);
                 param2 = param2 + _loc_3.textLength;
-                _loc_7 = true;
+                _loc_6 = true;
                 _loc_5++;
             }
             return true;
@@ -278,10 +247,8 @@
 
         public function composeTextFlow(param1:TextFlow, param2:int, param3:int) : int
         {
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = null;
+            var _loc_4:* = 0;
+            var _loc_5:* = null;
             this._textFlow = param1;
             this._releaseLineCreationData = param1.configuration.releaseLineCreationData && Configuration.playerEnablesArgoFeatures;
             this._flowComposer = this._textFlow.flowComposer;
@@ -295,33 +262,6 @@
             this._curElement = this._textFlow.findLeaf(this._startComposePosition);
             this._curElementStart = this._curElement.getAbsoluteStart();
             this._curElementOffset = this._startComposePosition - this._curElementStart;
-            var _loc_4:* = this._startController.interactiveObjects;
-            var _loc_5:* = this._startController.oldInteractiveObjects;
-            this._startController.oldInteractiveObjects.splice(0);
-            for each (_loc_6 in _loc_4)
-            {
-                
-                if (_loc_6 && (_loc_6 as FlowElement).getAbsoluteStart() >= this._startComposePosition)
-                {
-                    _loc_5.push(_loc_4[_loc_6]);
-                    delete _loc_4[_loc_6];
-                }
-            }
-            _loc_7 = this._flowComposer.getControllerIndex(this._startController) + 1;
-            while (_loc_7 <= param3)
-            {
-                
-                _loc_4 = this._flowComposer.getControllerAt(_loc_7).interactiveObjects;
-                for each (_loc_6 in _loc_4)
-                {
-                    
-                    if (_loc_6)
-                    {
-                        delete _loc_4[_loc_6];
-                    }
-                }
-                _loc_7++;
-            }
             if (this._startComposePosition <= this._startController.absoluteStart || !this.advanceToComposeStartPosition())
             {
                 if (this._startComposePosition > this._startController.absoluteStart)
@@ -337,9 +277,9 @@
                 }
                 else
                 {
-                    _loc_8 = this._flowComposer.findLineIndexAtPosition((this._startComposePosition - 1));
-                    _loc_9 = this._flowComposer.getLineAt(_loc_8);
-                    this._previousLine = _loc_9.getTextLine(true);
+                    _loc_4 = this._flowComposer.findLineIndexAtPosition((this._startComposePosition - 1));
+                    _loc_5 = this._flowComposer.getLineAt(_loc_4);
+                    this._previousLine = _loc_5.getTextLine(true);
                 }
                 this.advanceToNextParcel();
                 if (this._curParcel)
@@ -647,7 +587,6 @@
             var _loc_11:* = NaN;
             var _loc_12:* = NaN;
             var _loc_13:* = 0;
-            var _loc_14:* = null;
             var _loc_1:* = true;
             var _loc_5:* = 0;
             if (this._curParaFormat.direction == Direction.LTR)
@@ -803,23 +742,6 @@
                     do
                     {
                         
-                        if (this._curParaElement.hasInteractiveChildren())
-                        {
-                            _loc_14 = this._curElement;
-                            while (_loc_14 && _loc_14 != this._curParaElement)
-                            {
-                                
-                                if (_loc_14 is LinkElement)
-                                {
-                                    this._curInteractiveObjects[_loc_14] = _loc_14;
-                                }
-                                else if (_loc_14.hasActiveEventMirror())
-                                {
-                                    this._curInteractiveObjects[_loc_14] = _loc_14;
-                                }
-                                _loc_14 = _loc_14.parent;
-                            }
-                        }
                         this._curElementOffset = this._curElementOffset - this._curElement.textLength;
                         this._curElementStart = this._curElementStart + this._curElement.textLength;
                         this._curElement = this._curElement.getNextLeaf();
@@ -892,7 +814,7 @@
 
         protected function isLineVisible(param1:TextLine) : Boolean
         {
-            return this._curParcel.controller.testLineVisible(this._blockProgression, this._controllerVisibleBoundsXTW, this._controllerVisibleBoundsYTW, this._controllerVisibleBoundsWidthTW, this._controllerVisibleBoundsHeightTW, this._curLine, param1) is TextLine;
+            return this._curParcel.controller.isLineVisible(this._blockProgression, this._controllerVisibleBoundsXTW, this._controllerVisibleBoundsYTW, this._controllerVisibleBoundsWidthTW, this._controllerVisibleBoundsHeightTW, this._curLine, param1) != null;
         }// end function
 
         protected function endLine(param1:TextLine) : void
@@ -1103,28 +1025,10 @@
 
         protected function composeInlineGraphicElement(param1:InlineGraphicElement, param2:TextLine) : Boolean
         {
-            var _loc_6:* = null;
             var _loc_3:* = this._blockProgression == BlockProgression.RL ? (-param1.getEffectivePaddingRight()) : (param1.getEffectivePaddingLeft());
             var _loc_4:* = param1.getEffectivePaddingTop();
             var _loc_5:* = param1.placeholderGraphic.parent;
             this._curParcel.controller.addFloatAt(this._curParaStart + param1.getElementRelativeStart(this._curParaElement), param1.graphic, Float.NONE, _loc_3, _loc_4, _loc_5 ? (_loc_5.alpha) : (1), _loc_5 ? (_loc_5.transform.matrix) : (null), this._parcelList.totalDepth, 0, this._curParcel.columnIndex, param2);
-            if (this._curParaElement.hasInteractiveChildren())
-            {
-                _loc_6 = param1;
-                while (_loc_6 && _loc_6 != this._curParaElement)
-                {
-                    
-                    if (_loc_6 is LinkElement)
-                    {
-                        this._curInteractiveObjects[_loc_6] = _loc_6;
-                    }
-                    else if (_loc_6.hasActiveEventMirror())
-                    {
-                        this._curInteractiveObjects[_loc_6] = _loc_6;
-                    }
-                    _loc_6 = _loc_6.parent;
-                }
-            }
             return true;
         }// end function
 
@@ -1190,15 +1094,15 @@
                 _loc_12 = this.calculateFloatBounds(param1, _loc_3, _loc_11);
                 if (_loc_3)
                 {
-                    this._workingContentExtent = Math.max(this._workingContentExtent, _loc_12.bottom + param1.getEffectivePaddingLeft() + param1.getEffectivePaddingRight());
-                    this._workingContentHeight = Math.max(this._workingContentHeight, _floatSlug.depth + _loc_12.width + param1.getEffectivePaddingTop() + param1.getEffectivePaddingBottom());
+                    this._workingContentExtent = Math.max(this._workingContentExtent, _loc_12.bottom);
+                    this._workingContentHeight = Math.max(this._workingContentHeight, _floatSlug.depth + _loc_12.width);
                     this._workingContentLogicalExtent = Math.max(this._workingContentLogicalExtent, _loc_12.bottom);
                     this._accumulatedMinimumStart = Math.min(this._accumulatedMinimumStart, _loc_12.y);
                 }
                 else
                 {
-                    this._workingContentExtent = Math.max(this._workingContentExtent, _loc_12.right + param1.getEffectivePaddingLeft() + param1.getEffectivePaddingRight());
-                    this._workingContentHeight = Math.max(this._workingContentHeight, _floatSlug.depth + _loc_12.height + param1.getEffectivePaddingTop() + param1.getEffectivePaddingBottom());
+                    this._workingContentExtent = Math.max(this._workingContentExtent, _loc_12.right);
+                    this._workingContentHeight = Math.max(this._workingContentHeight, _floatSlug.depth + _loc_12.height);
                     this._workingContentLogicalExtent = Math.max(this._workingContentLogicalExtent, _loc_12.right);
                     this._accumulatedMinimumStart = Math.min(this._accumulatedMinimumStart, _loc_12.x);
                 }
@@ -1250,7 +1154,6 @@
                 _loc_5 = param1.getAtomBounds(_loc_3 != 0 && _loc_4 ? (1) : (0));
                 _loc_6 = _loc_6 - (this._blockProgression == BlockProgression.TB ? (_loc_5.left) : (_loc_5.top));
             }
-            param1.flushAtomData();
             return _loc_6;
         }// end function
 
@@ -1315,11 +1218,7 @@
             var _loc_13:* = NaN;
             var _loc_14:* = NaN;
             var _loc_15:* = NaN;
-            var _loc_4:* = param1.textWidth;
-            if (GlobalSettings.alwaysCalculateWhitespaceBounds || this._parcelList.explicitLineBreaks)
-            {
-                _loc_4 = this.calculateLineWidthExplicit(param1);
-            }
+            var _loc_4:* = this._parcelList.explicitLineBreaks ? (this.calculateLineWidthExplicit(param1)) : (param1.textWidth);
             var _loc_5:* = this._lineSlug.rightMargin;
             var _loc_6:* = this._lineSlug.leftMargin;
             var _loc_7:* = 0;
@@ -1992,27 +1891,6 @@
             return;
         }// end function
 
-        protected function advanceToNextContainer() : void
-        {
-            var _loc_3:* = null;
-            var _loc_1:* = this._parcelList.atLast() ? (null) : (this._parcelList.getParcelAt((this._parcelList.currentParcelIndex + 1)));
-            var _loc_2:* = this._curParcel ? (ContainerController(this._curParcel.controller)) : (null);
-            while (!this._parcelList.atLast())
-            {
-                
-                _loc_1 = this._parcelList.atLast() ? (null) : (this._parcelList.getParcelAt((this._parcelList.currentParcelIndex + 1)));
-                _loc_3 = _loc_1 ? (ContainerController(_loc_1.controller)) : (null);
-                if (_loc_2 != _loc_3)
-                {
-                    break;
-                }
-                this._parcelList.next();
-            }
-            this.parcelHasChanged(this._parcelList.atLast() ? (null) : (this._parcelList.getParcelAt((this._parcelList.currentParcelIndex + 1))));
-            this._parcelList.next();
-            return;
-        }// end function
-
         protected function parcelHasChanged(param1:Parcel) : void
         {
             var _loc_2:* = this._curParcel ? (ContainerController(this._curParcel.controller)) : (null);
@@ -2070,7 +1948,6 @@
                     {
                         this._startComposePosition = _loc_3.absoluteStart;
                     }
-                    this._curInteractiveObjects = _loc_3.interactiveObjects;
                     this.calculateControllerVisibleBounds(_loc_3);
                 }
             }
@@ -2288,8 +2165,6 @@ import flash.geom.*;
 
 import flash.text.engine.*;
 
-import flash.utils.*;
-
 import flashx.textLayout.container.*;
 
 import flashx.textLayout.elements.*;
@@ -2322,8 +2197,6 @@ import flash.display.*;
 import flash.geom.*;
 
 import flash.text.engine.*;
-
-import flash.utils.*;
 
 import flashx.textLayout.container.*;
 

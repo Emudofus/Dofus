@@ -1,9 +1,11 @@
 ﻿package com.ankamagames.dofus.console
 {
+    import com.ankamagames.dofus.*;
     import com.ankamagames.dofus.console.chat.*;
     import com.ankamagames.dofus.console.common.*;
     import com.ankamagames.dofus.console.debug.*;
     import com.ankamagames.dofus.datacenter.communication.*;
+    import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.jerakine.console.*;
 
     public class ChatConsoleInstructionRegistrar extends Object implements ConsoleInstructionRegistar
@@ -30,7 +32,14 @@
             param1.addHandler(["spectator", "list", "players", "kick"], new FightInstructionHandler());
             param1.addHandler(_loc_2, new EmoteInstructionHandler());
             param1.addHandler(["tab", "clear"], new OptionsInstructionHandler());
-            param1.addHandler(["savereplaylog"], new MiscInstructionHandler());
+            if (BuildInfos.BUILD_TYPE != BuildTypeEnum.RELEASE)
+            {
+                param1.addHandler(["savereplaylog", "sd", "showsmilies"], new MiscInstructionHandler());
+            }
+            else
+            {
+                param1.addHandler(["savereplaylog", "showsmilies"], new MiscInstructionHandler());
+            }
             param1.addHandler(["away", "invisible", "release"], new StatusInstructionHandler());
             return;
         }// end function

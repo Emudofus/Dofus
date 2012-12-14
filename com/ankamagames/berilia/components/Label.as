@@ -123,7 +123,7 @@
             }
             if (this._hyperlinkEnabled)
             {
-                HyperlinkFactory.createHyperlink(this._tText, this._useStyleSheet);
+                HyperlinkFactory.createTextClickHandler(this._tText, this._useStyleSheet);
             }
             if (this._currentStyleSheet)
             {
@@ -134,6 +134,17 @@
             {
                 this.resizeText();
             }
+            return;
+        }// end function
+
+        public function get htmlText() : String
+        {
+            return this._tText.htmlText;
+        }// end function
+
+        public function set htmlText(param1:String) : void
+        {
+            this._tText.htmlText = param1;
             return;
         }// end function
 
@@ -714,6 +725,10 @@
             var _loc_3:* = undefined;
             if (param2)
             {
+                if (this._aStyleObj[param2] == null)
+                {
+                    this._aStyleObj[param2] = new Object();
+                }
                 this._aStyleObj[param2].fontSize = param1 + "px";
             }
             else
@@ -782,6 +797,7 @@
             }
             var _loc_2:* = this._tText.styleSheet;
             this._tText.styleSheet = null;
+            this._aStyleObj = new Array();
             for each (_loc_4 in this._ssSheet.styleNames)
             {
                 
@@ -799,6 +815,10 @@
                 _loc_5 = this._aStyleObj[_loc_3]["shadowColor"] ? (parseInt(this._aStyleObj[_loc_3]["shadowColor"].substr(1))) : (0);
                 _loc_6 = this._aStyleObj[_loc_3]["shadowSize"] ? (parseInt(this._aStyleObj[_loc_3]["shadowSize"])) : (5);
                 this._tText.filters = [new DropShadowFilter(0, 0, _loc_5, 0.5, _loc_6, _loc_6, 3)];
+            }
+            else
+            {
+                this._tText.filters = [];
             }
             if (this._aStyleObj[_loc_3]["useEmbedFonts"])
             {
@@ -870,7 +890,7 @@
             this._tText.defaultTextFormat = this._tfFormatter;
             if (this._hyperlinkEnabled)
             {
-                HyperlinkFactory.createHyperlink(this._tText, true);
+                HyperlinkFactory.createTextClickHandler(this._tText, true);
             }
             if (this._nTextHeight)
             {
@@ -981,7 +1001,7 @@
             var _loc_5:* = 0;
             var _loc_6:* = NaN;
             this.removeTooltipExtension();
-            if (!this._tText.multiline && this._tText.autoSize == "none" && this._tfFormatter && !this._tText.wordWrap)
+            if (this._bFixedHeight && !this._tText.multiline && this._tText.autoSize == "none" && this._tfFormatter)
             {
                 _loc_2 = int(this._tfFormatter.size);
                 _loc_3 = _loc_2;
@@ -1002,7 +1022,7 @@
                 {
                     
                     _loc_6 = this._tText.textWidth;
-                    if (_loc_6 > _loc_5)
+                    if (_loc_6 > _loc_5 || this._tText.textHeight > this._tText.height)
                     {
                         _loc_2 = _loc_2 - 1;
                         if (_loc_2 < _loc_3)
@@ -1023,7 +1043,7 @@
                     }
                     break;
                 }
-                if (_loc_4 && (!this.multiline && !this.wordWrap))
+                if (_loc_4 && !this.multiline && this._bFixedHeight)
                 {
                     this.addTooltipExtension();
                 }
@@ -1064,10 +1084,14 @@
             var _loc_1:* = this._textFieldTooltipExtension.width + 2;
             this._tText.width = this._tText.width - _loc_1;
             __width = this._tText.width;
-            this._textFieldTooltipExtension.x = this._tText.width - 2;
-            this._textFieldTooltipExtension.y = this._tText.y;
-            this._tText.height = this._tText.textHeight + 3;
-            __height = this._tText.height;
+            this._textFieldTooltipExtension.x = this._tText.width;
+            this._textFieldTooltipExtension.y = this._tText.y + this._tText.height - this._textFieldTooltipExtension.textHeight - 10;
+            if (!this._tText.wordWrap)
+            {
+                this._textFieldTooltipExtension.y = this._tText.y;
+                this._tText.height = this._tText.textHeight + 3;
+                __height = this._tText.height;
+            }
             var _loc_2:* = this;
             var _loc_3:* = 0;
             while (_loc_3 < 4)
@@ -1107,6 +1131,7 @@
 
         private function onTextClick(event:TextEvent) : void
         {
+            event.stopPropagation();
             Berilia.getInstance().handler.process(new TextClickMessage(this, event.text));
             return;
         }// end function
@@ -1147,7 +1172,10 @@
                 }
                 case VALIGN_NONE:
                 {
-                    this._tText.height = this._tText.textHeight + 4 + HEIGHT_OFFSET;
+                    if (!this._tText.wordWrap || this._tText.multiline)
+                    {
+                        this._tText.height = this._tText.textHeight + 4 + HEIGHT_OFFSET;
+                    }
                     this._tText.y = 0;
                     break;
                 }
@@ -1185,7 +1213,7 @@
                 }
                 if (this._hyperlinkEnabled)
                 {
-                    HyperlinkFactory.createHyperlink(this._tText);
+                    HyperlinkFactory.createTextClickHandler(this._tText);
                 }
                 this._finalized = true;
                 _loc_1 = getUi();

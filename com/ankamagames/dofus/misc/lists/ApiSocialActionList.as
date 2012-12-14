@@ -24,6 +24,7 @@
         public static const FriendWarningSet:DofusApiAction = new DofusApiAction("FriendWarningSet", FriendWarningSetAction);
         public static const MemberWarningSet:DofusApiAction = new DofusApiAction("MemberWarningSet", MemberWarningSetAction);
         public static const FriendOrGuildMemberLevelUpWarningSet:DofusApiAction = new DofusApiAction("FriendOrGuildMemberLevelUpWarningSet", FriendOrGuildMemberLevelUpWarningSetAction);
+        public static const FriendGuildSetWarnOnAchievementComplete:DofusApiAction = new DofusApiAction("FriendGuildSetWarnOnAchievementComplete", FriendGuildSetWarnOnAchievementCompleteAction);
         public static const GuildGetInformations:DofusApiAction = new DofusApiAction("GuildGetInformations", GuildGetInformationsAction);
         public static const GuildCreationValid:DofusApiAction = new DofusApiAction("GuildCreationValid", GuildCreationValidAction);
         public static const GuildModificationValid:DofusApiAction = new DofusApiAction("GuildModificationValid", GuildModificationValidAction);

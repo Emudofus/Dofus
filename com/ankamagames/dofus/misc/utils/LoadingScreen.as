@@ -123,6 +123,14 @@
 
         public function set value(param1:Number) : void
         {
+            if (param1 < 0)
+            {
+                param1 = 0;
+            }
+            if (param1 > 100)
+            {
+                param1 = 100;
+            }
             this._value = param1;
             this._progressClip.gotoAndStop(Math.round(param1) + 2);
             return;

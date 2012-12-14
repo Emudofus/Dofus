@@ -7,6 +7,7 @@
     import com.ankamagames.jerakine.types.*;
     import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
     import com.ankamagames.jerakine.utils.display.*;
+    import com.ankamagames.jerakine.utils.system.*;
     import com.ankamagames.tiphon.*;
     import com.ankamagames.tiphon.engine.*;
     import com.ankamagames.tiphon.error.*;
@@ -52,10 +53,12 @@
         private var _backgroundOnly:Boolean = false;
         private var _tiphonEventManager:TiphonEventsManager;
         private var _animationModifier:Array;
+        private var _skinModifier:ISkinModifier;
         private var _savedMouseEnabled:Boolean = true;
         public var destroyed:Boolean = false;
         public var overrideNextAnimation:Boolean = false;
         public var disableMouseEventWhenAnimated:Boolean = false;
+        public var useProgressiveLoading:Boolean;
         private var _lastRenderRequest:uint;
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
         public static var MEMORY_LOG2:Dictionary = new Dictionary(true);
@@ -75,6 +78,7 @@
             this._deactivatedSubEntityCategory = new Array();
             this._waitingEventInitList = new Vector.<Event>;
             this._animationModifier = [];
+            this.useProgressiveLoading = AirScanner.isStreamingVersion();
             this._lastRenderRequest = getTimer();
             FpsManager.getInstance().watchObject(this, true);
             this._libReady = false;
@@ -248,6 +252,17 @@
                 return BoneIndexManager.getInstance().getAllCustomAnimations(this._look.getBone());
             }
             return Tiphon.skullLibrary.getResourceById(this._look.getBone()).getDefinitions();
+        }// end function
+
+        public function set skinModifier(param1:ISkinModifier) : void
+        {
+            this._skinModifier = param1;
+            return;
+        }// end function
+
+        public function get skinModifier() : ISkinModifier
+        {
+            return this._skinModifier;
         }// end function
 
         public function stopAnimation(param1:int = 0) : void
@@ -494,7 +509,7 @@
             var _loc_2:* = this.getDisplayInfoSprite(param1);
             if (_loc_2)
             {
-                if (this.mask != null)
+                if (this.mask != null && this.mask.parent)
                 {
                     this.mask.parent.removeChild(this.mask);
                 }
@@ -696,6 +711,10 @@
         public function getSkinSprite(param1:EquipmentSprite) : Sprite
         {
             var _loc_2:* = getQualifiedClassName(param1);
+            if (this._skinModifier != null)
+            {
+                _loc_2 = this._skinModifier.getModifiedSkin(this._skin, _loc_2, this._look);
+            }
             return this._skin.getPart(_loc_2);
         }// end function
 
@@ -1036,7 +1055,7 @@
             {
                 return;
             }
-            if ((this._skin.complete || this._lastRenderRequest > 60) && Tiphon.skullLibrary.isLoaded(this._look.getBone(), this._currentAnimation) && this._currentAnimation != null && this._currentDirection >= 0)
+            if ((this._skin.complete || this.useProgressiveLoading && this._lastRenderRequest > 60) && Tiphon.skullLibrary.isLoaded(this._look.getBone(), this._currentAnimation) && this._currentAnimation != null && this._currentDirection >= 0)
             {
                 this.render();
             }

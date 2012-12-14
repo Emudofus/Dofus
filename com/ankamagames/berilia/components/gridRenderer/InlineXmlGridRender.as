@@ -56,7 +56,7 @@
             return;
         }// end function
 
-        public function render(param1, param2:uint, param3:Boolean, param4:Boolean = true) : DisplayObject
+        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
         {
             var _loc_8:* = null;
             var _loc_5:* = this._grid.getUi();
@@ -77,7 +77,7 @@
             return _loc_5.getElement(_loc_6);
         }// end function
 
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:Boolean = true) : void
+        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
         {
             var _loc_6:* = this._grid.getUi();
             param3.visible = true;
@@ -166,6 +166,11 @@
         public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String
         {
             return param2;
+        }// end function
+
+        public function getDataLength(param1, param2:Boolean) : uint
+        {
+            return 1;
         }// end function
 
         private function copyElement(param1:BasicElement, param2:Object) : BasicElement

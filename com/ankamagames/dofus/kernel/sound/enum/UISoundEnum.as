@@ -99,6 +99,7 @@
         public static const RIGHT_TO_LEFT_SWITCH:String = "16098";
         public static const NEW_TIPS:String = "16112";
         public static const CONTEXT_MENU:String = "16072";
+        public static const ACHIEVEMENT_UNLOCKED:String = "16118";
 
         public function UISoundEnum()
         {

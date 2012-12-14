@@ -12,6 +12,7 @@
     import com.ankamagames.jerakine.utils.system.*;
     import flash.display.*;
     import flash.events.*;
+    import flash.geom.*;
     import flash.net.*;
     import flash.ui.*;
     import flash.utils.*;
@@ -43,7 +44,8 @@
                 throw new Error("Can\'t create a WebBrowser object without AIR support");
             }
             this._resizeTimer.addEventListener(TimerEvent.TIMER, this.onResizeEnd);
-            StageShareManager.stage.addEventListener(Event.RESIZE, this.onResize);
+            var _loc_1:* = StageShareManager.stage.nativeWindow;
+            _loc_1.addEventListener(Event.RESIZE, this.onResize);
             this._vScrollBar = new ScrollBar();
             this._vScrollBar.min = 1;
             this._vScrollBar.max = 1;
@@ -264,11 +266,9 @@
 
         public function javascriptSetVar(param1:String, param2) : void
         {
-            var varName:* = param1;
-            var value:* = param2;
             try
             {
-                this._htmlLoader.window.document.body[varName] = value;
+                this._htmlLoader.window.document.body[param1] = param2;
             }
             catch (e:Error)
             {
@@ -278,14 +278,11 @@
 
         public function javascriptCall(param1:String, ... args) : void
         {
-            args = new activation;
-            var f:Function;
-            var fctName:* = param1;
-            var params:* = args;
+            args = null;
             try
             {
-                f = this._htmlLoader.window[];
-                apply(null, );
+                args = this._htmlLoader.window[param1];
+                args.apply(null, args);
             }
             catch (e:Error)
             {
@@ -295,37 +292,37 @@
 
         private function removeHtmlEvent() : void
         {
-            var link:Object;
-            var input:Object;
-            var _loc_2:* = 0;
-            var _loc_3:* = this._linkList;
+            var _loc_1:* = null;
+            var _loc_2:* = null;
+            var _loc_3:* = 0;
+            var _loc_4:* = this._linkList;
             do
             {
                 
-                link = _loc_3[_loc_2];
+                _loc_1 = _loc_4[_loc_3];
                 try
                 {
-                    link.removeEventListener("click", this.onLinkClick);
+                    _loc_1.removeEventListener("click", this.onLinkClick);
                 }
                 catch (e:Error)
                 {
                 }
-            }while (_loc_3 in _loc_2)
-            var _loc_2:* = 0;
-            var _loc_3:* = this._inputList;
+            }while (_loc_4 in _loc_3)
+            var _loc_3:* = 0;
+            var _loc_4:* = this._inputList;
             do
             {
                 
-                input = _loc_3[_loc_2];
+                _loc_2 = _loc_4[_loc_3];
                 try
                 {
-                    input.removeEventListener("focus", this.onInputFocus);
-                    input.removeEventListener("blur", this.onInputBlur);
+                    _loc_2.removeEventListener("focus", this.onInputFocus);
+                    _loc_2.removeEventListener("blur", this.onInputBlur);
                 }
                 catch (e:Error)
                 {
                 }
-            }while (_loc_3 in _loc_2)
+            }while (_loc_4 in _loc_3)
             return;
         }// end function
 
@@ -339,13 +336,16 @@
         private function onResizeEnd(event:Event) : void
         {
             this._resizeTimer.stop();
-            var _loc_2:* = Math.min(StageShareManager.stage.stageWidth / StageShareManager.startWidth, StageShareManager.stage.stageHeight / StageShareManager.startHeight);
+            var _loc_2:* = StageShareManager.chrome;
+            var _loc_3:* = (StageShareManager.stage.nativeWindow.width - _loc_2.x) / StageShareManager.startWidth;
+            var _loc_4:* = (StageShareManager.stage.nativeWindow.height - _loc_2.y) / StageShareManager.startHeight;
+            var _loc_5:* = Math.min(_loc_3, _loc_4);
             if (this._htmlLoader)
             {
-                this._htmlLoader.width = width * _loc_2 - this._vScrollBar.width;
-                this._htmlLoader.height = height * _loc_2;
-                this._htmlLoader.scaleX = 1 / _loc_2;
-                this._htmlLoader.scaleY = 1 / _loc_2;
+                this._htmlLoader.width = width * _loc_5 - this._vScrollBar.width;
+                this._htmlLoader.height = height * _loc_5;
+                this._htmlLoader.scaleX = 1 / _loc_5;
+                this._htmlLoader.scaleY = 1 / _loc_5;
             }
             return;
         }// end function

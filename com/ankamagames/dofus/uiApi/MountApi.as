@@ -36,7 +36,7 @@
 
         public function getRiderEntityLook(param1) : TiphonEntityLook
         {
-            return EntityLookAdapter.getRiderLook(param1);
+            return EntityLookAdapter.getRiderLook(param1).clone();
         }// end function
 
         public function getMount(param1:uint) : Mount

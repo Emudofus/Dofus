@@ -27,6 +27,7 @@
         public static const LegalAgreementsLoaded:Hook = new Hook("LegalAgreementsLoaded", true);
         public static const ConsoleOutput:Hook = new Hook("ConsoleOutput", true);
         public static const ConsoleClear:Hook = new Hook("ConsoleClear", true);
+        public static const ShowSmilies:Hook = new Hook("ShowSmilies", true);
         public static const ToggleConsole:Hook = new Hook("ToggleConsole", true);
         public static const ConsoleAddCmd:Hook = new Hook("ConsoleAddCmd", true);
         public static const AuthenticationTicketAccepted:Hook = new Hook("AuthenticationTicketAccepted", true);
@@ -121,6 +122,7 @@
         public static const SpellForgotten:Hook = new Hook("SpellForgotten", false);
         public static const SpellUpgradeFail:Hook = new Hook("SpellUpgradeFail", false);
         public static const PartyLoyaltyStatus:Hook = new Hook("PartyLoyaltyStatus", false);
+        public static const PlayerAggression:Hook = new Hook("PlayerAggression", false);
         public static const JobsListUpdated:Hook = new Hook("JobsListUpdated", false);
         public static const NpcDialogCreation:Hook = new Hook("NpcDialogCreation", false);
         public static const PonyDialogCreation:Hook = new Hook("PonyDialogCreation", false);

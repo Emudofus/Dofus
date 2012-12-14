@@ -1,5 +1,6 @@
 ﻿package com.ankamagames.jerakine.utils.crypto
 {
+    import by.blooddy.crypto.*;
     import com.ankamagames.jerakine.utils.errors.*;
     import flash.utils.*;
 

@@ -1,6 +1,7 @@
 ﻿package com.ankamagames.dofus.logic.game.common.frames
 {
     import com.ankamagames.berilia.managers.*;
+    import com.ankamagames.dofus.internalDatacenter.guild.*;
     import com.ankamagames.dofus.internalDatacenter.house.*;
     import com.ankamagames.dofus.kernel.*;
     import com.ankamagames.dofus.kernel.net.*;
@@ -12,6 +13,7 @@
     import com.ankamagames.dofus.network.messages.game.context.roleplay.lockable.*;
     import com.ankamagames.dofus.network.messages.game.context.roleplay.purchasable.*;
     import com.ankamagames.dofus.network.messages.game.dialog.*;
+    import com.ankamagames.dofus.network.types.game.guild.*;
     import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.jerakine.messages.*;
     import com.ankamagames.jerakine.types.enums.*;
@@ -73,6 +75,10 @@
             var _loc_32:* = null;
             var _loc_33:* = null;
             var _loc_34:* = null;
+            var _loc_35:* = null;
+            var _loc_36:* = null;
+            var _loc_37:* = null;
+            var _loc_38:* = null;
             switch(true)
             {
                 case param1 is LeaveDialogAction:
@@ -131,86 +137,89 @@
                 case param1 is HouseGuildRightsMessage:
                 {
                     _loc_17 = param1 as HouseGuildRightsMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.HouseGuildRights, _loc_17.houseId, _loc_17.guildInfo.guildName, _loc_17.guildInfo.guildEmblem, _loc_17.rights);
+                    _loc_18 = _loc_17.guildInfo.guildEmblem;
+                    _loc_19 = EmblemWrapper.create(_loc_18.symbolShape, EmblemWrapper.UP, _loc_18.symbolColor);
+                    _loc_20 = EmblemWrapper.create(_loc_18.backgroundShape, EmblemWrapper.BACK, _loc_18.backgroundColor);
+                    _loc_21 = {upEmblem:_loc_19, backEmblem:_loc_20};
+                    KernelEventsManager.getInstance().processCallback(HookList.HouseGuildRights, _loc_17.houseId, _loc_17.guildInfo.guildName, _loc_21, _loc_17.rights);
                     return true;
                 }
                 case param1 is HouseSoldMessage:
                 {
-                    _loc_18 = param1 as HouseSoldMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.HouseSold, _loc_18.houseId, _loc_18.realPrice, _loc_18.buyerName);
+                    _loc_22 = param1 as HouseSoldMessage;
+                    KernelEventsManager.getInstance().processCallback(HookList.HouseSold, _loc_22.houseId, _loc_22.realPrice, _loc_22.buyerName);
                     return true;
                 }
                 case param1 is HouseBuyResultMessage:
                 {
-                    _loc_19 = param1 as HouseBuyResultMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.HouseBuyResult, _loc_19.houseId, _loc_19.bought, _loc_19.realPrice, this.getHouseInformations(_loc_19.houseId).ownerName);
+                    _loc_23 = param1 as HouseBuyResultMessage;
+                    KernelEventsManager.getInstance().processCallback(HookList.HouseBuyResult, _loc_23.houseId, _loc_23.bought, _loc_23.realPrice, this.getHouseInformations(_loc_23.houseId).ownerName);
                     return true;
                 }
                 case param1 is HouseGuildRightsViewAction:
                 {
-                    _loc_20 = param1 as HouseGuildRightsViewAction;
-                    _loc_21 = new HouseGuildRightsViewMessage();
-                    ConnectionsHandler.getConnection().send(_loc_21);
+                    _loc_24 = param1 as HouseGuildRightsViewAction;
+                    _loc_25 = new HouseGuildRightsViewMessage();
+                    ConnectionsHandler.getConnection().send(_loc_25);
                     return true;
                 }
                 case param1 is HouseGuildShareAction:
                 {
-                    _loc_22 = param1 as HouseGuildShareAction;
-                    _loc_23 = new HouseGuildShareRequestMessage();
-                    _loc_23.initHouseGuildShareRequestMessage(_loc_22.enabled, _loc_22.rights);
-                    ConnectionsHandler.getConnection().send(_loc_23);
+                    _loc_26 = param1 as HouseGuildShareAction;
+                    _loc_27 = new HouseGuildShareRequestMessage();
+                    _loc_27.initHouseGuildShareRequestMessage(_loc_26.enabled, _loc_26.rights);
+                    ConnectionsHandler.getConnection().send(_loc_27);
                     return true;
                 }
                 case param1 is HouseKickAction:
                 {
-                    _loc_24 = param1 as HouseKickAction;
-                    _loc_25 = new HouseKickRequestMessage();
-                    _loc_25.initHouseKickRequestMessage(_loc_24.id);
-                    ConnectionsHandler.getConnection().send(_loc_25);
+                    _loc_28 = param1 as HouseKickAction;
+                    _loc_29 = new HouseKickRequestMessage();
+                    _loc_29.initHouseKickRequestMessage(_loc_28.id);
+                    ConnectionsHandler.getConnection().send(_loc_29);
                     return true;
                 }
                 case param1 is HouseKickIndoorMerchantAction:
                 {
-                    _loc_26 = param1 as HouseKickIndoorMerchantAction;
-                    _loc_27 = new HouseKickIndoorMerchantRequestMessage();
-                    _loc_27.initHouseKickIndoorMerchantRequestMessage(_loc_26.cellId);
-                    ConnectionsHandler.getConnection().send(_loc_27);
+                    _loc_30 = param1 as HouseKickIndoorMerchantAction;
+                    _loc_31 = new HouseKickIndoorMerchantRequestMessage();
+                    _loc_31.initHouseKickIndoorMerchantRequestMessage(_loc_30.cellId);
+                    ConnectionsHandler.getConnection().send(_loc_31);
                     return true;
                 }
                 case param1 is LockableStateUpdateHouseDoorMessage:
                 {
-                    _loc_28 = param1 as LockableStateUpdateHouseDoorMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.LockableStateUpdateHouseDoor, _loc_28.houseId, _loc_28.locked);
+                    _loc_32 = param1 as LockableStateUpdateHouseDoorMessage;
+                    KernelEventsManager.getInstance().processCallback(HookList.LockableStateUpdateHouseDoor, _loc_32.houseId, _loc_32.locked);
                     return true;
                 }
                 case param1 is LockableShowCodeDialogMessage:
                 {
-                    _loc_29 = param1 as LockableShowCodeDialogMessage;
+                    _loc_33 = param1 as LockableShowCodeDialogMessage;
                     Kernel.getWorker().addFrame(this._houseDialogFrame);
-                    KernelEventsManager.getInstance().processCallback(HookList.LockableShowCode, _loc_29.changeOrUse, _loc_29.codeSize);
+                    KernelEventsManager.getInstance().processCallback(HookList.LockableShowCode, _loc_33.changeOrUse, _loc_33.codeSize);
                     return true;
                 }
                 case param1 is LockableChangeCodeAction:
                 {
-                    _loc_30 = param1 as LockableChangeCodeAction;
-                    _loc_31 = new LockableChangeCodeMessage();
-                    _loc_31.initLockableChangeCodeMessage(_loc_30.code);
-                    ConnectionsHandler.getConnection().send(_loc_31);
+                    _loc_34 = param1 as LockableChangeCodeAction;
+                    _loc_35 = new LockableChangeCodeMessage();
+                    _loc_35.initLockableChangeCodeMessage(_loc_34.code);
+                    ConnectionsHandler.getConnection().send(_loc_35);
                     return true;
                 }
                 case param1 is HouseLockFromInsideAction:
                 {
-                    _loc_32 = param1 as HouseLockFromInsideAction;
-                    _loc_33 = new HouseLockFromInsideRequestMessage();
-                    _loc_33.initHouseLockFromInsideRequestMessage(_loc_32.code);
-                    ConnectionsHandler.getConnection().send(_loc_33);
+                    _loc_36 = param1 as HouseLockFromInsideAction;
+                    _loc_37 = new HouseLockFromInsideRequestMessage();
+                    _loc_37.initHouseLockFromInsideRequestMessage(_loc_36.code);
+                    ConnectionsHandler.getConnection().send(_loc_37);
                     return true;
                 }
                 case param1 is LockableCodeResultMessage:
                 {
-                    _loc_34 = param1 as LockableCodeResultMessage;
-                    Kernel.getWorker().addFrame(this._houseDialogFrame);
-                    KernelEventsManager.getInstance().processCallback(HookList.LockableCodeResult, _loc_34.result);
+                    _loc_38 = param1 as LockableCodeResultMessage;
+                    KernelEventsManager.getInstance().processCallback(HookList.LockableCodeResult, _loc_38.result);
                     return true;
                 }
                 default:

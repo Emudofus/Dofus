@@ -21,6 +21,7 @@
             switch(param1.protocol)
             {
                 case "http":
+                case "https":
                 {
                     return new HttpProtocol();
                 }

@@ -6,6 +6,7 @@
     import com.ankamagames.jerakine.managers.*;
     import com.ankamagames.jerakine.types.*;
     import flash.text.*;
+    import flash.text.engine.*;
     import flash.utils.*;
     import flashx.textLayout.formats.*;
 
@@ -143,14 +144,22 @@
 
         public function TLFTransform(param1:Object) : TextLayoutFormat
         {
+            var _loc_3:* = null;
             var _loc_2:* = new TextLayoutFormat();
+            if (param1["fontFamily"])
+            {
+                _loc_3 = param1["fontFamily"];
+                if (FontManager.getInstance().getFontClassRenderingMode(_loc_3) == AntiAliasType.ADVANCED)
+                {
+                    _loc_2.renderingMode = RenderingMode.CFF;
+                    _loc_2.fontLookup = FontLookup.EMBEDDED_CFF;
+                    _loc_2.cffHinting = CFFHinting.HORIZONTAL_STEM;
+                }
+                _loc_2.fontFamily = _loc_3;
+            }
             if (param1["color"])
             {
                 _loc_2.color = param1["color"];
-            }
-            if (param1["fontFamily"])
-            {
-                _loc_2.fontFamily = param1["fontFamily"];
             }
             if (param1["fontSize"])
             {

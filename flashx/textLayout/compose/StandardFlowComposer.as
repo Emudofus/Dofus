@@ -337,7 +337,7 @@
             return this.updateToController();
         }// end function
 
-        public function updateToController(param1:int = 2147483647) : Boolean
+        public function updateToController(param1:int = 2.14748e+009) : Boolean
         {
             if (this._composing)
             {
@@ -533,7 +533,7 @@
                 throw e;
             }
             this._composing = false;
-            if (controller && composeToControllerIndex == (this.numControllers - 1))
+            if (composeToControllerIndex == (this.numControllers - 1))
             {
                 this.lastBPDirectionScrollPosition = getBPDirectionScrollPosition(bp, controller);
             }
@@ -559,12 +559,12 @@
             return this._composing ? (false) : (this.internalCompose() != null);
         }// end function
 
-        public function composeToPosition(param1:int = 2147483647) : Boolean
+        public function composeToPosition(param1:int = 2.14748e+009) : Boolean
         {
             return this._composing ? (false) : (this.internalCompose(param1, -1) != null);
         }// end function
 
-        public function composeToController(param1:int = 2147483647) : Boolean
+        public function composeToController(param1:int = 2.14748e+009) : Boolean
         {
             return this._composing ? (false) : (this.internalCompose(-1, param1) != null);
         }// end function

@@ -38,6 +38,7 @@
             var s:String;
             var managerName:String;
             var logFile:File;
+            var entitiesList:Array;
             var val:*;
             var prop:Array;
             var name:String;
@@ -45,6 +46,8 @@
             var o:*;
             var fsLog:FileStream;
             var logContent:ByteArray;
+            var entity:TiphonSprite;
+            var tete:DisplayObject;
             var console:* = param1;
             var cmd:* = param2;
             var args:* = param3;
@@ -243,6 +246,32 @@
                     }
                     break;
                 }
+                case "sd":
+                {
+                    entitiesList = EntitiesManager.getInstance().entities;
+                    var _loc_5:* = 0;
+                    var _loc_6:* = entitiesList;
+                    while (_loc_6 in _loc_5)
+                    {
+                        
+                        entity = _loc_6[_loc_5];
+                        if (entity)
+                        {
+                            tete = entity.getSlot("Tete");
+                            if (tete)
+                            {
+                                tete.scaleX = 2;
+                                tete.scaleY = 2;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "showsmilies":
+                {
+                    KernelEventsManager.getInstance().processCallback(HookList.ShowSmilies);
+                    break;
+                }
                 default:
                 {
                     break;
@@ -302,6 +331,10 @@
                 case "throw":
                 {
                     return "Throw an exception (test only) option:[async|sync]";
+                }
+                case "showsmilies":
+                {
+                    return "Activate/Deactivate smilies detection";
                 }
                 default:
                 {

@@ -1,7 +1,9 @@
 ﻿package com.ankamagames.dofus.uiApi
 {
     import __AS3__.vec.*;
+    import avmplus.*;
     import com.ankamagames.berilia.interfaces.*;
+    import com.ankamagames.dofus.datacenter.appearance.*;
     import com.ankamagames.dofus.datacenter.breeds.*;
     import com.ankamagames.dofus.datacenter.spells.*;
     import com.ankamagames.dofus.datacenter.world.*;
@@ -15,6 +17,7 @@
     import com.ankamagames.dofus.logic.game.fight.frames.*;
     import com.ankamagames.dofus.logic.game.fight.managers.*;
     import com.ankamagames.dofus.logic.game.roleplay.frames.*;
+    import com.ankamagames.dofus.logic.game.roleplay.types.*;
     import com.ankamagames.dofus.misc.*;
     import com.ankamagames.dofus.network.enums.*;
     import com.ankamagames.dofus.network.types.game.character.characteristic.*;
@@ -22,12 +25,14 @@
     import com.ankamagames.dofus.network.types.game.character.restriction.*;
     import com.ankamagames.dofus.network.types.game.context.roleplay.*;
     import com.ankamagames.dofus.types.data.*;
+    import com.ankamagames.jerakine.logger.*;
     import com.ankamagames.tiphon.types.look.*;
     import flash.utils.*;
 
     public class PlayedCharacterApi extends Object implements IApi
     {
         public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+        static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayedCharacterApi));
 
         public function PlayedCharacterApi()
         {
@@ -54,7 +59,7 @@
             _loc_2.sex = _loc_1.sex;
             _loc_2.name = _loc_1.name;
             _loc_2.entityLook = EntityLookAdapter.fromNetwork(_loc_1.entityLook);
-            _loc_2.realEntityLook = EntityLookAdapter.fromNetwork(_loc_1.entityLook);
+            _loc_2.realEntityLook = _loc_2.entityLook;
             var _loc_3:* = TiphonEntityLook(_loc_2.entityLook).getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);
             if (_loc_3)
             {
@@ -63,6 +68,10 @@
                     _loc_3.setBone(1);
                 }
                 _loc_2.entityLook = _loc_3;
+            }
+            if (isCreature())
+            {
+                TiphonEntityLook(_loc_2.entityLook).setBone(1);
             }
             return _loc_2;
         }// end function
@@ -100,6 +109,92 @@
         public static function getMount() : Object
         {
             return PlayedCharacterManager.getInstance().mount;
+        }// end function
+
+        public static function getTitle() : Title
+        {
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = undefined;
+            var _loc_5:* = null;
+            var _loc_1:* = (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).currentTitle;
+            if (_loc_1)
+            {
+                _loc_2 = Title.getTitleById(_loc_1);
+                return _loc_2;
+            }
+            _loc_3 = getEntityInfos();
+            if (_loc_3 && _loc_3.humanoidInfo)
+            {
+                for each (_loc_4 in _loc_3.humanoidInfo.options)
+                {
+                    
+                    if (_loc_4 is HumanOptionTitle)
+                    {
+                        _loc_1 = _loc_4.titleId;
+                    }
+                }
+                _loc_5 = Title.getTitleById(_loc_1);
+                return _loc_5;
+            }
+            return null;
+        }// end function
+
+        public static function getOrnament() : Ornament
+        {
+            var _loc_2:* = null;
+            var _loc_1:* = (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).currentOrnament;
+            if (_loc_1)
+            {
+                _loc_2 = Ornament.getOrnamentById(_loc_1);
+                return _loc_2;
+            }
+            return null;
+        }// end function
+
+        public static function getKnownTitles() : Vector.<uint>
+        {
+            return (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).knownTitles;
+        }// end function
+
+        public static function getKnownOrnaments() : Vector.<uint>
+        {
+            return (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).knownOrnaments;
+        }// end function
+
+        public static function titlesOrnamentsAskedBefore() : Boolean
+        {
+            return (Kernel.getWorker().getFrame(TinselFrame) as TinselFrame).titlesOrnamentsAskedBefore;
+        }// end function
+
+        public static function getEntityInfos() : GameRolePlayCharacterInformations
+        {
+            var _loc_1:* = null;
+            if (isInFight())
+            {
+                _loc_1 = Kernel.getWorker().getFrame(FightEntitiesFrame) as AbstractEntitiesFrame;
+            }
+            else
+            {
+                _loc_1 = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as AbstractEntitiesFrame;
+            }
+            if (!_loc_1)
+            {
+                return null;
+            }
+            var _loc_2:* = _loc_1.getEntityInfos(PlayedCharacterManager.getInstance().infos.id) as GameRolePlayCharacterInformations;
+            return _loc_2;
+        }// end function
+
+        public static function getEntityTooltipInfos() : CharacterTooltipInformation
+        {
+            var _loc_1:* = getEntityInfos();
+            if (!_loc_1)
+            {
+                return null;
+            }
+            var _loc_2:* = new CharacterTooltipInformation(_loc_1, 0);
+            return _loc_2;
         }// end function
 
         public static function inventoryWeight() : uint

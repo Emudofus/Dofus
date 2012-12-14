@@ -8,11 +8,11 @@
     {
         public var compressedCoords:uint;
         public var mapIds:Vector.<int>;
-        private var _x:int = -2.14748e+009;
-        private var _y:int = -2.14748e+009;
+        private var _x:int = -2147483648;
+        private var _y:int = -2147483648;
         private var _maps:Vector.<MapPosition>;
         private static const MODULE:String = "MapCoordinates";
-        private static const UNDEFINED_COORD:int = -2.14748e+009;
+        private static const UNDEFINED_COORD:int = -2147483648;
 
         public function MapCoordinates()
         {

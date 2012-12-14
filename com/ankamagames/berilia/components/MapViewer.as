@@ -1045,6 +1045,10 @@
                             Berilia.getInstance().handler.process(new MapElementRollOverMessage(this, this._elementsGraphicRef[this._openedMapGroupElement.icons[0]]));
                             this._openedMapGroupElement = null;
                         }
+                        else if (!(_loc_2.target is MapGroupElement))
+                        {
+                            Berilia.getInstance().handler.process(new MapElementRollOverMessage(this, this._elementsGraphicRef[_loc_2.target]));
+                        }
                     }
                     else if (this._elementsGraphicRef[_loc_2.target])
                     {

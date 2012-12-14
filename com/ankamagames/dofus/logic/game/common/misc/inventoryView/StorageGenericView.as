@@ -3,6 +3,8 @@
     import __AS3__.vec.*;
     import com.ankamagames.dofus.datacenter.items.*;
     import com.ankamagames.dofus.internalDatacenter.items.*;
+    import com.ankamagames.dofus.kernel.*;
+    import com.ankamagames.dofus.logic.game.common.frames.*;
     import com.ankamagames.dofus.logic.game.common.managers.*;
     import com.ankamagames.dofus.logic.game.common.misc.*;
     import com.ankamagames.jerakine.logger.*;
@@ -237,12 +239,26 @@
                         return param1.objectUID > param2.objectUID ? (1) : (param1.objectUID < param2.objectUID ? (-1) : (0));
                     }
                 }
+                case StorageOptionManager.SORT_FIELD_AVERAGEPRICE_ASCENDING:
+                {
+                    return this.getItemAveragePrice(param1.objectGID) > this.getItemAveragePrice(param2.objectGID) ? (1) : (this.getItemAveragePrice(param1.objectGID) < this.getItemAveragePrice(param2.objectGID) ? (-1) : (0));
+                }
+                case StorageOptionManager.SORT_FIELD_AVERAGEPRICE_DESCENDING:
+                {
+                    return this.getItemAveragePrice(param1.objectGID) < this.getItemAveragePrice(param2.objectGID) ? (1) : (this.getItemAveragePrice(param1.objectGID) > this.getItemAveragePrice(param2.objectGID) ? (-1) : (0));
+                }
                 default:
                 {
                     return 0;
                     break;
                 }
             }
+        }// end function
+
+        private function getItemAveragePrice(param1:uint) : int
+        {
+            var _loc_2:* = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
+            return _loc_2.pricesData.items["item" + param1];
         }// end function
 
         public function updateView() : void

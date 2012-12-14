@@ -28,7 +28,7 @@
             this._receiving_lc.allowInsecureDomain("*");
             this._receiving_lc.addEventListener(AsyncErrorEvent.ASYNC_ERROR, this.onError);
             this._receiving_lc.addEventListener(StatusEvent.STATUS, this.onStatusEvent);
-            var idIsFree:Boolean;
+            var _loc_1:* = false;
             do
             {
                 
@@ -36,12 +36,12 @@
                 try
                 {
                     this._receiving_lc.connect(this.connId);
-                    idIsFree;
+                    _loc_1 = true;
                 }
                 catch (e:Error)
                 {
                 }
-            }while (!idIsFree)
+            }while (!_loc_1)
             this._sending_lc.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onSecurityError);
             this._sending_lc.addEventListener(StatusEvent.STATUS, this.onStatusChange);
             this._receiving_lc.client = new Object();

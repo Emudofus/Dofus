@@ -54,44 +54,45 @@
 
         public static function updateFocusList(param1:Array, param2:String) : void
         {
-            var _loc_4:* = null;
-            var _loc_5:* = NaN;
-            var _loc_8:* = NaN;
-            var _loc_3:* = NativeApplication.nativeApplication.openedWindows[0];
-            if (AirScanner.hasAir())
+            var _loc_5:* = null;
+            var _loc_6:* = NaN;
+            var _loc_9:* = NaN;
+            var _loc_3:* = AirScanner.hasAir();
+            var _loc_4:* = NativeApplication.nativeApplication.openedWindows[0];
+            if (_loc_3)
             {
-                if (_loc_3 && _loc_3["displayState"] == NativeWindowDisplayState.MINIMIZED)
+                if (_loc_4 && _loc_4["displayState"] == NativeWindowDisplayState.MINIMIZED)
                 {
                     StageShareManager.stage.frameRate = 12;
                     return;
                 }
             }
-            var _loc_6:* = param1.length;
-            var _loc_7:* = 0;
-            while (_loc_7 < _loc_6)
+            var _loc_7:* = param1.length;
+            var _loc_8:* = 0;
+            while (_loc_8 < _loc_7)
             {
                 
-                if (_loc_4 == null)
+                if (_loc_5 == null)
                 {
-                    _loc_4 = param1[_loc_7];
-                    _loc_5 = Number(param1[(_loc_7 + 1)]);
+                    _loc_5 = param1[_loc_8];
+                    _loc_6 = Number(param1[(_loc_8 + 1)]);
                 }
                 else
                 {
-                    _loc_8 = Number(param1[(_loc_7 + 1)]);
-                    if (_loc_5 < _loc_8)
+                    _loc_9 = Number(param1[(_loc_8 + 1)]);
+                    if (_loc_6 < _loc_9)
                     {
-                        _loc_4 = param1[_loc_7];
-                        _loc_5 = _loc_8;
+                        _loc_5 = param1[_loc_8];
+                        _loc_6 = _loc_9;
                     }
                 }
-                _loc_7 = _loc_7 + 2;
+                _loc_8 = _loc_8 + 2;
             }
-            if (param2 == _loc_4)
+            if (param2 == _loc_5)
             {
                 StageShareManager.stage.frameRate = PerformanceManager.BASE_FRAMERATE;
             }
-            else
+            else if (!_loc_3 || _loc_3 && _loc_4 && !_loc_4.active)
             {
                 StageShareManager.stage.frameRate = 12;
             }

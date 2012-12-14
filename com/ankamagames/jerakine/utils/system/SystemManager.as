@@ -35,12 +35,11 @@
 
         public function notifyUser(param1:Boolean = false) : void
         {
-            var currentWindow:NativeWindow;
-            var always:* = param1;
+            var _loc_2:* = null;
             try
             {
-                currentWindow = NativeApplication.nativeApplication.openedWindows[0];
-                if (always || !currentWindow.active)
+                _loc_2 = NativeApplication.nativeApplication.openedWindows[0];
+                if (param1 || !_loc_2.active)
                 {
                     if (this.os == OperatingSystem.MAC_OS)
                     {
@@ -48,7 +47,7 @@
                     }
                     else
                     {
-                        currentWindow.notifyUser(NotificationType.CRITICAL);
+                        _loc_2.notifyUser(NotificationType.CRITICAL);
                     }
                 }
             }

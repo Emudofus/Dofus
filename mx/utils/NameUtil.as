@@ -6,7 +6,7 @@
 
     public class NameUtil extends Object
     {
-        static const VERSION:String = "4.1.0.16076";
+        static const VERSION:String = "4.6.0.23201";
         private static var counter:int = 0;
 
         public function NameUtil()
@@ -36,38 +36,37 @@
 
         public static function displayObjectToString(param1:DisplayObject) : String
         {
-            var result:String;
-            var o:DisplayObject;
-            var s:String;
-            var indices:Array;
-            var displayObject:* = param1;
+            var _loc_2:* = null;
+            var _loc_3:* = null;
+            var _loc_4:* = null;
+            var _loc_5:* = null;
             try
             {
-                o = displayObject;
-                while (o != null)
+                _loc_3 = param1;
+                while (_loc_3 != null)
                 {
                     
-                    if (o.parent && o.stage && o.parent == o.stage)
+                    if (_loc_3.parent && _loc_3.stage && _loc_3.parent == _loc_3.stage)
                     {
                         break;
                     }
-                    s = "id" in o && o["id"] ? (o["id"]) : (o.name);
-                    if (o is IRepeaterClient)
+                    _loc_4 = "id" in _loc_3 && _loc_3["id"] ? (_loc_3["id"]) : (_loc_3.name);
+                    if (_loc_3 is IRepeaterClient)
                     {
-                        indices = IRepeaterClient(o).instanceIndices;
-                        if (indices)
+                        _loc_5 = IRepeaterClient(_loc_3).instanceIndices;
+                        if (_loc_5)
                         {
-                            s = s + ("[" + indices.join("][") + "]");
+                            _loc_4 = _loc_4 + ("[" + _loc_5.join("][") + "]");
                         }
                     }
-                    result = result == null ? (s) : (s + "." + result);
-                    o = o.parent;
+                    _loc_2 = _loc_2 == null ? (_loc_4) : (_loc_4 + "." + _loc_2);
+                    _loc_3 = _loc_3.parent;
                 }
             }
             catch (e:SecurityError)
             {
             }
-            return result;
+            return _loc_2;
         }// end function
 
         public static function getUnqualifiedClassName(param1:Object) : String

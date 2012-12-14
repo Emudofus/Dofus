@@ -5,8 +5,8 @@
     {
         public static const ONE_TWIP:Number = 0.05;
         public static const TWIPS_PER_PIXEL:int = 20;
-        public static const MAX_VALUE:int = 2147483647;
-        public static const MIN_VALUE:int = -2147483648;
+        public static const MAX_VALUE:int = 2.14748e+009;
+        public static const MIN_VALUE:int = -2.14748e+009;
 
         public function Twips()
         {

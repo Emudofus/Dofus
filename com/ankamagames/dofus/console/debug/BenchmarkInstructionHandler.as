@@ -45,10 +45,12 @@
             var _loc_15:* = false;
             var _loc_16:* = null;
             var _loc_17:* = null;
-            var _loc_18:* = false;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
+            var _loc_18:* = 0;
+            var _loc_19:* = 0;
+            var _loc_20:* = false;
             var _loc_21:* = null;
+            var _loc_22:* = null;
+            var _loc_23:* = null;
             switch(param2)
             {
                 case "addmovingcharacter":
@@ -89,9 +91,15 @@
                     else
                     {
                         _loc_17 = DebugBotFrame.getInstance();
-                        if (param3.indexOf("debugchat") != -1)
+                        _loc_18 = param3.indexOf("debugchat");
+                        if (_loc_18 != -1)
                         {
-                            _loc_17.enableChatMessagesBot = true;
+                            _loc_19 = 500;
+                            if (param3.length > (_loc_18 + 1))
+                            {
+                                _loc_19 = param3[(_loc_18 + 1)];
+                            }
+                            _loc_17.enableChatMessagesBot(true, _loc_19);
                         }
                         Kernel.getWorker().addFrame(_loc_17);
                         param1.output("Démarrage du bot-spectator ");
@@ -121,12 +129,12 @@
                     }
                     else
                     {
-                        _loc_18 = param3.indexOf("external") != -1;
-                        if (_loc_18)
+                        _loc_20 = param3.indexOf("external") != -1;
+                        if (_loc_20)
                         {
                             param1.output("Fps Manager External");
                         }
-                        _loc_6.display(_loc_18);
+                        _loc_6.display(_loc_20);
                     }
                     break;
                 }
@@ -147,53 +155,53 @@
                     _loc_13 = false;
                     _loc_14 = true;
                     _loc_15 = true;
-                    for each (_loc_19 in param3)
+                    for each (_loc_21 in param3)
                     {
                         
-                        _loc_20 = _loc_19.split("=");
-                        if (_loc_20 == null)
+                        _loc_22 = _loc_21.split("=");
+                        if (_loc_22 == null)
                         {
                             continue;
                         }
-                        _loc_21 = _loc_20[1];
-                        if (_loc_19.search("fightzone") != -1 && _loc_20.length > 1)
+                        _loc_23 = _loc_22[1];
+                        if (_loc_21.search("fightzone") != -1 && _loc_22.length > 1)
                         {
-                            _loc_10 = _loc_21.toLowerCase() == "true" ? (true) : (false);
+                            _loc_10 = _loc_23.toLowerCase() == "true" ? (true) : (false);
                             continue;
                         }
-                        if (_loc_19.search("clearcache") != -1 && _loc_20.length > 1)
+                        if (_loc_21.search("clearcache") != -1 && _loc_22.length > 1)
                         {
-                            _loc_8 = _loc_21.toLowerCase() == "true" ? (false) : (true);
+                            _loc_8 = _loc_23.toLowerCase() == "true" ? (false) : (true);
                             continue;
                         }
-                        if (_loc_19.search("mode") != -1 && _loc_20.length > 1)
+                        if (_loc_21.search("mode") != -1 && _loc_22.length > 1)
                         {
-                            _loc_9 = _loc_21.toLowerCase() == "rp" ? (1) : (0);
+                            _loc_9 = _loc_23.toLowerCase() == "rp" ? (1) : (0);
                             continue;
                         }
-                        if (_loc_19.search("interactivecells") != -1 && _loc_20.length > 1)
+                        if (_loc_21.search("interactivecells") != -1 && _loc_22.length > 1)
                         {
-                            _loc_11 = _loc_21.toLowerCase() == "true" ? (true) : (false);
+                            _loc_11 = _loc_23.toLowerCase() == "true" ? (true) : (false);
                             continue;
                         }
-                        if (_loc_19.search("scalezone") != -1 && _loc_20.length > 1)
+                        if (_loc_21.search("scalezone") != -1 && _loc_22.length > 1)
                         {
-                            _loc_13 = _loc_21.toLowerCase() == "true" ? (true) : (false);
+                            _loc_13 = _loc_23.toLowerCase() == "true" ? (true) : (false);
                             continue;
                         }
-                        if (_loc_19.search("show") != -1 && _loc_20.length > 1)
+                        if (_loc_21.search("show") != -1 && _loc_22.length > 1)
                         {
-                            _loc_12 = _loc_21.toLowerCase() == "true" ? (true) : (false);
+                            _loc_12 = _loc_23.toLowerCase() == "true" ? (true) : (false);
                             continue;
                         }
-                        if (_loc_19.search("flattencells") != -1 && _loc_20.length > 1)
+                        if (_loc_21.search("flattencells") != -1 && _loc_22.length > 1)
                         {
-                            _loc_14 = _loc_21.toLowerCase() == "true" ? (true) : (false);
+                            _loc_14 = _loc_23.toLowerCase() == "true" ? (true) : (false);
                             continue;
                         }
-                        if (_loc_19.search("blocLDV") != -1 && _loc_20.length > 1)
+                        if (_loc_21.search("blocLDV") != -1 && _loc_22.length > 1)
                         {
-                            _loc_15 = _loc_21.toLowerCase() == "true" ? (true) : (false);
+                            _loc_15 = _loc_23.toLowerCase() == "true" ? (true) : (false);
                         }
                     }
                     if (_loc_12)
@@ -232,7 +240,7 @@
                 }
                 case "bot-spectator":
                 {
-                    return "Start/Stop the auto join fight spectator bot";
+                    return "Start/Stop the auto join fight spectator bot" + "\n    debugchat";
                 }
                 case "tiphon-error":
                 {
