@@ -1,94 +1,85 @@
-﻿package com.ankamagames.dofus.network.messages.game.chat
+package com.ankamagames.dofus.network.messages.game.chat
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ChatServerMessage extends ChatAbstractServerMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var senderId:int = 0;
-        public var senderName:String = "";
-        public var senderAccountId:int = 0;
-        public static const protocolId:uint = 881;
 
-        public function ChatServerMessage()
-        {
-            return;
-        }// end function
+   public class ChatServerMessage extends ChatAbstractServerMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function ChatServerMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 881;
-        }// end function
+      public static const protocolId:uint = 881;
 
-        public function initChatServerMessage(param1:uint = 0, param2:String = "", param3:uint = 0, param4:String = "", param5:int = 0, param6:String = "", param7:int = 0) : ChatServerMessage
-        {
-            super.initChatAbstractServerMessage(param1, param2, param3, param4);
-            this.senderId = param5;
-            this.senderName = param6;
-            this.senderAccountId = param7;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.senderId = 0;
-            this.senderName = "";
-            this.senderAccountId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var senderId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var senderName:String = "";
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ChatServerMessage(param1);
-            return;
-        }// end function
+      public var senderAccountId:int = 0;
 
-        public function serializeAs_ChatServerMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_ChatAbstractServerMessage(param1);
-            param1.writeInt(this.senderId);
-            param1.writeUTF(this.senderName);
-            param1.writeInt(this.senderAccountId);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 881;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ChatServerMessage(param1);
-            return;
-        }// end function
+      public function initChatServerMessage(channel:uint=0, content:String="", timestamp:uint=0, fingerprint:String="", senderId:int=0, senderName:String="", senderAccountId:int=0) : ChatServerMessage {
+         super.initChatAbstractServerMessage(channel,content,timestamp,fingerprint);
+         this.senderId=senderId;
+         this.senderName=senderName;
+         this.senderAccountId=senderAccountId;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserializeAs_ChatServerMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.senderId = param1.readInt();
-            this.senderName = param1.readUTF();
-            this.senderAccountId = param1.readInt();
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.senderId=0;
+         this.senderName="";
+         this.senderAccountId=0;
+         this._isInitialized=false;
+      }
 
-    }
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChatServerMessage(output);
+      }
+
+      public function serializeAs_ChatServerMessage(output:IDataOutput) : void {
+         super.serializeAs_ChatAbstractServerMessage(output);
+         output.writeInt(this.senderId);
+         output.writeUTF(this.senderName);
+         output.writeInt(this.senderAccountId);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChatServerMessage(input);
+      }
+
+      public function deserializeAs_ChatServerMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.senderId=input.readInt();
+         this.senderName=input.readUTF();
+         this.senderAccountId=input.readInt();
+      }
+   }
+
 }

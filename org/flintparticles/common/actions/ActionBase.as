@@ -1,36 +1,34 @@
-﻿package org.flintparticles.common.actions
+package org.flintparticles.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
-    import org.flintparticles.common.emitters.*;
-    import org.flintparticles.common.particles.*;
+   import org.flintparticles.common.emitters.Emitter;
+   import org.flintparticles.common.particles.Particle;
 
-    public class ActionBase extends Object implements Action
-    {
 
-        public function ActionBase()
-        {
-            return;
-        }// end function
+   public class ActionBase extends Object implements Action
+   {
+         
 
-        public function getDefaultPriority() : Number
-        {
-            return 0;
-        }// end function
+      public function ActionBase() {
+         super();
+      }
 
-        public function addedToEmitter(param1:Emitter) : void
-        {
-            return;
-        }// end function
 
-        public function removedFromEmitter(param1:Emitter) : void
-        {
-            return;
-        }// end function
 
-        public function update(param1:Emitter, param2:Particle, param3:Number) : void
-        {
-            return;
-        }// end function
+      public function getDefaultPriority() : Number {
+         return 0;
+      }
 
-    }
+      public function addedToEmitter(emitter:Emitter) : void {
+         
+      }
+
+      public function removedFromEmitter(emitter:Emitter) : void {
+         
+      }
+
+      public function update(emitter:Emitter, particle:Particle, time:Number) : void {
+         
+      }
+   }
+
 }

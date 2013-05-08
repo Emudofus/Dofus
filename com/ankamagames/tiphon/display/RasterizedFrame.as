@@ -1,58 +1,65 @@
-﻿package com.ankamagames.tiphon.display
+package com.ankamagames.tiphon.display
 {
-    import flash.display.*;
-    import flash.geom.*;
+   import flash.display.BitmapData;
+   import flash.display.MovieClip;
+   import flash.geom.Matrix;
+   import flash.geom.Rectangle;
 
-    public class RasterizedFrame extends Object
-    {
-        public var bitmapData:BitmapData;
-        public var x:Number = 0;
-        public var y:Number = 0;
 
-        public function RasterizedFrame(param1:MovieClip, param2:int)
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = NaN;
-            var _loc_7:* = NaN;
-            var _loc_8:* = NaN;
-            var _loc_9:* = NaN;
-            var _loc_10:* = NaN;
-            var _loc_11:* = NaN;
-            param1.gotoAndStop((param2 + 1));
-            var _loc_3:* = param1.getBounds(param1);
-            if (_loc_3.width + _loc_3.height)
-            {
-                _loc_5 = new Matrix();
-                _loc_6 = param1.scaleX;
-                _loc_7 = param1.scaleY;
-                _loc_8 = _loc_6 > 0 ? (_loc_3.width * _loc_6) : ((-_loc_3.width) * _loc_6);
-                _loc_9 = _loc_7 > 0 ? (_loc_3.height * _loc_7) : ((-_loc_3.height) * _loc_7);
-                _loc_10 = _loc_6 > 0 ? (_loc_3.x * _loc_6) : ((_loc_3.x + _loc_3.width) * _loc_6);
-                _loc_11 = _loc_7 > 0 ? (_loc_3.y * _loc_7) : ((_loc_3.y + _loc_3.height) * _loc_7);
-                _loc_5.scale(_loc_6, _loc_7);
-                _loc_5.translate(-_loc_10, -_loc_11);
-                this.x = _loc_10;
-                this.y = _loc_11;
-                _loc_4 = new BitmapData(_loc_8, _loc_9, true, 16777215);
-                _loc_4.draw(param1, _loc_5, null, null, null, true);
-            }
-            else
-            {
-                _loc_4 = new BitmapData(1, 1, true, 16777215);
-            }
-            this.bitmapData = _loc_4;
-            if (param1.currentFrame == param1.framesLoaded && param1.parent)
-            {
-                param1.parent.removeChild(param1);
-            }
-            return;
-        }// end function
+   public class RasterizedFrame extends Object
+   {
+         
 
-        public function toString() : String
-        {
-            return "[RasterizedFrame " + this.x + "," + this.y + ": " + this.bitmapData + " (" + this.bitmapData.width + "/" + this.bitmapData.height + ")]";
-        }// end function
+      public function RasterizedFrame(target:MovieClip, index:int) {
+         var bmpd:BitmapData = null;
+         var mtx:Matrix = null;
+         var sX:* = NaN;
+         var sY:* = NaN;
+         var bmpW:* = NaN;
+         var bmpH:* = NaN;
+         var drawX:* = NaN;
+         var drawY:* = NaN;
+         super();
+         target.gotoAndStop(index+1);
+         var bounds:Rectangle = target.getBounds(target);
+         if(bounds.width+bounds.height)
+         {
+            mtx=new Matrix();
+            sX=target.scaleX;
+            sY=target.scaleY;
+            bmpW=sX<0?bounds.width*sX:-bounds.width*sX;
+            bmpH=sY<0?bounds.height*sY:-bounds.height*sY;
+            drawX=sX<0?bounds.x*sX:(bounds.x+bounds.width)*sX;
+            drawY=sY<0?bounds.y*sY:(bounds.y+bounds.height)*sY;
+            mtx.scale(sX,sY);
+            mtx.translate(-drawX,-drawY);
+            this.x=drawX;
+            this.y=drawY;
+            bmpd=new BitmapData(bmpW,bmpH,true,16777215);
+            bmpd.draw(target,mtx,null,null,null,true);
+         }
+         else
+         {
+            bmpd=new BitmapData(1,1,true,16777215);
+         }
+         this.bitmapData=bmpd;
+         if((target.currentFrame==target.framesLoaded)&&(target.parent))
+         {
+            target.parent.removeChild(target);
+         }
+      }
 
-    }
+
+
+      public var bitmapData:BitmapData;
+
+      public var x:Number = 0;
+
+      public var y:Number = 0;
+
+      public function toString() : String {
+         return "[RasterizedFrame "+this.x+","+this.y+": "+this.bitmapData+" ("+this.bitmapData.width+"/"+this.bitmapData.height+")]";
+      }
+   }
+
 }

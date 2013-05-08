@@ -1,99 +1,101 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import by.blooddy.crypto.*;
-    import com.ankamagames.dofus.*;
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.events.*;
-    import flash.net.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.types.DataStoreType;
+   import flash.net.URLRequest;
+   import flash.net.URLLoader;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import flash.net.URLRequestMethod;
+   import flash.net.URLVariables;
+   import by.blooddy.crypto.MD5;
+   import com.ankamagames.dofus.logic.common.managers.PlayerManager;
+   import com.ankamagames.dofus.BuildInfos;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.DataStoreEnum;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class StatisticReportingManager extends Object
-    {
-        protected var _log:Logger;
-        private var _dt:DataStoreType;
-        private static var _self:StatisticReportingManager;
-        private static var WEB_SERVICE:String = "http://www.ankama.com/stats/dofus";
 
-        public function StatisticReportingManager()
-        {
-            this._log = Log.getLogger(getQualifiedClassName());
-            this._dt = new DataStoreType("StatisticReportingManager", true, DataStoreEnum.LOCATION_LOCAL, DataStoreEnum.BIND_COMPUTER);
-            if (_self)
-            {
-                throw new SingletonError();
-            }
+   public class StatisticReportingManager extends Object
+   {
+         
+
+      public function StatisticReportingManager() {
+         this._log=Log.getLogger(getQualifiedClassName(StatisticReportingManager));
+         this._dt=new DataStoreType("StatisticReportingManager",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_COMPUTER);
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function report(param1:String, param2:String) : Boolean
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            if (!param1)
-            {
-                return false;
-            }
-            try
-            {
-                _loc_3 = StoreDataManager.getInstance().getData(this._dt, param1);
-                if (_loc_3 && _loc_3 == param2)
-                {
-                    return false;
-                }
-                _loc_4 = new URLRequest(WEB_SERVICE);
-                _loc_4.method = URLRequestMethod.POST;
-                _loc_4.data = new URLVariables();
-                _loc_4.data.guid = MD5.hash(PlayerManager.getInstance().nickname);
-                _loc_4.data.version = BuildInfos.BUILD_TYPE;
-                _loc_4.data.key = param1;
-                _loc_4.data.value = param2;
-                _loc_5 = new URLLoader();
-                _loc_5.addEventListener(Event.COMPLETE, this.onSended);
-                _loc_5.addEventListener(IOErrorEvent.IO_ERROR, this.onSendError);
-                _loc_5.load(_loc_4);
-                StoreDataManager.getInstance().setData(this._dt, param1, param2);
-                return true;
-            }
-            catch (e:Error)
-            {
-            }
+      private static var _self:StatisticReportingManager;
+
+      private static var WEB_SERVICE:String = "http://www.ankama.com/stats/dofus";
+
+      public static function getInstance() : StatisticReportingManager {
+         if(!_self)
+         {
+            _self=new StatisticReportingManager();
+         }
+         return _self;
+      }
+
+      protected var _log:Logger;
+
+      private var _dt:DataStoreType;
+
+      public function report(key:String, value:String) : Boolean {
+         var oldValue:String = null;
+         var urlRequest:URLRequest = null;
+         var urlLoader:URLLoader = null;
+         if(!key)
+         {
             return false;
-        }// end function
-
-        public function isReported(param1:String) : Boolean
-        {
-            var _loc_2:* = StoreDataManager.getInstance().getData(this._dt, param1);
-            if (_loc_2)
-            {
-                return true;
-            }
+         }
+         oldValue=StoreDataManager.getInstance().getData(this._dt,key);
+         if((oldValue)&&(oldValue==value))
+         {
             return false;
-        }// end function
+         }
+         urlRequest=new URLRequest(WEB_SERVICE);
+         urlRequest.method=URLRequestMethod.POST;
+         urlRequest.data=new URLVariables();
+         urlRequest.data.guid=MD5.hash(PlayerManager.getInstance().nickname);
+         urlRequest.data.version=BuildInfos.BUILD_TYPE;
+         urlRequest.data.key=key;
+         urlRequest.data.value=value;
+         urlLoader=new URLLoader();
+         urlLoader.addEventListener(Event.COMPLETE,this.onSended);
+         urlLoader.addEventListener(IOErrorEvent.IO_ERROR,this.onSendError);
+         urlLoader.load(urlRequest);
+         StoreDataManager.getInstance().setData(this._dt,key,value);
+         return true;
+      }
 
-        private function onSended(event:Event) : void
-        {
-            return;
-        }// end function
+      public function isReported(key:String) : Boolean {
+         var oldValue:String = StoreDataManager.getInstance().getData(this._dt,key);
+         if(oldValue)
+         {
+            return true;
+         }
+         return false;
+      }
 
-        private function onSendError(event:Event) : void
-        {
-            return;
-        }// end function
+      private function onSended(e:Event) : void {
+         trace("ok");
+      }
 
-        public static function getInstance() : StatisticReportingManager
-        {
-            if (!_self)
-            {
-                _self = new StatisticReportingManager;
-            }
-            return _self;
-        }// end function
+      private function onSendError(e:Event) : void {
+         trace("error");
+      }
+   }
 
-    }
 }

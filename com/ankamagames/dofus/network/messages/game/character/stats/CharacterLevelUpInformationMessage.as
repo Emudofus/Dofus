@@ -1,97 +1,95 @@
-﻿package com.ankamagames.dofus.network.messages.game.character.stats
+package com.ankamagames.dofus.network.messages.game.character.stats
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var name:String = "";
-        public var id:uint = 0;
-        public static const protocolId:uint = 6076;
 
-        public function CharacterLevelUpInformationMessage()
-        {
+   public class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage implements INetworkMessage
+   {
+         
+
+      public function CharacterLevelUpInformationMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6076;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
+
+      public var name:String = "";
+
+      public var id:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6076;
+      }
+
+      public function initCharacterLevelUpInformationMessage(newLevel:uint=0, name:String="", id:uint=0) : CharacterLevelUpInformationMessage {
+         super.initCharacterLevelUpMessage(newLevel);
+         this.name=name;
+         this.id=id;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.name="";
+         this.id=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterLevelUpInformationMessage(output);
+      }
+
+      public function serializeAs_CharacterLevelUpInformationMessage(output:IDataOutput) : void {
+         super.serializeAs_CharacterLevelUpMessage(output);
+         output.writeUTF(this.name);
+         if(this.id<0)
+         {
+            throw new Error("Forbidden value ("+this.id+") on element id.");
+         }
+         else
+         {
+            output.writeInt(this.id);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterLevelUpInformationMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6076;
-        }// end function
-
-        public function initCharacterLevelUpInformationMessage(param1:uint = 0, param2:String = "", param3:uint = 0) : CharacterLevelUpInformationMessage
-        {
-            super.initCharacterLevelUpMessage(param1);
-            this.name = param2;
-            this.id = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.name = "";
-            this.id = 0;
-            this._isInitialized = false;
+      public function deserializeAs_CharacterLevelUpInformationMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.name=input.readUTF();
+         this.id=input.readInt();
+         if(this.id<0)
+         {
+            throw new Error("Forbidden value ("+this.id+") on element of CharacterLevelUpInformationMessage.id.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_CharacterLevelUpInformationMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_CharacterLevelUpInformationMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_CharacterLevelUpMessage(param1);
-            param1.writeUTF(this.name);
-            if (this.id < 0)
-            {
-                throw new Error("Forbidden value (" + this.id + ") on element id.");
-            }
-            param1.writeInt(this.id);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_CharacterLevelUpInformationMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_CharacterLevelUpInformationMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.name = param1.readUTF();
-            this.id = param1.readInt();
-            if (this.id < 0)
-            {
-                throw new Error("Forbidden value (" + this.id + ") on element of CharacterLevelUpInformationMessage.id.");
-            }
-            return;
-        }// end function
-
-    }
 }

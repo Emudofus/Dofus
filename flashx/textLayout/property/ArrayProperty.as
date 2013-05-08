@@ -1,212 +1,199 @@
-﻿package flashx.textLayout.property
+package flashx.textLayout.property
 {
-    import __AS3__.vec.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.formats.FormatValue;
+   import __AS3__.vec.Vector;
 
-    public class ArrayProperty extends Property
-    {
-        private var _memberType:Class;
 
-        public function ArrayProperty(param1:String, param2:Array, param3:Boolean, param4:Vector.<String>, param5:Class)
-        {
-            super(param1, param2, param3, param4);
-            this._memberType = param5;
-            return;
-        }// end function
+   public class ArrayProperty extends Property
+   {
+         
 
-        public function get memberType() : Class
-        {
-            return this._memberType;
-        }// end function
+      public function ArrayProperty(nameValue:String, defaultValue:Array, inherited:Boolean, categories:Vector.<String>, mType:Class) {
+         super(nameValue,defaultValue,inherited,categories);
+         this._memberType=mType;
+      }
 
-        protected function checkArrayTypes(param1:Object) : Boolean
-        {
-            var _loc_2:* = null;
-            if (param1 == null)
-            {
-                return true;
-            }
-            if (!(param1 is Array))
-            {
-                return false;
-            }
-            if (this._memberType == null)
-            {
-                return true;
-            }
-            for each (_loc_2 in param1 as Array)
-            {
-                
-                if (!(_loc_2 is this._memberType))
-                {
-                    return false;
-                }
-            }
+
+
+      private var _memberType:Class;
+
+      public function get memberType() : Class {
+         return this._memberType;
+      }
+
+      protected function checkArrayTypes(val:Object) : Boolean {
+         var obj:Object = null;
+         if(val==null)
+         {
             return true;
-        }// end function
+         }
+         if(!(val is Array))
+         {
+            return false;
+         }
+         if(this._memberType==null)
+         {
+            return true;
+         }
+         for each (obj in val as Array)
+         {
+            if(!(obj is this._memberType))
+            {
+               return false;
+            }
+         }
+         return true;
+      }
 
-        override public function get defaultValue()
-        {
-            return super.defaultValue == null ? (null) : ((super.defaultValue as Array).slice());
-        }// end function
+      override public function get defaultValue() : * {
+         return super.defaultValue==null?null:(super.defaultValue as Array).slice();
+      }
 
-        override public function setHelper(param1, param2)
-        {
-            if (param2 === null)
-            {
-                param2 = undefined;
-            }
-            if (param2 == undefined || param2 == FormatValue.INHERIT)
-            {
-                return param2;
-            }
-            if (param2 is String)
-            {
-                param2 = this.valueFromString(String(param2));
-            }
-            if (!this.checkArrayTypes(param2))
-            {
-                Property.errorHandler(this, param2);
-                return param1;
-            }
-            return (param2 as Array).slice();
-        }// end function
+      override public function setHelper(currVal:*, newVal:*) : * {
+         if(newVal===null)
+         {
+            newVal=undefined;
+         }
+         if((newVal==undefined)||(newVal==FormatValue.INHERIT))
+         {
+            return newVal;
+         }
+         if(newVal is String)
+         {
+            newVal=this.valueFromString(String(newVal));
+         }
+         if(!this.checkArrayTypes(newVal))
+         {
+            Property.errorHandler(this,newVal);
+            return currVal;
+         }
+         return (newVal as Array).slice();
+      }
 
-        override public function concatInheritOnlyHelper(param1, param2)
-        {
-            return inherited && param1 === undefined || param1 == FormatValue.INHERIT ? (param2 is Array ? ((param2 as Array).slice()) : (param2)) : (param1);
-        }// end function
+      override public function concatInheritOnlyHelper(currVal:*, concatVal:*) : * {
+         return (inherited)&&(currVal===undefined)||(currVal==FormatValue.INHERIT)?concatVal is Array?(concatVal as Array).slice():concatVal:currVal;
+      }
 
-        override public function concatHelper(param1, param2)
-        {
-            if (inherited)
-            {
-                return param1 === undefined || param1 == FormatValue.INHERIT ? (param2 is Array ? ((param2 as Array).slice()) : (param2)) : (param1);
-            }
-            if (param1 === undefined)
-            {
-                return this.defaultValue;
-            }
-            return param1 == FormatValue.INHERIT ? (param2 is Array ? ((param2 as Array).slice()) : (param2)) : (param1);
-        }// end function
+      override public function concatHelper(currVal:*, concatVal:*) : * {
+         if(inherited)
+         {
+            return (currVal===undefined)||(currVal==FormatValue.INHERIT)?concatVal is Array?(concatVal as Array).slice():concatVal:currVal;
+         }
+         if(currVal===undefined)
+         {
+            return this.defaultValue;
+         }
+         return currVal==FormatValue.INHERIT?concatVal is Array?(concatVal as Array).slice():concatVal:currVal;
+      }
 
-        override public function equalHelper(param1, param2) : Boolean
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            if (this._memberType != null)
+      override public function equalHelper(v1:*, v2:*) : Boolean {
+         var v1Array:Array = null;
+         var v2Array:Array = null;
+         var desc:Object = null;
+         var i:* = 0;
+         if(this._memberType!=null)
+         {
+            v1Array=v1 as Array;
+            v2Array=v2 as Array;
+            if((v1Array)&&(v2Array))
             {
-                _loc_3 = param1 as Array;
-                _loc_4 = param2 as Array;
-                if (_loc_3 && _loc_4)
-                {
-                    if (_loc_3.length == _loc_4.length)
-                    {
-                        _loc_5 = this._memberType.description;
-                        _loc_6 = 0;
-                        while (_loc_6 < _loc_3.length)
-                        {
-                            
-                            if (!Property.equalAllHelper(_loc_5, param1[_loc_6], param2[_loc_6]))
-                            {
-                                return false;
-                            }
-                            _loc_6++;
-                        }
-                        return true;
-                    }
-                }
+               if(v1Array.length==v2Array.length)
+               {
+                  desc=this._memberType.description;
+                  i=0;
+                  while(i<v1Array.length)
+                  {
+                     if(!Property.equalAllHelper(desc,v1[i],v2[i]))
+                     {
+                        return false;
+                     }
+                     i++;
+                  }
+                  return true;
+               }
             }
-            return param1 == param2;
-        }// end function
+         }
+         return v1==v2;
+      }
 
-        override public function toXMLString(param1:Object) : String
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = false;
-            var _loc_7:* = null;
-            if (param1 == FormatValue.INHERIT)
+      override public function toXMLString(val:Object) : String {
+         var member:Object = null;
+         var addComma:* = false;
+         var prop:Property = null;
+         if(val==FormatValue.INHERIT)
+         {
+            return String(val);
+         }
+         var desc:Object = this._memberType.description;
+         var rslt:String = "";
+         var addSemi:Boolean = false;
+         for each (member in val)
+         {
+            if(addSemi)
             {
-                return String(param1);
+               rslt=rslt+"; ";
             }
-            var _loc_2:* = this._memberType.description;
-            var _loc_3:* = "";
-            var _loc_4:* = false;
-            for each (_loc_5 in param1)
+            addComma=false;
+            for each (prop in desc)
             {
-                
-                if (_loc_4)
-                {
-                    _loc_3 = _loc_3 + "; ";
-                }
-                _loc_6 = false;
-                for each (_loc_7 in _loc_2)
-                {
-                    
-                    param1 = _loc_5[_loc_7.name];
-                    if (param1 != null)
-                    {
-                        if (_loc_6)
-                        {
-                            _loc_3 = _loc_3 + ", ";
-                        }
-                        _loc_3 = _loc_3 + (_loc_7.name + ":" + _loc_7.toXMLString(param1));
-                        _loc_6 = true;
-                    }
-                }
-                _loc_4 = true;
+               val=member[prop.name];
+               if(val!=null)
+               {
+                  if(addComma)
+                  {
+                     rslt=rslt+", ";
+                  }
+                  rslt=rslt+(prop.name+":"+prop.toXMLString(val));
+                  addComma=true;
+               }
             }
-            return _loc_3;
-        }// end function
+            addSemi=true;
+         }
+         return rslt;
+      }
 
-        private function valueFromString(param1:String)
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            if (param1 == null || param1 == "")
+      private function valueFromString(str:String) : * {
+         var attrs:String = null;
+         var obj:Object = null;
+         var attrsOne:Array = null;
+         var attr:String = null;
+         var nameValArr:Array = null;
+         var propName:String = null;
+         var propVal:String = null;
+         var prop:Property = null;
+         if((str==null)||(str==""))
+         {
+            return null;
+         }
+         if(str==FormatValue.INHERIT)
+         {
+            return str;
+         }
+         var result:Array = new Array();
+         var desc:Object = this._memberType.description;
+         var attrsAll:Array = str.split("; ");
+         for each (attrs in attrsAll)
+         {
+            obj=new this._memberType();
+            attrsOne=attrs.split(", ");
+            for each (attr in attrsOne)
             {
-                return null;
+               nameValArr=attr.split(":");
+               propName=nameValArr[0];
+               propVal=nameValArr[1];
+               for each (prop in desc)
+               {
+                  if(prop.name==propName)
+                  {
+                     obj[propName]=prop.setHelper(propVal,obj[propName]);
+                     break;
+                  }
+               }
             }
-            if (param1 == FormatValue.INHERIT)
-            {
-                return param1;
-            }
-            var _loc_2:* = new Array();
-            var _loc_3:* = this._memberType.description;
-            var _loc_4:* = param1.split("; ");
-            for each (_loc_5 in _loc_4)
-            {
-                
-                _loc_6 = new this._memberType();
-                _loc_7 = _loc_5.split(", ");
-                for each (_loc_8 in _loc_7)
-                {
-                    
-                    _loc_9 = _loc_8.split(":");
-                    _loc_10 = _loc_9[0];
-                    _loc_11 = _loc_9[1];
-                    for each (_loc_12 in _loc_3)
-                    {
-                        
-                        if (_loc_12.name == _loc_10)
-                        {
-                            _loc_6[_loc_10] = _loc_12.setHelper(_loc_11, _loc_6[_loc_10]);
-                            break;
-                        }
-                    }
-                }
-                _loc_2.push(_loc_6);
-            }
-            return _loc_2;
-        }// end function
+            result.push(obj);
+         }
+         return result;
+      }
+   }
 
-    }
 }

@@ -1,114 +1,126 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
+package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayPlayerFightFriendlyRequestedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fightId:uint = 0;
-        public var sourceId:uint = 0;
-        public var targetId:uint = 0;
-        public static const protocolId:uint = 5937;
 
-        public function GameRolePlayPlayerFightFriendlyRequestedMessage()
-        {
-            return;
-        }// end function
+   public class GameRolePlayPlayerFightFriendlyRequestedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameRolePlayPlayerFightFriendlyRequestedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5937;
-        }// end function
+      public static const protocolId:uint = 5937;
 
-        public function initGameRolePlayPlayerFightFriendlyRequestedMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0) : GameRolePlayPlayerFightFriendlyRequestedMessage
-        {
-            this.fightId = param1;
-            this.sourceId = param2;
-            this.targetId = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fightId = 0;
-            this.sourceId = 0;
-            this.targetId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fightId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var sourceId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(param1);
-            return;
-        }// end function
+      public var targetId:uint = 0;
 
-        public function serializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(param1:IDataOutput) : void
-        {
-            if (this.fightId < 0)
+      override public function getMessageId() : uint {
+         return 5937;
+      }
+
+      public function initGameRolePlayPlayerFightFriendlyRequestedMessage(fightId:uint=0, sourceId:uint=0, targetId:uint=0) : GameRolePlayPlayerFightFriendlyRequestedMessage {
+         this.fightId=fightId;
+         this.sourceId=sourceId;
+         this.targetId=targetId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.fightId=0;
+         this.sourceId=0;
+         this.targetId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(output:IDataOutput) : void {
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element fightId.");
+         }
+         else
+         {
+            output.writeInt(this.fightId);
+            if(this.sourceId<0)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+               throw new Error("Forbidden value ("+this.sourceId+") on element sourceId.");
             }
-            param1.writeInt(this.fightId);
-            if (this.sourceId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.sourceId + ") on element sourceId.");
+               output.writeInt(this.sourceId);
+               if(this.targetId<0)
+               {
+                  throw new Error("Forbidden value ("+this.targetId+") on element targetId.");
+               }
+               else
+               {
+                  output.writeInt(this.targetId);
+                  return;
+               }
             }
-            param1.writeInt(this.sourceId);
-            if (this.targetId < 0)
-            {
-                throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
-            }
-            param1.writeInt(this.targetId);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(input);
+      }
 
-        public function deserializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(param1:IDataInput) : void
-        {
-            this.fightId = param1.readInt();
-            if (this.fightId < 0)
+      public function deserializeAs_GameRolePlayPlayerFightFriendlyRequestedMessage(input:IDataInput) : void {
+         this.fightId=input.readInt();
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element of GameRolePlayPlayerFightFriendlyRequestedMessage.fightId.");
+         }
+         else
+         {
+            this.sourceId=input.readInt();
+            if(this.sourceId<0)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element of GameRolePlayPlayerFightFriendlyRequestedMessage.fightId.");
+               throw new Error("Forbidden value ("+this.sourceId+") on element of GameRolePlayPlayerFightFriendlyRequestedMessage.sourceId.");
             }
-            this.sourceId = param1.readInt();
-            if (this.sourceId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.sourceId + ") on element of GameRolePlayPlayerFightFriendlyRequestedMessage.sourceId.");
+               this.targetId=input.readInt();
+               if(this.targetId<0)
+               {
+                  throw new Error("Forbidden value ("+this.targetId+") on element of GameRolePlayPlayerFightFriendlyRequestedMessage.targetId.");
+               }
+               else
+               {
+                  return;
+               }
             }
-            this.targetId = param1.readInt();
-            if (this.targetId < 0)
-            {
-                throw new Error("Forbidden value (" + this.targetId + ") on element of GameRolePlayPlayerFightFriendlyRequestedMessage.targetId.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

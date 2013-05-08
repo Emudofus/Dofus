@@ -1,415 +1,401 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
-    import flash.text.engine.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.formats.VerticalAlign;
+   import flash.text.engine.TextLine;
+   import flashx.textLayout.formats.Direction;
+   import flashx.textLayout.elements.ParagraphElement;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.elements.FlowLeafElement;
+   import flashx.textLayout.elements.FlowGroupElement;
+   import flashx.textLayout.formats.BlockProgression;
 
-    public class SimpleCompose extends BaseCompose
-    {
-        protected var workingLine:TextFlowLine;
-        public var _lines:Array;
-        private var _vjLines:Array;
-        private var vjBeginLineIndex:int = 0;
-        private var vjDisableThisParcel:Boolean = false;
-        private var vjType:String;
-        private var _totalLength:Number;
-        private var _resetLineHandler:Function;
+   use namespace tlf_internal;
 
-        public function SimpleCompose()
-        {
-            this.workingLine = new TextFlowLine(null, null);
-            this._lines = new Array();
-            this._vjLines = new Array();
-            return;
-        }// end function
+   public class SimpleCompose extends BaseCompose
+   {
+         
 
-        override protected function createParcelList() : ParcelList
-        {
-            return ParcelList.getParcelList();
-        }// end function
+      public function SimpleCompose() {
+         this.workingLine=new TextFlowLine(null,null);
+         super();
+         this._lines=new Array();
+         this._vjLines=new Array();
+      }
 
-        override protected function releaseParcelList(param1:ParcelList) : void
-        {
-            ParcelList.releaseParcelList(param1);
-            return;
-        }// end function
 
-        override protected function initializeForComposer(param1:IFlowComposer, param2:int, param3:int, param4:int) : void
-        {
-            _startController = param1.getControllerAt(0);
-            _startComposePosition = 0;
-            super.initializeForComposer(param1, param2, 0, param4);
-            this._vjLines.splice(0);
-            this.vjBeginLineIndex = 0;
-            this.vjDisableThisParcel = false;
-            this.vjType = _startController.computedFormat.verticalAlign;
-            return;
-        }// end function
 
-        override public function composeTextFlow(param1:TextFlow, param2:int, param3:int) : int
-        {
-            _flowComposer = param1.flowComposer as StandardFlowComposer;
-            _curLine = this.workingLine;
-            this._lines.splice(0);
-            this._totalLength = 0;
-            return super.composeTextFlow(param1, param2, param3);
-        }// end function
+      protected var workingLine:TextFlowLine;
 
-        override protected function doVerticalAlignment(param1:Boolean, param2:Parcel) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_3:* = parcelList.currentParcel;
-            if (param1 && this.vjType != VerticalAlign.TOP && this.vjBeginLineIndex != this._lines.length && !this.vjDisableThisParcel)
+      public var _lines:Array;
+
+      private var _vjLines:Array;
+
+      private var vjBeginLineIndex:int = 0;
+
+      private var vjDisableThisParcel:Boolean = false;
+
+      private var vjType:String;
+
+      private var _totalLength:Number;
+
+      override protected function createParcelList() : ParcelList {
+         return ParcelList.getParcelList();
+      }
+
+      override protected function releaseParcelList(list:ParcelList) : void {
+         ParcelList.releaseParcelList(list);
+      }
+
+      override protected function initializeForComposer(composer:IFlowComposer, composeToPosition:int, controllerStartIndex:int, controllerEndIndex:int) : void {
+         _startController=composer.getControllerAt(0);
+         _startComposePosition=0;
+         super.initializeForComposer(composer,composeToPosition,0,controllerEndIndex);
+         this._vjLines.splice(0);
+         this.vjBeginLineIndex=0;
+         this.vjDisableThisParcel=false;
+         this.vjType=_startController.computedFormat.verticalAlign;
+      }
+
+      override public function composeTextFlow(textFlow:TextFlow, composeToPosition:int, controllerEndIndex:int) : int {
+         _flowComposer=textFlow.flowComposer as StandardFlowComposer;
+         _curLine=this.workingLine;
+         this._lines.splice(0);
+         this._totalLength=0;
+         return super.composeTextFlow(textFlow,composeToPosition,controllerEndIndex);
+      }
+
+      override protected function doVerticalAlignment(canVerticalAlign:Boolean, nextParcel:Parcel) : void {
+         var controller:ContainerController = null;
+         var beginFloatIndex:* = 0;
+         var endFloatIndex:* = 0;
+         var vjParcel:Parcel = parcelList.currentParcel;
+         if((canVerticalAlign)&&(!(this.vjType==VerticalAlign.TOP))&&(!(this.vjBeginLineIndex==this._lines.length))&&(!this.vjDisableThisParcel))
+         {
+            controller=_curParcel.controller;
+            beginFloatIndex=0;
+            endFloatIndex=0;
+            if(controller.numFloats>0)
             {
-                _loc_4 = _curParcel.controller;
-                _loc_5 = 0;
-                _loc_6 = 0;
-                if (_loc_4.numFloats > 0)
-                {
-                    _loc_5 = _loc_4.findFloatIndexAtOrAfter(_curParcelStart);
-                    _loc_6 = _loc_4.findFloatIndexAfter(_curElementStart + _curElementOffset);
-                }
-                applyVerticalAlignmentToColumn(_loc_3.controller, this.vjType, this._vjLines, 0, this._vjLines.length, _loc_5, _loc_6);
+               beginFloatIndex=controller.findFloatIndexAtOrAfter(_curParcelStart);
+               endFloatIndex=controller.findFloatIndexAfter(_curElementStart+_curElementOffset);
             }
-            this._vjLines.splice(0);
-            this.vjBeginLineIndex = this._lines.length;
-            this.vjDisableThisParcel = false;
-            if (param2)
-            {
-                this.vjType = param2.controller.computedFormat.verticalAlign;
-            }
-            return;
-        }// end function
+            applyVerticalAlignmentToColumn(vjParcel.controller,this.vjType,this._vjLines,0,this._vjLines.length,beginFloatIndex,endFloatIndex);
+         }
+         this._vjLines.splice(0);
+         this.vjBeginLineIndex=this._lines.length;
+         this.vjDisableThisParcel=false;
+         if(nextParcel)
+         {
+            this.vjType=nextParcel.controller.computedFormat.verticalAlign;
+         }
+      }
 
-        override protected function isLineVisible(param1:TextLine) : Boolean
-        {
-            return param1 != null;
-        }// end function
+      override protected function isLineVisible(textLine:TextLine) : Boolean {
+         return !(textLine==null);
+      }
 
-        override protected function endLine(param1:TextLine) : void
-        {
-            super.endLine(param1);
-            _curLine.createShape(_blockProgression, param1);
-            if (this.textFlow.backgroundManager)
-            {
-                this.textFlow.backgroundManager.finalizeLine(_curLine);
-            }
-            param1.userData = this._totalLength;
-            this._totalLength = this._totalLength + param1.rawTextLength;
-            this._lines.push(param1);
-            if (this.vjType != VerticalAlign.TOP)
-            {
-                this._vjLines.push(new VJHelper(param1, _curLine.height));
-            }
-            commitLastLineState(_curLine);
-            return;
-        }// end function
+      override protected function endLine(textLine:TextLine) : void {
+         super.endLine(textLine);
+         _curLine.createShape(_blockProgression,textLine);
+         if(this.textFlow.backgroundManager)
+         {
+            this.textFlow.backgroundManager.finalizeLine(_curLine);
+         }
+         textLine.userData=this._totalLength;
+         this._totalLength=this._totalLength+textLine.rawTextLength;
+         this._lines.push(textLine);
+         if(this.vjType!=VerticalAlign.TOP)
+         {
+            this._vjLines.push(new VJHelper(textLine,_curLine.height));
+         }
+         commitLastLineState(_curLine);
+      }
 
-        public function get textFlow() : TextFlow
-        {
-            return _textFlow;
-        }// end function
+      public function get textFlow() : TextFlow {
+         return _textFlow;
+      }
 
-        public function get resetLineHandler() : Function
-        {
-            return this._resetLineHandler;
-        }// end function
+      private var _resetLineHandler:Function;
 
-        public function set resetLineHandler(param1:Function) : void
-        {
-            this._resetLineHandler = param1;
-            return;
-        }// end function
+      public function get resetLineHandler() : Function {
+         return this._resetLineHandler;
+      }
 
-        override protected function resetLine(param1:TextLine) : void
-        {
-            super.resetLine(param1);
-            if (this._resetLineHandler != null)
-            {
-                this._resetLineHandler(param1);
-            }
-            return;
-        }// end function
+      public function set resetLineHandler(val:Function) : void {
+         this._resetLineHandler=val;
+      }
 
-        override protected function composeNextLine() : TextLine
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = false;
-            var _loc_4:* = NaN;
-            if (_listItemElement && _listItemElement.getAbsoluteStart() == _curElementStart + _curElementOffset)
+      override protected function resetLine(textLine:TextLine) : void {
+         super.resetLine(textLine);
+         if(this._resetLineHandler!=null)
+         {
+            this._resetLineHandler(textLine);
+         }
+      }
+
+      override protected function composeNextLine() : TextLine {
+         var numberLine:TextLine = null;
+         var textLine:TextLine = null;
+         var isRTL:* = false;
+         var newDepth:* = NaN;
+         if((_listItemElement)&&(_listItemElement.getAbsoluteStart()==_curElementStart+_curElementOffset))
+         {
+            isRTL=_curParaElement.computedFormat.direction==Direction.RTL;
+            numberLine=TextFlowLine.createNumberLine(_listItemElement,_curParaElement,_flowComposer.swfContext,isRTL?_parcelList.rightMargin:_parcelList.leftMargin);
+            pushInsideListItemMargins(numberLine);
+         }
+         if(!_parcelList.getLineSlug(_lineSlug,0,0,_textIndent,_curParaFormat.direction==Direction.LTR))
+         {
+            return null;
+         }
+         loop0:
+         while(true)
+         {
+            do
             {
-                _loc_3 = _curParaElement.computedFormat.direction == Direction.RTL;
-                _loc_1 = TextFlowLine.createNumberLine(_listItemElement, _curParaElement, _flowComposer.swfContext, _loc_3 ? (_parcelList.rightMargin) : (_parcelList.leftMargin));
-                pushInsideListItemMargins(_loc_1);
-            }
-            if (!_parcelList.getLineSlug(_lineSlug, 0, 0, _textIndent, _curParaFormat.direction == Direction.LTR))
-            {
-                return null;
-            }
-            while (true)
-            {
-                
-                while (true)
-                {
-                    
-                    _loc_2 = createTextLine(_lineSlug.width, !_lineSlug.wrapsKnockOut);
-                    if (_loc_2)
-                    {
-                        break;
-                    }
-                    _loc_4 = _curParcel.findNextTransition(_lineSlug.depth);
-                    if (_loc_4 < Number.MAX_VALUE)
-                    {
-                        _parcelList.addTotalDepth(_loc_4 - _lineSlug.depth);
-                        _parcelList.getLineSlug(_lineSlug, 0, 1, _textIndent, _curParaFormat.direction == Direction.LTR);
+               textLine=createTextLine(_lineSlug.width,!_lineSlug.wrapsKnockOut);
+               if(textLine)
+               {
+                  if(fitLineToParcel(textLine,true,numberLine))
+                  {
+                     popInsideListItemMargins(numberLine);
+                     return textLine;
+                  }
+                  if(this.resetLineHandler!=null)
+                  {
+                     this.resetLineHandler(textLine);
+                  }
+                  if(_parcelList.atEnd())
+                  {
+                     popInsideListItemMargins(numberLine);
+                     return null;
+                  }
+               }
+               else
+               {
+                  newDepth=_curParcel.findNextTransition(_lineSlug.depth);
+                  if(newDepth<Number.MAX_VALUE)
+                  {
+                     _parcelList.addTotalDepth(newDepth-_lineSlug.depth);
+                     _parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction==Direction.LTR);
+                     continue;
+                  }
+                  advanceToNextParcel();
+                  if(!_parcelList.atEnd())
+                  {
+                     if(_parcelList.getLineSlug(_lineSlug,0,1,_textIndent,_curParaFormat.direction==Direction.LTR))
+                     {
                         continue;
-                    }
-                    advanceToNextParcel();
-                    if (!_parcelList.atEnd())
-                    {
-                        if (_parcelList.getLineSlug(_lineSlug, 0, 1, _textIndent, _curParaFormat.direction == Direction.LTR))
-                        {
-                            continue;
-                        }
-                    }
-                    popInsideListItemMargins(_loc_1);
-                    return null;
-                }
-                if (fitLineToParcel(_loc_2, true, _loc_1))
-                {
-                    break;
-                }
-                if (this.resetLineHandler != null)
-                {
-                    this.resetLineHandler(_loc_2);
-                }
-                if (_parcelList.atEnd())
-                {
-                    popInsideListItemMargins(_loc_1);
-                    return null;
-                }
+                     }
+                  }
+                  popInsideListItemMargins(numberLine);
+                  return null;
+               }
+               continue loop0;
             }
-            popInsideListItemMargins(_loc_1);
-            return _loc_2;
-        }// end function
+            while(true);
+         }
+         continue loop1;
+      }
 
-        function swapLines(param1:Array) : Array
-        {
-            var _loc_2:* = this._lines;
-            this._lines = param1;
-            return _loc_2;
-        }// end function
+      tlf_internal function swapLines(lines:Array) : Array {
+         var current:Array = this._lines;
+         this._lines=lines;
+         return current;
+      }
 
-        override protected function finalParcelAdjustment(param1:ContainerController) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = NaN;
-            var _loc_9:* = NaN;
-            var _loc_10:* = NaN;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = NaN;
-            var _loc_14:* = NaN;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            var _loc_18:* = NaN;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            var _loc_21:* = 0;
-            var _loc_22:* = NaN;
-            var _loc_2:* = TextLine.MAX_LINE_WIDTH;
-            var _loc_3:* = TextLine.MAX_LINE_WIDTH;
-            var _loc_4:* = -TextLine.MAX_LINE_WIDTH;
-            var _loc_5:* = _blockProgression == BlockProgression.RL;
-            if (!isNaN(_parcelLogicalTop))
+      override protected function finalParcelAdjustment(controller:ContainerController) : void {
+         var textLine:TextLine = null;
+         var startPos:* = 0;
+         var firstLineAdjust:* = NaN;
+         var effectiveIndent:* = NaN;
+         var edgeAdjust:* = NaN;
+         var curPara:ParagraphElement = null;
+         var curParaFormat:ITextLayoutFormat = null;
+         var paddingVerticalAdjust:* = NaN;
+         var paddingHorizontalAdjust:* = NaN;
+         var previousParagraph:ParagraphElement = null;
+         var leaf:FlowLeafElement = null;
+         var para:ParagraphElement = null;
+         var inlineAscent:* = NaN;
+         var numberLine:TextLine = null;
+         var fge:FlowGroupElement = null;
+         var leafStart:* = 0;
+         var numberLineStart:* = NaN;
+         var minX:Number = TextLine.MAX_LINE_WIDTH;
+         var minY:Number = TextLine.MAX_LINE_WIDTH;
+         var maxX:Number = -TextLine.MAX_LINE_WIDTH;
+         var verticalText:Boolean = _blockProgression==BlockProgression.RL;
+         if(!isNaN(_parcelLogicalTop))
+         {
+            if(verticalText)
             {
-                if (_loc_5)
-                {
-                    _loc_4 = _parcelLogicalTop;
-                }
-                else
-                {
-                    _loc_3 = _parcelLogicalTop;
-                }
-            }
-            if (!_measuring)
-            {
-                if (_loc_5)
-                {
-                    _loc_3 = _accumulatedMinimumStart;
-                }
-                else
-                {
-                    _loc_2 = _accumulatedMinimumStart;
-                }
+               maxX=_parcelLogicalTop;
             }
             else
             {
-                _loc_7 = 0;
-                _loc_13 = 0;
-                _loc_14 = 0;
-                _loc_15 = null;
-                for each (_loc_6 in this._lines)
-                {
-                    
-                    _loc_16 = param1.textFlow.findLeaf(_loc_7);
-                    _loc_17 = _loc_16.getParagraph();
-                    if (_loc_17 != _loc_15)
-                    {
-                        _loc_13 = 0;
-                        _loc_14 = 0;
-                        _loc_20 = _loc_17;
-                        while (_loc_20 && _loc_20.parent)
-                        {
-                            
-                            if (_loc_5)
-                            {
-                                _loc_13 = _loc_13 + _loc_20.getEffectivePaddingRight();
-                                _loc_14 = _loc_14 + _loc_20.getEffectivePaddingTop();
-                            }
-                            else
-                            {
-                                _loc_13 = _loc_13 + _loc_20.getEffectivePaddingTop();
-                                _loc_14 = _loc_14 + _loc_20.getEffectivePaddingLeft();
-                            }
-                            _loc_20 = _loc_20.parent;
-                        }
-                        _loc_15 = _loc_17;
-                    }
-                    _loc_18 = 0;
-                    if (_loc_6.numChildren > 0)
-                    {
-                        _loc_21 = _loc_16.getAbsoluteStart();
-                        _loc_18 = TextFlowLine.getTextLineTypographicAscent(_loc_6, _loc_16, _loc_21, _loc_7 + _loc_6.rawTextLength);
-                    }
-                    if (_loc_11 != _loc_17)
-                    {
-                        _loc_12 = _loc_17.computedFormat;
-                        if (_loc_12.direction == Direction.LTR)
-                        {
-                            _loc_8 = Math.max(_loc_12.textIndent, 0);
-                            _loc_9 = _loc_12.paragraphStartIndent;
-                        }
-                        else
-                        {
-                            _loc_8 = 0;
-                            _loc_9 = _loc_12.paragraphEndIndent;
-                        }
-                    }
-                    _loc_9 = _loc_9 + _loc_14;
-                    _loc_10 = _loc_6.textBlockBeginIndex == 0 ? (_loc_9 + _loc_8) : (_loc_9);
-                    _loc_10 = _loc_5 ? (_loc_6.y - _loc_10) : (_loc_6.x - _loc_10);
-                    _loc_19 = TextFlowLine.findNumberLine(_loc_6);
-                    if (_loc_19)
-                    {
-                        _loc_22 = _loc_5 ? (_loc_19.y + _loc_6.y) : (_loc_19.x + _loc_6.x);
-                        _loc_10 = Math.min(_loc_10, _loc_22);
-                    }
-                    if (_loc_5)
-                    {
-                        _loc_3 = Math.min(_loc_10, _loc_3);
-                        _loc_4 = Math.max(_loc_6.x + Math.max(_loc_18, _loc_6.ascent) + _loc_13, _loc_4);
-                    }
-                    else
-                    {
-                        _loc_2 = Math.min(_loc_10, _loc_2);
-                        if (_loc_18 < _loc_6.ascent)
-                        {
-                            _loc_18 = _loc_6.ascent;
-                        }
-                        _loc_3 = Math.min(_loc_6.y - (_loc_18 + _loc_13), _loc_3);
-                    }
-                    _loc_7 = _loc_7 + _loc_6.rawTextLength;
-                }
+               minY=_parcelLogicalTop;
             }
-            if (_loc_2 != TextLine.MAX_LINE_WIDTH && Math.abs(_loc_2 - _parcelLeft) >= 1)
+         }
+         if(!_measuring)
+         {
+            if(verticalText)
             {
-                _parcelLeft = _loc_2;
+               minY=_accumulatedMinimumStart;
             }
-            if (_loc_4 != -TextLine.MAX_LINE_WIDTH && Math.abs(_loc_4 - _parcelRight) >= 1)
+            else
             {
-                _parcelRight = _loc_4;
+               minX=_accumulatedMinimumStart;
             }
-            if (_loc_3 != TextLine.MAX_LINE_WIDTH && Math.abs(_loc_3 - _parcelTop) >= 1)
+         }
+         else
+         {
+            startPos=0;
+            paddingVerticalAdjust=0;
+            paddingHorizontalAdjust=0;
+            previousParagraph=null;
+            for each (textLine in this._lines)
             {
-                _parcelTop = _loc_3;
+               leaf=controller.textFlow.findLeaf(startPos);
+               para=leaf.getParagraph();
+               if(para!=previousParagraph)
+               {
+                  paddingVerticalAdjust=0;
+                  paddingHorizontalAdjust=0;
+                  fge=para;
+                  while((fge)&&(fge.parent))
+                  {
+                     if(verticalText)
+                     {
+                        paddingVerticalAdjust=paddingVerticalAdjust+fge.getEffectivePaddingRight();
+                        paddingHorizontalAdjust=paddingHorizontalAdjust+fge.getEffectivePaddingTop();
+                     }
+                     else
+                     {
+                        paddingVerticalAdjust=paddingVerticalAdjust+fge.getEffectivePaddingTop();
+                        paddingHorizontalAdjust=paddingHorizontalAdjust+fge.getEffectivePaddingLeft();
+                     }
+                     fge=fge.parent;
+                  }
+                  previousParagraph=para;
+               }
+               inlineAscent=0;
+               if(textLine.numChildren>0)
+               {
+                  leafStart=leaf.getAbsoluteStart();
+                  inlineAscent=TextFlowLine.getTextLineTypographicAscent(textLine,leaf,leafStart,startPos+textLine.rawTextLength);
+               }
+               if(curPara!=para)
+               {
+                  curParaFormat=para.computedFormat;
+                  if(curParaFormat.direction==Direction.LTR)
+                  {
+                     firstLineAdjust=Math.max(curParaFormat.textIndent,0);
+                     effectiveIndent=curParaFormat.paragraphStartIndent;
+                  }
+                  else
+                  {
+                     firstLineAdjust=0;
+                     effectiveIndent=curParaFormat.paragraphEndIndent;
+                  }
+               }
+               effectiveIndent=effectiveIndent+paddingHorizontalAdjust;
+               edgeAdjust=textLine.textBlockBeginIndex==0?effectiveIndent+firstLineAdjust:effectiveIndent;
+               edgeAdjust=verticalText?textLine.y-edgeAdjust:textLine.x-edgeAdjust;
+               numberLine=TextFlowLine.findNumberLine(textLine);
+               if(numberLine)
+               {
+                  numberLineStart=verticalText?numberLine.y+textLine.y:numberLine.x+textLine.x;
+                  edgeAdjust=Math.min(edgeAdjust,numberLineStart);
+               }
+               if(verticalText)
+               {
+                  minY=Math.min(edgeAdjust,minY);
+                  maxX=Math.max(textLine.x+Math.max(inlineAscent,textLine.ascent)+paddingVerticalAdjust,maxX);
+               }
+               else
+               {
+                  minX=Math.min(edgeAdjust,minX);
+                  if(inlineAscent<textLine.ascent)
+                  {
+                     inlineAscent=textLine.ascent;
+                  }
+                  minY=Math.min(textLine.y-inlineAscent+paddingVerticalAdjust,minY);
+               }
+               startPos=startPos+textLine.rawTextLength;
             }
-            return;
-        }// end function
+         }
+         if((!(minX==TextLine.MAX_LINE_WIDTH))&&(Math.abs(minX-_parcelLeft)>=1))
+         {
+            _parcelLeft=minX;
+         }
+         if((!(maxX==-TextLine.MAX_LINE_WIDTH))&&(Math.abs(maxX-_parcelRight)>=1))
+         {
+            _parcelRight=maxX;
+         }
+         if((!(minY==TextLine.MAX_LINE_WIDTH))&&(Math.abs(minY-_parcelTop)>=1))
+         {
+            _parcelTop=minY;
+         }
+      }
 
-        override function releaseAnyReferences() : void
-        {
-            super.releaseAnyReferences();
-            this.workingLine.initialize(null, 0, 0, 0, 0, null);
-            this.resetLineHandler = null;
-            return;
-        }// end function
-
-    }
-}
-
-import flash.text.engine.*;
-
-import flashx.textLayout.container.*;
-
-import flashx.textLayout.elements.*;
-
-import flashx.textLayout.formats.*;
-
-class VJHelper extends Object implements IVerticalJustificationLine
-{
-    private var _line:TextLine;
-    private var _height:Number;
-
-    function VJHelper(param1:TextLine, param2:Number)
-    {
-        this._line = param1;
-        this._height = param2;
-        return;
-    }// end function
-
-    public function get x() : Number
-    {
-        return this._line.x;
-    }// end function
-
-    public function set x(param1:Number) : void
-    {
-        this._line.x = param1;
-        return;
-    }// end function
-
-    public function get y() : Number
-    {
-        return this._line.y;
-    }// end function
-
-    public function set y(param1:Number) : void
-    {
-        this._line.y = param1;
-        return;
-    }// end function
-
-    public function get ascent() : Number
-    {
-        return this._line.ascent;
-    }// end function
-
-    public function get descent() : Number
-    {
-        return this._line.descent;
-    }// end function
-
-    public function get height() : Number
-    {
-        return this._height;
-    }// end function
+      override tlf_internal function releaseAnyReferences() : void {
+         super.releaseAnyReferences();
+         this.workingLine.initialize(null,0,0,0,0,null);
+         this.resetLineHandler=null;
+      }
+   }
 
 }
 
+   import flashx.textLayout.compose.IVerticalJustificationLine;
+   import flash.text.engine.TextLine;
+
+
+   class VJHelper extends Object implements IVerticalJustificationLine
+   {
+         
+
+      function VJHelper(line:TextLine, h:Number) {
+         super();
+         this._line=line;
+         this._height=h;
+      }
+
+
+
+      private var _line:TextLine;
+
+      private var _height:Number;
+
+      public function get x() : Number {
+         return this._line.x;
+      }
+
+      public function set x(val:Number) : void {
+         this._line.x=val;
+      }
+
+      public function get y() : Number {
+         return this._line.y;
+      }
+
+      public function set y(val:Number) : void {
+         this._line.y=val;
+      }
+
+      public function get ascent() : Number {
+         return this._line.ascent;
+      }
+
+      public function get descent() : Number {
+         return this._line.descent;
+      }
+
+      public function get height() : Number {
+         return this._height;
+      }
+   }

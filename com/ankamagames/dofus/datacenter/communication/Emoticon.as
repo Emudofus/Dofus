@@ -1,116 +1,127 @@
-﻿package com.ankamagames.dofus.datacenter.communication
+package com.ankamagames.dofus.datacenter.communication
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
 
-    public class Emoticon extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var nameId:uint;
-        public var shortcutId:uint;
-        public var order:uint;
-        public var defaultAnim:String;
-        public var persistancy:Boolean;
-        public var eight_directions:Boolean;
-        public var aura:Boolean;
-        public var anims:Vector.<String>;
-        public var cooldown:uint = 1000;
-        public var duration:uint = 0;
-        public var weight:uint;
-        private var _name:String;
-        private var _shortcut:String;
-        private static const MODULE:String = "Emoticons";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Emoticon));
 
-        public function Emoticon()
-        {
-            return;
-        }// end function
+   public class Emoticon extends Object implements IDataCenter
+   {
+         
 
-        public function get name() : String
-        {
-            if (!this._name)
+      public function Emoticon() {
+         super();
+      }
+
+      public static const MODULE:String = "Emoticons";
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Emoticon));
+
+      public static function getEmoticonById(id:int) : Emoticon {
+         return GameData.getObject(MODULE,id) as Emoticon;
+      }
+
+      public static function getEmoticons() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var nameId:uint;
+
+      public var shortcutId:uint;
+
+      public var order:uint;
+
+      public var defaultAnim:String;
+
+      public var persistancy:Boolean;
+
+      public var eight_directions:Boolean;
+
+      public var aura:Boolean;
+
+      public var anims:Vector.<String>;
+
+      public var cooldown:uint = 1000;
+
+      public var duration:uint = 0;
+
+      public var weight:uint;
+
+      private var _name:String;
+
+      private var _shortcut:String;
+
+      public function get name() : String {
+         if(!this._name)
+         {
+            this._name=I18n.getText(this.nameId);
+         }
+         return this._name;
+      }
+
+      public function get shortcut() : String {
+         if(!this._shortcut)
+         {
+            this._shortcut=I18n.getText(this.shortcutId);
+         }
+         if((!this._shortcut)||(this._shortcut==""))
+         {
+            return this.defaultAnim;
+         }
+         return this._shortcut;
+      }
+
+      public function getAnimName(look:TiphonEntityLook) : String {
+         var animName:String = null;
+         var anim:String = null;
+         var animCase:Array = null;
+         var caseBoneId:uint = 0;
+         var caseSkins:Array = null;
+         var matchingSkin:uint = 0;
+         var skin:String = null;
+         var skinId:uint = 0;
+         var lookSkin:* = undefined;
+         if(look)
+         {
+            for each (anim in this.anims)
             {
-                this._name = I18n.getText(this.nameId);
-            }
-            return this._name;
-        }// end function
-
-        public function get shortcut() : String
-        {
-            if (!this._shortcut)
-            {
-                this._shortcut = I18n.getText(this.shortcutId);
-            }
-            if (!this._shortcut || this._shortcut == "")
-            {
-                return this.defaultAnim;
-            }
-            return this._shortcut;
-        }// end function
-
-        public function getAnimName(param1:TiphonEntityLook) : String
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = undefined;
-            if (param1)
-            {
-                for each (_loc_3 in this.anims)
-                {
-                    
-                    _loc_4 = _loc_3.split(";");
-                    _loc_5 = parseInt(_loc_4[0]);
-                    if (param1 && _loc_5 == param1.getBone())
-                    {
-                        _loc_6 = _loc_4[1].split(",");
-                        _loc_7 = 0;
-                        for each (_loc_8 in _loc_6)
+               animCase=anim.split(";");
+               caseBoneId=parseInt(animCase[0]);
+               if((look)&&(caseBoneId==look.getBone()))
+               {
+                  caseSkins=animCase[1].split(",");
+                  matchingSkin=0;
+                  for each (skin in caseSkins)
+                  {
+                     skinId=parseInt(skin);
+                     for each (lookSkin in look.skins)
+                     {
+                        if(skinId==lookSkin)
                         {
-                            
-                            _loc_9 = parseInt(_loc_8);
-                            for each (_loc_10 in param1.skins)
-                            {
-                                
-                                if (_loc_9 == _loc_10)
-                                {
-                                    _loc_7 = _loc_7 + 1;
-                                }
-                            }
+                           matchingSkin++;
                         }
-                        if (_loc_7 > 0)
-                        {
-                            _loc_2 = "AnimEmote" + _loc_4[2];
-                        }
-                    }
-                }
+                     }
+                  }
+                  if(matchingSkin>0)
+                  {
+                     animName="AnimEmote"+animCase[2];
+                  }
+               }
             }
-            if (!_loc_2)
-            {
-                _loc_2 = "AnimEmote" + this.defaultAnim.charAt(0).toUpperCase() + this.defaultAnim.substr(1).toLowerCase() + "_0";
-            }
-            return _loc_2;
-        }// end function
+         }
+         if(!animName)
+         {
+            animName="AnimEmote"+this.defaultAnim.charAt(0).toUpperCase()+this.defaultAnim.substr(1).toLowerCase()+"_0";
+         }
+         return animName;
+      }
+   }
 
-        public static function getEmoticonById(param1:int) : Emoticon
-        {
-            return GameData.getObject(MODULE, param1) as ;
-        }// end function
-
-        public static function getEmoticons() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
-
-    }
 }

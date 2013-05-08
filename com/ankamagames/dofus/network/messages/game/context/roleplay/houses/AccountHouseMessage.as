@@ -1,100 +1,88 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
+package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.house.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.house.AccountHouseInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AccountHouseMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var houses:Vector.<AccountHouseInformations>;
-        public static const protocolId:uint = 6315;
 
-        public function AccountHouseMessage()
-        {
-            this.houses = new Vector.<AccountHouseInformations>;
-            return;
-        }// end function
+   public class AccountHouseMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function AccountHouseMessage() {
+         this.houses=new Vector.<AccountHouseInformations>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6315;
-        }// end function
+      public static const protocolId:uint = 6315;
 
-        public function initAccountHouseMessage(param1:Vector.<AccountHouseInformations> = null) : AccountHouseMessage
-        {
-            this.houses = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.houses = new Vector.<AccountHouseInformations>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var houses:Vector.<AccountHouseInformations>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6315;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AccountHouseMessage(param1);
-            return;
-        }// end function
+      public function initAccountHouseMessage(houses:Vector.<AccountHouseInformations>=null) : AccountHouseMessage {
+         this.houses=houses;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_AccountHouseMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.houses.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.houses.length)
-            {
-                
-                (this.houses[_loc_2] as AccountHouseInformations).serializeAs_AccountHouseInformations(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.houses=new Vector.<AccountHouseInformations>();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AccountHouseMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_AccountHouseMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new AccountHouseInformations();
-                _loc_4.deserialize(param1);
-                this.houses.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AccountHouseMessage(output);
+      }
+
+      public function serializeAs_AccountHouseMessage(output:IDataOutput) : void {
+         output.writeShort(this.houses.length);
+         var _i1:uint = 0;
+         while(_i1<this.houses.length)
+         {
+            (this.houses[_i1] as AccountHouseInformations).serializeAs_AccountHouseInformations(output);
+            _i1++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AccountHouseMessage(input);
+      }
+
+      public function deserializeAs_AccountHouseMessage(input:IDataInput) : void {
+         var _item1:AccountHouseInformations = null;
+         var _housesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_housesLen)
+         {
+            _item1=new AccountHouseInformations();
+            _item1.deserialize(input);
+            this.houses.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

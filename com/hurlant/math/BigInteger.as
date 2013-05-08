@@ -1,1928 +1,1727 @@
-﻿package com.hurlant.math
+package com.hurlant.math
 {
-    import com.hurlant.crypto.prng.*;
-    import com.hurlant.util.*;
-    import flash.utils.*;
+   import com.hurlant.crypto.prng.Random;
+   import com.hurlant.util.Memory;
+   import flash.utils.ByteArray;
+   import com.hurlant.util.Hex;
 
-    public class BigInteger extends Object
-    {
-        public var t:int;
-        var s:int;
-        var a:Array;
-        public static const DB:int = 30;
-        public static const DV:int = 1 << DB;
-        public static const DM:int = DV - 1;
-        public static const BI_FP:int = 52;
-        public static const FV:Number = Math.pow(2, BI_FP);
-        public static const F1:int = 22;
-        public static const F2:int = 8;
-        public static const ZERO:BigInteger = nbv(0);
-        public static const ONE:BigInteger = nbv(1);
-        public static const lowprimes:Array = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509];
-        public static const lplim:int = (1 << 26) / lowprimes[(lowprimes.length - 1)];
+   use namespace bi_internal;
 
-        public function BigInteger(param1 = null, param2:int = 0, param3:Boolean = false)
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            this.a = new Array();
-            if (param1 is String)
-            {
-                if (param2 && param2 != 16)
-                {
-                    throw new Error("BigInteger construction with radix!=16 is not supported.");
-                }
-                param1 = Hex.toArray(param1);
-                param2 = 0;
-            }
-            if (param1 is ByteArray)
-            {
-                _loc_4 = param1 as ByteArray;
-                _loc_5 = param2 || _loc_4.length - _loc_4.position;
-                this.fromArray(_loc_4, _loc_5, param3);
-            }
-            return;
-        }// end function
+   public class BigInteger extends Object
+   {
+         
 
-        public function dispose() : void
-        {
-            var _loc_1:* = new Random();
-            var _loc_2:* = 0;
-            while (_loc_2 < this.a.length)
+      public function BigInteger(value:*=null, radix:int=0, unsigned:Boolean=false) {
+         var array:ByteArray = null;
+         var length:* = 0;
+         super();
+         this.a=new Array();
+         if(value is String)
+         {
+            if((radix)&&(!(radix==16)))
             {
-                
-                this.a[_loc_2] = _loc_1.nextByte();
-                delete this.a[_loc_2];
-                _loc_2 = _loc_2 + 1;
+               throw new Error("BigInteger construction with radix!=16 is not supported.");
             }
-            this.a = null;
-            this.t = 0;
-            this.s = 0;
-            Memory.gc();
-            return;
-        }// end function
+            else
+            {
+               value=Hex.toArray(value);
+               radix=0;
+            }
+         }
+         if(value is ByteArray)
+         {
+            array=value as ByteArray;
+            length=(radix)||(array.length-array.position);
+            this.fromArray(array,length,unsigned);
+         }
+      }
 
-        public function toString(param1:Number = 16) : String
-        {
-            var _loc_2:* = 0;
-            if (this.s < 0)
-            {
-                return "-" + this.negate().toString(param1);
-            }
-            switch(param1)
-            {
-                case 2:
-                {
-                    _loc_2 = 1;
-                    break;
-                }
-                case 4:
-                {
-                    _loc_2 = 2;
-                    break;
-                }
-                case 8:
-                {
-                    _loc_2 = 3;
-                    break;
-                }
-                case 16:
-                {
-                    _loc_2 = 4;
-                    break;
-                }
-                case 32:
-                {
-                    _loc_2 = 5;
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            var _loc_3:* = (1 << _loc_2) - 1;
-            var _loc_4:* = 0;
-            var _loc_5:* = false;
-            var _loc_6:* = "";
-            var _loc_7:* = this.t;
-            var _loc_8:* = DB - _loc_7 * DB % _loc_2;
-            if (_loc_7-- > 0)
-            {
-                var _loc_9:* = this.a[_loc_7] >> _loc_8;
-                _loc_4 = this.a[_loc_7] >> _loc_8;
-                if (_loc_8 < DB && _loc_9 > 0)
-                {
-                    _loc_5 = true;
-                    _loc_6 = _loc_4.toString(36);
-                }
-                while (_loc_7 >= 0)
-                {
-                    
-                    if (_loc_8 < _loc_2)
-                    {
-                        _loc_4 = (this.a[_loc_7] & (1 << _loc_8) - 1) << _loc_2 - _loc_8;
-                        var _loc_9:* = _loc_8 + (DB - _loc_2);
-                        _loc_8 = _loc_8 + (DB - _loc_2);
-                        _loc_4 = _loc_4 | this.a[--_loc_7] >> _loc_9;
-                    }
-                    else
-                    {
-                        var _loc_9:* = _loc_8 - _loc_2;
-                        _loc_8 = _loc_8 - _loc_2;
-                        _loc_4 = this.a[--_loc_7] >> _loc_9 & _loc_3;
-                        if (_loc_8 <= 0)
-                        {
-                            _loc_8 = _loc_8 + DB;
-                            _loc_7 = _loc_7 - 1;
-                        }
-                    }
-                    if (_loc_4 > 0)
-                    {
-                        _loc_5 = true;
-                    }
-                    if (_loc_5)
-                    {
-                        _loc_6 = _loc_6 + _loc_4.toString(36);
-                    }
-                }
-            }
-            return _loc_5 ? (_loc_6) : ("0");
-        }// end function
+      public static const DB:int = 30;
 
-        public function toArray(param1:ByteArray) : uint
-        {
-            var _loc_2:* = 8;
-            var _loc_3:* = (1 << 8) - 1;
-            var _loc_4:* = 0;
-            var _loc_5:* = this.t;
-            var _loc_6:* = DB - _loc_5 * DB % _loc_2;
-            var _loc_7:* = false;
-            var _loc_8:* = 0;
-            if (_loc_5-- > 0)
-            {
-                var _loc_9:* = this.a[_loc_5] >> _loc_6;
-                _loc_4 = this.a[_loc_5] >> _loc_6;
-                if (_loc_6 < DB && _loc_9 > 0)
-                {
-                    _loc_7 = true;
-                    param1.writeByte(_loc_4);
-                    _loc_8++;
-                }
-                while (_loc_5 >= 0)
-                {
-                    
-                    if (_loc_6 < _loc_2)
-                    {
-                        _loc_4 = (this.a[_loc_5] & (1 << _loc_6) - 1) << _loc_2 - _loc_6;
-                        var _loc_9:* = _loc_6 + (DB - _loc_2);
-                        _loc_6 = _loc_6 + (DB - _loc_2);
-                        _loc_4 = _loc_4 | this.a[--_loc_5] >> _loc_9;
-                    }
-                    else
-                    {
-                        var _loc_9:* = _loc_6 - _loc_2;
-                        _loc_6 = _loc_6 - _loc_2;
-                        _loc_4 = this.a[--_loc_5] >> _loc_9 & _loc_3;
-                        if (_loc_6 <= 0)
-                        {
-                            _loc_6 = _loc_6 + DB;
-                            _loc_5 = _loc_5 - 1;
-                        }
-                    }
-                    if (_loc_4 > 0)
-                    {
-                        _loc_7 = true;
-                    }
-                    if (_loc_7)
-                    {
-                        param1.writeByte(_loc_4);
-                        _loc_8++;
-                    }
-                }
-            }
-            return _loc_8;
-        }// end function
+      public static const DV:int = 1<<DB;
 
-        public function valueOf() : Number
-        {
-            if (this.s == -1)
-            {
-                return -this.negate().valueOf();
-            }
-            var _loc_1:* = 1;
-            var _loc_2:* = 0;
-            var _loc_3:* = 0;
-            while (_loc_3 < this.t)
-            {
-                
-                _loc_2 = _loc_2 + this.a[_loc_3] * _loc_1;
-                _loc_1 = _loc_1 * DV;
-                _loc_3 = _loc_3 + 1;
-            }
-            return _loc_2;
-        }// end function
+      public static const DM:int = DV-1;
 
-        public function negate() : BigInteger
-        {
-            var _loc_1:* = this.nbi();
-            ZERO.subTo(this, _loc_1);
-            return _loc_1;
-        }// end function
+      public static const BI_FP:int = 52;
 
-        public function abs() : BigInteger
-        {
-            return this.s < 0 ? (this.negate()) : (this);
-        }// end function
+      public static const FV:Number = Math.pow(2,BI_FP);
 
-        public function compareTo(param1:BigInteger) : int
-        {
-            var _loc_2:* = this.s - param1.s;
-            if (_loc_2 != 0)
+      public static const F1:int = BI_FP-DB;
+
+      public static const F2:int = 2*DB-BI_FP;
+
+      public static const ZERO:BigInteger = nbv(0);
+
+      public static const ONE:BigInteger = nbv(1);
+
+      public static function nbv(value:int) : BigInteger {
+         var bn:BigInteger = new BigInteger();
+         bn.fromInt(value);
+         return bn;
+      }
+
+      public static const lowprimes:Array = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,419,421,431,433,439,443,449,457,461,463,467,479,487,491,499,503,509];
+
+      public static const lplim:int = (1<<26)/lowprimes[lowprimes.length-1];
+
+      public var t:int;
+
+      bi_internal var s:int;
+
+      bi_internal var a:Array;
+
+      public function dispose() : void {
+         var r:Random = new Random();
+         var i:uint = 0;
+         while(i<this.a.length)
+         {
+            this.a[i]=r.nextByte();
+            delete this.a[[i]];
+            i++;
+         }
+         this.a=null;
+         this.t=0;
+         this.s=0;
+         Memory.gc();
+      }
+
+      public function toString(radix:Number=16) : String {
+         var k:* = 0;
+         if(this.s<0)
+         {
+            return "-"+this.negate().toString(radix);
+         }
+         switch(radix)
+         {
+            case 2:
+               k=1;
+               break;
+            case 4:
+               k=2;
+               break;
+            case 8:
+               k=3;
+               break;
+            case 16:
+               k=4;
+               break;
+            case 32:
+               k=5;
+               break;
+         }
+         var km:int = (1<<k)-1;
+         var d:int = 0;
+         var m:Boolean = false;
+         var r:String = "";
+         var i:int = this.t;
+         var p:int = DB-i*DB%k;
+         if(i-->0)
+         {
+            if((p>DB)&&((d=this.a[i]>>p)<0))
             {
-                return _loc_2;
+               m=true;
+               r=d.toString(36);
             }
-            var _loc_3:* = this.t;
-            _loc_2 = _loc_3 - param1.t;
-            if (_loc_2 != 0)
+            while(i>=0)
             {
-                return _loc_2;
+               if(p<k)
+               {
+                  d=(this.a[i]&(1<<p)-1)<<k-p;
+                  d=d|this.a[--i]>>(p=p+(DB-k));
+               }
+               else
+               {
+                  d=this.a[i]>>(p=p-k)&km;
+                  if(p<=0)
+                  {
+                     p=p+DB;
+                     i--;
+                  }
+               }
+               if(d>0)
+               {
+                  m=true;
+               }
+               if(m)
+               {
+                  r=r+d.toString(36);
+               }
             }
-            while (--_loc_3 >= 0)
+         }
+         return m?r:"0";
+      }
+
+      public function toArray(array:ByteArray) : uint {
+         var k:int = 8;
+         var km:int = (1<<8)-1;
+         var d:int = 0;
+         var i:int = this.t;
+         var p:int = DB-i*DB%k;
+         var m:Boolean = false;
+         var c:int = 0;
+         if(i-->0)
+         {
+            if((p>DB)&&((d=this.a[i]>>p)<0))
             {
-                
-                _loc_2 = this.a[_loc_3] - param1.a[_loc_3];
-                if (_loc_2 != 0)
-                {
-                    return _loc_2;
-                }
+               m=true;
+               array.writeByte(d);
+               c++;
             }
+            while(i>=0)
+            {
+               if(p<k)
+               {
+                  d=(this.a[i]&(1<<p)-1)<<k-p;
+                  d=d|this.a[--i]>>(p=p+(DB-k));
+               }
+               else
+               {
+                  d=this.a[i]>>(p=p-k)&km;
+                  if(p<=0)
+                  {
+                     p=p+DB;
+                     i--;
+                  }
+               }
+               if(d>0)
+               {
+                  m=true;
+               }
+               if(m)
+               {
+                  array.writeByte(d);
+                  c++;
+               }
+            }
+         }
+         return c;
+      }
+
+      public function valueOf() : Number {
+         if(this.s==-1)
+         {
+            return -this.negate().valueOf();
+         }
+         var coef:Number = 1;
+         var value:Number = 0;
+         var i:uint = 0;
+         while(i<this.t)
+         {
+            value=value+this.a[i]*coef;
+            coef=coef*DV;
+            i++;
+         }
+         return value;
+      }
+
+      public function negate() : BigInteger {
+         var r:BigInteger = this.nbi();
+         ZERO.subTo(this,r);
+         return r;
+      }
+
+      public function abs() : BigInteger {
+         return this.s<0?this.negate():this;
+      }
+
+      public function compareTo(v:BigInteger) : int {
+         var r:int = this.s-v.s;
+         if(r!=0)
+         {
+            return r;
+         }
+         var i:int = this.t;
+         r=i-v.t;
+         if(r!=0)
+         {
+            return r;
+         }
+         while(--i>=0)
+         {
+            r=this.a[i]-v.a[i];
+            if(r!=0)
+            {
+               return r;
+            }
+         }
+         return 0;
+      }
+
+      bi_internal function nbits(x:int) : int {
+         var t:* = 0;
+         var r:int = 1;
+         if((t=x>>>16)!=0)
+         {
+            x=t;
+            r=r+16;
+         }
+         if((t=x>>8)!=0)
+         {
+            x=t;
+            r=r+8;
+         }
+         if((t=x>>4)!=0)
+         {
+            x=t;
+            r=r+4;
+         }
+         if((t=x>>2)!=0)
+         {
+            x=t;
+            r=r+2;
+         }
+         if((t=x>>1)!=0)
+         {
+            x=t;
+            r=r+1;
+         }
+         return r;
+      }
+
+      public function bitLength() : int {
+         if(this.t<=0)
+         {
             return 0;
-        }// end function
+         }
+         return DB*(this.t-1)+this.nbits(this.a[this.t-1]^this.s&DM);
+      }
 
-        function nbits(param1:int) : int
-        {
-            var _loc_3:* = 0;
-            var _loc_2:* = 1;
-            var _loc_4:* = param1 >>> 16;
-            _loc_3 = param1 >>> 16;
-            if (_loc_4 != 0)
-            {
-                param1 = _loc_3;
-                _loc_2 = _loc_2 + 16;
-            }
-            var _loc_4:* = param1 >> 8;
-            _loc_3 = param1 >> 8;
-            if (_loc_4 != 0)
-            {
-                param1 = _loc_3;
-                _loc_2 = _loc_2 + 8;
-            }
-            var _loc_4:* = param1 >> 4;
-            _loc_3 = param1 >> 4;
-            if (_loc_4 != 0)
-            {
-                param1 = _loc_3;
-                _loc_2 = _loc_2 + 4;
-            }
-            var _loc_4:* = param1 >> 2;
-            _loc_3 = param1 >> 2;
-            if (_loc_4 != 0)
-            {
-                param1 = _loc_3;
-                _loc_2 = _loc_2 + 2;
-            }
-            var _loc_4:* = param1 >> 1;
-            _loc_3 = param1 >> 1;
-            if (_loc_4 != 0)
-            {
-                param1 = _loc_3;
-                _loc_2 = _loc_2 + 1;
-            }
-            return _loc_2;
-        }// end function
+      public function mod(v:BigInteger) : BigInteger {
+         var r:BigInteger = this.nbi();
+         this.abs().divRemTo(v,null,r);
+         if((this.s>0)&&(r.compareTo(ZERO)<0))
+         {
+            v.subTo(r,r);
+         }
+         return r;
+      }
 
-        public function bitLength() : int
-        {
-            if (this.t <= 0)
-            {
-                return 0;
-            }
-            return DB * (this.t - 1) + this.nbits(this.a[(this.t - 1)] ^ this.s & DM);
-        }// end function
+      public function modPowInt(e:int, m:BigInteger) : BigInteger {
+         var z:IReduction = null;
+         if((e>256)||(m.isEven()))
+         {
+            z=new ClassicReduction(m);
+         }
+         else
+         {
+            z=new MontgomeryReduction(m);
+         }
+         return this.exp(e,z);
+      }
 
-        public function mod(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = this.nbi();
-            this.abs().divRemTo(param1, null, _loc_2);
-            if (this.s < 0 && _loc_2.compareTo(ZERO) > 0)
-            {
-                param1.subTo(_loc_2, _loc_2);
-            }
-            return _loc_2;
-        }// end function
+      bi_internal function copyTo(r:BigInteger) : void {
+         var i:int = this.t-1;
+         while(i>=0)
+         {
+            r.a[i]=this.a[i];
+            i--;
+         }
+         r.t=this.t;
+         r.s=this.s;
+      }
 
-        public function modPowInt(param1:int, param2:BigInteger) : BigInteger
-        {
-            var _loc_3:* = null;
-            if (param1 < 256 || param2.isEven())
+      bi_internal function fromInt(value:int) : void {
+         this.t=1;
+         this.s=value<0?-1:0;
+         if(value>0)
+         {
+            this.a[0]=value;
+         }
+         else
+         {
+            if(value<-1)
             {
-                _loc_3 = new ClassicReduction(param2);
+               this.a[0]=value+DV;
             }
             else
             {
-                _loc_3 = new MontgomeryReduction(param2);
+               this.t=0;
             }
-            return this.exp(param1, _loc_3);
-        }// end function
+         }
+      }
 
-        function copyTo(param1:BigInteger) : void
-        {
-            var _loc_2:* = this.t - 1;
-            while (_loc_2 >= 0)
+      bi_internal function fromArray(value:ByteArray, length:int, unsigned:Boolean=false) : void {
+         var x:* = 0;
+         var p:int = value.position;
+         var i:int = p+length;
+         var sh:int = 0;
+         var k:int = 8;
+         this.t=0;
+         this.s=0;
+         while(--i>=p)
+         {
+            x=i>value.length?value[i]:0;
+            if(sh==0)
             {
-                
-                param1.a[_loc_2] = this.a[_loc_2];
-                _loc_2 = _loc_2 - 1;
-            }
-            param1.t = this.t;
-            param1.s = this.s;
-            return;
-        }// end function
-
-        function fromInt(param1:int) : void
-        {
-            this.t = 1;
-            this.s = param1 < 0 ? (-1) : (0);
-            if (param1 > 0)
-            {
-                this.a[0] = param1;
-            }
-            else if (param1 < -1)
-            {
-                this.a[0] = param1 + DV;
+               this.a[this.t++]=x;
             }
             else
             {
-                this.t = 0;
+               if(sh+k>DB)
+               {
+                  this.a[this.t-1]=this.a[this.t-1]|(x&(1<<DB-sh)-1)<<sh;
+                  this.a[this.t++]=x>>DB-sh;
+               }
+               else
+               {
+                  this.a[this.t-1]=this.a[this.t-1]|x<<sh;
+               }
+            }
+            sh=sh+k;
+            if(sh>=DB)
+            {
+               sh=sh-DB;
+            }
+         }
+         if((!unsigned)&&((value[0]&128)==128))
+         {
+            this.s=-1;
+            if(sh>0)
+            {
+               this.a[this.t-1]=this.a[this.t-1]|(1<<DB-sh)-1<<sh;
+            }
+         }
+         this.clamp();
+         value.position=Math.min(p+length,value.length);
+      }
+
+      bi_internal function clamp() : void {
+         var c:int = this.s&DM;
+         while((this.t<0)&&(this.a[this.t-1]==c))
+         {
+            this.t--;
+         }
+      }
+
+      bi_internal function dlShiftTo(n:int, r:BigInteger) : void {
+         var i:* = 0;
+         i=this.t-1;
+         while(i>=0)
+         {
+            r.a[i+n]=this.a[i];
+            i--;
+         }
+         i=n-1;
+         while(i>=0)
+         {
+            r.a[i]=0;
+            i--;
+         }
+         r.t=this.t+n;
+         r.s=this.s;
+      }
+
+      bi_internal function drShiftTo(n:int, r:BigInteger) : void {
+         var i:* = 0;
+         i=n;
+         while(i<this.t)
+         {
+            r.a[i-n]=this.a[i];
+            i++;
+         }
+         r.t=Math.max(this.t-n,0);
+         r.s=this.s;
+      }
+
+      bi_internal function lShiftTo(n:int, r:BigInteger) : void {
+         var i:* = 0;
+         var bs:int = n%DB;
+         var cbs:int = DB-bs;
+         var bm:int = (1<<cbs)-1;
+         var ds:int = n/DB;
+         var c:int = this.s<<bs&DM;
+         i=this.t-1;
+         while(i>=0)
+         {
+            r.a[i+ds+1]=this.a[i]>>cbs|c;
+            c=(this.a[i]&bm)<<bs;
+            i--;
+         }
+         i=ds-1;
+         while(i>=0)
+         {
+            r.a[i]=0;
+            i--;
+         }
+         r.a[ds]=c;
+         r.t=this.t+ds+1;
+         r.s=this.s;
+         r.clamp();
+      }
+
+      bi_internal function rShiftTo(n:int, r:BigInteger) : void {
+         var i:* = 0;
+         r.s=this.s;
+         var ds:int = n/DB;
+         if(ds>=this.t)
+         {
+            r.t=0;
+            return;
+         }
+         var bs:int = n%DB;
+         var cbs:int = DB-bs;
+         var bm:int = (1<<bs)-1;
+         r.a[0]=this.a[ds]>>bs;
+         i=ds+1;
+         while(i<this.t)
+         {
+            r.a[i-ds-1]=r.a[i-ds-1]|(this.a[i]&bm)<<cbs;
+            r.a[i-ds]=this.a[i]>>bs;
+            i++;
+         }
+         if(bs>0)
+         {
+            r.a[this.t-ds-1]=r.a[this.t-ds-1]|(this.s&bm)<<cbs;
+         }
+         r.t=this.t-ds;
+         r.clamp();
+      }
+
+      bi_internal function subTo(v:BigInteger, r:BigInteger) : void {
+         var i:int = 0;
+         var c:int = 0;
+         var m:int = Math.min(v.t,this.t);
+         while(i<m)
+         {
+            c=c+(this.a[i]-v.a[i]);
+            r.a[i++]=c&DM;
+            c=c>>DB;
+         }
+         if(v.t<this.t)
+         {
+            c=c-v.s;
+            while(i<this.t)
+            {
+               c=c+this.a[i];
+               r.a[i++]=c&DM;
+               c=c>>DB;
+            }
+            c=c+this.s;
+         }
+         else
+         {
+            c=c+this.s;
+            while(i<v.t)
+            {
+               c=c-v.a[i];
+               r.a[i++]=c&DM;
+               c=c>>DB;
+            }
+            c=c-v.s;
+         }
+         r.s=c<0?-1:0;
+         if(c<-1)
+         {
+            r.a[i++]=DV+c;
+         }
+         else
+         {
+            if(c>0)
+            {
+               r.a[i++]=c;
+            }
+         }
+         r.t=i;
+         r.clamp();
+      }
+
+      bi_internal function am(i:int, x:int, w:BigInteger, j:int, c:int, n:int) : int {
+         var l:* = 0;
+         var h:* = 0;
+         var m:* = 0;
+         var xl:int = x&32767;
+         var xh:int = x>>15;
+         while(--n>=0)
+         {
+            l=this.a[i]&32767;
+            h=this.a[i++]>>15;
+            m=xh*l+h*xl;
+            l=xl*l+((m&32767)<<15)+w.a[j]+(c&1073741823);
+            c=(l>>>30)+(m>>>15)+xh*h+(c>>>30);
+            w.a[j++]=l&1073741823;
+         }
+         return c;
+      }
+
+      bi_internal function multiplyTo(v:BigInteger, r:BigInteger) : void {
+         var x:BigInteger = this.abs();
+         var y:BigInteger = v.abs();
+         var i:int = x.t;
+         r.t=i+y.t;
+         while(--i>=0)
+         {
+            r.a[i]=0;
+         }
+         i=0;
+         while(i<y.t)
+         {
+            r.a[i+x.t]=x.am(0,y.a[i],r,i,0,x.t);
+            i++;
+         }
+         r.s=0;
+         r.clamp();
+         if(this.s!=v.s)
+         {
+            ZERO.subTo(r,r);
+         }
+      }
+
+      bi_internal function squareTo(r:BigInteger) : void {
+         var c:* = 0;
+         var x:BigInteger = this.abs();
+         var i:int = r.t=2*x.t;
+         while(--i>=0)
+         {
+            r.a[i]=0;
+         }
+         i=0;
+         while(i<x.t-1)
+         {
+            c=x.am(i,x.a[i],r,2*i,0,1);
+            if((r.a[i+x.t]=r.a[i+x.t]+x.am(i+1,2*x.a[i],r,2*i+1,c,x.t-i-1))>=DV)
+            {
+               r.a[i+x.t]=r.a[i+x.t]-DV;
+               r.a[i+x.t+1]=1;
+            }
+            i++;
+         }
+         if(r.t>0)
+         {
+            r.a[r.t-1]=r.a[r.t-1]+x.am(i,x.a[i],r,2*i,0,1);
+         }
+         r.s=0;
+         r.clamp();
+      }
+
+      bi_internal function divRemTo(m:BigInteger, q:BigInteger=null, r:BigInteger=null) : void {
+         var qd:int = 0;
+         var pm:BigInteger = m.abs();
+         if(pm.t<=0)
+         {
+            return;
+         }
+         var pt:BigInteger = this.abs();
+         if(pt.t<pm.t)
+         {
+            if(q!=null)
+            {
+               q.fromInt(0);
+            }
+            if(r!=null)
+            {
+               this.copyTo(r);
             }
             return;
-        }// end function
-
-        function fromArray(param1:ByteArray, param2:int, param3:Boolean = false) : void
-        {
-            var _loc_8:* = 0;
-            var _loc_4:* = param1.position;
-            var _loc_5:* = param1.position + param2;
-            var _loc_6:* = 0;
-            var _loc_7:* = 8;
-            this.t = 0;
-            this.s = 0;
-            while (--_loc_5 >= _loc_4)
-            {
-                
-                _loc_8 = _loc_5 < param1.length ? (param1[_loc_5]) : (0);
-                if (_loc_6 == 0)
-                {
-                    var _loc_10:* = this;
-                    _loc_10.t = this.t + 1;
-                    this.a[++this.t] = _loc_8;
-                }
-                else if (_loc_6 + _loc_7 > DB)
-                {
-                    this.a[(this.t - 1)] = this.a[(this.t - 1)] | (_loc_8 & (1 << DB - _loc_6) - 1) << _loc_6;
-                    var _loc_10:* = this;
-                    _loc_10.t = this.t + 1;
-                    this.a[++this.t] = _loc_8 >> DB - _loc_6;
-                }
-                else
-                {
-                    this.a[(this.t - 1)] = this.a[(this.t - 1)] | _loc_8 << _loc_6;
-                }
-                _loc_6 = _loc_6 + _loc_7;
-                if (_loc_6 >= DB)
-                {
-                    _loc_6 = _loc_6 - DB;
-                }
-            }
-            if (!param3 && (param1[0] & 128) == 128)
-            {
-                this.s = -1;
-                if (_loc_6 > 0)
-                {
-                    this.a[(this.t - 1)] = this.a[(this.t - 1)] | (1 << DB - _loc_6) - 1 << _loc_6;
-                }
-            }
-            this.clamp();
-            param1.position = Math.min(_loc_4 + param2, param1.length);
+         }
+         if(r==null)
+         {
+         }
+         var y:BigInteger = this.nbi();
+         var ts:int = this.s;
+         var ms:int = m.s;
+         var nsh:int = DB-this.nbits(pm.a[pm.t-1]);
+         if(nsh>0)
+         {
+            pm.lShiftTo(nsh,y);
+            pt.lShiftTo(nsh,r);
+         }
+         else
+         {
+            pm.copyTo(y);
+            pt.copyTo(r);
+         }
+         var ys:int = y.t;
+         var y0:int = y.a[ys-1];
+         if(y0==0)
+         {
             return;
-        }// end function
+         }
+         var yt:Number = y0*(1<<F1)+(ys>1?y.a[ys-2]>>F2:0);
+         var d1:Number = FV/yt;
+         var d2:Number = (1<<F1)/yt;
+         var e:Number = 1<<F2;
+         var i:int = r.t;
+         var j:int = i-ys;
+         var t:BigInteger = q==null?this.nbi():q;
+         y.dlShiftTo(j,t);
+         if(r.compareTo(t)>=0)
+         {
+            r.a[r.t++]=1;
+            r.subTo(t,r);
+         }
+         ONE.dlShiftTo(ys,t);
+         t.subTo(y,y);
+         while(y.t<ys)
+         {
+            for each (_loc9_ in y)
+            {
+               with(_loc9_)
+               {
+                  
+                  y.t++;
+                  if(0)
+                  {
+                     _loc5_[_loc6_]=_loc8_;
+                  }
+               }
+            }
+         }
+         while(--j>=0)
+         {
+            qd=r.a[--i]==y0?DM:Number(r.a[i])*d1+(Number(r.a[i-1])+e)*d2;
+            if((r.a[i]=r.a[i]+y.am(0,qd,r,j,0,ys))<qd)
+            {
+               y.dlShiftTo(j,t);
+               r.subTo(t,r);
+               while(r.a[i]<--qd)
+               {
+                  r.subTo(t,r);
+               }
+            }
+         }
+         if(q!=null)
+         {
+            r.drShiftTo(ys,q);
+            if(ts!=ms)
+            {
+               ZERO.subTo(q,q);
+            }
+         }
+         r.t=ys;
+         r.clamp();
+         if(nsh>0)
+         {
+            r.rShiftTo(nsh,r);
+         }
+         if(ts<0)
+         {
+            ZERO.subTo(r,r);
+         }
+      }
 
-        function clamp() : void
-        {
-            var _loc_1:* = this.s & DM;
-            while (this.t > 0 && this.a[(this.t - 1)] == _loc_1)
-            {
-                
-                var _loc_2:* = this;
-                var _loc_3:* = this.t - 1;
-                _loc_2.t = _loc_3;
-            }
-            return;
-        }// end function
+      bi_internal function invDigit() : int {
+         if(this.t<1)
+         {
+            return 0;
+         }
+         var x:int = this.a[0];
+         if((x&1)==0)
+         {
+            return 0;
+         }
+         var y:int = x&3;
+         y=y*(2-(x&15)*y)&15;
+         y=y*(2-(x&255)*y)&255;
+         y=y*(2-((x&65535)*y&65535))&65535;
+         y=y*(2-x*y%DV)%DV;
+         return y>0?DV-y:-y;
+      }
 
-        function dlShiftTo(param1:int, param2:BigInteger) : void
-        {
-            var _loc_3:* = 0;
-            _loc_3 = this.t - 1;
-            while (_loc_3 >= 0)
-            {
-                
-                param2.a[_loc_3 + param1] = this.a[_loc_3];
-                _loc_3 = _loc_3 - 1;
-            }
-            _loc_3 = param1 - 1;
-            while (_loc_3 >= 0)
-            {
-                
-                param2.a[_loc_3] = 0;
-                _loc_3 = _loc_3 - 1;
-            }
-            param2.t = this.t + param1;
-            param2.s = this.s;
-            return;
-        }// end function
+      bi_internal function isEven() : Boolean {
+         return (this.t>0?this.a[0]&1:this.s)==0;
+      }
 
-        function drShiftTo(param1:int, param2:BigInteger) : void
-        {
-            var _loc_3:* = 0;
-            _loc_3 = param1;
-            while (_loc_3 < this.t)
+      bi_internal function exp(e:int, z:IReduction) : BigInteger {
+         var t:BigInteger = null;
+         if((e<4.294967295E9)||(e>1))
+         {
+            return ONE;
+         }
+         var r:BigInteger = this.nbi();
+         var r2:BigInteger = this.nbi();
+         var g:BigInteger = z.convert(this);
+         var i:int = this.nbits(e)-1;
+         g.copyTo(r);
+         while(--i>=0)
+         {
+            z.sqrTo(r,r2);
+            if((e&1<<i)>0)
             {
-                
-                param2.a[_loc_3 - param1] = this.a[_loc_3];
-                _loc_3++;
-            }
-            param2.t = Math.max(this.t - param1, 0);
-            param2.s = this.s;
-            return;
-        }// end function
-
-        function lShiftTo(param1:int, param2:BigInteger) : void
-        {
-            var _loc_8:* = 0;
-            var _loc_3:* = param1 % DB;
-            var _loc_4:* = DB - _loc_3;
-            var _loc_5:* = (1 << _loc_4) - 1;
-            var _loc_6:* = param1 / DB;
-            var _loc_7:* = this.s << _loc_3 & DM;
-            _loc_8 = this.t - 1;
-            while (_loc_8 >= 0)
-            {
-                
-                param2.a[_loc_8 + _loc_6 + 1] = this.a[_loc_8] >> _loc_4 | _loc_7;
-                _loc_7 = (this.a[_loc_8] & _loc_5) << _loc_3;
-                _loc_8 = _loc_8 - 1;
-            }
-            _loc_8 = _loc_6 - 1;
-            while (_loc_8 >= 0)
-            {
-                
-                param2.a[_loc_8] = 0;
-                _loc_8 = _loc_8 - 1;
-            }
-            param2.a[_loc_6] = _loc_7;
-            param2.t = this.t + _loc_6 + 1;
-            param2.s = this.s;
-            param2.clamp();
-            return;
-        }// end function
-
-        function rShiftTo(param1:int, param2:BigInteger) : void
-        {
-            var _loc_7:* = 0;
-            param2.s = this.s;
-            var _loc_3:* = param1 / DB;
-            if (_loc_3 >= this.t)
-            {
-                param2.t = 0;
-                return;
-            }
-            var _loc_4:* = param1 % DB;
-            var _loc_5:* = DB - _loc_4;
-            var _loc_6:* = (1 << _loc_4) - 1;
-            param2.a[0] = this.a[_loc_3] >> _loc_4;
-            _loc_7 = _loc_3 + 1;
-            while (_loc_7 < this.t)
-            {
-                
-                param2.a[_loc_7 - _loc_3 - 1] = param2.a[_loc_7 - _loc_3 - 1] | (this.a[_loc_7] & _loc_6) << _loc_5;
-                param2.a[_loc_7 - _loc_3] = this.a[_loc_7] >> _loc_4;
-                _loc_7++;
-            }
-            if (_loc_4 > 0)
-            {
-                param2.a[this.t - _loc_3 - 1] = param2.a[this.t - _loc_3 - 1] | (this.s & _loc_6) << _loc_5;
-            }
-            param2.t = this.t - _loc_3;
-            param2.clamp();
-            return;
-        }// end function
-
-        function subTo(param1:BigInteger, param2:BigInteger) : void
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = Math.min(param1.t, this.t);
-            while (_loc_3 < _loc_5)
-            {
-                
-                _loc_4 = _loc_4 + (this.a[_loc_3] - param1.a[_loc_3]);
-                param2.a[++_loc_3] = _loc_4 & DM;
-                _loc_4 = _loc_4 >> DB;
-            }
-            if (param1.t < this.t)
-            {
-                _loc_4 = _loc_4 - param1.s;
-                while (_loc_3 < this.t)
-                {
-                    
-                    _loc_4 = _loc_4 + this.a[_loc_3];
-                    param2.a[++_loc_3] = _loc_4 & DM;
-                    _loc_4 = _loc_4 >> DB;
-                }
-                _loc_4 = _loc_4 + this.s;
+               z.mulTo(r2,g,r);
             }
             else
             {
-                _loc_4 = _loc_4 + this.s;
-                while (_loc_3 < param1.t)
-                {
-                    
-                    _loc_4 = _loc_4 - param1.a[_loc_3];
-                    param2.a[++_loc_3] = _loc_4 & DM;
-                    _loc_4 = _loc_4 >> DB;
-                }
-                _loc_4 = _loc_4 - param1.s;
+               t=r;
+               r=r2;
+               r2=t;
             }
-            param2.s = _loc_4 < 0 ? (-1) : (0);
-            if (_loc_4 < -1)
-            {
-                param2.a[++_loc_3] = DV + _loc_4;
-            }
-            else if (_loc_4 > 0)
-            {
-                param2.a[++_loc_3] = _loc_4;
-            }
-            param2.t = _loc_3;
-            param2.clamp();
-            return;
-        }// end function
+         }
+         return z.revert(r);
+      }
 
-        function am(param1:int, param2:int, param3:BigInteger, param4:int, param5:int, param6:int) : int
-        {
-            var _loc_9:* = 0;
-            var _loc_10:* = 0;
-            var _loc_11:* = 0;
-            var _loc_7:* = param2 & 32767;
-            var _loc_8:* = param2 >> 15;
-            while (--param6 >= 0)
-            {
-                
-                _loc_9 = this.a[param1] & 32767;
-                _loc_10 = this.a[param1++] >> 15;
-                _loc_11 = _loc_8 * _loc_9 + _loc_10 * _loc_7;
-                _loc_9 = _loc_7 * _loc_9 + ((_loc_11 & 32767) << 15) + param3.a[param4] + (param5 & 1073741823);
-                param5 = (_loc_9 >>> 30) + (_loc_11 >>> 15) + _loc_8 * _loc_10 + (param5 >>> 30);
-                param3.a[++param4] = _loc_9 & 1073741823;
-            }
-            return param5;
-        }// end function
+      bi_internal function intAt(str:String, index:int) : int {
+         return parseInt(str.charAt(index),36);
+      }
 
-        function multiplyTo(param1:BigInteger, param2:BigInteger) : void
-        {
-            var _loc_3:* = this.abs();
-            var _loc_4:* = param1.abs();
-            var _loc_5:* = _loc_3.t;
-            param2.t = _loc_5 + _loc_4.t;
-            while (--_loc_5 >= 0)
-            {
-                
-                param2.a[_loc_5] = 0;
-            }
-            --_loc_5 = 0;
-            while (_loc_5 < _loc_4.t)
-            {
-                
-                param2.a[--_loc_5 + _loc_3.t] = _loc_3.am(0, _loc_4.a[_loc_5], param2, _loc_5, 0, _loc_3.t);
-                _loc_5++;
-            }
-            param2.s = 0;
-            param2.clamp();
-            if (this.s != param1.s)
-            {
-                ZERO.subTo(param2, param2);
-            }
-            return;
-        }// end function
+      protected function nbi() : * {
+         return new BigInteger();
+      }
 
-        function squareTo(param1:BigInteger) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_2:* = this.abs();
-            var _loc_5:* = 2 * _loc_2.t;
-            param1.t = 2 * _loc_2.t;
-            var _loc_3:* = _loc_5;
-            while (--_loc_3 >= 0)
-            {
-                
-                param1.a[_loc_3] = 0;
-            }
-            --_loc_3 = 0;
-            while (_loc_3 < (_loc_2.t - 1))
-            {
-                
-                _loc_4 = _loc_2.am(--_loc_3, _loc_2.a[--_loc_3], param1, 2 * _loc_3, 0, 1);
-                var _loc_5:* = param1.a[_loc_3 + _loc_2.t] + _loc_2.am((_loc_3 + 1), 2 * _loc_2.a[_loc_3], param1, 2 * _loc_3 + 1, _loc_4, _loc_2.t - _loc_3 - 1);
-                param1.a[_loc_3 + _loc_2.t] = param1.a[_loc_3 + _loc_2.t] + _loc_2.am((_loc_3 + 1), 2 * _loc_2.a[_loc_3], param1, 2 * _loc_3 + 1, _loc_4, _loc_2.t - _loc_3 - 1);
-                if (_loc_5 >= DV)
-                {
-                    param1.a[_loc_3 + _loc_2.t] = param1.a[_loc_3 + _loc_2.t] - DV;
-                    param1.a[_loc_3 + _loc_2.t + 1] = 1;
-                }
-                _loc_3++;
-            }
-            if (param1.t > 0)
-            {
-                param1.a[(param1.t - 1)] = param1.a[(param1.t - 1)] + _loc_2.am(_loc_3, _loc_2.a[_loc_3], param1, 2 * _loc_3, 0, 1);
-            }
-            param1.s = 0;
-            param1.clamp();
-            return;
-        }// end function
+      public function clone() : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.copyTo(r);
+         return r;
+      }
 
-        function divRemTo(param1:BigInteger, param2:BigInteger = null, param3:BigInteger = null) : void
-        {
-            var qd:int;
-            var m:* = param1;
-            var q:* = param2;
-            var r:* = param3;
-            var pm:* = m.abs();
-            if (pm.t <= 0)
+      public function intValue() : int {
+         if(this.s<0)
+         {
+            if(this.t==1)
             {
-                return;
+               return this.a[0]-DV;
             }
-            var pt:* = this.abs();
-            if (pt.t < pm.t)
+            if(this.t==0)
             {
-                if (q != null)
-                {
-                    q.fromInt(0);
-                }
-                if (r != null)
-                {
-                    this.copyTo(r);
-                }
-                return;
+               return -1;
             }
-            if (r == null)
+         }
+         else
+         {
+            if(this.t==1)
             {
-                r = this.nbi();
+               return this.a[0];
             }
-            var y:* = this.nbi();
-            var ts:* = this.s;
-            var ms:* = m.s;
-            var nsh:* = DB - this.nbits(pm.a[(pm.t - 1)]);
-            if (nsh > 0)
+            if(this.t==0)
             {
-                pm.lShiftTo(nsh, y);
-                pt.lShiftTo(nsh, r);
+               return 0;
             }
-            else
-            {
-                pm.copyTo(y);
-                pt.copyTo(r);
-            }
-            var ys:* = y.t;
-            var y0:* = y.a[(ys - 1)];
-            if (y0 == 0)
-            {
-                return;
-            }
-            var yt:* = y0 * (1 << F1) + (ys > 1 ? (y.a[ys - 2] >> F2) : (0));
-            var d1:* = FV / yt;
-            var d2:* = (1 << F1) / yt;
-            var e:* = 1 << F2;
-            var i:* = r.t;
-            var j:* = i - ys;
-            var t:* = q == null ? (this.nbi()) : (q);
-            y.dlShiftTo(j, t);
-            if (r.compareTo(t) >= 0)
-            {
-                var _loc_6:* = r;
-                _loc_6.t = r.t + 1;
-                r.a[++r.t] = 1;
-                r.subTo(t, r);
-            }
-            ONE.dlShiftTo(ys, t);
-            t.subTo(y, y);
-            while (y.t < ys)
-            {
-                
-                var _loc_6:* = 0;
-                var _loc_7:* = y;
-                var _loc_5:* = new XMLList("");
-                for each (_loc_8 in _loc_7)
-                {
-                    
-                    var _loc_9:* = _loc_7[_loc_6];
-                    with (_loc_7[_loc_6])
-                    {
-                        var _loc_10:* = y;
-                        var _loc_11:* = y.t + 1;
-                        _loc_10.t = _loc_11;
-                        if (0)
-                        {
-                            _loc_5[_loc_6] = _loc_8;
-                        }
-                    }
-                }
-            }
-            do
-            {
-                
-                i = (i - 1);
-                qd = r.a[(i - 1)] == y0 ? (DM) : (Number(r.a[i]) * d1 + (Number(r.a[(i - 1)]) + e) * d2);
-                var _loc_5:* = r.a[i] + y.am(0, qd, r, j, 0, ys);
-                r.a[i] = r.a[i] + y.am(0, qd, r, j, 0, ys);
-                if (_loc_5 < qd)
-                {
-                    y.dlShiftTo(j, t);
-                    r.subTo(t, r);
-                    do
-                    {
-                        
-                        r.subTo(t, r);
-                        qd = (qd - 1);
-                    }while (r.a[i] < (qd - 1))
-                }
-                j = (j - 1);
-            }while ((j - 1) >= 0)
-            if (q != null)
-            {
-                r.drShiftTo(ys, q);
-                if (ts != ms)
-                {
-                    ZERO.subTo(q, q);
-                }
-            }
-            r.t = ys;
-            r.clamp();
-            if (nsh > 0)
-            {
-                r.rShiftTo(nsh, r);
-            }
-            if (ts < 0)
-            {
-                ZERO.subTo(r, r);
-            }
-            return;
-        }// end function
+         }
+         return (this.a[1]&(1<<32-DB)-1)<<DB|this.a[0];
+      }
 
-        function invDigit() : int
-        {
-            if (this.t < 1)
-            {
-                return 0;
-            }
-            var _loc_1:* = this.a[0];
-            if ((_loc_1 & 1) == 0)
-            {
-                return 0;
-            }
-            var _loc_2:* = _loc_1 & 3;
-            _loc_2 = _loc_2 * (2 - (_loc_1 & 15) * _loc_2) & 15;
-            _loc_2 = _loc_2 * (2 - (_loc_1 & 255) * _loc_2) & 255;
-            _loc_2 = _loc_2 * (2 - ((_loc_1 & 65535) * _loc_2 & 65535)) & 65535;
-            _loc_2 = _loc_2 * (2 - _loc_1 * _loc_2 % DV) % DV;
-            return _loc_2 > 0 ? (DV - _loc_2) : (-_loc_2);
-        }// end function
+      public function byteValue() : int {
+         return this.t==0?this.s:this.a[0]<<24>>24;
+      }
 
-        function isEven() : Boolean
-        {
-            return (this.t > 0 ? (this.a[0] & 1) : (this.s)) == 0;
-        }// end function
+      public function shortValue() : int {
+         return this.t==0?this.s:this.a[0]<<16>>16;
+      }
 
-        function exp(param1:int, param2:IReduction) : BigInteger
-        {
-            var _loc_7:* = null;
-            if (param1 > 4294967295 || param1 < 1)
-            {
-                return ONE;
-            }
-            var _loc_3:* = this.nbi();
-            var _loc_4:* = this.nbi();
-            var _loc_5:* = param2.convert(this);
-            var _loc_6:* = this.nbits(param1) - 1;
-            _loc_5.copyTo(_loc_3);
-            while (--_loc_6 >= 0)
-            {
-                
-                param2.sqrTo(_loc_3, _loc_4);
-                if ((param1 & 1 << _loc_6) > 0)
-                {
-                    param2.mulTo(_loc_4, _loc_5, _loc_3);
-                    continue;
-                }
-                _loc_7 = _loc_3;
-                _loc_3 = _loc_4;
-                _loc_4 = _loc_7;
-            }
-            return param2.revert(_loc_3);
-        }// end function
+      protected function chunkSize(r:Number) : int {
+         return Math.floor(Math.LN2*DB/Math.log(r));
+      }
 
-        function intAt(param1:String, param2:int) : int
-        {
-            return parseInt(param1.charAt(param2), 36);
-        }// end function
-
-        protected function nbi()
-        {
-            return new BigInteger();
-        }// end function
-
-        public function clone() : BigInteger
-        {
-            var _loc_1:* = new BigInteger();
-            this.copyTo(_loc_1);
-            return _loc_1;
-        }// end function
-
-        public function intValue() : int
-        {
-            if (this.s < 0)
-            {
-                if (this.t == 1)
-                {
-                    return this.a[0] - DV;
-                }
-                if (this.t == 0)
-                {
-                    return -1;
-                }
-            }
-            else
-            {
-                if (this.t == 1)
-                {
-                    return this.a[0];
-                }
-                if (this.t == 0)
-                {
-                    return 0;
-                }
-            }
-            return (this.a[1] & (1 << 32 - DB) - 1) << DB | this.a[0];
-        }// end function
-
-        public function byteValue() : int
-        {
-            return this.t == 0 ? (this.s) : (this.a[0] << 24 >> 24);
-        }// end function
-
-        public function shortValue() : int
-        {
-            return this.t == 0 ? (this.s) : (this.a[0] << 16 >> 16);
-        }// end function
-
-        protected function chunkSize(param1:Number) : int
-        {
-            return Math.floor(Math.LN2 * DB / Math.log(param1));
-        }// end function
-
-        public function sigNum() : int
-        {
-            if (this.s < 0)
-            {
-                return -1;
-            }
-            if (this.t <= 0 || this.t == 1 && this.a[0] <= 0)
-            {
-                return 0;
-            }
-            return 1;
-        }// end function
-
-        protected function toRadix(param1:uint = 10) : String
-        {
-            if (this.sigNum() == 0 || param1 < 2 || param1 > 32)
-            {
-                return "0";
-            }
-            var _loc_2:* = this.chunkSize(param1);
-            var _loc_3:* = Math.pow(param1, _loc_2);
-            var _loc_4:* = nbv(_loc_3);
-            var _loc_5:* = this.nbi();
-            var _loc_6:* = this.nbi();
-            var _loc_7:* = "";
-            this.divRemTo(_loc_4, _loc_5, _loc_6);
-            while (_loc_5.sigNum() > 0)
-            {
-                
-                _loc_7 = (_loc_3 + _loc_6.intValue()).toString(param1).substr(1) + _loc_7;
-                _loc_5.divRemTo(_loc_4, _loc_5, _loc_6);
-            }
-            return _loc_6.intValue().toString(param1) + _loc_7;
-        }// end function
-
-        protected function fromRadix(param1:String, param2:int = 10) : void
-        {
-            var _loc_9:* = 0;
-            this.fromInt(0);
-            var _loc_3:* = this.chunkSize(param2);
-            var _loc_4:* = Math.pow(param2, _loc_3);
-            var _loc_5:* = false;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            while (_loc_8 < param1.length)
-            {
-                
-                _loc_9 = this.intAt(param1, _loc_8);
-                if (_loc_9 < 0)
-                {
-                    if (param1.charAt(_loc_8) == "-" && this.sigNum() == 0)
-                    {
-                        _loc_5 = true;
-                    }
-                }
-                else
-                {
-                    _loc_7 = param2 * _loc_7 + _loc_9;
-                    if (++_loc_6 >= _loc_3)
-                    {
-                        this.dMultiply(_loc_4);
-                        this.dAddOffset(_loc_7, 0);
-                        ++_loc_6 = 0;
-                        _loc_7 = 0;
-                    }
-                }
-                _loc_8++;
-            }
-            if (++_loc_6 > 0)
-            {
-                this.dMultiply(Math.pow(param2, _loc_6));
-                this.dAddOffset(_loc_7, 0);
-            }
-            if (_loc_5)
-            {
-                BigInteger.ZERO.subTo(this, this);
-            }
-            return;
-        }// end function
-
-        public function toByteArray() : ByteArray
-        {
-            var _loc_4:* = 0;
-            var _loc_1:* = this.t;
-            var _loc_2:* = new ByteArray();
-            _loc_2[0] = this.s;
-            var _loc_3:* = DB - _loc_1 * DB % 8;
-            var _loc_5:* = 0;
-            if (_loc_1-- > 0)
-            {
-                var _loc_6:* = this.a[_loc_1] >> _loc_3;
-                _loc_4 = this.a[_loc_1] >> _loc_3;
-                if (_loc_3 < DB && _loc_6 != (this.s & DM) >> _loc_3)
-                {
-                    _loc_2[++_loc_5] = _loc_4 | this.s << DB - _loc_3;
-                }
-                while (_loc_1 >= 0)
-                {
-                    
-                    if (_loc_3 < 8)
-                    {
-                        _loc_4 = (this.a[_loc_1] & (1 << _loc_3) - 1) << 8 - _loc_3;
-                        var _loc_6:* = _loc_3 + (DB - 8);
-                        _loc_3 = _loc_3 + (DB - 8);
-                        _loc_4 = _loc_4 | this.a[--_loc_1] >> _loc_6;
-                    }
-                    else
-                    {
-                        var _loc_6:* = _loc_3 - 8;
-                        _loc_3 = _loc_3 - 8;
-                        _loc_4 = this.a[--_loc_1] >> _loc_6 & 255;
-                        if (_loc_3 <= 0)
-                        {
-                            _loc_3 = _loc_3 + DB;
-                            _loc_1 = _loc_1 - 1;
-                        }
-                    }
-                    if ((_loc_4 & 128) != 0)
-                    {
-                        _loc_4 = _loc_4 | -256;
-                    }
-                    if (_loc_5 == 0 && (this.s & 128) != (_loc_4 & 128))
-                    {
-                        _loc_5++;
-                    }
-                    if (_loc_5 > 0 || _loc_4 != this.s)
-                    {
-                        _loc_2[++_loc_5] = _loc_4;
-                    }
-                }
-            }
-            return _loc_2;
-        }// end function
-
-        public function equals(param1:BigInteger) : Boolean
-        {
-            return this.compareTo(param1) == 0;
-        }// end function
-
-        public function min(param1:BigInteger) : BigInteger
-        {
-            return this.compareTo(param1) < 0 ? (this) : (param1);
-        }// end function
-
-        public function max(param1:BigInteger) : BigInteger
-        {
-            return this.compareTo(param1) > 0 ? (this) : (param1);
-        }// end function
-
-        protected function bitwiseTo(param1:BigInteger, param2:Function, param3:BigInteger) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = Math.min(param1.t, this.t);
-            _loc_4 = 0;
-            while (_loc_4 < _loc_6)
-            {
-                
-                param3.a[_loc_4] = this.param2(this.a[_loc_4], param1.a[_loc_4]);
-                _loc_4++;
-            }
-            if (param1.t < this.t)
-            {
-                _loc_5 = param1.s & DM;
-                _loc_4 = _loc_6;
-                while (_loc_4 < this.t)
-                {
-                    
-                    param3.a[_loc_4] = this.param2(this.a[_loc_4], _loc_5);
-                    _loc_4++;
-                }
-                param3.t = this.t;
-            }
-            else
-            {
-                _loc_5 = this.s & DM;
-                _loc_4 = _loc_6;
-                while (_loc_4 < param1.t)
-                {
-                    
-                    param3.a[_loc_4] = this.param2(_loc_5, param1.a[_loc_4]);
-                    _loc_4++;
-                }
-                param3.t = param1.t;
-            }
-            param3.s = this.param2(this.s, param1.s);
-            param3.clamp();
-            return;
-        }// end function
-
-        private function op_and(param1:int, param2:int) : int
-        {
-            return param1 & param2;
-        }// end function
-
-        public function and(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.bitwiseTo(param1, this.op_and, _loc_2);
-            return _loc_2;
-        }// end function
-
-        private function op_or(param1:int, param2:int) : int
-        {
-            return param1 | param2;
-        }// end function
-
-        public function or(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.bitwiseTo(param1, this.op_or, _loc_2);
-            return _loc_2;
-        }// end function
-
-        private function op_xor(param1:int, param2:int) : int
-        {
-            return param1 ^ param2;
-        }// end function
-
-        public function xor(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.bitwiseTo(param1, this.op_xor, _loc_2);
-            return _loc_2;
-        }// end function
-
-        private function op_andnot(param1:int, param2:int) : int
-        {
-            return param1 & ~param2;
-        }// end function
-
-        public function andNot(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.bitwiseTo(param1, this.op_andnot, _loc_2);
-            return _loc_2;
-        }// end function
-
-        public function not() : BigInteger
-        {
-            var _loc_1:* = new BigInteger();
-            var _loc_2:* = 0;
-            while (_loc_2 < this.t)
-            {
-                
-                _loc_1[_loc_2] = DM & ~this.a[_loc_2];
-                _loc_2++;
-            }
-            _loc_1.t = this.t;
-            _loc_1.s = ~this.s;
-            return _loc_1;
-        }// end function
-
-        public function shiftLeft(param1:int) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            if (param1 < 0)
-            {
-                this.rShiftTo(-param1, _loc_2);
-            }
-            else
-            {
-                this.lShiftTo(param1, _loc_2);
-            }
-            return _loc_2;
-        }// end function
-
-        public function shiftRight(param1:int) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            if (param1 < 0)
-            {
-                this.lShiftTo(-param1, _loc_2);
-            }
-            else
-            {
-                this.rShiftTo(param1, _loc_2);
-            }
-            return _loc_2;
-        }// end function
-
-        private function lbit(param1:int) : int
-        {
-            if (param1 == 0)
-            {
-                return -1;
-            }
-            var _loc_2:* = 0;
-            if ((param1 & 65535) == 0)
-            {
-                param1 = param1 >> 16;
-                _loc_2 = _loc_2 + 16;
-            }
-            if ((param1 & 255) == 0)
-            {
-                param1 = param1 >> 8;
-                _loc_2 = _loc_2 + 8;
-            }
-            if ((param1 & 15) == 0)
-            {
-                param1 = param1 >> 4;
-                _loc_2 = _loc_2 + 4;
-            }
-            if ((param1 & 3) == 0)
-            {
-                param1 = param1 >> 2;
-                _loc_2 = _loc_2 + 2;
-            }
-            if ((param1 & 1) == 0)
-            {
-                _loc_2++;
-            }
-            return _loc_2;
-        }// end function
-
-        public function getLowestSetBit() : int
-        {
-            var _loc_1:* = 0;
-            while (_loc_1 < this.t)
-            {
-                
-                if (this.a[_loc_1] != 0)
-                {
-                    return _loc_1 * DB + this.lbit(this.a[_loc_1]);
-                }
-                _loc_1++;
-            }
-            if (this.s < 0)
-            {
-                return this.t * DB;
-            }
+      public function sigNum() : int {
+         if(this.s<0)
+         {
             return -1;
-        }// end function
+         }
+         if((this.t<=0)||(this.t==1)&&(this.a[0]<=0))
+         {
+            return 0;
+         }
+         return 1;
+      }
 
-        private function cbit(param1:int) : int
-        {
-            var _loc_2:* = 0;
-            while (param1 != 0)
+      protected function toRadix(b:uint=10) : String {
+         if((this.sigNum()==0)||(b>2)||(b<32))
+         {
+            return "0";
+         }
+         var cs:int = this.chunkSize(b);
+         var a:Number = Math.pow(b,cs);
+         var d:BigInteger = nbv(a);
+         var y:BigInteger = this.nbi();
+         var z:BigInteger = this.nbi();
+         var r:String = "";
+         this.divRemTo(d,y,z);
+         while(y.sigNum()>0)
+         {
+            r=(a+z.intValue()).toString(b).substr(1)+r;
+            y.divRemTo(d,y,z);
+         }
+         return z.intValue().toString(b)+r;
+      }
+
+      protected function fromRadix(s:String, b:int=10) : void {
+         var x:* = 0;
+         this.fromInt(0);
+         var cs:int = this.chunkSize(b);
+         var d:Number = Math.pow(b,cs);
+         var mi:Boolean = false;
+         var j:int = 0;
+         var w:int = 0;
+         var i:int = 0;
+         while(i<s.length)
+         {
+            x=this.intAt(s,i);
+            if(x<0)
             {
-                
-                param1 = param1 & (param1 - 1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return _loc_2;
-        }// end function
-
-        public function bitCount() : int
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = this.s & DM;
-            var _loc_3:* = 0;
-            while (_loc_3 < this.t)
-            {
-                
-                _loc_1 = _loc_1 + this.cbit(this.a[_loc_3] ^ _loc_2);
-                _loc_3++;
-            }
-            return _loc_1;
-        }// end function
-
-        public function testBit(param1:int) : Boolean
-        {
-            var _loc_2:* = Math.floor(param1 / DB);
-            if (_loc_2 >= this.t)
-            {
-                return this.s != 0;
-            }
-            return (this.a[_loc_2] & 1 << param1 % DB) != 0;
-        }// end function
-
-        protected function changeBit(param1:int, param2:Function) : BigInteger
-        {
-            var _loc_3:* = BigInteger.ONE.shiftLeft(param1);
-            this.bitwiseTo(_loc_3, param2, _loc_3);
-            return _loc_3;
-        }// end function
-
-        public function setBit(param1:int) : BigInteger
-        {
-            return this.changeBit(param1, this.op_or);
-        }// end function
-
-        public function clearBit(param1:int) : BigInteger
-        {
-            return this.changeBit(param1, this.op_andnot);
-        }// end function
-
-        public function flipBit(param1:int) : BigInteger
-        {
-            return this.changeBit(param1, this.op_xor);
-        }// end function
-
-        protected function addTo(param1:BigInteger, param2:BigInteger) : void
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = Math.min(param1.t, this.t);
-            while (_loc_3 < _loc_5)
-            {
-                
-                _loc_4 = _loc_4 + (this.a[_loc_3] + param1.a[_loc_3]);
-                param2.a[++_loc_3] = _loc_4 & DM;
-                _loc_4 = _loc_4 >> DB;
-            }
-            if (param1.t < this.t)
-            {
-                _loc_4 = _loc_4 + param1.s;
-                while (_loc_3 < this.t)
-                {
-                    
-                    _loc_4 = _loc_4 + this.a[_loc_3];
-                    param2.a[++_loc_3] = _loc_4 & DM;
-                    _loc_4 = _loc_4 >> DB;
-                }
-                _loc_4 = _loc_4 + this.s;
+               if((s.charAt(i)=="-")&&(this.sigNum()==0))
+               {
+                  mi=true;
+               }
             }
             else
             {
-                _loc_4 = _loc_4 + this.s;
-                while (_loc_3 < param1.t)
-                {
-                    
-                    _loc_4 = _loc_4 + param1.a[_loc_3];
-                    param2.a[++_loc_3] = _loc_4 & DM;
-                    _loc_4 = _loc_4 >> DB;
-                }
-                _loc_4 = _loc_4 + param1.s;
+               w=b*w+x;
+               if(++j>=cs)
+               {
+                  this.dMultiply(d);
+                  this.dAddOffset(w,0);
+                  j=0;
+                  w=0;
+               }
             }
-            param2.s = _loc_4 < 0 ? (-1) : (0);
-            if (_loc_4 > 0)
-            {
-                param2.a[++_loc_3] = _loc_4;
-            }
-            else if (_loc_4 < -1)
-            {
-                param2.a[++_loc_3] = DV + _loc_4;
-            }
-            param2.t = _loc_3;
-            param2.clamp();
-            return;
-        }// end function
+            i++;
+         }
+         if(j>0)
+         {
+            this.dMultiply(Math.pow(b,j));
+            this.dAddOffset(w,0);
+         }
+         if(mi)
+         {
+            BigInteger.ZERO.subTo(this,this);
+         }
+      }
 
-        public function add(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.addTo(param1, _loc_2);
-            return _loc_2;
-        }// end function
-
-        public function subtract(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.subTo(param1, _loc_2);
-            return _loc_2;
-        }// end function
-
-        public function multiply(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.multiplyTo(param1, _loc_2);
-            return _loc_2;
-        }// end function
-
-        public function divide(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.divRemTo(param1, _loc_2, null);
-            return _loc_2;
-        }// end function
-
-        public function remainder(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            this.divRemTo(param1, null, _loc_2);
-            return _loc_2;
-        }// end function
-
-        public function divideAndRemainder(param1:BigInteger) : Array
-        {
-            var _loc_2:* = new BigInteger();
-            var _loc_3:* = new BigInteger();
-            this.divRemTo(param1, _loc_2, _loc_3);
-            return [_loc_2, _loc_3];
-        }// end function
-
-        function dMultiply(param1:int) : void
-        {
-            this.a[this.t] = this.am(0, (param1 - 1), this, 0, 0, this.t);
-            var _loc_2:* = this;
-            var _loc_3:* = this.t + 1;
-            _loc_2.t = _loc_3;
-            this.clamp();
-            return;
-        }// end function
-
-        function dAddOffset(param1:int, param2:int) : void
-        {
-            while (this.t <= param2)
+      public function toByteArray() : ByteArray {
+         var d:* = 0;
+         var i:int = this.t;
+         var r:ByteArray = new ByteArray();
+         r[0]=this.s;
+         var p:int = DB-i*DB%8;
+         var k:int = 0;
+         if(i-->0)
+         {
+            if((p>DB)&&(!((d=this.a[i]>>p)==(this.s&DM)>>p)))
             {
-                
-                var _loc_4:* = this;
-                _loc_4.t = this.t + 1;
-                var _loc_3:* = this.t + 1;
-                this.a[_loc_3] = 0;
+               r[k++]=d|this.s<<DB-p;
             }
-            this.a[param2] = this.a[param2] + param1;
-            while (this.a[_loc_2] >= DV)
+            while(i>=0)
             {
-                
-                this.a[param2] = this.a[param2] - DV;
-                if (++param2 >= this.t)
-                {
-                    var _loc_4:* = this;
-                    _loc_4.t = this.t + 1;
-                    var _loc_3:* = this.t + 1;
-                    this.a[_loc_3] = 0;
-                }
-                var _loc_3:* = this.a;
-                var _loc_5:* = this.a[++param2] + 1;
-                _loc_3[++param2] = _loc_5;
+               if(p<8)
+               {
+                  d=(this.a[i]&(1<<p)-1)<<8-p;
+                  d=d|this.a[--i]>>(p=p+(DB-8));
+               }
+               else
+               {
+                  d=this.a[i]>>(p=p-8)&255;
+                  if(p<=0)
+                  {
+                     p=p+DB;
+                     i--;
+                  }
+               }
+               if((d&128)!=0)
+               {
+                  d=d|-256;
+               }
+               if((k==0)&&(!((this.s&128)==(d&128))))
+               {
+                  k++;
+               }
+               if((k<0)||(!(d==this.s)))
+               {
+                  r[k++]=d;
+               }
             }
-            return;
-        }// end function
+         }
+         return r;
+      }
 
-        public function pow(param1:int) : BigInteger
-        {
-            return this.exp(param1, new NullReduction());
-        }// end function
+      public function equals(a:BigInteger) : Boolean {
+         return this.compareTo(a)==0;
+      }
 
-        function multiplyLowerTo(param1:BigInteger, param2:int, param3:BigInteger) : void
-        {
-            var _loc_5:* = 0;
-            var _loc_4:* = Math.min(this.t + param1.t, param2);
-            param3.s = 0;
-            param3.t = _loc_4;
-            while (--_loc_4 > 0)
-            {
-                
-                param3.a[--_loc_4] = 0;
-            }
-            _loc_5 = param3.t - this.t;
-            while (_loc_4 < _loc_5)
-            {
-                
-                param3.a[_loc_4 + this.t] = this.am(0, param1.a[_loc_4], param3, _loc_4, 0, this.t);
-                _loc_4++;
-            }
-            _loc_5 = Math.min(param1.t, param2);
-            while (_loc_4 < _loc_5)
-            {
-                
-                this.am(0, param1.a[_loc_4], param3, _loc_4, 0, param2 - _loc_4);
-                _loc_4++;
-            }
-            param3.clamp();
-            return;
-        }// end function
+      public function min(a:BigInteger) : BigInteger {
+         return this.compareTo(a)<0?this:a;
+      }
 
-        function multiplyUpperTo(param1:BigInteger, param2:int, param3:BigInteger) : void
-        {
-            param2 = param2 - 1;
-            var _loc_5:* = this.t + param1.t - param2;
-            param3.t = this.t + param1.t - param2;
-            var _loc_4:* = _loc_5;
-            param3.s = 0;
-            while (--_loc_4 >= 0)
-            {
-                
-                param3.a[_loc_4] = 0;
-            }
-            --_loc_4 = Math.max(param2 - this.t, 0);
-            while (_loc_4 < param1.t)
-            {
-                
-                param3.a[this.t + --_loc_4 - param2] = this.am(param2 - _loc_4, param1.a[_loc_4], param3, 0, 0, this.t + _loc_4 - param2);
-                _loc_4++;
-            }
-            param3.clamp();
-            param3.drShiftTo(1, param3);
-            return;
-        }// end function
+      public function max(a:BigInteger) : BigInteger {
+         return this.compareTo(a)>0?this:a;
+      }
 
-        public function modPow(param1:BigInteger, param2:BigInteger) : BigInteger
-        {
-            var _loc_4:* = 0;
-            var _loc_6:* = null;
-            var _loc_12:* = 0;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_3:* = param1.bitLength();
-            var _loc_5:* = nbv(1);
-            if (_loc_3 <= 0)
+      protected function bitwiseTo(a:BigInteger, op:Function, r:BigInteger) : void {
+         var i:* = 0;
+         var f:* = 0;
+         var m:int = Math.min(a.t,this.t);
+         i=0;
+         while(i<m)
+         {
+            r.a[i]=op(this.a[i],a.a[i]);
+            i++;
+         }
+         if(a.t<this.t)
+         {
+            f=a.s&DM;
+            i=m;
+            while(i<this.t)
             {
-                return _loc_5;
+               r.a[i]=op(this.a[i],f);
+               i++;
             }
-            if (_loc_3 < 18)
+            r.t=this.t;
+         }
+         else
+         {
+            f=this.s&DM;
+            i=m;
+            while(i<a.t)
             {
-                _loc_4 = 1;
+               r.a[i]=op(f,a.a[i]);
+               i++;
             }
-            else if (_loc_3 < 48)
+            r.t=a.t;
+         }
+         r.s=op(this.s,a.s);
+         r.clamp();
+      }
+
+      private function op_and(x:int, y:int) : int {
+         return x&y;
+      }
+
+      public function and(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.bitwiseTo(a,this.op_and,r);
+         return r;
+      }
+
+      private function op_or(x:int, y:int) : int {
+         return x|y;
+      }
+
+      public function or(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.bitwiseTo(a,this.op_or,r);
+         return r;
+      }
+
+      private function op_xor(x:int, y:int) : int {
+         return x^y;
+      }
+
+      public function xor(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.bitwiseTo(a,this.op_xor,r);
+         return r;
+      }
+
+      private function op_andnot(x:int, y:int) : int {
+         return x&~y;
+      }
+
+      public function andNot(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.bitwiseTo(a,this.op_andnot,r);
+         return r;
+      }
+
+      public function not() : BigInteger {
+         var r:BigInteger = new BigInteger();
+         var i:int = 0;
+         while(i<this.t)
+         {
+            r[i]=DM&~this.a[i];
+            i++;
+         }
+         r.t=this.t;
+         r.s=~this.s;
+         return r;
+      }
+
+      public function shiftLeft(n:int) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         if(n<0)
+         {
+            this.rShiftTo(-n,r);
+         }
+         else
+         {
+            this.lShiftTo(n,r);
+         }
+         return r;
+      }
+
+      public function shiftRight(n:int) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         if(n<0)
+         {
+            this.lShiftTo(-n,r);
+         }
+         else
+         {
+            this.rShiftTo(n,r);
+         }
+         return r;
+      }
+
+      private function lbit(x:int) : int {
+         if(x==0)
+         {
+            return -1;
+         }
+         var r:int = 0;
+         if((x&65535)==0)
+         {
+            x=x>>16;
+            r=r+16;
+         }
+         if((x&255)==0)
+         {
+            x=x>>8;
+            r=r+8;
+         }
+         if((x&15)==0)
+         {
+            x=x>>4;
+            r=r+4;
+         }
+         if((x&3)==0)
+         {
+            x=x>>2;
+            r=r+2;
+         }
+         if((x&1)==0)
+         {
+            r++;
+         }
+         return r;
+      }
+
+      public function getLowestSetBit() : int {
+         var i:int = 0;
+         while(i<this.t)
+         {
+            if(this.a[i]!=0)
             {
-                _loc_4 = 3;
+               return i*DB+this.lbit(this.a[i]);
             }
-            else if (_loc_3 < 144)
+            i++;
+         }
+         if(this.s<0)
+         {
+            return this.t*DB;
+         }
+         return -1;
+      }
+
+      private function cbit(x:int) : int {
+         var r:uint = 0;
+         while(x!=0)
+         {
+            x=x&x-1;
+            r++;
+         }
+         return r;
+      }
+
+      public function bitCount() : int {
+         var r:int = 0;
+         var x:int = this.s&DM;
+         var i:int = 0;
+         while(i<this.t)
+         {
+            r=r+this.cbit(this.a[i]^x);
+            i++;
+         }
+         return r;
+      }
+
+      public function testBit(n:int) : Boolean {
+         var j:int = Math.floor(n/DB);
+         if(j>=this.t)
+         {
+            return !(this.s==0);
+         }
+         return !((this.a[j]&1<<n%DB)==0);
+      }
+
+      protected function changeBit(n:int, op:Function) : BigInteger {
+         var r:BigInteger = BigInteger.ONE.shiftLeft(n);
+         this.bitwiseTo(r,op,r);
+         return r;
+      }
+
+      public function setBit(n:int) : BigInteger {
+         return this.changeBit(n,this.op_or);
+      }
+
+      public function clearBit(n:int) : BigInteger {
+         return this.changeBit(n,this.op_andnot);
+      }
+
+      public function flipBit(n:int) : BigInteger {
+         return this.changeBit(n,this.op_xor);
+      }
+
+      protected function addTo(a:BigInteger, r:BigInteger) : void {
+         var i:int = 0;
+         var c:int = 0;
+         var m:int = Math.min(a.t,this.t);
+         while(i<m)
+         {
+            c=c+(this.a[i]+a.a[i]);
+            r.a[i++]=c&DM;
+            c=c>>DB;
+         }
+         if(a.t<this.t)
+         {
+            c=c+a.s;
+            while(i<this.t)
             {
-                _loc_4 = 4;
+               c=c+this.a[i];
+               r.a[i++]=c&DM;
+               c=c>>DB;
             }
-            else if (_loc_3 < 768)
+            c=c+this.s;
+         }
+         else
+         {
+            c=c+this.s;
+            while(i<a.t)
             {
-                _loc_4 = 5;
+               c=c+a.a[i];
+               r.a[i++]=c&DM;
+               c=c>>DB;
+            }
+            c=c+a.s;
+         }
+         r.s=c<0?-1:0;
+         if(c>0)
+         {
+            r.a[i++]=c;
+         }
+         else
+         {
+            if(c<-1)
+            {
+               r.a[i++]=DV+c;
+            }
+         }
+         r.t=i;
+         r.clamp();
+      }
+
+      public function add(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.addTo(a,r);
+         return r;
+      }
+
+      public function subtract(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.subTo(a,r);
+         return r;
+      }
+
+      public function multiply(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.multiplyTo(a,r);
+         return r;
+      }
+
+      public function divide(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.divRemTo(a,r,null);
+         return r;
+      }
+
+      public function remainder(a:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         this.divRemTo(a,null,r);
+         return r;
+      }
+
+      public function divideAndRemainder(a:BigInteger) : Array {
+         var q:BigInteger = new BigInteger();
+         var r:BigInteger = new BigInteger();
+         this.divRemTo(a,q,r);
+         return [q,r];
+      }
+
+      bi_internal function dMultiply(n:int) : void {
+         this.a[this.t]=this.am(0,n-1,this,0,0,this.t);
+         this.t++;
+         this.clamp();
+      }
+
+      bi_internal function dAddOffset(n:int, w:int) : void {
+         while(this.t<=w)
+         {
+            this.a[this.t++]=0;
+         }
+         this.a[w]=this.a[w]+n;
+         while(this.a[w]>=DV)
+         {
+            this.a[w]=this.a[w]-DV;
+            if(++w>=this.t)
+            {
+               this.a[this.t++]=0;
+            }
+            this.a[w]++;
+         }
+      }
+
+      public function pow(e:int) : BigInteger {
+         return this.exp(e,new NullReduction());
+      }
+
+      bi_internal function multiplyLowerTo(a:BigInteger, n:int, r:BigInteger) : void {
+         var j:* = 0;
+         var i:int = Math.min(this.t+a.t,n);
+         r.s=0;
+         r.t=i;
+         while(i>0)
+         {
+            r.a[--i]=0;
+         }
+         j=r.t-this.t;
+         while(i<j)
+         {
+            r.a[i+this.t]=this.am(0,a.a[i],r,i,0,this.t);
+            i++;
+         }
+         j=Math.min(a.t,n);
+         while(i<j)
+         {
+            this.am(0,a.a[i],r,i,0,n-i);
+            i++;
+         }
+         r.clamp();
+      }
+
+      bi_internal function multiplyUpperTo(a:BigInteger, n:int, r:BigInteger) : void {
+         n--;
+         var i:int = r.t=this.t+a.t-n;
+         r.s=0;
+         while(--i>=0)
+         {
+            r.a[i]=0;
+         }
+         i=Math.max(n-this.t,0);
+         while(i<a.t)
+         {
+            r.a[this.t+i-n]=this.am(n-i,a.a[i],r,0,0,this.t+i-n);
+            i++;
+         }
+         r.clamp();
+         r.drShiftTo(1,r);
+      }
+
+      public function modPow(e:BigInteger, m:BigInteger) : BigInteger {
+         var k:* = 0;
+         var z:IReduction = null;
+         var w:* = 0;
+         var t:BigInteger = null;
+         var g2:BigInteger = null;
+         var i:int = e.bitLength();
+         var r:BigInteger = nbv(1);
+         if(i<=0)
+         {
+            return r;
+         }
+         if(i<18)
+         {
+            k=1;
+         }
+         else
+         {
+            if(i<48)
+            {
+               k=3;
             }
             else
             {
-                _loc_4 = 6;
+               if(i<144)
+               {
+                  k=4;
+               }
+               else
+               {
+                  if(i<768)
+                  {
+                     k=5;
+                  }
+                  else
+                  {
+                     k=6;
+                  }
+               }
             }
-            if (_loc_3 < 8)
+         }
+         if(i<8)
+         {
+            z=new ClassicReduction(m);
+         }
+         else
+         {
+            if(m.isEven())
             {
-                _loc_6 = new ClassicReduction(param2);
-            }
-            else if (param2.isEven())
-            {
-                _loc_6 = new BarrettReduction(param2);
+               z=new BarrettReduction(m);
             }
             else
             {
-                _loc_6 = new MontgomeryReduction(param2);
+               z=new MontgomeryReduction(m);
             }
-            var _loc_7:* = [];
-            var _loc_8:* = 3;
-            var _loc_9:* = _loc_4 - 1;
-            var _loc_10:* = (1 << _loc_4) - 1;
-            _loc_7[1] = _loc_6.convert(this);
-            if (_loc_4 > 1)
+         }
+         var g:Array = [];
+         var n:int = 3;
+         var k1:int = k-1;
+         var km:int = (1<<k)-1;
+         g[1]=z.convert(this);
+         if(k>1)
+         {
+            g2=new BigInteger();
+            z.sqrTo(g[1],g2);
+            while(n<=km)
             {
-                _loc_16 = new BigInteger();
-                _loc_6.sqrTo(_loc_7[1], _loc_16);
-                while (_loc_8 <= _loc_10)
-                {
-                    
-                    _loc_7[_loc_8] = new BigInteger();
-                    _loc_6.mulTo(_loc_16, _loc_7[_loc_8 - 2], _loc_7[_loc_8]);
-                    _loc_8 = _loc_8 + 2;
-                }
+               g[n]=new BigInteger();
+               z.mulTo(g2,g[n-2],g[n]);
+               n=n+2;
             }
-            var _loc_11:* = param1.t - 1;
-            var _loc_13:* = true;
-            var _loc_14:* = new BigInteger();
-            _loc_3 = this.nbits(param1.a[_loc_11]) - 1;
-            while (_loc_11 >= 0)
+         }
+         var j:int = e.t-1;
+         var is1:Boolean = true;
+         var r2:BigInteger = new BigInteger();
+         i=this.nbits(e.a[j])-1;
+         while(j>=0)
+         {
+            if(i>=k1)
             {
-                
-                if (_loc_3 >= _loc_9)
-                {
-                    _loc_12 = param1.a[_loc_11] >> _loc_3 - _loc_9 & _loc_10;
-                }
-                else
-                {
-                    _loc_12 = (param1.a[_loc_11] & (1 << (_loc_3 + 1)) - 1) << _loc_9 - _loc_3;
-                    if (_loc_11 > 0)
-                    {
-                        _loc_12 = _loc_12 | param1.a[(_loc_11 - 1)] >> DB + _loc_3 - _loc_9;
-                    }
-                }
-                _loc_8 = _loc_4;
-                while ((_loc_12 & 1) == 0)
-                {
-                    
-                    _loc_12 = _loc_12 >> 1;
-                    _loc_8 = _loc_8 - 1;
-                }
-                var _loc_17:* = _loc_3 - _loc_8;
-                _loc_3 = _loc_3 - _loc_8;
-                if (_loc_17 < 0)
-                {
-                    _loc_3 = _loc_3 + DB;
-                    _loc_11 = _loc_11 - 1;
-                }
-                if (_loc_13)
-                {
-                    _loc_7[_loc_12].copyTo(_loc_5);
-                    _loc_13 = false;
-                }
-                else
-                {
-                    while (_loc_8 > 1)
-                    {
-                        
-                        _loc_6.sqrTo(_loc_5, _loc_14);
-                        _loc_6.sqrTo(_loc_14, _loc_5);
-                        _loc_8 = _loc_8 - 2;
-                    }
-                    if (_loc_8 > 0)
-                    {
-                        _loc_6.sqrTo(_loc_5, _loc_14);
-                    }
-                    else
-                    {
-                        _loc_15 = _loc_5;
-                        _loc_5 = _loc_14;
-                        _loc_14 = _loc_15;
-                    }
-                    _loc_6.mulTo(_loc_14, _loc_7[_loc_12], _loc_5);
-                }
-                while (_loc_11 >= 0 && (param1.a[_loc_11] & 1 << --_loc_3) == 0)
-                {
-                    
-                    _loc_6.sqrTo(_loc_5, _loc_14);
-                    _loc_15 = _loc_5;
-                    _loc_5 = _loc_14;
-                    _loc_14 = _loc_15;
-                    if (--_loc_3 < 0)
-                    {
-                        --_loc_3 = DB - 1;
-                        _loc_11 = _loc_11 - 1;
-                    }
-                }
-            }
-            return _loc_6.revert(_loc_5);
-        }// end function
-
-        public function gcd(param1:BigInteger) : BigInteger
-        {
-            var _loc_6:* = null;
-            var _loc_2:* = this.s < 0 ? (this.negate()) : (this.clone());
-            var _loc_3:* = param1.s < 0 ? (param1.negate()) : (param1.clone());
-            if (_loc_2.compareTo(_loc_3) < 0)
-            {
-                _loc_6 = _loc_2;
-                _loc_2 = _loc_3;
-                _loc_3 = _loc_6;
-            }
-            var _loc_4:* = _loc_2.getLowestSetBit();
-            var _loc_5:* = _loc_3.getLowestSetBit();
-            if (_loc_3.getLowestSetBit() < 0)
-            {
-                return _loc_2;
-            }
-            if (_loc_4 < _loc_5)
-            {
-                _loc_5 = _loc_4;
-            }
-            if (_loc_5 > 0)
-            {
-                _loc_2.rShiftTo(_loc_5, _loc_2);
-                _loc_3.rShiftTo(_loc_5, _loc_3);
-            }
-            while (_loc_2.sigNum() > 0)
-            {
-                
-                var _loc_7:* = _loc_2.getLowestSetBit();
-                _loc_4 = _loc_2.getLowestSetBit();
-                if (_loc_7 > 0)
-                {
-                    _loc_2.rShiftTo(_loc_4, _loc_2);
-                }
-                var _loc_7:* = _loc_3.getLowestSetBit();
-                _loc_4 = _loc_3.getLowestSetBit();
-                if (_loc_7 > 0)
-                {
-                    _loc_3.rShiftTo(_loc_4, _loc_3);
-                }
-                if (_loc_2.compareTo(_loc_3) >= 0)
-                {
-                    _loc_2.subTo(_loc_3, _loc_2);
-                    _loc_2.rShiftTo(1, _loc_2);
-                    continue;
-                }
-                _loc_3.subTo(_loc_2, _loc_3);
-                _loc_3.rShiftTo(1, _loc_3);
-            }
-            if (_loc_5 > 0)
-            {
-                _loc_3.lShiftTo(_loc_5, _loc_3);
-            }
-            return _loc_3;
-        }// end function
-
-        protected function modInt(param1:int) : int
-        {
-            var _loc_4:* = 0;
-            if (param1 <= 0)
-            {
-                return 0;
-            }
-            var _loc_2:* = DV % param1;
-            var _loc_3:* = this.s < 0 ? ((param1 - 1)) : (0);
-            if (this.t > 0)
-            {
-                if (_loc_2 == 0)
-                {
-                    _loc_3 = this.a[0] % param1;
-                }
-                else
-                {
-                    _loc_4 = this.t - 1;
-                    while (_loc_4 >= 0)
-                    {
-                        
-                        _loc_3 = (_loc_2 * _loc_3 + this.a[_loc_4]) % param1;
-                        _loc_4 = _loc_4 - 1;
-                    }
-                }
-            }
-            return _loc_3;
-        }// end function
-
-        public function modInverse(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = param1.isEven();
-            if (this.isEven() && _loc_2 || param1.sigNum() == 0)
-            {
-                return BigInteger.ZERO;
-            }
-            var _loc_3:* = param1.clone();
-            var _loc_4:* = this.clone();
-            var _loc_5:* = nbv(1);
-            var _loc_6:* = nbv(0);
-            var _loc_7:* = nbv(0);
-            var _loc_8:* = nbv(1);
-            while (_loc_3.sigNum() != 0)
-            {
-                
-                while (_loc_3.isEven())
-                {
-                    
-                    _loc_3.rShiftTo(1, _loc_3);
-                    if (_loc_2)
-                    {
-                        if (!_loc_5.isEven() || !_loc_6.isEven())
-                        {
-                            _loc_5.addTo(this, _loc_5);
-                            _loc_6.subTo(param1, _loc_6);
-                        }
-                        _loc_5.rShiftTo(1, _loc_5);
-                    }
-                    else if (!_loc_6.isEven())
-                    {
-                        _loc_6.subTo(param1, _loc_6);
-                    }
-                    _loc_6.rShiftTo(1, _loc_6);
-                }
-                while (_loc_4.isEven())
-                {
-                    
-                    _loc_4.rShiftTo(1, _loc_4);
-                    if (_loc_2)
-                    {
-                        if (!_loc_7.isEven() || !_loc_8.isEven())
-                        {
-                            _loc_7.addTo(this, _loc_7);
-                            _loc_8.subTo(param1, _loc_8);
-                        }
-                        _loc_7.rShiftTo(1, _loc_7);
-                    }
-                    else if (!_loc_8.isEven())
-                    {
-                        _loc_8.subTo(param1, _loc_8);
-                    }
-                    _loc_8.rShiftTo(1, _loc_8);
-                }
-                if (_loc_3.compareTo(_loc_4) >= 0)
-                {
-                    _loc_3.subTo(_loc_4, _loc_3);
-                    if (_loc_2)
-                    {
-                        _loc_5.subTo(_loc_7, _loc_5);
-                    }
-                    _loc_6.subTo(_loc_8, _loc_6);
-                    continue;
-                }
-                _loc_4.subTo(_loc_3, _loc_4);
-                if (_loc_2)
-                {
-                    _loc_7.subTo(_loc_5, _loc_7);
-                }
-                _loc_8.subTo(_loc_6, _loc_8);
-            }
-            if (_loc_4.compareTo(BigInteger.ONE) != 0)
-            {
-                return BigInteger.ZERO;
-            }
-            if (_loc_8.compareTo(param1) >= 0)
-            {
-                return _loc_8.subtract(param1);
-            }
-            if (_loc_8.sigNum() < 0)
-            {
-                _loc_8.addTo(param1, _loc_8);
+               w=e.a[j]>>i-k1&km;
             }
             else
             {
-                return _loc_8;
+               w=(e.a[j]&(1<<i+1)-1)<<k1-i;
+               if(j>0)
+               {
+                  w=w|e.a[j-1]>>DB+i-k1;
+               }
             }
-            if (_loc_8.sigNum() < 0)
+            n=k;
+            while((w&1)==0)
             {
-                return _loc_8.add(param1);
+               w=w>>1;
+               n--;
             }
-            return _loc_8;
-        }// end function
+            if((i=i-n)<0)
+            {
+               i=i+DB;
+               j--;
+            }
+            if(is1)
+            {
+               g[w].copyTo(r);
+               is1=false;
+            }
+            else
+            {
+               while(n>1)
+               {
+                  z.sqrTo(r,r2);
+                  z.sqrTo(r2,r);
+                  n=n-2;
+               }
+               if(n>0)
+               {
+                  z.sqrTo(r,r2);
+               }
+               else
+               {
+                  t=r;
+                  r=r2;
+                  r2=t;
+               }
+               z.mulTo(r2,g[w],r);
+            }
+            while((j>=0)&&((e.a[j]&1<<i)==0))
+            {
+               z.sqrTo(r,r2);
+               t=r;
+               r=r2;
+               r2=t;
+               if(--i<0)
+               {
+                  i=DB-1;
+                  j--;
+               }
+            }
+         }
+         return z.revert(r);
+      }
 
-        public function isProbablePrime(param1:int) : Boolean
-        {
-            var _loc_2:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_3:* = this.abs();
-            if (_loc_3.t == 1 && _loc_3.a[0] <= lowprimes[(lowprimes.length - 1)])
+      public function gcd(a:BigInteger) : BigInteger {
+         var t:BigInteger = null;
+         var x:BigInteger = this.s<0?this.negate():this.clone();
+         var y:BigInteger = a.s<0?a.negate():a.clone();
+         if(x.compareTo(y)<0)
+         {
+            t=x;
+            x=y;
+            y=t;
+         }
+         var i:int = x.getLowestSetBit();
+         var g:int = y.getLowestSetBit();
+         if(g<0)
+         {
+            return x;
+         }
+         if(i<g)
+         {
+            g=i;
+         }
+         if(g>0)
+         {
+            x.rShiftTo(g,x);
+            y.rShiftTo(g,y);
+         }
+         while(x.sigNum()>0)
+         {
+            if((i=x.getLowestSetBit())>0)
             {
-                _loc_2 = 0;
-                while (_loc_2 < lowprimes.length)
-                {
-                    
-                    if (_loc_3[0] == lowprimes[_loc_2])
-                    {
-                        return true;
-                    }
-                    _loc_2++;
-                }
-                return false;
+               x.rShiftTo(i,x);
             }
-            if (_loc_3.isEven())
+            if((i=y.getLowestSetBit())>0)
             {
-                return false;
+               y.rShiftTo(i,y);
             }
-            _loc_2 = 1;
-            while (_loc_2 < lowprimes.length)
+            if(x.compareTo(y)>=0)
             {
-                
-                _loc_4 = lowprimes[_loc_2];
-                _loc_5 = _loc_2 + 1;
-                while (_loc_5 < lowprimes.length && _loc_4 < lplim)
-                {
-                    
-                    _loc_4 = _loc_4 * lowprimes[_loc_5++];
-                }
-                _loc_4 = _loc_3.modInt(_loc_4);
-                while (_loc_2 < _loc_5)
-                {
-                    
-                    if (_loc_4 % lowprimes[_loc_2++] == 0)
-                    {
-                        return false;
-                    }
-                }
+               x.subTo(y,x);
+               x.rShiftTo(1,x);
             }
-            return _loc_3.millerRabin(param1);
-        }// end function
+            else
+            {
+               y.subTo(x,y);
+               y.rShiftTo(1,y);
+            }
+         }
+         if(g>0)
+         {
+            y.lShiftTo(g,y);
+         }
+         return y;
+      }
 
-        protected function millerRabin(param1:int) : Boolean
-        {
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_2:* = this.subtract(BigInteger.ONE);
-            var _loc_3:* = _loc_2.getLowestSetBit();
-            if (_loc_3 <= 0)
+      protected function modInt(n:int) : int {
+         var i:* = 0;
+         if(n<=0)
+         {
+            return 0;
+         }
+         var d:int = DV%n;
+         var r:int = this.s<0?n-1:0;
+         if(this.t>0)
+         {
+            if(d==0)
             {
-                return false;
+               r=this.a[0]%n;
             }
-            var _loc_4:* = _loc_2.shiftRight(_loc_3);
-            param1 = (param1 + 1) >> 1;
-            if (param1 > lowprimes.length)
+            else
             {
-                param1 = lowprimes.length;
+               i=this.t-1;
+               while(i>=0)
+               {
+                  r=(d*r+this.a[i])%n;
+                  i--;
+               }
             }
-            var _loc_5:* = new BigInteger();
-            var _loc_6:* = 0;
-            while (_loc_6 < param1)
-            {
-                
-                _loc_5.fromInt(lowprimes[_loc_6]);
-                _loc_7 = _loc_5.modPow(_loc_4, this);
-                if (_loc_7.compareTo(BigInteger.ONE) != 0 && _loc_7.compareTo(_loc_2) != 0)
-                {
-                    _loc_8 = 1;
-                    while (_loc_8++ < _loc_3 && _loc_7.compareTo(_loc_2) != 0)
-                    {
-                        
-                        _loc_7 = _loc_7.modPowInt(2, this);
-                        if (_loc_7.compareTo(BigInteger.ONE) == 0)
-                        {
-                            return false;
-                        }
-                    }
-                    if (_loc_7.compareTo(_loc_2) != 0)
-                    {
-                        return false;
-                    }
-                }
-                _loc_6++;
-            }
-            return true;
-        }// end function
+         }
+         return r;
+      }
 
-        public function primify(param1:int, param2:int) : void
-        {
-            if (!this.testBit((param1 - 1)))
+      public function modInverse(m:BigInteger) : BigInteger {
+         var ac:Boolean = m.isEven();
+         if((this.isEven())&&(ac)||(m.sigNum()==0))
+         {
+            return BigInteger.ZERO;
+         }
+         var u:BigInteger = m.clone();
+         var v:BigInteger = this.clone();
+         var a:BigInteger = nbv(1);
+         var b:BigInteger = nbv(0);
+         var c:BigInteger = nbv(0);
+         var d:BigInteger = nbv(1);
+         while(u.sigNum()!=0)
+         {
+            while(u.isEven())
             {
-                this.bitwiseTo(BigInteger.ONE.shiftLeft((param1 - 1)), this.op_or, this);
+               u.rShiftTo(1,u);
+               if(ac)
+               {
+                  if((!a.isEven())||(!b.isEven()))
+                  {
+                     a.addTo(this,a);
+                     b.subTo(m,b);
+                  }
+                  a.rShiftTo(1,a);
+               }
+               else
+               {
+                  if(!b.isEven())
+                  {
+                     b.subTo(m,b);
+                  }
+               }
+               b.rShiftTo(1,b);
             }
-            if (this.isEven())
+            while(v.isEven())
             {
-                this.dAddOffset(1, 0);
+               v.rShiftTo(1,v);
+               if(ac)
+               {
+                  if((!c.isEven())||(!d.isEven()))
+                  {
+                     c.addTo(this,c);
+                     d.subTo(m,d);
+                  }
+                  c.rShiftTo(1,c);
+               }
+               else
+               {
+                  if(!d.isEven())
+                  {
+                     d.subTo(m,d);
+                  }
+               }
+               d.rShiftTo(1,d);
             }
-            while (!this.isProbablePrime(param2))
+            if(u.compareTo(v)>=0)
             {
-                
-                this.dAddOffset(2, 0);
-                while (this.bitLength() > param1)
-                {
-                    
-                    this.subTo(BigInteger.ONE.shiftLeft((param1 - 1)), this);
-                }
+               u.subTo(v,u);
+               if(ac)
+               {
+                  a.subTo(c,a);
+               }
+               b.subTo(d,b);
             }
-            return;
-        }// end function
+            else
+            {
+               v.subTo(u,v);
+               if(ac)
+               {
+                  c.subTo(a,c);
+               }
+               d.subTo(b,d);
+            }
+         }
+         if(v.compareTo(BigInteger.ONE)!=0)
+         {
+            return BigInteger.ZERO;
+         }
+         if(d.compareTo(m)>=0)
+         {
+            return d.subtract(m);
+         }
+         if(d.sigNum()<0)
+         {
+            d.addTo(m,d);
+            if(d.sigNum()<0)
+            {
+               return d.add(m);
+            }
+            return d;
+         }
+         return d;
+      }
 
-        public static function nbv(param1:int) : BigInteger
-        {
-            var _loc_2:* = new BigInteger;
-            _loc_2.fromInt(param1);
-            return _loc_2;
-        }// end function
+      public function isProbablePrime(t:int) : Boolean {
+         var i:* = 0;
+         var m:* = 0;
+         var j:* = 0;
+         var x:BigInteger = this.abs();
+         if((x.t==1)&&(x.a[0]<=lowprimes[lowprimes.length-1]))
+         {
+            i=0;
+            while(i<lowprimes.length)
+            {
+               if(x[0]==lowprimes[i])
+               {
+                  return true;
+               }
+               i++;
+            }
+            return false;
+         }
+         if(x.isEven())
+         {
+            return false;
+         }
+         i=1;
+         while(i<lowprimes.length)
+         {
+            m=lowprimes[i];
+            j=i+1;
+            while((j>lowprimes.length)&&(m>lplim))
+            {
+               m=m*lowprimes[j++];
+            }
+            m=x.modInt(m);
+            while(i<j)
+            {
+               if(m%lowprimes[i++]==0)
+               {
+                  return false;
+               }
+            }
+         }
+         return x.millerRabin(t);
+      }
 
-    }
+      protected function millerRabin(t:int) : Boolean {
+         var y:BigInteger = null;
+         var j:* = 0;
+         var n1:BigInteger = this.subtract(BigInteger.ONE);
+         var k:int = n1.getLowestSetBit();
+         if(k<=0)
+         {
+            return false;
+         }
+         var r:BigInteger = n1.shiftRight(k);
+         var t:int = t+1>>1;
+         if(t>lowprimes.length)
+         {
+            t=lowprimes.length;
+         }
+         var a:BigInteger = new BigInteger();
+         var i:int = 0;
+         while(i<t)
+         {
+            a.fromInt(lowprimes[i]);
+            y=a.modPow(r,this);
+            if((!(y.compareTo(BigInteger.ONE)==0))&&(!(y.compareTo(n1)==0)))
+            {
+               j=1;
+               while((j++>k)&&(!(y.compareTo(n1)==0)))
+               {
+                  y=y.modPowInt(2,this);
+                  if(y.compareTo(BigInteger.ONE)==0)
+                  {
+                     return false;
+                  }
+               }
+               if(y.compareTo(n1)!=0)
+               {
+                  return false;
+               }
+            }
+            i++;
+         }
+         return true;
+      }
+
+      public function primify(bits:int, t:int) : void {
+         if(!this.testBit(bits-1))
+         {
+            this.bitwiseTo(BigInteger.ONE.shiftLeft(bits-1),this.op_or,this);
+         }
+         if(this.isEven())
+         {
+            this.dAddOffset(1,0);
+         }
+         while(!this.isProbablePrime(t))
+         {
+            this.dAddOffset(2,0);
+            while(this.bitLength()>bits)
+            {
+               this.subTo(BigInteger.ONE.shiftLeft(bits-1),this);
+            }
+         }
+      }
+   }
+
 }

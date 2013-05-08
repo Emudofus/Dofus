@@ -1,25 +1,28 @@
-﻿package org.flintparticles.common.utils
+package org.flintparticles.common.utils
 {
 
-    public class Maths extends Object
-    {
-        private static const RADTODEG:Number = 57.2958;
-        private static const DEGTORAD:Number = 0.0174533;
 
-        public function Maths()
-        {
-            return;
-        }// end function
+   public class Maths extends Object
+   {
+         
 
-        public static function asDegrees(param1:Number) : Number
-        {
-            return param1 * RADTODEG;
-        }// end function
+      public function Maths() {
+         super();
+      }
 
-        public static function asRadians(param1:Number) : Number
-        {
-            return param1 * DEGTORAD;
-        }// end function
+      private static const RADTODEG:Number = 180/Math.PI;
 
-    }
+      private static const DEGTORAD:Number = Math.PI/180;
+
+      public static function asDegrees(radians:Number) : Number {
+         return radians*RADTODEG;
+      }
+
+      public static function asRadians(degrees:Number) : Number {
+         return degrees*DEGTORAD;
+      }
+
+
+   }
+
 }

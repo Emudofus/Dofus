@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.party
+package com.ankamagames.dofus.logic.game.common.actions.party
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class TeleportToBuddyAnswerAction extends Object implements Action
-    {
-        public var dungeonId:int;
-        public var buddyId:int;
-        public var accept:Boolean;
 
-        public function TeleportToBuddyAnswerAction()
-        {
-            return;
-        }// end function
+   public class TeleportToBuddyAnswerAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int, param2:int, param3:Boolean) : TeleportToBuddyAnswerAction
-        {
-            var _loc_4:* = new TeleportToBuddyAnswerAction;
-            new TeleportToBuddyAnswerAction.dungeonId = param1;
-            _loc_4.buddyId = param2;
-            _loc_4.accept = param3;
-            return _loc_4;
-        }// end function
+      public function TeleportToBuddyAnswerAction() {
+         super();
+      }
 
-    }
+      public static function create(dungeonId:int, buddyId:int, accept:Boolean) : TeleportToBuddyAnswerAction {
+         var a:TeleportToBuddyAnswerAction = new TeleportToBuddyAnswerAction();
+         a.dungeonId=dungeonId;
+         a.buddyId=buddyId;
+         a.accept=accept;
+         return a;
+      }
+
+      public var dungeonId:int;
+
+      public var buddyId:int;
+
+      public var accept:Boolean;
+   }
+
 }

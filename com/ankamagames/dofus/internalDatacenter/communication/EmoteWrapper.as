@@ -1,209 +1,199 @@
-﻿package com.ankamagames.dofus.internalDatacenter.communication
+package com.ankamagames.dofus.internalDatacenter.communication
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.communication.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import flash.utils.Proxy;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.managers.SlotDataHolderManager;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import flash.utils.getTimer;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.EmoticonFrame;
+   import com.ankamagames.dofus.datacenter.communication.Emoticon;
+   import flash.utils.flash_proxy;
+   import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
 
-    public class EmoteWrapper extends Proxy implements IDataCenter, ISlotData
-    {
-        private var _uri:Uri;
-        private var _slotDataHolderManager:SlotDataHolderManager;
-        private var _timerDuration:int = 0;
-        private var _timerStartTime:int = 0;
-        public var position:uint;
-        public var id:uint = 0;
-        public var gfxId:int;
-        public var isOkForMultiUse:Boolean = false;
-        public var quantity:uint = 1;
-        private static var _cache:Array = new Array();
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(EmoteWrapper));
+   use namespace flash_proxy;
 
-        public function EmoteWrapper()
-        {
-            return;
-        }// end function
+   public class EmoteWrapper extends Proxy implements IDataCenter, ISlotData
+   {
+         
 
-        public function get iconUri() : Uri
-        {
-            if (!this._uri)
+      public function EmoteWrapper() {
+         super();
+      }
+
+      private static var _cache:Array = new Array();
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmoteWrapper));
+
+      public static function create(emoteID:uint, position:int=-1, useCache:Boolean=true) : EmoteWrapper {
+         var emote:EmoteWrapper = new EmoteWrapper();
+         if((!_cache[emoteID])||(!useCache))
+         {
+            emote=new EmoteWrapper();
+            emote.id=emoteID;
+            if(useCache)
             {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));
+               _cache[emoteID]=emote;
             }
-            return this._uri;
-        }// end function
+            emote._slotDataHolderManager=new SlotDataHolderManager(emote);
+         }
+         else
+         {
+            emote=_cache[emoteID];
+         }
+         emote.id=emoteID;
+         emote.gfxId=emoteID;
+         if(position>=0)
+         {
+            emote.position=position;
+         }
+         return emote;
+      }
 
-        public function get fullSizeIconUri() : Uri
-        {
-            if (!this._uri)
-            {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));
-            }
-            return this._uri;
-        }// end function
+      public static function refreshAllEmoteHolders() : void {
+         var wrapper:EmoteWrapper = null;
+         for each (wrapper in _cache)
+         {
+            wrapper._slotDataHolderManager.refreshAll();
+         }
+      }
 
-        public function get backGroundIconUri() : Uri
-        {
-            return null;
-        }// end function
+      public static function getEmoteWrapperById(id:uint) : EmoteWrapper {
+         return _cache[id];
+      }
 
-        public function get errorIconUri() : Uri
-        {
-            return null;
-        }// end function
+      private var _uri:Uri;
 
-        public function get info1() : String
-        {
-            return null;
-        }// end function
+      private var _slotDataHolderManager:SlotDataHolderManager;
 
-        public function get timer() : int
-        {
-            var _loc_1:* = this._timerStartTime + this._timerDuration - getTimer();
-            if (_loc_1 > 0)
-            {
-                return _loc_1;
-            }
-            return 0;
-        }// end function
+      private var _timerDuration:int = 0;
 
-        public function set timerToStart(param1:int) : void
-        {
-            this._timerDuration = param1;
-            this._timerStartTime = getTimer();
-            this._slotDataHolderManager.refreshAll();
-            return;
-        }// end function
+      private var _timerStartTime:int = 0;
 
-        public function get active() : Boolean
-        {
-            var _loc_1:* = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
-            return _loc_1.isKnownEmote(this.id);
-        }// end function
+      public var position:uint;
 
-        public function get emote() : Emoticon
-        {
-            return Emoticon.getEmoticonById(this.id);
-        }// end function
+      public var id:uint = 0;
 
-        public function get emoteId() : uint
-        {
-            return this.id;
-        }// end function
+      public var gfxId:int;
 
-        public function get isUsable() : Boolean
-        {
-            return true;
-        }// end function
+      public var isOkForMultiUse:Boolean = false;
 
-        override function getProperty(param1)
-        {
-            var l:*;
-            var r:*;
-            var name:* = param1;
-            if (isAttribute(name))
-            {
-                return this[name];
-            }
-            l = this.emote;
-            if (!l)
-            {
-                r;
-            }
-            try
-            {
-                return l[name];
-            }
-            catch (e:Error)
-            {
-                return "Error_on_item_" + name;
-            }
-            return;
-        }// end function
+      public var quantity:uint = 1;
 
-        override function hasProperty(param1) : Boolean
-        {
-            return isAttribute(param1);
-        }// end function
+      public function get iconUri() : Uri {
+         if(!this._uri)
+         {
+            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));
+         }
+         return this._uri;
+      }
 
-        public function toString() : String
-        {
-            return "[EmoteWrapper#" + this.id + "]";
-        }// end function
+      public function get fullSizeIconUri() : Uri {
+         if(!this._uri)
+         {
+            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));
+         }
+         return this._uri;
+      }
 
-        public function addHolder(param1:ISlotDataHolder) : void
-        {
-            this._slotDataHolderManager.addHolder(param1);
-            return;
-        }// end function
+      public function get backGroundIconUri() : Uri {
+         return null;
+      }
 
-        public function removeHolder(param1:ISlotDataHolder) : void
-        {
-            this._slotDataHolderManager.removeHolder(param1);
-            return;
-        }// end function
+      public function get errorIconUri() : Uri {
+         return null;
+      }
 
-        public function setLinkedSlotData(param1:ISlotData) : void
-        {
-            this._slotDataHolderManager.setLinkedSlotData(param1);
-            return;
-        }// end function
+      public function get info1() : String {
+         return null;
+      }
 
-        public function getIconUri(param1:Boolean = true) : Uri
-        {
-            if (!this._uri)
-            {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));
-            }
-            return this._uri;
-        }// end function
+      public function get timer() : int {
+         var remainingTime:int = this._timerStartTime+this._timerDuration-getTimer();
+         if(remainingTime>0)
+         {
+            return remainingTime;
+         }
+         return 0;
+      }
 
-        public static function create(param1:uint, param2:int = -1, param3:Boolean = true) : EmoteWrapper
-        {
-            var _loc_4:* = new EmoteWrapper;
-            if (!_cache[param1] || !param3)
-            {
-                _loc_4 = new EmoteWrapper;
-                _loc_4.id = param1;
-                if (param3)
-                {
-                    _cache[param1] = _loc_4;
-                }
-                _loc_4._slotDataHolderManager = new SlotDataHolderManager(_loc_4);
-            }
-            else
-            {
-                _loc_4 = _cache[param1];
-            }
-            _loc_4.id = param1;
-            _loc_4.gfxId = param1;
-            if (param2 >= 0)
-            {
-                _loc_4.position = param2;
-            }
-            return _loc_4;
-        }// end function
+      public function set timerToStart(t:int) : void {
+         this._timerDuration=t;
+         this._timerStartTime=getTimer();
+         this._slotDataHolderManager.refreshAll();
+      }
 
-        public static function refreshAllEmoteHolders() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in _cache)
-            {
-                
-                _loc_1._slotDataHolderManager.refreshAll();
-            }
-            return;
-        }// end function
+      public function get active() : Boolean {
+         var rpEmoticonFrame:EmoticonFrame = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
+         return rpEmoticonFrame.isKnownEmote(this.id);
+      }
 
-        public static function getEmoteWrapperById(param1:uint) : EmoteWrapper
-        {
-            return _cache[param1];
-        }// end function
+      public function get emote() : Emoticon {
+         return Emoticon.getEmoticonById(this.id);
+      }
 
-    }
+      public function get emoteId() : uint {
+         return this.id;
+      }
+
+      public function get isUsable() : Boolean {
+         return true;
+      }
+
+      override flash_proxy function getProperty(name:*) : * {
+         var l:* = undefined;
+         var r:* = undefined;
+         if(isAttribute(name))
+         {
+            return this[name];
+         }
+         l=this.emote;
+         if(!l)
+         {
+            r="";
+         }
+         try
+         {
+            return l[name];
+         }
+         catch(e:Error)
+         {
+            return "Error_on_item_"+name;
+         }
+      }
+
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
+      }
+
+      public function toString() : String {
+         return "[EmoteWrapper#"+this.id+"]";
+      }
+
+      public function addHolder(h:ISlotDataHolder) : void {
+         this._slotDataHolderManager.addHolder(h);
+      }
+
+      public function removeHolder(h:ISlotDataHolder) : void {
+         this._slotDataHolderManager.removeHolder(h);
+      }
+
+      public function setLinkedSlotData(slotData:ISlotData) : void {
+         this._slotDataHolderManager.setLinkedSlotData(slotData);
+      }
+
+      public function getIconUri(pngMode:Boolean=true) : Uri {
+         if(!this._uri)
+         {
+            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/emotes/").concat(this.id).concat(".png"));
+         }
+         return this._uri;
+      }
+   }
+
 }

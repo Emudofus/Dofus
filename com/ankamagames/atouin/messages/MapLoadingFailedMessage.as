@@ -1,15 +1,18 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
 
-    public class MapLoadingFailedMessage extends MapMessage
-    {
-        public var errorReason:uint;
-        public static const NO_FILE:uint = 0;
 
-        public function MapLoadingFailedMessage()
-        {
-            return;
-        }// end function
+   public class MapLoadingFailedMessage extends MapMessage
+   {
+         
 
-    }
+      public function MapLoadingFailedMessage() {
+         super();
+      }
+
+      public static const NO_FILE:uint = 0;
+
+      public var errorReason:uint;
+   }
+
 }

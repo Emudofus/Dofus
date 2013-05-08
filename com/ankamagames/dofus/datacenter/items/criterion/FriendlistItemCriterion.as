@@ -1,40 +1,39 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.SocialFrame;
 
-    public class FriendlistItemCriterion extends ItemCriterion implements IDataCenter
-    {
 
-        public function FriendlistItemCriterion(param1:String)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class FriendlistItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            var _loc_1:* = I18n.getUiText("ui.tooltip.playerInFriendlist");
-            var _loc_2:* = _operator.text;
-            if (_loc_2 == ItemCriterionOperator.EQUAL)
-            {
-                _loc_2 = ":";
-            }
-            return _loc_1 + " " + _loc_2 + " " + _criterionValue;
-        }// end function
+      public function FriendlistItemCriterion(pCriterion:String) {
+         super(pCriterion);
+      }
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new FriendlistItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
 
-        override protected function getCriterion() : int
-        {
-            return (Kernel.getWorker().getFrame(SocialFrame) as SocialFrame).friendsList.length;
-        }// end function
 
-    }
+      override public function get text() : String {
+         var readableCriterionRef:String = I18n.getUiText("ui.tooltip.playerInFriendlist");
+         var readableOperator:String = _operator.text;
+         if(readableOperator==ItemCriterionOperator.EQUAL)
+         {
+            readableOperator=":";
+         }
+         return readableCriterionRef+" "+readableOperator+" "+_criterionValue;
+      }
+
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:FriendlistItemCriterion = new FriendlistItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
+
+      override protected function getCriterion() : int {
+         return (Kernel.getWorker().getFrame(SocialFrame) as SocialFrame).friendsList.length;
+      }
+   }
+
 }

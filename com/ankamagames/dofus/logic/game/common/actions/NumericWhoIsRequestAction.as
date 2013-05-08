@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class NumericWhoIsRequestAction extends Object implements Action
-    {
-        public var playerId:uint;
 
-        public function NumericWhoIsRequestAction()
-        {
-            return;
-        }// end function
+   public class NumericWhoIsRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : NumericWhoIsRequestAction
-        {
-            var _loc_2:* = new NumericWhoIsRequestAction;
-            _loc_2.playerId = param1;
-            return _loc_2;
-        }// end function
+      public function NumericWhoIsRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(playerId:uint) : NumericWhoIsRequestAction {
+         var a:NumericWhoIsRequestAction = new NumericWhoIsRequestAction();
+         a.playerId=playerId;
+         return a;
+      }
+
+      public var playerId:uint;
+   }
+
 }

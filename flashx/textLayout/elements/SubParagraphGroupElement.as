@@ -1,61 +1,61 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
+   import flashx.textLayout.tlf_internal;
 
-    final public class SubParagraphGroupElement extends SubParagraphGroupElementBase
-    {
+   use namespace tlf_internal;
 
-        public function SubParagraphGroupElement()
-        {
-            return;
-        }// end function
+   public final class SubParagraphGroupElement extends SubParagraphGroupElementBase
+   {
+         
 
-        override protected function get abstract() : Boolean
-        {
-            return false;
-        }// end function
+      public function SubParagraphGroupElement() {
+         super();
+      }
 
-        override function get defaultTypeName() : String
-        {
-            return "g";
-        }// end function
 
-        override function get precedence() : uint
-        {
-            return kMinSPGEPrecedence;
-        }// end function
 
-        override function get allowNesting() : Boolean
-        {
-            return true;
-        }// end function
+      override protected function get abstract() : Boolean {
+         return false;
+      }
 
-        override function mergeToPreviousIfPossible() : Boolean
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = null;
-            if (parent && !bindableElement && !hasActiveEventMirror())
+      override tlf_internal function get defaultTypeName() : String {
+         return "g";
+      }
+
+      override tlf_internal function get precedence() : uint {
+         return kMinSPGEPrecedence;
+      }
+
+      override tlf_internal function get allowNesting() : Boolean {
+         return true;
+      }
+
+      override tlf_internal function mergeToPreviousIfPossible() : Boolean {
+         var myidx:* = 0;
+         var sib:SubParagraphGroupElement = null;
+         if((parent)&&(!bindableElement)&&(!hasActiveEventMirror()))
+         {
+            myidx=parent.getChildIndex(this);
+            if(myidx!=0)
             {
-                _loc_1 = parent.getChildIndex(this);
-                if (_loc_1 != 0)
-                {
-                    _loc_2 = parent.getChildAt((_loc_1 - 1)) as SubParagraphGroupElement;
-                    if (_loc_2 == null || _loc_2.hasActiveEventMirror())
-                    {
-                        return false;
-                    }
-                    if (equalStylesForMerge(_loc_2))
-                    {
-                        parent.removeChildAt(_loc_1);
-                        if (numChildren > 0)
-                        {
-                            _loc_2.replaceChildren(_loc_2.numChildren, _loc_2.numChildren, this.mxmlChildren);
-                        }
-                        return true;
-                    }
-                }
+               sib=parent.getChildAt(myidx-1) as SubParagraphGroupElement;
+               if((sib==null)||(sib.hasActiveEventMirror()))
+               {
+                  return false;
+               }
+               if(equalStylesForMerge(sib))
+               {
+                  parent.removeChildAt(myidx);
+                  if(numChildren>0)
+                  {
+                     sib.replaceChildren(sib.numChildren,sib.numChildren,this.mxmlChildren);
+                  }
+                  return true;
+               }
             }
-            return false;
-        }// end function
+         }
+         return false;
+      }
+   }
 
-    }
 }

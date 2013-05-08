@@ -1,114 +1,126 @@
-﻿package com.ankamagames.dofus.network.messages.game.approach
+package com.ankamagames.dofus.network.messages.game.approach
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AccountLoggingKickedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var days:uint = 0;
-        public var hours:uint = 0;
-        public var minutes:uint = 0;
-        public static const protocolId:uint = 6029;
 
-        public function AccountLoggingKickedMessage()
-        {
-            return;
-        }// end function
+   public class AccountLoggingKickedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function AccountLoggingKickedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6029;
-        }// end function
+      public static const protocolId:uint = 6029;
 
-        public function initAccountLoggingKickedMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0) : AccountLoggingKickedMessage
-        {
-            this.days = param1;
-            this.hours = param2;
-            this.minutes = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.days = 0;
-            this.hours = 0;
-            this.minutes = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var days:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var hours:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AccountLoggingKickedMessage(param1);
-            return;
-        }// end function
+      public var minutes:uint = 0;
 
-        public function serializeAs_AccountLoggingKickedMessage(param1:IDataOutput) : void
-        {
-            if (this.days < 0)
+      override public function getMessageId() : uint {
+         return 6029;
+      }
+
+      public function initAccountLoggingKickedMessage(days:uint=0, hours:uint=0, minutes:uint=0) : AccountLoggingKickedMessage {
+         this.days=days;
+         this.hours=hours;
+         this.minutes=minutes;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.days=0;
+         this.hours=0;
+         this.minutes=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AccountLoggingKickedMessage(output);
+      }
+
+      public function serializeAs_AccountLoggingKickedMessage(output:IDataOutput) : void {
+         if(this.days<0)
+         {
+            throw new Error("Forbidden value ("+this.days+") on element days.");
+         }
+         else
+         {
+            output.writeInt(this.days);
+            if(this.hours<0)
             {
-                throw new Error("Forbidden value (" + this.days + ") on element days.");
+               throw new Error("Forbidden value ("+this.hours+") on element hours.");
             }
-            param1.writeInt(this.days);
-            if (this.hours < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.hours + ") on element hours.");
+               output.writeInt(this.hours);
+               if(this.minutes<0)
+               {
+                  throw new Error("Forbidden value ("+this.minutes+") on element minutes.");
+               }
+               else
+               {
+                  output.writeInt(this.minutes);
+                  return;
+               }
             }
-            param1.writeInt(this.hours);
-            if (this.minutes < 0)
-            {
-                throw new Error("Forbidden value (" + this.minutes + ") on element minutes.");
-            }
-            param1.writeInt(this.minutes);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AccountLoggingKickedMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AccountLoggingKickedMessage(input);
+      }
 
-        public function deserializeAs_AccountLoggingKickedMessage(param1:IDataInput) : void
-        {
-            this.days = param1.readInt();
-            if (this.days < 0)
+      public function deserializeAs_AccountLoggingKickedMessage(input:IDataInput) : void {
+         this.days=input.readInt();
+         if(this.days<0)
+         {
+            throw new Error("Forbidden value ("+this.days+") on element of AccountLoggingKickedMessage.days.");
+         }
+         else
+         {
+            this.hours=input.readInt();
+            if(this.hours<0)
             {
-                throw new Error("Forbidden value (" + this.days + ") on element of AccountLoggingKickedMessage.days.");
+               throw new Error("Forbidden value ("+this.hours+") on element of AccountLoggingKickedMessage.hours.");
             }
-            this.hours = param1.readInt();
-            if (this.hours < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.hours + ") on element of AccountLoggingKickedMessage.hours.");
+               this.minutes=input.readInt();
+               if(this.minutes<0)
+               {
+                  throw new Error("Forbidden value ("+this.minutes+") on element of AccountLoggingKickedMessage.minutes.");
+               }
+               else
+               {
+                  return;
+               }
             }
-            this.minutes = param1.readInt();
-            if (this.minutes < 0)
-            {
-                throw new Error("Forbidden value (" + this.minutes + ") on element of AccountLoggingKickedMessage.minutes.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

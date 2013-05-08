@@ -1,123 +1,128 @@
-﻿package com.ankamagames.atouin.types
+package com.ankamagames.atouin.types
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.pools.*;
-    import flash.display.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.display.Sprite;
+   import flash.display.DisplayObject;
+   import flash.geom.Rectangle;
+   import com.ankamagames.jerakine.pools.PoolsManager;
+   import com.ankamagames.jerakine.pools.PoolableRectangle;
+   import flash.geom.ColorTransform;
 
-    public class CellReference extends Object
-    {
-        private var _visible:Boolean;
-        private var _lock:Boolean = false;
-        public var id:uint;
-        public var listSprites:Array;
-        public var elevation:int = 0;
-        public var x:Number = 0;
-        public var y:Number = 0;
-        public var width:Number = 0;
-        public var height:Number = 0;
-        public var mov:Boolean;
-        public var isDisabled:Boolean = false;
-        public var rendered:Boolean = false;
-        public var heightestDecor:Sprite;
-        public var gfxId:Array;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(CellReference));
 
-        public function CellReference(param1:uint)
-        {
-            this.id = param1;
-            this.listSprites = new Array();
-            this.gfxId = new Array();
-            return;
-        }// end function
+   public class CellReference extends Object
+   {
+         
 
-        public function addSprite(param1:DisplayObject) : void
-        {
-            this.listSprites.push(param1);
-            return;
-        }// end function
+      public function CellReference(nId:uint) {
+         super();
+         this.id=nId;
+         this.listSprites=new Array();
+         this.gfxId=new Array();
+      }
 
-        public function addGfx(param1:int) : void
-        {
-            this.gfxId.push(param1);
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CellReference));
 
-        public function lock() : void
-        {
-            this._lock = true;
-            return;
-        }// end function
+      private var _visible:Boolean;
 
-        public function get locked() : Boolean
-        {
-            return this._lock;
-        }// end function
+      private var _lock:Boolean = false;
 
-        public function get visible() : Boolean
-        {
-            return this._visible;
-        }// end function
+      public var id:uint;
 
-        public function set visible(param1:Boolean) : void
-        {
-            var _loc_2:* = 0;
-            if (this._visible != param1)
+      public var listSprites:Array;
+
+      public var elevation:int = 0;
+
+      public var x:Number = 0;
+
+      public var y:Number = 0;
+
+      public var width:Number = 0;
+
+      public var height:Number = 0;
+
+      public var mov:Boolean;
+
+      public var isDisabled:Boolean = false;
+
+      public var rendered:Boolean = false;
+
+      public var heightestDecor:Sprite;
+
+      public var gfxId:Array;
+
+      public function addSprite(d:DisplayObject) : void {
+         this.listSprites.push(d);
+      }
+
+      public function addGfx(nGfxId:int) : void {
+         this.gfxId.push(nGfxId);
+      }
+
+      public function lock() : void {
+         this._lock=true;
+      }
+
+      public function get locked() : Boolean {
+         return this._lock;
+      }
+
+      public function get visible() : Boolean {
+         return this._visible;
+      }
+
+      public function set visible(bValue:Boolean) : void {
+         var i:uint = 0;
+         if(this._visible!=bValue)
+         {
+            this._visible=bValue;
+            i=0;
+            while(i<this.listSprites.length)
             {
-                this._visible = param1;
-                _loc_2 = 0;
-                while (_loc_2 < this.listSprites.length)
-                {
-                    
-                    if (this.listSprites[_loc_2] != null)
-                    {
-                        this.listSprites[_loc_2].visible = param1;
-                    }
-                    _loc_2 = _loc_2 + 1;
-                }
+               if(this.listSprites[i]!=null)
+               {
+                  this.listSprites[i].visible=bValue;
+               }
+               i++;
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function get bounds() : Rectangle
-        {
-            var _loc_3:* = null;
-            var _loc_1:* = (PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle).renew();
-            var _loc_2:* = PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle;
-            for each (_loc_3 in this.listSprites)
-            {
-                
-                _loc_1.extend(_loc_2.renew(_loc_3.x, _loc_3.y, _loc_3.width, _loc_3.height));
-            }
-            PoolsManager.getInstance().getRectanglePool().checkIn(_loc_2);
-            PoolsManager.getInstance().getRectanglePool().checkIn(_loc_1);
-            return _loc_1 as Rectangle;
-        }// end function
+      public function get bounds() : Rectangle {
+         var sprite:DisplayObject = null;
+         var rectangle:PoolableRectangle = (PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle).renew();
+         var boundRect:PoolableRectangle = PoolsManager.getInstance().getRectanglePool().checkOut() as PoolableRectangle;
+         for each (sprite in this.listSprites)
+         {
+            rectangle.extend(boundRect.renew(sprite.x,sprite.y,sprite.width,sprite.height));
+         }
+         PoolsManager.getInstance().getRectanglePool().checkIn(boundRect);
+         PoolsManager.getInstance().getRectanglePool().checkIn(rectangle);
+         return rectangle as Rectangle;
+      }
 
-        public function getAvgColor() : uint
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_1:* = 0;
-            var _loc_2:* = 0;
-            var _loc_3:* = 0;
-            var _loc_6:* = this.listSprites.length;
-            _loc_5 = 0;
-            while (_loc_5 < _loc_6)
-            {
-                
-                _loc_4 = (this.listSprites[_loc_5] as DisplayObject).transform.colorTransform;
-                _loc_1 = _loc_1 + _loc_4.redOffset * _loc_4.redMultiplier;
-                _loc_2 = _loc_2 + _loc_4.greenOffset * _loc_4.greenMultiplier;
-                _loc_3 = _loc_3 + _loc_4.blueOffset * _loc_4.blueMultiplier;
-                _loc_5 = _loc_5 + 1;
-            }
-            _loc_1 = _loc_1 / _loc_6;
-            _loc_2 = _loc_2 / _loc_6;
-            _loc_3 = _loc_3 / _loc_6;
-            return _loc_1 << 16 | _loc_2 << 8 | _loc_3;
-        }// end function
+      public function getAvgColor() : uint {
+         var t:ColorTransform = null;
+         var i:* = 0;
+         var red:Number = 0;
+         var green:Number = 0;
+         var blue:Number = 0;
+         var len:int = this.listSprites.length;
+         i=0;
+         while(i<len)
+         {
+            t=(this.listSprites[i] as DisplayObject).transform.colorTransform;
+            red=red+t.redOffset*t.redMultiplier;
+            green=green+t.greenOffset*t.greenMultiplier;
+            blue=blue+t.blueOffset*t.blueMultiplier;
+            i=i+1;
+         }
+         red=red/len;
+         green=green/len;
+         blue=blue/len;
+         return red<<16|green<<8|blue;
+      }
+   }
 
-    }
 }

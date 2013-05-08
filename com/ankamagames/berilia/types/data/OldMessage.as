@@ -1,20 +1,24 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    import flash.utils.*;
+   import flash.utils.Dictionary;
 
-    public class OldMessage extends Object
-    {
-        public var hook:Hook;
-        public var args:Array;
-        public static var MEMORY_LOG:Dictionary = new Dictionary(true);
 
-        public function OldMessage(param1:Hook, param2:Array)
-        {
-            this.hook = param1;
-            this.args = param2;
-            MEMORY_LOG[this] = 1;
-            return;
-        }// end function
+   public class OldMessage extends Object
+   {
+         
 
-    }
+      public function OldMessage(pHook:Hook, pArgs:Array) {
+         super();
+         this.hook=pHook;
+         this.args=pArgs;
+         MEMORY_LOG[this]=1;
+      }
+
+      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+
+      public var hook:Hook;
+
+      public var args:Array;
+   }
+
 }

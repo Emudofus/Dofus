@@ -1,122 +1,111 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
 
-    public class TextRange extends Object
-    {
-        private var _textFlow:TextFlow;
-        private var _anchorPosition:int;
-        private var _activePosition:int;
 
-        public function TextRange(param1:TextFlow, param2:int, param3:int)
-        {
-            this._textFlow = param1;
-            if (param2 != -1 || param3 != -1)
-            {
-                param2 = this.clampToRange(param2);
-                param3 = this.clampToRange(param3);
-            }
-            this._anchorPosition = param2;
-            this._activePosition = param3;
-            return;
-        }// end function
+   public class TextRange extends Object
+   {
+         
 
-        private function clampToRange(param1:int) : int
-        {
-            if (param1 < 0)
-            {
-                return 0;
-            }
-            if (param1 > this._textFlow.textLength)
-            {
-                return this._textFlow.textLength;
-            }
-            return param1;
-        }// end function
+      public function TextRange(root:TextFlow, anchorIndex:int, activeIndex:int) {
+         super();
+         this._textFlow=root;
+         if((!(anchorIndex==-1))||(!(activeIndex==-1)))
+         {
+            anchorIndex=this.clampToRange(anchorIndex);
+            activeIndex=this.clampToRange(activeIndex);
+         }
+         this._anchorPosition=anchorIndex;
+         this._activePosition=activeIndex;
+      }
 
-        public function updateRange(param1:int, param2:int) : Boolean
-        {
-            if (param1 != -1 || param2 != -1)
-            {
-                param1 = this.clampToRange(param1);
-                param2 = this.clampToRange(param2);
-            }
-            if (this._anchorPosition != param1 || this._activePosition != param2)
-            {
-                this._anchorPosition = param1;
-                this._activePosition = param2;
-                return true;
-            }
-            return false;
-        }// end function
 
-        public function get textFlow() : TextFlow
-        {
-            return this._textFlow;
-        }// end function
 
-        public function set textFlow(param1:TextFlow) : void
-        {
-            this._textFlow = param1;
-            return;
-        }// end function
+      private var _textFlow:TextFlow;
 
-        public function get anchorPosition() : int
-        {
-            return this._anchorPosition;
-        }// end function
+      private var _anchorPosition:int;
 
-        public function set anchorPosition(param1:int) : void
-        {
-            this._anchorPosition = param1;
-            return;
-        }// end function
+      private var _activePosition:int;
 
-        public function get activePosition() : int
-        {
-            return this._activePosition;
-        }// end function
+      private function clampToRange(index:int) : int {
+         if(index<0)
+         {
+            return 0;
+         }
+         if(index>this._textFlow.textLength)
+         {
+            return this._textFlow.textLength;
+         }
+         return index;
+      }
 
-        public function set activePosition(param1:int) : void
-        {
-            this._activePosition = param1;
-            return;
-        }// end function
+      public function updateRange(newAnchorPosition:int, newActivePosition:int) : Boolean {
+         if((!(newAnchorPosition==-1))||(!(newActivePosition==-1)))
+         {
+            newAnchorPosition=this.clampToRange(newAnchorPosition);
+            newActivePosition=this.clampToRange(newActivePosition);
+         }
+         if((!(this._anchorPosition==newAnchorPosition))||(!(this._activePosition==newActivePosition)))
+         {
+            this._anchorPosition=newAnchorPosition;
+            this._activePosition=newActivePosition;
+            return true;
+         }
+         return false;
+      }
 
-        public function get absoluteStart() : int
-        {
-            return this._activePosition < this._anchorPosition ? (this._activePosition) : (this._anchorPosition);
-        }// end function
+      public function get textFlow() : TextFlow {
+         return this._textFlow;
+      }
 
-        public function set absoluteStart(param1:int) : void
-        {
-            if (this._activePosition < this._anchorPosition)
-            {
-                this._activePosition = param1;
-            }
-            else
-            {
-                this._anchorPosition = param1;
-            }
-            return;
-        }// end function
+      public function set textFlow(value:TextFlow) : void {
+         this._textFlow=value;
+      }
 
-        public function get absoluteEnd() : int
-        {
-            return this._activePosition > this._anchorPosition ? (this._activePosition) : (this._anchorPosition);
-        }// end function
+      public function get anchorPosition() : int {
+         return this._anchorPosition;
+      }
 
-        public function set absoluteEnd(param1:int) : void
-        {
-            if (this._activePosition > this._anchorPosition)
-            {
-                this._activePosition = param1;
-            }
-            else
-            {
-                this._anchorPosition = param1;
-            }
-            return;
-        }// end function
+      public function set anchorPosition(value:int) : void {
+         this._anchorPosition=value;
+      }
 
-    }
+      public function get activePosition() : int {
+         return this._activePosition;
+      }
+
+      public function set activePosition(value:int) : void {
+         this._activePosition=value;
+      }
+
+      public function get absoluteStart() : int {
+         return this._activePosition>this._anchorPosition?this._activePosition:this._anchorPosition;
+      }
+
+      public function set absoluteStart(value:int) : void {
+         if(this._activePosition<this._anchorPosition)
+         {
+            this._activePosition=value;
+         }
+         else
+         {
+            this._anchorPosition=value;
+         }
+      }
+
+      public function get absoluteEnd() : int {
+         return this._activePosition<this._anchorPosition?this._activePosition:this._anchorPosition;
+      }
+
+      public function set absoluteEnd(value:int) : void {
+         if(this._activePosition>this._anchorPosition)
+         {
+            this._activePosition=value;
+         }
+         else
+         {
+            this._anchorPosition=value;
+         }
+      }
+   }
+
 }

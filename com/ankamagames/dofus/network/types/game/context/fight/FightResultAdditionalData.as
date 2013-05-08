@@ -1,51 +1,47 @@
-﻿package com.ankamagames.dofus.network.types.game.context.fight
+package com.ankamagames.dofus.network.types.game.context.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class FightResultAdditionalData extends Object implements INetworkType
-    {
-        public static const protocolId:uint = 191;
 
-        public function FightResultAdditionalData()
-        {
-            return;
-        }// end function
+   public class FightResultAdditionalData extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 191;
-        }// end function
+      public function FightResultAdditionalData() {
+         super();
+      }
 
-        public function initFightResultAdditionalData() : FightResultAdditionalData
-        {
-            return this;
-        }// end function
+      public static const protocolId:uint = 191;
 
-        public function reset() : void
-        {
-            return;
-        }// end function
+      public function getTypeId() : uint {
+         return 191;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            return;
-        }// end function
+      public function initFightResultAdditionalData() : FightResultAdditionalData {
+         return this;
+      }
 
-        public function serializeAs_FightResultAdditionalData(param1:IDataOutput) : void
-        {
-            return;
-        }// end function
+      public function reset() : void {
+         
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            return;
-        }// end function
+      public function serialize(output:IDataOutput) : void {
+         
+      }
 
-        public function deserializeAs_FightResultAdditionalData(param1:IDataInput) : void
-        {
-            return;
-        }// end function
+      public function serializeAs_FightResultAdditionalData(output:IDataOutput) : void {
+         
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         
+      }
+
+      public function deserializeAs_FightResultAdditionalData(input:IDataInput) : void {
+         
+      }
+   }
+
 }

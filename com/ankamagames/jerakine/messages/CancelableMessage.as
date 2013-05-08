@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.messages
+package com.ankamagames.jerakine.messages
 {
 
-    public interface CancelableMessage
-    {
 
-        public function CancelableMessage();
+   public interface CancelableMessage
+   {
+         
 
-        function get cancel() : Boolean;
 
-    }
+
+      function get cancel() : Boolean;
+   }
+
 }

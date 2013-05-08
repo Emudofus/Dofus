@@ -1,44 +1,45 @@
-﻿package com.ankamagames.dofus.datacenter.effects.instances
+package com.ankamagames.dofus.datacenter.effects.instances
 {
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
 
-    public class EffectInstanceCreature extends EffectInstance implements IDataCenter
-    {
-        public var monsterFamilyId:uint;
 
-        public function EffectInstanceCreature()
-        {
-            return;
-        }// end function
+   public class EffectInstanceCreature extends EffectInstance implements IDataCenter
+   {
+         
 
-        override public function clone() : EffectInstance
-        {
-            var _loc_1:* = new EffectInstanceCreature();
-            _loc_1.rawZone = rawZone;
-            _loc_1.effectId = effectId;
-            _loc_1.duration = duration;
-            _loc_1.delay = delay;
-            _loc_1.monsterFamilyId = this.monsterFamilyId;
-            _loc_1.random = random;
-            _loc_1.group = group;
-            _loc_1.targetId = targetId;
-            return _loc_1;
-        }// end function
+      public function EffectInstanceCreature() {
+         super();
+      }
 
-        override public function get parameter0() : Object
-        {
-            return this.monsterFamilyId;
-        }// end function
 
-        override public function setParameter(param1:uint, param2) : void
-        {
-            if (param1 == 0)
-            {
-                this.monsterFamilyId = uint(param2);
-            }
-            return;
-        }// end function
 
-    }
+      public var monsterFamilyId:uint;
+
+      override public function clone() : EffectInstance {
+         var o:EffectInstanceCreature = new EffectInstanceCreature();
+         o.rawZone=rawZone;
+         o.effectId=effectId;
+         o.duration=duration;
+         o.delay=delay;
+         o.monsterFamilyId=this.monsterFamilyId;
+         o.random=random;
+         o.group=group;
+         o.targetId=targetId;
+         o.targetMask=targetMask;
+         return o;
+      }
+
+      override public function get parameter0() : Object {
+         return this.monsterFamilyId;
+      }
+
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         if(paramIndex==0)
+         {
+            this.monsterFamilyId=uint(value);
+         }
+      }
+   }
+
 }

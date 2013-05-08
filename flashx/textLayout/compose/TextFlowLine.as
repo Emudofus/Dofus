@@ -1,2087 +1,2033 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
-    import __AS3__.vec.*;
-    import flash.display.*;
-    import flash.geom.*;
-    import flash.text.engine.*;
-    import flash.utils.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
-    import flashx.textLayout.utils.*;
+   import flash.utils.Dictionary;
+   import flashx.textLayout.tlf_internal;
+   import flash.text.engine.TextLine;
+   import flashx.textLayout.elements.ListItemElement;
+   import flashx.textLayout.elements.ParagraphElement;
+   import flashx.textLayout.formats.IListMarkerFormat;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.ListStylePosition;
+   import flashx.textLayout.formats.FormatValue;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.formats.Direction;
+   import flashx.textLayout.elements.ListElement;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flashx.textLayout.elements.FlowLeafElement;
+   import flashx.textLayout.elements.LinkElement;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.elements.LinkState;
+   import flash.display.DisplayObject;
+   import flash.text.engine.TextBaseline;
+   import flashx.textLayout.elements.InlineGraphicElement;
+   import flash.display.Shape;
+   import __AS3__.vec.Vector;
+   import flash.display.GraphicsPathCommand;
+   import flash.display.GraphicsPathWinding;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.formats.LineBreak;
+   import flash.geom.Point;
+   import flashx.textLayout.elements.BackgroundManager;
+   import flash.text.engine.TextLineValidity;
+   import flashx.textLayout.formats.TextAlign;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.utils.Twips;
+   import flash.text.engine.TextBlock;
+   import flash.text.engine.ElementFormat;
+   import flash.text.engine.FontMetrics;
+   import flashx.textLayout.elements.FlowElement;
+   import flashx.textLayout.elements.SubParagraphGroupElementBase;
+   import flashx.textLayout.formats.Float;
+   import flash.text.engine.TextRotation;
+   import flashx.textLayout.elements.TCYElement;
+   import flashx.textLayout.elements.SpanElement;
+   import flashx.textLayout.utils.CharacterUtil;
+   import flashx.textLayout.edit.SelectionFormat;
+   import flashx.textLayout.edit.ISelectionManager;
+   import flashx.textLayout.elements.ContainerFormattedElement;
+   import flashx.textLayout.formats.LeadingModel;
+   import flashx.textLayout.formats.JustificationRule;
 
-    final public class TextFlowLine extends Object implements IVerticalJustificationLine
-    {
-        private var _absoluteStart:int;
-        private var _textLength:int;
-        private var _x:Number = 0;
-        private var _y:Number = 0;
-        private var _height:Number = 0;
-        private var _outerTargetWidth:Number = 0;
-        private var _boundsLeftTW:int = 2;
-        private var _boundsRightTW:int = 1;
-        private var _para:ParagraphElement;
-        private var _controller:ContainerController;
-        private var _columnIndex:int;
-        private var _adornCount:int = 0;
-        private var _flags:uint;
-        private var _ascent:Number;
-        private var _descent:Number;
-        private var _targetWidth:Number;
-        private var _lineOffset:Number;
-        private var _lineExtent:Number;
-        private var _accumulatedLineExtent:Number;
-        private var _accumulatedMinimumStart:Number;
-        private var _numberLinePosition:int;
-        private static var _selectionBlockCache:Dictionary = new Dictionary(true);
-        private static const VALIDITY_MASK:uint = 7;
-        private static const ALIGNMENT_SHIFT:uint = 3;
-        private static const ALIGNMENT_MASK:uint = 24;
-        private static const NUMBERLINE_MASK:uint = 32;
-        private static const GRAPHICELEMENT_MASK:uint = 64;
-        private static const _validities:Array = [TextLineValidity.INVALID, TextLineValidity.POSSIBLY_INVALID, TextLineValidity.STATIC, TextLineValidity.VALID, FlowDamageType.GEOMETRY];
-        private static const _alignments:Array = [TextAlign.LEFT, TextAlign.CENTER, TextAlign.RIGHT];
-        private static var numberLineFactory:NumberLineFactory;
-        private static const localZeroPoint:Point = new Point(0, 0);
-        private static const localOnePoint:Point = new Point(1, 0);
-        private static const rlLocalOnePoint:Point = new Point(0, 1);
+   use namespace tlf_internal;
 
-        public function TextFlowLine(param1:TextLine, param2:ParagraphElement, param3:Number = 0, param4:Number = 0, param5:int = 0, param6:int = 0)
-        {
-            this.initialize(param2, param3, param4, param5, param6, param1);
+   public final class TextFlowLine extends Object implements IVerticalJustificationLine
+   {
+         
+
+      public function TextFlowLine(textLine:TextLine, paragraph:ParagraphElement, outerTargetWidth:Number=0, lineOffset:Number=0, absoluteStart:int=0, numChars:int=0) {
+         super();
+         this.initialize(paragraph,outerTargetWidth,lineOffset,absoluteStart,numChars,textLine);
+      }
+
+      private static var _selectionBlockCache:Dictionary = new Dictionary(true);
+
+      private static const VALIDITY_MASK:uint = 7;
+
+      private static const ALIGNMENT_SHIFT:uint = 3;
+
+      private static const ALIGNMENT_MASK:uint = 24;
+
+      private static const NUMBERLINE_MASK:uint = 32;
+
+      private static const GRAPHICELEMENT_MASK:uint = 64;
+
+      private static const _validities:Array = [TextLineValidity.INVALID,TextLineValidity.POSSIBLY_INVALID,TextLineValidity.STATIC,TextLineValidity.VALID,FlowDamageType.GEOMETRY];
+
+      private static const _alignments:Array = [TextAlign.LEFT,TextAlign.CENTER,TextAlign.RIGHT];
+
+      tlf_internal  static function initializeNumberLinePosition(numberLine:TextLine, listItemElement:ListItemElement, curParaElement:ParagraphElement, totalWidth:Number) : void {
+         var listMarkerFormat:IListMarkerFormat = listItemElement.computedListMarkerFormat();
+         var paragraphFormat:ITextLayoutFormat = curParaElement.computedFormat;
+         var listEndIndent:Number = (listMarkerFormat.paragraphEndIndent===undefined)||(listItemElement.computedFormat.listStylePosition==ListStylePosition.INSIDE)?0:listMarkerFormat.paragraphEndIndent==FormatValue.INHERIT?paragraphFormat.paragraphEndIndent:listMarkerFormat.paragraphEndIndent;
+         TextFlowLine.setListEndIndent(numberLine,listEndIndent);
+         if(listItemElement.computedFormat.listStylePosition==ListStylePosition.OUTSIDE)
+         {
+            numberLine.x=numberLine.y=0;
             return;
-        }// end function
-
-        function initialize(param1:ParagraphElement, param2:Number = 0, param3:Number = 0, param4:int = 0, param5:int = 0, param6:TextLine = null) : void
-        {
-            this._para = param1;
-            this._outerTargetWidth = param2;
-            this._absoluteStart = param4;
-            this._textLength = param5;
-            this._adornCount = 0;
-            this._lineExtent = 0;
-            this._accumulatedLineExtent = 0;
-            this._accumulatedMinimumStart = TextLine.MAX_LINE_WIDTH;
-            this._flags = 0;
-            this._controller = null;
-            if (param6)
+         }
+         var bp:String = curParaElement.getTextFlow().computedFormat.blockProgression;
+         var numberLineWidth:Number = TextFlowLine.getNumberLineInsideLineWidth(numberLine);
+         if(bp==BlockProgression.TB)
+         {
+            if(paragraphFormat.direction==Direction.LTR)
             {
-                param6.userData = this;
-                this._targetWidth = param6.specifiedWidth;
-                this._ascent = param6.ascent;
-                this._descent = param6.descent;
-                this._lineOffset = param3;
-                this.setValidity(param6.validity);
-                this.setFlag(param6.hasGraphicElement ? (GRAPHICELEMENT_MASK) : (0), GRAPHICELEMENT_MASK);
+               numberLine.x=-numberLineWidth;
             }
             else
             {
-                this.setValidity(TextLineValidity.INVALID);
+               numberLine.x=totalWidth+numberLineWidth-numberLine.textWidth;
             }
-            return;
-        }// end function
-
-        private function setFlag(param1:uint, param2:uint) : void
-        {
-            this._flags = this._flags & ~param2 | param1;
-            return;
-        }// end function
-
-        private function getFlag(param1:uint) : uint
-        {
-            return this._flags & param1;
-        }// end function
-
-        function get heightTW() : int
-        {
-            return Twips.to(this._height);
-        }// end function
-
-        function get outerTargetWidthTW() : int
-        {
-            return Twips.to(this._outerTargetWidth);
-        }// end function
-
-        function get ascentTW() : int
-        {
-            return Twips.to(this._ascent);
-        }// end function
-
-        function get targetWidthTW() : int
-        {
-            return Twips.to(this._targetWidth);
-        }// end function
-
-        function get textHeightTW() : int
-        {
-            return Twips.to(this.textHeight);
-        }// end function
-
-        function get lineOffsetTW() : int
-        {
-            return Twips.to(this._lineOffset);
-        }// end function
-
-        function get lineExtentTW() : int
-        {
-            return Twips.to(this._lineExtent);
-        }// end function
-
-        function get hasGraphicElement() : Boolean
-        {
-            return this.getFlag(GRAPHICELEMENT_MASK) != 0;
-        }// end function
-
-        function get hasNumberLine() : Boolean
-        {
-            return this.getFlag(NUMBERLINE_MASK) != 0;
-        }// end function
-
-        function get numberLinePosition() : Number
-        {
-            return Twips.from(this._numberLinePosition);
-        }// end function
-
-        function set numberLinePosition(param1:Number) : void
-        {
-            this._numberLinePosition = Twips.to(param1);
-            return;
-        }// end function
-
-        public function get textHeight() : Number
-        {
-            return this._ascent + this._descent;
-        }// end function
-
-        public function get x() : Number
-        {
-            return this._x;
-        }// end function
-
-        public function set x(param1:Number) : void
-        {
-            this._x = param1;
-            this._boundsLeftTW = 2;
-            this._boundsRightTW = 1;
-            return;
-        }// end function
-
-        function get xTW() : int
-        {
-            return Twips.to(this._x);
-        }// end function
-
-        public function get y() : Number
-        {
-            return this._y;
-        }// end function
-
-        function get yTW() : int
-        {
-            return Twips.to(this._y);
-        }// end function
-
-        public function set y(param1:Number) : void
-        {
-            this._y = param1;
-            this._boundsLeftTW = 2;
-            this._boundsRightTW = 1;
-            return;
-        }// end function
-
-        function setXYAndHeight(param1:Number, param2:Number, param3:Number) : void
-        {
-            this._x = param1;
-            this._y = param2;
-            this._height = param3;
-            this._boundsLeftTW = 2;
-            this._boundsRightTW = 1;
-            return;
-        }// end function
-
-        public function get location() : int
-        {
-            var _loc_1:* = 0;
-            if (this._para)
+            numberLine.y=0;
+         }
+         else
+         {
+            if(paragraphFormat.direction==Direction.LTR)
             {
-                _loc_1 = this._absoluteStart - this._para.getAbsoluteStart();
-                if (_loc_1 == 0)
-                {
-                    return this._textLength == this._para.textLength ? (TextFlowLineLocation.ONLY) : (TextFlowLineLocation.FIRST);
-                }
-                if (_loc_1 + this.textLength == this._para.textLength)
-                {
-                    return TextFlowLineLocation.LAST;
-                }
-            }
-            return TextFlowLineLocation.MIDDLE;
-        }// end function
-
-        public function get controller() : ContainerController
-        {
-            return this._controller;
-        }// end function
-
-        public function get columnIndex() : int
-        {
-            return this._columnIndex;
-        }// end function
-
-        function setController(param1:ContainerController, param2:int) : void
-        {
-            this._controller = param1 as ContainerController;
-            this._columnIndex = param2;
-            return;
-        }// end function
-
-        public function get height() : Number
-        {
-            return this._height;
-        }// end function
-
-        public function get ascent() : Number
-        {
-            return this._ascent;
-        }// end function
-
-        public function get descent() : Number
-        {
-            return this._descent;
-        }// end function
-
-        public function get lineOffset() : Number
-        {
-            return this._lineOffset;
-        }// end function
-
-        public function get paragraph() : ParagraphElement
-        {
-            return this._para;
-        }// end function
-
-        public function get absoluteStart() : int
-        {
-            return this._absoluteStart;
-        }// end function
-
-        function setAbsoluteStart(param1:int) : void
-        {
-            this._absoluteStart = param1;
-            return;
-        }// end function
-
-        public function get textLength() : int
-        {
-            return this._textLength;
-        }// end function
-
-        function setTextLength(param1:int) : void
-        {
-            this._textLength = param1;
-            this.damage(TextLineValidity.INVALID);
-            return;
-        }// end function
-
-        public function get spaceBefore() : Number
-        {
-            return this.location & TextFlowLineLocation.FIRST ? (this._para.computedFormat.paragraphSpaceBefore) : (0);
-        }// end function
-
-        public function get spaceAfter() : Number
-        {
-            return this.location & TextFlowLineLocation.LAST ? (this._para.computedFormat.paragraphSpaceAfter) : (0);
-        }// end function
-
-        function get outerTargetWidth() : Number
-        {
-            return this._outerTargetWidth;
-        }// end function
-
-        function set outerTargetWidth(param1:Number) : void
-        {
-            this._outerTargetWidth = param1;
-            return;
-        }// end function
-
-        function get targetWidth() : Number
-        {
-            return this._targetWidth;
-        }// end function
-
-        public function getBounds() : Rectangle
-        {
-            var _loc_1:* = this.getTextLine(true);
-            if (!_loc_1)
-            {
-                return new Rectangle();
-            }
-            var _loc_2:* = this.paragraph.getAncestorWithContainer().computedFormat.blockProgression;
-            var _loc_3:* = this.x;
-            var _loc_4:* = this.createShapeY(_loc_2);
-            if (_loc_2 == BlockProgression.TB)
-            {
-                _loc_4 = _loc_4 + (this.descent - _loc_1.height);
-            }
-            return new Rectangle(_loc_3, _loc_4, _loc_1.width, _loc_1.height);
-        }// end function
-
-        private function setValidity(param1:String) : void
-        {
-            this.setFlag(_validities.indexOf(param1), VALIDITY_MASK);
-            return;
-        }// end function
-
-        public function get validity() : String
-        {
-            return _validities[this.getFlag(VALIDITY_MASK)];
-        }// end function
-
-        public function get unjustifiedTextWidth() : Number
-        {
-            var _loc_1:* = this.getTextLine(true);
-            return _loc_1.unjustifiedTextWidth + (this._outerTargetWidth - this.targetWidth);
-        }// end function
-
-        function get lineExtent() : Number
-        {
-            return this._lineExtent;
-        }// end function
-
-        function set lineExtent(param1:Number) : void
-        {
-            this._lineExtent = param1;
-            return;
-        }// end function
-
-        function get accumulatedLineExtent() : Number
-        {
-            return this._accumulatedLineExtent;
-        }// end function
-
-        function set accumulatedLineExtent(param1:Number) : void
-        {
-            this._accumulatedLineExtent = param1;
-            return;
-        }// end function
-
-        function get accumulatedMinimumStart() : Number
-        {
-            return this._accumulatedMinimumStart;
-        }// end function
-
-        function set accumulatedMinimumStart(param1:Number) : void
-        {
-            this._accumulatedMinimumStart = param1;
-            return;
-        }// end function
-
-        function get alignment() : String
-        {
-            return _alignments[this.getFlag(ALIGNMENT_MASK) >> ALIGNMENT_SHIFT];
-        }// end function
-
-        function set alignment(param1:String) : void
-        {
-            this.setFlag(_alignments.indexOf(param1) << ALIGNMENT_SHIFT, ALIGNMENT_MASK);
-            return;
-        }// end function
-
-        function isDamaged() : Boolean
-        {
-            return this.validity != TextLineValidity.VALID;
-        }// end function
-
-        function clearDamage() : void
-        {
-            this.setValidity(TextLineValidity.VALID);
-            return;
-        }// end function
-
-        function damage(param1:String) : void
-        {
-            var _loc_2:* = this.validity;
-            if (_loc_2 == param1 || _loc_2 == TextLineValidity.INVALID)
-            {
-                return;
-            }
-            this.setValidity(param1);
-            return;
-        }// end function
-
-        function isLineVisible(param1:String, param2:int, param3:int, param4:int, param5:int) : Boolean
-        {
-            if (param1 == BlockProgression.RL)
-            {
-                return this._boundsRightTW >= param2 && this._boundsLeftTW < param2 + param4;
-            }
-            return this._boundsRightTW >= param3 && this._boundsLeftTW < param3 + param5;
-        }// end function
-
-        function cacheLineBounds(param1:String, param2:Number, param3:Number, param4:Number, param5:Number) : void
-        {
-            if (param1 == BlockProgression.RL)
-            {
-                this._boundsLeftTW = Twips.to(param2);
-                this._boundsRightTW = Twips.to(param2 + param4);
+               numberLine.y=-numberLineWidth;
             }
             else
             {
-                this._boundsLeftTW = Twips.to(param3);
-                this._boundsRightTW = Twips.to(param3 + param5);
+               numberLine.y=totalWidth+numberLineWidth-numberLine.textWidth;
             }
-            return;
-        }// end function
+            numberLine.x=0;
+         }
+      }
 
-        function hasLineBounds() : Boolean
-        {
-            return this._boundsLeftTW <= this._boundsRightTW;
-        }// end function
+      private static var numberLineFactory:NumberLineFactory;
 
-        public function get textLineExists() : Boolean
-        {
-            return this.peekTextLine() != null;
-        }// end function
-
-        function peekTextLine() : TextLine
-        {
-            var _loc_1:* = null;
-            if (!this.paragraph)
-            {
-                return null;
-            }
-            var _loc_2:* = this.paragraph.peekTextBlock();
-            if (_loc_2)
-            {
-                _loc_1 = _loc_2.firstLine;
-                while (_loc_1)
-                {
-                    
-                    if (_loc_1.userData == this)
-                    {
-                        return _loc_1;
-                    }
-                    _loc_1 = _loc_1.nextLine;
-                }
-            }
-            return null;
-        }// end function
-
-        public function getTextLine(param1:Boolean = false) : TextLine
-        {
-            var _loc_2:* = this.peekTextLine();
-            if (_loc_2 && _loc_2.validity == FlowDamageType.GEOMETRY)
-            {
-                this.createShape(this.paragraph.getTextFlow().computedFormat.blockProgression, _loc_2);
-            }
-            else if (!_loc_2 || _loc_2.validity == TextLineValidity.INVALID && param1)
-            {
-                if (this.isDamaged() && this.validity != FlowDamageType.GEOMETRY)
-                {
-                    return null;
-                }
-                _loc_2 = this.getTextLineInternal();
-            }
-            return _loc_2;
-        }// end function
-
-        private function getTextLineInternal() : TextLine
-        {
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_1:* = this.paragraph.getAbsoluteStart();
-            var _loc_2:* = this.paragraph.getTextBlock();
-            var _loc_3:* = _loc_2.firstLine;
-            var _loc_4:* = this.paragraph.getTextFlow().flowComposer;
-            var _loc_5:* = this.paragraph.getTextFlow().flowComposer.findLineIndexAtPosition(_loc_1);
-            var _loc_6:* = null;
-            do
-            {
-                
-                _loc_8 = _loc_4.getLineAt(_loc_5);
-                if (_loc_3 != null && _loc_3.validity == TextLineValidity.VALID && (_loc_8 != this || _loc_3.userData == _loc_8))
-                {
-                    _loc_7 = _loc_3;
-                    _loc_3 = _loc_3.nextLine;
-                }
-                else
-                {
-                    _loc_7 = _loc_8.recreateTextLine(_loc_2, _loc_6);
-                    _loc_3 = null;
-                }
-                _loc_6 = _loc_7;
-                _loc_5++;
-            }while (_loc_8 != this)
-            return _loc_7;
-        }// end function
-
-        function recreateTextLine(param1:TextBlock, param2:TextLine) : TextLine
-        {
-            var _loc_3:* = null;
-            var _loc_8:* = null;
-            var _loc_10:* = NaN;
-            var _loc_11:* = 0;
-            var _loc_12:* = null;
-            var _loc_13:* = 0;
-            var _loc_14:* = null;
-            var _loc_4:* = this._para.getTextFlow();
-            var _loc_5:* = this._para.getTextFlow().computedFormat.blockProgression;
-            var _loc_6:* = _loc_4.flowComposer;
-            var _loc_7:* = _loc_4.flowComposer.swfContext ? (_loc_6.swfContext) : (BaseCompose.globalSWFContext);
-            var _loc_9:* = this._lineOffset;
-            if (this.hasNumberLine)
-            {
-                _loc_10 = this._lineOffset - this._para.computedFormat.textIndent;
-                _loc_8 = TextFlowLine.createNumberLine(this._para.getParentByType(ListItemElement) as ListItemElement, this._para, _loc_6.swfContext, _loc_10);
-                if (_loc_8)
-                {
-                    if (getNumberLineListStylePosition(_loc_8) == ListStylePosition.INSIDE)
-                    {
-                        _loc_9 = _loc_9 + getNumberLineInsideLineWidth(_loc_8);
-                    }
-                }
-            }
-            _loc_3 = TextLineRecycler.getLineForReuse();
-            if (_loc_3)
-            {
-                _loc_3 = _loc_7.callInContext(param1["recreateTextLine"], param1, [_loc_3, param2, this._targetWidth, _loc_9, true]);
-            }
-            else
-            {
-                _loc_3 = _loc_7.callInContext(param1.createTextLine, param1, [param2, this._targetWidth, _loc_9, true]);
-            }
-            _loc_3.x = this.x;
-            _loc_3.y = this.createShapeY(_loc_5);
-            _loc_3.doubleClickEnabled = true;
-            _loc_3.userData = this;
-            if (this._adornCount > 0)
-            {
-                _loc_11 = this._para.getAbsoluteStart();
-                _loc_12 = this._para.findLeaf(this.absoluteStart - _loc_11);
-                _loc_13 = _loc_12.getAbsoluteStart();
-                if (_loc_8)
-                {
-                    _loc_14 = this._para.getParentByType(ListItemElement) as ListItemElement;
-                    TextFlowLine.initializeNumberLinePosition(_loc_8, _loc_14, this._para, _loc_3.textWidth);
-                }
-                this.createAdornments(this._para.getAncestorWithContainer().computedFormat.blockProgression, _loc_12, _loc_13, _loc_3, _loc_8);
-                if (_loc_8 && getNumberLineListStylePosition(_loc_8) == ListStylePosition.OUTSIDE)
-                {
-                    if (_loc_5 == BlockProgression.TB)
-                    {
-                        _loc_8.x = this.numberLinePosition;
-                    }
-                    else
-                    {
-                        _loc_8.y = this.numberLinePosition;
-                    }
-                }
-            }
-            return _loc_3;
-        }// end function
-
-        function createShape(param1:String, param2:TextLine) : void
-        {
-            var _loc_3:* = this.x;
-            param2.x = _loc_3;
-            var _loc_4:* = this.createShapeY(param1);
-            param2.y = _loc_4;
-            return;
-        }// end function
-
-        private function createShapeY(param1:String) : Number
-        {
-            return param1 == BlockProgression.RL ? (this.y) : (this.y + this._ascent);
-        }// end function
-
-        function createAdornments(param1:String, param2:FlowLeafElement, param3:int, param4:TextLine, param5:TextLine) : void
-        {
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = undefined;
-            var _loc_6:* = this._absoluteStart + this._textLength;
-            this._adornCount = 0;
-            if (param5)
-            {
-                var _loc_10:* = this;
-                var _loc_11:* = this._adornCount + 1;
-                _loc_10._adornCount = _loc_11;
-                this.setFlag(NUMBERLINE_MASK, NUMBERLINE_MASK);
-                param4.addChild(param5);
-                if (getNumberLineBackground(param5) != null)
-                {
-                    _loc_7 = param2.getTextFlow().getBackgroundManager();
-                    if (_loc_7)
-                    {
-                        _loc_7.addNumberLine(param4, param5);
-                    }
-                }
-            }
-            else
-            {
-                this.setFlag(0, NUMBERLINE_MASK);
-            }
-            while (true)
-            {
-                
-                this._adornCount = this._adornCount + param2.updateAdornments(param4, param1);
-                _loc_8 = param2.format;
-                _loc_9 = _loc_8 ? (_loc_8.getStyle("imeStatus")) : (undefined);
-                if (_loc_9)
-                {
-                    param2.updateIMEAdornments(param4, param1, _loc_9 as String);
-                }
-                param3 = param3 + param2.textLength;
-                if (param3 >= _loc_6)
-                {
-                    break;
-                }
-                param2 = param2.getNextLeaf(this._para);
-            }
-            return;
-        }// end function
-
-        function getLineLeading(param1:String, param2:FlowLeafElement, param3:int) : Number
-        {
-            var _loc_6:* = NaN;
-            var _loc_4:* = this._absoluteStart + this._textLength;
-            var _loc_5:* = 0;
-            while (true)
-            {
-                
-                _loc_6 = param2.getEffectiveLineHeight(param1);
-                if (!_loc_6 && param2.textLength == this.textLength)
-                {
-                    _loc_6 = TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(param2.computedFormat.lineHeight, param2.computedFormat.fontSize);
-                }
-                _loc_5 = Math.max(_loc_5, _loc_6);
-                param3 = param3 + param2.textLength;
-                if (param3 >= _loc_4)
-                {
-                    break;
-                }
-                param2 = param2.getNextLeaf(this._para);
-            }
-            return _loc_5;
-        }// end function
-
-        function getLineTypographicAscent(param1:FlowLeafElement, param2:int, param3:TextLine) : Number
-        {
-            return getTextLineTypographicAscent(param3 ? (param3) : (this.getTextLine()), param1, param2, this.absoluteStart + this.textLength);
-        }// end function
-
-        function getCSSLineBox(param1:String, param2:FlowLeafElement, param3:int, param4:ISWFContext, param5:ITextLayoutFormat = null, param6:TextLine = null) : Rectangle
-        {
-            var lineBox:Rectangle;
-            var para:ParagraphElement;
-            var ef:ElementFormat;
-            var metrics:FontMetrics;
-            var bp:* = param1;
-            var elem:* = param2;
-            var elemStart:* = param3;
-            var swfContext:* = param4;
-            var effectiveListMarkerFormat:* = param5;
-            var numberLine:* = param6;
-            var addToLineBox:* = function (param1:Rectangle) : void
-            {
-                if (param1)
-                {
-                    lineBox = lineBox ? (lineBox.union(param1)) : (param1);
-                }
-                return;
-            }// end function
-            ;
-            var endPos:* = this._absoluteStart + this._textLength;
-            var textLine:* = this.getTextLine();
-            while (true)
-            {
-                
-                this.addToLineBox(elem.getCSSInlineBox(bp, textLine, this._para, swfContext));
-                elemStart = elemStart + elem.textLength;
-                if (elemStart >= endPos)
-                {
-                    break;
-                }
-                elem = elem.getNextLeaf(this._para);
-            }
-            if (effectiveListMarkerFormat && numberLine)
-            {
-                para;
-                ef = FlowLeafElement.computeElementFormatHelper(effectiveListMarkerFormat, para, swfContext);
-                metrics = swfContext ? (swfContext.callInContext(ef.getFontMetrics, ef, null, true)) : (ef.getFontMetrics());
-                this.addToLineBox(FlowLeafElement.getCSSInlineBoxHelper(effectiveListMarkerFormat, metrics, numberLine, para));
-            }
-            return lineBox;
-        }// end function
-
-        private function isTextlineSubsetOfSpan(param1:FlowLeafElement) : Boolean
-        {
-            var _loc_2:* = param1.getAbsoluteStart();
-            var _loc_3:* = _loc_2 + param1.textLength;
-            var _loc_4:* = this.absoluteStart;
-            var _loc_5:* = this.absoluteStart + this._textLength;
-            return _loc_2 <= _loc_4 && _loc_3 >= _loc_5;
-        }// end function
-
-        private function getSelectionShapesCacheEntry(param1:int, param2:int, param3:TextFlowLine, param4:TextFlowLine, param5:String) : SelectionCache
-        {
-            var _loc_12:* = null;
-            if (this.isDamaged())
-            {
-                return null;
-            }
-            var _loc_6:* = this._para.getAbsoluteStart();
-            if (param1 == param2 && _loc_6 + param1 == this.absoluteStart)
-            {
-                if (this.absoluteStart != (this._para.getTextFlow().textLength - 1))
-                {
-                    return null;
-                }
-                param2++;
-            }
-            var _loc_7:* = _selectionBlockCache[this];
-            if (_selectionBlockCache[this] && _loc_7.begIdx == param1 && _loc_7.endIdx == param2)
-            {
-                return _loc_7;
-            }
-            var _loc_8:* = new Array();
-            var _loc_9:* = new Array();
-            if (_loc_7 == null)
-            {
-                _loc_7 = new SelectionCache();
-                _selectionBlockCache[this] = _loc_7;
-            }
-            else
-            {
-                _loc_7.clear();
-            }
-            _loc_7.begIdx = param1;
-            _loc_7.endIdx = param2;
-            var _loc_10:* = this.getTextLine();
-            var _loc_11:* = this.getRomanSelectionHeightAndVerticalAdjustment(param3, param4);
-            this.calculateSelectionBounds(_loc_10, _loc_8, param1, param2, param5, _loc_11);
-            for each (_loc_12 in _loc_8)
-            {
-                
-                _loc_7.pushSelectionBlock(_loc_12);
-            }
-            return _loc_7;
-        }// end function
-
-        function calculateSelectionBounds(param1:TextLine, param2:Array, param3:int, param4:int, param5:String, param6:Array) : void
-        {
-            var _loc_15:* = 0;
-            var _loc_16:* = 0;
-            var _loc_17:* = null;
-            var _loc_18:* = null;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            var _loc_21:* = 0;
-            var _loc_22:* = null;
-            var _loc_23:* = 0;
-            var _loc_24:* = null;
-            var _loc_25:* = NaN;
-            var _loc_26:* = 0;
-            var _loc_27:* = null;
-            var _loc_28:* = null;
-            var _loc_29:* = 0;
-            var _loc_30:* = null;
-            var _loc_31:* = 0;
-            var _loc_32:* = null;
-            var _loc_33:* = null;
-            var _loc_34:* = null;
-            var _loc_35:* = 0;
-            var _loc_36:* = 0;
-            var _loc_7:* = this._para.computedFormat.direction;
-            var _loc_8:* = this._para.getAbsoluteStart();
-            var _loc_9:* = param3;
-            var _loc_10:* = null;
-            var _loc_11:* = 0;
-            var _loc_12:* = new Array();
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            while (_loc_9 < param4)
-            {
-                
-                _loc_10 = this._para.findLeaf(_loc_9);
-                if (_loc_10.textLength == 0)
-                {
-                    _loc_9++;
-                    continue;
-                }
-                else if (_loc_10 is InlineGraphicElement && (_loc_10 as InlineGraphicElement).computedFloat != Float.NONE)
-                {
-                    if (_loc_13 == null)
-                    {
-                        _loc_13 = new Array();
-                    }
-                    _loc_17 = _loc_10 as InlineGraphicElement;
-                    _loc_18 = this.controller.getFloatAtPosition(_loc_8 + _loc_9);
-                    if (_loc_18)
-                    {
-                        _loc_19 = new Rectangle(_loc_18.x - param1.x, _loc_18.y - param1.y, _loc_17.elementWidth, _loc_17.elementHeight);
-                        _loc_13.push(_loc_19);
-                    }
-                    _loc_9++;
-                    continue;
-                }
-                _loc_15 = _loc_10.textLength + _loc_10.getElementRelativeStart(this._para) - _loc_9;
-                _loc_16 = _loc_15 + _loc_9 > param4 ? (param4) : (_loc_15 + _loc_9);
-                if (param5 != BlockProgression.RL || param1.getAtomTextRotation(param1.getAtomIndexAtCharIndex(_loc_9)) != TextRotation.ROTATE_0)
-                {
-                    _loc_20 = this.makeSelectionBlocks(param1, _loc_9, _loc_16, _loc_8, param5, _loc_7, param6);
-                    _loc_21 = 0;
-                    while (_loc_21 < _loc_20.length)
-                    {
-                        
-                        _loc_12.push(_loc_20[_loc_21]);
-                        _loc_21++;
-                    }
-                }
-                else
-                {
-                    _loc_22 = _loc_10.getParentByType(TCYElement);
-                    _loc_23 = _loc_22.parentRelativeEnd;
-                    _loc_24 = _loc_22.getParentByType(SubParagraphGroupElementBase) as SubParagraphGroupElementBase;
-                    while (_loc_24)
-                    {
-                        
-                        _loc_23 = _loc_23 + _loc_24.parentRelativeStart;
-                        _loc_24 = _loc_24.getParentByType(SubParagraphGroupElementBase) as SubParagraphGroupElementBase;
-                    }
-                    _loc_25 = 0;
-                    _loc_26 = param4 < _loc_23 ? (param4) : (_loc_23);
-                    _loc_27 = new Array();
-                    while (_loc_9 < _loc_26)
-                    {
-                        
-                        _loc_10 = this._para.findLeaf(_loc_9);
-                        _loc_15 = _loc_10.textLength + _loc_10.getElementRelativeStart(this._para) - _loc_9;
-                        _loc_16 = _loc_15 + _loc_9 > param4 ? (param4) : (_loc_15 + _loc_9);
-                        _loc_28 = this.makeSelectionBlocks(param1, _loc_9, _loc_16, _loc_8, param5, _loc_7, param6);
-                        _loc_29 = 0;
-                        while (_loc_29 < _loc_28.length)
-                        {
-                            
-                            _loc_30 = _loc_28[_loc_29];
-                            if (_loc_30.height > _loc_25)
-                            {
-                                _loc_25 = _loc_30.height;
-                            }
-                            _loc_27.push(_loc_30);
-                            _loc_29++;
-                        }
-                        _loc_9 = _loc_16;
-                    }
-                    if (!_loc_14)
-                    {
-                        _loc_14 = new Array();
-                    }
-                    this.normalizeRects(_loc_27, _loc_14, _loc_25, BlockProgression.TB, _loc_7);
-                    continue;
-                }
-                _loc_9 = _loc_16;
-            }
-            if (_loc_12.length > 0 && _loc_8 + param3 == this.absoluteStart && _loc_8 + param4 == this.absoluteStart + this.textLength)
-            {
-                _loc_10 = this._para.findLeaf(param3);
-                if (_loc_10.getAbsoluteStart() + _loc_10.textLength < this.absoluteStart + this.textLength && _loc_16 >= 2)
-                {
-                    _loc_31 = this._para.getCharCodeAtPosition((_loc_16 - 1));
-                    if (_loc_31 != SpanElement.kParagraphTerminator.charCodeAt(0) && CharacterUtil.isWhitespace(_loc_31))
-                    {
-                        _loc_32 = this.makeSelectionBlocks(param1, (_loc_16 - 1), (_loc_16 - 1), _loc_8, param5, _loc_7, param6);
-                        _loc_33 = this.makeSelectionBlocks(param1, (_loc_16 - 1), (_loc_16 - 1), _loc_8, param5, _loc_7, param6)[(_loc_32.length - 1)];
-                        _loc_34 = _loc_12[(_loc_12.length - 1)] as Rectangle;
-                        if (param5 != BlockProgression.RL)
-                        {
-                            if (_loc_34.width == _loc_33.width)
-                            {
-                                _loc_12.pop();
-                            }
-                            else
-                            {
-                                _loc_34.width = _loc_34.width - _loc_33.width;
-                                if (_loc_7 == Direction.RTL)
-                                {
-                                    _loc_34.left = _loc_34.left - _loc_33.width;
-                                }
-                            }
-                        }
-                        else if (_loc_34.height == _loc_33.height)
-                        {
-                            _loc_12.pop();
-                        }
-                        else
-                        {
-                            _loc_34.height = _loc_34.height - _loc_33.height;
-                            if (_loc_7 == Direction.RTL)
-                            {
-                                _loc_34.top = _loc_34.top + _loc_33.height;
-                            }
-                        }
-                    }
-                }
-            }
-            this.normalizeRects(_loc_12, param2, _loc_11, param5, _loc_7);
-            if (_loc_14 && _loc_14.length > 0)
-            {
-                _loc_35 = 0;
-                while (_loc_35 < _loc_14.length)
-                {
-                    
-                    param2.push(_loc_14[_loc_35]);
-                    _loc_35++;
-                }
-            }
-            if (_loc_13)
-            {
-                _loc_36 = 0;
-                while (_loc_36 < _loc_13.length)
-                {
-                    
-                    param2.push(_loc_13[_loc_36]);
-                    _loc_36++;
-                }
-            }
-            return;
-        }// end function
-
-        private function createSelectionShapes(param1:Shape, param2:SelectionFormat, param3:DisplayObject, param4:int, param5:int, param6:TextFlowLine, param7:TextFlowLine) : void
-        {
-            var _loc_11:* = null;
-            var _loc_13:* = null;
-            var _loc_8:* = this._para.getAncestorWithContainer();
-            var _loc_9:* = this._para.getAncestorWithContainer().computedFormat.blockProgression;
-            var _loc_10:* = this.getSelectionShapesCacheEntry(param4, param5, param6, param7, _loc_9);
-            if (!this.getSelectionShapesCacheEntry(param4, param5, param6, param7, _loc_9))
-            {
-                return;
-            }
-            var _loc_12:* = param2.rangeColor;
-            if (this._para && this._para.getTextFlow())
-            {
-                _loc_13 = this._para.getTextFlow().interactionManager;
-                if (_loc_13 && _loc_13.anchorPosition == _loc_13.activePosition)
-                {
-                    _loc_12 = param2.pointColor;
-                }
-            }
-            for each (_loc_11 in _loc_10.selectionBlocks)
-            {
-                
-                _loc_11 = _loc_11.clone();
-                this.convertLineRectToContainer(_loc_11, true);
-                createSelectionRect(param1, _loc_12, _loc_11.x, _loc_11.y, _loc_11.width, _loc_11.height);
-            }
-            return;
-        }// end function
-
-        function getRomanSelectionHeightAndVerticalAdjustment(param1:TextFlowLine, param2:TextFlowLine) : Array
-        {
-            var _loc_5:* = false;
-            var _loc_6:* = false;
-            var _loc_7:* = NaN;
-            var _loc_8:* = NaN;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            if (ParagraphElement.useUpLeadingDirection(this._para.getEffectiveLeadingModel()))
-            {
-                _loc_3 = Math.max(this.height, this.textHeight);
-            }
-            else
-            {
-                _loc_5 = !param1 || param1.controller != this.controller || param1.columnIndex != this.columnIndex;
-                _loc_6 = !param2 || param2.controller != this.controller || param2.columnIndex != this.columnIndex || param2.paragraph.getEffectiveLeadingModel() == LeadingModel.ROMAN_UP;
-                if (_loc_6)
-                {
-                    if (!_loc_5)
-                    {
-                        _loc_3 = this.textHeight;
-                    }
-                    else
-                    {
-                        _loc_3 = Math.max(this.height, this.textHeight);
-                    }
-                }
-                else if (!_loc_5)
-                {
-                    _loc_3 = Math.max(param2.height, this.textHeight);
-                    _loc_4 = _loc_3 - this.textHeight;
-                }
-                else
-                {
-                    _loc_7 = this._descent - Math.max(this.height, this.textHeight);
-                    _loc_8 = Math.max(param2.height, this.textHeight) - this._ascent;
-                    _loc_3 = _loc_8 - _loc_7;
-                    _loc_4 = _loc_8 - this._descent;
-                }
-            }
-            if (!param1 || param1.columnIndex != this.columnIndex || param1.controller != this.controller)
-            {
-                _loc_3 = _loc_3 + this.descent;
-                _loc_4 = Math.floor(this.descent / 2);
-            }
-            return [_loc_3, _loc_4];
-        }// end function
-
-        private function makeSelectionBlocks(param1:TextLine, param2:int, param3:int, param4:int, param5:String, param6:String, param7:Array) : Array
-        {
-            var _loc_16:* = null;
-            var _loc_17:* = 0;
-            var _loc_18:* = 0;
-            var _loc_19:* = 0;
-            var _loc_20:* = 0;
-            var _loc_21:* = 0;
-            var _loc_22:* = 0;
-            var _loc_23:* = false;
-            var _loc_24:* = false;
-            var _loc_25:* = null;
-            var _loc_26:* = false;
-            var _loc_27:* = null;
-            var _loc_28:* = NaN;
-            var _loc_29:* = NaN;
-            var _loc_30:* = NaN;
-            var _loc_31:* = NaN;
-            var _loc_8:* = new Array();
-            var _loc_9:* = new Rectangle();
-            var _loc_10:* = this._para.findLeaf(param2);
-            var _loc_11:* = this._para.findLeaf(param2).getComputedFontMetrics().emBox;
-            if (!param1)
-            {
-                param1 = this.getTextLine(true);
-            }
-            var _loc_12:* = param1.getAtomIndexAtCharIndex(param2);
-            var _loc_13:* = this.adjustEndElementForBidi(param1, param2, param3, _loc_12, param6);
-            if (param6 == Direction.RTL && param1.getAtomBidiLevel(_loc_13) % 2 != 0)
-            {
-                if (_loc_13 == 0 && param2 < (param3 - 1))
-                {
-                    _loc_8 = this.makeSelectionBlocks(param1, param2, (param3 - 1), param4, param5, param6, param7);
-                    _loc_16 = this.makeSelectionBlocks(param1, (param3 - 1), (param3 - 1), param4, param5, param6, param7);
-                    _loc_17 = 0;
-                    while (_loc_17 < _loc_16.length)
-                    {
-                        
-                        _loc_8.push(_loc_16[_loc_17]);
-                        _loc_17++;
-                    }
-                    return _loc_8;
-                }
-            }
-            var _loc_14:* = _loc_12 != -1 ? (this.isAtomBidi(param1, _loc_12, param6)) : (false);
-            var _loc_15:* = _loc_13 != -1 ? (this.isAtomBidi(param1, _loc_13, param6)) : (false);
-            if (_loc_14 || _loc_15)
-            {
-                _loc_18 = param2;
-                _loc_19 = param2 != param3 ? (1) : (0);
-                _loc_20 = _loc_12;
-                _loc_21 = _loc_12;
-                _loc_22 = _loc_12;
-                _loc_23 = _loc_14;
-                do
-                {
-                    
-                    _loc_18 = _loc_18 + _loc_19;
-                    _loc_22 = param1.getAtomIndexAtCharIndex(_loc_18);
-                    _loc_24 = _loc_22 != -1 ? (this.isAtomBidi(param1, _loc_22, param6)) : (false);
-                    if (_loc_22 != -1 && _loc_24 != _loc_23)
-                    {
-                        _loc_9 = this.makeBlock(param1, _loc_18, _loc_20, _loc_21, _loc_11, param5, param6, param7);
-                        _loc_8.push(_loc_9);
-                        _loc_20 = _loc_22;
-                        _loc_21 = _loc_22;
-                        _loc_23 = _loc_24;
-                        continue;
-                    }
-                    if (_loc_18 == param3)
-                    {
-                        _loc_9 = this.makeBlock(param1, _loc_18, _loc_20, _loc_21, _loc_11, param5, param6, param7);
-                        _loc_8.push(_loc_9);
-                    }
-                    _loc_21 = _loc_22;
-                }while (_loc_18 < param3)
-            }
-            else
-            {
-                _loc_25 = _loc_10 as InlineGraphicElement;
-                if (!_loc_25 || _loc_25.effectiveFloat == Float.NONE || param2 == param3)
-                {
-                    _loc_9 = this.makeBlock(param1, param2, _loc_12, _loc_13, _loc_11, param5, param6, param7);
-                    if (_loc_25 && _loc_25.elementWidthWithMarginsAndPadding() != _loc_25.elementWidth)
-                    {
-                        _loc_26 = _loc_25.getTextFlow().computedFormat.blockProgression == BlockProgression.RL;
-                        _loc_27 = _loc_25.computedFormat;
-                        if (_loc_26)
-                        {
-                            _loc_28 = _loc_25.getEffectivePaddingTop();
-                            _loc_9.top = _loc_9.top + _loc_28;
-                            _loc_29 = _loc_25.getEffectivePaddingBottom();
-                            _loc_9.bottom = _loc_9.bottom - _loc_29;
-                        }
-                        else
-                        {
-                            _loc_30 = _loc_25.getEffectivePaddingLeft();
-                            _loc_9.left = _loc_9.left + _loc_30;
-                            _loc_31 = _loc_25.getEffectivePaddingRight();
-                            _loc_9.right = _loc_9.right - _loc_31;
-                        }
-                    }
-                }
-                else
-                {
-                    _loc_9 = _loc_25.graphic.getBounds(param1);
-                }
-                _loc_8.push(_loc_9);
-            }
-            return _loc_8;
-        }// end function
-
-        private function makeBlock(param1:TextLine, param2:int, param3:int, param4:int, param5:Rectangle, param6:String, param7:String, param8:Array) : Rectangle
-        {
-            var _loc_16:* = null;
-            var _loc_17:* = 0;
-            var _loc_9:* = new Rectangle();
-            var _loc_10:* = new Point(0, 0);
-            if (param3 > param4)
-            {
-                _loc_17 = param4;
-                param4 = param3;
-                param3 = _loc_17;
-            }
-            if (!param1)
-            {
-                param1 = this.getTextLine(true);
-            }
-            var _loc_11:* = param1.getAtomBounds(param3);
-            var _loc_12:* = param1.getAtomBounds(param4);
-            var _loc_13:* = this._para.getEffectiveJustificationRule();
-            if (param6 == BlockProgression.RL && param1.getAtomTextRotation(param3) != TextRotation.ROTATE_0)
-            {
-                _loc_10.y = _loc_11.y;
-                _loc_9.height = param3 != param4 ? (_loc_12.bottom - _loc_11.top) : (_loc_11.height);
-                if (_loc_13 == JustificationRule.EAST_ASIAN)
-                {
-                    _loc_9.width = _loc_11.width;
-                }
-                else
-                {
-                    _loc_9.width = param8[0];
-                    _loc_10.x = _loc_10.x - param8[1];
-                }
-            }
-            else
-            {
-                _loc_10.x = Math.min(_loc_11.x, _loc_12.x);
-                if (param6 == BlockProgression.RL)
-                {
-                    _loc_10.y = _loc_11.y + param5.width / 2;
-                }
-                if (_loc_13 != JustificationRule.EAST_ASIAN)
-                {
-                    _loc_9.height = param8[0];
-                    if (param6 == BlockProgression.RL)
-                    {
-                        _loc_10.x = _loc_10.x - param8[1];
-                    }
-                    else
-                    {
-                        _loc_10.y = _loc_10.y + param8[1];
-                    }
-                    _loc_9.width = param3 != param4 ? (Math.abs(_loc_12.right - _loc_11.left)) : (_loc_11.width);
-                }
-                else
-                {
-                    _loc_9.height = _loc_11.height;
-                    _loc_9.width = param3 != param4 ? (Math.abs(_loc_12.right - _loc_11.left)) : (_loc_11.width);
-                }
-            }
-            _loc_9.x = _loc_10.x;
-            _loc_9.y = _loc_10.y;
-            if (param6 == BlockProgression.RL)
-            {
-                if (param1.getAtomTextRotation(param3) != TextRotation.ROTATE_0)
-                {
-                    _loc_9.x = _loc_9.x - param1.descent;
-                }
-                else
-                {
-                    _loc_9.y = _loc_9.y - _loc_9.height / 2;
-                }
-            }
-            else
-            {
-                _loc_9.y = _loc_9.y + (param1.descent - _loc_9.height);
-            }
-            var _loc_14:* = param1.userData as TextFlowLine;
-            var _loc_15:* = this._para.findLeaf(param2);
-            if (!this._para.findLeaf(param2))
-            {
-                if (param2 < 0)
-                {
-                    _loc_15 = this._para.getFirstLeaf();
-                }
-                else if (param2 >= this._para.textLength)
-                {
-                    _loc_15 = this._para.getLastLeaf();
-                }
-                _loc_16 = _loc_15 ? (_loc_15.computedFormat.textRotation) : (TextRotation.ROTATE_0);
-            }
-            else
-            {
-                _loc_16 = _loc_15.computedFormat.textRotation;
-            }
-            if (_loc_16 == TextRotation.ROTATE_180 || _loc_16 == TextRotation.ROTATE_90)
-            {
-                if (param6 != BlockProgression.RL)
-                {
-                    _loc_9.y = _loc_9.y + _loc_9.height / 2;
-                }
-                else if (_loc_15.getParentByType(TCYElement) == null)
-                {
-                    if (_loc_16 == TextRotation.ROTATE_90)
-                    {
-                        _loc_9.x = _loc_9.x - _loc_9.width;
-                    }
-                    else
-                    {
-                        _loc_9.x = _loc_9.x - _loc_9.width * 0.75;
-                    }
-                }
-                else if (_loc_16 == TextRotation.ROTATE_90)
-                {
-                    _loc_9.y = _loc_9.y + _loc_9.height;
-                }
-                else
-                {
-                    _loc_9.y = _loc_9.y + _loc_9.height * 0.75;
-                }
-            }
-            return _loc_9;
-        }// end function
-
-        function convertLineRectToContainer(param1:Rectangle, param2:Boolean) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_3:* = this.getTextLine();
-            param1.x = param1.x + _loc_3.x;
-            param1.y = param1.y + _loc_3.y;
-            if (param2)
-            {
-                _loc_4 = this._para.getTextFlow();
-                _loc_5 = this.controller.columnState.getColumnAt(this.columnIndex);
-                constrainRectToColumn(_loc_4, param1, _loc_5, this.controller.horizontalScrollPosition, this.controller.verticalScrollPosition, this.controller.compositionWidth, this.controller.compositionHeight);
-            }
-            return;
-        }// end function
-
-        function hiliteBlockSelection(param1:Shape, param2:SelectionFormat, param3:DisplayObject, param4:int, param5:int, param6:TextFlowLine, param7:TextFlowLine) : void
-        {
-            if (this.isDamaged() || !this._controller)
-            {
-                return;
-            }
-            var _loc_8:* = this.peekTextLine();
-            if (!this.peekTextLine() || !_loc_8.parent)
-            {
-                return;
-            }
-            var _loc_9:* = this._para.getAbsoluteStart();
-            param4 = param4 - _loc_9;
-            param5 = param5 - _loc_9;
-            this.createSelectionShapes(param1, param2, param3, param4, param5, param6, param7);
-            return;
-        }// end function
-
-        function hilitePointSelection(param1:SelectionFormat, param2:int, param3:DisplayObject, param4:TextFlowLine, param5:TextFlowLine) : void
-        {
-            var _loc_6:* = this.computePointSelectionRectangle(param2, param3, param4, param5, true);
-            if (this.computePointSelectionRectangle(param2, param3, param4, param5, true))
-            {
-                this._controller.drawPointSelection(param1, _loc_6.x, _loc_6.y, _loc_6.width, _loc_6.height);
-            }
-            return;
-        }// end function
-
-        function computePointSelectionRectangle(param1:int, param2:DisplayObject, param3:TextFlowLine, param4:TextFlowLine, param5:Boolean) : Rectangle
-        {
-            var _loc_19:* = NaN;
-            var _loc_20:* = 0;
-            var _loc_21:* = null;
-            var _loc_22:* = null;
-            if (this.isDamaged() || !this._controller)
-            {
-                return null;
-            }
-            var _loc_6:* = this.peekTextLine();
-            if (!this.peekTextLine() || !_loc_6.parent)
-            {
-                return null;
-            }
-            param1 = param1 - this._para.getAbsoluteStart();
-            _loc_6 = this.getTextLine(true);
-            var _loc_7:* = param1;
-            var _loc_8:* = _loc_6.getAtomIndexAtCharIndex(param1);
-            var _loc_9:* = false;
-            var _loc_10:* = false;
-            var _loc_11:* = this._para.getAncestorWithContainer();
-            var _loc_12:* = this._para.getAncestorWithContainer().computedFormat.blockProgression;
-            var _loc_13:* = this._para.computedFormat.direction;
-            if (_loc_12 == BlockProgression.RL)
-            {
-                if (param1 == 0)
-                {
-                    if (_loc_6.getAtomTextRotation(0) == TextRotation.ROTATE_0)
-                    {
-                        _loc_10 = true;
-                    }
-                }
-                else
-                {
-                    _loc_20 = _loc_6.getAtomIndexAtCharIndex((param1 - 1));
-                    if (_loc_20 != -1)
-                    {
-                        if (_loc_6.getAtomTextRotation(_loc_8) == TextRotation.ROTATE_0 && _loc_6.getAtomTextRotation(_loc_20) != TextRotation.ROTATE_0)
-                        {
-                            _loc_8 = _loc_20;
-                            param1 = param1 - 1;
-                            _loc_9 = true;
-                        }
-                        else if (_loc_6.getAtomTextRotation(_loc_20) == TextRotation.ROTATE_0)
-                        {
-                            _loc_8 = _loc_20;
-                            param1 = param1 - 1;
-                            _loc_9 = true;
-                        }
-                    }
-                }
-            }
-            var _loc_14:* = this.getRomanSelectionHeightAndVerticalAdjustment(param3, param4);
-            var _loc_15:* = this.makeSelectionBlocks(_loc_6, param1, _loc_7, this._para.getAbsoluteStart(), _loc_12, _loc_13, _loc_14);
-            var _loc_16:* = this.makeSelectionBlocks(_loc_6, param1, _loc_7, this._para.getAbsoluteStart(), _loc_12, _loc_13, _loc_14)[0];
-            this.convertLineRectToContainer(_loc_16, param5);
-            var _loc_17:* = _loc_13 == Direction.RTL;
-            if (_loc_13 == Direction.RTL && _loc_6.getAtomBidiLevel(_loc_8) % 2 == 0 || !_loc_17 && _loc_6.getAtomBidiLevel(_loc_8) % 2 != 0)
-            {
-                _loc_17 = !_loc_17;
-            }
-            var _loc_18:* = param2.localToGlobal(localZeroPoint);
-            if (_loc_12 == BlockProgression.RL && _loc_6.getAtomTextRotation(_loc_8) != TextRotation.ROTATE_0)
-            {
-                _loc_21 = param2.localToGlobal(rlLocalOnePoint);
-                _loc_19 = _loc_18.y - _loc_21.y;
-                _loc_19 = _loc_19 == 0 ? (1) : (Math.abs(1 / _loc_19));
-                if (!_loc_17)
-                {
-                    setRectangleValues(_loc_16, _loc_16.x, !_loc_9 ? (_loc_16.y) : (_loc_16.y + _loc_16.height), _loc_16.width, _loc_19);
-                }
-                else
-                {
-                    setRectangleValues(_loc_16, _loc_16.x, !_loc_9 ? (_loc_16.y + _loc_16.height) : (_loc_16.y), _loc_16.width, _loc_19);
-                }
-            }
-            else
-            {
-                _loc_22 = param2.localToGlobal(localOnePoint);
-                _loc_19 = _loc_18.x - _loc_22.x;
-                _loc_19 = _loc_19 == 0 ? (1) : (Math.abs(1 / _loc_19));
-                if (!_loc_17)
-                {
-                    setRectangleValues(_loc_16, !_loc_9 ? (_loc_16.x) : (_loc_16.x + _loc_16.width), _loc_16.y, _loc_19, _loc_16.height);
-                }
-                else
-                {
-                    setRectangleValues(_loc_16, !_loc_9 ? (_loc_16.x + _loc_16.width) : (_loc_16.x), _loc_16.y, _loc_19, _loc_16.height);
-                }
-            }
-            return _loc_16;
-        }// end function
-
-        function selectionWillIntersectScrollRect(param1:Rectangle, param2:int, param3:int, param4:TextFlowLine, param5:TextFlowLine) : int
-        {
-            var _loc_9:* = null;
-            var _loc_10:* = 0;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_6:* = this._para.getAncestorWithContainer();
-            var _loc_7:* = this._para.getAncestorWithContainer().computedFormat.blockProgression;
-            var _loc_8:* = this.getTextLine(true);
-            if (param2 == param3)
-            {
-                _loc_9 = this.computePointSelectionRectangle(param2, DisplayObject(this.controller.container), param4, param5, false);
-                if (_loc_9)
-                {
-                    if (param1.containsRect(_loc_9))
-                    {
-                        return 2;
-                    }
-                    if (param1.intersects(_loc_9))
-                    {
-                        return 1;
-                    }
-                }
-            }
-            else
-            {
-                _loc_10 = this._para.getAbsoluteStart();
-                _loc_11 = this.getSelectionShapesCacheEntry(param2 - _loc_10, param3 - _loc_10, param4, param5, _loc_7);
-                if (_loc_11)
-                {
-                    for each (_loc_12 in _loc_11.selectionBlocks)
-                    {
-                        
-                        _loc_12 = _loc_12.clone();
-                        _loc_12.clone().x = _loc_12.x + _loc_8.x;
-                        _loc_12.y = _loc_12.y + _loc_8.y;
-                        if (param1.intersects(_loc_12))
-                        {
-                            if (_loc_7 == BlockProgression.RL)
-                            {
-                                if (_loc_12.left >= param1.left && _loc_12.right <= param1.right)
-                                {
-                                    return 2;
-                                }
-                            }
-                            else if (_loc_12.top >= param1.top && _loc_12.bottom <= param1.bottom)
-                            {
-                                return 2;
-                            }
-                            return 1;
-                        }
-                    }
-                }
-            }
-            return 0;
-        }// end function
-
-        private function normalizeRects(param1:Array, param2:Array, param3:Number, param4:String, param5:String) : void
-        {
-            var _loc_8:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            while (_loc_7 < param1.length)
-            {
-                
-                _loc_8 = param1[_loc_7++];
-                if (param4 == BlockProgression.RL)
-                {
-                    if (_loc_8.width < param3)
-                    {
-                        _loc_8.width = param3;
-                    }
-                }
-                else if (_loc_8.height < param3)
-                {
-                    _loc_8.height = param3;
-                }
-                if (_loc_6 == null)
-                {
-                    _loc_6 = _loc_8;
-                }
-                else if (param4 == BlockProgression.RL)
-                {
-                    if (_loc_6.y < _loc_8.y && _loc_6.y + _loc_6.height >= _loc_8.top && _loc_6.x == _loc_8.x)
-                    {
-                        _loc_6.height = _loc_6.height + _loc_8.height;
-                    }
-                    else if (_loc_8.y < _loc_6.y && _loc_6.y <= _loc_8.bottom && _loc_6.x == _loc_8.x)
-                    {
-                        _loc_6.height = _loc_6.height + _loc_8.height;
-                        _loc_6.y = _loc_8.y;
-                    }
-                    else
-                    {
-                        param2.push(_loc_6);
-                        _loc_6 = _loc_8;
-                    }
-                }
-                else if (_loc_6.x < _loc_8.x && _loc_6.x + _loc_6.width >= _loc_8.left && _loc_6.y == _loc_8.y)
-                {
-                    _loc_6.width = _loc_6.width + _loc_8.width;
-                }
-                else if (_loc_8.x < _loc_6.x && _loc_6.x <= _loc_8.right && _loc_6.y == _loc_8.y)
-                {
-                    _loc_6.width = _loc_6.width + _loc_8.width;
-                    _loc_6.x = _loc_8.x;
-                }
-                else
-                {
-                    param2.push(_loc_6);
-                    _loc_6 = _loc_8;
-                }
-                if (_loc_7 == param1.length)
-                {
-                    param2.push(_loc_6);
-                }
-            }
-            return;
-        }// end function
-
-        private function adjustEndElementForBidi(param1:TextLine, param2:int, param3:int, param4:int, param5:String) : int
-        {
-            var _loc_6:* = param4;
-            if (param3 != param2)
-            {
-                if ((param5 == Direction.LTR && param1.getAtomBidiLevel(param4) % 2 != 0 || param5 == Direction.RTL && param1.getAtomBidiLevel(param4) % 2 == 0) && param1.getAtomTextRotation(param4) != TextRotation.ROTATE_0)
-                {
-                    _loc_6 = param1.getAtomIndexAtCharIndex(param3);
-                }
-                else
-                {
-                    _loc_6 = param1.getAtomIndexAtCharIndex((param3 - 1));
-                }
-            }
-            if (_loc_6 == -1 && param3 > 0)
-            {
-                return this.adjustEndElementForBidi(param1, param2, (param3 - 1), param4, param5);
-            }
-            return _loc_6;
-        }// end function
-
-        private function isAtomBidi(param1:TextLine, param2:int, param3:String) : Boolean
-        {
-            if (!param1)
-            {
-                param1 = this.getTextLine(true);
-            }
-            return param1.getAtomBidiLevel(param2) % 2 != 0 && param3 == Direction.LTR || param1.getAtomBidiLevel(param2) % 2 == 0 && param3 == Direction.RTL;
-        }// end function
-
-        function get adornCount() : int
-        {
-            return this._adornCount;
-        }// end function
-
-        static function initializeNumberLinePosition(param1:TextLine, param2:ListItemElement, param3:ParagraphElement, param4:Number) : void
-        {
-            var _loc_5:* = param2.computedListMarkerFormat();
-            var _loc_6:* = param3.computedFormat;
-            var _loc_7:* = _loc_5.paragraphEndIndent === undefined || param2.computedFormat.listStylePosition == ListStylePosition.INSIDE ? (0) : (_loc_5.paragraphEndIndent == FormatValue.INHERIT ? (_loc_6.paragraphEndIndent) : (_loc_5.paragraphEndIndent));
-            TextFlowLine.setListEndIndent(param1, _loc_7);
-            if (param2.computedFormat.listStylePosition == ListStylePosition.OUTSIDE)
-            {
-                var _loc_10:* = 0;
-                param1.y = 0;
-                param1.x = _loc_10;
-                return;
-            }
-            var _loc_8:* = param3.getTextFlow().computedFormat.blockProgression;
-            var _loc_9:* = TextFlowLine.getNumberLineInsideLineWidth(param1);
-            if (_loc_8 == BlockProgression.TB)
-            {
-                if (_loc_6.direction == Direction.LTR)
-                {
-                    param1.x = -_loc_9;
-                }
-                else
-                {
-                    param1.x = param4 + _loc_9 - param1.textWidth;
-                }
-                param1.y = 0;
-            }
-            else
-            {
-                if (_loc_6.direction == Direction.LTR)
-                {
-                    param1.y = -_loc_9;
-                }
-                else
-                {
-                    param1.y = param4 + _loc_9 - param1.textWidth;
-                }
-                param1.x = 0;
-            }
-            return;
-        }// end function
-
-        static function createNumberLine(param1:ListItemElement, param2:ParagraphElement, param3:ISWFContext, param4:Number) : TextLine
-        {
-            var highestParentLinkLinkElement:LinkElement;
-            var key:String;
-            var rslt:Array;
-            var numberLine:TextLine;
-            var leaf:FlowLeafElement;
-            var val:*;
-            var listItemElement:* = param1;
-            var curParaElement:* = param2;
-            var swfContext:* = param3;
-            var totalStartIndent:* = param4;
-            if (numberLineFactory == null)
-            {
-                numberLineFactory = new NumberLineFactory();
-                numberLineFactory.compositionBounds = new Rectangle(0, 0, NaN, NaN);
-            }
-            numberLineFactory.swfContext = swfContext;
-            var listMarkerFormat:* = listItemElement.computedListMarkerFormat();
-            numberLineFactory.listStylePosition = listItemElement.computedFormat.listStylePosition;
-            var listElement:* = listItemElement.parent as ListElement;
-            var paragraphFormat:* = new TextLayoutFormat(curParaElement.computedFormat);
-            var boxStartIndent:* = paragraphFormat.direction == Direction.LTR ? (listElement.getEffectivePaddingLeft()) : (listElement.getEffectivePaddingRight());
-            paragraphFormat.apply(listMarkerFormat);
-            paragraphFormat.textIndent = paragraphFormat.textIndent + totalStartIndent;
-            if (numberLineFactory.listStylePosition == ListStylePosition.OUTSIDE)
-            {
-                paragraphFormat.textIndent = paragraphFormat.textIndent - boxStartIndent;
-            }
-            numberLineFactory.paragraphFormat = paragraphFormat;
-            numberLineFactory.textFlowFormat = curParaElement.getTextFlow().computedFormat;
-            var firstLeaf:* = curParaElement.getFirstLeaf();
-            var parentLink:* = firstLeaf.getParentByType(LinkElement) as LinkElement;
-            var linkStateArray:Array;
-            while (parentLink)
-            {
-                
-                highestParentLinkLinkElement = parentLink;
-                linkStateArray.push(parentLink.linkState);
-                parentLink.chgLinkState(LinkState.SUPPRESSED);
-                parentLink = parentLink.getParentByType(LinkElement) as LinkElement;
-            }
-            var spanFormat:* = new TextLayoutFormat(firstLeaf.computedFormat);
-            parentLink = firstLeaf.getParentByType(LinkElement) as LinkElement;
-            while (parentLink)
-            {
-                
-                linkStateArray.push(parentLink.linkState);
-                parentLink.chgLinkState(linkStateArray.shift());
-                parentLink = parentLink.getParentByType(LinkElement) as LinkElement;
-            }
-            if (highestParentLinkLinkElement)
-            {
-                leaf = highestParentLinkLinkElement.getFirstLeaf();
-                while (leaf)
-                {
-                    
-                    leaf = leaf.getNextLeaf(highestParentLinkLinkElement);
-                }
-            }
-            var markerFormat:* = new TextLayoutFormat(spanFormat);
-            TextLayoutFormat.resetModifiedNoninheritedStyles(markerFormat);
-            var holderStyles:* = (listMarkerFormat as TextLayoutFormat).getStyles();
-            var _loc_6:* = 0;
-            var _loc_7:* = holderStyles;
-            while (_loc_7 in _loc_6)
-            {
-                
-                key = _loc_7[_loc_6];
-                if (TextLayoutFormat.description[key] !== undefined)
-                {
-                    val = holderStyles[key];
-                    markerFormat[key] = val !== FormatValue.INHERIT ? (val) : (spanFormat[key]);
-                }
-            }
-            numberLineFactory.markerFormat = markerFormat;
-            numberLineFactory.text = listElement.computeListItemText(listItemElement, listMarkerFormat);
-            rslt;
-            numberLineFactory.createTextLines(function (param1:DisplayObject) : void
-            {
-                rslt.push(param1);
-                return;
-            }// end function
-            );
-            numberLine = rslt[0] as TextLine;
-            if (numberLine)
-            {
-                numberLine.mouseEnabled = false;
-                numberLine.mouseChildren = false;
-                setNumberLineBackground(numberLine, numberLineFactory.backgroundManager);
+      tlf_internal  static function createNumberLine(listItemElement:ListItemElement, curParaElement:ParagraphElement, swfContext:ISWFContext, totalStartIndent:Number) : TextLine {
+         var highestParentLinkLinkElement:LinkElement = null;
+         var key:String = null;
+         var rslt:Array = null;
+         var numberLine:TextLine = null;
+         var leaf:FlowLeafElement = null;
+         var val:* = undefined;
+         if(numberLineFactory==null)
+         {
+            numberLineFactory=new NumberLineFactory();
+            numberLineFactory.compositionBounds=new Rectangle(0,0,NaN,NaN);
+         }
+         numberLineFactory.swfContext=swfContext;
+         var listMarkerFormat:IListMarkerFormat = listItemElement.computedListMarkerFormat();
+         numberLineFactory.listStylePosition=listItemElement.computedFormat.listStylePosition;
+         var listElement:ListElement = listItemElement.parent as ListElement;
+         var paragraphFormat:TextLayoutFormat = new TextLayoutFormat(curParaElement.computedFormat);
+         var boxStartIndent:Number = paragraphFormat.direction==Direction.LTR?listElement.getEffectivePaddingLeft():listElement.getEffectivePaddingRight();
+         paragraphFormat.apply(listMarkerFormat);
+         paragraphFormat.textIndent=paragraphFormat.textIndent+totalStartIndent;
+         if(numberLineFactory.listStylePosition==ListStylePosition.OUTSIDE)
+         {
+            paragraphFormat.textIndent=paragraphFormat.textIndent-boxStartIndent;
+         }
+         numberLineFactory.paragraphFormat=paragraphFormat;
+         numberLineFactory.textFlowFormat=curParaElement.getTextFlow().computedFormat;
+         var firstLeaf:FlowLeafElement = curParaElement.getFirstLeaf();
+         var parentLink:LinkElement = firstLeaf.getParentByType(LinkElement) as LinkElement;
+         var linkStateArray:Array = [];
+         while(parentLink)
+         {
+            highestParentLinkLinkElement=parentLink;
+            linkStateArray.push(parentLink.linkState);
+            parentLink.chgLinkState(LinkState.SUPPRESSED);
+            parentLink=parentLink.getParentByType(LinkElement) as LinkElement;
+         }
+         var spanFormat:TextLayoutFormat = new TextLayoutFormat(firstLeaf.computedFormat);
+         parentLink=firstLeaf.getParentByType(LinkElement) as LinkElement;
+         while(parentLink)
+         {
+            linkStateArray.push(parentLink.linkState);
+            parentLink.chgLinkState(linkStateArray.shift());
+            parentLink=parentLink.getParentByType(LinkElement) as LinkElement;
+         }
+         if(highestParentLinkLinkElement)
+         {
+            leaf=highestParentLinkLinkElement.getFirstLeaf();
+            while(leaf)
+            {
+               leaf=leaf.getNextLeaf(highestParentLinkLinkElement);
+            }
+         }
+         var markerFormat:TextLayoutFormat = new TextLayoutFormat(spanFormat);
+         TextLayoutFormat.resetModifiedNoninheritedStyles(markerFormat);
+         var holderStyles:Object = (listMarkerFormat as TextLayoutFormat).getStyles();
+         for (key in holderStyles)
+         {
+            if(TextLayoutFormat.description[key]!==undefined)
+            {
+               val=holderStyles[key];
+               markerFormat[key]=val!==FormatValue.INHERIT?val:spanFormat[key];
+            }
+         }
+         numberLineFactory.markerFormat=markerFormat;
+         numberLineFactory.text=listElement.computeListItemText(listItemElement,listMarkerFormat);
+         rslt=[];
+         numberLineFactory.createTextLines(new function(o:DisplayObject):void
+         {
+            rslt.push(o);
+            });
+            numberLine=rslt[0] as TextLine;
+            if(numberLine)
+            {
+               numberLine.mouseEnabled=false;
+               numberLine.mouseChildren=false;
+               setNumberLineBackground(numberLine,numberLineFactory.backgroundManager);
             }
             numberLineFactory.clearBackgroundManager();
             return numberLine;
-        }// end function
+      }
 
-        static function getTextLineTypographicAscent(param1:TextLine, param2:FlowLeafElement, param3:int, param4:int) : Number
-        {
-            var _loc_5:* = param1.getBaselinePosition(TextBaseline.ROMAN) - param1.getBaselinePosition(TextBaseline.ASCENT);
-            if (param1.hasGraphicElement)
+      tlf_internal  static function getTextLineTypographicAscent(textLine:TextLine, elem:FlowLeafElement, elemStart:int, textLineEnd:int) : Number {
+         var rslt:Number = textLine.getBaselinePosition(TextBaseline.ROMAN)-textLine.getBaselinePosition(TextBaseline.ASCENT);
+         if(textLine.hasGraphicElement)
+         {
+            while(true)
             {
-                while (true)
-                {
-                    
-                    if (param2 is InlineGraphicElement)
-                    {
-                        _loc_5 = Math.max(_loc_5, InlineGraphicElement(param2).getTypographicAscent(param1));
-                    }
-                    param3 = param3 + param2.textLength;
-                    if (param3 >= param4)
-                    {
-                        break;
-                    }
-                    param2 = param2.getNextLeaf();
-                }
+               if(elem is InlineGraphicElement)
+               {
+                  rslt=Math.max(rslt,InlineGraphicElement(elem).getTypographicAscent(textLine));
+               }
+               elemStart=elemStart+elem.textLength;
             }
-            return _loc_5;
-        }// end function
+         }
+         return rslt;
+      }
 
-        private static function createSelectionRect(param1:Shape, param2:uint, param3:Number, param4:Number, param5:Number, param6:Number) : DisplayObject
-        {
-            param1.graphics.beginFill(param2);
-            var _loc_7:* = new Vector.<int>;
-            var _loc_8:* = new Vector.<Number>;
-            _loc_7.push(GraphicsPathCommand.MOVE_TO);
-            _loc_8.push(param3);
-            _loc_8.push(param4);
-            _loc_7.push(GraphicsPathCommand.LINE_TO);
-            _loc_8.push(param3 + param5);
-            _loc_8.push(param4);
-            _loc_7.push(GraphicsPathCommand.LINE_TO);
-            _loc_8.push(param3 + param5);
-            _loc_8.push(param4 + param6);
-            _loc_7.push(GraphicsPathCommand.LINE_TO);
-            _loc_8.push(param3);
-            _loc_8.push(param4 + param6);
-            _loc_7.push(GraphicsPathCommand.LINE_TO);
-            _loc_8.push(param3);
-            _loc_8.push(param4);
-            param1.graphics.drawPath(_loc_7, _loc_8, GraphicsPathWinding.NON_ZERO);
-            return param1;
-        }// end function
+      private static function createSelectionRect(selObj:Shape, color:uint, x:Number, y:Number, width:Number, height:Number) : DisplayObject {
+         selObj.graphics.beginFill(color);
+         var cmds:Vector.<int> = new Vector.<int>();
+         var pathPoints:Vector.<Number> = new Vector.<Number>();
+         cmds.push(GraphicsPathCommand.MOVE_TO);
+         pathPoints.push(x);
+         pathPoints.push(y);
+         cmds.push(GraphicsPathCommand.LINE_TO);
+         pathPoints.push(x+width);
+         pathPoints.push(y);
+         cmds.push(GraphicsPathCommand.LINE_TO);
+         pathPoints.push(x+width);
+         pathPoints.push(y+height);
+         cmds.push(GraphicsPathCommand.LINE_TO);
+         pathPoints.push(x);
+         pathPoints.push(y+height);
+         cmds.push(GraphicsPathCommand.LINE_TO);
+         pathPoints.push(x);
+         pathPoints.push(y);
+         selObj.graphics.drawPath(cmds,pathPoints,GraphicsPathWinding.NON_ZERO);
+         return selObj;
+      }
 
-        static function constrainRectToColumn(param1:TextFlow, param2:Rectangle, param3:Rectangle, param4:Number, param5:Number, param6:Number, param7:Number) : void
-        {
-            if (param1.computedFormat.lineBreak == LineBreak.EXPLICIT)
-            {
-                return;
-            }
-            var _loc_8:* = param1.computedFormat.blockProgression;
-            var _loc_9:* = param1.computedFormat.direction;
-            if (_loc_8 == BlockProgression.TB && !isNaN(param6))
-            {
-                if (_loc_9 == Direction.LTR)
-                {
-                    if (param2.left > param3.x + param3.width + param4)
-                    {
-                        param2.left = param3.x + param3.width + param4;
-                    }
-                    if (param2.right > param3.x + param3.width + param4)
-                    {
-                        param2.right = param3.x + param3.width + param4;
-                    }
-                }
-                else
-                {
-                    if (param2.right < param3.x + param4)
-                    {
-                        param2.right = param3.x + param4;
-                    }
-                    if (param2.left < param3.x + param4)
-                    {
-                        param2.left = param3.x + param4;
-                    }
-                }
-            }
-            else if (_loc_8 == BlockProgression.RL && !isNaN(param7))
-            {
-                if (_loc_9 == Direction.LTR)
-                {
-                    if (param2.top > param3.y + param3.height + param5)
-                    {
-                        param2.top = param3.y + param3.height + param5;
-                    }
-                    if (param2.bottom > param3.y + param3.height + param5)
-                    {
-                        param2.bottom = param3.y + param3.height + param5;
-                    }
-                }
-                else
-                {
-                    if (param2.bottom < param3.y + param5)
-                    {
-                        param2.bottom = param3.y + param5;
-                    }
-                    if (param2.top < param3.y + param5)
-                    {
-                        param2.top = param3.y + param5;
-                    }
-                }
-            }
+      tlf_internal  static function constrainRectToColumn(tf:TextFlow, rect:Rectangle, columnRect:Rectangle, hScrollPos:Number, vScrollPos:Number, compositionWidth:Number, compositionHeight:Number) : void {
+         if(tf.computedFormat.lineBreak==LineBreak.EXPLICIT)
+         {
             return;
-        }// end function
-
-        private static function setRectangleValues(param1:Rectangle, param2:Number, param3:Number, param4:Number, param5:Number) : void
-        {
-            param1.x = param2;
-            param1.y = param3;
-            param1.width = param4;
-            param1.height = param5;
-            return;
-        }// end function
-
-        static function findNumberLine(param1:TextLine) : TextLine
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = 0;
-            while (_loc_2 < param1.numChildren)
+         }
+         var bp:String = tf.computedFormat.blockProgression;
+         var direction:String = tf.computedFormat.direction;
+         if((bp==BlockProgression.TB)&&(!isNaN(compositionWidth)))
+         {
+            if(direction==Direction.LTR)
             {
-                
-                _loc_3 = param1.getChildAt(_loc_2) as TextLine;
-                if (_loc_3 && _loc_3.userData is NumberLineUserData)
-                {
-                    break;
-                }
-                _loc_2++;
+               if(rect.left>columnRect.x+columnRect.width+hScrollPos)
+               {
+                  rect.left=columnRect.x+columnRect.width+hScrollPos;
+               }
+               if(rect.right>columnRect.x+columnRect.width+hScrollPos)
+               {
+                  rect.right=columnRect.x+columnRect.width+hScrollPos;
+               }
             }
-            return _loc_3;
-        }// end function
+            else
+            {
+               if(rect.right<columnRect.x+hScrollPos)
+               {
+                  rect.right=columnRect.x+hScrollPos;
+               }
+               if(rect.left<columnRect.x+hScrollPos)
+               {
+                  rect.left=columnRect.x+hScrollPos;
+               }
+            }
+         }
+         else
+         {
+            if((bp==BlockProgression.RL)&&(!isNaN(compositionHeight)))
+            {
+               if(direction==Direction.LTR)
+               {
+                  if(rect.top>columnRect.y+columnRect.height+vScrollPos)
+                  {
+                     rect.top=columnRect.y+columnRect.height+vScrollPos;
+                  }
+                  if(rect.bottom>columnRect.y+columnRect.height+vScrollPos)
+                  {
+                     rect.bottom=columnRect.y+columnRect.height+vScrollPos;
+                  }
+               }
+               else
+               {
+                  if(rect.bottom<columnRect.y+vScrollPos)
+                  {
+                     rect.bottom=columnRect.y+vScrollPos;
+                  }
+                  if(rect.top<columnRect.y+vScrollPos)
+                  {
+                     rect.top=columnRect.y+vScrollPos;
+                  }
+               }
+            }
+         }
+      }
 
-        static function getNumberLineListStylePosition(param1:TextLine) : String
-        {
-            return (param1.userData as NumberLineUserData).listStylePosition;
-        }// end function
+      private static function setRectangleValues(rect:Rectangle, x:Number, y:Number, width:Number, height:Number) : void {
+         rect.x=x;
+         rect.y=y;
+         rect.width=width;
+         rect.height=height;
+      }
 
-        static function getNumberLineInsideLineWidth(param1:TextLine) : Number
-        {
-            return (param1.userData as NumberLineUserData).insideLineWidth;
-        }// end function
+      private static const localZeroPoint:Point = new Point(0,0);
 
-        static function getNumberLineSpanFormat(param1:TextLine) : ITextLayoutFormat
-        {
-            return (param1.userData as NumberLineUserData).spanFormat;
-        }// end function
+      private static const localOnePoint:Point = new Point(1,0);
 
-        static function getNumberLineParagraphDirection(param1:TextLine) : String
-        {
-            return (param1.userData as NumberLineUserData).paragraphDirection;
-        }// end function
+      private static const rlLocalOnePoint:Point = new Point(0,1);
 
-        static function setListEndIndent(param1:TextLine, param2:Number) : void
-        {
-            (param1.userData as NumberLineUserData).listEndIndent = param2;
+      tlf_internal  static function findNumberLine(textLine:TextLine) : TextLine {
+         var numberLine:TextLine = null;
+         var idx:int = 0;
+         while(idx<textLine.numChildren)
+         {
+            numberLine=textLine.getChildAt(idx) as TextLine;
+            if((numberLine)&&(numberLine.userData is NumberLineUserData))
+            {
+            }
+            else
+            {
+               idx++;
+               continue;
+            }
+         }
+      }
+
+      tlf_internal  static function getNumberLineListStylePosition(numberLine:TextLine) : String {
+         return (numberLine.userData as NumberLineUserData).listStylePosition;
+      }
+
+      tlf_internal  static function getNumberLineInsideLineWidth(numberLine:TextLine) : Number {
+         return (numberLine.userData as NumberLineUserData).insideLineWidth;
+      }
+
+      tlf_internal  static function getNumberLineSpanFormat(numberLine:TextLine) : ITextLayoutFormat {
+         return (numberLine.userData as NumberLineUserData).spanFormat;
+      }
+
+      tlf_internal  static function getNumberLineParagraphDirection(numberLine:TextLine) : String {
+         return (numberLine.userData as NumberLineUserData).paragraphDirection;
+      }
+
+      tlf_internal  static function setListEndIndent(numberLine:TextLine, listEndIndent:Number) : void {
+         (numberLine.userData as NumberLineUserData).listEndIndent=listEndIndent;
+      }
+
+      tlf_internal  static function getListEndIndent(numberLine:TextLine) : Number {
+         return (numberLine.userData as NumberLineUserData).listEndIndent;
+      }
+
+      tlf_internal  static function setNumberLineBackground(numberLine:TextLine, background:BackgroundManager) : void {
+         (numberLine.userData as NumberLineUserData).backgroundManager=background;
+      }
+
+      tlf_internal  static function getNumberLineBackground(numberLine:TextLine) : BackgroundManager {
+         return (numberLine.userData as NumberLineUserData).backgroundManager;
+      }
+
+      private var _absoluteStart:int;
+
+      private var _textLength:int;
+
+      private var _x:Number = 0;
+
+      private var _y:Number = 0;
+
+      private var _height:Number = 0;
+
+      private var _outerTargetWidth:Number = 0;
+
+      private var _boundsLeftTW:int = 2;
+
+      private var _boundsRightTW:int = 1;
+
+      private var _para:ParagraphElement;
+
+      private var _controller:ContainerController;
+
+      private var _columnIndex:int;
+
+      private var _adornCount:int = 0;
+
+      private var _flags:uint;
+
+      private var _ascent:Number;
+
+      private var _descent:Number;
+
+      private var _targetWidth:Number;
+
+      private var _lineOffset:Number;
+
+      private var _lineExtent:Number;
+
+      private var _accumulatedLineExtent:Number;
+
+      private var _accumulatedMinimumStart:Number;
+
+      private var _numberLinePosition:int;
+
+      tlf_internal function initialize(paragraph:ParagraphElement, outerTargetWidth:Number=0, lineOffset:Number=0, absoluteStart:int=0, numChars:int=0, textLine:TextLine=null) : void {
+         this._para=paragraph;
+         this._outerTargetWidth=outerTargetWidth;
+         this._absoluteStart=absoluteStart;
+         this._textLength=numChars;
+         this._adornCount=0;
+         this._lineExtent=0;
+         this._accumulatedLineExtent=0;
+         this._accumulatedMinimumStart=TextLine.MAX_LINE_WIDTH;
+         this._flags=0;
+         this._controller=null;
+         if(textLine)
+         {
+            textLine.userData=this;
+            this._targetWidth=textLine.specifiedWidth;
+            this._ascent=textLine.ascent;
+            this._descent=textLine.descent;
+            this._lineOffset=lineOffset;
+            this.setValidity(textLine.validity);
+            this.setFlag(textLine.hasGraphicElement?GRAPHICELEMENT_MASK:0,GRAPHICELEMENT_MASK);
+         }
+         else
+         {
+            this.setValidity(TextLineValidity.INVALID);
+         }
+      }
+
+      private function setFlag(value:uint, mask:uint) : void {
+         this._flags=this._flags&~mask|value;
+      }
+
+      private function getFlag(mask:uint) : uint {
+         return this._flags&mask;
+      }
+
+      tlf_internal function get heightTW() : int {
+         return Twips.to(this._height);
+      }
+
+      tlf_internal function get outerTargetWidthTW() : int {
+         return Twips.to(this._outerTargetWidth);
+      }
+
+      tlf_internal function get ascentTW() : int {
+         return Twips.to(this._ascent);
+      }
+
+      tlf_internal function get targetWidthTW() : int {
+         return Twips.to(this._targetWidth);
+      }
+
+      tlf_internal function get textHeightTW() : int {
+         return Twips.to(this.textHeight);
+      }
+
+      tlf_internal function get lineOffsetTW() : int {
+         return Twips.to(this._lineOffset);
+      }
+
+      tlf_internal function get lineExtentTW() : int {
+         return Twips.to(this._lineExtent);
+      }
+
+      tlf_internal function get hasGraphicElement() : Boolean {
+         return !(this.getFlag(GRAPHICELEMENT_MASK)==0);
+      }
+
+      tlf_internal function get hasNumberLine() : Boolean {
+         return !(this.getFlag(NUMBERLINE_MASK)==0);
+      }
+
+      tlf_internal function get numberLinePosition() : Number {
+         return Twips.from(this._numberLinePosition);
+      }
+
+      tlf_internal function set numberLinePosition(position:Number) : void {
+         this._numberLinePosition=Twips.to(position);
+      }
+
+      public function get textHeight() : Number {
+         return this._ascent+this._descent;
+      }
+
+      public function get x() : Number {
+         return this._x;
+      }
+
+      public function set x(lineX:Number) : void {
+         this._x=lineX;
+         this._boundsLeftTW=2;
+         this._boundsRightTW=1;
+      }
+
+      tlf_internal function get xTW() : int {
+         return Twips.to(this._x);
+      }
+
+      public function get y() : Number {
+         return this._y;
+      }
+
+      tlf_internal function get yTW() : int {
+         return Twips.to(this._y);
+      }
+
+      public function set y(lineY:Number) : void {
+         this._y=lineY;
+         this._boundsLeftTW=2;
+         this._boundsRightTW=1;
+      }
+
+      tlf_internal function setXYAndHeight(lineX:Number, lineY:Number, lineHeight:Number) : void {
+         this._x=lineX;
+         this._y=lineY;
+         this._height=lineHeight;
+         this._boundsLeftTW=2;
+         this._boundsRightTW=1;
+      }
+
+      public function get location() : int {
+         var lineStart:* = 0;
+         if(this._para)
+         {
+            lineStart=this._absoluteStart-this._para.getAbsoluteStart();
+            if(lineStart==0)
+            {
+               return this._textLength==this._para.textLength?TextFlowLineLocation.ONLY:TextFlowLineLocation.FIRST;
+            }
+            if(lineStart+this.textLength==this._para.textLength)
+            {
+               return TextFlowLineLocation.LAST;
+            }
+         }
+         return TextFlowLineLocation.MIDDLE;
+      }
+
+      public function get controller() : ContainerController {
+         return this._controller;
+      }
+
+      public function get columnIndex() : int {
+         return this._columnIndex;
+      }
+
+      tlf_internal function setController(cont:ContainerController, colNumber:int) : void {
+         this._controller=cont as ContainerController;
+         this._columnIndex=colNumber;
+      }
+
+      public function get height() : Number {
+         return this._height;
+      }
+
+      public function get ascent() : Number {
+         return this._ascent;
+      }
+
+      public function get descent() : Number {
+         return this._descent;
+      }
+
+      public function get lineOffset() : Number {
+         return this._lineOffset;
+      }
+
+      public function get paragraph() : ParagraphElement {
+         return this._para;
+      }
+
+      public function get absoluteStart() : int {
+         return this._absoluteStart;
+      }
+
+      tlf_internal function setAbsoluteStart(val:int) : void {
+         this._absoluteStart=val;
+      }
+
+      public function get textLength() : int {
+         return this._textLength;
+      }
+
+      tlf_internal function setTextLength(val:int) : void {
+         this._textLength=val;
+         this.damage(TextLineValidity.INVALID);
+      }
+
+      public function get spaceBefore() : Number {
+         return this.location&TextFlowLineLocation.FIRST?this._para.computedFormat.paragraphSpaceBefore:0;
+      }
+
+      public function get spaceAfter() : Number {
+         return this.location&TextFlowLineLocation.LAST?this._para.computedFormat.paragraphSpaceAfter:0;
+      }
+
+      tlf_internal function get outerTargetWidth() : Number {
+         return this._outerTargetWidth;
+      }
+
+      tlf_internal function set outerTargetWidth(val:Number) : void {
+         this._outerTargetWidth=val;
+      }
+
+      tlf_internal function get targetWidth() : Number {
+         return this._targetWidth;
+      }
+
+      public function getBounds() : Rectangle {
+         var textLine:TextLine = this.getTextLine(true);
+         if(!textLine)
+         {
+            return new Rectangle();
+         }
+         var bp:String = this.paragraph.getAncestorWithContainer().computedFormat.blockProgression;
+         var shapeX:Number = this.x;
+         var shapeY:Number = this.createShapeY(bp);
+         if(bp==BlockProgression.TB)
+         {
+            shapeY=shapeY+(this.descent-textLine.height);
+         }
+         return new Rectangle(shapeX,shapeY,textLine.width,textLine.height);
+      }
+
+      private function setValidity(value:String) : void {
+         this.setFlag(_validities.indexOf(value),VALIDITY_MASK);
+      }
+
+      public function get validity() : String {
+         return _validities[this.getFlag(VALIDITY_MASK)];
+      }
+
+      public function get unjustifiedTextWidth() : Number {
+         var textLine:TextLine = this.getTextLine(true);
+         return textLine.unjustifiedTextWidth+(this._outerTargetWidth-this.targetWidth);
+      }
+
+      tlf_internal function get lineExtent() : Number {
+         return this._lineExtent;
+      }
+
+      tlf_internal function set lineExtent(value:Number) : void {
+         this._lineExtent=value;
+      }
+
+      tlf_internal function get accumulatedLineExtent() : Number {
+         return this._accumulatedLineExtent;
+      }
+
+      tlf_internal function set accumulatedLineExtent(value:Number) : void {
+         this._accumulatedLineExtent=value;
+      }
+
+      tlf_internal function get accumulatedMinimumStart() : Number {
+         return this._accumulatedMinimumStart;
+      }
+
+      tlf_internal function set accumulatedMinimumStart(value:Number) : void {
+         this._accumulatedMinimumStart=value;
+      }
+
+      tlf_internal function get alignment() : String {
+         return _alignments[this.getFlag(ALIGNMENT_MASK)>>ALIGNMENT_SHIFT];
+      }
+
+      tlf_internal function set alignment(value:String) : void {
+         this.setFlag(_alignments.indexOf(value)<<ALIGNMENT_SHIFT,ALIGNMENT_MASK);
+      }
+
+      tlf_internal function isDamaged() : Boolean {
+         return !(this.validity==TextLineValidity.VALID);
+      }
+
+      tlf_internal function clearDamage() : void {
+         this.setValidity(TextLineValidity.VALID);
+      }
+
+      tlf_internal function damage(damageType:String) : void {
+         var current:String = this.validity;
+         if((current==damageType)||(current==TextLineValidity.INVALID))
+         {
             return;
-        }// end function
+         }
+         this.setValidity(damageType);
+      }
 
-        static function getListEndIndent(param1:TextLine) : Number
-        {
-            return (param1.userData as NumberLineUserData).listEndIndent;
-        }// end function
+      tlf_internal function isLineVisible(wmode:String, x:int, y:int, w:int, h:int) : Boolean {
+         if(wmode==BlockProgression.RL)
+         {
+            return (this._boundsRightTW>=x)&&(this._boundsLeftTW>x+w);
+         }
+         return (this._boundsRightTW>=y)&&(this._boundsLeftTW>y+h);
+      }
 
-        static function setNumberLineBackground(param1:TextLine, param2:BackgroundManager) : void
-        {
-            (param1.userData as NumberLineUserData).backgroundManager = param2;
+      tlf_internal function cacheLineBounds(wmode:String, bndsx:Number, bndsy:Number, bndsw:Number, bndsh:Number) : void {
+         if(wmode==BlockProgression.RL)
+         {
+            this._boundsLeftTW=Twips.to(bndsx);
+            this._boundsRightTW=Twips.to(bndsx+bndsw);
+         }
+         else
+         {
+            this._boundsLeftTW=Twips.to(bndsy);
+            this._boundsRightTW=Twips.to(bndsy+bndsh);
+         }
+      }
+
+      tlf_internal function hasLineBounds() : Boolean {
+         return this._boundsLeftTW<=this._boundsRightTW;
+      }
+
+      public function get textLineExists() : Boolean {
+         return !(this.peekTextLine()==null);
+      }
+
+      tlf_internal function peekTextLine() : TextLine {
+         var textLine:TextLine = null;
+         if(!this.paragraph)
+         {
+            return null;
+         }
+         var textBlock:TextBlock = this.paragraph.peekTextBlock();
+         if(textBlock)
+         {
+            textLine=textBlock.firstLine;
+            while(textLine)
+            {
+               if(textLine.userData==this)
+               {
+                  return textLine;
+               }
+               textLine=textLine.nextLine;
+            }
+         }
+         return null;
+      }
+
+      public function getTextLine(forceValid:Boolean=false) : TextLine {
+         var textLine:TextLine = this.peekTextLine();
+         if((textLine)&&(textLine.validity==FlowDamageType.GEOMETRY))
+         {
+            this.createShape(this.paragraph.getTextFlow().computedFormat.blockProgression,textLine);
+         }
+         else
+         {
+            if((!textLine)||(textLine.validity==TextLineValidity.INVALID)&&(forceValid))
+            {
+               if((this.isDamaged())&&(!(this.validity==FlowDamageType.GEOMETRY)))
+               {
+                  return null;
+               }
+               textLine=this.getTextLineInternal();
+            }
+         }
+         return textLine;
+      }
+
+      private function getTextLineInternal() : TextLine {
+         var textLine:TextLine = null;
+         var line:TextFlowLine = null;
+         var paraAbsStart:int = this.paragraph.getAbsoluteStart();
+         var textBlock:TextBlock = this.paragraph.getTextBlock();
+         var currentLine:TextLine = textBlock.firstLine;
+         var flowComposer:IFlowComposer = this.paragraph.getTextFlow().flowComposer;
+         var lineIndex:int = flowComposer.findLineIndexAtPosition(paraAbsStart);
+         var previousLine:TextLine = null;
+         line=flowComposer.getLineAt(lineIndex);
+         while(true)
+         {
+            if((!(currentLine==null))&&(currentLine.validity==TextLineValidity.VALID)&&((!(line==this))||(currentLine.userData==line)))
+            {
+               textLine=currentLine;
+               currentLine=currentLine.nextLine;
+            }
+            else
+            {
+               textLine=line.recreateTextLine(textBlock,previousLine);
+               currentLine=null;
+            }
+            previousLine=textLine;
+            lineIndex++;
+            if(line==this)
+            {
+               return textLine;
+            }
+            line=flowComposer.getLineAt(lineIndex);
+            continue loop0;
+         }
+      }
+
+      tlf_internal function recreateTextLine(textBlock:TextBlock, previousLine:TextLine) : TextLine {
+         var textLine:TextLine = null;
+         var numberLine:TextLine = null;
+         var boxStartTotalIndent:* = NaN;
+         var paraStart:* = 0;
+         var elem:FlowLeafElement = null;
+         var elemStart:* = 0;
+         var listItemElement:ListItemElement = null;
+         var textFlow:TextFlow = this._para.getTextFlow();
+         var bp:String = textFlow.computedFormat.blockProgression;
+         var flowComposer:IFlowComposer = textFlow.flowComposer;
+         var swfContext:ISWFContext = flowComposer.swfContext?flowComposer.swfContext:BaseCompose.globalSWFContext;
+         var effLineOffset:Number = this._lineOffset;
+         if(this.hasNumberLine)
+         {
+            boxStartTotalIndent=this._lineOffset-this._para.computedFormat.textIndent;
+            numberLine=TextFlowLine.createNumberLine(this._para.getParentByType(ListItemElement) as ListItemElement,this._para,flowComposer.swfContext,boxStartTotalIndent);
+            if(numberLine)
+            {
+               if(getNumberLineListStylePosition(numberLine)==ListStylePosition.INSIDE)
+               {
+                  effLineOffset=effLineOffset+getNumberLineInsideLineWidth(numberLine);
+               }
+            }
+         }
+         textLine=TextLineRecycler.getLineForReuse();
+         if(textLine)
+         {
+            textLine=swfContext.callInContext(textBlock["recreateTextLine"],textBlock,[textLine,previousLine,this._targetWidth,effLineOffset,true]);
+         }
+         else
+         {
+            textLine=swfContext.callInContext(textBlock.createTextLine,textBlock,[previousLine,this._targetWidth,effLineOffset,true]);
+         }
+         textLine.x=this.x;
+         textLine.y=this.createShapeY(bp);
+         textLine.doubleClickEnabled=true;
+         textLine.userData=this;
+         if(this._adornCount>0)
+         {
+            paraStart=this._para.getAbsoluteStart();
+            elem=this._para.findLeaf(this.absoluteStart-paraStart);
+            elemStart=elem.getAbsoluteStart();
+            if(numberLine)
+            {
+               listItemElement=this._para.getParentByType(ListItemElement) as ListItemElement;
+               TextFlowLine.initializeNumberLinePosition(numberLine,listItemElement,this._para,textLine.textWidth);
+            }
+            this.createAdornments(this._para.getAncestorWithContainer().computedFormat.blockProgression,elem,elemStart,textLine,numberLine);
+            if((numberLine)&&(getNumberLineListStylePosition(numberLine)==ListStylePosition.OUTSIDE))
+            {
+               if(bp==BlockProgression.TB)
+               {
+                  numberLine.x=this.numberLinePosition;
+               }
+               else
+               {
+                  numberLine.y=this.numberLinePosition;
+               }
+            }
+         }
+         return textLine;
+      }
+
+      tlf_internal function createShape(bp:String, textLine:TextLine) : void {
+         var newX:Number = this.x;
+         textLine.x=newX;
+         var newY:Number = this.createShapeY(bp);
+         textLine.y=newY;
+      }
+
+      private function createShapeY(bp:String) : Number {
+         return bp==BlockProgression.RL?this.y:this.y+this._ascent;
+      }
+
+      tlf_internal function createAdornments(blockProgression:String, elem:FlowLeafElement, elemStart:int, textLine:TextLine, numberLine:TextLine) : void {
+         var bgm:BackgroundManager = null;
+         var elemFormat:ITextLayoutFormat = null;
+         var imeStatus:* = undefined;
+         var endPos:int = this._absoluteStart+this._textLength;
+         this._adornCount=0;
+         if(numberLine)
+         {
+            this._adornCount++;
+            this.setFlag(NUMBERLINE_MASK,NUMBERLINE_MASK);
+            textLine.addChild(numberLine);
+            if(getNumberLineBackground(numberLine)!=null)
+            {
+               bgm=elem.getTextFlow().getBackgroundManager();
+               if(bgm)
+               {
+                  bgm.addNumberLine(textLine,numberLine);
+               }
+            }
+         }
+         else
+         {
+            this.setFlag(0,NUMBERLINE_MASK);
+         }
+         while(this._adornCount=this._adornCount+elem.updateAdornments(textLine,blockProgression), elemFormat=elem.format, imeStatus=elemFormat?elemFormat.getStyle("imeStatus"):undefined, if(imeStatus)
+         {
+            elem.updateIMEAdornments(textLine,blockProgression,imeStatus as String);
+            }, elemStart=elemStart+elem.textLength, elemStart<endPos)
+            {
+               elem=elem.getNextLeaf(this._para);
+            }
+      }
+
+      tlf_internal function getLineLeading(bp:String, elem:FlowLeafElement, elemStart:int) : Number {
+         var elemLeading:* = NaN;
+         var endPos:int = this._absoluteStart+this._textLength;
+         var totalLeading:Number = 0;
+         elemLeading=elem.getEffectiveLineHeight(bp);
+         while(true)
+         {
+            if((!elemLeading)&&(elem.textLength==this.textLength))
+            {
+               elemLeading=TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(elem.computedFormat.lineHeight,elem.computedFormat.fontSize);
+            }
+            totalLeading=Math.max(totalLeading,elemLeading);
+            elemStart=elemStart+elem.textLength;
+            if(elemStart>=endPos)
+            {
+               return totalLeading;
+            }
+            elem=elem.getNextLeaf(this._para);
+            elemLeading=elem.getEffectiveLineHeight(bp);
+            continue loop0;
+         }
+      }
+
+      tlf_internal function getLineTypographicAscent(elem:FlowLeafElement, elemStart:int, textLine:TextLine) : Number {
+         return getTextLineTypographicAscent(textLine?textLine:this.getTextLine(),elem,elemStart,this.absoluteStart+this.textLength);
+      }
+
+      tlf_internal function getCSSLineBox(bp:String, elem:FlowLeafElement, elemStart:int, swfContext:ISWFContext, effectiveListMarkerFormat:ITextLayoutFormat=null, numberLine:TextLine=null) : Rectangle {
+         var lineBox:Rectangle = null;
+         var para:ParagraphElement = null;
+         var ef:ElementFormat = null;
+         var metrics:FontMetrics = null;
+         var addToLineBox:Function = new function(inlineBox:Rectangle):void
+         {
+            if(inlineBox)
+            {
+                  lineBox=lineBox?lineBox.union(inlineBox):inlineBox;
+            }
+         };
+         var endPos:int = this._absoluteStart+this._textLength;
+         var textLine:TextLine = this.getTextLine();
+         do
+         {
+            addToLineBox(elem.getCSSInlineBox(bp,textLine,this._para,swfContext));
+         }
+         while(elemStart<endPos);
+         if((effectiveListMarkerFormat)&&(numberLine))
+         {
+            para=null;
+            ef=FlowLeafElement.computeElementFormatHelper(effectiveListMarkerFormat,para,swfContext);
+            metrics=swfContext?swfContext.callInContext(ef.getFontMetrics,ef,null,true):ef.getFontMetrics();
+            addToLineBox(FlowLeafElement.getCSSInlineBoxHelper(effectiveListMarkerFormat,metrics,numberLine,para));
+         }
+         return lineBox;
+      }
+
+      private function isTextlineSubsetOfSpan(element:FlowLeafElement) : Boolean {
+         var spanStart:int = element.getAbsoluteStart();
+         var spanEnd:int = spanStart+element.textLength;
+         var lineStart:int = this.absoluteStart;
+         var lineEnd:int = this.absoluteStart+this._textLength;
+         return (spanStart<=lineStart)&&(spanEnd>=lineEnd);
+      }
+
+      private function getSelectionShapesCacheEntry(begIdx:int, endIdx:int, prevLine:TextFlowLine, nextLine:TextFlowLine, blockProgression:String) : SelectionCache {
+         var drawRect:Rectangle = null;
+         if(this.isDamaged())
+         {
+            return null;
+         }
+         var paraAbsStart:int = this._para.getAbsoluteStart();
+         if((begIdx==endIdx)&&(paraAbsStart+begIdx==this.absoluteStart))
+         {
+            if(this.absoluteStart!=this._para.getTextFlow().textLength-1)
+            {
+               return null;
+            }
+            endIdx++;
+         }
+         var selectionCache:SelectionCache = _selectionBlockCache[this];
+         if((selectionCache)&&(selectionCache.begIdx==begIdx)&&(selectionCache.endIdx==endIdx))
+         {
+            return selectionCache;
+         }
+         var drawRects:Array = new Array();
+         var tcyDrawRects:Array = new Array();
+         if(selectionCache==null)
+         {
+            selectionCache=new SelectionCache();
+            _selectionBlockCache[this]=selectionCache;
+         }
+         else
+         {
+            selectionCache.clear();
+         }
+         selectionCache.begIdx=begIdx;
+         selectionCache.endIdx=endIdx;
+         var textLine:TextLine = this.getTextLine();
+         var heightAndAdj:Array = this.getRomanSelectionHeightAndVerticalAdjustment(prevLine,nextLine);
+         this.calculateSelectionBounds(textLine,drawRects,begIdx,endIdx,blockProgression,heightAndAdj);
+         for each (drawRect in drawRects)
+         {
+            selectionCache.pushSelectionBlock(drawRect);
+         }
+         return selectionCache;
+      }
+
+      tlf_internal function calculateSelectionBounds(textLine:TextLine, rectArray:Array, begIdx:int, endIdx:int, blockProgression:String, heightAndAdj:Array) : void {
+         var numCharsSelecting:* = 0;
+         var endPos:* = 0;
+         var ilg:InlineGraphicElement = null;
+         var floatInfo:FloatCompositionData = null;
+         var blockRect:Rectangle = null;
+         var leafBlockArray:Array = null;
+         var leafBlockIter:* = 0;
+         var tcyBlock:FlowElement = null;
+         var tcyParentRelativeEnd:* = 0;
+         var subParBlock:SubParagraphGroupElementBase = null;
+         var largestTCYRise:* = NaN;
+         var lastTCYIdx:* = 0;
+         var tcyRects:Array = null;
+         var tcyRectArray:Array = null;
+         var tcyBlockIter:* = 0;
+         var tcyRect:Rectangle = null;
+         var charCode:* = 0;
+         var lastElemBlockArray:Array = null;
+         var lastRect:Rectangle = null;
+         var modifyRect:Rectangle = null;
+         var tcyIter:* = 0;
+         var floatIter:* = 0;
+         var direction:String = this._para.computedFormat.direction;
+         var paraAbsStart:int = this._para.getAbsoluteStart();
+         var curIdx:int = begIdx;
+         var curElem:FlowLeafElement = null;
+         var largestRise:Number = 0;
+         var blockRectArray:Array = new Array();
+         var floatRectArray:Array = null;
+         var tcyDrawRects:Array = null;
+         while(curIdx<endIdx)
+         {
+            curElem=this._para.findLeaf(curIdx);
+            if(curElem.textLength==0)
+            {
+               curIdx++;
+            }
+            else
+            {
+               if((curElem is InlineGraphicElement)&&(!((curElem as InlineGraphicElement).computedFloat==Float.NONE)))
+               {
+                  if(floatRectArray==null)
+                  {
+                     floatRectArray=new Array();
+                  }
+                  ilg=curElem as InlineGraphicElement;
+                  floatInfo=this.controller.getFloatAtPosition(paraAbsStart+curIdx);
+                  if(floatInfo)
+                  {
+                     blockRect=new Rectangle(floatInfo.x-textLine.x,floatInfo.y-textLine.y,ilg.elementWidth,ilg.elementHeight);
+                     floatRectArray.push(blockRect);
+                  }
+                  curIdx++;
+               }
+               else
+               {
+                  numCharsSelecting=curElem.textLength+curElem.getElementRelativeStart(this._para)-curIdx;
+                  endPos=numCharsSelecting+curIdx<endIdx?endIdx:numCharsSelecting+curIdx;
+                  if((!(blockProgression==BlockProgression.RL))||(!(textLine.getAtomTextRotation(textLine.getAtomIndexAtCharIndex(curIdx))==TextRotation.ROTATE_0)))
+                  {
+                     leafBlockArray=this.makeSelectionBlocks(textLine,curIdx,endPos,paraAbsStart,blockProgression,direction,heightAndAdj);
+                     leafBlockIter=0;
+                     while(leafBlockIter<leafBlockArray.length)
+                     {
+                        blockRectArray.push(leafBlockArray[leafBlockIter]);
+                        leafBlockIter++;
+                     }
+                     curIdx=endPos;
+                  }
+                  else
+                  {
+                     tcyBlock=curElem.getParentByType(TCYElement);
+                     tcyParentRelativeEnd=tcyBlock.parentRelativeEnd;
+                     subParBlock=tcyBlock.getParentByType(SubParagraphGroupElementBase) as SubParagraphGroupElementBase;
+                     while(subParBlock)
+                     {
+                        tcyParentRelativeEnd=tcyParentRelativeEnd+subParBlock.parentRelativeStart;
+                        subParBlock=subParBlock.getParentByType(SubParagraphGroupElementBase) as SubParagraphGroupElementBase;
+                     }
+                     largestTCYRise=0;
+                     lastTCYIdx=endIdx>tcyParentRelativeEnd?endIdx:tcyParentRelativeEnd;
+                     tcyRects=new Array();
+                     while(curIdx<lastTCYIdx)
+                     {
+                        curElem=this._para.findLeaf(curIdx);
+                        numCharsSelecting=curElem.textLength+curElem.getElementRelativeStart(this._para)-curIdx;
+                        endPos=numCharsSelecting+curIdx<endIdx?endIdx:numCharsSelecting+curIdx;
+                        tcyRectArray=this.makeSelectionBlocks(textLine,curIdx,endPos,paraAbsStart,blockProgression,direction,heightAndAdj);
+                        tcyBlockIter=0;
+                        while(tcyBlockIter<tcyRectArray.length)
+                        {
+                           tcyRect=tcyRectArray[tcyBlockIter];
+                           if(tcyRect.height>largestTCYRise)
+                           {
+                              largestTCYRise=tcyRect.height;
+                           }
+                           tcyRects.push(tcyRect);
+                           tcyBlockIter++;
+                        }
+                        curIdx=endPos;
+                     }
+                     if(!tcyDrawRects)
+                     {
+                        tcyDrawRects=new Array();
+                     }
+                     this.normalizeRects(tcyRects,tcyDrawRects,largestTCYRise,BlockProgression.TB,direction);
+                  }
+               }
+            }
+         }
+         if((blockRectArray.length<0)&&(paraAbsStart+begIdx==this.absoluteStart)&&(paraAbsStart+endIdx==this.absoluteStart+this.textLength))
+         {
+            curElem=this._para.findLeaf(begIdx);
+            if((curElem.getAbsoluteStart()+curElem.textLength>this.absoluteStart+this.textLength)&&(endPos>=2))
+            {
+               charCode=this._para.getCharCodeAtPosition(endPos-1);
+               if((!(charCode==SpanElement.kParagraphTerminator.charCodeAt(0)))&&(CharacterUtil.isWhitespace(charCode)))
+               {
+                  lastElemBlockArray=this.makeSelectionBlocks(textLine,endPos-1,endPos-1,paraAbsStart,blockProgression,direction,heightAndAdj);
+                  lastRect=lastElemBlockArray[lastElemBlockArray.length-1];
+                  modifyRect=blockRectArray[blockRectArray.length-1] as Rectangle;
+                  if(blockProgression!=BlockProgression.RL)
+                  {
+                     if(modifyRect.width==lastRect.width)
+                     {
+                        blockRectArray.pop();
+                     }
+                     else
+                     {
+                        modifyRect.width=modifyRect.width-lastRect.width;
+                        if(direction==Direction.RTL)
+                        {
+                           modifyRect.left=modifyRect.left-lastRect.width;
+                        }
+                     }
+                  }
+                  else
+                  {
+                     if(modifyRect.height==lastRect.height)
+                     {
+                        blockRectArray.pop();
+                     }
+                     else
+                     {
+                        modifyRect.height=modifyRect.height-lastRect.height;
+                        if(direction==Direction.RTL)
+                        {
+                           modifyRect.top=modifyRect.top+lastRect.height;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         this.normalizeRects(blockRectArray,rectArray,largestRise,blockProgression,direction);
+         if((tcyDrawRects)&&(tcyDrawRects.length<0))
+         {
+            tcyIter=0;
+            while(tcyIter<tcyDrawRects.length)
+            {
+               rectArray.push(tcyDrawRects[tcyIter]);
+               tcyIter++;
+            }
+         }
+         if(floatRectArray)
+         {
+            floatIter=0;
+            while(floatIter<floatRectArray.length)
+            {
+               rectArray.push(floatRectArray[floatIter]);
+               floatIter++;
+            }
+         }
+      }
+
+      private function createSelectionShapes(selObj:Shape, selFormat:SelectionFormat, container:DisplayObject, begIdx:int, endIdx:int, prevLine:TextFlowLine, nextLine:TextFlowLine) : void {
+         var drawRect:Rectangle = null;
+         var selMgr:ISelectionManager = null;
+         var contElement:ContainerFormattedElement = this._para.getAncestorWithContainer();
+         var blockProgression:String = contElement.computedFormat.blockProgression;
+         var selCache:SelectionCache = this.getSelectionShapesCacheEntry(begIdx,endIdx,prevLine,nextLine,blockProgression);
+         if(!selCache)
+         {
             return;
-        }// end function
+         }
+         var color:uint = selFormat.rangeColor;
+         if((this._para)&&(this._para.getTextFlow()))
+         {
+            selMgr=this._para.getTextFlow().interactionManager;
+            if((selMgr)&&(selMgr.anchorPosition==selMgr.activePosition))
+            {
+               color=selFormat.pointColor;
+            }
+         }
+         for each (drawRect in selCache.selectionBlocks)
+         {
+            drawRect=drawRect.clone();
+            this.convertLineRectToContainer(drawRect,true);
+            createSelectionRect(selObj,color,drawRect.x,drawRect.y,drawRect.width,drawRect.height);
+         }
+      }
 
-        static function getNumberLineBackground(param1:TextLine) : BackgroundManager
-        {
-            return (param1.userData as NumberLineUserData).backgroundManager;
-        }// end function
+      tlf_internal function getRomanSelectionHeightAndVerticalAdjustment(prevLine:TextFlowLine, nextLine:TextFlowLine) : Array {
+         var isFirstLine:* = false;
+         var isLastLine:* = false;
+         var top:* = NaN;
+         var bottom:* = NaN;
+         var rectHeight:Number = 0;
+         var verticalAdj:Number = 0;
+         if(ParagraphElement.useUpLeadingDirection(this._para.getEffectiveLeadingModel()))
+         {
+            rectHeight=Math.max(this.height,this.textHeight);
+         }
+         else
+         {
+            isFirstLine=(!prevLine)||(!(prevLine.controller==this.controller))||(!(prevLine.columnIndex==this.columnIndex));
+            isLastLine=(!nextLine)||(!(nextLine.controller==this.controller))||(!(nextLine.columnIndex==this.columnIndex))||(nextLine.paragraph.getEffectiveLeadingModel()==LeadingModel.ROMAN_UP);
+            if(isLastLine)
+            {
+               if(!isFirstLine)
+               {
+                  rectHeight=this.textHeight;
+               }
+               else
+               {
+                  rectHeight=Math.max(this.height,this.textHeight);
+               }
+            }
+            else
+            {
+               if(!isFirstLine)
+               {
+                  rectHeight=Math.max(nextLine.height,this.textHeight);
+                  verticalAdj=rectHeight-this.textHeight;
+               }
+               else
+               {
+                  top=this._descent-Math.max(this.height,this.textHeight);
+                  bottom=Math.max(nextLine.height,this.textHeight)-this._ascent;
+                  rectHeight=bottom-top;
+                  verticalAdj=bottom-this._descent;
+               }
+            }
+         }
+         if((!prevLine)||(!(prevLine.columnIndex==this.columnIndex))||(!(prevLine.controller==this.controller)))
+         {
+            rectHeight=rectHeight+this.descent;
+            verticalAdj=Math.floor(this.descent/2);
+         }
+         return [rectHeight,verticalAdj];
+      }
 
-    }
+      private function makeSelectionBlocks(textLine:TextLine, begIdx:int, endIdx:int, paraAbsStart:int, blockProgression:String, direction:String, heightAndAdj:Array) : Array {
+         var bidiBlock:Array = null;
+         var bidiBlockIter:* = 0;
+         var curIdx:* = 0;
+         var incrementor:* = 0;
+         var activeStartIndex:* = 0;
+         var activeEndIndex:* = 0;
+         var curElementIndex:* = 0;
+         var activeEndIsBidi:* = false;
+         var curIsBidi:* = false;
+         var testILG:InlineGraphicElement = null;
+         var verticalText:* = false;
+         var ilgFormat:ITextLayoutFormat = null;
+         var paddingTop:* = NaN;
+         var paddingBottom:* = NaN;
+         var paddingLeft:* = NaN;
+         var paddingRight:* = NaN;
+         var blockArray:Array = new Array();
+         var blockRect:Rectangle = new Rectangle();
+         var startElem:FlowLeafElement = this._para.findLeaf(begIdx);
+         var startMetrics:Rectangle = startElem.getComputedFontMetrics().emBox;
+         if(!textLine)
+         {
+            textLine=this.getTextLine(true);
+         }
+         var begAtomIndex:int = textLine.getAtomIndexAtCharIndex(begIdx);
+         var endAtomIndex:int = this.adjustEndElementForBidi(textLine,begIdx,endIdx,begAtomIndex,direction);
+         if((direction==Direction.RTL)&&(!(textLine.getAtomBidiLevel(endAtomIndex)%2==0)))
+         {
+            if((endAtomIndex==0)&&(begIdx>endIdx-1))
+            {
+               blockArray=this.makeSelectionBlocks(textLine,begIdx,endIdx-1,paraAbsStart,blockProgression,direction,heightAndAdj);
+               bidiBlock=this.makeSelectionBlocks(textLine,endIdx-1,endIdx-1,paraAbsStart,blockProgression,direction,heightAndAdj);
+               bidiBlockIter=0;
+               while(bidiBlockIter<bidiBlock.length)
+               {
+                  blockArray.push(bidiBlock[bidiBlockIter]);
+                  bidiBlockIter++;
+               }
+               return blockArray;
+            }
+         }
+         var begIsBidi:Boolean = !(begAtomIndex==-1)?this.isAtomBidi(textLine,begAtomIndex,direction):false;
+         var endIsBidi:Boolean = !(endAtomIndex==-1)?this.isAtomBidi(textLine,endAtomIndex,direction):false;
+         if((begIsBidi)||(endIsBidi))
+         {
+            curIdx=begIdx;
+            incrementor=!(begIdx==endIdx)?1:0;
+            activeStartIndex=begAtomIndex;
+            activeEndIndex=begAtomIndex;
+            curElementIndex=begAtomIndex;
+            activeEndIsBidi=begIsBidi;
+            do
+            {
+               curIdx=curIdx+incrementor;
+               curElementIndex=textLine.getAtomIndexAtCharIndex(curIdx);
+               curIsBidi=curElementIndex!=-1?this.isAtomBidi(textLine,curElementIndex,direction):false;
+               if((!(curElementIndex==-1))&&(!(curIsBidi==activeEndIsBidi)))
+               {
+                  blockRect=this.makeBlock(textLine,curIdx,activeStartIndex,activeEndIndex,startMetrics,blockProgression,direction,heightAndAdj);
+                  blockArray.push(blockRect);
+                  activeStartIndex=curElementIndex;
+                  activeEndIndex=curElementIndex;
+                  activeEndIsBidi=curIsBidi;
+               }
+               else
+               {
+                  if(curIdx==endIdx)
+                  {
+                     blockRect=this.makeBlock(textLine,curIdx,activeStartIndex,activeEndIndex,startMetrics,blockProgression,direction,heightAndAdj);
+                     blockArray.push(blockRect);
+                  }
+                  activeEndIndex=curElementIndex;
+               }
+               if(curIdx>=endIdx)
+               {
+               }
+            }
+            while(true);
+         }
+         else
+         {
+            testILG=startElem as InlineGraphicElement;
+            if((!testILG)||(testILG.effectiveFloat==Float.NONE)||(begIdx==endIdx))
+            {
+               blockRect=this.makeBlock(textLine,begIdx,begAtomIndex,endAtomIndex,startMetrics,blockProgression,direction,heightAndAdj);
+               if((testILG)&&(!(testILG.elementWidthWithMarginsAndPadding()==testILG.elementWidth)))
+               {
+                  verticalText=testILG.getTextFlow().computedFormat.blockProgression==BlockProgression.RL;
+                  ilgFormat=testILG.computedFormat;
+                  if(verticalText)
+                  {
+                     paddingTop=testILG.getEffectivePaddingTop();
+                     blockRect.top=blockRect.top+paddingTop;
+                     paddingBottom=testILG.getEffectivePaddingBottom();
+                     blockRect.bottom=blockRect.bottom-paddingBottom;
+                  }
+                  else
+                  {
+                     paddingLeft=testILG.getEffectivePaddingLeft();
+                     blockRect.left=blockRect.left+paddingLeft;
+                     paddingRight=testILG.getEffectivePaddingRight();
+                     blockRect.right=blockRect.right-paddingRight;
+                  }
+               }
+            }
+            else
+            {
+               blockRect=testILG.graphic.getBounds(textLine);
+            }
+            blockArray.push(blockRect);
+            return blockArray;
+         }
+      }
+
+      private function makeBlock(textLine:TextLine, begTextIndex:int, begAtomIndex:int, endAtomIndex:int, startMetrics:Rectangle, blockProgression:String, direction:String, heightAndAdj:Array) : Rectangle {
+         var rotation:String = null;
+         var tempEndIdx:* = 0;
+         var blockRect:Rectangle = new Rectangle();
+         var globalStart:Point = new Point(0,0);
+         if(begAtomIndex>endAtomIndex)
+         {
+            tempEndIdx=endAtomIndex;
+            endAtomIndex=begAtomIndex;
+            begAtomIndex=tempEndIdx;
+         }
+         if(!textLine)
+         {
+            textLine=this.getTextLine(true);
+         }
+         var begCharRect:Rectangle = textLine.getAtomBounds(begAtomIndex);
+         var endCharRect:Rectangle = textLine.getAtomBounds(endAtomIndex);
+         var justRule:String = this._para.getEffectiveJustificationRule();
+         if((blockProgression==BlockProgression.RL)&&(!(textLine.getAtomTextRotation(begAtomIndex)==TextRotation.ROTATE_0)))
+         {
+            globalStart.y=begCharRect.y;
+            blockRect.height=!(begAtomIndex==endAtomIndex)?endCharRect.bottom-begCharRect.top:begCharRect.height;
+            if(justRule==JustificationRule.EAST_ASIAN)
+            {
+               blockRect.width=begCharRect.width;
+            }
+            else
+            {
+               blockRect.width=heightAndAdj[0];
+               globalStart.x=globalStart.x-heightAndAdj[1];
+            }
+         }
+         else
+         {
+            globalStart.x=Math.min(begCharRect.x,endCharRect.x);
+            if(blockProgression==BlockProgression.RL)
+            {
+               globalStart.y=begCharRect.y+startMetrics.width/2;
+            }
+            if(justRule!=JustificationRule.EAST_ASIAN)
+            {
+               blockRect.height=heightAndAdj[0];
+               if(blockProgression==BlockProgression.RL)
+               {
+                  globalStart.x=globalStart.x-heightAndAdj[1];
+               }
+               else
+               {
+                  globalStart.y=globalStart.y+heightAndAdj[1];
+               }
+               blockRect.width=!(begAtomIndex==endAtomIndex)?Math.abs(endCharRect.right-begCharRect.left):begCharRect.width;
+            }
+            else
+            {
+               blockRect.height=begCharRect.height;
+               blockRect.width=!(begAtomIndex==endAtomIndex)?Math.abs(endCharRect.right-begCharRect.left):begCharRect.width;
+            }
+         }
+         blockRect.x=globalStart.x;
+         blockRect.y=globalStart.y;
+         if(blockProgression==BlockProgression.RL)
+         {
+            if(textLine.getAtomTextRotation(begAtomIndex)!=TextRotation.ROTATE_0)
+            {
+               blockRect.x=blockRect.x-textLine.descent;
+            }
+            else
+            {
+               blockRect.y=blockRect.y-blockRect.height/2;
+            }
+         }
+         else
+         {
+            blockRect.y=blockRect.y+(textLine.descent-blockRect.height);
+         }
+         var tfl:TextFlowLine = textLine.userData as TextFlowLine;
+         var curElem:FlowLeafElement = this._para.findLeaf(begTextIndex);
+         if(!curElem)
+         {
+            if(begTextIndex<0)
+            {
+               curElem=this._para.getFirstLeaf();
+            }
+            else
+            {
+               if(begTextIndex>=this._para.textLength)
+               {
+                  curElem=this._para.getLastLeaf();
+               }
+            }
+            rotation=curElem?curElem.computedFormat.textRotation:TextRotation.ROTATE_0;
+            if((rotation==TextRotation.ROTATE_180)||(rotation==TextRotation.ROTATE_90))
+            {
+               if(blockProgression!=BlockProgression.RL)
+               {
+                  blockRect.y=blockRect.y+blockRect.height/2;
+               }
+               else
+               {
+                  if(curElem.getParentByType(TCYElement)==null)
+                  {
+                     if(rotation==TextRotation.ROTATE_90)
+                     {
+                        blockRect.x=blockRect.x-blockRect.width;
+                     }
+                     else
+                     {
+                        blockRect.x=blockRect.x-blockRect.width*0.75;
+                     }
+                  }
+                  else
+                  {
+                     if(rotation==TextRotation.ROTATE_90)
+                     {
+                        blockRect.y=blockRect.y+blockRect.height;
+                     }
+                     else
+                     {
+                        blockRect.y=blockRect.y+blockRect.height*0.75;
+                     }
+                  }
+               }
+            }
+            return blockRect;
+         }
+         rotation=curElem.computedFormat.textRotation;
+         if((rotation==TextRotation.ROTATE_180)||(rotation==TextRotation.ROTATE_90))
+         {
+            if(blockProgression!=BlockProgression.RL)
+            {
+               blockRect.y=blockRect.y+blockRect.height/2;
+            }
+            else
+            {
+               if(curElem.getParentByType(TCYElement)==null)
+               {
+                  if(rotation==TextRotation.ROTATE_90)
+                  {
+                     blockRect.x=blockRect.x-blockRect.width;
+                  }
+                  else
+                  {
+                     blockRect.x=blockRect.x-blockRect.width*0.75;
+                  }
+               }
+               else
+               {
+                  if(rotation==TextRotation.ROTATE_90)
+                  {
+                     blockRect.y=blockRect.y+blockRect.height;
+                  }
+                  else
+                  {
+                     blockRect.y=blockRect.y+blockRect.height*0.75;
+                  }
+               }
+            }
+         }
+         return blockRect;
+      }
+
+      tlf_internal function convertLineRectToContainer(rect:Rectangle, constrainShape:Boolean) : void {
+         var tf:TextFlow = null;
+         var columnRect:Rectangle = null;
+         var textLine:TextLine = this.getTextLine();
+         rect.x=rect.x+textLine.x;
+         rect.y=rect.y+textLine.y;
+         if(constrainShape)
+         {
+            tf=this._para.getTextFlow();
+            columnRect=this.controller.columnState.getColumnAt(this.columnIndex);
+            constrainRectToColumn(tf,rect,columnRect,this.controller.horizontalScrollPosition,this.controller.verticalScrollPosition,this.controller.compositionWidth,this.controller.compositionHeight);
+         }
+      }
+
+      tlf_internal function hiliteBlockSelection(selObj:Shape, selFormat:SelectionFormat, container:DisplayObject, begIdx:int, endIdx:int, prevLine:TextFlowLine, nextLine:TextFlowLine) : void {
+         if((this.isDamaged())||(!this._controller))
+         {
+            return;
+         }
+         var textLine:TextLine = this.peekTextLine();
+         if((!textLine)||(!textLine.parent))
+         {
+            return;
+         }
+         var paraStart:int = this._para.getAbsoluteStart();
+         var begIdx:int = begIdx-paraStart;
+         var endIdx:int = endIdx-paraStart;
+         this.createSelectionShapes(selObj,selFormat,container,begIdx,endIdx,prevLine,nextLine);
+      }
+
+      tlf_internal function hilitePointSelection(selFormat:SelectionFormat, idx:int, container:DisplayObject, prevLine:TextFlowLine, nextLine:TextFlowLine) : void {
+         var rect:Rectangle = this.computePointSelectionRectangle(idx,container,prevLine,nextLine,true);
+         if(rect)
+         {
+            this._controller.drawPointSelection(selFormat,rect.x,rect.y,rect.width,rect.height);
+         }
+      }
+
+      tlf_internal function computePointSelectionRectangle(idx:int, container:DisplayObject, prevLine:TextFlowLine, nextLine:TextFlowLine, constrainSelRect:Boolean) : Rectangle {
+         var cursorWidth:* = NaN;
+         var prevElementIndex:* = 0;
+         var rlOnePoint:Point = null;
+         var onePoint:Point = null;
+         if((this.isDamaged())||(!this._controller))
+         {
+            return null;
+         }
+         var textLine:TextLine = this.peekTextLine();
+         if((!textLine)||(!textLine.parent))
+         {
+            return null;
+         }
+         var idx:int = idx-this._para.getAbsoluteStart();
+         textLine=this.getTextLine(true);
+         var endIdx:int = idx;
+         var elementIndex:int = textLine.getAtomIndexAtCharIndex(idx);
+         var isTCYBounds:Boolean = false;
+         var paraLeadingTCY:Boolean = false;
+         var contElement:ContainerFormattedElement = this._para.getAncestorWithContainer();
+         var blockProgression:String = contElement.computedFormat.blockProgression;
+         var direction:String = this._para.computedFormat.direction;
+         if(blockProgression==BlockProgression.RL)
+         {
+            if(idx==0)
+            {
+               if(textLine.getAtomTextRotation(0)==TextRotation.ROTATE_0)
+               {
+                  paraLeadingTCY=true;
+               }
+            }
+            else
+            {
+               prevElementIndex=textLine.getAtomIndexAtCharIndex(idx-1);
+               if(prevElementIndex!=-1)
+               {
+                  if((textLine.getAtomTextRotation(elementIndex)==TextRotation.ROTATE_0)&&(!(textLine.getAtomTextRotation(prevElementIndex)==TextRotation.ROTATE_0)))
+                  {
+                     elementIndex=prevElementIndex;
+                     idx--;
+                     isTCYBounds=true;
+                  }
+                  else
+                  {
+                     if(textLine.getAtomTextRotation(prevElementIndex)==TextRotation.ROTATE_0)
+                     {
+                        elementIndex=prevElementIndex;
+                        idx--;
+                        isTCYBounds=true;
+                     }
+                  }
+               }
+            }
+         }
+         var heightAndAdj:Array = this.getRomanSelectionHeightAndVerticalAdjustment(prevLine,nextLine);
+         var blockRectArray:Array = this.makeSelectionBlocks(textLine,idx,endIdx,this._para.getAbsoluteStart(),blockProgression,direction,heightAndAdj);
+         var rect:Rectangle = blockRectArray[0];
+         this.convertLineRectToContainer(rect,constrainSelRect);
+         var drawOnRight:Boolean = direction==Direction.RTL;
+         if((drawOnRight)&&(textLine.getAtomBidiLevel(elementIndex)%2==0)||(!drawOnRight)&&(!(textLine.getAtomBidiLevel(elementIndex)%2==0)))
+         {
+            drawOnRight=!drawOnRight;
+         }
+         var zeroPoint:Point = container.localToGlobal(localZeroPoint);
+         if((blockProgression==BlockProgression.RL)&&(!(textLine.getAtomTextRotation(elementIndex)==TextRotation.ROTATE_0)))
+         {
+            rlOnePoint=container.localToGlobal(rlLocalOnePoint);
+            cursorWidth=zeroPoint.y-rlOnePoint.y;
+            cursorWidth=cursorWidth==0?1:Math.abs(1/cursorWidth);
+            if(!drawOnRight)
+            {
+               setRectangleValues(rect,rect.x,!isTCYBounds?rect.y:rect.y+rect.height,rect.width,cursorWidth);
+            }
+            else
+            {
+               setRectangleValues(rect,rect.x,!isTCYBounds?rect.y+rect.height:rect.y,rect.width,cursorWidth);
+            }
+         }
+         else
+         {
+            onePoint=container.localToGlobal(localOnePoint);
+            cursorWidth=zeroPoint.x-onePoint.x;
+            cursorWidth=cursorWidth==0?1:Math.abs(1/cursorWidth);
+            if(!drawOnRight)
+            {
+               setRectangleValues(rect,!isTCYBounds?rect.x:rect.x+rect.width,rect.y,cursorWidth,rect.height);
+            }
+            else
+            {
+               setRectangleValues(rect,!isTCYBounds?rect.x+rect.width:rect.x,rect.y,cursorWidth,rect.height);
+            }
+         }
+         return rect;
+      }
+
+      tlf_internal function selectionWillIntersectScrollRect(scrollRect:Rectangle, begIdx:int, endIdx:int, prevLine:TextFlowLine, nextLine:TextFlowLine) : int {
+         var pointSelRect:Rectangle = null;
+         var paraStart:* = 0;
+         var selCache:SelectionCache = null;
+         var drawRect:Rectangle = null;
+         var contElement:ContainerFormattedElement = this._para.getAncestorWithContainer();
+         var blockProgression:String = contElement.computedFormat.blockProgression;
+         var textLine:TextLine = this.getTextLine(true);
+         if(begIdx==endIdx)
+         {
+            pointSelRect=this.computePointSelectionRectangle(begIdx,DisplayObject(this.controller.container),prevLine,nextLine,false);
+            if(pointSelRect)
+            {
+               if(scrollRect.containsRect(pointSelRect))
+               {
+                  return 2;
+               }
+               if(scrollRect.intersects(pointSelRect))
+               {
+                  return 1;
+               }
+            }
+         }
+         else
+         {
+            paraStart=this._para.getAbsoluteStart();
+            selCache=this.getSelectionShapesCacheEntry(begIdx-paraStart,endIdx-paraStart,prevLine,nextLine,blockProgression);
+            if(selCache)
+            {
+               for each (drawRect in selCache.selectionBlocks)
+               {
+                  drawRect=drawRect.clone();
+                  drawRect.x=drawRect.x+textLine.x;
+                  drawRect.y=drawRect.y+textLine.y;
+                  if(scrollRect.intersects(drawRect))
+                  {
+                     if(blockProgression==BlockProgression.RL)
+                     {
+                        if((drawRect.left>=scrollRect.left)&&(drawRect.right<=scrollRect.right))
+                        {
+                           return 2;
+                        }
+                     }
+                     else
+                     {
+                        if((drawRect.top>=scrollRect.top)&&(drawRect.bottom<=scrollRect.bottom))
+                        {
+                           return 2;
+                        }
+                     }
+                     return 1;
+                  }
+               }
+            }
+         }
+         return 0;
+      }
+
+      private function normalizeRects(srcRects:Array, dstRects:Array, largestRise:Number, blockProgression:String, direction:String) : void {
+         var rect:Rectangle = null;
+         var lastRect:Rectangle = null;
+         var rectIter:int = 0;
+         while(rectIter<srcRects.length)
+         {
+            rect=srcRects[rectIter++];
+            if(blockProgression==BlockProgression.RL)
+            {
+               if(rect.width<largestRise)
+               {
+                  rect.width=largestRise;
+               }
+            }
+            else
+            {
+               if(rect.height<largestRise)
+               {
+                  rect.height=largestRise;
+               }
+            }
+            if(lastRect==null)
+            {
+               lastRect=rect;
+            }
+            else
+            {
+               if(blockProgression==BlockProgression.RL)
+               {
+                  if((lastRect.y>rect.y)&&(lastRect.y+lastRect.height>=rect.top)&&(lastRect.x==rect.x))
+                  {
+                     lastRect.height=lastRect.height+rect.height;
+                  }
+                  else
+                  {
+                     if((rect.y>lastRect.y)&&(lastRect.y<=rect.bottom)&&(lastRect.x==rect.x))
+                     {
+                        lastRect.height=lastRect.height+rect.height;
+                        lastRect.y=rect.y;
+                     }
+                     else
+                     {
+                        dstRects.push(lastRect);
+                        lastRect=rect;
+                     }
+                  }
+               }
+               else
+               {
+                  if((lastRect.x>rect.x)&&(lastRect.x+lastRect.width>=rect.left)&&(lastRect.y==rect.y))
+                  {
+                     lastRect.width=lastRect.width+rect.width;
+                  }
+                  else
+                  {
+                     if((rect.x>lastRect.x)&&(lastRect.x<=rect.right)&&(lastRect.y==rect.y))
+                     {
+                        lastRect.width=lastRect.width+rect.width;
+                        lastRect.x=rect.x;
+                     }
+                     else
+                     {
+                        dstRects.push(lastRect);
+                        lastRect=rect;
+                     }
+                  }
+               }
+            }
+            if(rectIter==srcRects.length)
+            {
+               dstRects.push(lastRect);
+            }
+         }
+      }
+
+      private function adjustEndElementForBidi(textLine:TextLine, begIdx:int, endIdx:int, begAtomIndex:int, direction:String) : int {
+         var endAtomIndex:int = begAtomIndex;
+         if(endIdx!=begIdx)
+         {
+            if(((direction==Direction.LTR)&&(!(textLine.getAtomBidiLevel(begAtomIndex)%2==0))||(direction==Direction.RTL)&&(textLine.getAtomBidiLevel(begAtomIndex)%2==0))&&(!(textLine.getAtomTextRotation(begAtomIndex)==TextRotation.ROTATE_0)))
+            {
+               endAtomIndex=textLine.getAtomIndexAtCharIndex(endIdx);
+            }
+            else
+            {
+               endAtomIndex=textLine.getAtomIndexAtCharIndex(endIdx-1);
+            }
+         }
+         if((endAtomIndex==-1)&&(endIdx<0))
+         {
+            return this.adjustEndElementForBidi(textLine,begIdx,endIdx-1,begAtomIndex,direction);
+         }
+         return endAtomIndex;
+      }
+
+      private function isAtomBidi(textLine:TextLine, elementIdx:int, direction:String) : Boolean {
+         if(!textLine)
+         {
+            textLine=this.getTextLine(true);
+         }
+         return (!(textLine.getAtomBidiLevel(elementIdx)%2==0))&&(direction==Direction.LTR)||(textLine.getAtomBidiLevel(elementIdx)%2==0)&&(direction==Direction.RTL);
+      }
+
+      tlf_internal function get adornCount() : int {
+         return this._adornCount;
+      }
+   }
+
 }
 
-import __AS3__.vec.*;
-
-import flash.display.*;
-
-import flash.geom.*;
-
-import flash.text.engine.*;
-
-import flash.utils.*;
-
-import flashx.textLayout.compose.*;
-
-import flashx.textLayout.container.*;
-
-import flashx.textLayout.edit.*;
-
-import flashx.textLayout.elements.*;
-
-import flashx.textLayout.formats.*;
-
-import flashx.textLayout.utils.*;
-
-final class SelectionCache extends Object
-{
-    private var _begIdx:int = -1;
-    private var _endIdx:int = -1;
-    private var _selectionBlocks:Array = null;
-
-    function SelectionCache()
-    {
-        return;
-    }// end function
-
-    public function get begIdx() : int
-    {
-        return this._begIdx;
-    }// end function
-
-    public function set begIdx(param1:int) : void
-    {
-        this._begIdx = param1;
-        return;
-    }// end function
-
-    public function get endIdx() : int
-    {
-        return this._endIdx;
-    }// end function
-
-    public function set endIdx(param1:int) : void
-    {
-        this._endIdx = param1;
-        return;
-    }// end function
-
-    public function pushSelectionBlock(param1:Rectangle) : void
-    {
-        if (!this._selectionBlocks)
-        {
-            this._selectionBlocks = new Array();
-        }
-        this._selectionBlocks.push(param1.clone());
-        return;
-    }// end function
-
-    public function get selectionBlocks() : Array
-    {
-        return this._selectionBlocks;
-    }// end function
-
-    public function clear() : void
-    {
-        this._selectionBlocks = null;
-        this._begIdx = -1;
-        this._endIdx = -1;
-        return;
-    }// end function
-
-}
+   import flash.geom.Rectangle;
 
 
-import __AS3__.vec.*;
+   final class SelectionCache extends Object
+   {
+         
 
-import flash.display.*;
+      function SelectionCache() {
+         super();
+      }
 
-import flash.geom.*;
 
-import flash.text.engine.*;
 
-import flash.utils.*;
+      private var _begIdx:int = -1;
 
-import flashx.textLayout.compose.*;
+      private var _endIdx:int = -1;
 
-import flashx.textLayout.container.*;
+      private var _selectionBlocks:Array = null;
 
-import flashx.textLayout.edit.*;
+      public function get begIdx() : int {
+         return this._begIdx;
+      }
 
-import flashx.textLayout.elements.*;
+      public function set begIdx(val:int) : void {
+         this._begIdx=val;
+      }
 
-import flashx.textLayout.formats.*;
+      public function get endIdx() : int {
+         return this._endIdx;
+      }
 
-import flashx.textLayout.utils.*;
+      public function set endIdx(val:int) : void {
+         this._endIdx=val;
+      }
 
-class NumberLineFactory extends StringTextLineFactory
-{
-    private var _listStylePosition:String;
-    private var _markerFormat:ITextLayoutFormat;
-    private var _backgroundManager:BackgroundManager;
+      public function pushSelectionBlock(drawRect:Rectangle) : void {
+         if(!this._selectionBlocks)
+         {
+            this._selectionBlocks=new Array();
+         }
+         this._selectionBlocks.push(drawRect.clone());
+      }
 
-    function NumberLineFactory()
-    {
-        return;
-    }// end function
+      public function get selectionBlocks() : Array {
+         return this._selectionBlocks;
+      }
 
-    public function get listStylePosition() : String
-    {
-        return this._listStylePosition;
-    }// end function
+      public function clear() : void {
+         this._selectionBlocks=null;
+         this._begIdx=-1;
+         this._endIdx=-1;
+      }
+   }
 
-    public function set listStylePosition(param1:String) : void
-    {
-        this._listStylePosition = param1;
-        return;
-    }// end function
 
-    public function get markerFormat() : ITextLayoutFormat
-    {
-        return this._markerFormat;
-    }// end function
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.elements.BackgroundManager;
 
-    public function set markerFormat(param1:ITextLayoutFormat) : void
-    {
-        this._markerFormat = param1;
-        spanFormat = param1;
-        return;
-    }// end function
 
-    public function get backgroundManager() : BackgroundManager
-    {
-        return this._backgroundManager;
-    }// end function
+   class NumberLineUserData extends Object
+   {
+         
 
-    public function clearBackgroundManager() : void
-    {
-        this._backgroundManager = null;
-        return;
-    }// end function
+      function NumberLineUserData(listStylePosition:String, insideLineWidth:Number, spanFormat:ITextLayoutFormat, paraDirection:String) {
+         super();
+         this.listStylePosition=listStylePosition;
+         this.insideLineWidth=insideLineWidth;
+         this.spanFormat=spanFormat;
+         this.paragraphDirection=paraDirection;
+      }
 
-    override protected function callbackWithTextLines(param1:Function, param2:Number, param3:Number) : void
-    {
-        var _loc_4:* = null;
-        var _loc_5:* = null;
-        for each (_loc_4 in _factoryComposer._lines)
-        {
-            
-            _loc_4.userData = new NumberLineUserData(this.listStylePosition, calculateInsideNumberLineWidth(_loc_4, textFlowFormat.blockProgression), this._markerFormat, paragraphFormat.direction);
-            _loc_5 = _loc_4.textBlock;
-            if (_loc_5)
+
+
+      public var listStylePosition:String;
+
+      public var insideLineWidth:Number;
+
+      public var spanFormat:ITextLayoutFormat;
+
+      public var paragraphDirection:String;
+
+      public var listEndIndent:Number;
+
+      public var backgroundManager:BackgroundManager;
+   }
+
+
+   import flashx.textLayout.factory.StringTextLineFactory;
+   import flashx.textLayout.tlf_internal;
+   import flash.text.engine.TextLine;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.elements.BackgroundManager;
+   import flash.text.engine.TextBlock;
+   import flash.text.engine.TextLineValidity;
+   import flashx.textLayout.elements.TextFlow;
+
+   use namespace tlf_internal;
+
+   class NumberLineFactory extends StringTextLineFactory
+   {
+         
+
+      function NumberLineFactory() {
+         super();
+      }
+
+      tlf_internal  static function calculateInsideNumberLineWidth(numberLine:TextLine, bp:String) : Number {
+         var rect:Rectangle = null;
+         var minVal:Number = Number.MAX_VALUE;
+         var maxVal:Number = Number.MIN_VALUE;
+         var idx:int = 0;
+         if(bp==BlockProgression.TB)
+         {
+            while(idx<numberLine.atomCount)
             {
-                _loc_5.releaseLines(_loc_5.firstLine, _loc_5.lastLine);
+               if(numberLine.getAtomTextBlockBeginIndex(idx)!=numberLine.rawTextLength-1)
+               {
+                  rect=numberLine.getAtomBounds(idx);
+                  minVal=Math.min(minVal,rect.x);
+                  maxVal=Math.max(maxVal,rect.right);
+               }
+               idx++;
             }
-            _loc_4.x = _loc_4.x + param2;
-            _loc_4.y = _loc_4.y + param3;
-            _loc_4.validity = TextLineValidity.STATIC;
-            this.param1(_loc_4);
-        }
-        return;
-    }// end function
-
-    override function processBackgroundColors(param1:TextFlow, param2:Function, param3:Number, param4:Number, param5:Number, param6:Number)
-    {
-        this._backgroundManager = param1.backgroundManager;
-        param1.clearBackgroundManager();
-        return;
-    }// end function
-
-    static function calculateInsideNumberLineWidth(param1:TextLine, param2:String) : Number
-    {
-        var _loc_6:* = null;
-        var _loc_3:* = Number.MAX_VALUE;
-        var _loc_4:* = Number.MIN_VALUE;
-        var _loc_5:* = 0;
-        if (param2 == BlockProgression.TB)
-        {
-            while (_loc_5 < param1.atomCount)
+         }
+         else
+         {
+            while(idx<numberLine.atomCount)
             {
-                
-                if (param1.getAtomTextBlockBeginIndex(_loc_5) != (param1.rawTextLength - 1))
-                {
-                    _loc_6 = param1.getAtomBounds(_loc_5);
-                    _loc_3 = Math.min(_loc_3, _loc_6.x);
-                    _loc_4 = Math.max(_loc_4, _loc_6.right);
-                }
-                _loc_5++;
+               if(numberLine.getAtomTextBlockBeginIndex(idx)!=numberLine.rawTextLength-1)
+               {
+                  rect=numberLine.getAtomBounds(idx);
+                  minVal=Math.min(minVal,rect.top);
+                  maxVal=Math.max(maxVal,rect.bottom);
+               }
+               idx++;
             }
-        }
-        else
-        {
-            while (_loc_5 < param1.atomCount)
+         }
+         return maxVal<minVal?maxVal-minVal:0;
+      }
+
+      private var _listStylePosition:String;
+
+      private var _markerFormat:ITextLayoutFormat;
+
+      private var _backgroundManager:BackgroundManager;
+
+      public function get listStylePosition() : String {
+         return this._listStylePosition;
+      }
+
+      public function set listStylePosition(val:String) : void {
+         this._listStylePosition=val;
+      }
+
+      public function get markerFormat() : ITextLayoutFormat {
+         return this._markerFormat;
+      }
+
+      public function set markerFormat(val:ITextLayoutFormat) : void {
+         this._markerFormat=val;
+         spanFormat=val;
+      }
+
+      public function get backgroundManager() : BackgroundManager {
+         return this._backgroundManager;
+      }
+
+      public function clearBackgroundManager() : void {
+         this._backgroundManager=null;
+      }
+
+      override protected function callbackWithTextLines(callback:Function, delx:Number, dely:Number) : void {
+         var textLine:TextLine = null;
+         var textBlock:TextBlock = null;
+         for each (textLine in _factoryComposer._lines)
+         {
+            textLine.userData=new NumberLineUserData(this.listStylePosition,calculateInsideNumberLineWidth(textLine,textFlowFormat.blockProgression),this._markerFormat,paragraphFormat.direction);
+            textBlock=textLine.textBlock;
+            if(textBlock)
             {
-                
-                if (param1.getAtomTextBlockBeginIndex(_loc_5) != (param1.rawTextLength - 1))
-                {
-                    _loc_6 = param1.getAtomBounds(_loc_5);
-                    _loc_3 = Math.min(_loc_3, _loc_6.top);
-                    _loc_4 = Math.max(_loc_4, _loc_6.bottom);
-                }
-                _loc_5++;
+               textBlock.releaseLines(textBlock.firstLine,textBlock.lastLine);
             }
-        }
-        return _loc_4 > _loc_3 ? (_loc_4 - _loc_3) : (0);
-    }// end function
+            textLine.x=textLine.x+delx;
+            textLine.y=textLine.y+dely;
+            textLine.validity=TextLineValidity.STATIC;
+            callback(textLine);
+         }
+      }
 
-}
-
+      override tlf_internal function processBackgroundColors(textFlow:TextFlow, callback:Function, x:Number, y:Number, constrainWidth:Number, constrainHeight:Number) : * {
+         this._backgroundManager=textFlow.backgroundManager;
+         textFlow.clearBackgroundManager();
+      }
+   }

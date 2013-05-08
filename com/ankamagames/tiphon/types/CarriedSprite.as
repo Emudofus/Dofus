@@ -1,26 +1,27 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import flash.display.*;
-    import flash.utils.*;
+   import flash.utils.getQualifiedClassName;
+   import flash.display.DisplayObjectContainer;
 
-    public class CarriedSprite extends DynamicSprite
-    {
 
-        public function CarriedSprite()
-        {
-            return;
-        }// end function
+   public class CarriedSprite extends DynamicSprite
+   {
+         
 
-        override public function init(param1:IAnimationSpriteHandler) : void
-        {
-            var _loc_2:* = getQualifiedClassName(this).split("_");
-            var _loc_3:* = param1.getSubEntitySlot(parseInt(_loc_2[1]), parseInt(_loc_2[2]));
-            if (_loc_3)
-            {
-                addChild(_loc_3);
-            }
-            return;
-        }// end function
+      public function CarriedSprite() {
+         super();
+      }
 
-    }
+
+
+      override public function init(handler:IAnimationSpriteHandler) : void {
+         var splitedName:Array = getQualifiedClassName(this).split("_");
+         var c:DisplayObjectContainer = handler.getSubEntitySlot(parseInt(splitedName[1]),parseInt(splitedName[2]));
+         if(c)
+         {
+            addChild(c);
+         }
+      }
+   }
+
 }

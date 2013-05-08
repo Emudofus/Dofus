@@ -1,67 +1,61 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.formats.TextLayoutFormat;
 
-    public class FlowValueHolder extends TextLayoutFormat
-    {
-        private var _privateData:Object;
 
-        public function FlowValueHolder(param1:FlowValueHolder = null)
-        {
-            super(param1);
-            this.initialize(param1);
-            return;
-        }// end function
+   public class FlowValueHolder extends TextLayoutFormat
+   {
+         
 
-        private function initialize(param1:FlowValueHolder) : void
-        {
-            var _loc_2:* = null;
-            if (param1)
+      public function FlowValueHolder(initialValues:FlowValueHolder=null) {
+         super(initialValues);
+         this.initialize(initialValues);
+      }
+
+
+
+      private var _privateData:Object;
+
+      private function initialize(initialValues:FlowValueHolder) : void {
+         var s:String = null;
+         if(initialValues)
+         {
+            for (s in initialValues.privateData)
             {
-                for (_loc_2 in param1.privateData)
-                {
-                    
-                    this.setPrivateData(_loc_2, param1.privateData[_loc_2]);
-                }
+               this.setPrivateData(s,initialValues.privateData[s]);
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function get privateData() : Object
-        {
-            return this._privateData;
-        }// end function
+      public function get privateData() : Object {
+         return this._privateData;
+      }
 
-        public function set privateData(param1:Object) : void
-        {
-            this._privateData = param1;
-            return;
-        }// end function
+      public function set privateData(val:Object) : void {
+         this._privateData=val;
+      }
 
-        public function getPrivateData(param1:String)
-        {
-            return this._privateData ? (this._privateData[param1]) : (undefined);
-        }// end function
+      public function getPrivateData(styleProp:String) : * {
+         return this._privateData?this._privateData[styleProp]:undefined;
+      }
 
-        public function setPrivateData(param1:String, param2) : void
-        {
-            if (param2 === undefined)
+      public function setPrivateData(styleProp:String, newValue:*) : void {
+         if(newValue===undefined)
+         {
+            if(this._privateData)
             {
-                if (this._privateData)
-                {
-                    delete this._privateData[param1];
-                }
+               delete this._privateData[[styleProp]];
             }
-            else
+         }
+         else
+         {
+            if(this._privateData==null)
             {
-                if (this._privateData == null)
-                {
-                    this._privateData = {};
-                }
-                this._privateData[param1] = param2;
+               this._privateData={};
             }
-            return;
-        }// end function
+            this._privateData[styleProp]=newValue;
+         }
+      }
+   }
 
-    }
 }

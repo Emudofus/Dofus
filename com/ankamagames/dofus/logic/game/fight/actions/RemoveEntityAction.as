@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.fight.actions
+package com.ankamagames.dofus.logic.game.fight.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class RemoveEntityAction extends Object implements Action
-    {
-        public var actorId:int;
 
-        public function RemoveEntityAction()
-        {
-            return;
-        }// end function
+   public class RemoveEntityAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : RemoveEntityAction
-        {
-            var _loc_2:* = new RemoveEntityAction;
-            _loc_2.actorId = param1;
-            return _loc_2;
-        }// end function
+      public function RemoveEntityAction() {
+         super();
+      }
 
-    }
+      public static function create(actorId:int) : RemoveEntityAction {
+         var o:RemoveEntityAction = new RemoveEntityAction();
+         o.actorId=actorId;
+         return o;
+      }
+
+      public var actorId:int;
+   }
+
 }

@@ -1,93 +1,92 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
+package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class LockableShowCodeDialogMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var changeOrUse:Boolean = false;
-        public var codeSize:uint = 0;
-        public static const protocolId:uint = 5740;
 
-        public function LockableShowCodeDialogMessage()
-        {
+   public class LockableShowCodeDialogMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function LockableShowCodeDialogMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5740;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var changeOrUse:Boolean = false;
+
+      public var codeSize:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5740;
+      }
+
+      public function initLockableShowCodeDialogMessage(changeOrUse:Boolean=false, codeSize:uint=0) : LockableShowCodeDialogMessage {
+         this.changeOrUse=changeOrUse;
+         this.codeSize=codeSize;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.changeOrUse=false;
+         this.codeSize=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LockableShowCodeDialogMessage(output);
+      }
+
+      public function serializeAs_LockableShowCodeDialogMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.changeOrUse);
+         if(this.codeSize<0)
+         {
+            throw new Error("Forbidden value ("+this.codeSize+") on element codeSize.");
+         }
+         else
+         {
+            output.writeByte(this.codeSize);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LockableShowCodeDialogMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5740;
-        }// end function
-
-        public function initLockableShowCodeDialogMessage(param1:Boolean = false, param2:uint = 0) : LockableShowCodeDialogMessage
-        {
-            this.changeOrUse = param1;
-            this.codeSize = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.changeOrUse = false;
-            this.codeSize = 0;
-            this._isInitialized = false;
+      public function deserializeAs_LockableShowCodeDialogMessage(input:IDataInput) : void {
+         this.changeOrUse=input.readBoolean();
+         this.codeSize=input.readByte();
+         if(this.codeSize<0)
+         {
+            throw new Error("Forbidden value ("+this.codeSize+") on element of LockableShowCodeDialogMessage.codeSize.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_LockableShowCodeDialogMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_LockableShowCodeDialogMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.changeOrUse);
-            if (this.codeSize < 0)
-            {
-                throw new Error("Forbidden value (" + this.codeSize + ") on element codeSize.");
-            }
-            param1.writeByte(this.codeSize);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_LockableShowCodeDialogMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_LockableShowCodeDialogMessage(param1:IDataInput) : void
-        {
-            this.changeOrUse = param1.readBoolean();
-            this.codeSize = param1.readByte();
-            if (this.codeSize < 0)
-            {
-                throw new Error("Forbidden value (" + this.codeSize + ") on element of LockableShowCodeDialogMessage.codeSize.");
-            }
-            return;
-        }// end function
-
-    }
 }

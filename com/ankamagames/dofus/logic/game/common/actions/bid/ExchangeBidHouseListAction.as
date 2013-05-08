@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.bid
+package com.ankamagames.dofus.logic.game.common.actions.bid
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeBidHouseListAction extends Object implements Action
-    {
-        public var id:uint;
 
-        public function ExchangeBidHouseListAction()
-        {
-            return;
-        }// end function
+   public class ExchangeBidHouseListAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : ExchangeBidHouseListAction
-        {
-            var _loc_2:* = new ExchangeBidHouseListAction;
-            _loc_2.id = param1;
-            return _loc_2;
-        }// end function
+      public function ExchangeBidHouseListAction() {
+         super();
+      }
 
-    }
+      public static function create(pId:uint) : ExchangeBidHouseListAction {
+         var a:ExchangeBidHouseListAction = new ExchangeBidHouseListAction();
+         a.id=pId;
+         return a;
+      }
+
+      public var id:uint;
+   }
+
 }

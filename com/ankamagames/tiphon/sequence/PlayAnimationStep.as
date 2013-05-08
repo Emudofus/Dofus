@@ -1,151 +1,147 @@
-﻿package com.ankamagames.tiphon.sequence
+package com.ankamagames.tiphon.sequence
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.events.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.tiphon.events.TiphonEvent;
+   import flash.events.TimerEvent;
 
-    public class PlayAnimationStep extends AbstractSequencable
-    {
-        private var _target:TiphonSprite;
-        private var _animationName:String;
-        private var _loop:int;
-        private var _endEvent:String;
-        private var _waitEvent:Boolean;
-        private var _lastAnimName:String;
-        private var _lastSpriteAnimation:String;
-        private var _backToLastAnimationAtEnd:Boolean;
-        private var _callbackExecuted:Boolean = false;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayAnimationStep));
 
-        public function PlayAnimationStep(param1:TiphonSprite, param2:String, param3:Boolean = true, param4:Boolean = true, param5:String = "animation_event_end", param6:int = 1)
-        {
-            this._endEvent = param5;
-            this._target = param1;
-            this._animationName = param2;
-            this._loop = param6;
-            this._waitEvent = param4;
-            this._backToLastAnimationAtEnd = param3;
-            return;
-        }// end function
+   public class PlayAnimationStep extends AbstractSequencable
+   {
+         
 
-        public function get target() : TiphonSprite
-        {
-            return this._target;
-        }// end function
+      public function PlayAnimationStep(target:TiphonSprite, animationName:String, backToLastAnimationAtEnd:Boolean=true, waitEvent:Boolean=true, eventEnd:String="animation_event_end", loop:int=1) {
+         super();
+         this._endEvent=eventEnd;
+         this._target=target;
+         this._animationName=animationName;
+         this._loop=loop;
+         this._waitEvent=waitEvent;
+         this._backToLastAnimationAtEnd=backToLastAnimationAtEnd;
+      }
 
-        public function get animation() : String
-        {
-            return this._animationName;
-        }// end function
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(PlayAnimationStep));
 
-        public function set waitEvent(param1:Boolean) : void
-        {
-            this._waitEvent = param1;
-            return;
-        }// end function
+      private var _target:TiphonSprite;
 
-        override public function start() : void
-        {
-            var _loc_2:* = null;
-            if (this._target.isShowingOnlyBackground())
-            {
-                this._callbackExecuted = true;
-                executeCallbacks();
-                return;
-            }
-            if (this._endEvent != TiphonEvent.ANIMATION_END)
-            {
-                this._target.addEventListener(this._endEvent, this.onCustomEvent);
-            }
-            this._target.addEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
-            this._target.addEventListener(TiphonEvent.RENDER_FAILED, this.onAnimationFail);
-            this._target.addEventListener(TiphonEvent.SPRITE_INIT_FAILED, this.onAnimationFail);
-            this._lastAnimName = this._target.getAnimation();
-            this._target.overrideNextAnimation = true;
-            var _loc_1:* = this._target.getAvaibleDirection(this._animationName, true);
-            if (!_loc_1[this._target.getDirection()])
-            {
-                for (_loc_2 in _loc_1)
-                {
-                    
-                    if (_loc_1[_loc_2])
-                    {
-                        this._target.setDirection(uint(_loc_2));
-                        break;
-                    }
-                }
-            }
-            this._target.setAnimation(this._animationName);
-            this._lastSpriteAnimation = this._target.getAnimation();
-            if (!this._waitEvent)
-            {
-                this._callbackExecuted = true;
-                executeCallbacks();
-            }
-            return;
-        }// end function
+      private var _animationName:String;
 
-        private function onCustomEvent(event:TiphonEvent) : void
-        {
-            this._target.removeEventListener(this._endEvent, this.onCustomEvent);
-            this._callbackExecuted = true;
+      private var _loop:int;
+
+      private var _endEvent:String;
+
+      private var _waitEvent:Boolean;
+
+      private var _lastAnimName:String;
+
+      private var _lastSpriteAnimation:String;
+
+      private var _backToLastAnimationAtEnd:Boolean;
+
+      private var _callbackExecuted:Boolean = false;
+
+      public function get target() : TiphonSprite {
+         return this._target;
+      }
+
+      public function get animation() : String {
+         return this._animationName;
+      }
+
+      public function set waitEvent(v:Boolean) : void {
+         this._waitEvent=v;
+      }
+
+      override public function start() : void {
+         var s:String = null;
+         if(this._target.isShowingOnlyBackground())
+         {
+            this._callbackExecuted=true;
             executeCallbacks();
             return;
-        }// end function
-
-        private function onAnimationFail(event:TiphonEvent) : void
-        {
-            if (this._endEvent != TiphonEvent.ANIMATION_END)
+         }
+         if(this._endEvent!=TiphonEvent.ANIMATION_END)
+         {
+            this._target.addEventListener(this._endEvent,this.onCustomEvent);
+         }
+         this._target.addEventListener(TiphonEvent.ANIMATION_END,this.onAnimationEnd);
+         this._target.addEventListener(TiphonEvent.RENDER_FAILED,this.onAnimationFail);
+         this._target.addEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.onAnimationFail);
+         this._lastAnimName=this._target.getAnimation();
+         this._target.overrideNextAnimation=true;
+         var directions:Array = this._target.getAvaibleDirection(this._animationName,true);
+         if(!directions[this._target.getDirection()])
+         {
+            for (s in directions)
             {
-                this.onCustomEvent(event);
+               if(directions[s])
+               {
+                  this._target.setDirection(uint(s));
+                  break;
+               }
             }
-            this.onAnimationEnd(event);
-            return;
-        }// end function
+         }
+         this._target.setAnimation(this._animationName);
+         this._lastSpriteAnimation=this._target.getAnimation();
+         if(!this._waitEvent)
+         {
+            this._callbackExecuted=true;
+            executeCallbacks();
+         }
+      }
 
-        private function onAnimationEnd(event:TiphonEvent) : void
-        {
-            var _loc_2:* = null;
-            if (this._target)
+      private function onCustomEvent(e:TiphonEvent) : void {
+         this._target.removeEventListener(this._endEvent,this.onCustomEvent);
+         this._callbackExecuted=true;
+         executeCallbacks();
+      }
+
+      private function onAnimationFail(e:TiphonEvent) : void {
+         if(this._endEvent!=TiphonEvent.ANIMATION_END)
+         {
+            this.onCustomEvent(e);
+         }
+         this.onAnimationEnd(e);
+      }
+
+      private function onAnimationEnd(e:TiphonEvent) : void {
+         var currentSpriteAnimation:String = null;
+         if(this._target)
+         {
+            if(this._endEvent!=TiphonEvent.ANIMATION_END)
             {
-                if (this._endEvent != TiphonEvent.ANIMATION_END)
-                {
-                    this._target.removeEventListener(this._endEvent, this.onCustomEvent);
-                }
-                this._target.removeEventListener(TiphonEvent.ANIMATION_END, this.onAnimationEnd);
-                this._target.removeEventListener(TiphonEvent.RENDER_FAILED, this.onAnimationEnd);
-                this._target.removeEventListener(TiphonEvent.SPRITE_INIT_FAILED, this.onAnimationFail);
-                _loc_2 = this._target.getAnimation();
-                if (this._backToLastAnimationAtEnd)
-                {
-                    if (_loc_2 && this._lastSpriteAnimation && this._lastSpriteAnimation.indexOf(_loc_2) != -1)
-                    {
-                        this._target.setAnimation("AnimStatique");
-                    }
-                }
+               this._target.removeEventListener(this._endEvent,this.onCustomEvent);
             }
-            if (!this._callbackExecuted)
+            this._target.removeEventListener(TiphonEvent.ANIMATION_END,this.onAnimationEnd);
+            this._target.removeEventListener(TiphonEvent.RENDER_FAILED,this.onAnimationEnd);
+            this._target.removeEventListener(TiphonEvent.SPRITE_INIT_FAILED,this.onAnimationFail);
+            currentSpriteAnimation=this._target.getAnimation();
+            if(this._backToLastAnimationAtEnd)
             {
-                executeCallbacks();
+               if((currentSpriteAnimation)&&(this._lastSpriteAnimation)&&(!(this._lastSpriteAnimation.indexOf(currentSpriteAnimation)==-1)))
+               {
+                  this._target.setAnimation("AnimStatique");
+               }
             }
-            return;
-        }// end function
+         }
+         if(!this._callbackExecuted)
+         {
+            executeCallbacks();
+         }
+      }
 
-        override public function toString() : String
-        {
-            return "play " + this._animationName + " on " + (this._target ? (this._target.name) : (this._target));
-        }// end function
+      override public function toString() : String {
+         return "play "+this._animationName+" on "+(this._target?this._target.name:this._target);
+      }
 
-        override protected function onTimeOut(event:TimerEvent) : void
-        {
-            this._callbackExecuted = true;
-            this.onAnimationEnd(null);
-            super.onTimeOut(event);
-            return;
-        }// end function
+      override protected function onTimeOut(e:TimerEvent) : void {
+         this._callbackExecuted=true;
+         this.onAnimationEnd(null);
+         super.onTimeOut(e);
+      }
+   }
 
-    }
 }

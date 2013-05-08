@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.externalGame
+package com.ankamagames.dofus.logic.game.common.actions.externalGame
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class KrosmasterInventoryRequestAction extends Object implements Action
-    {
 
-        public function KrosmasterInventoryRequestAction()
-        {
-            return;
-        }// end function
+   public class KrosmasterInventoryRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : KrosmasterInventoryRequestAction
-        {
-            var _loc_1:* = new KrosmasterInventoryRequestAction;
-            return _loc_1;
-        }// end function
+      public function KrosmasterInventoryRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : KrosmasterInventoryRequestAction {
+         var action:KrosmasterInventoryRequestAction = new KrosmasterInventoryRequestAction();
+         return action;
+      }
+
+
+   }
+
 }

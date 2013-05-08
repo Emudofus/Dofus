@@ -1,115 +1,113 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    import com.ankamagames.jerakine.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.events.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.jerakine.utils.files.*;
-    import flash.events.*;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.types.LangMetaData;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.jerakine.JerakineConstants;
+   import com.ankamagames.jerakine.types.events.LangFileEvent;
+   import com.ankamagames.jerakine.utils.files.FileUtils;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class I18nUpdater extends DataUpdateManager
-    {
-        private var _language:String;
-        private var _overrideProvider:Uri;
-        private static var _self:I18nUpdater;
 
-        public function I18nUpdater()
-        {
-            if (_self)
-            {
-                throw new SingletonError();
-            }
+   public class I18nUpdater extends DataUpdateManager
+   {
+         
+
+      public function I18nUpdater() {
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function initI18n(param1:String, param2:Uri, param3:Boolean = false, param4:Uri = null) : void
-        {
-            this._language = param1;
-            this._overrideProvider = param4;
-            super.init(param2, param3);
-            return;
-        }// end function
+      private static var _self:I18nUpdater;
 
-        override protected function checkFileVersion(param1:String, param2:String) : Boolean
-        {
-            return false;
-        }// end function
+      public static function getInstance() : I18nUpdater {
+         if(!_self)
+         {
+            _self=new I18nUpdater();
+         }
+         return _self;
+      }
 
-        override public function clear() : void
-        {
-            I18nFileAccessor.getInstance().close();
-            return;
-        }// end function
+      private var _language:String;
 
-        override protected function onLoaded(event:ResourceLoadedEvent) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            switch(event.uri.fileType)
-            {
-                case "d2i":
-                {
-                    I18nFileAccessor.getInstance().init(event.uri);
-                    if (this._overrideProvider)
-                    {
-                        I18nFileAccessor.getInstance().addOverrideFile(this._overrideProvider);
-                    }
-                    _versions[event.uri.tag.file] = event.uri.tag.version;
-                    StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO, _storeKey, _versions);
-                    dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE, false, false, event.uri.tag.file));
-                    _dataFilesLoaded = true;
-                    var _loc_7:* = _loadedFileCount + 1;
-                    _loadedFileCount = _loc_7;
-                    break;
-                }
-                case "meta":
-                {
-                    _loc_2 = LangMetaData.fromXml(event.resource, event.uri.uri, this.checkFileVersion);
-                    _loc_4 = 0;
-                    for (_loc_5 in _loc_2.clearFile)
-                    {
-                        
-                        if (_loc_5.indexOf("_" + this._language) == -1)
+      private var _overrideProvider:Uri;
+
+      public function initI18n(language:String, metaFileListe:Uri, clearAll:Boolean=false, overrideProvider:Uri=null) : void {
+         this._language=language;
+         this._overrideProvider=overrideProvider;
+         super.init(metaFileListe,clearAll);
+      }
+
+      override protected function checkFileVersion(sFileName:String, sVersion:String) : Boolean {
+         return false;
+      }
+
+      override public function clear() : void {
+         I18nFileAccessor.getInstance().close();
+      }
+
+      override protected function onLoaded(e:ResourceLoadedEvent) : void {
+         var meta:LangMetaData = null;
+         var uri:Uri = null;
+         var realCount:uint = 0;
+         var file:String = null;
+         switch(e.uri.fileType)
+         {
+            case "d2i":
+               I18nFileAccessor.getInstance().init(e.uri);
+               if(this._overrideProvider)
+               {
+                  I18nFileAccessor.getInstance().addOverrideFile(this._overrideProvider);
+               }
+               _versions[e.uri.tag.file]=e.uri.tag.version;
+               StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,_storeKey,_versions);
+               dispatchEvent(new LangFileEvent(LangFileEvent.COMPLETE,false,false,e.uri.tag.file));
+               _dataFilesLoaded=true;
+               _loadedFileCount++;
+               break;
+            case "meta":
+               meta=LangMetaData.fromXml(e.resource,e.uri.uri,this.checkFileVersion);
+               realCount=0;
+               for (file in meta.clearFile)
+               {
+                  if(file.indexOf("_"+this._language)==-1)
+                  {
+                  }
+                  else
+                  {
+                     uri=new Uri(FileUtils.getFilePath(e.uri.path)+"/"+file);
+                     uri.tag=
                         {
-                            continue;
+                           version:meta.clearFile[file],
+                           file:FileUtils.getFileStartName(e.uri.uri)+"."+file
                         }
-                        _loc_3 = new Uri(FileUtils.getFilePath(event.uri.path) + "/" + _loc_5);
-                        _loc_3.tag = {version:_loc_2.clearFile[_loc_5], file:FileUtils.getFileStartName(event.uri.uri) + "." + _loc_5};
-                        _files.push(_loc_3);
-                        _loc_4 = _loc_4 + 1;
-                    }
-                    if (_loc_4)
-                    {
-                        _loader.load(_files);
-                    }
-                    else
-                    {
-                        dispatchEvent(new Event(Event.COMPLETE));
-                    }
-                    break;
-                }
-                default:
-                {
-                    super.onLoaded(event);
-                    break;
-                    break;
-                }
-            }
-            return;
-        }// end function
+                     ;
+                     _files.push(uri);
+                     realCount++;
+                  }
+               }
+               if(realCount)
+               {
+                  _loader.load(_files);
+               }
+               else
+               {
+                  dispatchEvent(new Event(Event.COMPLETE));
+               }
+               break;
+            default:
+               super.onLoaded(e);
+         }
+      }
+   }
 
-        public static function getInstance() : I18nUpdater
-        {
-            if (!_self)
-            {
-                _self = new I18nUpdater;
-            }
-            return _self;
-        }// end function
-
-    }
 }

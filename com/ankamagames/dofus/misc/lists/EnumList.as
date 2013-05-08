@@ -1,13 +1,18 @@
-﻿package com.ankamagames.dofus.misc.lists
+package com.ankamagames.dofus.misc.lists
 {
 
-    public class EnumList extends Object
-    {
 
-        public function EnumList()
-        {
-            return;
-        }// end function
+   public class EnumList extends Object
+   {
+         
 
-    }
+      public function EnumList() {
+         super();
+      }
+
+
+
+
+   }
+
 }

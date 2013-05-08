@@ -1,23 +1,26 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
+   import flashx.textLayout.tlf_internal;
 
-    final public class DivElement extends ContainerFormattedElement
-    {
+   use namespace tlf_internal;
 
-        public function DivElement()
-        {
-            return;
-        }// end function
+   public final class DivElement extends ContainerFormattedElement
+   {
+         
 
-        override protected function get abstract() : Boolean
-        {
-            return false;
-        }// end function
+      public function DivElement() {
+         super();
+      }
 
-        override function get defaultTypeName() : String
-        {
-            return "div";
-        }// end function
 
-    }
+
+      override protected function get abstract() : Boolean {
+         return false;
+      }
+
+      override tlf_internal function get defaultTypeName() : String {
+         return "div";
+      }
+   }
+
 }

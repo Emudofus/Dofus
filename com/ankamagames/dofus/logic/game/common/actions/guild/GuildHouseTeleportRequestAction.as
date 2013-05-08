@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.guild
+package com.ankamagames.dofus.logic.game.common.actions.guild
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuildHouseTeleportRequestAction extends Object implements Action
-    {
-        public var houseId:uint;
 
-        public function GuildHouseTeleportRequestAction()
-        {
-            return;
-        }// end function
+   public class GuildHouseTeleportRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : GuildHouseTeleportRequestAction
-        {
-            var _loc_2:* = new GuildHouseTeleportRequestAction;
-            _loc_2.houseId = param1;
-            return _loc_2;
-        }// end function
+      public function GuildHouseTeleportRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pHouseId:uint) : GuildHouseTeleportRequestAction {
+         var action:GuildHouseTeleportRequestAction = new GuildHouseTeleportRequestAction();
+         action.houseId=pHouseId;
+         return action;
+      }
+
+      public var houseId:uint;
+   }
+
 }

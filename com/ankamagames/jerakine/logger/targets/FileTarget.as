@@ -1,108 +1,90 @@
-﻿package com.ankamagames.jerakine.logger.targets
+package com.ankamagames.jerakine.logger.targets
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.logger.targets.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.events.*;
-    import flash.filesystem.*;
-    import flash.net.*;
+   import flash.net.XMLSocket;
+   import flash.filesystem.FileStream;
+   import com.ankamagames.jerakine.logger.LogLevel;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.logger.LogEvent;
+   import com.ankamagames.jerakine.logger.TextLogEvent;
+   import com.ankamagames.jerakine.types.CustomSharedObject;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
 
-    public class FileTarget extends AbstractTarget implements ConfigurableLoggingTarget
-    {
-        private var _name:String;
-        private static var _socket:XMLSocket = new XMLSocket();
-        private static var _history:Array = new Array();
-        private static var _connecting:Boolean = false;
-        private static var _fileStream:FileStream = new FileStream();
 
-        public function FileTarget()
-        {
-            var _loc_1:* = new Date();
-            this._name = CustomSharedObject.getCustomSharedObjectDirectory() + "/logs/log_" + _loc_1.fullYear + "-" + _loc_1.month + "-" + _loc_1.day + "_" + _loc_1.hours + "h" + _loc_1.minutes + "m" + _loc_1.seconds + "s" + _loc_1.milliseconds + ".log";
-            var _loc_2:* = new File(this._name);
-            _fileStream.openAsync(_loc_2, FileMode.WRITE);
-            return;
-        }// end function
+   public class FileTarget extends AbstractTarget implements ConfigurableLoggingTarget
+   {
+         
 
-        override public function logEvent(event:LogEvent) : void
-        {
-            if (event is TextLogEvent)
-            {
-                send(event.level, event.message + "\n");
-            }
-            return;
-        }// end function
+      public function FileTarget() {
+         super();
+         var date:Date = new Date();
+         this._name=CustomSharedObject.getCustomSharedObjectDirectory()+"/logs/log_"+date.fullYear+"-"+date.month+"-"+date.day+"_"+date.hours+"h"+date.minutes+"m"+date.seconds+"s"+date.milliseconds+".log";
+         var file:File = new File(this._name);
+         _fileStream.openAsync(file,FileMode.WRITE);
+      }
 
-        public function configure(param1:XML) : void
-        {
-            return;
-        }// end function
+      private static var _socket:XMLSocket = new XMLSocket();
 
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
+      private static var _history:Array = new Array();
 
-        private static function send(param1:int, param2:String) : void
-        {
-            _fileStream.writeUTFBytes("[" + param1 + "] " + param2);
-            return;
-        }// end function
+      private static var _connecting:Boolean = false;
 
-        private static function getKeyName(param1:int) : String
-        {
-            switch(param1)
-            {
-                case LogLevel.TRACE:
-                {
-                    return "trace";
-                }
-                case LogLevel.DEBUG:
-                {
-                    return "debug";
-                }
-                case LogLevel.INFO:
-                {
-                    return "info";
-                }
-                case LogLevel.WARN:
-                {
-                    return "warning";
-                }
-                case LogLevel.ERROR:
-                {
-                    return "error";
-                }
-                case LogLevel.FATAL:
-                {
-                    return "fatal";
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return "severe";
-        }// end function
+      private static var _fileStream:FileStream = new FileStream();
 
-        private static function onSocket(event:Event) : void
-        {
-            var _loc_2:* = null;
-            _connecting = false;
-            for each (_loc_2 in _history)
-            {
-                
-                send(_loc_2.level, _loc_2.message);
-            }
-            _history = new Array();
-            return;
-        }// end function
+      private static function send(level:int, message:String) : void {
+         _fileStream.writeUTFBytes("["+level+"] "+message);
+      }
 
-        private static function onSocketError(event:Event) : void
-        {
-            _connecting = false;
-            return;
-        }// end function
+      private static function getKeyName(level:int) : String {
+         switch(level)
+         {
+            case LogLevel.TRACE:
+               return "trace";
+            case LogLevel.DEBUG:
+               return "debug";
+            case LogLevel.INFO:
+               return "info";
+            case LogLevel.WARN:
+               return "warning";
+            case LogLevel.ERROR:
+               return "error";
+            case LogLevel.FATAL:
+               return "fatal";
+            default:
+               return "severe";
+         }
+      }
 
-    }
+      private static function onSocket(e:Event) : void {
+         var o:LoggerHistoryElement = null;
+         _connecting=false;
+         for each (o in _history)
+         {
+            send(o.level,o.message);
+         }
+         _history=new Array();
+      }
+
+      private static function onSocketError(e:Event) : void {
+         _connecting=false;
+      }
+
+      private var _name:String;
+
+      override public function logEvent(event:LogEvent) : void {
+         if(event is TextLogEvent)
+         {
+            send(event.level,event.message+"\n");
+         }
+      }
+
+      public function configure(config:XML) : void {
+         
+      }
+
+      public function get name() : String {
+         return this._name;
+      }
+   }
+
 }

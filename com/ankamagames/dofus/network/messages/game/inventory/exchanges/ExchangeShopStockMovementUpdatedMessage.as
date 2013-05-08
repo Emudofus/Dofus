@@ -1,83 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSell;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeShopStockMovementUpdatedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var objectInfo:ObjectItemToSell;
-        public static const protocolId:uint = 5909;
 
-        public function ExchangeShopStockMovementUpdatedMessage()
-        {
-            this.objectInfo = new ObjectItemToSell();
-            return;
-        }// end function
+   public class ExchangeShopStockMovementUpdatedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeShopStockMovementUpdatedMessage() {
+         this.objectInfo=new ObjectItemToSell();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5909;
-        }// end function
+      public static const protocolId:uint = 5909;
 
-        public function initExchangeShopStockMovementUpdatedMessage(param1:ObjectItemToSell = null) : ExchangeShopStockMovementUpdatedMessage
-        {
-            this.objectInfo = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.objectInfo = new ObjectItemToSell();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var objectInfo:ObjectItemToSell;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5909;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeShopStockMovementUpdatedMessage(param1);
-            return;
-        }// end function
+      public function initExchangeShopStockMovementUpdatedMessage(objectInfo:ObjectItemToSell=null) : ExchangeShopStockMovementUpdatedMessage {
+         this.objectInfo=objectInfo;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ExchangeShopStockMovementUpdatedMessage(param1:IDataOutput) : void
-        {
-            this.objectInfo.serializeAs_ObjectItemToSell(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.objectInfo=new ObjectItemToSell();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeShopStockMovementUpdatedMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ExchangeShopStockMovementUpdatedMessage(param1:IDataInput) : void
-        {
-            this.objectInfo = new ObjectItemToSell();
-            this.objectInfo.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeShopStockMovementUpdatedMessage(output);
+      }
+
+      public function serializeAs_ExchangeShopStockMovementUpdatedMessage(output:IDataOutput) : void {
+         this.objectInfo.serializeAs_ObjectItemToSell(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeShopStockMovementUpdatedMessage(input);
+      }
+
+      public function deserializeAs_ExchangeShopStockMovementUpdatedMessage(input:IDataInput) : void {
+         this.objectInfo=new ObjectItemToSell();
+         this.objectInfo.deserialize(input);
+      }
+   }
+
 }

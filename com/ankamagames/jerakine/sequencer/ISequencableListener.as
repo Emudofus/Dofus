@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.sequencer
+package com.ankamagames.jerakine.sequencer
 {
 
-    public interface ISequencableListener
-    {
 
-        public function ISequencableListener();
+   public interface ISequencableListener
+   {
+         
 
-        function stepFinished() : void;
 
-    }
+
+      function stepFinished() : void;
+   }
+
 }

@@ -1,64 +1,65 @@
-﻿package com.ankamagames.dofus.network.types.game.context.fight
+package com.ankamagames.dofus.network.types.game.context.fight
 {
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.dofus.network.types.game.look.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class GameFightFighterNamedInformations extends GameFightFighterInformations implements INetworkType
-    {
-        public var name:String = "";
-        public static const protocolId:uint = 158;
 
-        public function GameFightFighterNamedInformations()
-        {
-            return;
-        }// end function
+   public class GameFightFighterNamedInformations extends GameFightFighterInformations implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 158;
-        }// end function
+      public function GameFightFighterNamedInformations() {
+         this.status=new PlayerStatus();
+         super();
+      }
 
-        public function initGameFightFighterNamedInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:uint = 2, param5:Boolean = false, param6:GameFightMinimalStats = null, param7:String = "") : GameFightFighterNamedInformations
-        {
-            super.initGameFightFighterInformations(param1, param2, param3, param4, param5, param6);
-            this.name = param7;
-            return this;
-        }// end function
+      public static const protocolId:uint = 158;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.name = "";
-            return;
-        }// end function
+      public var name:String = "";
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightFighterNamedInformations(param1);
-            return;
-        }// end function
+      public var status:PlayerStatus;
 
-        public function serializeAs_GameFightFighterNamedInformations(param1:IDataOutput) : void
-        {
-            super.serializeAs_GameFightFighterInformations(param1);
-            param1.writeUTF(this.name);
-            return;
-        }// end function
+      override public function getTypeId() : uint {
+         return 158;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightFighterNamedInformations(param1);
-            return;
-        }// end function
+      public function initGameFightFighterNamedInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null, name:String="", status:PlayerStatus=null) : GameFightFighterNamedInformations {
+         super.initGameFightFighterInformations(contextualId,look,disposition,teamId,alive,stats);
+         this.name=name;
+         this.status=status;
+         return this;
+      }
 
-        public function deserializeAs_GameFightFighterNamedInformations(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.name = param1.readUTF();
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.name="";
+         this.status=new PlayerStatus();
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightFighterNamedInformations(output);
+      }
+
+      public function serializeAs_GameFightFighterNamedInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterInformations(output);
+         output.writeUTF(this.name);
+         this.status.serializeAs_PlayerStatus(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightFighterNamedInformations(input);
+      }
+
+      public function deserializeAs_GameFightFighterNamedInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.name=input.readUTF();
+         this.status=new PlayerStatus();
+         this.status.deserialize(input);
+      }
+   }
+
 }

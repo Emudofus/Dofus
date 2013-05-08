@@ -1,35 +1,35 @@
-﻿package com.ankamagames.dofus.logic.game.fight.steps
+package com.ankamagames.dofus.logic.game.fight.steps
 {
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.tiphon.display.*;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.tiphon.display.TiphonSprite;
 
-    public class FightRemoveCarriedEntityStep extends FightRemoveSubEntityStep
-    {
-        private var _carriedId:int;
 
-        public function FightRemoveCarriedEntityStep(param1:int, param2:int, param3:uint, param4:uint)
-        {
-            this._carriedId = param2;
-            super(param1, param3, param4);
-            return;
-        }// end function
+   public class FightRemoveCarriedEntityStep extends FightRemoveSubEntityStep
+   {
+         
 
-        override public function get stepType() : String
-        {
-            return "removeCarriedEntity";
-        }// end function
+      public function FightRemoveCarriedEntityStep(fighterId:int, carriedId:int, category:uint, slot:uint) {
+         this._carriedId=carriedId;
+         super(fighterId,category,slot);
+      }
 
-        override public function start() : void
-        {
-            var _loc_1:* = DofusEntities.getEntity(this._carriedId) as TiphonSprite;
-            var _loc_2:* = _loc_1.parentSprite;
-            if (_loc_1 && _loc_2)
-            {
-                _loc_2.removeSubEntity(_loc_1);
-            }
-            super.start();
-            return;
-        }// end function
 
-    }
+
+      private var _carriedId:int;
+
+      override public function get stepType() : String {
+         return "removeCarriedEntity";
+      }
+
+      override public function start() : void {
+         var carriedEntity:TiphonSprite = DofusEntities.getEntity(this._carriedId) as TiphonSprite;
+         var parentSprite:TiphonSprite = carriedEntity.parentSprite;
+         if((carriedEntity)&&(parentSprite))
+         {
+            parentSprite.removeSubEntity(carriedEntity);
+         }
+         super.start();
+      }
+   }
+
 }

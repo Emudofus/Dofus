@@ -1,24 +1,25 @@
-﻿package com.ankamagames.berilia.types.event
+package com.ankamagames.berilia.types.event
 {
-    import com.ankamagames.berilia.uiRender.*;
-    import flash.events.*;
+   import flash.events.Event;
+   import com.ankamagames.berilia.uiRender.XmlPreProcessor;
 
-    public class PreProcessEndEvent extends Event
-    {
-        private var _preprocessor:XmlPreProcessor;
-        public static const PRE_PROCESS_END:String = "pre_process_end";
 
-        public function PreProcessEndEvent(param1:XmlPreProcessor)
-        {
-            super(PRE_PROCESS_END, false, false);
-            this._preprocessor = param1;
-            return;
-        }// end function
+   public class PreProcessEndEvent extends Event
+   {
+         
 
-        public function get preprocessor() : XmlPreProcessor
-        {
-            return this._preprocessor;
-        }// end function
+      public function PreProcessEndEvent(preprocessor:XmlPreProcessor) {
+         super(PRE_PROCESS_END,false,false);
+         this._preprocessor=preprocessor;
+      }
 
-    }
+      public static const PRE_PROCESS_END:String = "pre_process_end";
+
+      private var _preprocessor:XmlPreProcessor;
+
+      public function get preprocessor() : XmlPreProcessor {
+         return this._preprocessor;
+      }
+   }
+
 }

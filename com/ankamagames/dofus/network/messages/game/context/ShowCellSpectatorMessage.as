@@ -1,84 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.context
+package com.ankamagames.dofus.network.messages.game.context
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ShowCellSpectatorMessage extends ShowCellMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var playerName:String = "";
-        public static const protocolId:uint = 6158;
 
-        public function ShowCellSpectatorMessage()
-        {
-            return;
-        }// end function
+   public class ShowCellSpectatorMessage extends ShowCellMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function ShowCellSpectatorMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6158;
-        }// end function
+      public static const protocolId:uint = 6158;
 
-        public function initShowCellSpectatorMessage(param1:int = 0, param2:uint = 0, param3:String = "") : ShowCellSpectatorMessage
-        {
-            super.initShowCellMessage(param1, param2);
-            this.playerName = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.playerName = "";
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var playerName:String = "";
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6158;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ShowCellSpectatorMessage(param1);
-            return;
-        }// end function
+      public function initShowCellSpectatorMessage(sourceId:int=0, cellId:uint=0, playerName:String="") : ShowCellSpectatorMessage {
+         super.initShowCellMessage(sourceId,cellId);
+         this.playerName=playerName;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ShowCellSpectatorMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_ShowCellMessage(param1);
-            param1.writeUTF(this.playerName);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.playerName="";
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ShowCellSpectatorMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ShowCellSpectatorMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.playerName = param1.readUTF();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShowCellSpectatorMessage(output);
+      }
+
+      public function serializeAs_ShowCellSpectatorMessage(output:IDataOutput) : void {
+         super.serializeAs_ShowCellMessage(output);
+         output.writeUTF(this.playerName);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShowCellSpectatorMessage(input);
+      }
+
+      public function deserializeAs_ShowCellSpectatorMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.playerName=input.readUTF();
+      }
+   }
+
 }

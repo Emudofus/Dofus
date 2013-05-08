@@ -1,21 +1,24 @@
-﻿package com.ankamagames.jerakine.logger.targets
+package com.ankamagames.jerakine.logger.targets
 {
-    import com.ankamagames.jerakine.logger.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.LogEvent;
 
-    public interface LoggingTarget
-    {
 
-        public function LoggingTarget();
+   public interface LoggingTarget
+   {
+         
 
-        function set filters(param1:Array) : void;
 
-        function get filters() : Array;
 
-        function addLogger(param1:Logger) : void;
+      function set filters(param1:Array) : void;
 
-        function removeLogger(param1:Logger) : void;
+      function get filters() : Array;
 
-        function onLog(event:LogEvent) : void;
+      function addLogger(param1:Logger) : void;
 
-    }
+      function removeLogger(param1:Logger) : void;
+
+      function onLog(param1:LogEvent) : void;
+   }
+
 }

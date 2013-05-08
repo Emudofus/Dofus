@@ -1,120 +1,121 @@
-﻿package com.ankamagames.dofus.network.messages.game.basic
+package com.ankamagames.dofus.network.messages.game.basic
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class TextInformationMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var msgType:uint = 0;
-        public var msgId:uint = 0;
-        public var parameters:Vector.<String>;
-        public static const protocolId:uint = 780;
 
-        public function TextInformationMessage()
-        {
-            this.parameters = new Vector.<String>;
-            return;
-        }// end function
+   public class TextInformationMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function TextInformationMessage() {
+         this.parameters=new Vector.<String>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 780;
-        }// end function
+      public static const protocolId:uint = 780;
 
-        public function initTextInformationMessage(param1:uint = 0, param2:uint = 0, param3:Vector.<String> = null) : TextInformationMessage
-        {
-            this.msgType = param1;
-            this.msgId = param2;
-            this.parameters = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.msgType = 0;
-            this.msgId = 0;
-            this.parameters = new Vector.<String>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var msgType:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var msgId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_TextInformationMessage(param1);
-            return;
-        }// end function
+      public var parameters:Vector.<String>;
 
-        public function serializeAs_TextInformationMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.msgType);
-            if (this.msgId < 0)
+      override public function getMessageId() : uint {
+         return 780;
+      }
+
+      public function initTextInformationMessage(msgType:uint=0, msgId:uint=0, parameters:Vector.<String>=null) : TextInformationMessage {
+         this.msgType=msgType;
+         this.msgId=msgId;
+         this.parameters=parameters;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.msgType=0;
+         this.msgId=0;
+         this.parameters=new Vector.<String>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TextInformationMessage(output);
+      }
+
+      public function serializeAs_TextInformationMessage(output:IDataOutput) : void {
+         output.writeByte(this.msgType);
+         if(this.msgId<0)
+         {
+            throw new Error("Forbidden value ("+this.msgId+") on element msgId.");
+         }
+         else
+         {
+            output.writeShort(this.msgId);
+            output.writeShort(this.parameters.length);
+            _i3=0;
+            while(_i3<this.parameters.length)
             {
-                throw new Error("Forbidden value (" + this.msgId + ") on element msgId.");
-            }
-            param1.writeShort(this.msgId);
-            param1.writeShort(this.parameters.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.parameters.length)
-            {
-                
-                param1.writeUTF(this.parameters[_loc_2]);
-                _loc_2 = _loc_2 + 1;
+               output.writeUTF(this.parameters[_i3]);
+               _i3++;
             }
             return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_TextInformationMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TextInformationMessage(input);
+      }
 
-        public function deserializeAs_TextInformationMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.msgType = param1.readByte();
-            if (this.msgType < 0)
+      public function deserializeAs_TextInformationMessage(input:IDataInput) : void {
+         var _val3:String = null;
+         this.msgType=input.readByte();
+         if(this.msgType<0)
+         {
+            throw new Error("Forbidden value ("+this.msgType+") on element of TextInformationMessage.msgType.");
+         }
+         else
+         {
+            this.msgId=input.readShort();
+            if(this.msgId<0)
             {
-                throw new Error("Forbidden value (" + this.msgType + ") on element of TextInformationMessage.msgType.");
+               throw new Error("Forbidden value ("+this.msgId+") on element of TextInformationMessage.msgId.");
             }
-            this.msgId = param1.readShort();
-            if (this.msgId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.msgId + ") on element of TextInformationMessage.msgId.");
+               _parametersLen=input.readUnsignedShort();
+               _i3=0;
+               while(_i3<_parametersLen)
+               {
+                  _val3=input.readUTF();
+                  this.parameters.push(_val3);
+                  _i3++;
+               }
+               return;
             }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUTF();
-                this.parameters.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

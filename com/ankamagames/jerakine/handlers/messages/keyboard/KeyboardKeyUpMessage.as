@@ -1,24 +1,26 @@
-﻿package com.ankamagames.jerakine.handlers.messages.keyboard
+package com.ankamagames.jerakine.handlers.messages.keyboard
 {
-    import flash.display.*;
-    import flash.events.*;
+   import flash.display.InteractiveObject;
+   import flash.events.KeyboardEvent;
 
-    public class KeyboardKeyUpMessage extends KeyboardMessage
-    {
 
-        public function KeyboardKeyUpMessage()
-        {
-            return;
-        }// end function
+   public class KeyboardKeyUpMessage extends KeyboardMessage
+   {
+         
 
-        public static function create(param1:InteractiveObject, param2:KeyboardEvent, param3:KeyboardMessage = null) : KeyboardKeyUpMessage
-        {
-            if (!param3)
-            {
-                param3 = new KeyboardKeyUpMessage;
-            }
-            return KeyboardMessage.create(param1, param2, param3) as KeyboardKeyUpMessage;
-        }// end function
+      public function KeyboardKeyUpMessage() {
+         super();
+      }
 
-    }
+      public static function create(target:InteractiveObject, keyboardEvent:KeyboardEvent, instance:KeyboardMessage=null) : KeyboardKeyUpMessage {
+         if(!instance)
+         {
+            instance=new KeyboardKeyUpMessage();
+         }
+         return KeyboardMessage.create(target,keyboardEvent,instance) as KeyboardKeyUpMessage;
+      }
+
+
+   }
+
 }

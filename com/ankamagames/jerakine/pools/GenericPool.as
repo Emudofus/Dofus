@@ -1,36 +1,37 @@
-﻿package com.ankamagames.jerakine.pools
+package com.ankamagames.jerakine.pools
 {
-    import flash.utils.*;
+   import flash.utils.Dictionary;
 
-    public class GenericPool extends Object
-    {
-        private static var _pools:Dictionary = new Dictionary();
 
-        public function GenericPool()
-        {
-            return;
-        }// end function
+   public class GenericPool extends Object
+   {
+         
 
-        public static function get(param1:Class, ... args)
-        {
-            if (_pools[param1] && _pools[param1].length)
-            {
-                return param1["create"].apply(null, args.concat(_pools[param1].pop()));
-            }
-            return param1["create"].apply(null, args);
-        }// end function
+      public function GenericPool() {
+         super();
+      }
 
-        public static function free(param1:Poolable) : void
-        {
-            param1.free();
-            var _loc_2:* = Object(param1).constructor;
-            if (!_pools[_loc_2])
-            {
-                _pools[_loc_2] = new Array();
-            }
-            (_pools[_loc_2] as Array).push(param1);
-            return;
-        }// end function
+      private static var _pools:Dictionary = new Dictionary();
 
-    }
+      public static function get(type:Class, ... args) : * {
+         if((_pools[type])&&(_pools[type].length))
+         {
+            return type["create"].apply(null,args.concat(_pools[type].pop()));
+         }
+         return type["create"].apply(null,args);
+      }
+
+      public static function free(target:Poolable) : void {
+         target.free();
+         var type:Class = Object(target).constructor;
+         if(!_pools[type])
+         {
+            _pools[type]=new Array();
+         }
+         (_pools[type] as Array).push(target);
+      }
+
+
+   }
+
 }

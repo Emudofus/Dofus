@@ -1,314 +1,279 @@
-﻿package com.ankamagames.jerakine.console
+package com.ankamagames.jerakine.console
 {
-    import com.ankamagames.jerakine.console.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.MessageHandler;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.data.I18n;
+   import flash.utils.getTimer;
 
-    public class ConsoleHandler extends Object implements MessageHandler, ConsoleInstructionHandler
-    {
-        private var _name:String;
-        private var _handlers:Dictionary;
-        private var _outputHandler:MessageHandler;
-        private var _displayExecutionTime:Boolean;
-        private var _hideCommandsWithoutHelp:Boolean;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ConsoleHandler));
 
-        public function ConsoleHandler(param1:MessageHandler, param2:Boolean = true, param3:Boolean = false)
-        {
-            this._outputHandler = param1;
-            this._handlers = new Dictionary();
-            this._displayExecutionTime = param2;
-            this._hideCommandsWithoutHelp = param3;
-            this._handlers["help"] = this;
-            return;
-        }// end function
+   public class ConsoleHandler extends Object implements MessageHandler, ConsoleInstructionHandler
+   {
+         
 
-        public function get handlers() : Dictionary
-        {
-            return this._handlers;
-        }// end function
+      public function ConsoleHandler(outputHandler:MessageHandler, displayExecutionTime:Boolean=true, hideCommandsWithoutHelp:Boolean=false) {
+         super();
+         this._outputHandler=outputHandler;
+         this._handlers=new Dictionary();
+         this._displayExecutionTime=displayExecutionTime;
+         this._hideCommandsWithoutHelp=hideCommandsWithoutHelp;
+         this._handlers["help"]=this;
+      }
 
-        public function get outputHandler() : MessageHandler
-        {
-            return this._outputHandler;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ConsoleHandler));
 
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
+      private var _name:String;
 
-        public function set name(param1:String) : void
-        {
-            this._name = param1;
-            return;
-        }// end function
+      private var _handlers:Dictionary;
 
-        public function process(param1:Message) : Boolean
-        {
-            if (param1 is ConsoleInstructionMessage)
+      private var _outputHandler:MessageHandler;
+
+      private var _displayExecutionTime:Boolean;
+
+      private var _hideCommandsWithoutHelp:Boolean;
+
+      public function get handlers() : Dictionary {
+         return this._handlers;
+      }
+
+      public function get outputHandler() : MessageHandler {
+         return this._outputHandler;
+      }
+
+      public function get name() : String {
+         return this._name;
+      }
+
+      public function set name(value:String) : void {
+         this._name=value;
+      }
+
+      public function process(msg:Message) : Boolean {
+         if(msg is ConsoleInstructionMessage)
+         {
+            this.dispatchMessage(ConsoleInstructionMessage(msg));
+            return true;
+         }
+         return false;
+      }
+
+      public function output(text:String, type:uint=0) : void {
+         this._outputHandler.process(new ConsoleOutputMessage(this._name,text,type));
+      }
+
+      public function addHandler(cmd:*, handler:ConsoleInstructionHandler) : void {
+         var s:String = null;
+         if(cmd is Array)
+         {
+            for each (s in cmd)
             {
-                this.dispatchMessage(ConsoleInstructionMessage(param1));
-                return true;
+               if(s)
+               {
+                  this._handlers[String(s)]=handler;
+               }
             }
-            return false;
-        }// end function
-
-        public function output(param1:String) : void
-        {
-            this._outputHandler.process(new ConsoleOutputMessage(this._name, param1));
-            return;
-        }// end function
-
-        public function addHandler(param1, param2:ConsoleInstructionHandler) : void
-        {
-            var _loc_3:* = null;
-            if (param1 is Array)
+         }
+         else
+         {
+            if(cmd)
             {
-                for each (_loc_3 in param1)
-                {
-                    
-                    if (_loc_3)
-                    {
-                        this._handlers[String(_loc_3)] = param2;
-                    }
-                }
+               this._handlers[String(cmd)]=handler;
             }
-            else if (param1)
+         }
+      }
+
+      public function changeOutputHandler(outputHandler:MessageHandler) : void {
+         this._outputHandler=outputHandler;
+      }
+
+      public function removeHandler(cmd:String) : void {
+         delete this._handlers[[cmd]];
+      }
+
+      public function isHandled(cmd:String) : Boolean {
+         return !(this._handlers[cmd]==null);
+      }
+
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var commands:Array = null;
+         var sCmd:String = null;
+         var cmdHelp:String = null;
+         var handler:ConsoleInstructionHandler = null;
+         switch(cmd)
+         {
+            case "help":
+               if(args.length==0)
+               {
+                  console.output(I18n.getUiText("ui.console.generalHelp",[this._name]));
+                  commands=new Array();
+                  for (cmd in this._handlers)
+                  {
+                     commands.push(cmd);
+                  }
+                  commands.sort();
+                  for each (sCmd in commands)
+                  {
+                     cmdHelp=(this._handlers[sCmd] as ConsoleInstructionHandler).getHelp(sCmd);
+                     if((cmdHelp)||(!this._hideCommandsWithoutHelp))
+                     {
+                        console.output("  - <b>"+sCmd+"</b>: "+cmdHelp);
+                     }
+                  }
+               }
+               else
+               {
+                  handler=this._handlers[args[0]];
+                  if(handler)
+                  {
+                     console.output("<b>"+sCmd+"</b>: "+handler.getHelp(args[0]));
+                  }
+                  else
+                  {
+                     console.output(I18n.getUiText("ui.console.unknownCommand",[args[0]]));
+                  }
+               }
+               break;
+         }
+      }
+
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
+         {
+            case "help":
+               return I18n.getUiText("ui.console.displayhelp");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
+         }
+      }
+
+      public function getCmdHelp(sCmd:String) : String {
+         var cih:ConsoleInstructionHandler = this._handlers[sCmd];
+         if(cih)
+         {
+            return cih.getHelp(sCmd);
+         }
+         return null;
+      }
+
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         return [];
+      }
+
+      public function autoComplete(cmd:String) : String {
+         var sCmd:String = null;
+         var startCmd:String = null;
+         var newCmd:String = null;
+         var bMatch:* = false;
+         var i:uint = 0;
+         var aMatch:Array = new Array();
+         var splittedCmd:Array = cmd.split(" ");
+         if(splittedCmd.length==1)
+         {
+            for (sCmd in this._handlers)
             {
-                this._handlers[String(param1)] = param2;
+               if(sCmd.indexOf(cmd)==0)
+               {
+                  aMatch.push(sCmd);
+               }
             }
-            return;
-        }// end function
-
-        public function changeOutputHandler(param1:MessageHandler) : void
-        {
-            this._outputHandler = param1;
-            return;
-        }// end function
-
-        public function removeHandler(param1:String) : void
-        {
-            delete this._handlers[param1];
-            return;
-        }// end function
-
-        public function isHandled(param1:String) : Boolean
-        {
-            return this._handlers[param1] != null;
-        }// end function
-
-        public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            switch(param2)
+            startCmd="";
+         }
+         else
+         {
+            aMatch=this.getAutoCompletePossibilitiesOnParam(splittedCmd[0],splittedCmd.slice(1).length-1,splittedCmd.slice(1));
+            startCmd=splittedCmd.slice(0,splittedCmd.length-1).join(" ")+" ";
+         }
+         if(aMatch.length>1)
+         {
+            newCmd="";
+            bMatch=true;
+            i=1;
+            while(i<30)
             {
-                case "help":
-                {
-                    if (param3.length == 0)
-                    {
-                        param1.output(I18n.getUiText("ui.console.generalHelp", [this._name]));
-                        _loc_4 = new Array();
-                        for (param2 in this._handlers)
-                        {
-                            
-                            _loc_4.push(param2);
-                        }
-                        _loc_4.sort();
-                        for each (_loc_5 in _loc_4)
-                        {
-                            
-                            _loc_6 = (this._handlers[_loc_5] as ConsoleInstructionHandler).getHelp(_loc_5);
-                            if (_loc_6 || !this._hideCommandsWithoutHelp)
-                            {
-                                param1.output("  - <b>" + _loc_5 + "</b>: " + _loc_6);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        _loc_7 = this._handlers[param3[0]];
-                        if (_loc_7)
-                        {
-                            param1.output("<b>" + _loc_5 + "</b>: " + _loc_7.getHelp(param3[0]));
-                        }
-                        else
-                        {
-                            param1.output(I18n.getUiText("ui.console.unknownCommand", [param3[0]]));
-                        }
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
-
-        public function getHelp(param1:String) : String
-        {
-            switch(param1)
-            {
-                case "help":
-                {
-                    return I18n.getUiText("ui.console.displayhelp");
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return I18n.getUiText("ui.chat.console.noHelp", [param1]);
-        }// end function
-
-        public function getCmdHelp(param1:String) : String
-        {
-            var _loc_2:* = this._handlers[param1];
-            if (_loc_2)
-            {
-                return _loc_2.getHelp(param1);
-            }
-            return null;
-        }// end function
-
-        public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
-        {
-            return [];
-        }// end function
-
-        public function autoComplete(param1:String) : String
-        {
-            var _loc_3:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = false;
-            var _loc_8:* = 0;
-            var _loc_2:* = new Array();
-            var _loc_4:* = param1.split(" ");
-            if (param1.split(" ").length == 1)
-            {
-                for (_loc_3 in this._handlers)
-                {
-                    
-                    if (_loc_3.indexOf(param1) == 0)
-                    {
-                        _loc_2.push(_loc_3);
-                    }
-                }
-                _loc_5 = "";
-            }
-            else
-            {
-                _loc_2 = this.getAutoCompletePossibilitiesOnParam(_loc_4[0], (_loc_4.slice(1).length - 1), _loc_4.slice(1));
-                _loc_5 = _loc_4.slice(0, (_loc_4.length - 1)).join(" ") + " ";
-            }
-            if (_loc_2.length > 1)
-            {
-                _loc_6 = "";
-                _loc_7 = true;
-                _loc_8 = 1;
-                while (_loc_8 < 30)
-                {
-                    
-                    if (_loc_8 > _loc_2[0].length)
-                    {
+               if(i>aMatch[0].length)
+               {
+               }
+               else
+               {
+                  for each (sCmd in aMatch)
+                  {
+                     bMatch=(bMatch)&&(sCmd.indexOf(aMatch[0].substr(0,i))==0);
+                     if(!bMatch)
+                     {
                         break;
-                    }
-                    for each (_loc_3 in _loc_2)
-                    {
-                        
-                        _loc_7 = _loc_7 && _loc_3.indexOf(_loc_2[0].substr(0, _loc_8)) == 0;
-                        if (!_loc_7)
-                        {
-                            break;
-                        }
-                    }
-                    if (_loc_7)
-                    {
-                        _loc_6 = _loc_2[0].substr(0, _loc_8);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    _loc_8 = _loc_8 + 1;
-                }
-                return _loc_5 + _loc_6;
+                     }
+                  }
+                  if(bMatch)
+                  {
+                     newCmd=aMatch[0].substr(0,i);
+                     i++;
+                     continue;
+                  }
+               }
             }
-            else
+         }
+         else
+         {
+            if(aMatch.length==1)
             {
-                if (_loc_2.length == 1)
-                {
-                    return _loc_5 + _loc_2[0];
-                }
-                return param1;
+               return startCmd+aMatch[0];
             }
-        }// end function
+            return cmd;
+         }
+      }
 
-        public function getAutoCompletePossibilities(param1:String) : Array
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = new Array();
-            for (_loc_3 in this._handlers)
+      public function getAutoCompletePossibilities(cmd:String) : Array {
+         var sCmd:String = null;
+         var aMatch:Array = new Array();
+         for (sCmd in this._handlers)
+         {
+            if(sCmd.indexOf(cmd)==0)
             {
-                
-                if (_loc_3.indexOf(param1) == 0)
-                {
-                    _loc_2.push(_loc_3);
-                }
+               aMatch.push(sCmd);
             }
-            return _loc_2;
-        }// end function
+         }
+         return aMatch;
+      }
 
-        public function getAutoCompletePossibilitiesOnParam(param1:String, param2:uint, param3:Array) : Array
-        {
-            var _loc_7:* = null;
-            var _loc_4:* = this._handlers[param1];
-            var _loc_5:* = new Array();
-            var _loc_6:* = new Array();
-            if (_loc_4)
+      public function getAutoCompletePossibilitiesOnParam(cmd:String, paramIndex:uint, currentParams:Array) : Array {
+         var possibility:String = null;
+         var cih:ConsoleInstructionHandler = this._handlers[cmd];
+         var allPossibilities:Array = new Array();
+         var possibilities:Array = new Array();
+         if(cih)
+         {
+            allPossibilities=cih.getParamPossibilities(cmd,paramIndex,currentParams);
+            for each (possibility in allPossibilities)
             {
-                _loc_5 = _loc_4.getParamPossibilities(param1, param2, param3);
-                for each (_loc_7 in _loc_5)
-                {
-                    
-                    if (_loc_7.indexOf(param3[param2]) == 0)
-                    {
-                        _loc_6.push(_loc_7);
-                    }
-                }
-                return _loc_6;
+               if(possibility.indexOf(currentParams[paramIndex])==0)
+               {
+                  possibilities.push(possibility);
+               }
             }
-            return [];
-        }// end function
+            return possibilities;
+         }
+         return [];
+      }
 
-        private function dispatchMessage(param1:ConsoleInstructionMessage) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            if (this._handlers[param1.cmd] != null)
+      private function dispatchMessage(msg:ConsoleInstructionMessage) : void {
+         var handler:ConsoleInstructionHandler = null;
+         var t1:uint = 0;
+         if(this._handlers[msg.cmd]!=null)
+         {
+            handler=this._handlers[msg.cmd] as ConsoleInstructionHandler;
+            t1=getTimer();
+            handler.handle(this,msg.cmd,msg.args);
+            if(this._displayExecutionTime)
             {
-                _loc_2 = this._handlers[param1.cmd] as ConsoleInstructionHandler;
-                _loc_3 = getTimer();
-                _loc_2.handle(this, param1.cmd, param1.args);
-                if (this._displayExecutionTime)
-                {
-                    this.output("Command " + param1.cmd + " executed in " + (getTimer() - _loc_3) + " ms");
-                }
-            }
-            else
-            {
-                throw new UnhandledConsoleInstructionError(I18n.getUiText("ui.console.notfound", [param1.cmd]));
+               this.output("Command "+msg.cmd+" executed in "+(getTimer()-t1)+" ms");
             }
             return;
-        }// end function
+         }
+         throw new UnhandledConsoleInstructionError(I18n.getUiText("ui.console.notfound",[msg.cmd]));
+      }
+   }
 
-    }
 }

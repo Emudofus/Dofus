@@ -1,93 +1,112 @@
-﻿package com.ankamagames.dofus.network.messages.game.approach
+package com.ankamagames.dofus.network.messages.game.approach
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ServerSettingsMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var lang:String = "";
-        public var community:uint = 0;
-        public static const protocolId:uint = 6340;
 
-        public function ServerSettingsMessage()
-        {
-            return;
-        }// end function
+   public class ServerSettingsMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ServerSettingsMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6340;
-        }// end function
+      public static const protocolId:uint = 6340;
 
-        public function initServerSettingsMessage(param1:String = "", param2:uint = 0) : ServerSettingsMessage
-        {
-            this.lang = param1;
-            this.community = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.lang = "";
-            this.community = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var lang:String = "";
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var community:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ServerSettingsMessage(param1);
-            return;
-        }// end function
+      public var gameType:uint = 0;
 
-        public function serializeAs_ServerSettingsMessage(param1:IDataOutput) : void
-        {
-            param1.writeUTF(this.lang);
-            if (this.community < 0)
+      override public function getMessageId() : uint {
+         return 6340;
+      }
+
+      public function initServerSettingsMessage(lang:String="", community:uint=0, gameType:uint=0) : ServerSettingsMessage {
+         this.lang=lang;
+         this.community=community;
+         this.gameType=gameType;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.lang="";
+         this.community=0;
+         this.gameType=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerSettingsMessage(output);
+      }
+
+      public function serializeAs_ServerSettingsMessage(output:IDataOutput) : void {
+         output.writeUTF(this.lang);
+         if(this.community<0)
+         {
+            throw new Error("Forbidden value ("+this.community+") on element community.");
+         }
+         else
+         {
+            output.writeByte(this.community);
+            if(this.gameType<0)
             {
-                throw new Error("Forbidden value (" + this.community + ") on element community.");
+               throw new Error("Forbidden value ("+this.gameType+") on element gameType.");
             }
-            param1.writeByte(this.community);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ServerSettingsMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ServerSettingsMessage(param1:IDataInput) : void
-        {
-            this.lang = param1.readUTF();
-            this.community = param1.readByte();
-            if (this.community < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.community + ") on element of ServerSettingsMessage.community.");
+               output.writeByte(this.gameType);
+               return;
             }
-            return;
-        }// end function
+         }
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerSettingsMessage(input);
+      }
+
+      public function deserializeAs_ServerSettingsMessage(input:IDataInput) : void {
+         this.lang=input.readUTF();
+         this.community=input.readByte();
+         if(this.community<0)
+         {
+            throw new Error("Forbidden value ("+this.community+") on element of ServerSettingsMessage.community.");
+         }
+         else
+         {
+            this.gameType=input.readByte();
+            if(this.gameType<0)
+            {
+               throw new Error("Forbidden value ("+this.gameType+") on element of ServerSettingsMessage.gameType.");
+            }
+            else
+            {
+               return;
+            }
+         }
+      }
+   }
+
 }

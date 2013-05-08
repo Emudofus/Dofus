@@ -1,11 +1,15 @@
-﻿package com.ankamagames.jerakine.handlers.messages
+package com.ankamagames.jerakine.handlers.messages
 {
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.Message;
 
-    public interface Action extends Message
-    {
 
-        public function Action();
+   public interface Action extends Message
+   {
+         
 
-    }
+
+
+
+   }
+
 }

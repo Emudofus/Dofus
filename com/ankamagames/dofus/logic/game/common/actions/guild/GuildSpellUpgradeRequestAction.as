@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.guild
+package com.ankamagames.dofus.logic.game.common.actions.guild
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuildSpellUpgradeRequestAction extends Object implements Action
-    {
-        public var spellId:uint;
 
-        public function GuildSpellUpgradeRequestAction()
-        {
-            return;
-        }// end function
+   public class GuildSpellUpgradeRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : GuildSpellUpgradeRequestAction
-        {
-            var _loc_2:* = new GuildSpellUpgradeRequestAction;
-            _loc_2.spellId = param1;
-            return _loc_2;
-        }// end function
+      public function GuildSpellUpgradeRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pSpellId:uint) : GuildSpellUpgradeRequestAction {
+         var action:GuildSpellUpgradeRequestAction = new GuildSpellUpgradeRequestAction();
+         action.spellId=pSpellId;
+         return action;
+      }
+
+      public var spellId:uint;
+   }
+
 }

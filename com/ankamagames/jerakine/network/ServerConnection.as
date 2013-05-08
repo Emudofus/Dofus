@@ -1,557 +1,514 @@
-ï»¿package com.ankamagames.jerakine.network
+package com.ankamagames.jerakine.network
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.network.*;
-    import com.ankamagames.jerakine.network.messages.*;
-    import com.ankamagames.jerakine.replay.*;
-    import flash.events.*;
-    import flash.net.*;
-    import flash.utils.*;
+   import flash.net.Socket;
+   import flash.events.IEventDispatcher;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.messages.MessageHandler;
+   import flash.utils.ByteArray;
+   import flash.utils.Timer;
+   import flash.events.TimerEvent;
+   import com.ankamagames.jerakine.replay.LogFrame;
+   import com.ankamagames.jerakine.replay.LogTypeEnum;
+   import flash.events.ProgressEvent;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
+   import flash.utils.IDataInput;
+   import flash.utils.getTimer;
+   import com.ankamagames.jerakine.messages.ConnectedMessage;
+   import flash.utils.setTimeout;
+   import com.ankamagames.jerakine.network.messages.ServerConnectionClosedMessage;
+   import com.ankamagames.jerakine.network.messages.ServerConnectionFailedMessage;
 
-    public class ServerConnection extends Socket implements IEventDispatcher, IServerConnection
-    {
-        private var _rawParser:RawDataParser;
-        private var _handler:MessageHandler;
-        private var _remoteSrvHost:String;
-        private var _remoteSrvPort:uint;
-        private var _connecting:Boolean;
-        private var _outputBuffer:Array;
-        private var _splittedPacket:Boolean;
-        private var _staticHeader:int;
-        private var _splittedPacketId:uint;
-        private var _splittedPacketLength:uint;
-        private var _inputBuffer:ByteArray;
-        private var _pauseBuffer:Array;
-        private var _pause:Boolean;
-        private var _latencyBuffer:Array;
-        private var _latestSent:uint;
-        private var _lastSent:uint;
-        private var _timeoutTimer:Timer;
-        private var _lagometer:ILagometer;
-        private var _sendSequenceId:uint = 0;
-        public static var disabled:Boolean;
-        public static var disabledIn:Boolean;
-        public static var disabledOut:Boolean;
-        private static const DEBUG_DATA:Boolean = true;
-        private static const LATENCY_AVG_BUFFER_SIZE:uint = 50;
-        public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ServerConnection));
 
-        public function ServerConnection(param1:String = null, param2:int = 0)
-        {
-            this._pauseBuffer = new Array();
-            this._latencyBuffer = new Array();
-            super(param1, param2);
-            this._remoteSrvHost = param1;
-            this._remoteSrvPort = param2;
+   public class ServerConnection extends Socket implements IEventDispatcher, IServerConnection
+   {
+         
+
+      public function ServerConnection(host:String=null, port:int=0) {
+         this._pauseBuffer=new Array();
+         this._latencyBuffer=new Array();
+         super(host,port);
+         this._remoteSrvHost=host;
+         this._remoteSrvPort=port;
+      }
+
+      public static var disabled:Boolean;
+
+      public static var disabledIn:Boolean;
+
+      public static var disabledOut:Boolean;
+
+      private static const DEBUG_DATA:Boolean = true;
+
+      private static const LATENCY_AVG_BUFFER_SIZE:uint = 50;
+
+      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ServerConnection));
+
+      private var _rawParser:RawDataParser;
+
+      private var _handler:MessageHandler;
+
+      private var _remoteSrvHost:String;
+
+      private var _remoteSrvPort:uint;
+
+      private var _connecting:Boolean;
+
+      private var _outputBuffer:Array;
+
+      private var _splittedPacket:Boolean;
+
+      private var _staticHeader:int;
+
+      private var _splittedPacketId:uint;
+
+      private var _splittedPacketLength:uint;
+
+      private var _inputBuffer:ByteArray;
+
+      private var _pauseBuffer:Array;
+
+      private var _pause:Boolean;
+
+      private var _latencyBuffer:Array;
+
+      private var _latestSent:uint;
+
+      private var _lastSent:uint;
+
+      private var _timeoutTimer:Timer;
+
+      private var _lagometer:ILagometer;
+
+      private var _sendSequenceId:uint = 0;
+
+      public function get rawParser() : RawDataParser {
+         return this._rawParser;
+      }
+
+      public function set rawParser(value:RawDataParser) : void {
+         this._rawParser=value;
+      }
+
+      public function get handler() : MessageHandler {
+         return this._handler;
+      }
+
+      public function set handler(value:MessageHandler) : void {
+         this._handler=value;
+      }
+
+      public function get latencyAvg() : uint {
+         var latency:uint = 0;
+         if(this._latencyBuffer.length==0)
+         {
+            return 0;
+         }
+         var total:uint = 0;
+         for each (latency in this._latencyBuffer)
+         {
+            total=total+latency;
+         }
+         return total/this._latencyBuffer.length;
+      }
+
+      public function get latencySamplesCount() : uint {
+         return this._latencyBuffer.length;
+      }
+
+      public function get latencySamplesMax() : uint {
+         return LATENCY_AVG_BUFFER_SIZE;
+      }
+
+      public function get port() : uint {
+         return this._remoteSrvPort;
+      }
+
+      public function get lastSent() : uint {
+         return this._lastSent;
+      }
+
+      public function set lagometer(l:ILagometer) : void {
+         this._lagometer=l;
+      }
+
+      public function get lagometer() : ILagometer {
+         return this._lagometer;
+      }
+
+      public function get sendSequenceId() : uint {
+         return this._sendSequenceId;
+      }
+
+      override public function connect(host:String, port:int) : void {
+         if((this._connecting)||(disabled)||(disabledIn)&&(disabledOut))
+         {
             return;
-        }// end function
+         }
+         this._connecting=true;
+         this._remoteSrvHost=host;
+         this._remoteSrvPort=port;
+         this.addListeners();
+         _log.trace("Connecting to "+host+":"+port+"...");
+         super.connect(host,port);
+         this._timeoutTimer=new Timer(10000,1);
+         this._timeoutTimer.start();
+         this._timeoutTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onSocketTimeOut);
+      }
 
-        public function get rawParser() : RawDataParser
-        {
-            return this._rawParser;
-        }// end function
-
-        public function set rawParser(param1:RawDataParser) : void
-        {
-            this._rawParser = param1;
+      public function send(msg:INetworkMessage) : void {
+         if(DEBUG_DATA)
+         {
+            _log.trace("[SND] "+msg);
+         }
+         LogFrame.log(LogTypeEnum.NETWORK_OUT,msg);
+         if((disabled)||(disabledOut))
+         {
             return;
-        }// end function
-
-        public function get handler() : MessageHandler
-        {
-            return this._handler;
-        }// end function
-
-        public function set handler(param1:MessageHandler) : void
-        {
-            this._handler = param1;
+         }
+         if(!msg.isInitialized)
+         {
+            _log.warn("Sending non-initialized packet "+msg+" !");
+         }
+         if(!connected)
+         {
+            if(this._connecting)
+            {
+               this._outputBuffer.push(msg);
+            }
             return;
-        }// end function
+         }
+         this.lowSend(msg);
+      }
 
-        public function get latencyAvg() : uint
-        {
-            var _loc_2:* = 0;
-            if (this._latencyBuffer.length == 0)
+      override public function toString() : String {
+         var status:String = "Server connection status:\n";
+         status=status+("  Connected:       "+(connected?"Yes":"No")+"\n");
+         if(connected)
+         {
+            status=status+("  Connected to:    "+this._remoteSrvHost+":"+this._remoteSrvPort+"\n");
+         }
+         else
+         {
+            status=status+("  Connecting:      "+(this._connecting?"Yes":"No")+"\n");
+         }
+         if(this._connecting)
+         {
+            status=status+("  Connecting to:   "+this._remoteSrvHost+":"+this._remoteSrvPort+"\n");
+         }
+         status=status+("  Raw parser:      "+this.rawParser+"\n");
+         status=status+("  Message handler: "+this.handler+"\n");
+         if(this._outputBuffer)
+         {
+            status=status+("  Output buffer:   "+this._outputBuffer.length+" message(s)\n");
+         }
+         if(this._inputBuffer)
+         {
+            status=status+("  Input buffer:    "+this._inputBuffer.length+" byte(s)\n");
+         }
+         if(this._splittedPacket)
+         {
+            status=status+"  Splitted message in the input buffer:\n";
+            status=status+("    Message ID:      "+this._splittedPacketId+"\n");
+            status=status+("    Awaited length:  "+this._splittedPacketLength+"\n");
+         }
+         return status;
+      }
+
+      public function pause() : void {
+         this._pause=true;
+      }
+
+      public function resume() : void {
+         var msg:INetworkMessage = null;
+         this._pause=false;
+         while((this._pauseBuffer.length)&&(!this._pause))
+         {
+            msg=this._pauseBuffer.shift();
+            if(DEBUG_DATA)
             {
-                return 0;
+               _log.trace("[RCV] "+msg);
             }
-            var _loc_1:* = 0;
-            for each (_loc_2 in this._latencyBuffer)
+            _log.logDirectly(new NetworkLogEvent(msg,true));
+            this._handler.process(msg);
+         }
+         this._pauseBuffer=[];
+      }
+
+      public function stopConnectionTimeout() : void {
+         if(this._timeoutTimer)
+         {
+            this._timeoutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onSocketTimeOut);
+            this._timeoutTimer.stop();
+            this._timeoutTimer=null;
+         }
+      }
+
+      private function addListeners() : void {
+         addEventListener(ProgressEvent.SOCKET_DATA,this.onSocketData,false,0,true);
+         addEventListener(Event.CONNECT,this.onConnect,false,0,true);
+         addEventListener(Event.CLOSE,this.onClose,false,0,true);
+         addEventListener(IOErrorEvent.IO_ERROR,this.onSocketError,false,0,true);
+         addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError,false,0,true);
+      }
+
+      private function removeListeners() : void {
+         removeEventListener(ProgressEvent.SOCKET_DATA,this.onSocketData);
+         removeEventListener(Event.CONNECT,this.onConnect);
+         removeEventListener(Event.CLOSE,this.onClose);
+         removeEventListener(IOErrorEvent.IO_ERROR,this.onSocketError);
+         removeEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError);
+      }
+
+      private function receive(src:IDataInput) : void {
+         var msg:INetworkMessage = null;
+         var count:uint = 0;
+         try
+         {
+            while(src.bytesAvailable>0)
             {
-                
-                _loc_1 = _loc_1 + _loc_2;
+               msg=this.lowReceive(src);
+               if(msg is INetworkDataContainerMessage)
+               {
+                  while(INetworkDataContainerMessage(msg).content.bytesAvailable)
+                  {
+                     this.receive(INetworkDataContainerMessage(msg).content);
+                  }
+               }
+               if((!(msg==null))&&(!(msg is INetworkDataContainerMessage)))
+               {
+                  if(this._lagometer)
+                  {
+                     this._lagometer.pong(msg);
+                  }
+                  if(!this._pause)
+                  {
+                     if(DEBUG_DATA)
+                     {
+                        _log.trace("[RCV] "+msg);
+                     }
+                     _log.logDirectly(new NetworkLogEvent(msg,true));
+                     if(!disabledIn)
+                     {
+                        this._handler.process(msg);
+                     }
+                  }
+                  else
+                  {
+                     this._pauseBuffer.push(msg);
+                  }
+                  count++;
+                  continue;
+               }
             }
-            return _loc_1 / this._latencyBuffer.length;
-        }// end function
-
-        public function get latencySamplesCount() : uint
-        {
-            return this._latencyBuffer.length;
-        }// end function
-
-        public function get latencySamplesMax() : uint
-        {
-            return LATENCY_AVG_BUFFER_SIZE;
-        }// end function
-
-        public function get port() : uint
-        {
-            return this._remoteSrvPort;
-        }// end function
-
-        public function get lastSent() : uint
-        {
-            return this._lastSent;
-        }// end function
-
-        public function set lagometer(param1:ILagometer) : void
-        {
-            this._lagometer = param1;
-            return;
-        }// end function
-
-        public function get lagometer() : ILagometer
-        {
-            return this._lagometer;
-        }// end function
-
-        public function get sendSequenceId() : uint
-        {
-            return this._sendSequenceId;
-        }// end function
-
-        override public function connect(param1:String, param2:int) : void
-        {
-            if (this._connecting || disabled || disabledIn && disabledOut)
+         }
+         catch(e:Error)
+         {
+            if(e.getStackTrace())
             {
-                return;
-            }
-            this._connecting = true;
-            this._remoteSrvHost = param1;
-            this._remoteSrvPort = param2;
-            this.addListeners();
-            _log.trace("Connecting to " + param1 + ":" + param2 + "...");
-            super.connect(param1, param2);
-            this._timeoutTimer = new Timer(10000, 1);
-            this._timeoutTimer.start();
-            this._timeoutTimer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onSocketTimeOut);
-            return;
-        }// end function
-
-        public function send(param1:INetworkMessage) : void
-        {
-            if (DEBUG_DATA)
-            {
-                _log.trace("[SND] " + param1);
-            }
-            LogFrame.log(LogTypeEnum.NETWORK_OUT, param1);
-            if (disabled || disabledOut)
-            {
-                return;
-            }
-            if (!param1.isInitialized)
-            {
-                _log.warn("Sending non-initialized packet " + param1 + " !");
-            }
-            if (!connected)
-            {
-                if (this._connecting)
-                {
-                    this._outputBuffer.push(param1);
-                }
-                return;
-            }
-            this.lowSend(param1);
-            return;
-        }// end function
-
-        override public function toString() : String
-        {
-            var _loc_1:* = "Server connection status:\n";
-            _loc_1 = _loc_1 + ("  Connected:       " + (connected ? ("Yes") : ("No")) + "\n");
-            if (connected)
-            {
-                _loc_1 = _loc_1 + ("  Connected to:    " + this._remoteSrvHost + ":" + this._remoteSrvPort + "\n");
+               _log.error("Error while reading socket. "+e.getStackTrace());
             }
             else
             {
-                _loc_1 = _loc_1 + ("  Connecting:      " + (this._connecting ? ("Yes") : ("No")) + "\n");
+               _log.error("Error while reading socket. No stack trace available");
             }
-            if (this._connecting)
-            {
-                _loc_1 = _loc_1 + ("  Connecting to:   " + this._remoteSrvHost + ":" + this._remoteSrvPort + "\n");
-            }
-            _loc_1 = _loc_1 + ("  Raw parser:      " + this.rawParser + "\n");
-            _loc_1 = _loc_1 + ("  Message handler: " + this.handler + "\n");
-            if (this._outputBuffer)
-            {
-                _loc_1 = _loc_1 + ("  Output buffer:   " + this._outputBuffer.length + " message(s)\n");
-            }
-            if (this._inputBuffer)
-            {
-                _loc_1 = _loc_1 + ("  Input buffer:    " + this._inputBuffer.length + " byte(s)\n");
-            }
-            if (this._splittedPacket)
-            {
-                _loc_1 = _loc_1 + "  Splitted message in the input buffer:\n";
-                _loc_1 = _loc_1 + ("    Message ID:      " + this._splittedPacketId + "\n");
-                _loc_1 = _loc_1 + ("    Awaited length:  " + this._splittedPacketLength + "\n");
-            }
-            return _loc_1;
-        }// end function
+            close();
+         }
+      }
 
-        public function pause() : void
-        {
-            this._pause = true;
-            return;
-        }// end function
+      private function getMessageId(firstOctet:uint) : uint {
+         return firstOctet>>NetworkMessage.BIT_RIGHT_SHIFT_LEN_PACKET_ID;
+      }
 
-        public function resume() : void
-        {
-            var _loc_1:* = null;
-            this._pause = false;
-            while (this._pauseBuffer.length && !this._pause)
-            {
-                
-                _loc_1 = this._pauseBuffer.shift();
-                if (DEBUG_DATA)
-                {
-                    _log.trace("[RCV] " + _loc_1);
-                }
-                _log.logDirectly(new NetworkLogEvent(_loc_1, true));
-                this._handler.process(_loc_1);
-            }
-            this._pauseBuffer = [];
-            return;
-        }// end function
+      private function readMessageLength(staticHeader:uint, src:IDataInput) : uint {
+         var byteLenDynamicHeader:uint = staticHeader&NetworkMessage.BIT_MASK;
+         var messageLength:uint = 0;
+         switch(byteLenDynamicHeader)
+         {
+            case 0:
+               break;
+            case 1:
+               messageLength=src.readUnsignedByte();
+               break;
+            case 2:
+               messageLength=src.readUnsignedShort();
+               break;
+            case 3:
+               messageLength=((src.readByte()&255)<<16)+((src.readByte()&255)<<8)+(src.readByte()&255);
+               break;
+         }
+         return messageLength;
+      }
 
-        public function stopConnectionTimeout() : void
-        {
-            if (this._timeoutTimer)
-            {
-                this._timeoutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onSocketTimeOut);
-                this._timeoutTimer.stop();
-                this._timeoutTimer = null;
-            }
-            return;
-        }// end function
-
-        private function addListeners() : void
-        {
-            addEventListener(ProgressEvent.SOCKET_DATA, this.onSocketData, false, 0, true);
-            addEventListener(Event.CONNECT, this.onConnect, false, 0, true);
-            addEventListener(Event.CLOSE, this.onClose, false, 0, true);
-            addEventListener(IOErrorEvent.IO_ERROR, this.onSocketError, false, 0, true);
-            addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onSecurityError, false, 0, true);
-            return;
-        }// end function
-
-        private function removeListeners() : void
-        {
-            removeEventListener(ProgressEvent.SOCKET_DATA, this.onSocketData);
-            removeEventListener(Event.CONNECT, this.onConnect);
-            removeEventListener(Event.CLOSE, this.onClose);
-            removeEventListener(IOErrorEvent.IO_ERROR, this.onSocketError);
-            removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onSecurityError);
-            return;
-        }// end function
-
-        private function receive(param1:IDataInput) : void
-        {
-            var msg:INetworkMessage;
-            var src:* = param1;
-            var count:uint;
-            try
-            {
-                while (src.bytesAvailable > 0)
-                {
-                    
-                    msg = this.lowReceive(src);
-                    if (msg is INetworkDataContainerMessage)
-                    {
-                        while (INetworkDataContainerMessage(msg).content.bytesAvailable)
-                        {
-                            
-                            this.receive(INetworkDataContainerMessage(msg).content);
-                        }
-                    }
-                    if (msg != null && !(msg is INetworkDataContainerMessage))
-                    {
-                        if (this._lagometer)
-                        {
-                            this._lagometer.pong(msg);
-                        }
-                        if (!this._pause)
-                        {
-                            if (DEBUG_DATA)
-                            {
-                                _log.trace("[RCV] " + msg);
-                            }
-                            _log.logDirectly(new NetworkLogEvent(msg, true));
-                            if (!disabledIn)
-                            {
-                                this._handler.process(msg);
-                            }
-                        }
-                        else
-                        {
-                            this._pauseBuffer.push(msg);
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    count = (count + 1);
-                }
-            }
-            catch (e:Error)
-            {
-                if (e.getStackTrace())
-                {
-                    _log.error("Error while reading socket. " + e.getStackTrace());
-                }
-                else
-                {
-                    _log.error("Error while reading socket. No stack trace available");
-                }
-                close();
-            }
-            return;
-        }// end function
-
-        private function getMessageId(param1:uint) : uint
-        {
-            return param1 >> NetworkMessage.BIT_RIGHT_SHIFT_LEN_PACKET_ID;
-        }// end function
-
-        private function readMessageLength(param1:uint, param2:IDataInput) : uint
-        {
-            var _loc_3:* = param1 & NetworkMessage.BIT_MASK;
-            var _loc_4:* = 0;
-            switch(_loc_3)
-            {
-                case 0:
-                {
-                    break;
-                }
-                case 1:
-                {
-                    _loc_4 = param2.readUnsignedByte();
-                    break;
-                }
-                case 2:
-                {
-                    _loc_4 = param2.readUnsignedShort();
-                    break;
-                }
-                case 3:
-                {
-                    _loc_4 = ((param2.readByte() & 255) << 16) + ((param2.readByte() & 255) << 8) + (param2.readByte() & 255);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return _loc_4;
-        }// end function
-
-        protected function lowSend(param1:INetworkMessage, param2:Boolean = true) : void
-        {
-            param1.pack(this);
-            this._latestSent = getTimer();
-            this._lastSent = getTimer();
-            var _loc_3:* = this;
-            var _loc_4:* = this._sendSequenceId + 1;
-            _loc_3._sendSequenceId = _loc_4;
-            if (this._lagometer)
-            {
-                this._lagometer.ping(param1);
-            }
-            if (param2)
-            {
-                flush();
-            }
-            return;
-        }// end function
-
-        protected function lowReceive(param1:IDataInput) : INetworkMessage
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            if (!this._splittedPacket)
-            {
-                if (param1.bytesAvailable < 2)
-                {
-                    return null;
-                }
-                _loc_3 = param1.readUnsignedShort();
-                _loc_4 = this.getMessageId(_loc_3);
-                if (param1.bytesAvailable >= (_loc_3 & NetworkMessage.BIT_MASK))
-                {
-                    _loc_5 = this.readMessageLength(_loc_3, param1);
-                    if (param1.bytesAvailable >= _loc_5)
-                    {
-                        this.updateLatency();
-                        _loc_2 = this._rawParser.parse(param1, _loc_4, _loc_5);
-                        MEMORY_LOG[_loc_2] = 1;
-                    }
-                    else
-                    {
-                        this._staticHeader = -1;
-                        this._splittedPacketLength = _loc_5;
-                        this._splittedPacketId = _loc_4;
-                        this._splittedPacket = true;
-                        readBytes(this._inputBuffer, 0, param1.bytesAvailable);
-                        return null;
-                    }
-                }
-                else
-                {
-                    this._staticHeader = _loc_3;
-                    this._splittedPacketLength = _loc_5;
-                    this._splittedPacketId = _loc_4;
-                    this._splittedPacket = true;
-                    return null;
-                }
-            }
-            else
-            {
-                if (this._staticHeader != -1)
-                {
-                    this._splittedPacketLength = this.readMessageLength(this._staticHeader, param1);
-                    this._staticHeader = -1;
-                }
-                if (param1.bytesAvailable + this._inputBuffer.length >= this._splittedPacketLength)
-                {
-                    param1.readBytes(this._inputBuffer, this._inputBuffer.length, this._splittedPacketLength - this._inputBuffer.length);
-                    this._inputBuffer.position = 0;
-                    this.updateLatency();
-                    _loc_2 = this._rawParser.parse(this._inputBuffer, this._splittedPacketId, this._splittedPacketLength);
-                    MEMORY_LOG[_loc_2] = 1;
-                    this._splittedPacket = false;
-                    this._inputBuffer = new ByteArray();
-                    return _loc_2;
-                }
-                param1.readBytes(this._inputBuffer, this._inputBuffer.length, param1.bytesAvailable);
-                return null;
-            }
-            return _loc_2;
-        }// end function
-
-        private function updateLatency() : void
-        {
-            if (this._pause || this._pauseBuffer.length > 0 || this._latestSent == 0)
-            {
-                return;
-            }
-            var _loc_1:* = getTimer();
-            var _loc_2:* = _loc_1 - this._latestSent;
-            this._latestSent = 0;
-            this._latencyBuffer.push(_loc_2);
-            if (this._latencyBuffer.length > LATENCY_AVG_BUFFER_SIZE)
-            {
-                this._latencyBuffer.shift();
-            }
-            return;
-        }// end function
-
-        protected function onConnect(event:Event) : void
-        {
-            var _loc_2:* = null;
-            this._connecting = false;
-            if (this._timeoutTimer)
-            {
-                this._timeoutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onSocketTimeOut);
-                this._timeoutTimer.stop();
-                this._timeoutTimer = null;
-            }
-            if (DEBUG_DATA)
-            {
-                _log.trace("Connection opened.");
-            }
-            for each (_loc_2 in this._outputBuffer)
-            {
-                
-                this.lowSend(_loc_2, false);
-            }
+      protected function lowSend(msg:INetworkMessage, autoFlush:Boolean=true) : void {
+         msg.pack(this);
+         this._latestSent=getTimer();
+         this._lastSent=getTimer();
+         this._sendSequenceId++;
+         if(this._lagometer)
+         {
+            this._lagometer.ping(msg);
+         }
+         if(autoFlush)
+         {
             flush();
-            this._inputBuffer = new ByteArray();
-            this._outputBuffer = new Array();
-            this._handler.process(new ConnectedMessage());
-            return;
-        }// end function
+         }
+      }
 
-        protected function onClose(event:Event) : void
-        {
-            if (DEBUG_DATA)
+      protected function lowReceive(src:IDataInput) : INetworkMessage {
+         var msg:INetworkMessage = null;
+         var staticHeader:uint = 0;
+         var messageId:uint = 0;
+         var messageLength:uint = 0;
+         if(!this._splittedPacket)
+         {
+            if(src.bytesAvailable<2)
             {
-                _log.trace("Connection closed.");
+               return null;
             }
-            setTimeout(this.removeListeners, 30000);
-            if (this._lagometer)
+            staticHeader=src.readUnsignedShort();
+            messageId=this.getMessageId(staticHeader);
+            if(src.bytesAvailable>=(staticHeader&NetworkMessage.BIT_MASK))
             {
-                this._lagometer.stop();
+               messageLength=this.readMessageLength(staticHeader,src);
+               if(src.bytesAvailable>=messageLength)
+               {
+                  this.updateLatency();
+                  msg=this._rawParser.parse(src,messageId,messageLength);
+                  MEMORY_LOG[msg]=1;
+                  return msg;
+               }
+               this._staticHeader=-1;
+               this._splittedPacketLength=messageLength;
+               this._splittedPacketId=messageId;
+               this._splittedPacket=true;
+               readBytes(this._inputBuffer,0,src.bytesAvailable);
+               return null;
             }
-            this._handler.process(new ServerConnectionClosedMessage(this));
-            this._connecting = false;
-            this._outputBuffer = new Array();
-            return;
-        }// end function
+            this._staticHeader=staticHeader;
+            this._splittedPacketLength=messageLength;
+            this._splittedPacketId=messageId;
+            this._splittedPacket=true;
+            return null;
+         }
+         if(this._staticHeader!=-1)
+         {
+            this._splittedPacketLength=this.readMessageLength(this._staticHeader,src);
+            this._staticHeader=-1;
+         }
+         if(src.bytesAvailable+this._inputBuffer.length>=this._splittedPacketLength)
+         {
+            src.readBytes(this._inputBuffer,this._inputBuffer.length,this._splittedPacketLength-this._inputBuffer.length);
+            this._inputBuffer.position=0;
+            this.updateLatency();
+            msg=this._rawParser.parse(this._inputBuffer,this._splittedPacketId,this._splittedPacketLength);
+            MEMORY_LOG[msg]=1;
+            this._splittedPacket=false;
+            this._inputBuffer=new ByteArray();
+            return msg;
+         }
+         src.readBytes(this._inputBuffer,this._inputBuffer.length,src.bytesAvailable);
+         return null;
+      }
 
-        protected function onSocketData(event:ProgressEvent) : void
-        {
-            this.receive(this);
+      private function updateLatency() : void {
+         if((this._pause)||(this._pauseBuffer.length<0)||(this._latestSent==0))
+         {
             return;
-        }// end function
+         }
+         var packetReceived:uint = getTimer();
+         var latency:uint = packetReceived-this._latestSent;
+         this._latestSent=0;
+         this._latencyBuffer.push(latency);
+         if(this._latencyBuffer.length>LATENCY_AVG_BUFFER_SIZE)
+         {
+            this._latencyBuffer.shift();
+         }
+      }
 
-        protected function onSocketError(event:IOErrorEvent) : void
-        {
-            if (this._lagometer)
-            {
-                this._lagometer.stop();
-            }
-            _log.error("Failure while opening socket.");
-            this._connecting = false;
-            this._handler.process(new ServerConnectionFailedMessage(this, event.text));
-            return;
-        }// end function
+      protected function onConnect(e:Event) : void {
+         var msg:INetworkMessage = null;
+         this._connecting=false;
+         if(this._timeoutTimer)
+         {
+            this._timeoutTimer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onSocketTimeOut);
+            this._timeoutTimer.stop();
+            this._timeoutTimer=null;
+         }
+         if(DEBUG_DATA)
+         {
+            _log.trace("Connection opened.");
+         }
+         for each (msg in this._outputBuffer)
+         {
+            this.lowSend(msg,false);
+         }
+         flush();
+         this._inputBuffer=new ByteArray();
+         this._outputBuffer=new Array();
+         this._handler.process(new ConnectedMessage());
+      }
 
-        protected function onSocketTimeOut(event:Event) : void
-        {
-            if (this._lagometer)
-            {
-                this._lagometer.stop();
-            }
-            _log.error("Failure while opening socket, timeout.");
-            this._connecting = false;
-            this._handler.process(new ServerConnectionFailedMessage(this, "timeoutÂ§Â§Â§"));
-            return;
-        }// end function
+      protected function onClose(e:Event) : void {
+         if(DEBUG_DATA)
+         {
+            _log.trace("Connection closed.");
+         }
+         setTimeout(this.removeListeners,30000);
+         if(this._lagometer)
+         {
+            this._lagometer.stop();
+         }
+         this._handler.process(new ServerConnectionClosedMessage(this));
+         this._connecting=false;
+         this._outputBuffer=new Array();
+      }
 
-        protected function onSecurityError(event:SecurityErrorEvent) : void
-        {
-            if (this._lagometer)
-            {
-                this._lagometer.stop();
-            }
-            if (this.connected)
-            {
-                _log.error("Security error while connected : " + event.text);
-                this._handler.process(new ServerConnectionFailedMessage(this, event.text));
-            }
-            else
-            {
-                _log.error("Security error while disconnected : " + event.text);
-            }
-            return;
-        }// end function
+      protected function onSocketData(pe:ProgressEvent) : void {
+         this.receive(this);
+      }
 
-    }
+      protected function onSocketError(e:IOErrorEvent) : void {
+         if(this._lagometer)
+         {
+            this._lagometer.stop();
+         }
+         _log.error("Failure while opening socket.");
+         this._connecting=false;
+         this._handler.process(new ServerConnectionFailedMessage(this,e.text));
+      }
+
+      protected function onSocketTimeOut(e:Event) : void {
+         if(this._lagometer)
+         {
+            this._lagometer.stop();
+         }
+         _log.error("Failure while opening socket, timeout.");
+         this._connecting=false;
+         this._handler.process(new ServerConnectionFailedMessage(this,"timeout§§§"));
+      }
+
+      protected function onSecurityError(see:SecurityErrorEvent) : void {
+         if(this._lagometer)
+         {
+            this._lagometer.stop();
+         }
+         if(this.connected)
+         {
+            _log.error("Security error while connected : "+see.text);
+            this._handler.process(new ServerConnectionFailedMessage(this,see.text));
+         }
+         else
+         {
+            _log.error("Security error while disconnected : "+see.text);
+         }
+      }
+   }
+
 }

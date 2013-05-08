@@ -1,29 +1,30 @@
-﻿package com.ankamagames.tiphon.events
+package com.ankamagames.tiphon.events
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class AnimationEvent extends Event
-    {
-        private var _id:String;
-        public static const EVENT:String = "animationEventEvent";
-        public static const ANIM:String = "animationAnimEvent";
 
-        public function AnimationEvent(param1:String, param2:String, param3:Boolean = false, param4:Boolean = false)
-        {
-            super(param1, param3, param4);
-            this._id = param2;
-            return;
-        }// end function
+   public class AnimationEvent extends Event
+   {
+         
 
-        public function get id() : String
-        {
-            return this._id;
-        }// end function
+      public function AnimationEvent(type:String, pId:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
+         this._id=pId;
+      }
 
-        override public function clone() : Event
-        {
-            return new AnimationEvent(type, this.id, bubbles, cancelable);
-        }// end function
+      public static const EVENT:String = "animationEventEvent";
 
-    }
+      public static const ANIM:String = "animationAnimEvent";
+
+      private var _id:String;
+
+      public function get id() : String {
+         return this._id;
+      }
+
+      override public function clone() : Event {
+         return new AnimationEvent(type,this.id,bubbles,cancelable);
+      }
+   }
+
 }

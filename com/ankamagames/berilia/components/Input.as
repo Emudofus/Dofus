@@ -1,186 +1,283 @@
-ï»¿package com.ankamagames.berilia.components
+package com.ankamagames.berilia.components
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.messages.*;
-    import com.ankamagames.berilia.frames.*;
-    import com.ankamagames.jerakine.handlers.*;
-    import com.ankamagames.jerakine.handlers.messages.mouse.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.replay.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.text.*;
+   import com.ankamagames.berilia.UIComponent;
+   import flash.utils.Timer;
+   import flash.events.TimerEvent;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.jerakine.handlers.FocusHandler;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseClickMessage;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseWheelMessage;
+   import com.ankamagames.berilia.frames.ShortcutsFrame;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.replay.LogFrame;
+   import com.ankamagames.jerakine.replay.LogTypeEnum;
+   import com.ankamagames.jerakine.replay.KeyboardInput;
+   import com.ankamagames.berilia.components.messages.ChangeMessage;
+   import flash.display.InteractiveObject;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import flash.text.TextFieldType;
 
-    public class Input extends Label implements UIComponent
-    {
-        private var _nMaxChars:int;
-        private var _nNumberMax:uint;
-        private var _bPassword:Boolean = false;
-        private var _sRestrictChars:String;
-        private var _lastTextOnInput:String;
-        public var imeActive:Boolean;
-        public var focusEventHandlerPriority:Boolean = true;
-        private static const _strReplace:String = "NoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLog";
-        private static var regSpace:RegExp = /\s""\s/g;
 
-        public function Input()
-        {
-            _bHtmlAllowed = false;
-            _tText.selectable = true;
-            _tText.type = TextFieldType.INPUT;
-            _tText.restrict = this._sRestrictChars;
-            _tText.maxChars = this._nMaxChars;
-            _tText.mouseEnabled = true;
-            _autoResize = false;
-            _tText.addEventListener(Event.CHANGE, this.onTextChange);
-            return;
-        }// end function
+   public class Input extends Label implements UIComponent
+   {
+         
 
-        public function get lastTextOnInput() : String
-        {
-            return this._lastTextOnInput;
-        }// end function
+      public function Input() {
+         super();
+         _bHtmlAllowed=false;
+         _tText.selectable=true;
+         _tText.type=TextFieldType.INPUT;
+         _tText.restrict=this._sRestrictChars;
+         _tText.maxChars=this._nMaxChars;
+         _tText.mouseEnabled=true;
+         _autoResize=false;
+         this.numberSeparator=numberStrSeparator;
+         _tText.addEventListener(Event.CHANGE,this.onTextChange);
+      }
 
-        public function get maxChars() : uint
-        {
-            return this._nMaxChars;
-        }// end function
+      private static const _strReplace:String = "NoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLogNoLog";
 
-        public function set maxChars(param1:uint) : void
-        {
-            this._nMaxChars = param1;
-            _tText.maxChars = this._nMaxChars;
-            return;
-        }// end function
+      private static var regSpace:RegExp = new RegExp("\\s","g");
 
-        public function set numberMax(param1:uint) : void
-        {
-            this._nNumberMax = param1;
-            return;
-        }// end function
+      public static var numberStrSeparator:String;
 
-        public function get password() : Boolean
-        {
-            return this._bPassword;
-        }// end function
+      private var _nMaxChars:int;
 
-        public function set password(param1:Boolean) : void
-        {
-            this._bPassword = param1;
-            if (this._bPassword)
+      private var _nNumberMax:uint;
+
+      private var _bPassword:Boolean = false;
+
+      private var _sRestrictChars:String;
+
+      private var _bNumberAutoFormat:Boolean = false;
+
+      private var _numberSeparator:String = " ";
+
+      private var _nSelectionStart:int;
+
+      private var _nSelectionEnd:int;
+
+      private var _lastTextOnInput:String;
+
+      public var imeActive:Boolean;
+
+      private var _timerFormatDelay:Timer;
+
+      public var focusEventHandlerPriority:Boolean = true;
+
+      public function get lastTextOnInput() : String {
+         return this._lastTextOnInput;
+      }
+
+      public function get maxChars() : uint {
+         return this._nMaxChars;
+      }
+
+      public function set maxChars(nValue:uint) : void {
+         this._nMaxChars=nValue;
+         _tText.maxChars=this._nMaxChars;
+      }
+
+      public function set numberMax(nValue:uint) : void {
+         this._nNumberMax=nValue;
+      }
+
+      public function get password() : Boolean {
+         return this._bPassword;
+      }
+
+      public function set password(bValue:Boolean) : void {
+         this._bPassword=bValue;
+         if(this._bPassword)
+         {
+            _tText.displayAsPassword=true;
+         }
+      }
+
+      public function get numberAutoFormat() : Boolean {
+         return this._bNumberAutoFormat;
+      }
+
+      public function set numberAutoFormat(bValue:Boolean) : void {
+         this._bNumberAutoFormat=bValue;
+         if(!bValue)
+         {
+            if(this._timerFormatDelay)
             {
-                _tText.displayAsPassword = true;
+               this._timerFormatDelay.stop();
+               this._timerFormatDelay.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onTimerFormatDelay);
             }
-            return;
-        }// end function
+         }
+         else
+         {
+            this._timerFormatDelay=new Timer(1000,1);
+            this._timerFormatDelay.addEventListener(TimerEvent.TIMER_COMPLETE,this.onTimerFormatDelay);
+         }
+      }
 
-        public function get restrictChars() : String
-        {
-            return this._sRestrictChars;
-        }// end function
+      public function get numberSeparator() : String {
+         return this._numberSeparator;
+      }
 
-        public function set restrictChars(param1:String) : void
-        {
-            this._sRestrictChars = param1;
-            _tText.restrict = this._sRestrictChars;
-            return;
-        }// end function
+      public function set numberSeparator(bValue:String) : void {
+         this._numberSeparator=bValue;
+      }
 
-        public function get haveFocus() : Boolean
-        {
-            return Berilia.getInstance().docMain.stage.focus == _tText;
-        }// end function
+      public function get restrictChars() : String {
+         return this._sRestrictChars;
+      }
 
-        override public function set text(param1:String) : void
-        {
-            super.text = param1;
-            this.onTextChange(null);
-            return;
-        }// end function
+      public function set restrictChars(sValue:String) : void {
+         this._sRestrictChars=sValue;
+         _tText.restrict=this._sRestrictChars;
+      }
 
-        override public function focus() : void
-        {
-            Berilia.getInstance().docMain.stage.focus = _tText;
-            FocusHandler.getInstance().setFocus(_tText);
-            return;
-        }// end function
+      public function get haveFocus() : Boolean {
+         return Berilia.getInstance().docMain.stage.focus==_tText;
+      }
 
-        public function blur() : void
-        {
-            Berilia.getInstance().docMain.stage.focus = null;
-            FocusHandler.getInstance().setFocus(null);
-            return;
-        }// end function
+      override public function set text(sValue:String) : void {
+         super.text=sValue;
+         this.onTextChange(null);
+      }
 
-        override public function process(param1:Message) : Boolean
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            if (param1 is MouseClickMessage && MouseClickMessage(param1).target == this)
+      override public function remove() : void {
+         if(this._timerFormatDelay)
+         {
+            this._timerFormatDelay.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onTimerFormatDelay);
+         }
+         super.remove();
+      }
+
+      override public function free() : void {
+         if(this._timerFormatDelay)
+         {
+            this._timerFormatDelay.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onTimerFormatDelay);
+         }
+         super.free();
+      }
+
+      override public function focus() : void {
+         Berilia.getInstance().docMain.stage.focus=_tText;
+         FocusHandler.getInstance().setFocus(_tText);
+      }
+
+      public function blur() : void {
+         Berilia.getInstance().docMain.stage.focus=null;
+         FocusHandler.getInstance().setFocus(null);
+      }
+
+      override public function process(msg:Message) : Boolean {
+         var delta:* = 0;
+         var inc:* = 0;
+         var newValue:* = 0;
+         if((msg is MouseClickMessage)&&(MouseClickMessage(msg).target==this))
+         {
+            this.focus();
+         }
+         var tfIntValue:int = parseInt(text.split(" ").join("").split(" ").join("").split(this._numberSeparator).join(""));
+         if((msg is MouseWheelMessage)&&(!disabled)&&(tfIntValue.toString(10)==text.split(" ").join("").split(" ").join("").split(this._numberSeparator).join("")))
+         {
+            delta=(msg as MouseWheelMessage).mouseEvent.delta<0?1:-1;
+            inc=Math.abs(tfIntValue)<99?Math.pow(10,(tfIntValue+delta).toString(10).length-2):1;
+            if(ShortcutsFrame.ctrlKey)
             {
-                this.focus();
+               inc=1;
             }
-            var _loc_2:* = parseInt(text.split(" ").join("").split("Â ").join(""));
-            if (param1 is MouseWheelMessage && !disabled && _loc_2.toString(10) == text.split(" ").join("").split("Â ").join(""))
+            newValue=tfIntValue+delta*inc;
+            newValue=newValue>0?0:newValue;
+            if((this._nNumberMax<0)&&(newValue<this._nNumberMax))
             {
-                _loc_3 = (param1 as MouseWheelMessage).mouseEvent.delta > 0 ? (1) : (-1);
-                _loc_4 = Math.abs(_loc_2) > 99 ? (Math.pow(10, (_loc_2 + _loc_3).toString(10).length - 2)) : (1);
-                if (ShortcutsFrame.ctrlKey)
-                {
-                    _loc_4 = 1;
-                }
-                _loc_5 = _loc_2 + _loc_3 * _loc_4;
-                _loc_5 = _loc_5 < 0 ? (0) : (_loc_5);
-                if (this._nNumberMax > 0 && _loc_5 > this._nNumberMax)
-                {
-                    _loc_5 = this._nNumberMax;
-                }
-                this.text = StringUtils.formateIntToString(_loc_5);
+               newValue=this._nNumberMax;
             }
-            return super.process(param1);
-        }// end function
+            this.text=newValue.toString();
+         }
+         return super.process(msg);
+      }
 
-        public function setSelection(param1:int, param2:int) : void
-        {
-            _tText.setSelection(param1, param2);
-            return;
-        }// end function
+      public function setSelection(start:int, end:int) : void {
+         this._nSelectionStart=start;
+         this._nSelectionEnd=end;
+         _tText.setSelection(this._nSelectionStart,this._nSelectionEnd);
+      }
 
-        private function onTextChange(event:Event) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = NaN;
-            if (this._nNumberMax > 0)
+      private function onTextChange(e:Event) : void {
+         var pattern0:RegExp = null;
+         var tempString:String = null;
+         var toInt:* = NaN;
+         if(this._nNumberMax>0)
+         {
+            pattern0=new RegExp("[0-9 ]+","g");
+            tempString=this.removeSpace(_tText.text);
+            toInt=parseFloat(tempString);
+            if((!isNaN(toInt))&&(pattern0.test(_tText.text)))
             {
-                _loc_2 = /[0-9 ]+""[0-9 ]+/g;
-                _loc_3 = this.removeSpace(_tText.text);
-                _loc_4 = parseFloat(_loc_3);
-                if (!isNaN(_loc_4) && _loc_2.test(_tText.text))
-                {
-                    if (_loc_4 > this._nNumberMax)
-                    {
-                        _tText.text = this._nNumberMax + "";
-                    }
-                }
+               if(toInt>this._nNumberMax)
+               {
+                  _tText.text=this._nNumberMax+"";
+               }
             }
-            if (this._lastTextOnInput != _tText.text)
+         }
+         if(this._lastTextOnInput!=_tText.text)
+         {
+            LogFrame.log(LogTypeEnum.KEYBOARD_INPUT,new KeyboardInput(customUnicName,_strReplace.substr(0,_tText.text.length)));
+         }
+         this._lastTextOnInput=_tText.text;
+         if(this._timerFormatDelay)
+         {
+            this._timerFormatDelay.reset();
+            this._timerFormatDelay.start();
+         }
+         this._nSelectionStart=0;
+         this._nSelectionEnd=0;
+         Berilia.getInstance().handler.process(new ChangeMessage(InteractiveObject(this)));
+      }
+
+      public function removeSpace(spaced:String) : String {
+         var pattern1:RegExp = new RegExp(regSpace);
+         var tempString:String = spaced.replace(pattern1,"");
+         tempString=tempString.replace(this._numberSeparator,"");
+         return tempString;
+      }
+
+      private function onTimerFormatDelay(e:TimerEvent) : void {
+         var newStringWithSpaces:String = null;
+         this._timerFormatDelay.removeEventListener(TimerEvent.TIMER,this.onTimerFormatDelay);
+         var caret:int = caretIndex;
+         var startText:String = _tText.text;
+         var i:int = 0;
+         i=0;
+         while(i<caretIndex)
+         {
+            if((startText.charAt(i)==this._numberSeparator)||(startText.charAt(i)==" "))
             {
-                LogFrame.log(LogTypeEnum.KEYBOARD_INPUT, new KeyboardInput(customUnicName, _strReplace.substr(0, _tText.text.length)));
+               caret--;
             }
-            this._lastTextOnInput = _tText.text;
-            Berilia.getInstance().handler.process(new ChangeMessage(InteractiveObject(this)));
-            return;
-        }// end function
+            i++;
+         }
+         var tempString:String = this.removeSpace(startText);
+         var toInt:Number = parseFloat(tempString);
+         if((toInt)&&(!isNaN(toInt)))
+         {
+            newStringWithSpaces=StringUtils.formateIntToString(toInt);
+            i=0;
+            while(i<caret)
+            {
+               if(newStringWithSpaces.charAt(i)==this._numberSeparator)
+               {
+                  caret++;
+               }
+               i++;
+            }
+            super.text=newStringWithSpaces;
+            caretIndex=caret;
+         }
+         if(this._nSelectionStart!=this._nSelectionEnd)
+         {
+            _tText.setSelection(this._nSelectionStart,this._nSelectionEnd);
+         }
+      }
+   }
 
-        public function removeSpace(param1:String) : String
-        {
-            var _loc_2:* = new RegExp(regSpace);
-            var _loc_3:* = param1.replace(_loc_2, "");
-            return _loc_3;
-        }// end function
-
-    }
 }

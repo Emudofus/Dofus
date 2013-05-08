@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.spectator
+package com.ankamagames.dofus.logic.game.common.actions.spectator
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class MapRunningFightDetailsRequestAction extends Object implements Action
-    {
-        public var fightId:uint;
 
-        public function MapRunningFightDetailsRequestAction()
-        {
-            return;
-        }// end function
+   public class MapRunningFightDetailsRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : MapRunningFightDetailsRequestAction
-        {
-            var _loc_2:* = new MapRunningFightDetailsRequestAction;
-            _loc_2.fightId = param1;
-            return _loc_2;
-        }// end function
+      public function MapRunningFightDetailsRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(fightId:uint) : MapRunningFightDetailsRequestAction {
+         var a:MapRunningFightDetailsRequestAction = new MapRunningFightDetailsRequestAction();
+         a.fightId=fightId;
+         return a;
+      }
+
+      public var fightId:uint;
+   }
+
 }

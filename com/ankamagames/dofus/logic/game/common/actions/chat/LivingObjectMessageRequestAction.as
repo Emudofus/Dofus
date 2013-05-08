@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class LivingObjectMessageRequestAction extends Object implements Action
-    {
-        public var msgId:uint;
-        public var livingObjectUID:uint;
 
-        public function LivingObjectMessageRequestAction()
-        {
-            return;
-        }// end function
+   public class LivingObjectMessageRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint) : LivingObjectMessageRequestAction
-        {
-            var _loc_3:* = new LivingObjectMessageRequestAction;
-            _loc_3.msgId = param1;
-            _loc_3.livingObjectUID = param2;
-            return _loc_3;
-        }// end function
+      public function LivingObjectMessageRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(msgId:uint, livingObjectUID:uint) : LivingObjectMessageRequestAction {
+         var a:LivingObjectMessageRequestAction = new LivingObjectMessageRequestAction();
+         a.msgId=msgId;
+         a.livingObjectUID=livingObjectUID;
+         return a;
+      }
+
+      public var msgId:uint;
+
+      public var livingObjectUID:uint;
+   }
+
 }

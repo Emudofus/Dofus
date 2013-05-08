@@ -1,88 +1,80 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.frames
+package com.ankamagames.dofus.logic.game.roleplay.frames
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.common.actions.*;
-    import com.ankamagames.dofus.logic.game.roleplay.actions.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.*;
-    import com.ankamagames.dofus.network.messages.game.dialog.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcDialogQuestionMessage;
+   import com.ankamagames.dofus.logic.game.roleplay.actions.NpcDialogReplyAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.npc.NpcDialogReplyMessage;
+   import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogMessage;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogRequestMessage;
+   import com.ankamagames.dofus.network.enums.DialogTypeEnum;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
+   import com.ankamagames.dofus.logic.game.roleplay.actions.LeaveDialogRequestAction;
 
-    public class NpcDialogFrame extends Object implements Frame
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
 
-        public function NpcDialogFrame()
-        {
-            return;
-        }// end function
+   public class NpcDialogFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function NpcDialogFrame() {
+         super();
+      }
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            switch(true)
-            {
-                case param1 is NpcDialogQuestionMessage:
-                {
-                    _loc_2 = param1 as NpcDialogQuestionMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.NpcDialogQuestion, _loc_2.messageId, _loc_2.dialogParams, _loc_2.visibleReplies);
-                    return true;
-                }
-                case param1 is NpcDialogReplyAction:
-                {
-                    _loc_3 = param1 as NpcDialogReplyAction;
-                    _loc_4 = new NpcDialogReplyMessage();
-                    _loc_4.initNpcDialogReplyMessage(_loc_3.replyId);
-                    ConnectionsHandler.getConnection().send(_loc_4);
-                    return true;
-                }
-                case param1 is LeaveDialogRequestAction:
-                {
-                    ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
-                    return true;
-                }
-                case param1 is LeaveDialogMessage:
-                {
-                    _loc_5 = param1 as LeaveDialogMessage;
-                    if (_loc_5.dialogType == DialogTypeEnum.DIALOG_DIALOG)
-                    {
-                        Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
-                        Kernel.getWorker().removeFrame(this);
-                    }
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
 
-        public function pulled() : Boolean
-        {
-            KernelEventsManager.getInstance().processCallback(HookList.LeaveDialog);
-            return true;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-    }
+      public function process(msg:Message) : Boolean {
+         var ndcmsg:NpcDialogQuestionMessage = null;
+         var ndra:NpcDialogReplyAction = null;
+         var ndrmsg:NpcDialogReplyMessage = null;
+         var ldm:LeaveDialogMessage = null;
+         switch(true)
+         {
+            case msg is NpcDialogQuestionMessage:
+               ndcmsg=msg as NpcDialogQuestionMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.NpcDialogQuestion,ndcmsg.messageId,ndcmsg.dialogParams,ndcmsg.visibleReplies);
+               return true;
+            case msg is NpcDialogReplyAction:
+               ndra=msg as NpcDialogReplyAction;
+               ndrmsg=new NpcDialogReplyMessage();
+               ndrmsg.initNpcDialogReplyMessage(ndra.replyId);
+               ConnectionsHandler.getConnection().send(ndrmsg);
+               return true;
+            case msg is LeaveDialogRequestAction:
+               ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
+               return true;
+            case msg is LeaveDialogMessage:
+               ldm=msg as LeaveDialogMessage;
+               if(ldm.dialogType==DialogTypeEnum.DIALOG_DIALOG)
+               {
+                  Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
+                  Kernel.getWorker().removeFrame(this);
+               }
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function pulled() : Boolean {
+         KernelEventsManager.getInstance().processCallback(HookList.LeaveDialog);
+         return true;
+      }
+   }
+
 }

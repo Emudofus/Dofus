@@ -1,188 +1,217 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.datacenter.quest.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveInformations;
+   import com.ankamagames.dofus.datacenter.quest.Quest;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.logic.game.common.frames.QuestFrame;
+   import com.ankamagames.dofus.datacenter.quest.Achievement;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.network.types.game.achievement.AchievementRewardable;
+   import com.ankamagames.dofus.datacenter.quest.AchievementObjective;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class QuestApi extends Object implements IApi
-    {
-        protected var _log:Logger;
-        private var _module:UiModule;
 
-        public function QuestApi()
-        {
-            this._log = Log.getLogger(getQualifiedClassName(QuestApi));
-            return;
-        }// end function
+   public class QuestApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function QuestApi() {
+         this._log=Log.getLogger(getQualifiedClassName(QuestApi));
+         super();
+      }
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
 
-        public function getQuestInformations(param1:int) : Object
-        {
-            return this.getQuestFrame().getQuestInformations(param1);
-        }// end function
 
-        public function getAllQuests() : Vector.<Object>
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_1:* = new Vector.<Object>(0, false);
-            var _loc_2:* = this.getQuestFrame().getActiveQuests();
-            for each (_loc_3 in _loc_2)
+      protected var _log:Logger;
+
+      private var _module:UiModule;
+
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
+
+      public function destroy() : void {
+         this._module=null;
+      }
+
+      public function getQuestInformations(questId:int) : Object {
+         return this.getQuestFrame().getQuestInformations(questId);
+      }
+
+      public function getAllQuests() : Vector.<Object> {
+         var activeQuest:QuestActiveInformations = null;
+         var completedQuests:Vector.<uint> = null;
+         var completedQuest:uint = 0;
+         var r:Vector.<Object> = new Vector.<Object>(0,false);
+         var activeQuests:Vector.<QuestActiveInformations> = this.getQuestFrame().getActiveQuests();
+         for each (activeQuest in activeQuests)
+         {
+            r.push(
+               {
+                  id:activeQuest.questId,
+                  status:true
+               }
+            );
+         }
+         completedQuests=this.getQuestFrame().getCompletedQuests();
+         for each (completedQuest in completedQuests)
+         {
+            r.push(
+               {
+                  id:completedQuest,
+                  status:false
+               }
+            );
+         }
+         return r;
+      }
+
+      public function getActiveQuests() : Vector.<uint> {
+         var activeQuest:QuestActiveInformations = null;
+         var data:Vector.<uint> = new Vector.<uint>();
+         var activeQuests:Vector.<QuestActiveInformations> = this.getQuestFrame().getActiveQuests();
+         for each (activeQuest in activeQuests)
+         {
+            data.push(activeQuest.questId);
+         }
+         return data;
+      }
+
+      public function getCompletedQuests() : Vector.<uint> {
+         return this.getQuestFrame().getCompletedQuests();
+      }
+
+      public function getAllQuestsOrderByCategory(withCompletedQuests:Boolean=false) : Array {
+         var quest:Quest = null;
+         var questInfos:QuestActiveInformations = null;
+         var category:Object = null;
+         var questId:uint = 0;
+         var completedQuests:Vector.<uint> = null;
+         var catsListWithQuests:Array = new Array();
+         var totalQuest:int = 0;
+         var tabIndex:uint = 0;
+         var activeQuests:Vector.<QuestActiveInformations> = this.getQuestFrame().getActiveQuests();
+         totalQuest=totalQuest+activeQuests.length;
+         for each (questInfos in activeQuests)
+         {
+            quest=Quest.getQuestById(questInfos.questId);
+            tabIndex=quest.category.order;
+            if((tabIndex<catsListWithQuests.length)||(!catsListWithQuests[tabIndex]))
             {
-                
-                _loc_1.push({id:_loc_3.questId, status:true});
+               category=new Object();
+               category.data=new Array();
+               category.id=quest.categoryId;
+               catsListWithQuests[tabIndex]=category;
             }
-            _loc_4 = this.getQuestFrame().getCompletedQuests();
-            for each (_loc_5 in _loc_4)
+            catsListWithQuests[tabIndex].data.push(
+               {
+                  id:questInfos.questId,
+                  status:true
+               }
+            );
+         }
+         if(withCompletedQuests)
+         {
+            completedQuests=this.getQuestFrame().getCompletedQuests();
+            totalQuest=totalQuest+completedQuests.length;
+            for each (questId in completedQuests)
             {
-                
-                _loc_1.push({id:_loc_5, status:false});
+               quest=Quest.getQuestById(questId);
+               tabIndex=quest.category.order;
+               if((tabIndex<catsListWithQuests.length)||(!catsListWithQuests[tabIndex]))
+               {
+                  category=new Object();
+                  category.data=new Array();
+                  category.id=quest.categoryId;
+                  catsListWithQuests[tabIndex]=category;
+               }
+               catsListWithQuests[tabIndex].data.push(
+                  {
+                     id:questId,
+                     status:false
+                  }
+               );
             }
-            return _loc_1;
-        }// end function
+         }
+         return catsListWithQuests;
+      }
 
-        public function getActiveQuests() : Vector.<uint>
-        {
-            var _loc_3:* = null;
-            var _loc_1:* = new Vector.<uint>;
-            var _loc_2:* = this.getQuestFrame().getActiveQuests();
-            for each (_loc_3 in _loc_2)
+      public function getTutorialReward() : Vector.<ItemWrapper> {
+         var itemWrapperList:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         itemWrapperList.push(ItemWrapper.create(0,0,10785,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10794,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10797,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10798,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10799,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10784,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10800,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10801,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10792,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10793,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10795,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10796,1,null,false));
+         itemWrapperList.push(ItemWrapper.create(0,0,10793,1,null,false));
+         return itemWrapperList;
+      }
+
+      public function getNotificationList() : Array {
+         return QuestFrame.notificationList;
+      }
+
+      public function getFinishedAchievementsIds() : Vector.<uint> {
+         return this.getQuestFrame().finishedAchievementsIds;
+      }
+
+      public function isAchievementFinished(id:int) : Boolean {
+         return !(this.getQuestFrame().finishedAchievementsIds.indexOf(id)==-1);
+      }
+
+      public function getAchievementKamasReward(achievement:Achievement, level:int=0) : Number {
+         if(level==0)
+         {
+            level=PlayedCharacterManager.getInstance().infos.level;
+         }
+         return achievement.getKamasReward(level);
+      }
+
+      public function getAchievementExperienceReward(achievement:Achievement, level:int=0) : Number {
+         if(level==0)
+         {
+            level=PlayedCharacterManager.getInstance().infos.level;
+         }
+         return achievement.getExperienceReward(level,PlayedCharacterManager.getInstance().experiencePercent);
+      }
+
+      public function getRewardableAchievements() : Vector.<AchievementRewardable> {
+         return this.getQuestFrame().rewardableAchievements;
+      }
+
+      public function getAchievementObjectivesNames(achId:int) : String {
+         var objId:* = 0;
+         var objAch:AchievementObjective = null;
+         var text:String = "-";
+         var a:Achievement = Achievement.getAchievementById(achId);
+         for each (objId in a.objectiveIds)
+         {
+            objAch=AchievementObjective.getAchievementObjectiveById(objId);
+            if((objAch)&&(objAch.name))
             {
-                
-                _loc_1.push(_loc_3.questId);
+               text=text+(" "+StringUtils.noAccent(objAch.name).toLowerCase());
             }
-            return _loc_1;
-        }// end function
+         }
+         return text;
+      }
 
-        public function getCompletedQuests() : Vector.<uint>
-        {
-            return this.getQuestFrame().getCompletedQuests();
-        }// end function
+      private function getQuestFrame() : QuestFrame {
+         return Kernel.getWorker().getFrame(QuestFrame) as QuestFrame;
+      }
+   }
 
-        public function getAllQuestsOrderByCategory(param1:Boolean = false) : Array
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_6:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            var _loc_2:* = new Array();
-            var _loc_5:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = this.getQuestFrame().getActiveQuests();
-            _loc_5 = _loc_5 + _loc_8.length;
-            for each (_loc_4 in _loc_8)
-            {
-                
-                _loc_3 = Quest.getQuestById(_loc_4.questId);
-                _loc_7 = _loc_3.category.order;
-                if (_loc_7 > _loc_2.length || !_loc_2[_loc_7])
-                {
-                    _loc_6 = new Object();
-                    _loc_6.data = new Array();
-                    _loc_6.id = _loc_3.categoryId;
-                    _loc_2[_loc_7] = _loc_6;
-                }
-                _loc_2[_loc_7].data.push({id:_loc_4.questId, status:true});
-            }
-            if (param1)
-            {
-                _loc_10 = this.getQuestFrame().getCompletedQuests();
-                _loc_5 = _loc_5 + _loc_10.length;
-                for each (_loc_9 in _loc_10)
-                {
-                    
-                    _loc_3 = Quest.getQuestById(_loc_9);
-                    _loc_7 = _loc_3.category.order;
-                    if (_loc_7 > _loc_2.length || !_loc_2[_loc_7])
-                    {
-                        _loc_6 = new Object();
-                        _loc_6.data = new Array();
-                        _loc_6.id = _loc_3.categoryId;
-                        _loc_2[_loc_7] = _loc_6;
-                    }
-                    _loc_2[_loc_7].data.push({id:_loc_9, status:false});
-                }
-            }
-            return _loc_2;
-        }// end function
-
-        public function getTutorialReward() : Vector.<ItemWrapper>
-        {
-            var _loc_1:* = new Vector.<ItemWrapper>;
-            _loc_1.push(ItemWrapper.create(0, 0, 10785, 1, null, false));
-            _loc_1.push(ItemWrapper.create(0, 0, 10794, 1, null, false));
-            _loc_1.push(ItemWrapper.create(0, 0, 10797, 1, null, false));
-            _loc_1.push(ItemWrapper.create(0, 0, 10798, 1, null, false));
-            _loc_1.push(ItemWrapper.create(0, 0, 10799, 1, null, false));
-            _loc_1.push(ItemWrapper.create(0, 0, 10784, 1, null, false));
-            _loc_1.push(ItemWrapper.create(0, 0, 10800, 1, null, false));
-            _loc_1.push(ItemWrapper.create(0, 0, 10801, 1, null, false));
-            return _loc_1;
-        }// end function
-
-        public function getNotificationList() : Array
-        {
-            return QuestFrame.notificationList;
-        }// end function
-
-        public function getFinishedAchievementsIds() : Vector.<uint>
-        {
-            return this.getQuestFrame().finishedAchievementsIds;
-        }// end function
-
-        public function isAchievementFinished(param1:int) : Boolean
-        {
-            return this.getQuestFrame().finishedAchievementsIds.indexOf(param1) != -1;
-        }// end function
-
-        public function getAchievementKamasReward(param1:Achievement, param2:int = 0) : Number
-        {
-            if (param2 == 0)
-            {
-                param2 = PlayedCharacterManager.getInstance().infos.level;
-            }
-            return param1.getKamasReward(param2);
-        }// end function
-
-        public function getAchievementExperienceReward(param1:Achievement, param2:int = 0) : Number
-        {
-            if (param2 == 0)
-            {
-                param2 = PlayedCharacterManager.getInstance().infos.level;
-            }
-            return param1.getExperienceReward(param2, PlayedCharacterManager.getInstance().experiencePercent);
-        }// end function
-
-        public function getRewardableAchievements() : Vector.<AchievementRewardable>
-        {
-            return this.getQuestFrame().rewardableAchievements;
-        }// end function
-
-        private function getQuestFrame() : QuestFrame
-        {
-            return Kernel.getWorker().getFrame(QuestFrame) as QuestFrame;
-        }// end function
-
-    }
 }

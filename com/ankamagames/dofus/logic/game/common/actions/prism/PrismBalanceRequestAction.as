@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.prism
+package com.ankamagames.dofus.logic.game.common.actions.prism
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PrismBalanceRequestAction extends Object implements Action
-    {
 
-        public function PrismBalanceRequestAction()
-        {
-            return;
-        }// end function
+   public class PrismBalanceRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : PrismBalanceRequestAction
-        {
-            var _loc_1:* = new PrismBalanceRequestAction;
-            return _loc_1;
-        }// end function
+      public function PrismBalanceRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : PrismBalanceRequestAction {
+         var action:PrismBalanceRequestAction = new PrismBalanceRequestAction();
+         return action;
+      }
+
+
+   }
+
 }

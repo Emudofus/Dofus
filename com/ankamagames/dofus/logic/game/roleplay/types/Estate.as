@@ -1,88 +1,99 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.types
+package com.ankamagames.dofus.logic.game.roleplay.types
 {
-    import com.ankamagames.dofus.datacenter.houses.*;
-    import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.network.types.game.house.*;
-    import com.ankamagames.dofus.network.types.game.paddock.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.network.types.game.house.HouseInformationsForSell;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
+   import com.ankamagames.dofus.datacenter.houses.House;
+   import com.ankamagames.dofus.datacenter.world.Area;
+   import com.ankamagames.dofus.network.types.game.paddock.PaddockInformationsForSell;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class Estate extends Object
-    {
-        public var name:String;
-        public var area:String;
-        public var price:uint;
-        public var infos:Object;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Estate));
 
-        public function Estate(param1:Object)
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            if (param1 is HouseInformationsForSell)
+   public class Estate extends Object
+   {
+         
+
+      public function Estate(estate:Object) {
+         var house:HouseInformationsForSell = null;
+         var subAreah:SubArea = null;
+         var housen:House = null;
+         var area:Area = null;
+         var paddock:PaddockInformationsForSell = null;
+         var subAreap:SubArea = null;
+         var areap:Area = null;
+         super();
+         if(estate is HouseInformationsForSell)
+         {
+            house=estate as HouseInformationsForSell;
+            subAreah=SubArea.getSubAreaById(house.subAreaId);
+            housen=House.getGuildHouseById(house.modelId);
+            if(!housen)
             {
-                _loc_2 = param1 as HouseInformationsForSell;
-                _loc_3 = SubArea.getSubAreaById(_loc_2.subAreaId);
-                _loc_4 = House.getGuildHouseById(_loc_2.modelId);
-                if (!_loc_4)
-                {
-                    this.name = "-";
-                }
-                else
-                {
-                    this.name = _loc_4.name;
-                }
-                if (_loc_3)
-                {
-                    _loc_5 = Area.getAreaById(_loc_3.areaId);
-                    if (!_loc_5)
-                    {
-                        this.area = "-";
-                    }
-                    else
-                    {
-                        this.area = _loc_5.name;
-                    }
-                }
-                else
-                {
-                    this.area = "-";
-                }
-                this.price = _loc_2.price;
-                this.infos = _loc_2;
+               this.name="-";
             }
-            else if (param1 is PaddockInformationsForSell)
+            else
             {
-                _loc_6 = param1 as PaddockInformationsForSell;
-                _loc_7 = SubArea.getSubAreaById(_loc_6.subAreaId);
-                this.name = I18n.getUiText("ui.mount.paddockWithRoom", [_loc_6.nbMount]);
-                if (_loc_7)
-                {
-                    _loc_8 = Area.getAreaById(_loc_7.areaId);
-                    if (!_loc_8)
-                    {
-                        this.area = "-";
-                    }
-                    else
-                    {
-                        this.area = _loc_8.name;
-                    }
-                }
-                else
-                {
-                    this.area = "-";
-                }
-                this.price = _loc_6.price;
-                this.infos = _loc_6;
+               this.name=housen.name;
             }
-            return;
-        }// end function
+            if(subAreah)
+            {
+               area=Area.getAreaById(subAreah.areaId);
+               if(!area)
+               {
+                  this.area="-";
+               }
+               else
+               {
+                  this.area=area.name;
+               }
+            }
+            else
+            {
+               this.area="-";
+            }
+            this.price=house.price;
+            this.infos=house;
+         }
+         else
+         {
+            if(estate is PaddockInformationsForSell)
+            {
+               paddock=estate as PaddockInformationsForSell;
+               subAreap=SubArea.getSubAreaById(paddock.subAreaId);
+               this.name=I18n.getUiText("ui.mount.paddockWithRoom",[paddock.nbMount]);
+               if(subAreap)
+               {
+                  areap=Area.getAreaById(subAreap.areaId);
+                  if(!areap)
+                  {
+                     this.area="-";
+                  }
+                  else
+                  {
+                     this.area=areap.name;
+                  }
+               }
+               else
+               {
+                  this.area="-";
+               }
+               this.price=paddock.price;
+               this.infos=paddock;
+            }
+         }
+      }
 
-    }
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Estate));
+
+      public var name:String;
+
+      public var area:String;
+
+      public var price:uint;
+
+      public var infos:Object;
+   }
+
 }

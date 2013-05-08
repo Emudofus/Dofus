@@ -1,120 +1,110 @@
-﻿package nochump.util.zip
+package nochump.util.zip
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public class ZipEntry extends Object
-    {
-        private var _name:String;
-        private var _size:int = -1;
-        private var _compressedSize:int = -1;
-        private var _crc:uint;
-        var dostime:uint;
-        private var _method:int = -1;
-        private var _extra:ByteArray;
-        private var _comment:String;
-        var flag:int;
-        var version:int;
-        var offset:int;
 
-        public function ZipEntry(param1:String)
-        {
-            this._name = param1;
-            return;
-        }// end function
+   public class ZipEntry extends Object
+   {
+         
 
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
+      public function ZipEntry(name:String) {
+         super();
+         this._name=name;
+      }
 
-        public function get time() : Number
-        {
-            var _loc_1:* = new Date((this.dostime >> 25 & 127) + 1980, (this.dostime >> 21 & 15) - 1, this.dostime >> 16 & 31, this.dostime >> 11 & 31, this.dostime >> 5 & 63, (this.dostime & 31) << 1);
-            return _loc_1.time;
-        }// end function
 
-        public function set time(param1:Number) : void
-        {
-            var _loc_2:* = new Date(param1);
-            this.dostime = (_loc_2.fullYear - 1980 & 127) << 25 | (_loc_2.month + 1) << 21 | _loc_2.day << 16 | _loc_2.hours << 11 | _loc_2.minutes << 5 | _loc_2.seconds >> 1;
-            return;
-        }// end function
 
-        public function get size() : int
-        {
-            return this._size;
-        }// end function
+      private var _name:String;
 
-        public function set size(param1:int) : void
-        {
-            this._size = param1;
-            return;
-        }// end function
+      private var _size:int = -1;
 
-        public function get compressedSize() : int
-        {
-            return this._compressedSize;
-        }// end function
+      private var _compressedSize:int = -1;
 
-        public function set compressedSize(param1:int) : void
-        {
-            this._compressedSize = param1;
-            return;
-        }// end function
+      private var _crc:uint;
 
-        public function get crc() : uint
-        {
-            return this._crc;
-        }// end function
+      var dostime:uint;
 
-        public function set crc(param1:uint) : void
-        {
-            this._crc = param1;
-            return;
-        }// end function
+      private var _method:int = -1;
 
-        public function get method() : int
-        {
-            return this._method;
-        }// end function
+      private var _extra:ByteArray;
 
-        public function set method(param1:int) : void
-        {
-            this._method = param1;
-            return;
-        }// end function
+      private var _comment:String;
 
-        public function get extra() : ByteArray
-        {
-            return this._extra;
-        }// end function
+      var flag:int;
 
-        public function set extra(param1:ByteArray) : void
-        {
-            this._extra = param1;
-            return;
-        }// end function
+      var version:int;
 
-        public function get comment() : String
-        {
-            return this._comment;
-        }// end function
+      var offset:int;
 
-        public function set comment(param1:String) : void
-        {
-            this._comment = param1;
-            return;
-        }// end function
+      public function get name() : String {
+         return this._name;
+      }
 
-        public function isDirectory() : Boolean
-        {
-            return this._name.charAt((this._name.length - 1)) == "/";
-        }// end function
+      public function get time() : Number {
+         var d:Date = new Date((this.dostime>>25&127)+1980,(this.dostime>>21&15)-1,this.dostime>>16&31,this.dostime>>11&31,this.dostime>>5&63,(this.dostime&31)<<1);
+         return d.time;
+      }
 
-        public function toString() : String
-        {
-            return this._name;
-        }// end function
+      public function set time(time:Number) : void {
+         var d:Date = new Date(time);
+         this.dostime=(d.fullYear-1980&127)<<25|d.month+1<<21|d.day<<16|d.hours<<11|d.minutes<<5|d.seconds>>1;
+      }
 
-    }
+      public function get size() : int {
+         return this._size;
+      }
+
+      public function set size(size:int) : void {
+         this._size=size;
+      }
+
+      public function get compressedSize() : int {
+         return this._compressedSize;
+      }
+
+      public function set compressedSize(csize:int) : void {
+         this._compressedSize=csize;
+      }
+
+      public function get crc() : uint {
+         return this._crc;
+      }
+
+      public function set crc(crc:uint) : void {
+         this._crc=crc;
+      }
+
+      public function get method() : int {
+         return this._method;
+      }
+
+      public function set method(method:int) : void {
+         this._method=method;
+      }
+
+      public function get extra() : ByteArray {
+         return this._extra;
+      }
+
+      public function set extra(extra:ByteArray) : void {
+         this._extra=extra;
+      }
+
+      public function get comment() : String {
+         return this._comment;
+      }
+
+      public function set comment(comment:String) : void {
+         this._comment=comment;
+      }
+
+      public function isDirectory() : Boolean {
+         return this._name.charAt(this._name.length-1)=="/";
+      }
+
+      public function toString() : String {
+         return this._name;
+      }
+   }
+
 }

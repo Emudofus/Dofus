@@ -1,85 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild
+package com.ankamagames.dofus.network.messages.game.guild
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GuildMemberLeavingMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var kicked:Boolean = false;
-        public var memberId:int = 0;
-        public static const protocolId:uint = 5923;
 
-        public function GuildMemberLeavingMessage()
-        {
-            return;
-        }// end function
+   public class GuildMemberLeavingMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GuildMemberLeavingMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5923;
-        }// end function
+      public static const protocolId:uint = 5923;
 
-        public function initGuildMemberLeavingMessage(param1:Boolean = false, param2:int = 0) : GuildMemberLeavingMessage
-        {
-            this.kicked = param1;
-            this.memberId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.kicked = false;
-            this.memberId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var kicked:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var memberId:int = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GuildMemberLeavingMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5923;
+      }
 
-        public function serializeAs_GuildMemberLeavingMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.kicked);
-            param1.writeInt(this.memberId);
-            return;
-        }// end function
+      public function initGuildMemberLeavingMessage(kicked:Boolean=false, memberId:int=0) : GuildMemberLeavingMessage {
+         this.kicked=kicked;
+         this.memberId=memberId;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GuildMemberLeavingMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.kicked=false;
+         this.memberId=0;
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_GuildMemberLeavingMessage(param1:IDataInput) : void
-        {
-            this.kicked = param1.readBoolean();
-            this.memberId = param1.readInt();
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildMemberLeavingMessage(output);
+      }
+
+      public function serializeAs_GuildMemberLeavingMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.kicked);
+         output.writeInt(this.memberId);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildMemberLeavingMessage(input);
+      }
+
+      public function deserializeAs_GuildMemberLeavingMessage(input:IDataInput) : void {
+         this.kicked=input.readBoolean();
+         this.memberId=input.readInt();
+      }
+   }
+
 }

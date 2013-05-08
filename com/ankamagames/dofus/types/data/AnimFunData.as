@@ -1,15 +1,20 @@
-﻿package com.ankamagames.dofus.types.data
+package com.ankamagames.dofus.types.data
 {
 
-    public class AnimFunData extends Object
-    {
-        public var animName:String;
-        public var animWeight:int;
 
-        public function AnimFunData()
-        {
-            return;
-        }// end function
+   public class AnimFunData extends Object
+   {
+         
 
-    }
+      public function AnimFunData() {
+         super();
+      }
+
+
+
+      public var animName:String;
+
+      public var animWeight:int;
+   }
+
 }

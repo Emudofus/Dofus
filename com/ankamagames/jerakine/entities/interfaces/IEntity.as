@@ -1,19 +1,21 @@
-﻿package com.ankamagames.jerakine.entities.interfaces
+package com.ankamagames.jerakine.entities.interfaces
 {
-    import com.ankamagames.jerakine.types.positions.*;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
 
-    public interface IEntity
-    {
 
-        public function IEntity();
+   public interface IEntity
+   {
+         
 
-        function get id() : int;
 
-        function set id(param1:int) : void;
 
-        function get position() : MapPoint;
+      function get id() : int;
 
-        function set position(param1:MapPoint) : void;
+      function set id(param1:int) : void;
 
-    }
+      function get position() : MapPoint;
+
+      function set position(param1:MapPoint) : void;
+   }
+
 }

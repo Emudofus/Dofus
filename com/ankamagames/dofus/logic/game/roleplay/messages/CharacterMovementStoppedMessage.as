@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.messages
+package com.ankamagames.dofus.logic.game.roleplay.messages
 {
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.Message;
 
-    public class CharacterMovementStoppedMessage extends Object implements Message
-    {
 
-        public function CharacterMovementStoppedMessage()
-        {
-            return;
-        }// end function
+   public class CharacterMovementStoppedMessage extends Object implements Message
+   {
+         
 
-    }
+      public function CharacterMovementStoppedMessage() {
+         super();
+      }
+
+
+
+
+   }
+
 }

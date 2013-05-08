@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class NotificationResetAction extends Object implements Action
-    {
 
-        public function NotificationResetAction()
-        {
-            return;
-        }// end function
+   public class NotificationResetAction extends Object implements Action
+   {
+         
 
-        public static function create() : NotificationResetAction
-        {
-            var _loc_1:* = new NotificationResetAction;
-            return _loc_1;
-        }// end function
+      public function NotificationResetAction() {
+         super();
+      }
 
-    }
+      public static function create() : NotificationResetAction {
+         var action:NotificationResetAction = new NotificationResetAction();
+         return action;
+      }
+
+
+   }
+
 }

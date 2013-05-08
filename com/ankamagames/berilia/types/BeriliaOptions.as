@@ -1,16 +1,20 @@
-﻿package com.ankamagames.berilia.types
+package com.ankamagames.berilia.types
 {
-    import com.ankamagames.jerakine.managers.*;
+   import com.ankamagames.jerakine.managers.OptionManager;
 
-    dynamic public class BeriliaOptions extends OptionManager
-    {
 
-        public function BeriliaOptions()
-        {
-            super("berilia");
-            add("uiShadows", true);
-            return;
-        }// end function
+   public dynamic class BeriliaOptions extends OptionManager
+   {
+         
 
-    }
+      public function BeriliaOptions() {
+         super("berilia");
+         add("uiShadows",true);
+      }
+
+
+
+
+   }
+
 }

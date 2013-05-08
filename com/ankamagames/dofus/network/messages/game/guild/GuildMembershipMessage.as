@@ -1,80 +1,68 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild
+package com.ankamagames.dofus.network.messages.game.guild
 {
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GuildMembershipMessage extends GuildJoinedMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 5835;
 
-        public function GuildMembershipMessage()
-        {
-            return;
-        }// end function
+   public class GuildMembershipMessage extends GuildJoinedMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function GuildMembershipMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5835;
-        }// end function
+      public static const protocolId:uint = 5835;
 
-        public function initGuildMembershipMessage(param1:GuildInformations = null, param2:uint = 0, param3:Boolean = false) : GuildMembershipMessage
-        {
-            super.initGuildJoinedMessage(param1, param2, param3);
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5835;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public function initGuildMembershipMessage(guildInfo:GuildInformations=null, memberRights:uint=0, enabled:Boolean=false) : GuildMembershipMessage {
+         super.initGuildJoinedMessage(guildInfo,memberRights,enabled);
+         this._isInitialized=true;
+         return this;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GuildMembershipMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this._isInitialized=false;
+      }
 
-        public function serializeAs_GuildMembershipMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_GuildJoinedMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GuildMembershipMessage(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserializeAs_GuildMembershipMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildMembershipMessage(output);
+      }
 
-    }
+      public function serializeAs_GuildMembershipMessage(output:IDataOutput) : void {
+         super.serializeAs_GuildJoinedMessage(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildMembershipMessage(input);
+      }
+
+      public function deserializeAs_GuildMembershipMessage(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

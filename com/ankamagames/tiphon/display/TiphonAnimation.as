@@ -1,16 +1,20 @@
-﻿package com.ankamagames.tiphon.display
+package com.ankamagames.tiphon.display
 {
-    import com.ankamagames.tiphon.types.*;
-    import flash.display.*;
+   import flash.display.MovieClip;
+   import com.ankamagames.tiphon.types.IAnimationSpriteHandler;
 
-    public class TiphonAnimation extends MovieClip
-    {
-        public var spriteHandler:IAnimationSpriteHandler;
 
-        public function TiphonAnimation()
-        {
-            return;
-        }// end function
+   public class TiphonAnimation extends MovieClip
+   {
+         
 
-    }
+      public function TiphonAnimation() {
+         super();
+      }
+
+
+
+      public var spriteHandler:IAnimationSpriteHandler;
+   }
+
 }

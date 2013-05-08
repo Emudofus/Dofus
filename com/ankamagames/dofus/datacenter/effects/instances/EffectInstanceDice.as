@@ -1,97 +1,89 @@
-﻿package com.ankamagames.dofus.datacenter.effects.instances
+package com.ankamagames.dofus.datacenter.effects.instances
 {
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
 
-    public class EffectInstanceDice extends EffectInstanceInteger implements IDataCenter
-    {
-        public var diceNum:uint;
-        public var diceSide:uint;
 
-        public function EffectInstanceDice()
-        {
-            return;
-        }// end function
+   public class EffectInstanceDice extends EffectInstanceInteger implements IDataCenter
+   {
+         
 
-        override public function clone() : EffectInstance
-        {
-            var _loc_1:* = new EffectInstanceDice();
-            _loc_1.rawZone = rawZone;
-            _loc_1.effectId = effectId;
-            _loc_1.duration = duration;
-            _loc_1.delay = delay;
-            _loc_1.diceNum = this.diceNum;
-            _loc_1.diceSide = this.diceSide;
-            _loc_1.value = value;
-            _loc_1.random = random;
-            _loc_1.group = group;
-            _loc_1.hidden = hidden;
-            _loc_1.targetId = targetId;
-            return _loc_1;
-        }// end function
+      public function EffectInstanceDice() {
+         super();
+      }
 
-        override public function get parameter0() : Object
-        {
-            return this.diceNum != 0 ? (this.diceNum) : (null);
-        }// end function
 
-        override public function get parameter1() : Object
-        {
-            return this.diceSide != 0 ? (this.diceSide) : (null);
-        }// end function
 
-        override public function get parameter2() : Object
-        {
-            return value != 0 ? (value) : (null);
-        }// end function
+      public var diceNum:uint;
 
-        override public function setParameter(param1:uint, param2) : void
-        {
-            switch(param1)
+      public var diceSide:uint;
+
+      override public function clone() : EffectInstance {
+         var o:EffectInstanceDice = new EffectInstanceDice();
+         o.rawZone=rawZone;
+         o.effectId=effectId;
+         o.duration=duration;
+         o.delay=delay;
+         o.diceNum=this.diceNum;
+         o.diceSide=this.diceSide;
+         o.value=value;
+         o.random=random;
+         o.group=group;
+         o.hidden=hidden;
+         o.targetId=targetId;
+         o.targetMask=targetMask;
+         return o;
+      }
+
+      override public function get parameter0() : Object {
+         return !(this.diceNum==0)?this.diceNum:null;
+      }
+
+      override public function get parameter1() : Object {
+         return !(this.diceSide==0)?this.diceSide:null;
+      }
+
+      override public function get parameter2() : Object {
+         return !(value==0)?value:null;
+      }
+
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         switch(paramIndex)
+         {
+            case 0:
+               this.diceNum=uint(value);
+               break;
+            case 1:
+               this.diceSide=uint(value);
+               break;
+            case 2:
+               this.value=int(value);
+               break;
+         }
+      }
+
+      override public function add(term:*) : EffectInstance {
+         if(term is EffectInstanceDice)
+         {
+            this.diceNum=this.diceNum+term.diceNum;
+            this.diceSide=this.diceSide+term.diceSide;
+            forceDescriptionRefresh();
+         }
+         else
+         {
+            if(term is EffectInstanceInteger)
             {
-                case 0:
-                {
-                    this.diceNum = uint(param2);
-                    break;
-                }
-                case 1:
-                {
-                    this.diceSide = uint(param2);
-                    break;
-                }
-                case 2:
-                {
-                    this.value = int(param2);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
-
-        override public function add(param1) : EffectInstance
-        {
-            if (param1 is EffectInstanceDice)
-            {
-                this.diceNum = this.diceNum + param1.diceNum;
-                this.diceSide = this.diceSide + param1.diceSide;
-                forceDescriptionRefresh();
-            }
-            else if (param1 is EffectInstanceInteger)
-            {
-                this.diceNum = this.diceNum + param1.value;
-                this.diceSide = this.diceSide != 0 ? (this.diceSide + param1.value) : (0);
-                forceDescriptionRefresh();
+               this.diceNum=this.diceNum+term.value;
+               this.diceSide=!(this.diceSide==0)?this.diceSide+term.value:0;
+               forceDescriptionRefresh();
             }
             else
             {
-                _log.error(param1 + " cannot be added to EffectInstanceDice.");
+               _log.error(term+" cannot be added to EffectInstanceDice.");
             }
-            return this;
-        }// end function
+         }
+         return this;
+      }
+   }
 
-    }
 }

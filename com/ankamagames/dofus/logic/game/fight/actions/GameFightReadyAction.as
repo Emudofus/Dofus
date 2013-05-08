@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.fight.actions
+package com.ankamagames.dofus.logic.game.fight.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GameFightReadyAction extends Object implements Action
-    {
-        public var isReady:Boolean;
 
-        public function GameFightReadyAction()
-        {
-            return;
-        }// end function
+   public class GameFightReadyAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : GameFightReadyAction
-        {
-            var _loc_2:* = new GameFightReadyAction;
-            _loc_2.isReady = param1;
-            return _loc_2;
-        }// end function
+      public function GameFightReadyAction() {
+         super();
+      }
 
-    }
+      public static function create(isReady:Boolean) : GameFightReadyAction {
+         var a:GameFightReadyAction = new GameFightReadyAction();
+         a.isReady=isReady;
+         return a;
+      }
+
+      public var isReady:Boolean;
+   }
+
 }

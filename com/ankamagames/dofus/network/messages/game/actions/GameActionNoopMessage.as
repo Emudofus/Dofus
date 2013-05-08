@@ -1,70 +1,63 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions
+package com.ankamagames.dofus.network.messages.game.actions
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameActionNoopMessage extends NetworkMessage implements INetworkMessage
-    {
-        public static const protocolId:uint = 1002;
 
-        public function GameActionNoopMessage()
-        {
-            return;
-        }// end function
+   public class GameActionNoopMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return true;
-        }// end function
+      public function GameActionNoopMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 1002;
-        }// end function
+      public static const protocolId:uint = 1002;
 
-        public function initGameActionNoopMessage() : GameActionNoopMessage
-        {
-            return this;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return true;
+      }
 
-        override public function reset() : void
-        {
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 1002;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public function initGameActionNoopMessage() : GameActionNoopMessage {
+         return this;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function serializeAs_GameActionNoopMessage(param1:IDataOutput) : void
-        {
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            return;
-        }// end function
+      public function serialize(output:IDataOutput) : void {
+         
+      }
 
-        public function deserializeAs_GameActionNoopMessage(param1:IDataInput) : void
-        {
-            return;
-        }// end function
+      public function serializeAs_GameActionNoopMessage(output:IDataOutput) : void {
+         
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         
+      }
+
+      public function deserializeAs_GameActionNoopMessage(input:IDataInput) : void {
+         
+      }
+   }
+
 }

@@ -1,311 +1,296 @@
-﻿package com.ankamagames.berilia.managers
+package com.ankamagames.berilia.managers
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.types.event.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.text.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.berilia.BeriliaConstants;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.types.Callback;
+   import com.ankamagames.berilia.types.data.ExtendedStyleSheet;
+   import flash.text.StyleSheet;
+   import com.ankamagames.berilia.types.event.CssEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.managers.ErrorManager;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
 
-    public class CssManager extends Object
-    {
-        private var _aCss:Array;
-        private var _aWaiting:Array;
-        private var _aMultiWaiting:Array;
-        private var _loader:IResourceLoader;
-        private var _aLoadingFile:Array;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(CssManager));
-        private static const CSS_ARRAY_KEY:String = "cssFilesContents";
-        private static var _self:CssManager;
-        private static var _useCache:Boolean = true;
 
-        public function CssManager()
-        {
-            if (_self)
-            {
-                throw new SingletonError();
-            }
-            this._aCss = new Array();
-            this._aWaiting = new Array();
-            this._aMultiWaiting = new Array();
-            this._aLoadingFile = new Array();
-            this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.complete);
-            this._loader.addEventListener(ResourceErrorEvent.ERROR, this.error);
+   public class CssManager extends Object
+   {
+         
+
+      public function CssManager() {
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            this._aCss=new Array();
+            this._aWaiting=new Array();
+            this._aMultiWaiting=new Array();
+            this._aLoadingFile=new Array();
+            this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
+            this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.complete);
+            this._loader.addEventListener(ResourceErrorEvent.ERROR,this.error);
             return;
-        }// end function
+         }
+      }
 
-        public function load(param1) : void
-        {
-            var _loc_2:* = null;
-            var _loc_4:* = 0;
-            var _loc_3:* = new Array();
-            if (param1 is String)
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CssManager));
+
+      private static const CSS_ARRAY_KEY:String = "cssFilesContents";
+
+      private static var _self:CssManager;
+
+      private static var _useCache:Boolean = true;
+
+      public static function getInstance() : CssManager {
+         if(!_self)
+         {
+            _self=new CssManager();
+         }
+         return _self;
+      }
+
+      public static function set useCache(b:Boolean) : void {
+         _useCache=b;
+         if(!b)
+         {
+            clear();
+         }
+      }
+
+      public static function get useCache() : Boolean {
+         return _useCache;
+      }
+
+      public static function clear() : void {
+         StoreDataManager.getInstance().clear(BeriliaConstants.DATASTORE_UI_CSS);
+      }
+
+      private var _aCss:Array;
+
+      private var _aWaiting:Array;
+
+      private var _aMultiWaiting:Array;
+
+      private var _loader:IResourceLoader;
+
+      private var _aLoadingFile:Array;
+
+      public function load(oFile:*) : void {
+         var uri:Uri = null;
+         var i:uint = 0;
+         var aQueue:Array = new Array();
+         if(oFile is String)
+         {
+            uri=new Uri(oFile);
+            if((!this.exists(uri.uri))&&(!this.inQueue(uri.uri)))
             {
-                _loc_2 = new Uri(param1);
-                if (!this.exists(_loc_2.uri) && !this.inQueue(_loc_2.uri))
-                {
-                    _loc_3.push(_loc_2);
-                    this._aLoadingFile[_loc_2.uri] = true;
-                }
+               aQueue.push(uri);
+               this._aLoadingFile[uri.uri]=true;
             }
-            else if (param1 is Array)
+         }
+         else
+         {
+            if(oFile is Array)
             {
-                _loc_4 = 0;
-                while (_loc_4 < (param1 as Array).length)
-                {
-                    
-                    _loc_2 = new Uri(param1[_loc_4]);
-                    if (!this.exists(_loc_2.uri) && !this.inQueue(_loc_2.uri))
-                    {
-                        this._aLoadingFile[_loc_2.uri] = true;
-                        _loc_3.push(_loc_2);
-                    }
-                    _loc_4 = _loc_4 + 1;
-                }
+               i=0;
+               while(i<(oFile as Array).length)
+               {
+                  uri=new Uri(oFile[i]);
+                  if((!this.exists(uri.uri))&&(!this.inQueue(uri.uri)))
+                  {
+                     this._aLoadingFile[uri.uri]=true;
+                     aQueue.push(uri);
+                  }
+                  i++;
+               }
             }
-            if (_loc_3.length)
+         }
+         if(aQueue.length)
+         {
+            this._loader.load(aQueue);
+         }
+      }
+
+      public function exists(sUrl:String) : Boolean {
+         var uri:Uri = new Uri(sUrl);
+         return !(this._aCss[uri.uri]==null);
+      }
+
+      public function inQueue(sUrl:String) : Boolean {
+         return this._aLoadingFile[sUrl];
+      }
+
+      public function askCss(sUrl:String, callback:Callback) : void {
+         var uri:Uri = null;
+         var files:Array = null;
+         if(this.exists(sUrl))
+         {
+            callback.exec();
+         }
+         else
+         {
+            uri=new Uri(sUrl);
+            if(!this._aWaiting[uri.uri])
             {
-                this._loader.load(_loc_3);
+               this._aWaiting[uri.uri]=new Array();
             }
-            return;
-        }// end function
-
-        public function exists(param1:String) : Boolean
-        {
-            var _loc_2:* = new Uri(param1);
-            return this._aCss[_loc_2.uri] != null;
-        }// end function
-
-        public function inQueue(param1:String) : Boolean
-        {
-            return this._aLoadingFile[param1];
-        }// end function
-
-        public function askCss(param1:String, param2:Callback) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (this.exists(param1))
+            this._aWaiting[uri.uri].push(callback);
+            if(sUrl.indexOf(",")!=-1)
             {
-                param2.exec();
+               files=sUrl.split(",");
+               this._aMultiWaiting[uri.uri]=files;
+               this.load(files);
             }
             else
             {
-                _loc_3 = new Uri(param1);
-                if (!this._aWaiting[_loc_3.uri])
-                {
-                    this._aWaiting[_loc_3.uri] = new Array();
-                }
-                this._aWaiting[_loc_3.uri].push(param2);
-                if (param1.indexOf(",") != -1)
-                {
-                    _loc_4 = param1.split(",");
-                    this._aMultiWaiting[_loc_3.uri] = _loc_4;
-                    this.load(_loc_4);
-                }
-                else
-                {
-                    this.load(param1);
-                }
+               this.load(sUrl);
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function preloadCss(param1:String) : void
-        {
-            if (!this.exists(param1))
+      public function preloadCss(sUrl:String) : void {
+         if(!this.exists(sUrl))
+         {
+            this.load(sUrl);
+         }
+      }
+
+      public function getCss(sUrl:String) : ExtendedStyleSheet {
+         var uri:Uri = new Uri(sUrl);
+         return this._aCss[uri.uri];
+      }
+
+      public function merge(aStyleSheet:Array) : ExtendedStyleSheet {
+         var newCssName:String = "";
+         var j:uint = 0;
+         while(j<aStyleSheet.length)
+         {
+            newCssName=newCssName+((j?",":"")+aStyleSheet[j].url);
+            j++;
+         }
+         if(this.exists(newCssName))
+         {
+            return this.getCss(newCssName);
+         }
+         var newEss:ExtendedStyleSheet = new ExtendedStyleSheet(newCssName);
+         var i:uint = aStyleSheet.length-1;
+         while(i-1>-1)
+         {
+            newEss.merge(aStyleSheet[i] as ExtendedStyleSheet);
+            i--;
+         }
+         this._aCss[newCssName]=newEss;
+         return newEss;
+      }
+
+      protected function init() : void {
+         var aSavedCss:Array = null;
+         var file:String = null;
+         if(_useCache)
+         {
+            aSavedCss=StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_UI_CSS,CSS_ARRAY_KEY,new Array());
+            for (file in aSavedCss)
             {
-                this.load(param1);
+               this.parseCss(file,aSavedCss[file]);
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function getCss(param1:String) : ExtendedStyleSheet
-        {
-            var _loc_2:* = new Uri(param1);
-            return this._aCss[_loc_2.uri];
-        }// end function
+      private function parseCss(sUrl:String, content:String) : void {
+         var uri:Uri = new Uri(sUrl);
+         var styleSheet:StyleSheet = new ExtendedStyleSheet(uri.uri);
+         this._aCss[uri.uri]=styleSheet;
+         styleSheet.addEventListener(CssEvent.CSS_PARSED,this.onCssParsed);
+         styleSheet.parseCSS(content);
+      }
 
-        public function merge(param1:Array) : ExtendedStyleSheet
-        {
-            var _loc_2:* = "";
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.length)
+      private function updateWaitingMultiUrl(loadedUrl:String) : void {
+         var ok:* = false;
+         var url:String = null;
+         var i:uint = 0;
+         var files:Array = null;
+         var sse:Array = null;
+         var k:uint = 0;
+         for (url in this._aMultiWaiting)
+         {
+            if(this._aMultiWaiting[url])
             {
-                
-                _loc_2 = _loc_2 + ((_loc_3 ? (",") : ("")) + param1[_loc_3].url);
-                _loc_3 = _loc_3 + 1;
+               ok=true;
+               i=0;
+               while(i<this._aMultiWaiting[url].length)
+               {
+                  if(this._aMultiWaiting[url][i]==loadedUrl)
+                  {
+                     this._aMultiWaiting[url][i]=true;
+                  }
+                  ok=(ok)&&(this._aMultiWaiting[url][i]===true);
+                  i++;
+               }
+               if(ok)
+               {
+                  delete this._aMultiWaiting[[url]];
+                  files=url.split(",");
+                  sse=new Array();
+                  k=0;
+                  while(k<files.length)
+                  {
+                     sse.push(this.getCss(files[k]));
+                     k++;
+                  }
+                  this.merge(sse);
+                  this.dispatchWaitingCallbabk(url);
+               }
             }
-            if (this.exists(_loc_2))
+         }
+      }
+
+      private function dispatchWaitingCallbabk(url:String) : void {
+         var i:uint = 0;
+         if(this._aWaiting[url])
+         {
+            i=0;
+            while(i<this._aWaiting[url].length)
             {
-                return this.getCss(_loc_2);
+               Callback(this._aWaiting[url][i]).exec();
+               i++;
             }
-            var _loc_4:* = new ExtendedStyleSheet(_loc_2);
-            var _loc_5:* = param1.length - 1;
-            while ((_loc_5 - 1) > -1)
-            {
-                
-                _loc_4.merge(param1[_loc_5] as ExtendedStyleSheet);
-                _loc_5 = _loc_5 - 1;
-            }
-            this._aCss[_loc_2] = _loc_4;
-            return _loc_4;
-        }// end function
+            delete this._aWaiting[[url]];
+         }
+      }
 
-        protected function init() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            if (_useCache)
-            {
-                _loc_1 = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_UI_CSS, CSS_ARRAY_KEY, new Array());
-                for (_loc_2 in _loc_1)
-                {
-                    
-                    this.parseCss(_loc_2, _loc_1[_loc_2]);
-                }
-            }
-            return;
-        }// end function
+      protected function complete(e:ResourceLoadedEvent) : void {
+         var aSavedCss:Array = null;
+         if(_useCache)
+         {
+            aSavedCss=StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_UI_CSS,CSS_ARRAY_KEY,new Array());
+            aSavedCss[e.uri.uri]=e.resource;
+            StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_CSS,CSS_ARRAY_KEY,aSavedCss);
+         }
+         this._aLoadingFile[e.uri.uri]=false;
+         this.parseCss(e.uri.uri,e.resource);
+      }
 
-        private function parseCss(param1:String, param2:String) : void
-        {
-            var _loc_3:* = new Uri(param1);
-            var _loc_4:* = new ExtendedStyleSheet(_loc_3.uri);
-            this._aCss[_loc_3.uri] = _loc_4;
-            _loc_4.addEventListener(CssEvent.CSS_PARSED, this.onCssParsed);
-            _loc_4.parseCSS(param2);
-            return;
-        }// end function
+      protected function error(e:ResourceErrorEvent) : void {
+         ErrorManager.addError("Impossible de trouver la feuille de style (url: "+e.uri+")");
+         this._aLoadingFile[e.uri.uri]=false;
+         delete this._aWaiting[[e.uri.uri]];
+      }
 
-        private function updateWaitingMultiUrl(param1:String) : void
-        {
-            var _loc_2:* = false;
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            for (_loc_3 in this._aMultiWaiting)
-            {
-                
-                if (this._aMultiWaiting[_loc_3])
-                {
-                    _loc_2 = true;
-                    _loc_4 = 0;
-                    while (_loc_4 < this._aMultiWaiting[_loc_3].length)
-                    {
-                        
-                        if (this._aMultiWaiting[_loc_3][_loc_4] == param1)
-                        {
-                            this._aMultiWaiting[_loc_3][_loc_4] = true;
-                        }
-                        _loc_2 = _loc_2 && this._aMultiWaiting[_loc_3][_loc_4] === true;
-                        _loc_4 = _loc_4 + 1;
-                    }
-                    if (_loc_2)
-                    {
-                        delete this._aMultiWaiting[_loc_3];
-                        _loc_5 = _loc_3.split(",");
-                        _loc_6 = new Array();
-                        _loc_7 = 0;
-                        while (_loc_7 < _loc_5.length)
-                        {
-                            
-                            _loc_6.push(this.getCss(_loc_5[_loc_7]));
-                            _loc_7 = _loc_7 + 1;
-                        }
-                        this.merge(_loc_6);
-                        this.dispatchWaitingCallbabk(_loc_3);
-                    }
-                }
-            }
-            return;
-        }// end function
+      private function onCssParsed(e:CssEvent) : void {
+         e.stylesheet.removeEventListener(CssEvent.CSS_PARSED,this.onCssParsed);
+         var uri:Uri = new Uri(e.stylesheet.url);
+         this.dispatchWaitingCallbabk(uri.uri);
+         this.updateWaitingMultiUrl(uri.uri);
+      }
+   }
 
-        private function dispatchWaitingCallbabk(param1:String) : void
-        {
-            var _loc_2:* = 0;
-            if (this._aWaiting[param1])
-            {
-                _loc_2 = 0;
-                while (_loc_2 < this._aWaiting[param1].length)
-                {
-                    
-                    Callback(this._aWaiting[param1][_loc_2]).exec();
-                    _loc_2 = _loc_2 + 1;
-                }
-                delete this._aWaiting[param1];
-            }
-            return;
-        }// end function
-
-        protected function complete(event:ResourceLoadedEvent) : void
-        {
-            var _loc_2:* = null;
-            if (_useCache)
-            {
-                _loc_2 = StoreDataManager.getInstance().getSetData(BeriliaConstants.DATASTORE_UI_CSS, CSS_ARRAY_KEY, new Array());
-                _loc_2[event.uri.uri] = event.resource;
-                StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_UI_CSS, CSS_ARRAY_KEY, _loc_2);
-            }
-            this._aLoadingFile[event.uri.uri] = false;
-            this.parseCss(event.uri.uri, event.resource);
-            return;
-        }// end function
-
-        protected function error(event:ResourceErrorEvent) : void
-        {
-            ErrorManager.addError("Impossible de trouver la feuille de style (url: " + event.uri + ")");
-            this._aLoadingFile[event.uri.uri] = false;
-            delete this._aWaiting[event.uri.uri];
-            return;
-        }// end function
-
-        private function onCssParsed(event:CssEvent) : void
-        {
-            event.stylesheet.removeEventListener(CssEvent.CSS_PARSED, this.onCssParsed);
-            var _loc_2:* = new Uri(event.stylesheet.url);
-            this.dispatchWaitingCallbabk(_loc_2.uri);
-            this.updateWaitingMultiUrl(_loc_2.uri);
-            return;
-        }// end function
-
-        public static function getInstance() : CssManager
-        {
-            if (!_self)
-            {
-                _self = new CssManager;
-            }
-            return _self;
-        }// end function
-
-        public static function set useCache(param1:Boolean) : void
-        {
-            _useCache = param1;
-            if (!param1)
-            {
-                clear();
-            }
-            return;
-        }// end function
-
-        public static function get useCache() : Boolean
-        {
-            return _useCache;
-        }// end function
-
-        public static function clear() : void
-        {
-            StoreDataManager.getInstance().clear(BeriliaConstants.DATASTORE_UI_CSS);
-            return;
-        }// end function
-
-    }
 }

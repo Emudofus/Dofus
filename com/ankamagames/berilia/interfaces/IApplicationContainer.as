@@ -1,10 +1,14 @@
-﻿package com.ankamagames.berilia.interfaces
+package com.ankamagames.berilia.interfaces
 {
 
-    public interface IApplicationContainer
-    {
 
-        public function IApplicationContainer();
+   public interface IApplicationContainer
+   {
+         
 
-    }
+
+
+
+   }
+
 }

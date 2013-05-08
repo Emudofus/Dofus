@@ -1,81 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.storage
+package com.ankamagames.dofus.network.messages.game.inventory.storage
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.messages.game.inventory.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.InventoryContentMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class StorageInventoryContentMessage extends InventoryContentMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 5646;
 
-        public function StorageInventoryContentMessage()
-        {
-            return;
-        }// end function
+   public class StorageInventoryContentMessage extends InventoryContentMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function StorageInventoryContentMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5646;
-        }// end function
+      public static const protocolId:uint = 5646;
 
-        public function initStorageInventoryContentMessage(param1:Vector.<ObjectItem> = null, param2:uint = 0) : StorageInventoryContentMessage
-        {
-            super.initInventoryContentMessage(param1, param2);
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5646;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public function initStorageInventoryContentMessage(objects:Vector.<ObjectItem>=null, kamas:uint=0) : StorageInventoryContentMessage {
+         super.initInventoryContentMessage(objects,kamas);
+         this._isInitialized=true;
+         return this;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_StorageInventoryContentMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this._isInitialized=false;
+      }
 
-        public function serializeAs_StorageInventoryContentMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_InventoryContentMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_StorageInventoryContentMessage(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserializeAs_StorageInventoryContentMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_StorageInventoryContentMessage(output);
+      }
 
-    }
+      public function serializeAs_StorageInventoryContentMessage(output:IDataOutput) : void {
+         super.serializeAs_InventoryContentMessage(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_StorageInventoryContentMessage(input);
+      }
+
+      public function deserializeAs_StorageInventoryContentMessage(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

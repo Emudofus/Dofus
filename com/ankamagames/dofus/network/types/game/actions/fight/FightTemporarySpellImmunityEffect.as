@@ -1,62 +1,54 @@
-﻿package com.ankamagames.dofus.network.types.game.actions.fight
+package com.ankamagames.dofus.network.types.game.actions.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class FightTemporarySpellImmunityEffect extends AbstractFightDispellableEffect implements INetworkType
-    {
-        public var immuneSpellId:int = 0;
-        public static const protocolId:uint = 366;
 
-        public function FightTemporarySpellImmunityEffect()
-        {
-            return;
-        }// end function
+   public class FightTemporarySpellImmunityEffect extends AbstractFightDispellableEffect implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 366;
-        }// end function
+      public function FightTemporarySpellImmunityEffect() {
+         super();
+      }
 
-        public function initFightTemporarySpellImmunityEffect(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 1, param5:uint = 0, param6:uint = 0, param7:int = 0) : FightTemporarySpellImmunityEffect
-        {
-            super.initAbstractFightDispellableEffect(param1, param2, param3, param4, param5, param6);
-            this.immuneSpellId = param7;
-            return this;
-        }// end function
+      public static const protocolId:uint = 366;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.immuneSpellId = 0;
-            return;
-        }// end function
+      public var immuneSpellId:int = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_FightTemporarySpellImmunityEffect(param1);
-            return;
-        }// end function
+      override public function getTypeId() : uint {
+         return 366;
+      }
 
-        public function serializeAs_FightTemporarySpellImmunityEffect(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractFightDispellableEffect(param1);
-            param1.writeInt(this.immuneSpellId);
-            return;
-        }// end function
+      public function initFightTemporarySpellImmunityEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, parentBoostUid:uint=0, immuneSpellId:int=0) : FightTemporarySpellImmunityEffect {
+         super.initAbstractFightDispellableEffect(uid,targetId,turnDuration,dispelable,spellId,parentBoostUid);
+         this.immuneSpellId=immuneSpellId;
+         return this;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_FightTemporarySpellImmunityEffect(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.immuneSpellId=0;
+      }
 
-        public function deserializeAs_FightTemporarySpellImmunityEffect(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.immuneSpellId = param1.readInt();
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightTemporarySpellImmunityEffect(output);
+      }
 
-    }
+      public function serializeAs_FightTemporarySpellImmunityEffect(output:IDataOutput) : void {
+         super.serializeAs_AbstractFightDispellableEffect(output);
+         output.writeInt(this.immuneSpellId);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightTemporarySpellImmunityEffect(input);
+      }
+
+      public function deserializeAs_FightTemporarySpellImmunityEffect(input:IDataInput) : void {
+         super.deserialize(input);
+         this.immuneSpellId=input.readInt();
+      }
+   }
+
 }

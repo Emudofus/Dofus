@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.party
+package com.ankamagames.dofus.logic.game.common.actions.party
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ArenaUnregisterAction extends Object implements Action
-    {
 
-        public function ArenaUnregisterAction()
-        {
-            return;
-        }// end function
+   public class ArenaUnregisterAction extends Object implements Action
+   {
+         
 
-        public static function create() : ArenaUnregisterAction
-        {
-            var _loc_1:* = new ArenaUnregisterAction;
-            return _loc_1;
-        }// end function
+      public function ArenaUnregisterAction() {
+         super();
+      }
 
-    }
+      public static function create() : ArenaUnregisterAction {
+         var a:ArenaUnregisterAction = new ArenaUnregisterAction();
+         return a;
+      }
+
+
+   }
+
 }

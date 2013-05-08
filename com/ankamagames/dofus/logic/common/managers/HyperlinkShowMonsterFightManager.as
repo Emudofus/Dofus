@@ -1,46 +1,46 @@
-﻿package com.ankamagames.dofus.logic.common.managers
+package com.ankamagames.dofus.logic.common.managers
 {
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.frames.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import flash.display.*;
-    import flash.geom.*;
+   import flash.display.DisplayObject;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import flash.geom.Rectangle;
+   import com.ankamagames.berilia.types.data.TextTooltipInfo;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.enums.StrataEnum;
 
-    public class HyperlinkShowMonsterFightManager extends Object
-    {
 
-        public function HyperlinkShowMonsterFightManager()
-        {
-            return;
-        }// end function
+   public class HyperlinkShowMonsterFightManager extends Object
+   {
+         
 
-        public static function showEntity(param1:int) : void
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            if (_loc_2)
+      public function HyperlinkShowMonsterFightManager() {
+         super();
+      }
+
+      public static function showEntity(entityId:int) : void {
+         var entity:DisplayObject = null;
+         var fightEntitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         if(fightEntitiesFrame)
+         {
+            entity=DofusEntities.getEntity(entityId) as DisplayObject;
+            if(entity)
             {
-                _loc_3 = DofusEntities.getEntity(param1) as DisplayObject;
-                if (_loc_3)
-                {
-                    HyperlinkShowCellManager.showCell((_loc_3 as IEntity).position.cellId);
-                }
+               HyperlinkShowCellManager.showCell((entity as IEntity).position.cellId);
             }
-            return;
-        }// end function
+         }
+      }
 
-        public static function rollOver(param1:int, param2:int, param3:int) : void
-        {
-            var _loc_4:* = new Rectangle(param1, param2, 10, 10);
-            var _loc_5:* = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.whereAreYou"));
-            TooltipManager.show(_loc_5, _loc_4, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
-            return;
-        }// end function
+      public static function rollOver(pX:int, pY:int, entityId:int) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.whereAreYou"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      }
 
-    }
+
+   }
+
 }

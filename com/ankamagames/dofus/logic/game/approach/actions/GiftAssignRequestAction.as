@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.approach.actions
+package com.ankamagames.dofus.logic.game.approach.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GiftAssignRequestAction extends Object implements Action
-    {
-        public var giftId:uint;
-        public var characterId:uint;
 
-        public function GiftAssignRequestAction()
-        {
-            return;
-        }// end function
+   public class GiftAssignRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint) : GiftAssignRequestAction
-        {
-            var _loc_3:* = new GiftAssignRequestAction;
-            _loc_3.giftId = param1;
-            _loc_3.characterId = param2;
-            return _loc_3;
-        }// end function
+      public function GiftAssignRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(giftId:uint, characterId:uint) : GiftAssignRequestAction {
+         var action:GiftAssignRequestAction = new GiftAssignRequestAction();
+         action.giftId=giftId;
+         action.characterId=characterId;
+         return action;
+      }
+
+      public var giftId:uint;
+
+      public var characterId:uint;
+   }
+
 }

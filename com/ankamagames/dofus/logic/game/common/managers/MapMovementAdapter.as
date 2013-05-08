@@ -1,100 +1,102 @@
-﻿package com.ankamagames.dofus.logic.game.common.managers
+package com.ankamagames.dofus.logic.game.common.managers
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.positions.MovementPath;
+   import com.ankamagames.jerakine.types.positions.PathElement;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class MapMovementAdapter extends Object
-    {
-        private static const DEBUG_ADAPTER:Boolean = false;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(MapMovementAdapter));
 
-        public function MapMovementAdapter()
-        {
-            return;
-        }// end function
+   public class MapMovementAdapter extends Object
+   {
+         
 
-        public static function getServerMovement(param1:MovementPath) : Vector.<uint>
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            param1.compress();
-            var _loc_2:* = new Vector.<uint>;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            for each (_loc_5 in param1.path)
+      public function MapMovementAdapter() {
+         super();
+      }
+
+      private static const DEBUG_ADAPTER:Boolean = false;
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapMovementAdapter));
+
+      public static function getServerMovement(path:MovementPath) : Vector.<uint> {
+         var pe:PathElement = null;
+         var lastValue:* = 0;
+         var value:* = 0;
+         var movStr:String = null;
+         var movCell:uint = 0;
+         path.compress();
+         var movement:Vector.<uint> = new Vector.<uint>();
+         var lastOrientation:uint = 0;
+         var moveCount:uint = 0;
+         for each (pe in path.path)
+         {
+            lastOrientation=pe.orientation;
+            value=(lastOrientation&7)<<12|pe.step.cellId&4095;
+            movement.push(value);
+            moveCount++;
+         }
+         lastValue=(lastOrientation&7)<<12|path.end.cellId&4095;
+         movement.push(lastValue);
+         if(DEBUG_ADAPTER)
+         {
+            movStr="";
+            for each (movCell in movement)
             {
-                
-                _loc_3 = _loc_5.orientation;
-                _loc_7 = (_loc_3 & 7) << 12 | _loc_5.step.cellId & 4095;
-                _loc_2.push(_loc_7);
-                _loc_4 = _loc_4 + 1;
+               movStr=movStr+((movCell&4095)+" > ");
             }
-            _loc_6 = (_loc_3 & 7) << 12 | param1.end.cellId & 4095;
-            _loc_2.push(_loc_6);
-            if (DEBUG_ADAPTER)
-            {
-                _loc_8 = "";
-                for each (_loc_9 in _loc_2)
-                {
-                    
-                    _loc_8 = _loc_8 + ((_loc_9 & 4095) + " > ");
-                }
-                _log.debug("Sending path : " + _loc_8);
-            }
-            return _loc_2;
-        }// end function
+            _log.debug("Sending path : "+movStr);
+         }
+         return movement;
+      }
 
-        public static function getClientMovement(param1:Vector.<uint>) : MovementPath
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_2:* = new MovementPath();
-            var _loc_3:* = 0;
-            for each (_loc_5 in param1)
+      public static function getClientMovement(path:Vector.<uint>) : MovementPath {
+         var previousElement:PathElement = null;
+         var movement:* = 0;
+         var destination:MapPoint = null;
+         var pe:PathElement = null;
+         var movStr:String = null;
+         var movElement:PathElement = null;
+         var mp:MovementPath = new MovementPath();
+         var moveCount:uint = 0;
+         for each (movement in path)
+         {
+            destination=MapPoint.fromCellId(movement&4095);
+            pe=new PathElement();
+            pe.step=destination;
+            if(moveCount==0)
             {
-                
-                _loc_6 = MapPoint.fromCellId(_loc_5 & 4095);
-                _loc_7 = new PathElement();
-                _loc_7.step = _loc_6;
-                if (_loc_3 == 0)
-                {
-                    _loc_2.start = _loc_6;
-                }
-                else
-                {
-                    _loc_4.orientation = _loc_4.step.orientationTo(_loc_7.step);
-                }
-                if (_loc_3 == (param1.length - 1))
-                {
-                    _loc_2.end = _loc_6;
-                    break;
-                }
-                _loc_2.addPoint(_loc_7);
-                _loc_4 = _loc_7;
-                _loc_3 = _loc_3 + 1;
+               mp.start=destination;
             }
-            _loc_2.fill();
-            if (DEBUG_ADAPTER)
+            else
             {
-                _loc_8 = "Start : " + _loc_2.start.cellId + " | ";
-                for each (_loc_9 in _loc_2.path)
-                {
-                    
-                    _loc_8 = _loc_8 + (_loc_9.step.cellId + " > ");
-                }
-                _log.debug("Received path : " + _loc_8 + " | End : " + _loc_2.end.cellId);
+               previousElement.orientation=previousElement.step.orientationTo(pe.step);
             }
-            return _loc_2;
-        }// end function
+            if(moveCount==path.length-1)
+            {
+               mp.end=destination;
+               break;
+            }
+            mp.addPoint(pe);
+            previousElement=pe;
+            moveCount++;
+         }
+         mp.fill();
+         if(DEBUG_ADAPTER)
+         {
+            movStr="Start : "+mp.start.cellId+" | ";
+            for each (movElement in mp.path)
+            {
+               movStr=movStr+(movElement.step.cellId+" > ");
+            }
+            _log.debug("Received path : "+movStr+" | End : "+mp.end.cellId);
+         }
+         return mp;
+      }
 
-    }
+
+   }
+
 }

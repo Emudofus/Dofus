@@ -1,39 +1,43 @@
-﻿package com.ankamagames.dofus.datacenter.mounts
+package com.ankamagames.dofus.datacenter.mounts
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class Mount extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var nameId:uint;
-        public var look:String;
-        private var _name:String;
-        private static var MODULE:String = "Mounts";
 
-        public function Mount()
-        {
-            return;
-        }// end function
+   public class Mount extends Object implements IDataCenter
+   {
+         
 
-        public function get name() : String
-        {
-            if (!this._name)
-            {
-                this._name = I18n.getText(this.nameId);
-            }
-            return this._name;
-        }// end function
+      public function Mount() {
+         super();
+      }
 
-        public static function getMountById(param1:uint) : Mount
-        {
-            return GameData.getObject(MODULE, param1) as Mount;
-        }// end function
+      private static var MODULE:String = "Mounts";
 
-        public static function getMounts() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static function getMountById(id:uint) : Mount {
+         return GameData.getObject(MODULE,id) as Mount;
+      }
 
-    }
+      public static function getMounts() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var nameId:uint;
+
+      public var look:String;
+
+      private var _name:String;
+
+      public function get name() : String {
+         if(!this._name)
+         {
+            this._name=I18n.getText(this.nameId);
+         }
+         return this._name;
+      }
+   }
+
 }

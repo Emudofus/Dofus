@@ -1,305 +1,323 @@
-﻿package com.ankamagames.berilia.components.gridRenderer
+package com.ankamagames.berilia.components.gridRenderer
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.display.*;
-    import flash.geom.*;
-    import flash.utils.*;
-    import gs.*;
-    import gs.easing.*;
-    import gs.events.*;
+   import com.ankamagames.berilia.interfaces.IGridRenderer;
+   import com.ankamagames.jerakine.interfaces.ICustomSecureObject;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.components.Grid;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.display.DisplayObject;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import com.ankamagames.berilia.components.Slot;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.berilia.types.data.LinkedCursorData;
+   import flash.geom.Point;
+   import com.ankamagames.berilia.interfaces.IClonable;
+   import com.ankamagames.berilia.managers.LinkedCursorSpriteManager;
+   import gs.TweenMax;
+   import gs.easing.Quart;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.berilia.UIComponent;
+   import gs.events.TweenEvent;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class SlotGridRenderer extends Object implements IGridRenderer, ICustomSecureObject
-    {
-        protected var _log:Logger;
-        private var _grid:Grid;
-        private var _emptyTexture:Uri;
-        private var _overTexture:Uri;
-        private var _selectedTexture:Uri;
-        private var _acceptDragTexture:Uri;
-        private var _refuseDragTexture:Uri;
-        private var _timerTexture:Uri;
-        private var _cssUri:Uri;
-        private var _allowDrop:Boolean;
-        private var _isButton:Boolean;
-        private var _hideQuantities:Boolean = false;
-        public var dropValidatorFunction:Function;
-        public var processDropFunction:Function;
-        public var removeDropSourceFunction:Function;
 
-        public function SlotGridRenderer(param1:String)
-        {
-            this._log = Log.getLogger(getQualifiedClassName(SlotGridRenderer));
-            var _loc_2:* = param1 ? (param1.split(",")) : ([]);
-            this._emptyTexture = _loc_2[0] && _loc_2[0].length ? (new Uri(_loc_2[0])) : (null);
-            this._overTexture = _loc_2[1] && _loc_2[1].length ? (new Uri(_loc_2[1])) : (null);
-            this._selectedTexture = _loc_2[2] && _loc_2[2].length ? (new Uri(_loc_2[2])) : (null);
-            this._selectedTexture = _loc_2[2] && _loc_2[2].length ? (new Uri(_loc_2[2])) : (null);
-            this._acceptDragTexture = _loc_2[3] && _loc_2[3].length ? (new Uri(_loc_2[3])) : (null);
-            this._refuseDragTexture = _loc_2[4] && _loc_2[4].length ? (new Uri(_loc_2[4])) : (null);
-            this._timerTexture = _loc_2[5] && _loc_2[5].length ? (new Uri(_loc_2[5])) : (null);
-            this._cssUri = _loc_2[6] && _loc_2[6].length ? (new Uri(_loc_2[6])) : (null);
-            this._allowDrop = _loc_2[7] && _loc_2[7].length ? (_loc_2[7] == "true") : (true);
-            this._isButton = _loc_2[8] && _loc_2[8].length ? (_loc_2[8] == "true") : (false);
+   public class SlotGridRenderer extends Object implements IGridRenderer, ICustomSecureObject
+   {
+         
+
+      public function SlotGridRenderer(strParams:String) {
+         this._log=Log.getLogger(getQualifiedClassName(SlotGridRenderer));
+         super();
+         var params:Array = strParams?strParams.split(","):[];
+         this._emptyTexture=(params[0])&&(params[0].length)?new Uri(params[0]):null;
+         this._overTexture=(params[1])&&(params[1].length)?new Uri(params[1]):null;
+         this._selectedTexture=(params[2])&&(params[2].length)?new Uri(params[2]):null;
+         this._selectedTexture=(params[2])&&(params[2].length)?new Uri(params[2]):null;
+         this._acceptDragTexture=(params[3])&&(params[3].length)?new Uri(params[3]):null;
+         this._refuseDragTexture=(params[4])&&(params[4].length)?new Uri(params[4]):null;
+         this._timerTexture=(params[5])&&(params[5].length)?new Uri(params[5]):null;
+         this._cssUri=(params[6])&&(params[6].length)?new Uri(params[6]):null;
+         this._allowDrop=(params[7])&&(params[7].length)?params[7]=="true":true;
+         this._isButton=(params[8])&&(params[8].length)?params[8]=="true":false;
+      }
+
+
+
+      protected var _log:Logger;
+
+      private var _grid:Grid;
+
+      private var _emptyTexture:Uri;
+
+      private var _overTexture:Uri;
+
+      private var _selectedTexture:Uri;
+
+      private var _acceptDragTexture:Uri;
+
+      private var _refuseDragTexture:Uri;
+
+      private var _customTexture:Uri;
+
+      private var _timerTexture:Uri;
+
+      private var _cssUri:Uri;
+
+      private var _allowDrop:Boolean;
+
+      private var _isButton:Boolean;
+
+      private var _hideQuantities:Boolean = false;
+
+      public var dropValidatorFunction:Function;
+
+      public var processDropFunction:Function;
+
+      public var removeDropSourceFunction:Function;
+
+      public function set allowDrop(pAllow:Boolean) : void {
+         this._allowDrop=pAllow;
+      }
+
+      public function get allowDrop() : Boolean {
+         return this._allowDrop;
+      }
+
+      public function set isButton(pButton:Boolean) : void {
+         this._isButton=pButton;
+      }
+
+      public function get isButton() : Boolean {
+         return this._isButton;
+      }
+
+      public function set hideQuantities(value:Boolean) : void {
+         this._hideQuantities=value;
+      }
+
+      public function get hideQuantities() : Boolean {
+         return this._hideQuantities;
+      }
+
+      public function get acceptDragTexture() : Uri {
+         return this._acceptDragTexture;
+      }
+
+      public function set acceptDragTexture(uri:Uri) : void {
+         this._acceptDragTexture=uri;
+      }
+
+      public function get refuseDragTexture() : Uri {
+         return this._refuseDragTexture;
+      }
+
+      public function set refuseDragTexture(uri:Uri) : void {
+         this._refuseDragTexture=uri;
+      }
+
+      public function get customTexture() : Uri {
+         return this._customTexture;
+      }
+
+      public function set customTexture(uri:Uri) : void {
+         this._customTexture=uri;
+      }
+
+      public function set grid(g:Grid) : void {
+         this._grid=g;
+      }
+
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+         var slotData:* = SecureCenter.unsecure(data);
+         var slot:Slot = new Slot();
+         slot.name=this._grid.getUi().name+"::"+this._grid.name+"::item"+index;
+         slot.mouseEnabled=true;
+         slot.emptyTexture=this._emptyTexture;
+         slot.highlightTexture=this._overTexture;
+         slot.timerTexture=this._timerTexture;
+         slot.selectedTexture=this._selectedTexture;
+         slot.acceptDragTexture=this._acceptDragTexture;
+         slot.refuseDragTexture=this._refuseDragTexture;
+         slot.customTexture=this._customTexture;
+         slot.css=this._cssUri;
+         slot.isButton=this._isButton;
+         if(this._hideQuantities)
+         {
+            slot.hideTopLabel=true;
+         }
+         else
+         {
+            slot.hideTopLabel=false;
+         }
+         slot.width=this._grid.slotWidth;
+         slot.height=this._grid.slotHeight;
+         if(this._isButton)
+         {
+            slot.selected=selected;
+         }
+         else
+         {
+            slot.allowDrag=this._allowDrop;
+         }
+         slot.data=slotData;
+         slot.processDrop=this._processDrop;
+         slot.removeDropSource=this._removeDropSourceFunction;
+         slot.dropValidator=this._dropValidatorFunction;
+         slot.finalize();
+         return slot;
+      }
+
+      public function _removeDropSourceFunction(target:*) : void {
+         var data:* = undefined;
+         if(this.removeDropSourceFunction!=null)
+         {
+            this.removeDropSourceFunction(target);
             return;
-        }// end function
-
-        public function set allowDrop(param1:Boolean) : void
-        {
-            this._allowDrop = param1;
-            return;
-        }// end function
-
-        public function get allowDrop() : Boolean
-        {
-            return this._allowDrop;
-        }// end function
-
-        public function set isButton(param1:Boolean) : void
-        {
-            this._isButton = param1;
-            return;
-        }// end function
-
-        public function get isButton() : Boolean
-        {
-            return this._isButton;
-        }// end function
-
-        public function set hideQuantities(param1:Boolean) : void
-        {
-            this._hideQuantities = param1;
-            return;
-        }// end function
-
-        public function get hideQuantities() : Boolean
-        {
-            return this._hideQuantities;
-        }// end function
-
-        public function get acceptDragTexture() : Uri
-        {
-            return this._acceptDragTexture;
-        }// end function
-
-        public function set acceptDragTexture(param1:Uri) : void
-        {
-            this._acceptDragTexture = param1;
-            return;
-        }// end function
-
-        public function get refuseDragTexture() : Uri
-        {
-            return this._refuseDragTexture;
-        }// end function
-
-        public function set refuseDragTexture(param1:Uri) : void
-        {
-            this._refuseDragTexture = param1;
-            return;
-        }// end function
-
-        public function set grid(param1:Grid) : void
-        {
-            this._grid = param1;
-            return;
-        }// end function
-
-        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
-        {
-            var _loc_5:* = SecureCenter.unsecure(param1);
-            var _loc_6:* = new Slot();
-            new Slot().name = this._grid.getUi().name + "::" + this._grid.name + "::item" + param2;
-            _loc_6.mouseEnabled = true;
-            _loc_6.emptyTexture = this._emptyTexture;
-            _loc_6.highlightTexture = this._overTexture;
-            _loc_6.timerTexture = this._timerTexture;
-            _loc_6.selectedTexture = this._selectedTexture;
-            _loc_6.acceptDragTexture = this._acceptDragTexture;
-            _loc_6.refuseDragTexture = this._refuseDragTexture;
-            _loc_6.css = this._cssUri;
-            _loc_6.isButton = this._isButton;
-            if (this._hideQuantities)
+         }
+         var dp:Array = new Array();
+         var addData:Boolean = true;
+         for each (data in this._grid.dataProvider)
+         {
+            if(data!=target.data)
             {
-                _loc_6.hideTopLabel = true;
+               dp.push(data);
+            }
+         }
+         this._grid.dataProvider=dp;
+      }
+
+      public function _dropValidatorFunction(target:Object, iSlotData:*, source:Object) : Boolean {
+         if(this.dropValidatorFunction!=null)
+         {
+            return this.dropValidatorFunction(target,iSlotData,source);
+         }
+         return true;
+      }
+
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+         var slot:Slot = null;
+         if(dispObj is Slot)
+         {
+            slot=Slot(dispObj);
+            slot.data=SecureCenter.unsecure(data) as ISlotData;
+            if(!this._isButton)
+            {
+               slot.selected=selected;
+               slot.allowDrag=this._allowDrop;
+            }
+            slot.isButton=this._isButton;
+            if(this._hideQuantities)
+            {
+               slot.hideTopLabel=true;
             }
             else
             {
-                _loc_6.hideTopLabel = false;
+               slot.hideTopLabel=false;
             }
-            _loc_6.width = this._grid.slotWidth;
-            _loc_6.height = this._grid.slotHeight;
-            if (this._isButton)
+            slot.dropValidator=this._dropValidatorFunction;
+            slot.removeDropSource=this._removeDropSourceFunction;
+            slot.processDrop=this._processDrop;
+         }
+         else
+         {
+            this._log.warn("Can\'t update, "+dispObj.name+" is not a Slot component");
+         }
+      }
+
+      public function getDataLength(data:*, selected:Boolean) : uint {
+         return 1;
+      }
+
+      public function remove(dispObj:DisplayObject) : void {
+         if((dispObj is Slot)&&(dispObj.parent))
+         {
+            Slot(dispObj).remove();
+         }
+      }
+
+      public function destroy() : void {
+         this._grid=null;
+         this._emptyTexture=null;
+         this._overTexture=null;
+         this._timerTexture=null;
+         this._selectedTexture=null;
+         this._acceptDragTexture=null;
+         this._refuseDragTexture=null;
+         this._customTexture=null;
+         this._cssUri=null;
+      }
+
+      public function _processDrop(target:*, data:*, source:*) : void {
+         var linkCursor:LinkedCursorData = null;
+         var pt:Point = null;
+         var tweenTarget:DisplayObject = null;
+         if(this.processDropFunction!=null)
+         {
+            this.processDropFunction(target,data,source);
+            return;
+         }
+         var sameGrid:Boolean = false;
+         if(DisplayObject(data.holder).parent!=this._grid)
+         {
+            if(data is IClonable)
             {
-                _loc_6.selected = param3;
+               this._grid.dataProvider.push((data as IClonable).clone());
             }
             else
             {
-                _loc_6.allowDrag = this._allowDrop;
+               this._grid.dataProvider.push(data);
             }
-            _loc_6.data = _loc_5;
-            _loc_6.processDrop = this._processDrop;
-            _loc_6.removeDropSource = this._removeDropSourceFunction;
-            _loc_6.dropValidator = this._dropValidatorFunction;
-            _loc_6.finalize();
-            return _loc_6;
-        }// end function
+            this._grid.dataProvider=this._grid.dataProvider;
+         }
+         else
+         {
+            sameGrid=true;
+         }
+         linkCursor=LinkedCursorSpriteManager.getInstance().getItem(Slot.DRAG_AND_DROP_CURSOR_NAME);
+         if((sameGrid)||(!this._grid.indexIsInvisibleSlot(this._grid.dataProvider.length-1)))
+         {
+            tweenTarget=DisplayObject(data.holder);
+            pt=tweenTarget.localToGlobal(new Point(tweenTarget.x,tweenTarget.y));
+            TweenMax.to(linkCursor.sprite,0.5,
+               {
+                  x:pt.x,
+                  y:pt.y,
+                  alpha:0,
+                  ease:Quart.easeOut,
+                  onCompleteListener:this.onTweenEnd
+               }
+            );
+         }
+         else
+         {
+            pt=this._grid.localToGlobal(new Point(this._grid.x,this._grid.y));
+            linkCursor.sprite.stopDrag();
+            TweenMax.to(linkCursor.sprite,0.5,
+               {
+                  x:pt.x+this._grid.width/2,
+                  y:pt.y+this._grid.height,
+                  alpha:0,
+                  scaleX:0.1,
+                  scaleY:0.1,
+                  ease:Quart.easeOut,
+                  onCompleteListener:this.onTweenEnd
+               }
+            );
+         }
+      }
 
-        public function _removeDropSourceFunction(param1) : void
-        {
-            var _loc_4:* = undefined;
-            if (this.removeDropSourceFunction != null)
-            {
-                this.removeDropSourceFunction(param1);
-                return;
-            }
-            var _loc_2:* = new Array();
-            var _loc_3:* = true;
-            for each (_loc_4 in this._grid.dataProvider)
-            {
-                
-                if (_loc_4 != param1.data)
-                {
-                    _loc_2.push(_loc_4);
-                }
-            }
-            this._grid.dataProvider = _loc_2;
-            return;
-        }// end function
+      public function renderModificator(childs:Array) : Array {
+         return childs;
+      }
 
-        public function _dropValidatorFunction(param1:Object, param2, param3:Object) : Boolean
-        {
-            if (this.dropValidatorFunction != null)
-            {
-                return this.dropValidatorFunction(param1, param2, param3);
-            }
-            return true;
-        }// end function
+      public function eventModificator(msg:Message, functionName:String, args:Array, target:UIComponent) : String {
+         return functionName;
+      }
 
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
-        {
-            var _loc_6:* = null;
-            if (param3 is Slot)
-            {
-                _loc_6 = Slot(param3);
-                _loc_6.data = SecureCenter.unsecure(param1) as ISlotData;
-                if (!this._isButton)
-                {
-                    _loc_6.selected = param4;
-                    _loc_6.allowDrag = this._allowDrop;
-                }
-                _loc_6.isButton = this._isButton;
-                if (this._hideQuantities)
-                {
-                    _loc_6.hideTopLabel = true;
-                }
-                else
-                {
-                    _loc_6.hideTopLabel = false;
-                }
-                _loc_6.dropValidator = this._dropValidatorFunction;
-                _loc_6.removeDropSource = this._removeDropSourceFunction;
-                _loc_6.processDrop = this._processDrop;
-            }
-            else
-            {
-                this._log.warn("Can\'t update, " + param3.name + " is not a Slot component");
-            }
-            return;
-        }// end function
+      private function onTweenEnd(e:TweenEvent) : void {
+         LinkedCursorSpriteManager.getInstance().removeItem(Slot.DRAG_AND_DROP_CURSOR_NAME);
+      }
+   }
 
-        public function getDataLength(param1, param2:Boolean) : uint
-        {
-            return 1;
-        }// end function
-
-        public function remove(param1:DisplayObject) : void
-        {
-            if (param1 is Slot && param1.parent)
-            {
-                Slot(param1).remove();
-            }
-            return;
-        }// end function
-
-        public function destroy() : void
-        {
-            this._grid = null;
-            this._emptyTexture = null;
-            this._overTexture = null;
-            this._timerTexture = null;
-            this._selectedTexture = null;
-            this._acceptDragTexture = null;
-            this._refuseDragTexture = null;
-            this._cssUri = null;
-            return;
-        }// end function
-
-        public function _processDrop(param1, param2, param3) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            if (this.processDropFunction != null)
-            {
-                this.processDropFunction(param1, param2, param3);
-                return;
-            }
-            var _loc_4:* = false;
-            if (DisplayObject(param2.holder).parent != this._grid)
-            {
-                if (param2 is IClonable)
-                {
-                    this._grid.dataProvider.push((param2 as IClonable).clone());
-                }
-                else
-                {
-                    this._grid.dataProvider.push(param2);
-                }
-                this._grid.dataProvider = this._grid.dataProvider;
-            }
-            else
-            {
-                _loc_4 = true;
-            }
-            _loc_5 = LinkedCursorSpriteManager.getInstance().getItem(Slot.DRAG_AND_DROP_CURSOR_NAME);
-            if (_loc_4 || !this._grid.indexIsInvisibleSlot((this._grid.dataProvider.length - 1)))
-            {
-                _loc_7 = DisplayObject(param2.holder);
-                _loc_6 = _loc_7.localToGlobal(new Point(_loc_7.x, _loc_7.y));
-                TweenMax.to(_loc_5.sprite, 0.5, {x:_loc_6.x, y:_loc_6.y, alpha:0, ease:Quart.easeOut, onCompleteListener:this.onTweenEnd});
-            }
-            else
-            {
-                _loc_6 = this._grid.localToGlobal(new Point(this._grid.x, this._grid.y));
-                _loc_5.sprite.stopDrag();
-                TweenMax.to(_loc_5.sprite, 0.5, {x:_loc_6.x + this._grid.width / 2, y:_loc_6.y + this._grid.height, alpha:0, scaleX:0.1, scaleY:0.1, ease:Quart.easeOut, onCompleteListener:this.onTweenEnd});
-            }
-            return;
-        }// end function
-
-        public function renderModificator(param1:Array) : Array
-        {
-            return param1;
-        }// end function
-
-        public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String
-        {
-            return param2;
-        }// end function
-
-        private function onTweenEnd(event:TweenEvent) : void
-        {
-            LinkedCursorSpriteManager.getInstance().removeItem(Slot.DRAG_AND_DROP_CURSOR_NAME);
-            return;
-        }// end function
-
-    }
 }

@@ -1,100 +1,88 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay
+package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.interactive.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class MapObstacleUpdateMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var obstacles:Vector.<MapObstacle>;
-        public static const protocolId:uint = 6051;
 
-        public function MapObstacleUpdateMessage()
-        {
-            this.obstacles = new Vector.<MapObstacle>;
-            return;
-        }// end function
+   public class MapObstacleUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function MapObstacleUpdateMessage() {
+         this.obstacles=new Vector.<MapObstacle>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6051;
-        }// end function
+      public static const protocolId:uint = 6051;
 
-        public function initMapObstacleUpdateMessage(param1:Vector.<MapObstacle> = null) : MapObstacleUpdateMessage
-        {
-            this.obstacles = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.obstacles = new Vector.<MapObstacle>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var obstacles:Vector.<MapObstacle>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6051;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_MapObstacleUpdateMessage(param1);
-            return;
-        }// end function
+      public function initMapObstacleUpdateMessage(obstacles:Vector.<MapObstacle>=null) : MapObstacleUpdateMessage {
+         this.obstacles=obstacles;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_MapObstacleUpdateMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.obstacles.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.obstacles.length)
-            {
-                
-                (this.obstacles[_loc_2] as MapObstacle).serializeAs_MapObstacle(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.obstacles=new Vector.<MapObstacle>();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_MapObstacleUpdateMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_MapObstacleUpdateMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new MapObstacle();
-                _loc_4.deserialize(param1);
-                this.obstacles.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MapObstacleUpdateMessage(output);
+      }
+
+      public function serializeAs_MapObstacleUpdateMessage(output:IDataOutput) : void {
+         output.writeShort(this.obstacles.length);
+         var _i1:uint = 0;
+         while(_i1<this.obstacles.length)
+         {
+            (this.obstacles[_i1] as MapObstacle).serializeAs_MapObstacle(output);
+            _i1++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MapObstacleUpdateMessage(input);
+      }
+
+      public function deserializeAs_MapObstacleUpdateMessage(input:IDataInput) : void {
+         var _item1:MapObstacle = null;
+         var _obstaclesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_obstaclesLen)
+         {
+            _item1=new MapObstacle();
+            _item1.deserialize(input);
+            this.obstacles.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

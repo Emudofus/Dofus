@@ -1,255 +1,289 @@
-﻿package flashx.textLayout.container
+package flashx.textLayout.container
 {
-    import flash.geom.*;
-    import flashx.textLayout.formats.*;
-    import flashx.textLayout.utils.*;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.FormatValue;
+   import flashx.textLayout.formats.LineBreak;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.formats.Direction;
+   import flashx.textLayout.utils.Twips;
 
-    public class ColumnState extends Object
-    {
-        private var _inputsChanged:Boolean;
-        private var _blockProgression:String;
-        private var _columnDirection:String;
-        private var _paddingTop:Number;
-        private var _paddingBottom:Number;
-        private var _paddingLeft:Number;
-        private var _paddingRight:Number;
-        private var _compositionWidth:Number;
-        private var _compositionHeight:Number;
-        private var _forceSingleColumn:Boolean;
-        private var _inputColumnWidth:Object;
-        private var _inputColumnGap:Number;
-        private var _inputColumnCount:Object;
-        private var _columnWidth:Number;
-        private var _columnCount:int;
-        private var _columnGap:Number;
-        private var _inset:Number;
-        private var _columnArray:Array;
-        private var _singleColumn:Rectangle;
+   use namespace tlf_internal;
 
-        public function ColumnState(param1:String, param2:String, param3:ContainerController, param4:Number, param5:Number)
-        {
-            this._inputsChanged = true;
-            this._columnCount = 0;
-            if (param1 != null)
-            {
-                this.updateInputs(param1, param2, param3, param4, param5);
-                this.computeColumns();
-            }
+   public class ColumnState extends Object
+   {
+         
+
+      public function ColumnState(blockProgression:String, columnDirection:String, controller:ContainerController, compositionWidth:Number, compositionHeight:Number) {
+         super();
+         this._inputsChanged=true;
+         this._columnCount=0;
+         if(blockProgression!=null)
+         {
+            this.updateInputs(blockProgression,columnDirection,controller,compositionWidth,compositionHeight);
+            this.computeColumns();
+         }
+      }
+
+
+
+      private var _inputsChanged:Boolean;
+
+      private var _blockProgression:String;
+
+      private var _columnDirection:String;
+
+      private var _paddingTop:Number;
+
+      private var _paddingBottom:Number;
+
+      private var _paddingLeft:Number;
+
+      private var _paddingRight:Number;
+
+      private var _compositionWidth:Number;
+
+      private var _compositionHeight:Number;
+
+      private var _forceSingleColumn:Boolean;
+
+      private var _inputColumnWidth:Object;
+
+      private var _inputColumnGap:Number;
+
+      private var _inputColumnCount:Object;
+
+      private var _columnWidth:Number;
+
+      private var _columnCount:int;
+
+      private var _columnGap:Number;
+
+      private var _inset:Number;
+
+      private var _columnArray:Array;
+
+      private var _singleColumn:Rectangle;
+
+      public function get columnWidth() : Number {
+         return this._columnWidth;
+      }
+
+      public function get columnCount() : int {
+         return this._columnCount;
+      }
+
+      public function get columnGap() : Number {
+         return this._columnGap;
+      }
+
+      public function getColumnAt(index:int) : Rectangle {
+         return this._columnCount==1?this._singleColumn:this._columnArray[index];
+      }
+
+      tlf_internal function updateInputs(newBlockProgression:String, newColumnDirection:String, controller:ContainerController, newCompositionWidth:Number, newCompositionHeight:Number) : void {
+         var newPaddingTop:Number = controller.getTotalPaddingTop();
+         var newPaddingBottom:Number = controller.getTotalPaddingBottom();
+         var newPaddingLeft:Number = controller.getTotalPaddingLeft();
+         var newPaddingRight:Number = controller.getTotalPaddingRight();
+         var containerAttr:ITextLayoutFormat = controller.computedFormat;
+         var newColumnWidth:Object = containerAttr.columnWidth;
+         var newColumnGap:Number = containerAttr.columnGap;
+         var newColumnCount:Object = containerAttr.columnCount;
+         var newForceSingleColumn:Boolean = (containerAttr.columnCount==FormatValue.AUTO)&&((containerAttr.columnWidth==FormatValue.AUTO)||(Number(containerAttr.columnWidth)==0))||(controller.rootElement.computedFormat.lineBreak==LineBreak.EXPLICIT)||(isNaN(newBlockProgression==BlockProgression.RL?newCompositionHeight:newCompositionWidth));
+         if(this._inputsChanged==false)
+         {
+            this._inputsChanged=(!(newCompositionWidth==this._compositionHeight))||(!(newCompositionHeight==this._compositionHeight))||(!(this._paddingTop==newPaddingTop))||(!(this._paddingBottom==newPaddingBottom))||(!(this._paddingLeft==newPaddingLeft))||(!(this._paddingRight==newPaddingRight))||(!(this._blockProgression==this._blockProgression))||(!(this._columnDirection==newColumnDirection))||(!(this._forceSingleColumn==newForceSingleColumn))||(!(this._inputColumnWidth==newColumnWidth))||(!(this._inputColumnGap==newColumnGap))||(!(this._inputColumnCount==newColumnCount));
+         }
+         if(this._inputsChanged)
+         {
+            this._blockProgression=newBlockProgression;
+            this._columnDirection=newColumnDirection;
+            this._paddingTop=newPaddingTop;
+            this._paddingBottom=newPaddingBottom;
+            this._paddingLeft=newPaddingLeft;
+            this._paddingRight=newPaddingRight;
+            this._compositionWidth=newCompositionWidth;
+            this._compositionHeight=newCompositionHeight;
+            this._forceSingleColumn=newForceSingleColumn;
+            this._inputColumnWidth=newColumnWidth;
+            this._inputColumnGap=newColumnGap;
+            this._inputColumnCount=newColumnCount;
+         }
+      }
+
+      tlf_internal function computeColumns() : void {
+         var newColumnGap:* = NaN;
+         var newColumnCount:* = 0;
+         var newColumnWidth:* = NaN;
+         var xPos:* = NaN;
+         var yPos:* = NaN;
+         var delX:* = NaN;
+         var delY:* = NaN;
+         var colH:* = NaN;
+         var colW:* = NaN;
+         var insetHeight:* = NaN;
+         var i:* = 0;
+         if(!this._inputsChanged)
+         {
             return;
-        }// end function
-
-        public function get columnWidth() : Number
-        {
-            return this._columnWidth;
-        }// end function
-
-        public function get columnCount() : int
-        {
-            return this._columnCount;
-        }// end function
-
-        public function get columnGap() : Number
-        {
-            return this._columnGap;
-        }// end function
-
-        public function getColumnAt(param1:int) : Rectangle
-        {
-            return this._columnCount == 1 ? (this._singleColumn) : (this._columnArray[param1]);
-        }// end function
-
-        function updateInputs(param1:String, param2:String, param3:ContainerController, param4:Number, param5:Number) : void
-        {
-            var _loc_6:* = param3.getTotalPaddingTop();
-            var _loc_7:* = param3.getTotalPaddingBottom();
-            var _loc_8:* = param3.getTotalPaddingLeft();
-            var _loc_9:* = param3.getTotalPaddingRight();
-            var _loc_10:* = param3.computedFormat;
-            var _loc_11:* = param3.computedFormat.columnWidth;
-            var _loc_12:* = _loc_10.columnGap;
-            var _loc_13:* = _loc_10.columnCount;
-            var _loc_14:* = _loc_10.columnCount == FormatValue.AUTO && (_loc_10.columnWidth == FormatValue.AUTO || Number(_loc_10.columnWidth) == 0) || param3.rootElement.computedFormat.lineBreak == LineBreak.EXPLICIT || isNaN(param1 == BlockProgression.RL ? (param5) : (param4));
-            if (this._inputsChanged == false)
+         }
+         var totalColumnWidth:Number = this._blockProgression==BlockProgression.RL?this._compositionHeight:this._compositionWidth;
+         var newColumnInset:Number = this._blockProgression==BlockProgression.RL?this._paddingTop+this._paddingBottom:this._paddingLeft+this._paddingRight;
+         totalColumnWidth=(totalColumnWidth<newColumnInset)&&(!isNaN(totalColumnWidth))?totalColumnWidth-newColumnInset:0;
+         if(this._forceSingleColumn)
+         {
+            newColumnCount=1;
+            newColumnWidth=totalColumnWidth;
+            newColumnGap=0;
+         }
+         else
+         {
+            newColumnGap=this._inputColumnGap;
+            if(this._inputColumnWidth==FormatValue.AUTO)
             {
-                this._inputsChanged = param4 != this._compositionHeight || param5 != this._compositionHeight || this._paddingTop != _loc_6 || this._paddingBottom != _loc_7 || this._paddingLeft != _loc_8 || this._paddingRight != _loc_9 || this._blockProgression != this._blockProgression || this._columnDirection != param2 || this._forceSingleColumn != _loc_14 || this._inputColumnWidth != _loc_11 || this._inputColumnGap != _loc_12 || this._inputColumnCount != _loc_13;
-            }
-            if (this._inputsChanged)
-            {
-                this._blockProgression = param1;
-                this._columnDirection = param2;
-                this._paddingTop = _loc_6;
-                this._paddingBottom = _loc_7;
-                this._paddingLeft = _loc_8;
-                this._paddingRight = _loc_9;
-                this._compositionWidth = param4;
-                this._compositionHeight = param5;
-                this._forceSingleColumn = _loc_14;
-                this._inputColumnWidth = _loc_11;
-                this._inputColumnGap = _loc_12;
-                this._inputColumnCount = _loc_13;
-            }
-            return;
-        }// end function
-
-        function computeColumns() : void
-        {
-            var _loc_1:* = NaN;
-            var _loc_2:* = 0;
-            var _loc_3:* = NaN;
-            var _loc_6:* = NaN;
-            var _loc_7:* = NaN;
-            var _loc_8:* = NaN;
-            var _loc_9:* = NaN;
-            var _loc_10:* = NaN;
-            var _loc_11:* = NaN;
-            var _loc_12:* = NaN;
-            var _loc_13:* = 0;
-            if (!this._inputsChanged)
-            {
-                return;
-            }
-            var _loc_4:* = this._blockProgression == BlockProgression.RL ? (this._compositionHeight) : (this._compositionWidth);
-            var _loc_5:* = this._blockProgression == BlockProgression.RL ? (this._paddingTop + this._paddingBottom) : (this._paddingLeft + this._paddingRight);
-            _loc_4 = _loc_4 > _loc_5 && !isNaN(_loc_4) ? (_loc_4 - _loc_5) : (0);
-            if (this._forceSingleColumn)
-            {
-                _loc_2 = 1;
-                _loc_3 = _loc_4;
-                _loc_1 = 0;
+               newColumnCount=Number(this._inputColumnCount);
+               if((newColumnCount-1)*newColumnGap<totalColumnWidth)
+               {
+                  newColumnWidth=(totalColumnWidth-(newColumnCount-1)*newColumnGap)/newColumnCount;
+               }
+               else
+               {
+                  if(newColumnGap>totalColumnWidth)
+                  {
+                     newColumnCount=1;
+                     newColumnWidth=totalColumnWidth;
+                     newColumnGap=0;
+                  }
+                  else
+                  {
+                     newColumnCount=Math.floor(totalColumnWidth/newColumnGap);
+                     newColumnWidth=(totalColumnWidth-(newColumnCount-1)*newColumnGap)/newColumnCount;
+                  }
+               }
             }
             else
             {
-                _loc_1 = this._inputColumnGap;
-                if (this._inputColumnWidth == FormatValue.AUTO)
-                {
-                    _loc_2 = Number(this._inputColumnCount);
-                    if ((_loc_2 - 1) * _loc_1 < _loc_4)
-                    {
-                        _loc_3 = (_loc_4 - (_loc_2 - 1) * _loc_1) / _loc_2;
-                    }
-                    else if (_loc_1 > _loc_4)
-                    {
-                        _loc_2 = 1;
-                        _loc_3 = _loc_4;
-                        _loc_1 = 0;
-                    }
-                    else
-                    {
-                        _loc_2 = Math.floor(_loc_4 / _loc_1);
-                        _loc_3 = (_loc_4 - (_loc_2 - 1) * _loc_1) / _loc_2;
-                    }
-                }
-                else if (this._inputColumnCount == FormatValue.AUTO)
-                {
-                    _loc_3 = Number(this._inputColumnWidth);
-                    if (_loc_3 >= _loc_4)
-                    {
-                        _loc_2 = 1;
-                        _loc_3 = _loc_4;
-                        _loc_1 = 0;
-                    }
-                    else
-                    {
-                        _loc_2 = Math.floor((_loc_4 + _loc_1) / (_loc_3 + _loc_1));
-                        _loc_3 = (_loc_4 + _loc_1) / _loc_2 - _loc_1;
-                    }
-                }
-                else
-                {
-                    _loc_2 = Number(this._inputColumnCount);
-                    _loc_3 = Number(this._inputColumnWidth);
-                    if (_loc_2 * _loc_3 + (_loc_2 - 1) * _loc_1 <= _loc_4)
-                    {
-                    }
-                    else if (_loc_3 >= _loc_4)
-                    {
-                        _loc_2 = 1;
-                        _loc_1 = 0;
-                    }
-                    else
-                    {
-                        _loc_2 = Math.floor((_loc_4 + _loc_1) / (_loc_3 + _loc_1));
-                        _loc_3 = (_loc_4 + _loc_1) / _loc_2 - _loc_1;
-                    }
-                }
+               if(this._inputColumnCount==FormatValue.AUTO)
+               {
+                  newColumnWidth=Number(this._inputColumnWidth);
+                  if(newColumnWidth>=totalColumnWidth)
+                  {
+                     newColumnCount=1;
+                     newColumnWidth=totalColumnWidth;
+                     newColumnGap=0;
+                  }
+                  else
+                  {
+                     newColumnCount=Math.floor((totalColumnWidth+newColumnGap)/(newColumnWidth+newColumnGap));
+                     newColumnWidth=(totalColumnWidth+newColumnGap)/newColumnCount-newColumnGap;
+                  }
+               }
+               else
+               {
+                  newColumnCount=Number(this._inputColumnCount);
+                  newColumnWidth=Number(this._inputColumnWidth);
+                  if(newColumnCount*newColumnWidth+(newColumnCount-1)*newColumnGap<=totalColumnWidth)
+                  {
+                  }
+                  else
+                  {
+                     if(newColumnWidth>=totalColumnWidth)
+                     {
+                        newColumnCount=1;
+                        newColumnGap=0;
+                     }
+                     else
+                     {
+                        newColumnCount=Math.floor((totalColumnWidth+newColumnGap)/(newColumnWidth+newColumnGap));
+                        newColumnWidth=(totalColumnWidth+newColumnGap)/newColumnCount-newColumnGap;
+                     }
+                  }
+               }
             }
-            this._columnWidth = _loc_3;
-            this._columnCount = _loc_2;
-            this._columnGap = _loc_1;
-            this._inset = _loc_5;
-            if (this._blockProgression == BlockProgression.TB)
+         }
+         this._columnWidth=newColumnWidth;
+         this._columnCount=newColumnCount;
+         this._columnGap=newColumnGap;
+         this._inset=newColumnInset;
+         if(this._blockProgression==BlockProgression.TB)
+         {
+            if(this._columnDirection==Direction.LTR)
             {
-                if (this._columnDirection == Direction.LTR)
-                {
-                    _loc_6 = this._paddingLeft;
-                    _loc_8 = this._columnWidth + this._columnGap;
-                    _loc_11 = this._columnWidth;
-                }
-                else
-                {
-                    _loc_6 = isNaN(this._compositionWidth) ? (this._paddingLeft) : (this._compositionWidth - this._paddingRight - this._columnWidth);
-                    _loc_8 = -(this._columnWidth + this._columnGap);
-                    _loc_11 = this._columnWidth;
-                }
-                _loc_7 = this._paddingTop;
-                _loc_9 = 0;
-                _loc_12 = this._paddingTop + this._paddingBottom;
-                _loc_10 = this._compositionHeight > _loc_12 && !isNaN(this._compositionHeight) ? (this._compositionHeight - _loc_12) : (0);
-            }
-            else if (this._blockProgression == BlockProgression.RL)
-            {
-                _loc_6 = isNaN(this._compositionWidth) ? (-this._paddingRight) : (this._paddingLeft - this._compositionWidth);
-                _loc_7 = this._paddingTop;
-                _loc_8 = 0;
-                _loc_9 = this._columnWidth + this._columnGap;
-                _loc_12 = this._paddingLeft + this._paddingRight;
-                _loc_11 = this._compositionWidth > _loc_12 ? (this._compositionWidth - _loc_12) : (0);
-                _loc_10 = this._columnWidth;
-            }
-            if (_loc_11 == 0)
-            {
-                _loc_11 = Twips.ONE_TWIP;
-                if (this._blockProgression == BlockProgression.RL)
-                {
-                    _loc_6 = _loc_6 - _loc_11;
-                }
-            }
-            if (_loc_10 == 0)
-            {
-                _loc_10 = Twips.ONE_TWIP;
-            }
-            if (this._columnCount == 1)
-            {
-                this._singleColumn = new Rectangle(_loc_6, _loc_7, _loc_11, _loc_10);
-                this._columnArray = null;
-            }
-            else if (this._columnCount == 0)
-            {
-                this._singleColumn = null;
-                this._columnArray = null;
+               xPos=this._paddingLeft;
+               delX=this._columnWidth+this._columnGap;
+               colW=this._columnWidth;
             }
             else
             {
-                if (this._columnArray)
-                {
-                    this._columnArray.splice(0);
-                }
-                else
-                {
-                    this._columnArray = new Array();
-                }
-                _loc_13 = 0;
-                while (_loc_13 < this._columnCount)
-                {
-                    
-                    this._columnArray.push(new Rectangle(_loc_6, _loc_7, _loc_11, _loc_10));
-                    _loc_6 = _loc_6 + _loc_8;
-                    _loc_7 = _loc_7 + _loc_9;
-                    _loc_13++;
-                }
+               xPos=isNaN(this._compositionWidth)?this._paddingLeft:this._compositionWidth-this._paddingRight-this._columnWidth;
+               delX=-(this._columnWidth+this._columnGap);
+               colW=this._columnWidth;
             }
-            return;
-        }// end function
+            yPos=this._paddingTop;
+            delY=0;
+            insetHeight=this._paddingTop+this._paddingBottom;
+            colH=(this._compositionHeight<insetHeight)&&(!isNaN(this._compositionHeight))?this._compositionHeight-insetHeight:0;
+         }
+         else
+         {
+            if(this._blockProgression==BlockProgression.RL)
+            {
+               xPos=isNaN(this._compositionWidth)?-this._paddingRight:this._paddingLeft-this._compositionWidth;
+               yPos=this._paddingTop;
+               delX=0;
+               delY=this._columnWidth+this._columnGap;
+               insetHeight=this._paddingLeft+this._paddingRight;
+               colW=this._compositionWidth>insetHeight?this._compositionWidth-insetHeight:0;
+               colH=this._columnWidth;
+            }
+         }
+         if(colW==0)
+         {
+            colW=Twips.ONE_TWIP;
+            if(this._blockProgression==BlockProgression.RL)
+            {
+               xPos=xPos-colW;
+            }
+         }
+         if(colH==0)
+         {
+            colH=Twips.ONE_TWIP;
+         }
+         if(this._columnCount==1)
+         {
+            this._singleColumn=new Rectangle(xPos,yPos,colW,colH);
+            this._columnArray=null;
+         }
+         else
+         {
+            if(this._columnCount==0)
+            {
+               this._singleColumn=null;
+               this._columnArray=null;
+            }
+            else
+            {
+               if(this._columnArray)
+               {
+                  this._columnArray.splice(0);
+               }
+               else
+               {
+                  this._columnArray=new Array();
+               }
+               i=0;
+               while(i<this._columnCount)
+               {
+                  this._columnArray.push(new Rectangle(xPos,yPos,colW,colH));
+                  xPos=xPos+delX;
+                  yPos=yPos+delY;
+                  i++;
+               }
+            }
+         }
+      }
+   }
 
-    }
 }

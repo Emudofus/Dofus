@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.party
+package com.ankamagames.dofus.logic.game.common.actions.party
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PartyStopFollowingMemberAction extends Object implements Action
-    {
-        public var playerId:uint;
-        public var partyId:int;
 
-        public function PartyStopFollowingMemberAction()
-        {
-            return;
-        }// end function
+   public class PartyStopFollowingMemberAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int, param2:uint) : PartyStopFollowingMemberAction
-        {
-            var _loc_3:* = new PartyStopFollowingMemberAction;
-            _loc_3.partyId = param1;
-            _loc_3.playerId = param2;
-            return _loc_3;
-        }// end function
+      public function PartyStopFollowingMemberAction() {
+         super();
+      }
 
-    }
+      public static function create(partyId:int, pPlayerId:uint) : PartyStopFollowingMemberAction {
+         var a:PartyStopFollowingMemberAction = new PartyStopFollowingMemberAction();
+         a.partyId=partyId;
+         a.playerId=pPlayerId;
+         return a;
+      }
+
+      public var playerId:uint;
+
+      public var partyId:int;
+   }
+
 }

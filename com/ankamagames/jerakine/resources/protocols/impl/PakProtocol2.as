@@ -1,179 +1,180 @@
-﻿package com.ankamagames.jerakine.resources.protocols.impl
+package com.ankamagames.jerakine.resources.protocols.impl
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.newCache.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.protocols.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.filesystem.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.resources.protocols.AbstractProtocol;
+   import com.ankamagames.jerakine.resources.protocols.IProtocol;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.IResourceObserver;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import flash.filesystem.FileStream;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.resources.ResourceErrorCode;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
 
-    public class PakProtocol2 extends AbstractProtocol implements IProtocol
-    {
-        private static var _indexes:Dictionary = new Dictionary();
-        private static var _properties:Dictionary = new Dictionary();
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(PakProtocol2));
 
-        public function PakProtocol2()
-        {
-            return;
-        }// end function
+   public class PakProtocol2 extends AbstractProtocol implements IProtocol
+   {
+         
 
-        public function getFilesIndex(param1:Uri) : Dictionary
-        {
-            var _loc_2:* = _indexes[param1.path];
-            if (!_loc_2)
-            {
-                _loc_2 = this.initStream(param1);
-                if (!_loc_2)
-                {
-                    return null;
-                }
-            }
-            return _indexes[param1.path];
-        }// end function
+      public function PakProtocol2() {
+         super();
+      }
 
-        public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void
-        {
-            var fileStream:FileStream;
-            var uri:* = param1;
-            var observer:* = param2;
-            var dispatchProgress:* = param3;
-            var cache:* = param4;
-            var forcedAdapter:* = param5;
-            var uniqueFile:* = param6;
-            if (!_indexes[uri.path])
+      private static var _indexes:Dictionary = new Dictionary();
+
+      private static var _properties:Dictionary = new Dictionary();
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PakProtocol2));
+
+      public function getFilesIndex(uri:Uri) : Dictionary {
+         var fileStream:* = _indexes[uri.path];
+         if(!fileStream)
+         {
+            fileStream=this.initStream(uri);
+            if(!fileStream)
             {
-                fileStream = this.initStream(uri);
-                if (!fileStream)
-                {
-                    if (observer)
-                    {
-                        observer.onFailed(uri, "Unable to find container.", ResourceErrorCode.PAK_NOT_FOUND);
-                    }
-                    return;
-                }
+               return null;
             }
-            var index:* = _indexes[uri.path][uri.subPath];
-            if (!index)
+         }
+         return _indexes[uri.path];
+      }
+
+      public function load(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, cache:ICache, forcedAdapter:Class, uniqueFile:Boolean) : void {
+         var fileStream:FileStream = null;
+         if(!_indexes[uri.path])
+         {
+            fileStream=this.initStream(uri);
+            if(!fileStream)
             {
-                if (observer)
-                {
-                    observer.onFailed(uri, "Unable to find the file in the container.", ResourceErrorCode.FILE_NOT_FOUND_IN_PAK);
-                }
-                return;
+               if(observer)
+               {
+                  observer.onFailed(uri,"Unable to find container.",ResourceErrorCode.PAK_NOT_FOUND);
+               }
+               return;
             }
-            fileStream = index.stream;
-            var data:* = new ByteArray();
-            fileStream.position = index.o;
-            fileStream.readBytes(data, 0, index.l);
-            getAdapter(uri, forcedAdapter);
-            try
+         }
+         var index:Object = _indexes[uri.path][uri.subPath];
+         if(!index)
+         {
+            if(observer)
             {
-                _adapter.loadFromData(uri, data, observer, dispatchProgress);
-            }
-            catch (e:Object)
-            {
-                observer.onFailed(uri, "Can\'t load byte array from this adapter.", ResourceErrorCode.INCOMPATIBLE_ADAPTER);
-                return;
+               observer.onFailed(uri,"Unable to find the file in the container.",ResourceErrorCode.FILE_NOT_FOUND_IN_PAK);
             }
             return;
-        }// end function
-
-        override protected function release() : void
-        {
+         }
+         fileStream=index.stream;
+         var data:ByteArray = new ByteArray();
+         fileStream.position=index.o;
+         fileStream.readBytes(data,0,index.l);
+         getAdapter(uri,forcedAdapter);
+         try
+         {
+            _adapter.loadFromData(uri,data,observer,dispatchProgress);
+         }
+         catch(e:Object)
+         {
+            observer.onFailed(uri,"Can\'t load byte array from this adapter.",ResourceErrorCode.INCOMPATIBLE_ADAPTER);
             return;
-        }// end function
+         }
+      }
 
-        override public function cancel() : void
-        {
-            if (_adapter)
+      override protected function release() : void {
+         
+      }
+
+      override public function cancel() : void {
+         if(_adapter)
+         {
+            _adapter.free();
+         }
+      }
+
+      private function initStream(uri:Uri) : FileStream {
+         var fs:FileStream = null;
+         var vMax:* = 0;
+         var vMin:* = 0;
+         var dataOffset:uint = 0;
+         var dataCount:uint = 0;
+         var indexOffset:uint = 0;
+         var indexCount:uint = 0;
+         var propertiesOffset:uint = 0;
+         var propertiesCount:uint = 0;
+         var propertyName:String = null;
+         var propertyValue:String = null;
+         var i:uint = 0;
+         var filePath:String = null;
+         var fileOffset:* = 0;
+         var fileLength:* = 0;
+         var idx:* = 0;
+         var fileUri:Uri = uri;
+         var file:File = fileUri.toFile();
+         var indexes:Dictionary = new Dictionary();
+         var properties:Dictionary = new Dictionary();
+         _indexes[uri.path]=indexes;
+         _properties[uri.path]=properties;
+         while((file)&&(file.exists))
+         {
+            fs=new FileStream();
+            fs.open(file,FileMode.READ);
+            vMax=fs.readUnsignedByte();
+            vMin=fs.readUnsignedByte();
+            if((!(vMax==2))||(!(vMin==1)))
             {
-                _adapter.free();
+               return null;
             }
-            return;
-        }// end function
-
-        private function initStream(param1:Uri) : FileStream
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            var _loc_10:* = 0;
-            var _loc_11:* = 0;
-            var _loc_12:* = 0;
-            var _loc_13:* = 0;
-            var _loc_14:* = 0;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = 0;
-            var _loc_18:* = null;
-            var _loc_19:* = 0;
-            var _loc_20:* = 0;
-            var _loc_21:* = 0;
-            var _loc_2:* = param1;
-            var _loc_3:* = _loc_2.toFile();
-            var _loc_4:* = new Dictionary();
-            var _loc_5:* = new Dictionary();
-            _indexes[param1.path] = _loc_4;
-            _properties[param1.path] = _loc_5;
-            while (_loc_3 && _loc_3.exists)
+            fs.position=file.size-24;
+            dataOffset=fs.readUnsignedInt();
+            dataCount=fs.readUnsignedInt();
+            indexOffset=fs.readUnsignedInt();
+            indexCount=fs.readUnsignedInt();
+            propertiesOffset=fs.readUnsignedInt();
+            propertiesCount=fs.readUnsignedInt();
+            fs.position=propertiesOffset;
+            file=null;
+            i=0;
+            while(i<propertiesCount)
             {
-                
-                _loc_6 = new FileStream();
-                _loc_6.open(_loc_3, FileMode.READ);
-                _loc_7 = _loc_6.readUnsignedByte();
-                _loc_8 = _loc_6.readUnsignedByte();
-                if (_loc_7 != 2 || _loc_8 != 1)
-                {
-                    return null;
-                }
-                _loc_6.position = _loc_3.size - 24;
-                _loc_9 = _loc_6.readUnsignedInt();
-                _loc_10 = _loc_6.readUnsignedInt();
-                _loc_11 = _loc_6.readUnsignedInt();
-                _loc_12 = _loc_6.readUnsignedInt();
-                _loc_13 = _loc_6.readUnsignedInt();
-                _loc_14 = _loc_6.readUnsignedInt();
-                _loc_6.position = _loc_13;
-                _loc_3 = null;
-                _loc_17 = 0;
-                while (_loc_17 < _loc_14)
-                {
-                    
-                    _loc_15 = _loc_6.readUTF();
-                    _loc_16 = _loc_6.readUTF();
-                    _loc_5[_loc_15] = _loc_16;
-                    if (_loc_15 == "link")
-                    {
-                        _loc_21 = _loc_2.path.lastIndexOf("/");
-                        if (_loc_21 != -1)
-                        {
-                            _loc_2 = new Uri(_loc_2.path.substr(0, _loc_21) + "/" + _loc_16);
-                        }
-                        else
-                        {
-                            _loc_2 = new Uri(_loc_16);
-                        }
-                        _loc_3 = _loc_2.toFile();
-                    }
-                    _loc_17 = _loc_17 + 1;
-                }
-                _loc_6.position = _loc_11;
-                _loc_17 = 0;
-                while (_loc_17 < _loc_12)
-                {
-                    
-                    _loc_18 = _loc_6.readUTF();
-                    _loc_19 = _loc_6.readInt();
-                    _loc_20 = _loc_6.readInt();
-                    _loc_4[_loc_18] = {o:_loc_19 + _loc_9, l:_loc_20, stream:_loc_6};
-                    _loc_17 = _loc_17 + 1;
-                }
+               propertyName=fs.readUTF();
+               propertyValue=fs.readUTF();
+               properties[propertyName]=propertyValue;
+               if(propertyName=="link")
+               {
+                  idx=fileUri.path.lastIndexOf("/");
+                  if(idx!=-1)
+                  {
+                     fileUri=new Uri(fileUri.path.substr(0,idx)+"/"+propertyValue);
+                  }
+                  else
+                  {
+                     fileUri=new Uri(propertyValue);
+                  }
+                  file=fileUri.toFile();
+               }
+               i++;
             }
-            return _loc_6;
-        }// end function
+            fs.position=indexOffset;
+            i=0;
+            while(i<indexCount)
+            {
+               filePath=fs.readUTF();
+               fileOffset=fs.readInt();
+               fileLength=fs.readInt();
+               indexes[filePath]=
+                  {
+                     o:fileOffset+dataOffset,
+                     l:fileLength,
+                     stream:fs
+                  }
+               ;
+               i++;
+            }
+         }
+         return fs;
+      }
+   }
 
-    }
 }

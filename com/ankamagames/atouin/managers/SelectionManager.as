@@ -1,117 +1,115 @@
-﻿package com.ankamagames.atouin.managers
+package com.ankamagames.atouin.managers
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.errors.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.atouin.types.Selection;
+   import com.ankamagames.atouin.AtouinConstants;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.atouin.utils.errors.AtouinError;
 
-    public class SelectionManager extends Object
-    {
-        private var _aSelection:Array;
-        private static var _self:SelectionManager;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(SelectionManager));
 
-        public function SelectionManager()
-        {
-            if (_self)
-            {
-                throw new AtouinError("SelectionManager is a singleton class. Please acces it through getInstance()");
-            }
+   public class SelectionManager extends Object
+   {
+         
+
+      public function SelectionManager() {
+         super();
+         if(_self)
+         {
+            throw new AtouinError("SelectionManager is a singleton class. Please acces it through getInstance()");
+         }
+         else
+         {
             this.init();
             return;
-        }// end function
+         }
+      }
 
-        public function init() : void
-        {
-            this._aSelection = new Array();
+      private static var _self:SelectionManager;
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SelectionManager));
+
+      public static function getInstance() : SelectionManager {
+         if(!_self)
+         {
+            _self=new SelectionManager();
+         }
+         return _self;
+      }
+
+      private var _aSelection:Array;
+
+      public function init() : void {
+         this._aSelection=new Array();
+      }
+
+      public function addSelection(s:Selection, name:String, cellId:uint=561) : void {
+         if(this._aSelection[name])
+         {
+            Selection(this._aSelection[name]).remove();
+         }
+         this._aSelection[name]=s;
+         if(cellId!=AtouinConstants.MAP_CELLS_COUNT+1)
+         {
+            this.update(name,cellId);
+         }
+      }
+
+      public function getSelection(name:String) : Selection {
+         return this._aSelection[name];
+      }
+
+      public function update(name:String, cellId:uint=0) : void {
+         var aCell:Vector.<uint> = null;
+         var aOldCells:Vector.<uint> = null;
+         var s:Selection = this.getSelection(name);
+         if(!s)
+         {
             return;
-        }// end function
-
-        public function addSelection(param1:Selection, param2:String, param3:uint = 561) : void
-        {
-            if (this._aSelection[param2])
+         }
+         if(s.zone)
+         {
+            aCell=s.zone.getCells(cellId);
+            aOldCells=!s.cells?null:s.cells.concat();
+            s.remove(aOldCells);
+            s.cells=aCell;
+            if(s.renderer)
             {
-                Selection(this._aSelection[param2]).remove();
-            }
-            this._aSelection[param2] = param1;
-            if (param3 != (AtouinConstants.MAP_CELLS_COUNT + 1))
-            {
-                this.update(param2, param3);
-            }
-            return;
-        }// end function
-
-        public function getSelection(param1:String) : Selection
-        {
-            return this._aSelection[param1];
-        }// end function
-
-        public function update(param1:String, param2:uint = 0) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_3:* = this.getSelection(param1);
-            if (!_loc_3)
-            {
-                return;
-            }
-            if (_loc_3.zone)
-            {
-                _loc_4 = _loc_3.zone.getCells(param2);
-                _loc_5 = !_loc_3.cells ? (null) : (var _loc_6:* = (_loc_3.cells as Vector.<uint>).concat(), _loc_5 = (_loc_3.cells as Vector.<uint>).concat(), _loc_6);
-                _loc_3.remove(_loc_5);
-                _loc_3.cells = _loc_4;
-                if (_loc_3.renderer)
-                {
-                    _loc_3.update();
-                }
-                else
-                {
-                    _log.error("No renderer set for selection [" + param1 + "]");
-                }
+               s.update();
             }
             else
             {
-                _log.error("No zone set for selection [" + param1 + "]");
+               _log.error("No renderer set for selection ["+name+"]");
             }
-            return;
-        }// end function
+         }
+         else
+         {
+            _log.error("No zone set for selection ["+name+"]");
+         }
+      }
 
-        public function isInside(param1:uint, param2:String) : Boolean
-        {
-            var _loc_3:* = this.getSelection(param2);
-            if (!_loc_3)
+      public function isInside(cellId:uint, selectionName:String) : Boolean {
+         var s:Selection = this.getSelection(selectionName);
+         if(!s)
+         {
+            return false;
+         }
+         return s.isInside(cellId);
+      }
+
+      private function diff(a1:Vector.<uint>, a2:Vector.<uint>) : Vector.<uint> {
+         var elem:* = undefined;
+         var res:Vector.<uint> = new Vector.<uint>();
+         for each (elem in a2)
+         {
+            if(-1==a1.indexOf(elem))
             {
-                return false;
+               res.push(elem);
             }
-            return _loc_3.isInside(param1);
-        }// end function
+         }
+         return res;
+      }
+   }
 
-        private function diff(param1:Vector.<uint>, param2:Vector.<uint>) : Vector.<uint>
-        {
-            var _loc_4:* = undefined;
-            var _loc_3:* = new Vector.<uint>;
-            for each (_loc_4 in param2)
-            {
-                
-                if (param1.indexOf(_loc_4) == -1)
-                {
-                    _loc_3.push(_loc_4);
-                }
-            }
-            return _loc_3;
-        }// end function
-
-        public static function getInstance() : SelectionManager
-        {
-            if (!_self)
-            {
-                _self = new SelectionManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

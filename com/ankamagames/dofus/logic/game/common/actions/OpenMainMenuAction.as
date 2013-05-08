@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenMainMenuAction extends Object implements Action
-    {
 
-        public function OpenMainMenuAction()
-        {
-            return;
-        }// end function
+   public class OpenMainMenuAction extends Object implements Action
+   {
+         
 
-        public static function create() : OpenMainMenuAction
-        {
-            return new OpenMainMenuAction;
-        }// end function
+      public function OpenMainMenuAction() {
+         super();
+      }
 
-    }
+      public static function create() : OpenMainMenuAction {
+         return new OpenMainMenuAction();
+      }
+
+
+   }
+
 }

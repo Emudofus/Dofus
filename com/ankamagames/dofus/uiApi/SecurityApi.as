@@ -1,33 +1,39 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.dofus.logic.common.managers.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.dofus.logic.shield.SecureModeManager;
 
-    public class SecurityApi extends Object implements IApi
-    {
 
-        public function SecurityApi()
-        {
-            return;
-        }// end function
+   public class SecurityApi extends Object implements IApi
+   {
+         
 
-        public static function askSecureModeCode(param1:Function) : void
-        {
-            SecureModeManager.getInstance().askCode(param1);
-            return;
-        }// end function
+      public function SecurityApi() {
+         super();
+      }
 
-        public static function sendSecureModeCode(param1:String, param2:Function, param3:String = null) : void
-        {
-            SecureModeManager.getInstance().computerName = param3;
-            SecureModeManager.getInstance().sendCode(param1, param2);
-            return;
-        }// end function
+      public static function askSecureModeCode(callback:Function) : void {
+         SecureModeManager.getInstance().askCode(callback);
+      }
 
-        public static function SecureModeisActive() : Boolean
-        {
-            return SecureModeManager.getInstance().active;
-        }// end function
+      public static function sendSecureModeCode(code:String, callback:Function, computerName:String=null) : void {
+         SecureModeManager.getInstance().computerName=computerName;
+         SecureModeManager.getInstance().sendCode(code,callback);
+      }
 
-    }
+      public static function SecureModeisActive() : Boolean {
+         return SecureModeManager.getInstance().active;
+      }
+
+      public static function setShieldLevel(level:uint) : void {
+         SecureModeManager.getInstance().shieldLevel=level;
+      }
+
+      public static function getShieldLevel() : uint {
+         return SecureModeManager.getInstance().shieldLevel;
+      }
+
+
+   }
+
 }

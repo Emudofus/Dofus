@@ -1,33 +1,33 @@
-﻿package com.hurlant.util
+package com.hurlant.util
 {
-    import flash.net.*;
-    import flash.system.*;
+   import flash.net.LocalConnection;
+   import flash.system.System;
 
-    public class Memory extends Object
-    {
 
-        public function Memory()
-        {
-            return;
-        }// end function
+   public class Memory extends Object
+   {
+         
 
-        public static function gc() : void
-        {
-            try
-            {
-                new LocalConnection().connect("foo");
-                new LocalConnection().connect("foo");
-            }
-            catch (e)
-            {
-            }
-            return;
-        }// end function
+      public function Memory() {
+         super();
+      }
 
-        public static function get used() : uint
-        {
-            return System.totalMemory;
-        }// end function
+      public static function gc() : void {
+         try
+         {
+            new LocalConnection().connect("foo");
+            new LocalConnection().connect("foo");
+         }
+         catch(e:*)
+         {
+         }
+      }
 
-    }
+      public static function get used() : uint {
+         return System.totalMemory;
+      }
+
+
+   }
+
 }

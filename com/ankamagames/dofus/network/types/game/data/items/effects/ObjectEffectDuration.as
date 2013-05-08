@@ -1,96 +1,110 @@
-﻿package com.ankamagames.dofus.network.types.game.data.items.effects
+package com.ankamagames.dofus.network.types.game.data.items.effects
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class ObjectEffectDuration extends ObjectEffect implements INetworkType
-    {
-        public var days:uint = 0;
-        public var hours:uint = 0;
-        public var minutes:uint = 0;
-        public static const protocolId:uint = 75;
 
-        public function ObjectEffectDuration()
-        {
-            return;
-        }// end function
+   public class ObjectEffectDuration extends ObjectEffect implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 75;
-        }// end function
+      public function ObjectEffectDuration() {
+         super();
+      }
 
-        public function initObjectEffectDuration(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0) : ObjectEffectDuration
-        {
-            super.initObjectEffect(param1);
-            this.days = param2;
-            this.hours = param3;
-            this.minutes = param4;
-            return this;
-        }// end function
+      public static const protocolId:uint = 75;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.days = 0;
-            this.hours = 0;
-            this.minutes = 0;
-            return;
-        }// end function
+      public var days:uint = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ObjectEffectDuration(param1);
-            return;
-        }// end function
+      public var hours:uint = 0;
 
-        public function serializeAs_ObjectEffectDuration(param1:IDataOutput) : void
-        {
-            super.serializeAs_ObjectEffect(param1);
-            if (this.days < 0)
+      public var minutes:uint = 0;
+
+      override public function getTypeId() : uint {
+         return 75;
+      }
+
+      public function initObjectEffectDuration(actionId:uint=0, days:uint=0, hours:uint=0, minutes:uint=0) : ObjectEffectDuration {
+         super.initObjectEffect(actionId);
+         this.days=days;
+         this.hours=hours;
+         this.minutes=minutes;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.days=0;
+         this.hours=0;
+         this.minutes=0;
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectEffectDuration(output);
+      }
+
+      public function serializeAs_ObjectEffectDuration(output:IDataOutput) : void {
+         super.serializeAs_ObjectEffect(output);
+         if(this.days<0)
+         {
+            throw new Error("Forbidden value ("+this.days+") on element days.");
+         }
+         else
+         {
+            output.writeShort(this.days);
+            if(this.hours<0)
             {
-                throw new Error("Forbidden value (" + this.days + ") on element days.");
+               throw new Error("Forbidden value ("+this.hours+") on element hours.");
             }
-            param1.writeShort(this.days);
-            if (this.hours < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.hours + ") on element hours.");
+               output.writeShort(this.hours);
+               if(this.minutes<0)
+               {
+                  throw new Error("Forbidden value ("+this.minutes+") on element minutes.");
+               }
+               else
+               {
+                  output.writeShort(this.minutes);
+                  return;
+               }
             }
-            param1.writeShort(this.hours);
-            if (this.minutes < 0)
-            {
-                throw new Error("Forbidden value (" + this.minutes + ") on element minutes.");
-            }
-            param1.writeShort(this.minutes);
-            return;
-        }// end function
+         }
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ObjectEffectDuration(param1);
-            return;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectEffectDuration(input);
+      }
 
-        public function deserializeAs_ObjectEffectDuration(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.days = param1.readShort();
-            if (this.days < 0)
+      public function deserializeAs_ObjectEffectDuration(input:IDataInput) : void {
+         super.deserialize(input);
+         this.days=input.readShort();
+         if(this.days<0)
+         {
+            throw new Error("Forbidden value ("+this.days+") on element of ObjectEffectDuration.days.");
+         }
+         else
+         {
+            this.hours=input.readShort();
+            if(this.hours<0)
             {
-                throw new Error("Forbidden value (" + this.days + ") on element of ObjectEffectDuration.days.");
+               throw new Error("Forbidden value ("+this.hours+") on element of ObjectEffectDuration.hours.");
             }
-            this.hours = param1.readShort();
-            if (this.hours < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.hours + ") on element of ObjectEffectDuration.hours.");
+               this.minutes=input.readShort();
+               if(this.minutes<0)
+               {
+                  throw new Error("Forbidden value ("+this.minutes+") on element of ObjectEffectDuration.minutes.");
+               }
+               else
+               {
+                  return;
+               }
             }
-            this.minutes = param1.readShort();
-            if (this.minutes < 0)
-            {
-                throw new Error("Forbidden value (" + this.minutes + ") on element of ObjectEffectDuration.minutes.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

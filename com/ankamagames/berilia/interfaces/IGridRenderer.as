@@ -1,30 +1,32 @@
-﻿package com.ankamagames.berilia.interfaces
+package com.ankamagames.berilia.interfaces
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.*;
-    import com.ankamagames.jerakine.messages.*;
-    import flash.display.*;
+   import com.ankamagames.berilia.components.Grid;
+   import flash.display.DisplayObject;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.berilia.UIComponent;
 
-    public interface IGridRenderer
-    {
 
-        public function IGridRenderer();
+   public interface IGridRenderer
+   {
+         
 
-        function set grid(param1:Grid) : void;
 
-        function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject;
 
-        function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void;
+      function set grid(param1:Grid) : void;
 
-        function remove(param1:DisplayObject) : void;
+      function render(param1:*, param2:uint, param3:Boolean, param4:uint=0) : DisplayObject;
 
-        function destroy() : void;
+      function update(param1:*, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint=0) : void;
 
-        function renderModificator(param1:Array) : Array;
+      function remove(param1:DisplayObject) : void;
 
-        function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String;
+      function destroy() : void;
 
-        function getDataLength(param1, param2:Boolean) : uint;
+      function renderModificator(param1:Array) : Array;
 
-    }
+      function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String;
+
+      function getDataLength(param1:*, param2:Boolean) : uint;
+   }
+
 }

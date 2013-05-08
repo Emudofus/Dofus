@@ -1,65 +1,62 @@
-﻿package com.hurlant.util
+package com.hurlant.util
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public class Hex extends Object
-    {
 
-        public function Hex()
-        {
-            return;
-        }// end function
+   public class Hex extends Object
+   {
+         
 
-        public static function toArray(param1:String) : ByteArray
-        {
-            param1 = param1.replace(/\s|:""\s|:/gm, "");
-            var _loc_2:* = new ByteArray();
-            if (param1.length & 1 == 1)
+      public function Hex() {
+         super();
+      }
+
+      public static function toArray(hex:String) : ByteArray {
+         var hex:String = hex.replace(new RegExp("\\s|:","gm"),"");
+         var a:ByteArray = new ByteArray();
+         if(hex.length&1==1)
+         {
+            hex="0"+hex;
+         }
+         var i:uint = 0;
+         while(i<hex.length)
+         {
+            a[i/2]=parseInt(hex.substr(i,2),16);
+            i=i+2;
+         }
+         return a;
+      }
+
+      public static function fromArray(array:ByteArray, colons:Boolean=false) : String {
+         var s:String = "";
+         var i:uint = 0;
+         while(i<array.length)
+         {
+            s=s+("0"+array[i].toString(16)).substr(-2,2);
+            if(colons)
             {
-                param1 = "0" + param1;
+               if(i<array.length-1)
+               {
+                  s=s+":";
+               }
             }
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.length)
-            {
-                
-                _loc_2[_loc_3 / 2] = parseInt(param1.substr(_loc_3, 2), 16);
-                _loc_3 = _loc_3 + 2;
-            }
-            return _loc_2;
-        }// end function
+            i++;
+         }
+         return s;
+      }
 
-        public static function fromArray(param1:ByteArray, param2:Boolean = false) : String
-        {
-            var _loc_3:* = "";
-            var _loc_4:* = 0;
-            while (_loc_4 < param1.length)
-            {
-                
-                _loc_3 = _loc_3 + ("0" + param1[_loc_4].toString(16)).substr(-2, 2);
-                if (param2)
-                {
-                    if (_loc_4 < (param1.length - 1))
-                    {
-                        _loc_3 = _loc_3 + ":";
-                    }
-                }
-                _loc_4 = _loc_4 + 1;
-            }
-            return _loc_3;
-        }// end function
+      public static function toString(hex:String) : String {
+         var a:ByteArray = toArray(hex);
+         return a.readUTFBytes(a.length);
+      }
 
-        public static function toString(param1:String) : String
-        {
-            var _loc_2:* = toArray(param1);
-            return _loc_2.readUTFBytes(_loc_2.length);
-        }// end function
+      public static function fromString(str:String, colons:Boolean=false) : String {
+         var a:ByteArray = new ByteArray();
+         a.writeUTFBytes(str);
+         return fromArray(a,colons);
+      }
 
-        public static function fromString(param1:String, param2:Boolean = false) : String
-        {
-            var _loc_3:* = new ByteArray();
-            _loc_3.writeUTFBytes(param1);
-            return fromArray(_loc_3, param2);
-        }// end function
 
-    }
+   }
+
 }

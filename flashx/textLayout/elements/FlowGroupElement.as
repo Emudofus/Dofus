@@ -1,863 +1,877 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flash.text.engine.*;
-    import flash.utils.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.events.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.tlf_internal;
+   import flash.utils.getQualifiedClassName;
+   import flash.text.engine.ContentElement;
+   import flash.text.engine.GroupElement;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.events.ModelChange;
+   import flashx.textLayout.compose.FlowDamageType;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.FormatValue;
 
-    public class FlowGroupElement extends FlowElement
-    {
-        private var _childArray:Array;
-        private var _singleChild:FlowElement;
-        private var _numChildren:int;
+   use namespace tlf_internal;
 
-        public function FlowGroupElement()
-        {
-            this._numChildren = 0;
-            return;
-        }// end function
+   public class FlowGroupElement extends FlowElement
+   {
+         
 
-        override public function deepCopy(param1:int = 0, param2:int = -1) : FlowElement
-        {
-            var _loc_4:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            if (param2 == -1)
+      public function FlowGroupElement() {
+         super();
+         this._numChildren=0;
+      }
+
+      private static function getNestedArgCount(obj:Object) : uint {
+         return obj is Array?obj.length:1;
+      }
+
+      private static function getNestedArg(obj:Object, index:uint) : FlowElement {
+         return (obj is Array?obj[index]:obj) as FlowElement;
+      }
+
+      private var _childArray:Array;
+
+      private var _singleChild:FlowElement;
+
+      private var _numChildren:int;
+
+      override public function deepCopy(startPos:int=0, endPos:int=-1) : FlowElement {
+         var newFlowElement:FlowElement = null;
+         var child:FlowElement = null;
+         var possiblyEmptyFlowElement:FlowElement = null;
+         if(endPos==-1)
+         {
+            endPos=textLength;
+         }
+         var retFlow:FlowGroupElement = shallowCopy(startPos,endPos) as FlowGroupElement;
+         var idx:int = 0;
+         while(idx<this._numChildren)
+         {
+            child=this.getChildAt(idx);
+            if((startPos-child.parentRelativeStart>child.textLength)&&(endPos-child.parentRelativeStart<0))
             {
-                param2 = textLength;
+               newFlowElement=child.deepCopy(startPos-child.parentRelativeStart,endPos-child.parentRelativeStart);
+               retFlow.replaceChildren(retFlow.numChildren,retFlow.numChildren,newFlowElement);
+               if(retFlow.numChildren>1)
+               {
+                  possiblyEmptyFlowElement=retFlow.getChildAt(retFlow.numChildren-2);
+                  if(possiblyEmptyFlowElement.textLength==0)
+                  {
+                     retFlow.replaceChildren(retFlow.numChildren-2,retFlow.numChildren-1);
+                  }
+               }
             }
-            var _loc_3:* = shallowCopy(param1, param2) as FlowGroupElement;
-            var _loc_5:* = 0;
-            while (_loc_5 < this._numChildren)
+            idx++;
+         }
+         return retFlow;
+      }
+
+      override public function getText(relativeStart:int=0, relativeEnd:int=-1, paragraphSeparator:String="\n") : String {
+         var child:FlowElement = null;
+         var copyStart:* = 0;
+         var copyEnd:* = 0;
+         var text:String = super.getText();
+         if(relativeEnd==-1)
+         {
+            relativeEnd=textLength;
+         }
+         var pos:int = relativeStart;
+         var idx:int = this.findChildIndexAtPosition(relativeStart);
+         while((idx>this._numChildren)&&(pos>relativeEnd))
+         {
+            child=this.getChildAt(idx);
+            copyStart=pos-child.parentRelativeStart;
+            copyEnd=Math.min(relativeEnd-child.parentRelativeStart,child.textLength);
+            text=text+child.getText(copyStart,copyEnd,paragraphSeparator);
+            pos=pos+(copyEnd-copyStart);
+            if((paragraphSeparator)&&(child is ParagraphFormattedElement)&&(pos>relativeEnd))
             {
-                
-                _loc_6 = this.getChildAt(_loc_5);
-                if (param1 - _loc_6.parentRelativeStart < _loc_6.textLength && param2 - _loc_6.parentRelativeStart > 0)
-                {
-                    _loc_4 = _loc_6.deepCopy(param1 - _loc_6.parentRelativeStart, param2 - _loc_6.parentRelativeStart);
-                    _loc_3.replaceChildren(_loc_3.numChildren, _loc_3.numChildren, _loc_4);
-                    if (_loc_3.numChildren > 1)
-                    {
-                        _loc_7 = _loc_3.getChildAt(_loc_3.numChildren - 2);
-                        if (_loc_7.textLength == 0)
-                        {
-                            _loc_3.replaceChildren(_loc_3.numChildren - 2, (_loc_3.numChildren - 1));
-                        }
-                    }
-                }
-                _loc_5++;
+               text=text+paragraphSeparator;
             }
-            return _loc_3;
-        }// end function
+            idx++;
+         }
+         return text;
+      }
 
-        override public function getText(param1:int = 0, param2:int = -1, param3:String = "\n") : String
-        {
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            var _loc_4:* = super.getText();
-            if (param2 == -1)
+      override tlf_internal function formatChanged(notifyModelChanged:Boolean=true) : void {
+         var child:FlowElement = null;
+         super.formatChanged(notifyModelChanged);
+         var idx:int = 0;
+         while(idx<this._numChildren)
+         {
+            child=this.getChildAt(idx);
+            child.formatChanged(false);
+            idx++;
+         }
+      }
+
+      override tlf_internal function styleSelectorChanged() : void {
+         super.styleSelectorChanged();
+         this.formatChanged(false);
+      }
+
+      public function get mxmlChildren() : Array {
+         return this._numChildren==0?null:this._numChildren==1?[this._singleChild]:this._childArray.slice();
+      }
+
+      public function set mxmlChildren(array:Array) : void {
+         var child:Object = null;
+         var s:SpanElement = null;
+         this.replaceChildren(0,this._numChildren);
+         var effectiveParent:FlowGroupElement = this;
+         for each (child in array)
+         {
+            if(child is FlowElement)
             {
-                param2 = textLength;
+               if(child is ParagraphFormattedElement)
+               {
+                  effectiveParent=this;
+               }
+               else
+               {
+                  if(effectiveParent is ContainerFormattedElement)
+                  {
+                     effectiveParent=new ParagraphElement();
+                     effectiveParent.impliedElement=true;
+                     this.replaceChildren(this._numChildren,this._numChildren,effectiveParent);
+                  }
+               }
+               if((child is SpanElement)||(child is SubParagraphGroupElementBase))
+               {
+                  child.bindableElement=true;
+               }
+               effectiveParent.replaceChildren(effectiveParent.numChildren,effectiveParent.numChildren,FlowElement(child));
+               continue;
             }
-            var _loc_5:* = param1;
-            var _loc_6:* = this.findChildIndexAtPosition(param1);
-            while (_loc_6 < this._numChildren && _loc_5 < param2)
+            if(child is String)
             {
-                
-                _loc_7 = this.getChildAt(_loc_6);
-                _loc_8 = _loc_5 - _loc_7.parentRelativeStart;
-                _loc_9 = Math.min(param2 - _loc_7.parentRelativeStart, _loc_7.textLength);
-                _loc_4 = _loc_4 + _loc_7.getText(_loc_8, _loc_9, param3);
-                _loc_5 = _loc_5 + (_loc_9 - _loc_8);
-                if (param3 && _loc_7 is ParagraphFormattedElement && _loc_5 < param2)
-                {
-                    _loc_4 = _loc_4 + param3;
-                }
-                _loc_6++;
+               s=new SpanElement();
+               s.text=String(child);
+               s.bindableElement=true;
+               s.impliedElement=true;
+               if(effectiveParent is ContainerFormattedElement)
+               {
+                  effectiveParent=new ParagraphElement();
+                  this.replaceChildren(this._numChildren,this._numChildren,effectiveParent);
+                  effectiveParent.impliedElement=true;
+               }
+               effectiveParent.replaceChildren(effectiveParent.numChildren,effectiveParent.numChildren,s);
+               continue;
             }
-            return _loc_4;
-        }// end function
-
-        override function formatChanged(param1:Boolean = true) : void
-        {
-            var _loc_3:* = null;
-            super.formatChanged(param1);
-            var _loc_2:* = 0;
-            while (_loc_2 < this._numChildren)
+            if(child!=null)
             {
-                
-                _loc_3 = this.getChildAt(_loc_2);
-                _loc_3.formatChanged(false);
-                _loc_2++;
-            }
-            return;
-        }// end function
-
-        override function styleSelectorChanged() : void
-        {
-            super.styleSelectorChanged();
-            this.formatChanged(false);
-            return;
-        }// end function
-
-        public function get mxmlChildren() : Array
-        {
-            return this._numChildren == 0 ? (null) : (this._numChildren == 1 ? ([this._singleChild]) : (this._childArray.slice()));
-        }// end function
-
-        public function set mxmlChildren(param1:Array) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            this.replaceChildren(0, this._numChildren);
-            var _loc_2:* = this;
-            for each (_loc_3 in param1)
-            {
-                
-                if (_loc_3 is FlowElement)
-                {
-                    if (_loc_3 is ParagraphFormattedElement)
-                    {
-                        _loc_2 = this;
-                    }
-                    else if (_loc_2 is ContainerFormattedElement)
-                    {
-                        _loc_2 = new ParagraphElement();
-                        _loc_2.impliedElement = true;
-                        this.replaceChildren(this._numChildren, this._numChildren, _loc_2);
-                    }
-                    if (_loc_3 is SpanElement || _loc_3 is SubParagraphGroupElementBase)
-                    {
-                        _loc_3.bindableElement = true;
-                    }
-                    _loc_2.replaceChildren(_loc_2.numChildren, _loc_2.numChildren, FlowElement(_loc_3));
-                    continue;
-                }
-                if (_loc_3 is String)
-                {
-                    _loc_4 = new SpanElement();
-                    _loc_4.text = String(_loc_3);
-                    _loc_4.bindableElement = true;
-                    _loc_4.impliedElement = true;
-                    if (_loc_2 is ContainerFormattedElement)
-                    {
-                        _loc_2 = new ParagraphElement();
-                        this.replaceChildren(this._numChildren, this._numChildren, _loc_2);
-                        _loc_2.impliedElement = true;
-                    }
-                    _loc_2.replaceChildren(_loc_2.numChildren, _loc_2.numChildren, _loc_4);
-                    continue;
-                }
-                if (_loc_3 != null)
-                {
-                    throw new TypeError(GlobalSettings.resourceStringFunction("badMXMLChildrenArgument", [getQualifiedClassName(_loc_3)]));
-                }
-            }
-            return;
-        }// end function
-
-        public function get numChildren() : int
-        {
-            return this._numChildren;
-        }// end function
-
-        public function getChildIndex(param1:FlowElement) : int
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_2:* = this._numChildren - 1;
-            if (_loc_2 <= 0)
-            {
-                return this._singleChild == param1 ? (0) : (-1);
-            }
-            var _loc_3:* = 0;
-            while (_loc_3 <= _loc_2)
-            {
-                
-                _loc_4 = (_loc_3 + _loc_2) / 2;
-                _loc_5 = this._childArray[_loc_4];
-                if (_loc_5.parentRelativeStart == param1.parentRelativeStart)
-                {
-                    if (_loc_5 == param1)
-                    {
-                        return _loc_4;
-                    }
-                    if (_loc_5.textLength == 0)
-                    {
-                        _loc_6 = _loc_4;
-                        while (_loc_6 < this._numChildren)
-                        {
-                            
-                            _loc_5 = this._childArray[_loc_6];
-                            if (_loc_5 == param1)
-                            {
-                                return _loc_6;
-                            }
-                            if (_loc_5.textLength != 0)
-                            {
-                                break;
-                            }
-                            _loc_6++;
-                        }
-                    }
-                    while (_loc_4 > 0)
-                    {
-                        
-                        _loc_4 = _loc_4 - 1;
-                        _loc_5 = this._childArray[_loc_4];
-                        if (_loc_5 == param1)
-                        {
-                            return _loc_4;
-                        }
-                        if (_loc_5.textLength != 0)
-                        {
-                            break;
-                        }
-                    }
-                    return -1;
-                }
-                if (_loc_5.parentRelativeStart < param1.parentRelativeStart)
-                {
-                    _loc_3 = _loc_4 + 1;
-                    continue;
-                }
-                _loc_2 = _loc_4 - 1;
-            }
-            return -1;
-        }// end function
-
-        public function getChildAt(param1:int) : FlowElement
-        {
-            if (this._numChildren > 1)
-            {
-                return this._childArray[param1];
-            }
-            return param1 == 0 ? (this._singleChild) : (null);
-        }// end function
-
-        function getNextLeafHelper(param1:FlowGroupElement, param2:FlowElement) : FlowLeafElement
-        {
-            var _loc_3:* = this.getChildIndex(param2);
-            if (_loc_3 == -1)
-            {
-                return null;
-            }
-            if (_loc_3 == (this._numChildren - 1))
-            {
-                if (param1 == this || !parent)
-                {
-                    return null;
-                }
-                return parent.getNextLeafHelper(param1, this);
-            }
-            param2 = this.getChildAt((_loc_3 + 1));
-            return param2 is FlowLeafElement ? (FlowLeafElement(param2)) : (FlowGroupElement(param2).getFirstLeaf());
-        }// end function
-
-        function getPreviousLeafHelper(param1:FlowGroupElement, param2:FlowElement) : FlowLeafElement
-        {
-            var _loc_3:* = this.getChildIndex(param2);
-            if (_loc_3 == -1)
-            {
-                return null;
-            }
-            if (_loc_3 == 0)
-            {
-                if (param1 == this || !parent)
-                {
-                    return null;
-                }
-                return parent.getPreviousLeafHelper(param1, this);
-            }
-            param2 = this.getChildAt((_loc_3 - 1));
-            return param2 is FlowLeafElement ? (FlowLeafElement(param2)) : (FlowGroupElement(param2).getLastLeaf());
-        }// end function
-
-        public function findLeaf(param1:int) : FlowLeafElement
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_2:* = null;
-            var _loc_3:* = this.findChildIndexAtPosition(param1);
-            if (_loc_3 != -1)
-            {
-                do
-                {
-                    
-                    _loc_4 = this.getChildAt(_loc_3++);
-                    if (!_loc_4)
-                    {
-                        break;
-                    }
-                    _loc_5 = param1 - _loc_4.parentRelativeStart;
-                    if (_loc_4 is FlowGroupElement)
-                    {
-                        _loc_2 = FlowGroupElement(_loc_4).findLeaf(_loc_5);
-                        continue;
-                    }
-                    if (_loc_5 >= 0 && _loc_5 < _loc_4.textLength || _loc_4.textLength == 0 && this._numChildren == 1)
-                    {
-                        _loc_2 = FlowLeafElement(_loc_4);
-                    }
-                }while (!_loc_2 && !_loc_4.textLength)
-            }
-            return _loc_2;
-        }// end function
-
-        public function findChildIndexAtPosition(param1:int) : int
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_2:* = 0;
-            var _loc_3:* = this._numChildren - 1;
-            while (_loc_2 <= _loc_3)
-            {
-                
-                _loc_4 = (_loc_2 + _loc_3) / 2;
-                _loc_5 = this.getChildAt(_loc_4);
-                if (_loc_5.parentRelativeStart <= param1)
-                {
-                    if (_loc_5.parentRelativeStart == param1)
-                    {
-                        while (_loc_4 != 0)
-                        {
-                            
-                            _loc_5 = this.getChildAt((_loc_4 - 1));
-                            if (_loc_5.textLength != 0)
-                            {
-                                break;
-                            }
-                            _loc_4 = _loc_4 - 1;
-                        }
-                        return _loc_4;
-                    }
-                    if (_loc_5.parentRelativeStart + _loc_5.textLength > param1)
-                    {
-                        return _loc_4;
-                    }
-                    _loc_2 = _loc_4 + 1;
-                    continue;
-                }
-                _loc_3 = _loc_4 - 1;
-            }
-            return -1;
-        }// end function
-
-        public function getFirstLeaf() : FlowLeafElement
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (this._numChildren > 1)
-            {
-                _loc_1 = 0;
-                while (_loc_1 < this._numChildren)
-                {
-                    
-                    _loc_2 = this._childArray[_loc_1];
-                    _loc_3 = _loc_2 is FlowGroupElement ? (FlowGroupElement(_loc_2).getFirstLeaf()) : (FlowLeafElement(_loc_2));
-                    if (_loc_3)
-                    {
-                        return _loc_3;
-                    }
-                    _loc_1++;
-                }
-                return null;
-            }
-            return this._numChildren == 0 ? (null) : (this._singleChild is FlowGroupElement ? (FlowGroupElement(this._singleChild).getFirstLeaf()) : (FlowLeafElement(this._singleChild)));
-        }// end function
-
-        public function getLastLeaf() : FlowLeafElement
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (this._numChildren > 1)
-            {
-                _loc_1 = this._numChildren;
-                while (_loc_1 != 0)
-                {
-                    
-                    _loc_2 = this._childArray[(_loc_1 - 1)];
-                    _loc_3 = _loc_2 is FlowGroupElement ? (FlowGroupElement(_loc_2).getLastLeaf()) : (FlowLeafElement(_loc_2));
-                    if (_loc_3)
-                    {
-                        return _loc_3;
-                    }
-                    _loc_1 = _loc_1 - 1;
-                }
-                return null;
-            }
-            return this._numChildren == 0 ? (null) : (this._singleChild is FlowGroupElement ? (FlowGroupElement(this._singleChild).getLastLeaf()) : (FlowLeafElement(this._singleChild)));
-        }// end function
-
-        override public function getCharAtPosition(param1:int) : String
-        {
-            var _loc_2:* = this.findLeaf(param1);
-            return _loc_2 ? (_loc_2.getCharAtPosition(param1 - _loc_2.getElementRelativeStart(this))) : ("");
-        }// end function
-
-        override function applyFunctionToElements(param1:Function) : Boolean
-        {
-            if (this.param1(this))
-            {
-                return true;
-            }
-            var _loc_2:* = 0;
-            while (_loc_2 < this._numChildren)
-            {
-                
-                if (this.getChildAt(_loc_2).applyFunctionToElements(param1))
-                {
-                    return true;
-                }
-                _loc_2++;
-            }
-            return false;
-        }// end function
-
-        function removeBlockElement(param1:FlowElement, param2:ContentElement) : void
-        {
-            return;
-        }// end function
-
-        function insertBlockElement(param1:FlowElement, param2:ContentElement) : void
-        {
-            return;
-        }// end function
-
-        function hasBlockElement() : Boolean
-        {
-            return false;
-        }// end function
-
-        function createContentAsGroup() : GroupElement
-        {
-            return null;
-        }// end function
-
-        function addChildAfterInternal(param1:FlowElement, param2:FlowElement) : void
-        {
-            if (this._numChildren > 1)
-            {
-                this._childArray.splice((this._childArray.indexOf(param1) + 1), 0, param2);
+               throw new TypeError(GlobalSettings.resourceStringFunction("badMXMLChildrenArgument",[getQualifiedClassName(child)]));
             }
             else
             {
-                this._childArray = [this._singleChild, param2];
-                this._singleChild = null;
+               continue;
             }
-            var _loc_3:* = this;
-            var _loc_4:* = this._numChildren + 1;
-            _loc_3._numChildren = _loc_4;
-            param2.setParentAndRelativeStartOnly(this, param1.parentRelativeEnd);
-            return;
-        }// end function
+         }
+      }
 
-        function canOwnFlowElement(param1:FlowElement) : Boolean
-        {
-            return !(param1 is TextFlow) && !(param1 is FlowLeafElement) && !(param1 is SubParagraphGroupElementBase) && !(param1 is ListItemElement);
-        }// end function
+      public function get numChildren() : int {
+         return this._numChildren;
+      }
 
-        public function replaceChildren(param1:int, param2:int, ... args) : void
-        {
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = 0;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = 0;
-            var _loc_15:* = 0;
-            var _loc_16:* = null;
-            var _loc_17:* = 0;
-            var _loc_18:* = 0;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            if (param1 > this._numChildren || param2 > this._numChildren)
+      public function getChildIndex(child:FlowElement) : int {
+         var mid:* = 0;
+         var p:FlowElement = null;
+         var testmid:* = 0;
+         var hi:int = this._numChildren-1;
+         if(hi<=0)
+         {
+            return this._singleChild==child?0:-1;
+         }
+         var lo:int = 0;
+         while(lo<=hi)
+         {
+            mid=(lo+hi)/2;
+            p=this._childArray[mid];
+            if(p.parentRelativeStart==child.parentRelativeStart)
             {
-                throw RangeError(GlobalSettings.resourceStringFunction("badReplaceChildrenIndex"));
+               if(p==child)
+               {
+                  return mid;
+               }
+               if(p.textLength==0)
+               {
+                  testmid=mid;
+                  while(testmid<this._numChildren)
+                  {
+                     p=this._childArray[testmid];
+                     if(p==child)
+                     {
+                        return testmid;
+                     }
+                     if(p.textLength!=0)
+                     {
+                     }
+                     else
+                     {
+                        testmid++;
+                        continue;
+                     }
+                  }
+               }
+               while(mid>0)
+               {
+                  mid--;
+                  p=this._childArray[mid];
+                  if(p==child)
+                  {
+                     return mid;
+                  }
+                  if(p.textLength!=0)
+                  {
+                  }
+                  else
+                  {
+                     continue;
+                  }
+               }
             }
-            args = getAbsoluteStart();
-            var _loc_5:* = args + (param1 == this._numChildren ? (textLength) : (this.getChildAt(param1).parentRelativeStart));
-            var _loc_6:* = param1 == this._numChildren ? (textLength) : (this.getChildAt(param1).parentRelativeStart);
-            if (param1 < param2)
+            else
             {
-                _loc_14 = 0;
-                while (param1 < param2)
-                {
-                    
-                    _loc_13 = this.getChildAt(param1);
-                    this.modelChanged(ModelChange.ELEMENT_REMOVAL, _loc_13, _loc_13.parentRelativeStart, _loc_13.textLength);
-                    _loc_14 = _loc_14 + _loc_13.textLength;
-                    _loc_13.setParentAndRelativeStart(null, 0);
-                    if (this._numChildren == 1)
-                    {
-                        this._singleChild = null;
-                        this._numChildren = 0;
-                    }
-                    else
-                    {
-                        this._childArray.splice(param1, 1);
-                        var _loc_21:* = this;
-                        var _loc_22:* = this._numChildren - 1;
-                        _loc_21._numChildren = _loc_22;
-                        if (this._numChildren == 1)
-                        {
-                            this._singleChild = this._childArray[0];
-                            this._childArray = null;
-                        }
-                    }
-                    param2 = param2 - 1;
-                }
-                if (_loc_14)
-                {
-                    while (param2 < this._numChildren)
-                    {
-                        
-                        _loc_13 = this.getChildAt(param2);
-                        this.getChildAt(param2).setParentRelativeStart(_loc_13.parentRelativeStart - _loc_14);
-                        param2++;
-                    }
-                    updateLengths(_loc_5, -_loc_14, true);
-                    deleteContainerText(_loc_6 + _loc_14, _loc_14);
-                }
+               if(p.parentRelativeStart<child.parentRelativeStart)
+               {
+                  lo=mid+1;
+               }
+               else
+               {
+                  hi=mid-1;
+               }
+               continue;
             }
-            var _loc_7:* = 0;
-            for each (_loc_12 in args)
+         }
+         return -1;
+      }
+
+      public function getChildAt(index:int) : FlowElement {
+         if(this._numChildren>1)
+         {
+            return this._childArray[index];
+         }
+         return index==0?this._singleChild:null;
+      }
+
+      tlf_internal function getNextLeafHelper(limitElement:FlowGroupElement, child:FlowElement) : FlowLeafElement {
+         var idx:int = this.getChildIndex(child);
+         if(idx==-1)
+         {
+            return null;
+         }
+         if(idx==this._numChildren-1)
+         {
+            if((limitElement==this)||(!parent))
             {
-                
-                if (!_loc_12)
-                {
-                    continue;
-                }
-                _loc_15 = getNestedArgCount(_loc_12);
-                _loc_11 = 0;
-                while (_loc_11 < _loc_15)
-                {
-                    
-                    _loc_10 = getNestedArg(_loc_12, _loc_11);
-                    if (_loc_10)
-                    {
-                        _loc_16 = _loc_10.parent;
-                        if (_loc_16)
+               return null;
+            }
+            return parent.getNextLeafHelper(limitElement,this);
+         }
+         var child:FlowElement = this.getChildAt(idx+1);
+         return child is FlowLeafElement?FlowLeafElement(child):FlowGroupElement(child).getFirstLeaf();
+      }
+
+      tlf_internal function getPreviousLeafHelper(limitElement:FlowGroupElement, child:FlowElement) : FlowLeafElement {
+         var idx:int = this.getChildIndex(child);
+         if(idx==-1)
+         {
+            return null;
+         }
+         if(idx==0)
+         {
+            if((limitElement==this)||(!parent))
+            {
+               return null;
+            }
+            return parent.getPreviousLeafHelper(limitElement,this);
+         }
+         var child:FlowElement = this.getChildAt(idx-1);
+         return child is FlowLeafElement?FlowLeafElement(child):FlowGroupElement(child).getLastLeaf();
+      }
+
+      public function findLeaf(relativePosition:int) : FlowLeafElement {
+         var child:FlowElement = null;
+         var childRelativePos:* = 0;
+         var found:FlowLeafElement = null;
+         var childIdx:int = this.findChildIndexAtPosition(relativePosition);
+         if(childIdx!=-1)
+         {
+            do
+            {
+               child=this.getChildAt(childIdx++);
+               if(!child)
+               {
+               }
+               else
+               {
+                  childRelativePos=relativePosition-child.parentRelativeStart;
+                  if(child is FlowGroupElement)
+                  {
+                     found=FlowGroupElement(child).findLeaf(childRelativePos);
+                  }
+                  else
+                  {
+                     if((childRelativePos>=0)&&(childRelativePos>child.textLength)||(child.textLength==0)&&(this._numChildren==1))
+                     {
+                        found=FlowLeafElement(child);
+                     }
+                  }
+                  if(!((!found)&&(!child.textLength)))
+                  {
+                  }
+                  else
+                  {
+                     continue;
+                  }
+               }
+            }
+            while(true);
+         }
+         return found;
+      }
+
+      public function findChildIndexAtPosition(relativePosition:int) : int {
+         var mid:* = 0;
+         var child:FlowElement = null;
+         var lo:int = 0;
+         var hi:int = this._numChildren-1;
+         while(lo<=hi)
+         {
+            mid=(lo+hi)/2;
+            child=this.getChildAt(mid);
+            if(child.parentRelativeStart<=relativePosition)
+            {
+               if(child.parentRelativeStart==relativePosition)
+               {
+                  while(mid!=0)
+                  {
+                     child=this.getChildAt(mid-1);
+                     if(child.textLength!=0)
+                     {
+                     }
+                     else
+                     {
+                        mid--;
+                        continue;
+                     }
+                  }
+               }
+               else
+               {
+                  if(child.parentRelativeStart+child.textLength>relativePosition)
+                  {
+                     return mid;
+                  }
+                  lo=mid+1;
+                  continue;
+               }
+            }
+            else
+            {
+               hi=mid-1;
+               continue;
+            }
+         }
+         return -1;
+      }
+
+      public function getFirstLeaf() : FlowLeafElement {
+         var idx:* = 0;
+         var child:FlowElement = null;
+         var leaf:FlowLeafElement = null;
+         if(this._numChildren>1)
+         {
+            idx=0;
+            while(idx<this._numChildren)
+            {
+               child=this._childArray[idx];
+               leaf=child is FlowGroupElement?FlowGroupElement(child).getFirstLeaf():FlowLeafElement(child);
+               if(leaf)
+               {
+                  return leaf;
+               }
+               idx++;
+            }
+            return null;
+         }
+         return this._numChildren==0?null:this._singleChild is FlowGroupElement?FlowGroupElement(this._singleChild).getFirstLeaf():FlowLeafElement(this._singleChild);
+      }
+
+      public function getLastLeaf() : FlowLeafElement {
+         var idx:* = 0;
+         var child:FlowElement = null;
+         var leaf:FlowLeafElement = null;
+         if(this._numChildren>1)
+         {
+            idx=this._numChildren;
+            while(idx!=0)
+            {
+               child=this._childArray[idx-1];
+               leaf=child is FlowGroupElement?FlowGroupElement(child).getLastLeaf():FlowLeafElement(child);
+               if(leaf)
+               {
+                  return leaf;
+               }
+               idx--;
+            }
+            return null;
+         }
+         return this._numChildren==0?null:this._singleChild is FlowGroupElement?FlowGroupElement(this._singleChild).getLastLeaf():FlowLeafElement(this._singleChild);
+      }
+
+      override public function getCharAtPosition(relativePosition:int) : String {
+         var leaf:FlowLeafElement = this.findLeaf(relativePosition);
+         return leaf?leaf.getCharAtPosition(relativePosition-leaf.getElementRelativeStart(this)):"";
+      }
+
+      override tlf_internal function applyFunctionToElements(func:Function) : Boolean {
+         if(func(this))
+         {
+            return true;
+         }
+         var idx:int = 0;
+         while(idx<this._numChildren)
+         {
+            if(this.getChildAt(idx).applyFunctionToElements(func))
+            {
+               return true;
+            }
+            idx++;
+         }
+         return false;
+      }
+
+      tlf_internal function removeBlockElement(child:FlowElement, block:ContentElement) : void {
+         
+      }
+
+      tlf_internal function insertBlockElement(child:FlowElement, block:ContentElement) : void {
+         
+      }
+
+      tlf_internal function hasBlockElement() : Boolean {
+         return false;
+      }
+
+      tlf_internal function createContentAsGroup() : GroupElement {
+         return null;
+      }
+
+      tlf_internal function addChildAfterInternal(child:FlowElement, newChild:FlowElement) : void {
+         if(this._numChildren>1)
+         {
+            this._childArray.splice(this._childArray.indexOf(child)+1,0,newChild);
+         }
+         else
+         {
+            this._childArray=[this._singleChild,newChild];
+            this._singleChild=null;
+         }
+         this._numChildren++;
+         newChild.setParentAndRelativeStartOnly(this,child.parentRelativeEnd);
+      }
+
+      tlf_internal function canOwnFlowElement(elem:FlowElement) : Boolean {
+         return (!(elem is TextFlow))&&(!(elem is FlowLeafElement))&&(!(elem is SubParagraphGroupElementBase))&&(!(elem is ListItemElement));
+      }
+
+      public function replaceChildren(beginChildIndex:int, endChildIndex:int, ... rest) : void {
+         var flatNewChildList:Array = null;
+         var newChildToAdd:FlowElement = null;
+         var newChild:FlowElement = null;
+         var idx:* = 0;
+         var obj:Object = null;
+         var child:FlowElement = null;
+         var len:* = 0;
+         var numNestedArgs:* = 0;
+         var newChildParent:FlowGroupElement = null;
+         var childIndex:* = 0;
+         var addedTextLength:uint = 0;
+         var enclosingContainer:ContainerController = null;
+         var tFlow:TextFlow = null;
+         if((beginChildIndex<this._numChildren)||(endChildIndex<this._numChildren))
+         {
+            throw RangeError(GlobalSettings.resourceStringFunction("badReplaceChildrenIndex"));
+         }
+         else
+         {
+            thisAbsStart=getAbsoluteStart();
+            absStartIdx=thisAbsStart+(beginChildIndex==this._numChildren?textLength:this.getChildAt(beginChildIndex).parentRelativeStart);
+            relStartIdx=beginChildIndex==this._numChildren?textLength:this.getChildAt(beginChildIndex).parentRelativeStart;
+            if(beginChildIndex<endChildIndex)
+            {
+               len=0;
+               while(beginChildIndex<endChildIndex)
+               {
+                  child=this.getChildAt(beginChildIndex);
+                  this.modelChanged(ModelChange.ELEMENT_REMOVAL,child,child.parentRelativeStart,child.textLength);
+                  len=len+child.textLength;
+                  child.setParentAndRelativeStart(null,0);
+                  if(this._numChildren==1)
+                  {
+                     this._singleChild=null;
+                     this._numChildren=0;
+                  }
+                  else
+                  {
+                     this._childArray.splice(beginChildIndex,1);
+                     this._numChildren--;
+                     if(this._numChildren==1)
+                     {
+                        this._singleChild=this._childArray[0];
+                        this._childArray=null;
+                     }
+                  }
+                  endChildIndex--;
+               }
+               if(len)
+               {
+                  while(endChildIndex<this._numChildren)
+                  {
+                     child=this.getChildAt(endChildIndex);
+                     child.setParentRelativeStart(child.parentRelativeStart-len);
+                     endChildIndex++;
+                  }
+                  updateLengths(absStartIdx,-len,true);
+                  deleteContainerText(relStartIdx+len,len);
+               }
+            }
+            childrenToAdd=0;
+            for each (obj in rest)
+            {
+               if(!obj)
+               {
+               }
+               else
+               {
+                  numNestedArgs=getNestedArgCount(obj);
+                  idx=0;
+                  while(idx<numNestedArgs)
+                  {
+                     newChild=getNestedArg(obj,idx);
+                     if(newChild)
+                     {
+                        newChildParent=newChild.parent;
+                        if(newChildParent)
                         {
-                            if (_loc_16 == this)
-                            {
-                                _loc_17 = this.getChildIndex(_loc_10);
-                                _loc_16.removeChild(_loc_10);
-                                args = getAbsoluteStart();
-                                if (_loc_17 <= param1)
-                                {
-                                    param1 = param1 - 1;
-                                    _loc_5 = args + (param1 == this._numChildren ? (textLength) : (this.getChildAt(param1).parentRelativeStart));
-                                    _loc_6 = param1 == this._numChildren ? (textLength) : (this.getChildAt(param1).parentRelativeStart);
-                                }
-                            }
-                            else
-                            {
-                                _loc_16.removeChild(_loc_10);
-                                args = getAbsoluteStart();
-                                _loc_5 = args + (param1 == this._numChildren ? (textLength) : (this.getChildAt(param1).parentRelativeStart));
-                                _loc_6 = param1 == this._numChildren ? (textLength) : (this.getChildAt(param1).parentRelativeStart);
-                            }
+                           if(newChildParent==this)
+                           {
+                              childIndex=this.getChildIndex(newChild);
+                              newChildParent.removeChild(newChild);
+                              thisAbsStart=getAbsoluteStart();
+                              if(childIndex<=beginChildIndex)
+                              {
+                                 beginChildIndex--;
+                                 absStartIdx=thisAbsStart+(beginChildIndex==this._numChildren?textLength:this.getChildAt(beginChildIndex).parentRelativeStart);
+                                 relStartIdx=beginChildIndex==this._numChildren?textLength:this.getChildAt(beginChildIndex).parentRelativeStart;
+                              }
+                           }
+                           else
+                           {
+                              newChildParent.removeChild(newChild);
+                              thisAbsStart=getAbsoluteStart();
+                              absStartIdx=thisAbsStart+(beginChildIndex==this._numChildren?textLength:this.getChildAt(beginChildIndex).parentRelativeStart);
+                              relStartIdx=beginChildIndex==this._numChildren?textLength:this.getChildAt(beginChildIndex).parentRelativeStart;
+                           }
                         }
-                        if (!this.canOwnFlowElement(_loc_10))
+                        if(!this.canOwnFlowElement(newChild))
                         {
-                            throw ArgumentError(GlobalSettings.resourceStringFunction("invalidChildType"));
-                        }
-                        if (_loc_7 == 0)
-                        {
-                            _loc_9 = _loc_10;
-                        }
-                        else if (_loc_7 == 1)
-                        {
-                            _loc_8 = [_loc_9, _loc_10];
+                           throw ArgumentError(GlobalSettings.resourceStringFunction("invalidChildType"));
                         }
                         else
                         {
-                            _loc_8.push(_loc_10);
+                           if(childrenToAdd==0)
+                           {
+                              newChildToAdd=newChild;
+                           }
+                           else
+                           {
+                              if(childrenToAdd==1)
+                              {
+                                 flatNewChildList=[newChildToAdd,newChild];
+                              }
+                              else
+                              {
+                                 flatNewChildList.push(newChild);
+                              }
+                           }
+                           childrenToAdd++;
                         }
-                        _loc_7++;
-                    }
-                    _loc_11++;
-                }
+                     }
+                     idx++;
+                  }
+               }
             }
-            if (_loc_7)
+            if(childrenToAdd)
             {
-                _loc_18 = 0;
-                _loc_11 = 0;
-                while (_loc_11 < _loc_7)
-                {
-                    
-                    _loc_10 = _loc_7 == 1 ? (_loc_9) : (_loc_8[_loc_11]);
-                    if (this._numChildren == 0)
-                    {
-                        this._singleChild = _loc_10;
-                    }
-                    else if (this._numChildren > 1)
-                    {
-                        this._childArray.splice(param1, 0, _loc_10);
-                    }
-                    else
-                    {
-                        this._childArray = param1 == 0 ? ([_loc_10, this._singleChild]) : ([this._singleChild, _loc_10]);
-                        this._singleChild = null;
-                    }
-                    var _loc_21:* = this;
-                    var _loc_22:* = this._numChildren + 1;
-                    _loc_21._numChildren = _loc_22;
-                    _loc_10.setParentAndRelativeStart(this, _loc_6 + _loc_18);
-                    _loc_18 = _loc_18 + _loc_10.textLength;
-                    param1++;
-                    _loc_11++;
-                }
-                if (_loc_18)
-                {
-                    while (_loc_1 < this._numChildren)
-                    {
-                        
-                        _loc_13 = this.getChildAt(param1++);
-                        this.getChildAt(param1++).setParentRelativeStart(_loc_13.parentRelativeStart + _loc_18);
-                    }
-                    updateLengths(_loc_5, _loc_18, true);
-                    _loc_19 = getEnclosingController(_loc_6);
-                    if (_loc_19)
-                    {
-                        ContainerController(_loc_19).setTextLength(_loc_19.textLength + _loc_18);
-                    }
-                }
-                _loc_11 = 0;
-                while (_loc_11 < _loc_7)
-                {
-                    
-                    _loc_10 = _loc_7 == 1 ? (_loc_9) : (_loc_8[_loc_11]);
-                    this.modelChanged(ModelChange.ELEMENT_ADDED, _loc_10, _loc_10.parentRelativeStart, _loc_10.textLength);
-                    _loc_11++;
-                }
+               addedTextLength=0;
+               idx=0;
+               while(idx<childrenToAdd)
+               {
+                  newChild=childrenToAdd==1?newChildToAdd:flatNewChildList[idx];
+                  if(this._numChildren==0)
+                  {
+                     this._singleChild=newChild;
+                  }
+                  else
+                  {
+                     if(this._numChildren>1)
+                     {
+                        this._childArray.splice(beginChildIndex,0,newChild);
+                     }
+                     else
+                     {
+                        this._childArray=beginChildIndex==0?[newChild,this._singleChild]:[this._singleChild,newChild];
+                        this._singleChild=null;
+                     }
+                  }
+                  this._numChildren++;
+                  newChild.setParentAndRelativeStart(this,relStartIdx+addedTextLength);
+                  addedTextLength=addedTextLength+newChild.textLength;
+                  beginChildIndex++;
+                  idx++;
+               }
+               if(addedTextLength)
+               {
+                  while(beginChildIndex<this._numChildren)
+                  {
+                     child=this.getChildAt(beginChildIndex++);
+                     child.setParentRelativeStart(child.parentRelativeStart+addedTextLength);
+                  }
+                  updateLengths(absStartIdx,addedTextLength,true);
+                  enclosingContainer=getEnclosingController(relStartIdx);
+                  if(enclosingContainer)
+                  {
+                     ContainerController(enclosingContainer).setTextLength(enclosingContainer.textLength+addedTextLength);
+                  }
+               }
+               idx=0;
+               while(idx<childrenToAdd)
+               {
+                  newChild=childrenToAdd==1?newChildToAdd:flatNewChildList[idx];
+                  this.modelChanged(ModelChange.ELEMENT_ADDED,newChild,newChild.parentRelativeStart,newChild.textLength);
+                  idx++;
+               }
             }
             else
             {
-                _loc_20 = getTextFlow();
-                if (_loc_20 != null)
-                {
-                    if (_loc_1 < this._numChildren)
-                    {
-                        _loc_11 = args + this.getChildAt(_loc_1).parentRelativeStart;
-                    }
-                    else if (_loc_1 > 1)
-                    {
-                        _loc_10 = this.getChildAt((_loc_1 - 1));
-                        _loc_11 = args + _loc_10.parentRelativeStart + _loc_10.textLength - 1;
-                    }
-                    else
-                    {
-                        _loc_11 = args;
-                        if (_loc_11 >= _loc_20.textLength)
+               tFlow=getTextFlow();
+               if(tFlow!=null)
+               {
+                  if(beginChildIndex<this._numChildren)
+                  {
+                     idx=thisAbsStart+this.getChildAt(beginChildIndex).parentRelativeStart;
+                  }
+                  else
+                  {
+                     if(beginChildIndex>1)
+                     {
+                        newChild=this.getChildAt(beginChildIndex-1);
+                        idx=thisAbsStart+newChild.parentRelativeStart+newChild.textLength-1;
+                     }
+                     else
+                     {
+                        idx=thisAbsStart;
+                        if(idx>=tFlow.textLength)
                         {
-                            _loc_11 = _loc_11 - 1;
+                           idx--;
                         }
-                    }
-                    _loc_20.damage(_loc_11, 1, FlowDamageType.INVALID, false);
-                }
+                     }
+                  }
+                  tFlow.damage(idx,1,FlowDamageType.INVALID,false);
+               }
             }
             return;
-        }// end function
+         }
+      }
 
-        public function addChild(param1:FlowElement) : FlowElement
-        {
-            this.replaceChildren(this._numChildren, this._numChildren, param1);
-            return param1;
-        }// end function
+      public function addChild(child:FlowElement) : FlowElement {
+         this.replaceChildren(this._numChildren,this._numChildren,child);
+         return child;
+      }
 
-        public function addChildAt(param1:uint, param2:FlowElement) : FlowElement
-        {
-            this.replaceChildren(param1, param1, param2);
-            return param2;
-        }// end function
+      public function addChildAt(index:uint, child:FlowElement) : FlowElement {
+         this.replaceChildren(index,index,child);
+         return child;
+      }
 
-        public function removeChild(param1:FlowElement) : FlowElement
-        {
-            var _loc_2:* = this.getChildIndex(param1);
-            if (_loc_2 == -1)
-            {
-                throw ArgumentError(GlobalSettings.resourceStringFunction("badRemoveChild"));
-            }
-            this.removeChildAt(_loc_2);
-            return param1;
-        }// end function
+      public function removeChild(child:FlowElement) : FlowElement {
+         var index:int = this.getChildIndex(child);
+         if(index==-1)
+         {
+            throw ArgumentError(GlobalSettings.resourceStringFunction("badRemoveChild"));
+         }
+         else
+         {
+            this.removeChildAt(index);
+            return child;
+         }
+      }
 
-        public function removeChildAt(param1:uint) : FlowElement
-        {
-            var _loc_2:* = this.getChildAt(param1);
-            this.replaceChildren(param1, (param1 + 1));
-            return _loc_2;
-        }// end function
+      public function removeChildAt(index:uint) : FlowElement {
+         var childToReplace:FlowElement = this.getChildAt(index);
+         this.replaceChildren(index,index+1);
+         return childToReplace;
+      }
 
-        public function splitAtIndex(param1:int) : FlowGroupElement
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            if (param1 > this._numChildren)
+      public function splitAtIndex(childIndex:int) : FlowGroupElement {
+         var childArray:Array = null;
+         var myidx:* = 0;
+         if(childIndex>this._numChildren)
+         {
+            throw RangeError(GlobalSettings.resourceStringFunction("invalidSplitAtIndex"));
+         }
+         else
+         {
+            newSibling=shallowCopy() as FlowGroupElement;
+            numChildrenToMove=this._numChildren-childIndex;
+            if(numChildrenToMove==1)
             {
-                throw RangeError(GlobalSettings.resourceStringFunction("invalidSplitAtIndex"));
-            }
-            var _loc_2:* = shallowCopy() as FlowGroupElement;
-            var _loc_3:* = this._numChildren - param1;
-            if (_loc_3 == 1)
-            {
-                _loc_2.addChild(this.removeChildAt(param1));
-            }
-            else if (_loc_3 != 0)
-            {
-                _loc_4 = this._childArray.slice(param1);
-                this.replaceChildren(param1, (this._numChildren - 1));
-                _loc_2.replaceChildren(0, 0, _loc_4);
-            }
-            if (parent)
-            {
-                _loc_5 = parent.getChildIndex(this);
-                parent.replaceChildren((_loc_5 + 1), (_loc_5 + 1), _loc_2);
-            }
-            return _loc_2;
-        }// end function
-
-        override public function splitAtPosition(param1:int) : FlowElement
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            if (param1 < 0 || param1 > textLength)
-            {
-                throw RangeError(GlobalSettings.resourceStringFunction("invalidSplitAtPosition"));
-            }
-            if (param1 == textLength)
-            {
-                _loc_2 = this._numChildren;
+               newSibling.addChild(this.removeChildAt(childIndex));
             }
             else
             {
-                _loc_2 = this.findChildIndexAtPosition(param1);
-                _loc_3 = this.getChildAt(_loc_2);
-                if (_loc_3.parentRelativeStart != param1)
-                {
-                    if (_loc_3 is FlowGroupElement)
-                    {
-                        FlowGroupElement(_loc_3).splitAtPosition(param1 - _loc_3.parentRelativeStart);
-                    }
-                    else
-                    {
-                        SpanElement(_loc_3).splitAtPosition(param1 - _loc_3.parentRelativeStart);
-                    }
-                    _loc_2++;
-                }
+               if(numChildrenToMove!=0)
+               {
+                  childArray=this._childArray.slice(childIndex);
+                  this.replaceChildren(childIndex,this._numChildren-1);
+                  newSibling.replaceChildren(0,0,childArray);
+               }
             }
-            return this.splitAtIndex(_loc_2);
-        }// end function
-
-        override function normalizeRange(param1:uint, param2:uint) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_3:* = this.findChildIndexAtPosition(param1);
-            if (_loc_3 != -1 && _loc_3 < this._numChildren)
+            if(parent)
             {
-                _loc_4 = this.getChildAt(_loc_3);
-                param1 = param1 - _loc_4.parentRelativeStart;
-                while (true)
-                {
-                    
-                    _loc_5 = _loc_4.parentRelativeStart + _loc_4.textLength;
-                    _loc_4.normalizeRange(param1, param2 - _loc_4.parentRelativeStart);
-                    _loc_6 = _loc_4.parentRelativeStart + _loc_4.textLength;
-                    param2 = param2 + (_loc_6 - _loc_5);
-                    if (_loc_4.textLength == 0 && !_loc_4.bindableElement)
-                    {
-                        this.replaceChildren(_loc_3, (_loc_3 + 1));
-                    }
-                    else
-                    {
-                        _loc_3++;
-                    }
-                    if (_loc_3 == this._numChildren)
-                    {
-                        break;
-                    }
-                    _loc_4 = this.getChildAt(_loc_3);
-                    if (_loc_4.parentRelativeStart > param2)
-                    {
-                        break;
-                    }
-                    param1 = 0;
-                }
+               myidx=parent.getChildIndex(this);
+               parent.replaceChildren(myidx+1,myidx+1,newSibling);
             }
-            return;
-        }// end function
+            return newSibling;
+         }
+      }
 
-        override function applyWhiteSpaceCollapse(param1:String) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = undefined;
-            var _loc_5:* = null;
-            if (param1 == null)
+      override public function splitAtPosition(relativePosition:int) : FlowElement {
+         var curElementIdx:* = 0;
+         var curFlowElement:FlowElement = null;
+         if((relativePosition>0)||(relativePosition<textLength))
+         {
+            throw RangeError(GlobalSettings.resourceStringFunction("invalidSplitAtPosition"));
+         }
+         else
+         {
+            if(relativePosition==textLength)
             {
-                param1 = this.computedFormat.whiteSpaceCollapse;
+               curElementIdx=this._numChildren;
             }
             else
             {
-                _loc_3 = this.formatForCascade;
-                _loc_4 = _loc_3 ? (_loc_3.whiteSpaceCollapse) : (undefined);
-                if (_loc_4 !== undefined && _loc_4 != FormatValue.INHERIT)
-                {
-                    param1 = _loc_4;
-                }
+               curElementIdx=this.findChildIndexAtPosition(relativePosition);
+               curFlowElement=this.getChildAt(curElementIdx);
+               if(curFlowElement.parentRelativeStart!=relativePosition)
+               {
+                  if(curFlowElement is FlowGroupElement)
+                  {
+                     FlowGroupElement(curFlowElement).splitAtPosition(relativePosition-curFlowElement.parentRelativeStart);
+                  }
+                  else
+                  {
+                     SpanElement(curFlowElement).splitAtPosition(relativePosition-curFlowElement.parentRelativeStart);
+                  }
+                  curElementIdx++;
+               }
             }
-            var _loc_2:* = 0;
-            while (_loc_2 < this._numChildren)
+            return this.splitAtIndex(curElementIdx);
+         }
+      }
+
+      override tlf_internal function normalizeRange(normalizeStart:uint, normalizeEnd:uint) : void {
+         var child:FlowElement = null;
+         var origChildEnd:* = 0;
+         var newChildEnd:* = 0;
+         var idx:int = this.findChildIndexAtPosition(normalizeStart);
+         if((!(idx==-1))&&(idx>this._numChildren))
+         {
+            child=this.getChildAt(idx);
+            normalizeStart=normalizeStart-child.parentRelativeStart;
+            origChildEnd=child.parentRelativeStart+child.textLength;
+            child.normalizeRange(normalizeStart,normalizeEnd-child.parentRelativeStart);
+            newChildEnd=child.parentRelativeStart+child.textLength;
+            normalizeEnd=normalizeEnd+(newChildEnd-origChildEnd);
+            while(true)
             {
-                
-                _loc_5 = this.getChildAt(_loc_2);
-                _loc_5.applyWhiteSpaceCollapse(param1);
-                if (_loc_5.parent == this)
-                {
-                    _loc_2++;
-                }
+               if((child.textLength==0)&&(!child.bindableElement))
+               {
+                  this.replaceChildren(idx,idx+1);
+               }
+               else
+               {
+                  idx++;
+               }
+               if(idx==this._numChildren)
+               {
+               }
+               else
+               {
+                  child=this.getChildAt(idx);
+                  if(child.parentRelativeStart>normalizeEnd)
+                  {
+                  }
+                  else
+                  {
+                     normalizeStart=0;
+                  }
+               }
+               origChildEnd=child.parentRelativeStart+child.textLength;
+               child.normalizeRange(normalizeStart,normalizeEnd-child.parentRelativeStart);
+               newChildEnd=child.parentRelativeStart+child.textLength;
+               normalizeEnd=normalizeEnd+(newChildEnd-origChildEnd);
+               continue loop0;
             }
-            if (textLength == 0 && impliedElement && parent != null)
+         }
+      }
+
+      override tlf_internal function applyWhiteSpaceCollapse(collapse:String) : void {
+         var ffc:ITextLayoutFormat = null;
+         var wsc:* = undefined;
+         var child:FlowElement = null;
+         if(collapse==null)
+         {
+            collapse=this.computedFormat.whiteSpaceCollapse;
+         }
+         else
+         {
+            ffc=this.formatForCascade;
+            wsc=ffc?ffc.whiteSpaceCollapse:undefined;
+            if((!(wsc===undefined))&&(!(wsc==FormatValue.INHERIT)))
             {
-                parent.removeChild(this);
+               collapse=wsc;
             }
-            super.applyWhiteSpaceCollapse(param1);
-            return;
-        }// end function
-
-        override function appendElementsForDelayedUpdate(param1:TextFlow, param2:String) : void
-        {
-            var _loc_4:* = null;
-            var _loc_3:* = 0;
-            while (_loc_3 < this._numChildren)
+         }
+         var idx:int = 0;
+         while(idx<this._numChildren)
+         {
+            child=this.getChildAt(idx);
+            child.applyWhiteSpaceCollapse(collapse);
+            if(child.parent==this)
             {
-                
-                _loc_4 = this.getChildAt(_loc_3);
-                _loc_4.appendElementsForDelayedUpdate(param1, param2);
-                _loc_3++;
+               idx++;
             }
-            return;
-        }// end function
+         }
+         if((textLength==0)&&(impliedElement)&&(!(parent==null)))
+         {
+            parent.removeChild(this);
+         }
+         super.applyWhiteSpaceCollapse(collapse);
+      }
 
-        private static function getNestedArgCount(param1:Object) : uint
-        {
-            return param1 is Array ? (param1.length) : (1);
-        }// end function
+      override tlf_internal function appendElementsForDelayedUpdate(tf:TextFlow, changeType:String) : void {
+         var child:FlowElement = null;
+         var idx:int = 0;
+         while(idx<this._numChildren)
+         {
+            child=this.getChildAt(idx);
+            child.appendElementsForDelayedUpdate(tf,changeType);
+            idx++;
+         }
+      }
+   }
 
-        private static function getNestedArg(param1:Object, param2:uint) : FlowElement
-        {
-            return (param1 is Array ? (param1[param2]) : (param1)) as FlowElement;
-        }// end function
-
-    }
 }

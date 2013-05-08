@@ -1,610 +1,609 @@
-﻿package com.ankamagames.dofus.logic.game.fight.frames
+package com.ankamagames.dofus.logic.game.fight.frames
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.atouin.messages.*;
-    import com.ankamagames.atouin.renderers.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.actions.*;
-    import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.dofus.logic.game.fight.miscs.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.messages.game.context.*;
-    import com.ankamagames.dofus.network.messages.game.context.fight.*;
-    import com.ankamagames.dofus.network.types.game.character.characteristic.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.pathfinding.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.types.zones.*;
-    import flash.display.*;
-    import flash.filters.*;
-    import flash.geom.*;
-    import flash.text.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.types.Color;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.atouin.types.Selection;
+   import com.ankamagames.berilia.types.data.LinkedCursorData;
+   import flash.text.TextField;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import flash.utils.clearTimeout;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.atouin.messages.CellOverMessage;
+   import com.ankamagames.dofus.logic.game.fight.actions.GameFightSpellCastAction;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import com.ankamagames.atouin.messages.CellClickMessage;
+   import com.ankamagames.atouin.messages.EntityMovementCompleteMessage;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.jerakine.entities.interfaces.IMovable;
+   import com.ankamagames.dofus.network.messages.game.context.GameMapNoMovementMessage;
+   import com.ankamagames.dofus.logic.game.fight.actions.GameFightTurnFinishAction;
+   import com.ankamagames.atouin.messages.MapContainerRollOutMessage;
+   import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.jerakine.types.positions.PathElement;
+   import flash.display.Sprite;
+   import flash.text.TextFormat;
+   import flash.filters.GlowFilter;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
+   import com.ankamagames.jerakine.pathfinding.Pathfinding;
+   import com.ankamagames.atouin.utils.DataMapProvider;
+   import com.ankamagames.jerakine.types.positions.MovementPath;
+   import com.ankamagames.dofus.logic.game.fight.miscs.TackleUtil;
+   import com.ankamagames.atouin.renderers.MovementZoneRenderer;
+   import com.ankamagames.atouin.managers.SelectionManager;
+   import com.ankamagames.jerakine.types.zones.Custom;
+   import com.ankamagames.jerakine.managers.FontManager;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.berilia.managers.EmbedFontManager;
+   import flash.geom.Point;
+   import com.ankamagames.berilia.managers.LinkedCursorSpriteManager;
+   import com.ankamagames.dofus.network.messages.game.context.GameMapMovementRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.managers.MapMovementAdapter;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightTurnFinishMessage;
+   import flash.utils.setTimeout;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.ChatHookList;
+   import com.ankamagames.dofus.logic.game.common.frames.ChatFrame;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofus.misc.lists.FightHookList;
 
-    public class FightTurnFrame extends Object implements Frame
-    {
-        private var _movementSelection:Selection;
-        private var _movementSelectionUnreachable:Selection;
-        private var _isRequestingMovement:Boolean;
-        private var _spellCastFrame:Frame;
-        private var _finishingTurn:Boolean;
-        private var _remindTurnTimeoutId:uint;
-        private var _myTurn:Boolean;
-        private var _turnDuration:uint;
-        private var _lastCell:uint;
-        private var _cursorData:LinkedCursorData = null;
-        private var _tfAP:TextField;
-        private var _tfMP:TextField;
-        private var _cells:Vector.<uint>;
-        private var _cellsUnreachable:Vector.<uint>;
-        private static const TAKLED_CURSOR_NAME:String = "TackledCursor";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(FightTurnFrame));
-        public static const SELECTION_PATH:String = "FightMovementPath";
-        public static const SELECTION_PATH_UNREACHABLE:String = "FightMovementPathUnreachable";
-        private static const PATH_COLOR:Color = new Color(26112);
-        private static const PATH_UNREACHABLE_COLOR:Color = new Color(6684672);
-        private static const REMIND_TURN_DELAY:uint = 15000;
 
-        public function FightTurnFrame()
-        {
-            return;
-        }// end function
+   public class FightTurnFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.HIGH;
-        }// end function
+      public function FightTurnFrame() {
+         super();
+      }
 
-        public function get myTurn() : Boolean
-        {
-            return this._myTurn;
-        }// end function
+      private static const TAKLED_CURSOR_NAME:String = "TackledCursor";
 
-        public function set myTurn(param1:Boolean) : void
-        {
-            var _loc_5:* = null;
-            var _loc_2:* = param1 != this._myTurn;
-            var _loc_3:* = !this._myTurn;
-            this._myTurn = param1;
-            if (param1)
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FightTurnFrame));
+
+      public static const SELECTION_PATH:String = "FightMovementPath";
+
+      public static const SELECTION_PATH_UNREACHABLE:String = "FightMovementPathUnreachable";
+
+      private static const PATH_COLOR:Color = new Color(26112);
+
+      private static const PATH_UNREACHABLE_COLOR:Color = new Color(6684672);
+
+      private static const REMIND_TURN_DELAY:uint = 15000;
+
+      private var _movementSelection:Selection;
+
+      private var _movementSelectionUnreachable:Selection;
+
+      private var _isRequestingMovement:Boolean;
+
+      private var _spellCastFrame:Frame;
+
+      private var _finishingTurn:Boolean;
+
+      private var _remindTurnTimeoutId:uint;
+
+      private var _myTurn:Boolean;
+
+      private var _turnDuration:uint;
+
+      private var _lastCell:uint;
+
+      private var _cursorData:LinkedCursorData = null;
+
+      private var _tfAP:TextField;
+
+      private var _tfMP:TextField;
+
+      private var _cells:Vector.<uint>;
+
+      private var _cellsUnreachable:Vector.<uint>;
+
+      public function get priority() : int {
+         return Priority.HIGH;
+      }
+
+      public function get myTurn() : Boolean {
+         return this._myTurn;
+      }
+
+      public function set myTurn(b:Boolean) : void {
+         var entity:IEntity = null;
+         var refreshTarget:Boolean = !(b==this._myTurn);
+         var monsterEndTurn:Boolean = !this._myTurn;
+         this._myTurn=b;
+         if(b)
+         {
+            this.startRemindTurn();
+         }
+         else
+         {
+            this._isRequestingMovement=false;
+            if(this._remindTurnTimeoutId!=0)
             {
-                this.startRemindTurn();
+               clearTimeout(this._remindTurnTimeoutId);
             }
-            else
-            {
-                this._isRequestingMovement = false;
-                if (this._remindTurnTimeoutId != 0)
-                {
-                    clearTimeout(this._remindTurnTimeoutId);
-                }
-                this.removePath();
-            }
-            var _loc_4:* = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
-            if (Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame)
-            {
-                if (_loc_3)
-                {
-                    _loc_4.drawRange();
-                }
-                if (_loc_2)
-                {
-                    if (_loc_4)
-                    {
-                        if (FightContextFrame.timelineOverEntityId)
-                        {
-                            _loc_5 = DofusEntities.getEntity(FightContextFrame.timelineOverEntityId);
-                            if (_loc_5)
-                            {
-                                FightContextFrame.currentCell = _loc_5.position.cellId;
-                            }
-                        }
-                        _loc_4.refreshTarget(true);
-                    }
-                }
-            }
-            if (this._myTurn && !_loc_4)
-            {
-                this.drawPath();
-            }
-            return;
-        }// end function
-
-        public function set turnDuration(param1:uint) : void
-        {
-            this._turnDuration = param1;
-            return;
-        }// end function
-
-        public function freePlayer() : void
-        {
-            this._isRequestingMovement = false;
-            return;
-        }// end function
-
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
-
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            switch(true)
-            {
-                case param1 is CellOverMessage:
-                {
-                    if (!this.myTurn)
-                    {
-                        return false;
-                    }
-                    if (Kernel.getWorker().getFrame(FightSpellCastFrame) != null)
-                    {
-                        return false;
-                    }
-                    _loc_2 = param1 as CellOverMessage;
-                    this.drawPath(_loc_2.cell);
-                    return false;
-                }
-                case param1 is GameFightSpellCastAction:
-                {
-                    _loc_3 = param1 as GameFightSpellCastAction;
-                    if (this._spellCastFrame != null)
-                    {
-                        Kernel.getWorker().removeFrame(this._spellCastFrame);
-                    }
-                    this.removePath();
-                    if (this._myTurn)
-                    {
-                        this.startRemindTurn();
-                    }
-                    _loc_4 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(PlayedCharacterManager.getInstance().id) as GameFightFighterInformations;
-                    if (_loc_4 && _loc_4.alive)
-                    {
-                        var _loc_8:* = new FightSpellCastFrame(_loc_3.spellId);
-                        this._spellCastFrame = new FightSpellCastFrame(_loc_3.spellId);
-                        Kernel.getWorker().addFrame(_loc_8);
-                    }
-                    return true;
-                }
-                case param1 is CellClickMessage:
-                {
-                    if (!this.myTurn)
-                    {
-                        return false;
-                    }
-                    _loc_5 = param1 as CellClickMessage;
-                    this.askMoveTo(_loc_5.cell);
-                    return true;
-                }
-                case param1 is GameMapNoMovementMessage:
-                {
-                    if (!this.myTurn)
-                    {
-                        return false;
-                    }
-                    this._isRequestingMovement = false;
-                    this.removePath();
-                    return true;
-                }
-                case param1 is EntityMovementCompleteMessage:
-                {
-                    _loc_6 = param1 as EntityMovementCompleteMessage;
-                    if (!this.myTurn)
-                    {
-                        return false;
-                    }
-                    if (_loc_6.entity.id == CurrentPlayedFighterManager.getInstance().currentFighterId)
-                    {
-                        this._isRequestingMovement = false;
-                        _loc_7 = Kernel.getWorker().getFrame(FightSpellCastFrame);
-                        if (!_loc_7)
-                        {
-                            this.drawPath();
-                        }
-                        this.startRemindTurn();
-                        if (this._finishingTurn)
-                        {
-                            this.finishTurn();
-                        }
-                    }
-                    return true;
-                }
-                case param1 is GameFightTurnFinishAction:
-                {
-                    if (!this.myTurn)
-                    {
-                        return false;
-                    }
-                    if ((DofusEntities.getEntity(CurrentPlayedFighterManager.getInstance().currentFighterId) as IMovable).isMoving)
-                    {
-                        this._finishingTurn = true;
-                    }
-                    else
-                    {
-                        this.finishTurn();
-                    }
-                    return true;
-                }
-                case param1 is MapContainerRollOutMessage:
-                {
-                    this.removePath();
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
-
-        public function pulled() : Boolean
-        {
-            if (this._remindTurnTimeoutId != 0)
-            {
-                clearTimeout(this._remindTurnTimeoutId);
-            }
-            Atouin.getInstance().cellOverEnabled = false;
             this.removePath();
-            Kernel.getWorker().removeFrame(this._spellCastFrame);
-            return true;
-        }// end function
+         }
+         var scf:FightSpellCastFrame = Kernel.getWorker().getFrame(FightSpellCastFrame) as FightSpellCastFrame;
+         if(scf)
+         {
+            if(monsterEndTurn)
+            {
+               scf.drawRange();
+            }
+            if(refreshTarget)
+            {
+               if(scf)
+               {
+                  if(FightContextFrame.timelineOverEntityId)
+                  {
+                     entity=DofusEntities.getEntity(FightContextFrame.timelineOverEntityId);
+                     if(entity)
+                     {
+                        FightContextFrame.currentCell=entity.position.cellId;
+                     }
+                  }
+                  scf.refreshTarget(true);
+               }
+            }
+         }
+         if((this._myTurn)&&(!scf))
+         {
+            this.drawPath();
+         }
+      }
 
-        public function drawPath(param1:MapPoint = null) : void
-        {
-            var _loc_3:* = NaN;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            var _loc_18:* = null;
-            var _loc_19:* = null;
-            if (this._isRequestingMovement)
-            {
-                return;
-            }
-            if (!param1)
-            {
-                if (FightContextFrame.currentCell == -1)
-                {
-                    return;
-                }
-                param1 = MapPoint.fromCellId(FightContextFrame.currentCell);
-            }
-            var _loc_2:* = DofusEntities.getEntity(CurrentPlayedFighterManager.getInstance().currentFighterId);
-            if (!_loc_2)
-            {
-                this.removePath();
-                return;
-            }
-            var _loc_4:* = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
-            var _loc_7:* = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations().movementPointsCurrent;
-            var _loc_8:* = _loc_4.actionPointsCurrent;
-            if (IMovable(_loc_2).isMoving || _loc_2.position.distanceToCell(param1) > _loc_4.movementPointsCurrent)
-            {
-                this.removePath();
-                return;
-            }
-            var _loc_9:* = Pathfinding.findPath(DataMapProvider.getInstance(), _loc_2.position, param1, false, false, null, null, true);
-            if (Pathfinding.findPath(DataMapProvider.getInstance(), _loc_2.position, param1, false, false, null, null, true).path.length == 0 || _loc_9.path.length > _loc_4.movementPointsCurrent)
-            {
-                this.removePath();
-                return;
-            }
-            this._cells = new Vector.<uint>;
-            this._cellsUnreachable = new Vector.<uint>;
-            var _loc_10:* = true;
-            var _loc_11:* = 0;
-            var _loc_12:* = null;
-            var _loc_13:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            var _loc_14:* = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntityInfos(_loc_2.id) as GameFightFighterInformations;
-            for each (_loc_15 in _loc_9.path)
-            {
-                
-                if (_loc_10)
-                {
-                    _loc_10 = false;
-                }
-                else
-                {
-                    _loc_3 = TackleUtil.getTackle(_loc_14, _loc_12.step);
-                    _loc_5 = _loc_5 + int((_loc_7 - _loc_11) * (1 - _loc_3) + 0.5);
-                    if (_loc_5 < 0)
-                    {
-                        _loc_5 = 0;
-                    }
-                    _loc_6 = _loc_6 + int(_loc_8 * (1 - _loc_3) + 0.5);
-                    if (_loc_6 < 0)
-                    {
-                        _loc_6 = 0;
-                    }
-                    _loc_7 = _loc_4.movementPointsCurrent - _loc_5;
-                    _loc_8 = _loc_4.actionPointsCurrent - _loc_6;
-                    if (_loc_11 < _loc_7)
-                    {
-                        this._cells.push(_loc_15.step.cellId);
-                        _loc_11++;
-                    }
-                    else
-                    {
-                        this._cellsUnreachable.push(_loc_15.step.cellId);
-                    }
-                }
-                _loc_12 = _loc_15;
-            }
-            _loc_3 = TackleUtil.getTackle(_loc_14, _loc_12.step);
-            _loc_5 = _loc_5 + int((_loc_7 - _loc_11) * (1 - _loc_3) + 0.5);
-            if (_loc_5 < 0)
-            {
-                _loc_5 = 0;
-            }
-            _loc_6 = _loc_6 + int(_loc_8 * (1 - _loc_3) + 0.5);
-            if (_loc_6 < 0)
-            {
-                _loc_6 = 0;
-            }
-            _loc_7 = _loc_4.movementPointsCurrent - _loc_5;
-            _loc_8 = _loc_4.actionPointsCurrent - _loc_6;
-            if (_loc_11 < _loc_7)
-            {
-                this._cells.push(_loc_9.end.cellId);
-            }
-            else
-            {
-                this._cellsUnreachable.push(_loc_9.end.cellId);
-            }
-            if (this._movementSelection == null)
-            {
-                this._movementSelection = new Selection();
-                this._movementSelection.renderer = new MovementZoneRenderer(Dofus.getInstance().options.showMovementDistance);
-                this._movementSelection.color = PATH_COLOR;
-                SelectionManager.getInstance().addSelection(this._movementSelection, SELECTION_PATH);
-            }
-            if (this._cellsUnreachable.length > 0)
-            {
-                if (this._movementSelectionUnreachable == null)
-                {
-                    this._movementSelectionUnreachable = new Selection();
-                    this._movementSelectionUnreachable.renderer = new MovementZoneRenderer(Dofus.getInstance().options.showMovementDistance, (_loc_7 + 1));
-                    this._movementSelectionUnreachable.color = PATH_UNREACHABLE_COLOR;
-                    SelectionManager.getInstance().addSelection(this._movementSelectionUnreachable, SELECTION_PATH_UNREACHABLE);
-                }
-                this._movementSelectionUnreachable.zone = new Custom(this._cellsUnreachable);
-                SelectionManager.getInstance().update(SELECTION_PATH_UNREACHABLE);
-            }
-            else
-            {
-                _loc_16 = SelectionManager.getInstance().getSelection(SELECTION_PATH_UNREACHABLE);
-                if (_loc_16)
-                {
-                    _loc_16.remove();
-                    this._movementSelectionUnreachable = null;
-                }
-            }
-            if (_loc_5 > 0 || _loc_6 > 0)
-            {
-                if (!this._cursorData)
-                {
-                    _loc_17 = new Sprite();
-                    this._tfAP = new TextField();
-                    this._tfAP.selectable = false;
-                    _loc_18 = new TextFormat(FontManager.getInstance().getRealFontName("Verdana"), 16, 255, true);
-                    this._tfAP.defaultTextFormat = _loc_18;
-                    this._tfAP.setTextFormat(_loc_18);
-                    this._tfAP.text = "-" + _loc_6 + " " + I18n.getUiText("ui.common.ap");
-                    if (EmbedFontManager.getInstance().isEmbed(_loc_18.font))
-                    {
-                        this._tfAP.embedFonts = true;
-                    }
-                    this._tfAP.width = this._tfAP.textWidth + 5;
-                    this._tfAP.height = this._tfAP.textHeight;
-                    _loc_17.addChild(this._tfAP);
-                    this._tfMP = new TextField();
-                    this._tfMP.selectable = false;
-                    _loc_18 = new TextFormat(FontManager.getInstance().getRealFontName("Verdana"), 16, 26112, true);
-                    this._tfMP.defaultTextFormat = _loc_18;
-                    this._tfMP.setTextFormat(_loc_18);
-                    this._tfMP.text = "-" + _loc_5 + " " + I18n.getUiText("ui.common.mp");
-                    if (EmbedFontManager.getInstance().isEmbed(_loc_18.font))
-                    {
-                        this._tfMP.embedFonts = true;
-                    }
-                    this._tfMP.width = this._tfMP.textWidth + 5;
-                    this._tfMP.height = this._tfMP.textHeight;
-                    this._tfMP.y = this._tfAP.height;
-                    _loc_17.addChild(this._tfMP);
-                    _loc_19 = new GlowFilter(16777215, 1, 4, 4, 3, 1);
-                    _loc_17.filters = [_loc_19];
-                    this._cursorData = new LinkedCursorData();
-                    this._cursorData.sprite = _loc_17;
-                    this._cursorData.sprite.cacheAsBitmap = true;
-                    this._cursorData.offset = new Point(14, 14);
-                }
-                if (_loc_6 > 0)
-                {
-                    this._tfAP.text = "-" + _loc_6 + " " + I18n.getUiText("ui.common.ap");
-                    this._tfAP.width = this._tfAP.textWidth + 5;
-                    this._tfAP.visible = true;
-                    this._tfMP.y = this._tfAP.height;
-                }
-                else
-                {
-                    this._tfAP.visible = false;
-                    this._tfMP.y = 0;
-                }
-                if (_loc_5 > 0)
-                {
-                    this._tfMP.text = "-" + _loc_5 + " " + I18n.getUiText("ui.common.mp");
-                    this._tfMP.width = this._tfMP.textWidth + 5;
-                    this._tfMP.visible = true;
-                }
-                else
-                {
-                    this._tfMP.visible = false;
-                }
-                LinkedCursorSpriteManager.getInstance().addItem(TAKLED_CURSOR_NAME, this._cursorData, true);
-            }
-            else if (LinkedCursorSpriteManager.getInstance().getItem(TAKLED_CURSOR_NAME))
-            {
-                LinkedCursorSpriteManager.getInstance().removeItem(TAKLED_CURSOR_NAME);
-            }
-            this._movementSelection.zone = new Custom(this._cells);
-            SelectionManager.getInstance().update(SELECTION_PATH);
-            return;
-        }// end function
+      public function set turnDuration(v:uint) : void {
+         this._turnDuration=v;
+      }
 
-        private function removePath() : void
-        {
-            var _loc_1:* = SelectionManager.getInstance().getSelection(SELECTION_PATH);
-            if (_loc_1)
-            {
-                _loc_1.remove();
-                this._movementSelection = null;
-            }
-            _loc_1 = SelectionManager.getInstance().getSelection(SELECTION_PATH_UNREACHABLE);
-            if (_loc_1)
-            {
-                _loc_1.remove();
-                this._movementSelectionUnreachable = null;
-            }
-            if (LinkedCursorSpriteManager.getInstance().getItem(TAKLED_CURSOR_NAME))
-            {
-                LinkedCursorSpriteManager.getInstance().removeItem(TAKLED_CURSOR_NAME);
-            }
-            return;
-        }// end function
+      public function freePlayer() : void {
+         this._isRequestingMovement=false;
+      }
 
-        private function askMoveTo(param1:MapPoint) : Boolean
-        {
-            var _loc_8:* = 0;
-            var _loc_12:* = null;
-            if (this._isRequestingMovement)
-            {
-                return false;
-            }
-            this._isRequestingMovement = true;
-            var _loc_2:* = DofusEntities.getEntity(CurrentPlayedFighterManager.getInstance().currentFighterId);
-            if (!_loc_2)
-            {
-                _log.warn("The player tried to move before its character was added to the scene. Aborting.");
-                var _loc_14:* = false;
-                this._isRequestingMovement = false;
-                return _loc_14;
-            }
-            if (IMovable(_loc_2).isMoving)
-            {
-                var _loc_14:* = false;
-                this._isRequestingMovement = false;
-                return _loc_14;
-            }
-            var _loc_3:* = Pathfinding.findPath(DataMapProvider.getInstance(), _loc_2.position, param1, false, false, null, null, true);
-            var _loc_4:* = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
-            if (_loc_3.path.length == 0 || _loc_3.path.length > _loc_4.movementPointsCurrent)
-            {
-                var _loc_14:* = false;
-                this._isRequestingMovement = false;
-                return _loc_14;
-            }
-            var _loc_5:* = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-            var _loc_6:* = (Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame).getEntityInfos(_loc_2.id) as GameFightFighterInformations;
-            var _loc_7:* = TackleUtil.getTackle(_loc_6, _loc_2.position);
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            var _loc_11:* = _loc_4.movementPointsCurrent;
-            this._cells = new Vector.<uint>;
-            for each (_loc_12 in _loc_3.path)
-            {
-                
-                if (_loc_10)
-                {
-                    _loc_7 = TackleUtil.getTackle(_loc_6, _loc_10.step);
-                    _loc_8 = _loc_8 + int((_loc_11 - _loc_9) * (1 - _loc_7) + 0.5);
-                    if (_loc_8 < 0)
-                    {
-                        _loc_8 = 0;
-                    }
-                    _loc_11 = _loc_4.movementPointsCurrent - _loc_8;
-                    if (_loc_9 < _loc_11)
-                    {
-                        this._cells.push(_loc_12.step.cellId);
-                        _loc_9++;
-                    }
-                    else
-                    {
-                        this._cellsUnreachable.push(_loc_12.step.cellId);
-                    }
-                }
-                _loc_10 = _loc_12;
-            }
-            if (_loc_11 < _loc_3.length)
-            {
-                _loc_3.end = _loc_3.getPointAtIndex(_loc_11).step;
-                _loc_3.deletePoint(_loc_11, 0);
-            }
-            var _loc_13:* = new GameMapMovementRequestMessage();
-            new GameMapMovementRequestMessage().initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(_loc_3), PlayedCharacterManager.getInstance().currentMap.mapId);
-            ConnectionsHandler.getConnection().send(_loc_13);
-            this.removePath();
-            return true;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-        private function finishTurn() : void
-        {
-            var _loc_1:* = new GameFightTurnFinishMessage();
-            ConnectionsHandler.getConnection().send(_loc_1);
-            this._finishingTurn = false;
-            return;
-        }// end function
+      public function process(msg:Message) : Boolean {
+         var conmsg:CellOverMessage = null;
+         var gfsca:GameFightSpellCastAction = null;
+         var playerInformation:GameFightFighterInformations = null;
+         var ccmsg:CellClickMessage = null;
+         var emcmsg:EntityMovementCompleteMessage = null;
+         var spellCastFrame:Frame = null;
+         switch(true)
+         {
+            case msg is CellOverMessage:
+               if(!this.myTurn)
+               {
+                  return false;
+               }
+               if(Kernel.getWorker().getFrame(FightSpellCastFrame)!=null)
+               {
+                  return false;
+               }
+               conmsg=msg as CellOverMessage;
+               this.drawPath(conmsg.cell);
+               return false;
+               break;
+            case msg is GameFightSpellCastAction:
+               gfsca=msg as GameFightSpellCastAction;
+               if(this._spellCastFrame!=null)
+               {
+                  Kernel.getWorker().removeFrame(this._spellCastFrame);
+               }
+               this.removePath();
+               if(this._myTurn)
+               {
+                  this.startRemindTurn();
+               }
+               playerInformation=FightEntitiesFrame.getCurrentInstance().getEntityInfos(PlayedCharacterManager.getInstance().id) as GameFightFighterInformations;
+               if((playerInformation)&&(playerInformation.alive))
+               {
+                  Kernel.getWorker().addFrame(this._spellCastFrame=new FightSpellCastFrame(gfsca.spellId));
+               }
+               return true;
+               break;
+            case msg is CellClickMessage:
+               if(!this.myTurn)
+               {
+                  return false;
+               }
+               ccmsg=msg as CellClickMessage;
+               this.askMoveTo(ccmsg.cell);
+               return true;
+               break;
+            case msg is GameMapNoMovementMessage:
+               if(!this.myTurn)
+               {
+                  return false;
+               }
+               this._isRequestingMovement=false;
+               this.removePath();
+               return true;
+               break;
+            case msg is EntityMovementCompleteMessage:
+               emcmsg=msg as EntityMovementCompleteMessage;
+               if(!this.myTurn)
+               {
+                  return false;
+               }
+               if(emcmsg.entity.id==CurrentPlayedFighterManager.getInstance().currentFighterId)
+               {
+                  this._isRequestingMovement=false;
+                  spellCastFrame=Kernel.getWorker().getFrame(FightSpellCastFrame);
+                  if(!spellCastFrame)
+                  {
+                     this.drawPath();
+                  }
+                  this.startRemindTurn();
+                  if(this._finishingTurn)
+                  {
+                     this.finishTurn();
+                  }
+               }
+               return true;
+               break;
+            case msg is GameFightTurnFinishAction:
+               if(!this.myTurn)
+               {
+                  return false;
+               }
+               if((DofusEntities.getEntity(CurrentPlayedFighterManager.getInstance().currentFighterId) as IMovable).isMoving)
+               {
+                  this._finishingTurn=true;
+               }
+               else
+               {
+                  this.finishTurn();
+               }
+               return true;
+               break;
+            case msg is MapContainerRollOutMessage:
+               this.removePath();
+               break;
+         }
+         return false;
+      }
 
-        private function startRemindTurn() : void
-        {
-            if (!this._myTurn)
-            {
-                return;
-            }
-            if (this._turnDuration > 0 && Dofus.getInstance().options.remindTurn)
-            {
-                if (this._remindTurnTimeoutId != 0)
-                {
-                    clearTimeout(this._remindTurnTimeoutId);
-                }
-                this._remindTurnTimeoutId = setTimeout(this.remindTurn, REMIND_TURN_DELAY);
-            }
-            return;
-        }// end function
-
-        private function remindTurn() : void
-        {
-            var _loc_1:* = I18n.getUiText("ui.fight.inactivity");
-            KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_1, ChatFrame.RED_CHANNEL_ID, TimeManager.getInstance().getTimestamp());
-            KernelEventsManager.getInstance().processCallback(FightHookList.RemindTurn);
+      public function pulled() : Boolean {
+         if(this._remindTurnTimeoutId!=0)
+         {
             clearTimeout(this._remindTurnTimeoutId);
-            this._remindTurnTimeoutId = 0;
-            return;
-        }// end function
+         }
+         Atouin.getInstance().cellOverEnabled=false;
+         this.removePath();
+         Kernel.getWorker().removeFrame(this._spellCastFrame);
+         return true;
+      }
 
-    }
+      public function drawPath(cell:MapPoint=null) : void {
+         var tackle:* = NaN;
+         var mpLost:* = 0;
+         var apLost:* = 0;
+         var pe:PathElement = null;
+         var s:Selection = null;
+         var cursorSprite:Sprite = null;
+         var textFormat:TextFormat = null;
+         var effect:GlowFilter = null;
+         if(this._isRequestingMovement)
+         {
+            return;
+         }
+         if(!cell)
+         {
+            if(FightContextFrame.currentCell==-1)
+            {
+               return;
+            }
+            cell=MapPoint.fromCellId(FightContextFrame.currentCell);
+         }
+         var playerEntity:IEntity = DofusEntities.getEntity(CurrentPlayedFighterManager.getInstance().currentFighterId);
+         if(!playerEntity)
+         {
+            this.removePath();
+            return;
+         }
+         var characteristics:CharacterCharacteristicsInformations = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
+         var movementPoints:int = characteristics.movementPointsCurrent;
+         var actionPoints:int = characteristics.actionPointsCurrent;
+         if((IMovable(playerEntity).isMoving)||(playerEntity.position.distanceToCell(cell)<characteristics.movementPointsCurrent))
+         {
+            this.removePath();
+            return;
+         }
+         var path:MovementPath = Pathfinding.findPath(DataMapProvider.getInstance(),playerEntity.position,cell,false,false,null,null,true);
+         if((path.path.length==0)||(path.path.length<characteristics.movementPointsCurrent))
+         {
+            this.removePath();
+            return;
+         }
+         this._cells=new Vector.<uint>();
+         this._cellsUnreachable=new Vector.<uint>();
+         var isFirst:Boolean = true;
+         var mpCount:int = 0;
+         var lastPe:PathElement = null;
+         var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         var playerInfos:GameFightFighterInformations = entitiesFrame.getEntityInfos(playerEntity.id) as GameFightFighterInformations;
+         for each (pe in path.path)
+         {
+            if(isFirst)
+            {
+               isFirst=false;
+            }
+            else
+            {
+               tackle=TackleUtil.getTackle(playerInfos,lastPe.step);
+               mpLost=mpLost+int((movementPoints-mpCount)*(1-tackle)+0.5);
+               if(mpLost<0)
+               {
+                  mpLost=0;
+               }
+               apLost=apLost+int(actionPoints*(1-tackle)+0.5);
+               if(apLost<0)
+               {
+                  apLost=0;
+               }
+               movementPoints=characteristics.movementPointsCurrent-mpLost;
+               actionPoints=characteristics.actionPointsCurrent-apLost;
+               if(mpCount<movementPoints)
+               {
+                  this._cells.push(pe.step.cellId);
+                  mpCount++;
+               }
+               else
+               {
+                  this._cellsUnreachable.push(pe.step.cellId);
+               }
+            }
+            lastPe=pe;
+         }
+         tackle=TackleUtil.getTackle(playerInfos,lastPe.step);
+         mpLost=mpLost+int((movementPoints-mpCount)*(1-tackle)+0.5);
+         if(mpLost<0)
+         {
+            mpLost=0;
+         }
+         apLost=apLost+int(actionPoints*(1-tackle)+0.5);
+         if(apLost<0)
+         {
+            apLost=0;
+         }
+         movementPoints=characteristics.movementPointsCurrent-mpLost;
+         actionPoints=characteristics.actionPointsCurrent-apLost;
+         if(mpCount<movementPoints)
+         {
+            this._cells.push(path.end.cellId);
+         }
+         else
+         {
+            this._cellsUnreachable.push(path.end.cellId);
+         }
+         if(this._movementSelection==null)
+         {
+            this._movementSelection=new Selection();
+            this._movementSelection.renderer=new MovementZoneRenderer(Dofus.getInstance().options.showMovementDistance);
+            this._movementSelection.color=PATH_COLOR;
+            SelectionManager.getInstance().addSelection(this._movementSelection,SELECTION_PATH);
+         }
+         if(this._cellsUnreachable.length>0)
+         {
+            if(this._movementSelectionUnreachable==null)
+            {
+               this._movementSelectionUnreachable=new Selection();
+               this._movementSelectionUnreachable.renderer=new MovementZoneRenderer(Dofus.getInstance().options.showMovementDistance,movementPoints+1);
+               this._movementSelectionUnreachable.color=PATH_UNREACHABLE_COLOR;
+               SelectionManager.getInstance().addSelection(this._movementSelectionUnreachable,SELECTION_PATH_UNREACHABLE);
+            }
+            this._movementSelectionUnreachable.zone=new Custom(this._cellsUnreachable);
+            SelectionManager.getInstance().update(SELECTION_PATH_UNREACHABLE);
+         }
+         else
+         {
+            s=SelectionManager.getInstance().getSelection(SELECTION_PATH_UNREACHABLE);
+            if(s)
+            {
+               s.remove();
+               this._movementSelectionUnreachable=null;
+            }
+         }
+         if((mpLost<0)||(apLost<0))
+         {
+            if(!this._cursorData)
+            {
+               cursorSprite=new Sprite();
+               this._tfAP=new TextField();
+               this._tfAP.selectable=false;
+               textFormat=new TextFormat(FontManager.getInstance().getRealFontName("Verdana"),16,255,true);
+               this._tfAP.defaultTextFormat=textFormat;
+               this._tfAP.setTextFormat(textFormat);
+               this._tfAP.text="-"+apLost+" "+I18n.getUiText("ui.common.ap");
+               if(EmbedFontManager.getInstance().isEmbed(textFormat.font))
+               {
+                  this._tfAP.embedFonts=true;
+               }
+               this._tfAP.width=this._tfAP.textWidth+5;
+               this._tfAP.height=this._tfAP.textHeight;
+               cursorSprite.addChild(this._tfAP);
+               this._tfMP=new TextField();
+               this._tfMP.selectable=false;
+               textFormat=new TextFormat(FontManager.getInstance().getRealFontName("Verdana"),16,26112,true);
+               this._tfMP.defaultTextFormat=textFormat;
+               this._tfMP.setTextFormat(textFormat);
+               this._tfMP.text="-"+mpLost+" "+I18n.getUiText("ui.common.mp");
+               if(EmbedFontManager.getInstance().isEmbed(textFormat.font))
+               {
+                  this._tfMP.embedFonts=true;
+               }
+               this._tfMP.width=this._tfMP.textWidth+5;
+               this._tfMP.height=this._tfMP.textHeight;
+               this._tfMP.y=this._tfAP.height;
+               cursorSprite.addChild(this._tfMP);
+               effect=new GlowFilter(16777215,1,4,4,3,1);
+               cursorSprite.filters=[effect];
+               this._cursorData=new LinkedCursorData();
+               this._cursorData.sprite=cursorSprite;
+               this._cursorData.sprite.cacheAsBitmap=true;
+               this._cursorData.offset=new Point(14,14);
+            }
+            if(apLost>0)
+            {
+               this._tfAP.text="-"+apLost+" "+I18n.getUiText("ui.common.ap");
+               this._tfAP.width=this._tfAP.textWidth+5;
+               this._tfAP.visible=true;
+               this._tfMP.y=this._tfAP.height;
+            }
+            else
+            {
+               this._tfAP.visible=false;
+               this._tfMP.y=0;
+            }
+            if(mpLost>0)
+            {
+               this._tfMP.text="-"+mpLost+" "+I18n.getUiText("ui.common.mp");
+               this._tfMP.width=this._tfMP.textWidth+5;
+               this._tfMP.visible=true;
+            }
+            else
+            {
+               this._tfMP.visible=false;
+            }
+            LinkedCursorSpriteManager.getInstance().addItem(TAKLED_CURSOR_NAME,this._cursorData,true);
+         }
+         else
+         {
+            if(LinkedCursorSpriteManager.getInstance().getItem(TAKLED_CURSOR_NAME))
+            {
+               LinkedCursorSpriteManager.getInstance().removeItem(TAKLED_CURSOR_NAME);
+            }
+         }
+         this._movementSelection.zone=new Custom(this._cells);
+         SelectionManager.getInstance().update(SELECTION_PATH);
+      }
+
+      private function removePath() : void {
+         var s:Selection = SelectionManager.getInstance().getSelection(SELECTION_PATH);
+         if(s)
+         {
+            s.remove();
+            this._movementSelection=null;
+         }
+         s=SelectionManager.getInstance().getSelection(SELECTION_PATH_UNREACHABLE);
+         if(s)
+         {
+            s.remove();
+            this._movementSelectionUnreachable=null;
+         }
+         if(LinkedCursorSpriteManager.getInstance().getItem(TAKLED_CURSOR_NAME))
+         {
+            LinkedCursorSpriteManager.getInstance().removeItem(TAKLED_CURSOR_NAME);
+         }
+      }
+
+      private function askMoveTo(cell:MapPoint) : Boolean {
+         var mpLost:* = 0;
+         var pe:PathElement = null;
+         if(this._isRequestingMovement)
+         {
+            return false;
+         }
+         this._isRequestingMovement=true;
+         var playerEntity:IEntity = DofusEntities.getEntity(CurrentPlayedFighterManager.getInstance().currentFighterId);
+         if(!playerEntity)
+         {
+            _log.warn("The player tried to move before its character was added to the scene. Aborting.");
+            return this._isRequestingMovement=false;
+         }
+         if(IMovable(playerEntity).isMoving)
+         {
+            return this._isRequestingMovement=false;
+         }
+         var path:MovementPath = Pathfinding.findPath(DataMapProvider.getInstance(),playerEntity.position,cell,false,false,null,null,true);
+         var characteristics:CharacterCharacteristicsInformations = CurrentPlayedFighterManager.getInstance().getCharacteristicsInformations();
+         if((path.path.length==0)||(path.path.length<characteristics.movementPointsCurrent))
+         {
+            return this._isRequestingMovement=false;
+         }
+         var entitiesFrame:FightEntitiesFrame = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+         var playerInfos:GameFightFighterInformations = entitiesFrame.getEntityInfos(playerEntity.id) as GameFightFighterInformations;
+         var tackle:Number = TackleUtil.getTackle(playerInfos,playerEntity.position);
+         var mpCount:int = 0;
+         var lastPe:PathElement = null;
+         var realMP:int = characteristics.movementPointsCurrent;
+         this._cells=new Vector.<uint>();
+         for each (pe in path.path)
+         {
+            if(lastPe)
+            {
+               tackle=TackleUtil.getTackle(playerInfos,lastPe.step);
+               mpLost=mpLost+int((realMP-mpCount)*(1-tackle)+0.5);
+               if(mpLost<0)
+               {
+                  mpLost=0;
+               }
+               realMP=characteristics.movementPointsCurrent-mpLost;
+               if(mpCount<realMP)
+               {
+                  this._cells.push(pe.step.cellId);
+                  mpCount++;
+               }
+               else
+               {
+                  this._cellsUnreachable.push(pe.step.cellId);
+               }
+            }
+            lastPe=pe;
+         }
+         if(realMP<path.length)
+         {
+            path.end=path.getPointAtIndex(realMP).step;
+            path.deletePoint(realMP,0);
+         }
+         var gmmrmsg:GameMapMovementRequestMessage = new GameMapMovementRequestMessage();
+         gmmrmsg.initGameMapMovementRequestMessage(MapMovementAdapter.getServerMovement(path),PlayedCharacterManager.getInstance().currentMap.mapId);
+         ConnectionsHandler.getConnection().send(gmmrmsg);
+         this.removePath();
+         return true;
+      }
+
+      private function finishTurn() : void {
+         var gftfmsg:GameFightTurnFinishMessage = new GameFightTurnFinishMessage();
+         ConnectionsHandler.getConnection().send(gftfmsg);
+         this._finishingTurn=false;
+      }
+
+      private function startRemindTurn() : void {
+         if(!this._myTurn)
+         {
+            return;
+         }
+         if((this._turnDuration<0)&&(Dofus.getInstance().options.remindTurn))
+         {
+            if(this._remindTurnTimeoutId!=0)
+            {
+               clearTimeout(this._remindTurnTimeoutId);
+            }
+            this._remindTurnTimeoutId=setTimeout(this.remindTurn,REMIND_TURN_DELAY);
+         }
+      }
+
+      private function remindTurn() : void {
+         var text:String = I18n.getUiText("ui.fight.inactivity");
+         KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text,ChatFrame.RED_CHANNEL_ID,TimeManager.getInstance().getTimestamp());
+         KernelEventsManager.getInstance().processCallback(FightHookList.RemindTurn);
+         clearTimeout(this._remindTurnTimeoutId);
+         this._remindTurnTimeoutId=0;
+      }
+   }
+
 }

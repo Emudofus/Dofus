@@ -1,19 +1,21 @@
-﻿package com.ankamagames.jerakine.utils.display.spellZone
+package com.ankamagames.jerakine.utils.display.spellZone
 {
-    import __AS3__.vec.*;
+   import __AS3__.vec.Vector;
 
-    public interface ICellZoneProvider
-    {
 
-        public function ICellZoneProvider();
+   public interface ICellZoneProvider
+   {
+         
 
-        function get minimalRange() : uint;
 
-        function get maximalRange() : uint;
 
-        function get castZoneInLine() : Boolean;
+      function get minimalRange() : uint;
 
-        function get spellZoneEffects() : Vector.<IZoneShape>;
+      function get maximalRange() : uint;
 
-    }
+      function get castZoneInLine() : Boolean;
+
+      function get spellZoneEffects() : Vector.<IZoneShape>;
+   }
+
 }

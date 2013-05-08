@@ -1,440 +1,376 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.dofus.datacenter.items.*;
-    import com.ankamagames.dofus.datacenter.jobs.*;
-    import com.ankamagames.dofus.datacenter.livingObjects.*;
-    import com.ankamagames.dofus.datacenter.mounts.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.jerakine.logger.Logger;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.dofus.datacenter.livingObjects.Pet;
+   import com.ankamagames.dofus.datacenter.mounts.RideFood;
+   import com.ankamagames.dofus.datacenter.items.Item;
+   import com.ankamagames.dofus.logic.game.common.misc.IInventoryView;
+   import com.ankamagames.dofus.network.enums.ShortcutBarEnum;
+   import com.ankamagames.dofus.internalDatacenter.items.MountWrapper;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.MountFrame;
+   import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.dofus.datacenter.jobs.Skill;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class StorageApi extends Object implements IApi
-    {
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageApi));
-        private static var _lastItemPosition:Array = new Array();
-        public static const ITEM_TYPE_TO_SERVER_POSITION:Array = [[], [0], [1], [2, 4], [3], [5], [], [15], [1], [], [6], [7], [8], [9, 10, 11, 12, 13, 14]];
 
-        public function StorageApi()
-        {
-            return;
-        }// end function
+   public class StorageApi extends Object implements IApi
+   {
+         
 
-        public static function itemSuperTypeToServerPosition(param1:uint) : Array
-        {
-            return ITEM_TYPE_TO_SERVER_POSITION[param1];
-        }// end function
+      public function StorageApi() {
+         super();
+      }
 
-        public static function getLivingObjectFood(param1:int) : Vector.<ItemWrapper>
-        {
-            var _loc_6:* = null;
-            var _loc_2:* = new Vector.<ItemWrapper>;
-            var _loc_3:* = InventoryManager.getInstance().inventory.getView("storage").content;
-            var _loc_4:* = _loc_3.length;
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(StorageApi));
+
+      private static var _lastItemPosition:Array = new Array();
+
+      public static const ITEM_TYPE_TO_SERVER_POSITION:Array = [[],[0],[1],[2,4],[3],[5],[],[15],[1],[],[6],[7],[8],[9,10,11,12,13,14]];
+
+      public static function itemSuperTypeToServerPosition(superTypeId:uint) : Array {
+         return ITEM_TYPE_TO_SERVER_POSITION[superTypeId];
+      }
+
+      public static function getLivingObjectFood(itemType:int) : Vector.<ItemWrapper> {
+         var item:ItemWrapper = null;
+         var itemList:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("storage").content;
+         var nb:int = inventory.length;
+         var i:int = 0;
+         while(i<nb)
+         {
+            item=inventory[i];
+            if((!item.isLivingObject)&&(item.type.id==itemType))
             {
-                
-                _loc_6 = _loc_3[_loc_5];
-                if (!_loc_6.isLivingObject && _loc_6.type.id == param1)
-                {
-                    _loc_2.push(_loc_6);
-                }
-                _loc_5++;
+               itemList.push(item);
             }
-            return _loc_2;
-        }// end function
+            i++;
+         }
+         return itemList;
+      }
 
-        public static function getPetFood(param1:int) : Vector.<ItemWrapper>
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = null;
-            var _loc_2:* = new Vector.<ItemWrapper>;
-            var _loc_3:* = Pet.getPetById(param1);
-            if (_loc_3)
+      public static function getPetFood(id:int) : Vector.<ItemWrapper> {
+         var inventory:Vector.<ItemWrapper> = null;
+         var foodItems:Vector.<int> = null;
+         var foodTypeItems:Vector.<int> = null;
+         var nb:* = 0;
+         var i:* = 0;
+         var item:ItemWrapper = null;
+         var itemList:Vector.<ItemWrapper> = new Vector.<ItemWrapper>();
+         var pet:Pet = Pet.getPetById(id);
+         if(pet)
+         {
+            inventory=InventoryManager.getInstance().inventory.getView("storage").content;
+            foodItems=Pet.getPetById(id).foodItems;
+            foodTypeItems=Pet.getPetById(id).foodTypes;
+            nb=inventory.length;
+            i=0;
+            while(i<nb)
             {
-                _loc_4 = InventoryManager.getInstance().inventory.getView("storage").content;
-                _loc_5 = Pet.getPetById(param1).foodItems;
-                _loc_6 = Pet.getPetById(param1).foodTypes;
-                _loc_7 = _loc_4.length;
-                _loc_8 = 0;
-                while (_loc_8 < _loc_7)
-                {
-                    
-                    _loc_9 = _loc_4[_loc_8];
-                    if (_loc_5.indexOf(_loc_9.objectGID) > -1 || _loc_6.indexOf(_loc_9.typeId) > -1)
-                    {
-                        _loc_2.push(_loc_9);
-                    }
-                    _loc_8++;
-                }
+               item=inventory[i];
+               if((foodItems.indexOf(item.objectGID)<-1)||(foodTypeItems.indexOf(item.typeId)<-1))
+               {
+                  itemList.push(item);
+               }
+               i++;
             }
-            return _loc_2;
-        }// end function
+         }
+         return itemList;
+      }
 
-        public static function getRideFoods() : Array
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_1:* = new Array();
-            var _loc_2:* = InventoryManager.getInstance().inventory.getView("storage").content;
-            var _loc_3:* = RideFood.getRideFoods();
-            var _loc_4:* = new Array();
-            var _loc_5:* = new Array();
-            for each (_loc_6 in _loc_3)
+      public static function getRideFoods() : Array {
+         var rideFood:RideFood = null;
+         var item:ItemWrapper = null;
+         var it:Item = null;
+         var itemList:Array = new Array();
+         var inventory:Vector.<ItemWrapper> = InventoryManager.getInstance().inventory.getView("storage").content;
+         var rideFoods:Array = RideFood.getRideFoods();
+         var gids:Array = new Array();
+         var typeIds:Array = new Array();
+         for each (rideFood in rideFoods)
+         {
+            if(rideFood.gid!=0)
             {
-                
-                if (_loc_6.gid != 0)
-                {
-                    _loc_4.push(_loc_6.gid);
-                }
-                if (_loc_6.typeId != 0)
-                {
-                    _loc_5.push(_loc_6.typeId);
-                }
+               gids.push(rideFood.gid);
             }
-            for each (_loc_7 in _loc_2)
+            if(rideFood.typeId!=0)
             {
-                
-                _loc_8 = Item.getItemById(_loc_7.objectGID);
-                if (_loc_4.indexOf(_loc_7.objectGID) != -1 || _loc_5.indexOf(_loc_8.typeId) != -1)
-                {
-                    _loc_1.push(_loc_7);
-                }
+               typeIds.push(rideFood.typeId);
             }
-            return _loc_1;
-        }// end function
+         }
+         for each (item in inventory)
+         {
+            it=Item.getItemById(item.objectGID);
+            if((!(gids.indexOf(item.objectGID)==-1))||(!(typeIds.indexOf(it.typeId)==-1)))
+            {
+               itemList.push(item);
+            }
+         }
+         return itemList;
+      }
 
-        public static function getViewContent(param1:String) : Vector.<ItemWrapper>
-        {
-            var _loc_2:* = InventoryManager.getInstance().inventory.getView(param1);
-            if (_loc_2)
+      public static function getViewContent(name:String) : Vector.<ItemWrapper> {
+         var view:IInventoryView = InventoryManager.getInstance().inventory.getView(name);
+         if(view)
+         {
+            return view.content;
+         }
+         return null;
+      }
+
+      public static function getShortcutBarContent(barType:uint) : Array {
+         if(barType==ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
+         {
+            return InventoryManager.getInstance().shortcutBarItems;
+         }
+         if(barType==ShortcutBarEnum.SPELL_SHORTCUT_BAR)
+         {
+            return InventoryManager.getInstance().shortcutBarSpells;
+         }
+         return new Array();
+      }
+
+      public static function getFakeItemMount() : MountWrapper {
+         if(PlayedCharacterManager.getInstance().mount)
+         {
+            return MountWrapper.create();
+         }
+         return null;
+      }
+
+      public static function getBestEquipablePosition(item:Object) : int {
+         var equipement:Object = null;
+         var freeSlot:* = 0;
+         var pos:* = 0;
+         var typeId:* = 0;
+         var lastIndex:* = 0;
+         var possiblePosition:Object = itemSuperTypeToServerPosition(item.type.superTypeId);
+         if((possiblePosition)&&(possiblePosition.length))
+         {
+            equipement=getViewContent("equipment");
+            freeSlot=-1;
+            for each (pos in possiblePosition)
             {
-                return _loc_2.content;
+               typeId=item.typeId;
+               if((equipement[pos])&&(equipement[pos].objectGID==item.objectGID)&&((!(item.typeId==9))||(item.belongsToSet)))
+               {
+                  freeSlot=pos;
+                  break;
+               }
             }
+            if(freeSlot==-1)
+            {
+               for each (pos in possiblePosition)
+               {
+                  if(!equipement[pos])
+                  {
+                     freeSlot=pos;
+                     break;
+                  }
+               }
+            }
+            if(freeSlot==-1)
+            {
+               if(!_lastItemPosition[item.type.superTypeId])
+               {
+                  _lastItemPosition[item.type.superTypeId]=0;
+               }
+               lastIndex=++_lastItemPosition[item.type.superTypeId];
+               if(lastIndex>=possiblePosition.length)
+               {
+                  lastIndex=0;
+               }
+               _lastItemPosition[item.type.superTypeId]=lastIndex;
+               freeSlot=possiblePosition[lastIndex];
+            }
+         }
+         return freeSlot;
+      }
+
+      public static function addItemMask(itemUID:int, name:String, quantity:int) : void {
+         InventoryManager.getInstance().inventory.addItemMask(itemUID,name,quantity);
+      }
+
+      public static function removeItemMask(itemUID:int, name:String) : void {
+         InventoryManager.getInstance().inventory.removeItemMask(itemUID,name);
+      }
+
+      public static function removeAllItemMasks(name:String) : void {
+         InventoryManager.getInstance().inventory.removeAllItemMasks(name);
+      }
+
+      public static function releaseHooks() : void {
+         InventoryManager.getInstance().inventory.releaseHooks();
+      }
+
+      public static function releaseBankHooks() : void {
+         InventoryManager.getInstance().bankInventory.releaseHooks();
+      }
+
+      public static function dracoTurkyInventoryWeight() : uint {
+         var mf:MountFrame = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+         return mf.inventoryWeight;
+      }
+
+      public static function dracoTurkyMaxInventoryWeight() : uint {
+         var mf:MountFrame = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+         return mf.inventoryMaxWeight;
+      }
+
+      public static function getStorageTypes(category:int) : Array {
+         var entry:Object = null;
+         var array:Array = new Array();
+         var dict:Dictionary = StorageOptionManager.getInstance().getCategoryTypes(category);
+         if(!dict)
+         {
             return null;
-        }// end function
+         }
+         for each (entry in dict)
+         {
+            array.push(entry);
+         }
+         array.sort(sortStorageTypes);
+         return array;
+      }
 
-        public static function getShortcutBarContent(param1:uint) : Array
-        {
-            if (param1 == ShortcutBarEnum.GENERAL_SHORTCUT_BAR)
-            {
-                return InventoryManager.getInstance().shortcutBarItems;
-            }
-            if (param1 == ShortcutBarEnum.SPELL_SHORTCUT_BAR)
-            {
-                return InventoryManager.getInstance().shortcutBarSpells;
-            }
-            return new Array();
-        }// end function
+      private static function sortStorageTypes(a:Object, b:Object) : int {
+         return -StringUtils.noAccent(b.name).localeCompare(StringUtils.noAccent(a.name));
+      }
 
-        public static function getFakeItemMount() : MountWrapper
-        {
-            if (PlayedCharacterManager.getInstance().mount)
-            {
-                return MountWrapper.create();
-            }
+      public static function getBankStorageTypes(category:int) : Array {
+         var entry:Object = null;
+         var array:Array = new Array();
+         var dict:Dictionary = StorageOptionManager.getInstance().getBankCategoryTypes(category);
+         if(!dict)
+         {
             return null;
-        }// end function
+         }
+         for each (entry in dict)
+         {
+            array.push(entry);
+         }
+         array.sortOn("name");
+         return array;
+      }
 
-        public static function getBestEquipablePosition(param1:Object) : int
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = itemSuperTypeToServerPosition(param1.type.superTypeId);
-            if (_loc_2 && _loc_2.length)
-            {
-                _loc_3 = getViewContent("equipment");
-                _loc_4 = -1;
-                for each (_loc_5 in _loc_2)
-                {
-                    
-                    _loc_6 = param1.typeId;
-                    if (_loc_3[_loc_5] && _loc_3[_loc_5].objectGID == param1.objectGID && (param1.typeId != 9 || param1.belongsToSet))
-                    {
-                        _loc_4 = _loc_5;
-                        break;
-                    }
-                }
-                if (_loc_4 == -1)
-                {
-                    for each (_loc_5 in _loc_2)
-                    {
-                        
-                        if (!_loc_3[_loc_5])
-                        {
-                            _loc_4 = _loc_5;
-                            break;
-                        }
-                    }
-                }
-                if (_loc_4 == -1)
-                {
-                    if (!_lastItemPosition[param1.type.superTypeId])
-                    {
-                        _lastItemPosition[param1.type.superTypeId] = 0;
-                    }
-                    var _loc_8:* = _lastItemPosition;
-                    var _loc_9:* = param1.type.superTypeId;
-                    _loc_8[_loc_9] = _lastItemPosition[param1.type.superTypeId] + 1;
-                    if (++_lastItemPosition[param1.type.superTypeId] >= _loc_2.length)
-                    {
-                        ++_lastItemPosition[param1.type.superTypeId] = 0;
-                    }
-                    ++_lastItemPosition[param1.type.superTypeId];
-                    _loc_4 = _loc_2[_loc_7];
-                }
-            }
-            return _loc_4;
-        }// end function
+      public static function setDisplayedCategory(category:int) : void {
+         StorageOptionManager.getInstance().category=category;
+      }
 
-        public static function addItemMask(param1:int, param2:String, param3:int) : void
-        {
-            InventoryManager.getInstance().inventory.addItemMask(param1, param2, param3);
-            return;
-        }// end function
+      public static function setDisplayedBankCategory(category:int) : void {
+         StorageOptionManager.getInstance().bankCategory=category;
+      }
 
-        public static function removeItemMask(param1:int, param2:String) : void
-        {
-            InventoryManager.getInstance().inventory.removeItemMask(param1, param2);
-            return;
-        }// end function
+      public static function getDisplayedCategory() : int {
+         return StorageOptionManager.getInstance().category;
+      }
 
-        public static function removeAllItemMasks(param1:String) : void
-        {
-            InventoryManager.getInstance().inventory.removeAllItemMasks(param1);
-            return;
-        }// end function
+      public static function getDisplayedBankCategory() : int {
+         return StorageOptionManager.getInstance().bankCategory;
+      }
 
-        public static function releaseHooks() : void
-        {
-            InventoryManager.getInstance().inventory.releaseHooks();
-            return;
-        }// end function
+      public static function setStorageFilter(typeId:int) : void {
+         StorageOptionManager.getInstance().filter=typeId;
+      }
 
-        public static function releaseBankHooks() : void
-        {
-            InventoryManager.getInstance().bankInventory.releaseHooks();
-            return;
-        }// end function
+      public static function setBankStorageFilter(typeId:int) : void {
+         StorageOptionManager.getInstance().bankFilter=typeId;
+      }
 
-        public static function dracoTurkyInventoryWeight() : uint
-        {
-            var _loc_1:* = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
-            return _loc_1.inventoryWeight;
-        }// end function
+      public static function getStorageFilter() : int {
+         return StorageOptionManager.getInstance().filter;
+      }
 
-        public static function dracoTurkyMaxInventoryWeight() : uint
-        {
-            var _loc_1:* = Kernel.getWorker().getFrame(MountFrame) as MountFrame;
-            return _loc_1.inventoryMaxWeight;
-        }// end function
+      public static function getBankStorageFilter() : int {
+         return StorageOptionManager.getInstance().bankFilter;
+      }
 
-        public static function getStorageTypes(param1:int) : Array
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = new Array();
-            var _loc_3:* = StorageOptionManager.getInstance().getCategoryTypes(param1);
-            if (!_loc_3)
-            {
-                return null;
-            }
-            for each (_loc_4 in _loc_3)
-            {
-                
-                _loc_2.push(_loc_4);
-            }
-            _loc_2.sort(sortStorageTypes);
-            return _loc_2;
-        }// end function
+      public static function updateStorageView() : void {
+         StorageOptionManager.getInstance().updateStorageView();
+      }
 
-        private static function sortStorageTypes(param1:Object, param2:Object) : int
-        {
-            return -StringUtils.noAccent(param2.name).localeCompare(StringUtils.noAccent(param1.name));
-        }// end function
+      public static function updateBankStorageView() : void {
+         StorageOptionManager.getInstance().updateBankStorageView();
+      }
 
-        public static function getBankStorageTypes(param1:int) : Array
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = new Array();
-            var _loc_3:* = StorageOptionManager.getInstance().getBankCategoryTypes(param1);
-            if (!_loc_3)
-            {
-                return null;
-            }
-            for each (_loc_4 in _loc_3)
-            {
-                
-                _loc_2.push(_loc_4);
-            }
-            _loc_2.sortOn("name");
-            return _loc_2;
-        }// end function
+      public static function sort(sortField:int, revert:Boolean) : void {
+         StorageOptionManager.getInstance().sortRevert=revert;
+         StorageOptionManager.getInstance().sortField=sortField;
+      }
 
-        public static function setDisplayedCategory(param1:int) : void
-        {
-            StorageOptionManager.getInstance().category = param1;
-            return;
-        }// end function
+      public static function sortBank(sortField:int, revert:Boolean) : void {
+         StorageOptionManager.getInstance().sortBankRevert=revert;
+         StorageOptionManager.getInstance().sortBankField=sortField;
+      }
 
-        public static function setDisplayedBankCategory(param1:int) : void
-        {
-            StorageOptionManager.getInstance().bankCategory = param1;
-            return;
-        }// end function
+      public static function getSortField() : int {
+         return StorageOptionManager.getInstance().sortField;
+      }
 
-        public static function getDisplayedCategory() : int
-        {
-            return StorageOptionManager.getInstance().category;
-        }// end function
+      public static function getSortBankField() : int {
+         return StorageOptionManager.getInstance().sortBankField;
+      }
 
-        public static function getDisplayedBankCategory() : int
-        {
-            return StorageOptionManager.getInstance().bankCategory;
-        }// end function
+      public static function unsort() : void {
+         StorageOptionManager.getInstance().sortField=StorageOptionManager.SORT_FIELD_NONE;
+      }
 
-        public static function setStorageFilter(param1:int) : void
-        {
-            StorageOptionManager.getInstance().filter = param1;
-            return;
-        }// end function
+      public static function unsortBank() : void {
+         StorageOptionManager.getInstance().sortBankField=StorageOptionManager.SORT_FIELD_NONE;
+      }
 
-        public static function setBankStorageFilter(param1:int) : void
-        {
-            StorageOptionManager.getInstance().bankFilter = param1;
-            return;
-        }// end function
+      public static function enableBidHouseFilter(allowedTypes:Object, maxItemLevel:uint) : void {
+         var entry:uint = 0;
+         var vtypes:Vector.<uint> = new Vector.<uint>();
+         for each (entry in allowedTypes)
+         {
+            vtypes.push(entry);
+         }
+         StorageOptionManager.getInstance().enableBidHouseFilter(vtypes,maxItemLevel);
+      }
 
-        public static function getStorageFilter() : int
-        {
-            return StorageOptionManager.getInstance().filter;
-        }// end function
+      public static function disableBidHouseFilter() : void {
+         StorageOptionManager.getInstance().disableBidHouseFilter();
+      }
 
-        public static function getBankStorageFilter() : int
-        {
-            return StorageOptionManager.getInstance().bankFilter;
-        }// end function
+      public static function getIsBidHouseFilterEnabled() : Boolean {
+         return StorageOptionManager.getInstance().getIsBidHouseFilterEnabled();
+      }
 
-        public static function updateStorageView() : void
-        {
-            StorageOptionManager.getInstance().updateStorageView();
-            return;
-        }// end function
+      public static function enableSmithMagicFilter(skill:Object) : void {
+         StorageOptionManager.getInstance().enableSmithMagicFilter(skill as Skill);
+      }
 
-        public static function updateBankStorageView() : void
-        {
-            StorageOptionManager.getInstance().updateBankStorageView();
-            return;
-        }// end function
+      public static function disableSmithMagicFilter() : void {
+         StorageOptionManager.getInstance().disableSmithMagicFilter();
+      }
 
-        public static function sort(param1:int, param2:Boolean) : void
-        {
-            StorageOptionManager.getInstance().sortRevert = param2;
-            StorageOptionManager.getInstance().sortField = param1;
-            return;
-        }// end function
+      public static function enableCraftFilter(skill:Object, slotCount:int) : void {
+         StorageOptionManager.getInstance().enableCraftFilter(skill as Skill,slotCount);
+      }
 
-        public static function sortBank(param1:int, param2:Boolean) : void
-        {
-            StorageOptionManager.getInstance().sortBankRevert = param2;
-            StorageOptionManager.getInstance().sortBankField = param1;
-            return;
-        }// end function
+      public static function disableCraftFilter() : void {
+         StorageOptionManager.getInstance().disableCraftFilter();
+      }
 
-        public static function getSortField() : int
-        {
-            return StorageOptionManager.getInstance().sortField;
-        }// end function
+      public static function getIsSmithMagicFilterEnabled() : Boolean {
+         return StorageOptionManager.getInstance().getIsSmithMagicFilterEnabled();
+      }
 
-        public static function getSortBankField() : int
-        {
-            return StorageOptionManager.getInstance().sortBankField;
-        }// end function
+      public static function getItemMaskCount(objectUID:int, mask:String) : int {
+         return InventoryManager.getInstance().inventory.getItemMaskCount(objectUID,mask);
+      }
 
-        public static function unsort() : void
-        {
-            StorageOptionManager.getInstance().sortField = StorageOptionManager.SORT_FIELD_NONE;
-            return;
-        }// end function
 
-        public static function unsortBank() : void
-        {
-            StorageOptionManager.getInstance().sortBankField = StorageOptionManager.SORT_FIELD_NONE;
-            return;
-        }// end function
+   }
 
-        public static function enableBidHouseFilter(param1:Object, param2:uint) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_3:* = new Vector.<uint>;
-            for each (_loc_4 in param1)
-            {
-                
-                _loc_3.push(_loc_4);
-            }
-            StorageOptionManager.getInstance().enableBidHouseFilter(_loc_3, param2);
-            return;
-        }// end function
-
-        public static function disableBidHouseFilter() : void
-        {
-            StorageOptionManager.getInstance().disableBidHouseFilter();
-            return;
-        }// end function
-
-        public static function getIsBidHouseFilterEnabled() : Boolean
-        {
-            return StorageOptionManager.getInstance().getIsBidHouseFilterEnabled();
-        }// end function
-
-        public static function enableSmithMagicFilter(param1:Object) : void
-        {
-            StorageOptionManager.getInstance().enableSmithMagicFilter(param1 as Skill);
-            return;
-        }// end function
-
-        public static function disableSmithMagicFilter() : void
-        {
-            StorageOptionManager.getInstance().disableSmithMagicFilter();
-            return;
-        }// end function
-
-        public static function enableCraftFilter(param1:Object, param2:int) : void
-        {
-            StorageOptionManager.getInstance().enableCraftFilter(param1 as Skill, param2);
-            return;
-        }// end function
-
-        public static function disableCraftFilter() : void
-        {
-            StorageOptionManager.getInstance().disableCraftFilter();
-            return;
-        }// end function
-
-        public static function getIsSmithMagicFilterEnabled() : Boolean
-        {
-            return StorageOptionManager.getInstance().getIsSmithMagicFilterEnabled();
-        }// end function
-
-        public static function getItemMaskCount(param1:int, param2:String) : int
-        {
-            return InventoryManager.getInstance().inventory.getItemMaskCount(param1, param2);
-        }// end function
-
-    }
 }

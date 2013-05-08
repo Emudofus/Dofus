@@ -1,459 +1,510 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.utils.errors.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import flash.display.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IModuleUtil;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import flash.display.Loader;
+   import flash.system.ApplicationDomain;
+   import com.ankamagames.berilia.utils.ModuleScriptAnalyzer;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.berilia.BeriliaConstants;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.managers.UiGroupManager;
+   import com.ankamagames.berilia.utils.errors.BeriliaError;
 
-    public class UiModule extends Object implements IModuleUtil
-    {
-        private var _instanceId:uint;
-        private var _id:String;
-        private var _name:String;
-        private var _version:String;
-        private var _gameVersion:String;
-        private var _author:String;
-        private var _shortDescription:String;
-        private var _description:String;
-        private var _iconUri:String;
-        private var _script:String;
-        private var _shortcuts:String;
-        private var _uis:Array;
-        private var _trusted:Boolean = false;
-        private var _trustedInit:Boolean = false;
-        private var _activated:Boolean = false;
-        private var _rootPath:String;
-        private var _storagePath:String;
-        private var _mainClass:Object;
-        private var _cachedFiles:Array;
-        private var _apiList:Vector.<Object>;
-        private var _groups:Vector.<UiGroup>;
-        var _loader:Loader;
-        private var _moduleAppDomain:ApplicationDomain;
-        private var _enable:Boolean = true;
-        private var _rawXml:XML;
-        private static var ID_COUNT:uint = 0;
-        public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(UiModule));
 
-        public function UiModule(param1:String = null, param2:String = null, param3:String = null, param4:String = null, param5:String = null, param6:String = null, param7:String = null, param8:String = null, param9:String = null, param10:String = null, param11:Array = null, param12:Array = null, param13:Boolean = false)
-        {
-            var _loc_14:* = null;
-            this._instanceId = ID_COUNT + 1;
-            MEMORY_LOG[this] = 1;
-            this._name = param2;
-            this._version = param3;
-            this._gameVersion = param4;
-            this._author = param5;
-            this._shortDescription = param6;
-            this._description = param7;
-            this._iconUri = param8;
-            this._script = param9;
-            this._shortcuts = param10;
-            this._id = param1;
-            this._uis = new Array();
-            this._cachedFiles = param12 ? (param12) : (new Array());
-            for each (_loc_14 in param11)
+   public class UiModule extends Object implements IModuleUtil
+   {
+         
+
+      public function UiModule(id:String=null, name:String=null, version:String=null, gameVersion:String=null, author:String=null, shortDescription:String=null, description:String=null, iconUri:String=null, script:String=null, shortcuts:String=null, uis:Array=null, cachedFiles:Array=null, activated:Boolean=false) {
+         var ui:UiData = null;
+         this._instanceId=++ID_COUNT;
+         this._apiScriptAnalyserCallback=new Dictionary();
+         this._hookScriptAnalyserCallback=new Dictionary();
+         this._actionScriptAnalyserCallback=new Dictionary();
+         super();
+         MEMORY_LOG[this]=1;
+         this._name=name;
+         this._version=version;
+         this._gameVersion=gameVersion;
+         this._author=author;
+         this._shortDescription=shortDescription;
+         this._description=description;
+         this._iconUri=iconUri;
+         this._script=script;
+         this._shortcuts=shortcuts;
+         this._id=id;
+         this._uis=new Array();
+         this._cachedFiles=cachedFiles?cachedFiles:new Array();
+         for each (this._uis[ui.name] in uis)
+         {
+         }
+         this._apiList=new Vector.<Object>();
+      }
+
+      private static var ID_COUNT:uint = 0;
+
+      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiModule));
+
+      public static function createFromXml(xml:XML, nativePath:String, id:String) : UiModule {
+         var um:UiModule = new UiModule();
+         um.fillFromXml(xml,nativePath,id);
+         return um;
+      }
+
+      private var _instanceId:uint;
+
+      private var _id:String;
+
+      private var _name:String;
+
+      private var _version:String;
+
+      private var _gameVersion:String;
+
+      private var _author:String;
+
+      private var _shortDescription:String;
+
+      private var _description:String;
+
+      private var _iconUri:String;
+
+      private var _script:String;
+
+      private var _shortcuts:String;
+
+      private var _uis:Array;
+
+      private var _trusted:Boolean = false;
+
+      private var _trustedInit:Boolean = false;
+
+      private var _activated:Boolean = false;
+
+      private var _rootPath:String;
+
+      private var _storagePath:String;
+
+      private var _mainClass:Object;
+
+      private var _cachedFiles:Array;
+
+      private var _apiList:Vector.<Object>;
+
+      private var _groups:Vector.<UiGroup>;
+
+      var _loader:Loader;
+
+      private var _moduleAppDomain:ApplicationDomain;
+
+      private var _enable:Boolean = true;
+
+      private var _rawXml:XML;
+
+      private var _scriptAnalyser:ModuleScriptAnalyzer;
+
+      private var _apiScriptAnalyserCallback:Dictionary;
+
+      private var _hookScriptAnalyserCallback:Dictionary;
+
+      private var _actionScriptAnalyserCallback:Dictionary;
+
+      public function set loader(l:Loader) : void {
+         if(!this._loader)
+         {
+            this._loader=l;
+         }
+      }
+
+      public function get instanceId() : uint {
+         return this._instanceId;
+      }
+
+      public function get id() : String {
+         return this._id;
+      }
+
+      public function get name() : String {
+         return this._name;
+      }
+
+      public function get version() : String {
+         return this._version;
+      }
+
+      public function get gameVersion() : String {
+         return this._gameVersion;
+      }
+
+      public function get author() : String {
+         return this._author;
+      }
+
+      public function get shortDescription() : String {
+         return this._shortDescription;
+      }
+
+      public function get description() : String {
+         return this._description;
+      }
+
+      public function get iconUri() : String {
+         return this._iconUri;
+      }
+
+      public function get script() : String {
+         return this._script;
+      }
+
+      public function get shortcuts() : String {
+         return this._shortcuts;
+      }
+
+      public function get uis() : Array {
+         return this._uis;
+      }
+
+      public function get trusted() : Boolean {
+         return this._trusted;
+      }
+
+      public function set trusted(v:Boolean) : void {
+         var state:* = undefined;
+         if(!this._trustedInit)
+         {
+            this._trusted=v;
+            this._trustedInit=true;
+            state=StoreDataManager.getInstance().getData(BeriliaConstants.DATASTORE_MOD,this.id);
+            if(state==null)
             {
-                
-                this._uis[_loc_14.name] = _loc_14;
-            }
-            this._apiList = new Vector.<Object>;
-            return;
-        }// end function
-
-        public function set loader(param1:Loader) : void
-        {
-            if (!this._loader)
-            {
-                this._loader = param1;
-            }
-            return;
-        }// end function
-
-        public function get instanceId() : uint
-        {
-            return this._instanceId;
-        }// end function
-
-        public function get id() : String
-        {
-            return this._id;
-        }// end function
-
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
-
-        public function get version() : String
-        {
-            return this._version;
-        }// end function
-
-        public function get gameVersion() : String
-        {
-            return this._gameVersion;
-        }// end function
-
-        public function get author() : String
-        {
-            return this._author;
-        }// end function
-
-        public function get shortDescription() : String
-        {
-            return this._shortDescription;
-        }// end function
-
-        public function get description() : String
-        {
-            return this._description;
-        }// end function
-
-        public function get iconUri() : String
-        {
-            return this._iconUri;
-        }// end function
-
-        public function get script() : String
-        {
-            return this._script;
-        }// end function
-
-        public function get shortcuts() : String
-        {
-            return this._shortcuts;
-        }// end function
-
-        public function get uis() : Array
-        {
-            return this._uis;
-        }// end function
-
-        public function get trusted() : Boolean
-        {
-            return this._trusted;
-        }// end function
-
-        public function set trusted(param1:Boolean) : void
-        {
-            var _loc_2:* = undefined;
-            if (!this._trustedInit)
-            {
-                this._trusted = param1;
-                this._trustedInit = true;
-                _loc_2 = StoreDataManager.getInstance().getData(BeriliaConstants.DATASTORE_MOD, this.id);
-                if (_loc_2 == null)
-                {
-                    this._enable = this._trusted;
-                }
-                else
-                {
-                    this._enable = _loc_2 || this._trusted;
-                }
-                if (!this._enable)
-                {
-                    this.enable = false;
-                }
-            }
-            return;
-        }// end function
-
-        public function get enable() : Boolean
-        {
-            return this._enable;
-        }// end function
-
-        public function set enable(param1:Boolean) : void
-        {
-            var _loc_2:* = null;
-            StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_MOD, this.id, param1);
-            if (!this._enable && param1)
-            {
-                this._enable = true;
-                UiModuleManager.getInstance().loadModule(this.id);
-            }
-            else
-            {
-                this._enable = false;
-                for each (_loc_2 in this._groups)
-                {
-                    
-                    UiGroupManager.getInstance().removeGroup(_loc_2.name);
-                }
-                UiModuleManager.getInstance().unloadModule(this.id);
-            }
-            return;
-        }// end function
-
-        public function get rootPath() : String
-        {
-            return this._rootPath;
-        }// end function
-
-        public function get storagePath() : String
-        {
-            return this._storagePath;
-        }// end function
-
-        public function get cachedFiles() : Array
-        {
-            return this._cachedFiles;
-        }// end function
-
-        public function get apiList() : Vector.<Object>
-        {
-            return this._apiList;
-        }// end function
-
-        public function set applicationDomain(param1:ApplicationDomain) : void
-        {
-            var _loc_2:* = null;
-            if (this._moduleAppDomain)
-            {
-                throw new BeriliaError("ApplicationDomain cannot be set twice.");
-            }
-            for each (_loc_2 in this.uis)
-            {
-                
-                if (param1 && param1.hasDefinition(_loc_2.uiClassName))
-                {
-                    _loc_2.uiClass = param1.getDefinition(_loc_2.uiClassName) as Class;
-                    continue;
-                }
-                _log.error(_loc_2.uiClassName + " cannot be found");
-            }
-            this._moduleAppDomain = param1;
-            return;
-        }// end function
-
-        public function get applicationDomain() : ApplicationDomain
-        {
-            return this._moduleAppDomain;
-        }// end function
-
-        public function get mainClass() : Object
-        {
-            return this._mainClass;
-        }// end function
-
-        public function set mainClass(param1:Object) : void
-        {
-            if (this._mainClass)
-            {
-                throw new BeriliaError("mainClass cannot be set twice.");
-            }
-            this._mainClass = param1;
-            return;
-        }// end function
-
-        public function get groups() : Vector.<UiGroup>
-        {
-            return this._groups;
-        }// end function
-
-        public function get rawXml() : XML
-        {
-            return this._rawXml;
-        }// end function
-
-        public function getUi(param1:String) : UiData
-        {
-            return this._uis[param1];
-        }// end function
-
-        public function toString() : String
-        {
-            var _loc_1:* = "ID:" + this._id;
-            if (this._name)
-            {
-                _loc_1 = _loc_1 + ("\nName:" + this._name);
-            }
-            if (this._trusted)
-            {
-                _loc_1 = _loc_1 + ("\nTrusted:" + this._trusted);
-            }
-            if (this._author)
-            {
-                _loc_1 = _loc_1 + ("\nAuthor:" + this._author);
-            }
-            if (this._description)
-            {
-                _loc_1 = _loc_1 + ("\nDescription:" + this._description);
-            }
-            return _loc_1;
-        }// end function
-
-        public function destroy() : void
-        {
-            if (this._loader)
-            {
-                this._loader.unloadAndStop(true);
-            }
-            return;
-        }// end function
-
-        protected function fillFromXml(param1:XML, param2:String, param3:String) : void
-        {
-            var uiGroup:UiGroup;
-            var group:XML;
-            var uiData:UiData;
-            var uis:XML;
-            var path:XML;
-            var uiNames:Array;
-            var groupName:String;
-            var uisXML:XMLList;
-            var uiName:XML;
-            var uisGroup:String;
-            var ui:XML;
-            var file:String;
-            var mod:String;
-            var fileuri:String;
-            var xml:* = param1;
-            var nativePath:* = param2;
-            var id:* = param3;
-            this.setProperty("name", xml..header..name);
-            this.setProperty("version", xml..header..version);
-            this.setProperty("gameVersion", xml..header..gameVersion);
-            this.setProperty("author", xml..header..author);
-            this.setProperty("description", xml..header..description);
-            this.setProperty("iconUri", xml..header..icon);
-            this.setProperty("shortDescription", xml..header..shortDescription);
-            this.setProperty("script", xml..script);
-            this.setProperty("shortcuts", xml..shortcuts);
-            this._rawXml = xml;
-            nativePath = nativePath.split("app:/").join("");
-            if (nativePath.indexOf("file://") == -1 && nativePath.substr(0, 2) != "\\\\")
-            {
-                nativePath = "file://" + nativePath;
-            }
-            this._id = id;
-            if (this.script)
-            {
-                this._script = nativePath + "/" + this.script;
-            }
-            if (this.shortcuts)
-            {
-                this._shortcuts = nativePath + "/" + this.shortcuts;
-            }
-            this._rootPath = nativePath + "/";
-            this._storagePath = unescape(this._rootPath + "storage/").replace("file://", "");
-            this._groups = new Vector.<UiGroup>;
-            var _loc_5:* = 0;
-            var _loc_6:* = xml.uiGroup;
-            while (_loc_6 in _loc_5)
-            {
-                
-                group = _loc_6[_loc_5];
-                uiNames = new Array();
-                groupName = group..@name;
-                try
-                {
-                    var _loc_8:* = 0;
-                    var _loc_9:* = xml.uis;
-                    var _loc_7:* = new XMLList("");
-                    for each (_loc_10 in _loc_9)
-                    {
-                        
-                        var _loc_11:* = _loc_9[_loc_8];
-                        with (_loc_9[_loc_8])
-                        {
-                            if (@group == groupName)
-                            {
-                                _loc_7[_loc_8] = _loc_10;
-                            }
-                        }
-                    }
-                    uisXML = _loc_7;
-                    var _loc_7:* = 0;
-                    var _loc_8:* = uisXML..@name;
-                    while (_loc_8 in _loc_7)
-                    {
-                        
-                        uiName = _loc_8[_loc_7];
-                        uiNames.push(uiName.toString());
-                    }
-                }
-                catch (e:Error)
-                {
-                }
-                uiGroup = new UiGroup(group.@name, group.@exclusive.toString() == "true", group.@permanent.toString() == "true", uiNames);
-                UiGroupManager.getInstance().registerGroup(uiGroup);
-                this._groups.push(uiGroup);
-            }
-            var _loc_5:* = 0;
-            var _loc_6:* = xml.uis;
-            while (_loc_6 in _loc_5)
-            {
-                
-                uis = _loc_6[_loc_5];
-                uisGroup = uis.@group.toString();
-                var _loc_7:* = 0;
-                var _loc_8:* = uis..ui;
-                while (_loc_8 in _loc_7)
-                {
-                    
-                    ui = _loc_8[_loc_7];
-                    if (ui.@group.toString().length)
-                    {
-                        uisGroup = ui.@group.toString();
-                    }
-                    file;
-                    if (ui.@file.toString().length)
-                    {
-                        if (ui.@file.indexOf("::") != -1)
-                        {
-                            mod = nativePath.split("Ankama")[0];
-                            fileuri = ui.@file;
-                            fileuri = fileuri.replace("::", "/");
-                            file = mod + fileuri;
-                        }
-                        else
-                        {
-                            file = nativePath + "/" + ui.@file;
-                        }
-                    }
-                    uiData = new UiData(this, ui.@name, file, ui["class"], uisGroup);
-                    this._uis[uiData.name] = uiData;
-                }
-            }
-            var _loc_5:* = 0;
-            var _loc_6:* = xml.cachedFiles..path;
-            while (_loc_6 in _loc_5)
-            {
-                
-                path = _loc_6[_loc_5];
-                this.cachedFiles.push(path.children().toString());
-            }
-            return;
-        }// end function
-
-        private function setProperty(param1:String, param2:String) : void
-        {
-            if (param2 && param2.length)
-            {
-                this["_" + param1] = param2;
+               this._enable=this._trusted;
             }
             else
             {
-                this["_" + param1] = null;
+               this._enable=(state)||(this._trusted);
             }
+            if(!this._enable)
+            {
+               this.enable=false;
+            }
+         }
+      }
+
+      public function get enable() : Boolean {
+         return this._enable;
+      }
+
+      public function set enable(v:Boolean) : void {
+         var uiGroup:UiGroup = null;
+         StoreDataManager.getInstance().setData(BeriliaConstants.DATASTORE_MOD,this.id,v);
+         if((!this._enable)&&(v))
+         {
+            this._enable=true;
+            UiModuleManager.getInstance().loadModule(this.id);
+         }
+         else
+         {
+            this._enable=false;
+            for each (uiGroup in this._groups)
+            {
+               UiGroupManager.getInstance().removeGroup(uiGroup.name);
+            }
+            UiModuleManager.getInstance().unloadModule(this.id);
+         }
+      }
+
+      public function get rootPath() : String {
+         return this._rootPath;
+      }
+
+      public function get storagePath() : String {
+         return this._storagePath;
+      }
+
+      public function get cachedFiles() : Array {
+         return this._cachedFiles;
+      }
+
+      public function get apiList() : Vector.<Object> {
+         return this._apiList;
+      }
+
+      public function set applicationDomain(appDomain:ApplicationDomain) : void {
+         var ui:UiData = null;
+         if(this._moduleAppDomain)
+         {
+            throw new BeriliaError("ApplicationDomain cannot be set twice.");
+         }
+         else
+         {
+            for each (ui in this.uis)
+            {
+               if((appDomain)&&(appDomain.hasDefinition(ui.uiClassName)))
+               {
+                  ui.uiClass=appDomain.getDefinition(ui.uiClassName) as Class;
+               }
+               else
+               {
+                  _log.error(ui.uiClassName+" cannot be found");
+               }
+            }
+            this._moduleAppDomain=appDomain;
             return;
-        }// end function
+         }
+      }
 
-        public static function createFromXml(param1:XML, param2:String, param3:String) : UiModule
-        {
-            var _loc_4:* = new UiModule;
-            new UiModule.fillFromXml(param1, param2, param3);
-            return _loc_4;
-        }// end function
+      public function get applicationDomain() : ApplicationDomain {
+         return this._moduleAppDomain;
+      }
 
-    }
+      public function get mainClass() : Object {
+         return this._mainClass;
+      }
+
+      public function set mainClass(instance:Object) : void {
+         if(this._mainClass)
+         {
+            throw new BeriliaError("mainClass cannot be set twice.");
+         }
+         else
+         {
+            this._mainClass=instance;
+            return;
+         }
+      }
+
+      public function get groups() : Vector.<UiGroup> {
+         return this._groups;
+      }
+
+      public function get rawXml() : XML {
+         return this._rawXml;
+      }
+
+      public function getUi(name:String) : UiData {
+         return this._uis[name];
+      }
+
+      public function toString() : String {
+         var result:String = "ID:"+this._id;
+         if(this._name)
+         {
+            result=result+("\nName:"+this._name);
+         }
+         if(this._trusted)
+         {
+            result=result+("\nTrusted:"+this._trusted);
+         }
+         if(this._author)
+         {
+            result=result+("\nAuthor:"+this._author);
+         }
+         if(this._description)
+         {
+            result=result+("\nDescription:"+this._description);
+         }
+         return result;
+      }
+
+      public function destroy() : void {
+         if(this._loader)
+         {
+            this._loader.unloadAndStop(true);
+         }
+      }
+
+      public function usedApiList(callBack:Function) : void {
+         if(this._apiScriptAnalyserCallback)
+         {
+            if(!this._scriptAnalyser)
+            {
+               this._scriptAnalyser=new ModuleScriptAnalyzer(this,this.onScriptAnalyserReady,null);
+            }
+            this._apiScriptAnalyserCallback[callBack]=callBack;
+         }
+         else
+         {
+            callBack(this._scriptAnalyser.apis);
+         }
+      }
+
+      public function usedHookList(callBack:Function) : void {
+         if(this._hookScriptAnalyserCallback)
+         {
+            if(!this._scriptAnalyser)
+            {
+               this._scriptAnalyser=new ModuleScriptAnalyzer(this,this.onScriptAnalyserReady,null);
+            }
+            this._hookScriptAnalyserCallback[callBack]=callBack;
+         }
+         else
+         {
+            callBack(this._scriptAnalyser.hooks);
+         }
+      }
+
+      public function usedActionList(callBack:Function) : void {
+         if(this._actionScriptAnalyserCallback)
+         {
+            if(!this._scriptAnalyser)
+            {
+               this._scriptAnalyser=new ModuleScriptAnalyzer(this,this.onScriptAnalyserReady,null);
+            }
+            this._actionScriptAnalyserCallback[callBack]=callBack;
+         }
+         else
+         {
+            callBack(this._scriptAnalyser.actions);
+         }
+      }
+
+      private function initScriptAnalyser() : void {
+         if(!this._scriptAnalyser)
+         {
+            this._scriptAnalyser=new ModuleScriptAnalyzer(this,this.onScriptAnalyserReady,this._moduleAppDomain);
+         }
+      }
+
+      private function onScriptAnalyserReady() : void {
+         var f:Function = null;
+         for each (f in this._actionScriptAnalyserCallback)
+         {
+            f(this._scriptAnalyser.actions);
+         }
+         for each (f in this._hookScriptAnalyserCallback)
+         {
+            f(this._scriptAnalyser.hooks);
+         }
+         for each (f in this._apiScriptAnalyserCallback)
+         {
+            f(this._scriptAnalyser.apis);
+         }
+         this._actionScriptAnalyserCallback=null;
+         this._hookScriptAnalyserCallback=null;
+         this._apiScriptAnalyserCallback=null;
+      }
+
+      protected function fillFromXml(xml:XML, nativePath:String, id:String) : void {
+         var uiGroup:UiGroup = null;
+         var group:XML = null;
+         var uiData:UiData = null;
+         var uis:XML = null;
+         var path:XML = null;
+         var uiNames:Array = null;
+         var groupName:String = null;
+         var uisXML:XMLList = null;
+         var uiName:XML = null;
+         var uisGroup:String = null;
+         var ui:XML = null;
+         var file:String = null;
+         var mod:String = null;
+         var fileuri:String = null;
+         this.setProperty("name",xml..header..name);
+         this.setProperty("version",xml..header..version);
+         this.setProperty("gameVersion",xml..header..gameVersion);
+         this.setProperty("author",xml..header..author);
+         this.setProperty("description",xml..header..description);
+         this.setProperty("iconUri",xml..header..icon);
+         this.setProperty("shortDescription",xml..header..shortDescription);
+         this.setProperty("script",xml..script);
+         this.setProperty("shortcuts",xml..shortcuts);
+         this._rawXml=xml;
+         if((nativePath.indexOf("file://")==-1)&&(!(nativePath.substr(0,2)=="\\\\")))
+         {
+         }
+         this._id=id;
+         if(this.script)
+         {
+            this._script=nativePath+"/"+this.script;
+         }
+         if(this.shortcuts)
+         {
+            this._shortcuts=nativePath+"/"+this.shortcuts;
+         }
+         this._rootPath=nativePath+"/";
+         this._storagePath=unescape(this._rootPath+"storage/").replace("file://","");
+         this._groups=new Vector.<UiGroup>();
+         for each (group in xml.uiGroup)
+         {
+            uiNames=new Array();
+            groupName=group..@name;
+            try
+            {
+               for each (_loc11_ in xml.uis)
+               {
+                  with(_loc11_)
+                  {
+                     
+                     if(@group==groupName)
+                     {
+                        _loc7_[_loc8_]=_loc10_;
+                     }
+                  }
+               }
+               uisXML=_loc7_;
+               for each (uiName in uisXML..@name)
+               {
+                  uiNames.push(uiName.toString());
+               }
+            }
+            catch(e:Error)
+            {
+            }
+            uiGroup=new UiGroup(group.@name,group.@exclusive.toString()=="true",group.@permanent.toString()=="true",uiNames);
+            UiGroupManager.getInstance().registerGroup(uiGroup);
+            this._groups.push(uiGroup);
+         }
+         for each (uis in xml.uis)
+         {
+            uisGroup=uis.@group.toString();
+            for each (ui in uis..ui)
+            {
+               if(ui.@group.toString().length)
+               {
+                  uisGroup=ui.@group.toString();
+               }
+               file=null;
+               if(ui.@file.toString().length)
+               {
+                  if(ui.@file.indexOf("::")!=-1)
+                  {
+                     mod=nativePath.split("Ankama")[0];
+                     fileuri=ui.@file;
+                     fileuri=fileuri.replace("::","/");
+                     file=mod+fileuri;
+                  }
+                  else
+                  {
+                     file=nativePath+"/"+ui.@file;
+                  }
+               }
+               uiData=new UiData(this,ui.@name,file,ui["class"],uisGroup);
+               this._uis[uiData.name]=uiData;
+            }
+         }
+         for each (path in xml.cachedFiles..path)
+         {
+            this.cachedFiles.push(path.children().toString());
+         }
+      }
+
+      private function setProperty(key:String, value:String) : void {
+         if((value)&&(value.length))
+         {
+            this["_"+key]=value;
+         }
+         else
+         {
+            this["_"+key]=null;
+         }
+      }
+   }
+
 }

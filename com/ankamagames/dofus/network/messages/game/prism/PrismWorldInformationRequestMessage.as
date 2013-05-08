@@ -1,80 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.game.prism
+package com.ankamagames.dofus.network.messages.game.prism
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PrismWorldInformationRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var join:Boolean = false;
-        public static const protocolId:uint = 5985;
 
-        public function PrismWorldInformationRequestMessage()
-        {
-            return;
-        }// end function
+   public class PrismWorldInformationRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PrismWorldInformationRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5985;
-        }// end function
+      public static const protocolId:uint = 5985;
 
-        public function initPrismWorldInformationRequestMessage(param1:Boolean = false) : PrismWorldInformationRequestMessage
-        {
-            this.join = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.join = false;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var join:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5985;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PrismWorldInformationRequestMessage(param1);
-            return;
-        }// end function
+      public function initPrismWorldInformationRequestMessage(join:Boolean=false) : PrismWorldInformationRequestMessage {
+         this.join=join;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_PrismWorldInformationRequestMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.join);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.join=false;
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PrismWorldInformationRequestMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_PrismWorldInformationRequestMessage(param1:IDataInput) : void
-        {
-            this.join = param1.readBoolean();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismWorldInformationRequestMessage(output);
+      }
+
+      public function serializeAs_PrismWorldInformationRequestMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.join);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismWorldInformationRequestMessage(input);
+      }
+
+      public function deserializeAs_PrismWorldInformationRequestMessage(input:IDataInput) : void {
+         this.join=input.readBoolean();
+      }
+   }
+
 }

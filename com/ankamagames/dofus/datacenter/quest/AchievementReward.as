@@ -1,36 +1,47 @@
-﻿package com.ankamagames.dofus.datacenter.quest
+package com.ankamagames.dofus.datacenter.quest
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import __AS3__.vec.Vector;
 
-    public class AchievementReward extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var achievementId:uint;
-        public var levelMin:int;
-        public var levelMax:int;
-        public var itemsReward:Vector.<Vector.<uint>>;
-        public var emotesReward:Vector.<uint>;
-        public var spellsReward:Vector.<uint>;
-        public var titlesReward:Vector.<uint>;
-        public var ornamentsReward:Vector.<uint>;
-        private static const MODULE:String = "AchievementRewards";
 
-        public function AchievementReward()
-        {
-            return;
-        }// end function
+   public class AchievementReward extends Object implements IDataCenter
+   {
+         
 
-        public static function getAchievementRewardById(param1:int) : AchievementReward
-        {
-            return GameData.getObject(MODULE, param1) as AchievementReward;
-        }// end function
+      public function AchievementReward() {
+         super();
+      }
 
-        public static function getAchievementRewards() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static const MODULE:String = "AchievementRewards";
 
-    }
+      public static function getAchievementRewardById(id:int) : AchievementReward {
+         return GameData.getObject(MODULE,id) as AchievementReward;
+      }
+
+      public static function getAchievementRewards() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var achievementId:uint;
+
+      public var levelMin:int;
+
+      public var levelMax:int;
+
+      public var itemsReward:Vector.<uint>;
+
+      public var itemsQuantityReward:Vector.<uint>;
+
+      public var emotesReward:Vector.<uint>;
+
+      public var spellsReward:Vector.<uint>;
+
+      public var titlesReward:Vector.<uint>;
+
+      public var ornamentsReward:Vector.<uint>;
+   }
+
 }

@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.datacenter.monsters
+package com.ankamagames.dofus.datacenter.monsters
 {
-    import com.ankamagames.dofus.types.data.*;
+   import com.ankamagames.dofus.types.data.AnimFunData;
 
-    final public class AnimFunMonsterData extends AnimFunData
-    {
 
-        public function AnimFunMonsterData()
-        {
-            return;
-        }// end function
+   public final class AnimFunMonsterData extends AnimFunData
+   {
+         
 
-    }
+      public function AnimFunMonsterData() {
+         super();
+      }
+
+
+
+
+   }
+
 }

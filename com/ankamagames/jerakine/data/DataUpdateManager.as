@@ -1,144 +1,142 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    import com.ankamagames.jerakine.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.events.*;
-    import com.ankamagames.jerakine.utils.files.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.jerakine.JerakineConstants;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
+   import com.ankamagames.jerakine.resources.events.ResourceLoaderProgressEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.types.LangMetaData;
+   import com.ankamagames.jerakine.utils.files.FileUtils;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.types.events.FileEvent;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class DataUpdateManager extends EventDispatcher
-    {
-        protected const _log:Logger;
-        protected var _loader:IResourceLoader;
-        protected var _versions:Array;
-        protected var _dataFilesLoaded:Boolean = false;
-        protected var _files:Array;
-        protected var _loadedFileCount:uint = 0;
-        protected var _metaFileListe:Uri;
-        protected var _storeKey:String;
-        private var _clearAll:Boolean;
-        private var _datastoreList:Array;
-        public static const SQL_MODE:Boolean = XmlConfig.getInstance().getEntry("config.data.SQLMode") == "true";
 
-        public function DataUpdateManager()
-        {
-            this._log = Log.getLogger(getQualifiedClassName(DataUpdateManager));
-            return;
-        }// end function
+   public class DataUpdateManager extends EventDispatcher
+   {
+         
 
-        public function init(param1:Uri, param2:Boolean = false) : void
-        {
-            this._metaFileListe = param1;
-            this._storeKey = "version_" + this._metaFileListe.uri;
-            this._clearAll = param2;
-            if (this._clearAll)
-            {
-                this.clear();
-            }
-            this.initMetaFileListe();
-            return;
-        }// end function
+      public function DataUpdateManager() {
+         super();
+      }
 
-        public function initMetaFileListe() : void
-        {
-            this._versions = this._clearAll ? (new Array()) : (StoreDataManager.getInstance().getSetData(JerakineConstants.DATASTORE_FILES_INFO, this._storeKey, new Array()));
-            this._files = new Array();
-            this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
-            this._loader.addEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE, this.onComplete);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onLoaded);
-            this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onLoadFailed);
-            this._loader.load(this._metaFileListe);
-            return;
-        }// end function
+      public static const SQL_MODE:Boolean = XmlConfig.getInstance().getEntry("config.data.SQLMode")=="true";
 
-        public function get files() : Array
-        {
-            return this._files;
-        }// end function
+      protected const _log:Logger = Log.getLogger(getQualifiedClassName(DataUpdateManager));
 
-        public function clear() : void
-        {
-            return;
-        }// end function
+      protected var _loader:IResourceLoader;
 
-        protected function checkFileVersion(param1:String, param2:String) : Boolean
-        {
-            return this._versions[param1] == param2;
-        }// end function
+      protected var _versions:Array;
 
-        protected function onLoaded(event:ResourceLoadedEvent) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            switch(event.uri.fileType)
-            {
-                case "meta":
-                {
-                    _loc_2 = LangMetaData.fromXml(event.resource, event.uri.uri, this.checkFileVersion);
-                    for (_loc_5 in _loc_2.clearFile)
-                    {
-                        
-                        _loc_3 = new Uri(FileUtils.getFilePath(event.uri.path) + "/" + _loc_5);
-                        _loc_3.tag = {version:_loc_2.clearFile[_loc_5], file:FileUtils.getFileStartName(event.uri.uri) + "." + _loc_5};
-                        this._files.push(_loc_3);
-                    }
-                    if (_loc_2.clearFileCount)
-                    {
-                        this._loader.load(this._files);
-                    }
-                    else
-                    {
-                        dispatchEvent(new Event(Event.COMPLETE));
-                    }
-                    break;
-                }
-                case "swf":
-                {
-                    this._dataFilesLoaded = true;
-                    _loc_4 = event.resource;
-                    StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO, _loc_4.moduleName + "_filelist", _loc_4.fileList);
-                    StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO, _loc_4.moduleName + "_chunkLength", _loc_4.chunkLength);
-                    var _loc_6:* = this;
-                    var _loc_7:* = this._loadedFileCount + 1;
-                    _loc_6._loadedFileCount = _loc_7;
-                    this.processFileData(_loc_4, event.uri);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      protected var _dataFilesLoaded:Boolean = false;
 
-        protected function processFileData(param1:Object, param2:Uri) : void
-        {
-            return;
-        }// end function
+      protected var _files:Array;
 
-        private function onLoadFailed(event:ResourceErrorEvent) : void
-        {
-            this._log.error("Failed " + event.uri);
-            dispatchEvent(new FileEvent(FileEvent.ERROR, event.uri.uri, false));
-            return;
-        }// end function
+      protected var _loadedFileCount:uint = 0;
 
-        private function onComplete(event:ResourceLoaderProgressEvent) : void
-        {
-            if (this._dataFilesLoaded)
-            {
-                dispatchEvent(new Event(Event.COMPLETE));
-            }
-            return;
-        }// end function
+      protected var _metaFileListe:Uri;
 
-    }
+      protected var _storeKey:String;
+
+      private var _clearAll:Boolean;
+
+      private var _datastoreList:Array;
+
+      public function init(metaFileListe:Uri, clearAll:Boolean=false) : void {
+         this._metaFileListe=metaFileListe;
+         this._storeKey="version_"+this._metaFileListe.uri;
+         this._clearAll=clearAll;
+         if(this._clearAll)
+         {
+            this.clear();
+         }
+         this.initMetaFileListe();
+      }
+
+      public function initMetaFileListe() : void {
+         this._versions=this._clearAll?new Array():StoreDataManager.getInstance().getSetData(JerakineConstants.DATASTORE_FILES_INFO,this._storeKey,new Array());
+         this._files=new Array();
+         this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
+         this._loader.addEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE,this.onComplete);
+         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoaded);
+         this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onLoadFailed);
+         this._loader.load(this._metaFileListe);
+      }
+
+      public function get files() : Array {
+         return this._files;
+      }
+
+      public function clear() : void {
+         
+      }
+
+      protected function checkFileVersion(sFileName:String, sVersion:String) : Boolean {
+         return this._versions[sFileName]==sVersion;
+      }
+
+      protected function onLoaded(e:ResourceLoadedEvent) : void {
+         var meta:LangMetaData = null;
+         var uri:Uri = null;
+         var container:Object = null;
+         var file:String = null;
+         switch(e.uri.fileType)
+         {
+            case "meta":
+               meta=LangMetaData.fromXml(e.resource,e.uri.uri,this.checkFileVersion);
+               for (file in meta.clearFile)
+               {
+                  uri=new Uri(FileUtils.getFilePath(e.uri.path)+"/"+file);
+                  uri.tag=
+                     {
+                        version:meta.clearFile[file],
+                        file:FileUtils.getFileStartName(e.uri.uri)+"."+file
+                     }
+                  ;
+                  this._files.push(uri);
+               }
+               if(meta.clearFileCount)
+               {
+                  this._loader.load(this._files);
+               }
+               else
+               {
+                  dispatchEvent(new Event(Event.COMPLETE));
+               }
+               break;
+            case "swf":
+               this._dataFilesLoaded=true;
+               container=e.resource;
+               StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,container.moduleName+"_filelist",container.fileList);
+               StoreDataManager.getInstance().setData(JerakineConstants.DATASTORE_FILES_INFO,container.moduleName+"_chunkLength",container.chunkLength);
+               this._loadedFileCount++;
+               this.processFileData(container,e.uri);
+               break;
+         }
+      }
+
+      protected function processFileData(container:Object, uri:Uri) : void {
+         
+      }
+
+      private function onLoadFailed(e:ResourceErrorEvent) : void {
+         this._log.error("Failed "+e.uri);
+         dispatchEvent(new FileEvent(FileEvent.ERROR,e.uri.uri,false));
+      }
+
+      private function onComplete(e:ResourceLoaderProgressEvent) : void {
+         if(this._dataFilesLoaded)
+         {
+            dispatchEvent(new Event(Event.COMPLETE));
+         }
+      }
+   }
+
 }

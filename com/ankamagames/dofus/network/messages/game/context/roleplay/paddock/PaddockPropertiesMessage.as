@@ -1,86 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
+package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
 {
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.paddock.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.paddock.PaddockInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class PaddockPropertiesMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var properties:PaddockInformations;
-        public static const protocolId:uint = 5824;
 
-        public function PaddockPropertiesMessage()
-        {
-            this.properties = new PaddockInformations();
-            return;
-        }// end function
+   public class PaddockPropertiesMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PaddockPropertiesMessage() {
+         this.properties=new PaddockInformations();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5824;
-        }// end function
+      public static const protocolId:uint = 5824;
 
-        public function initPaddockPropertiesMessage(param1:PaddockInformations = null) : PaddockPropertiesMessage
-        {
-            this.properties = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.properties = new PaddockInformations();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var properties:PaddockInformations;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5824;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PaddockPropertiesMessage(param1);
-            return;
-        }// end function
+      public function initPaddockPropertiesMessage(properties:PaddockInformations=null) : PaddockPropertiesMessage {
+         this.properties=properties;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_PaddockPropertiesMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.properties.getTypeId());
-            this.properties.serialize(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.properties=new PaddockInformations();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PaddockPropertiesMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_PaddockPropertiesMessage(param1:IDataInput) : void
-        {
-            var _loc_2:* = param1.readUnsignedShort();
-            this.properties = ProtocolTypeManager.getInstance(PaddockInformations, _loc_2);
-            this.properties.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PaddockPropertiesMessage(output);
+      }
+
+      public function serializeAs_PaddockPropertiesMessage(output:IDataOutput) : void {
+         output.writeShort(this.properties.getTypeId());
+         this.properties.serialize(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PaddockPropertiesMessage(input);
+      }
+
+      public function deserializeAs_PaddockPropertiesMessage(input:IDataInput) : void {
+         var _id1:uint = input.readUnsignedShort();
+         this.properties=ProtocolTypeManager.getInstance(PaddockInformations,_id1);
+         this.properties.deserialize(input);
+      }
+   }
+
 }

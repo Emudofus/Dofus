@@ -1,93 +1,102 @@
-﻿package com.ankamagames.dofus.network.types.game.prism
+package com.ankamagames.dofus.network.types.game.prism
 {
-    import com.ankamagames.jerakine.network.*;
-    import com.ankamagames.jerakine.network.utils.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
+   import flash.utils.IDataInput;
 
-    public class VillageConquestPrismInformation extends Object implements INetworkType
-    {
-        public var areaId:uint = 0;
-        public var areaAlignment:uint = 0;
-        public var isEntered:Boolean = false;
-        public var isInRoom:Boolean = false;
-        public static const protocolId:uint = 379;
 
-        public function VillageConquestPrismInformation()
-        {
-            return;
-        }// end function
+   public class VillageConquestPrismInformation extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 379;
-        }// end function
+      public function VillageConquestPrismInformation() {
+         super();
+      }
 
-        public function initVillageConquestPrismInformation(param1:uint = 0, param2:uint = 0, param3:Boolean = false, param4:Boolean = false) : VillageConquestPrismInformation
-        {
-            this.areaId = param1;
-            this.areaAlignment = param2;
-            this.isEntered = param3;
-            this.isInRoom = param4;
-            return this;
-        }// end function
+      public static const protocolId:uint = 379;
 
-        public function reset() : void
-        {
-            this.areaId = 0;
-            this.areaAlignment = 0;
-            this.isEntered = false;
-            this.isInRoom = false;
-            return;
-        }// end function
+      public var areaId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_VillageConquestPrismInformation(param1);
-            return;
-        }// end function
+      public var areaAlignment:uint = 0;
 
-        public function serializeAs_VillageConquestPrismInformation(param1:IDataOutput) : void
-        {
-            var _loc_2:* = 0;
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.isEntered);
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.isInRoom);
-            param1.writeByte(_loc_2);
-            if (this.areaId < 0)
+      public var isEntered:Boolean = false;
+
+      public var isInRoom:Boolean = false;
+
+      public function getTypeId() : uint {
+         return 379;
+      }
+
+      public function initVillageConquestPrismInformation(areaId:uint=0, areaAlignment:uint=0, isEntered:Boolean=false, isInRoom:Boolean=false) : VillageConquestPrismInformation {
+         this.areaId=areaId;
+         this.areaAlignment=areaAlignment;
+         this.isEntered=isEntered;
+         this.isInRoom=isInRoom;
+         return this;
+      }
+
+      public function reset() : void {
+         this.areaId=0;
+         this.areaAlignment=0;
+         this.isEntered=false;
+         this.isInRoom=false;
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_VillageConquestPrismInformation(output);
+      }
+
+      public function serializeAs_VillageConquestPrismInformation(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0=BooleanByteWrapper.setFlag(_box0,0,this.isEntered);
+         _box0=BooleanByteWrapper.setFlag(_box0,1,this.isInRoom);
+         output.writeByte(_box0);
+         if(this.areaId<0)
+         {
+            throw new Error("Forbidden value ("+this.areaId+") on element areaId.");
+         }
+         else
+         {
+            output.writeShort(this.areaId);
+            if(this.areaAlignment<0)
             {
-                throw new Error("Forbidden value (" + this.areaId + ") on element areaId.");
+               throw new Error("Forbidden value ("+this.areaAlignment+") on element areaAlignment.");
             }
-            param1.writeShort(this.areaId);
-            if (this.areaAlignment < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.areaAlignment + ") on element areaAlignment.");
+               output.writeByte(this.areaAlignment);
+               return;
             }
-            param1.writeByte(this.areaAlignment);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_VillageConquestPrismInformation(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_VillageConquestPrismInformation(input);
+      }
 
-        public function deserializeAs_VillageConquestPrismInformation(param1:IDataInput) : void
-        {
-            var _loc_2:* = param1.readByte();
-            this.isEntered = BooleanByteWrapper.getFlag(_loc_2, 0);
-            this.isInRoom = BooleanByteWrapper.getFlag(_loc_2, 1);
-            this.areaId = param1.readShort();
-            if (this.areaId < 0)
+      public function deserializeAs_VillageConquestPrismInformation(input:IDataInput) : void {
+         var _box0:uint = input.readByte();
+         this.isEntered=BooleanByteWrapper.getFlag(_box0,0);
+         this.isInRoom=BooleanByteWrapper.getFlag(_box0,1);
+         this.areaId=input.readShort();
+         if(this.areaId<0)
+         {
+            throw new Error("Forbidden value ("+this.areaId+") on element of VillageConquestPrismInformation.areaId.");
+         }
+         else
+         {
+            this.areaAlignment=input.readByte();
+            if(this.areaAlignment<0)
             {
-                throw new Error("Forbidden value (" + this.areaId + ") on element of VillageConquestPrismInformation.areaId.");
+               throw new Error("Forbidden value ("+this.areaAlignment+") on element of VillageConquestPrismInformation.areaAlignment.");
             }
-            this.areaAlignment = param1.readByte();
-            if (this.areaAlignment < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.areaAlignment + ") on element of VillageConquestPrismInformation.areaAlignment.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

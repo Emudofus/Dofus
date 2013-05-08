@@ -1,20 +1,22 @@
-﻿package com.ankamagames.jerakine.resources.adapters
+package com.ankamagames.jerakine.resources.adapters
 {
-    import com.ankamagames.jerakine.pools.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.pools.Poolable;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.IResourceObserver;
+   import flash.utils.ByteArray;
 
-    public interface IAdapter extends Poolable
-    {
 
-        public function IAdapter();
+   public interface IAdapter extends Poolable
+   {
+         
 
-        function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void;
 
-        function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void;
 
-        function getResourceType() : uint;
+      function loadDirectly(param1:Uri, param2:String, param3:IResourceObserver, param4:Boolean) : void;
 
-    }
+      function loadFromData(param1:Uri, param2:ByteArray, param3:IResourceObserver, param4:Boolean) : void;
+
+      function getResourceType() : uint;
+   }
+
 }

@@ -1,45 +1,45 @@
-﻿package com.ankamagames.dofus.datacenter.misc
+package com.ankamagames.dofus.datacenter.misc
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import flash.utils.Dictionary;
 
-    public class OptionalFeature extends Object implements IDataCenter
-    {
-        public var id:int;
-        public var keyword:String;
-        public static const MODULE:String = "OptionalFeatures";
-        private static var _keywords:Dictionary;
 
-        public function OptionalFeature()
-        {
-            return;
-        }// end function
+   public class OptionalFeature extends Object implements IDataCenter
+   {
+         
 
-        public static function getOptionalFeatureById(param1:int) : OptionalFeature
-        {
-            return GameData.getObject(MODULE, param1) as OptionalFeature;
-        }// end function
+      public function OptionalFeature() {
+         super();
+      }
 
-        public static function getOptionalFeatureByKeyword(param1:String) : OptionalFeature
-        {
-            var _loc_2:* = null;
-            if (!_keywords || !_keywords[param1])
+      public static const MODULE:String = "OptionalFeatures";
+
+      public static function getOptionalFeatureById(id:int) : OptionalFeature {
+         return GameData.getObject(MODULE,id) as OptionalFeature;
+      }
+
+      private static var _keywords:Dictionary;
+
+      public static function getOptionalFeatureByKeyword(key:String) : OptionalFeature {
+         var feature:OptionalFeature = null;
+         if((!_keywords)||(!_keywords[key]))
+         {
+            _keywords=new Dictionary();
+            for each (_keywords[feature.keyword] in getAllOptionalFeatures())
             {
-                _keywords = new Dictionary();
-                for each (_loc_2 in getAllOptionalFeatures())
-                {
-                    
-                    _keywords[_loc_2.keyword] = _loc_2;
-                }
             }
-            return _keywords[param1];
-        }// end function
+         }
+         return _keywords[key];
+      }
 
-        public static function getAllOptionalFeatures() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static function getAllOptionalFeatures() : Array {
+         return GameData.getObjects(MODULE);
+      }
 
-    }
+      public var id:int;
+
+      public var keyword:String;
+   }
+
 }

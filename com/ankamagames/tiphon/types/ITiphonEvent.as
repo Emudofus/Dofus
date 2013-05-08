@@ -1,18 +1,20 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
 
-    public interface ITiphonEvent
-    {
 
-        public function ITiphonEvent();
+   public interface ITiphonEvent
+   {
+         
 
-        function get label() : String;
 
-        function get sprite();
 
-        function get params() : String;
+      function get label() : String;
 
-        function get animationName() : String;
+      function get sprite() : *;
 
-    }
+      function get params() : String;
+
+      function get animationName() : String;
+   }
+
 }

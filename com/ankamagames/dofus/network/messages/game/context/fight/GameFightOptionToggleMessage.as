@@ -1,84 +1,78 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameFightOptionToggleMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var option:uint = 3;
-        public static const protocolId:uint = 707;
 
-        public function GameFightOptionToggleMessage()
-        {
+   public class GameFightOptionToggleMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function GameFightOptionToggleMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 707;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var option:uint = 3;
+
+      override public function getMessageId() : uint {
+         return 707;
+      }
+
+      public function initGameFightOptionToggleMessage(option:uint=3) : GameFightOptionToggleMessage {
+         this.option=option;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.option=3;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightOptionToggleMessage(output);
+      }
+
+      public function serializeAs_GameFightOptionToggleMessage(output:IDataOutput) : void {
+         output.writeByte(this.option);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightOptionToggleMessage(input);
+      }
+
+      public function deserializeAs_GameFightOptionToggleMessage(input:IDataInput) : void {
+         this.option=input.readByte();
+         if(this.option<0)
+         {
+            throw new Error("Forbidden value ("+this.option+") on element of GameFightOptionToggleMessage.option.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 707;
-        }// end function
-
-        public function initGameFightOptionToggleMessage(param1:uint = 3) : GameFightOptionToggleMessage
-        {
-            this.option = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.option = 3;
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightOptionToggleMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_GameFightOptionToggleMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.option);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightOptionToggleMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_GameFightOptionToggleMessage(param1:IDataInput) : void
-        {
-            this.option = param1.readByte();
-            if (this.option < 0)
-            {
-                throw new Error("Forbidden value (" + this.option + ") on element of GameFightOptionToggleMessage.option.");
-            }
-            return;
-        }// end function
-
-    }
 }

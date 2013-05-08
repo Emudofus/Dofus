@@ -1,128 +1,123 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight.challenge
+package com.ankamagames.dofus.network.messages.game.context.fight.challenge
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ChallengeTargetsListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var targetIds:Vector.<int>;
-        public var targetCells:Vector.<int>;
-        public static const protocolId:uint = 5613;
 
-        public function ChallengeTargetsListMessage()
-        {
-            this.targetIds = new Vector.<int>;
-            this.targetCells = new Vector.<int>;
-            return;
-        }// end function
+   public class ChallengeTargetsListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ChallengeTargetsListMessage() {
+         this.targetIds=new Vector.<int>();
+         this.targetCells=new Vector.<int>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5613;
-        }// end function
+      public static const protocolId:uint = 5613;
 
-        public function initChallengeTargetsListMessage(param1:Vector.<int> = null, param2:Vector.<int> = null) : ChallengeTargetsListMessage
-        {
-            this.targetIds = param1;
-            this.targetCells = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.targetIds = new Vector.<int>;
-            this.targetCells = new Vector.<int>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var targetIds:Vector.<int>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var targetCells:Vector.<int>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ChallengeTargetsListMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5613;
+      }
 
-        public function serializeAs_ChallengeTargetsListMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.targetIds.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.targetIds.length)
+      public function initChallengeTargetsListMessage(targetIds:Vector.<int>=null, targetCells:Vector.<int>=null) : ChallengeTargetsListMessage {
+         this.targetIds=targetIds;
+         this.targetCells=targetCells;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.targetIds=new Vector.<int>();
+         this.targetCells=new Vector.<int>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChallengeTargetsListMessage(output);
+      }
+
+      public function serializeAs_ChallengeTargetsListMessage(output:IDataOutput) : void {
+         output.writeShort(this.targetIds.length);
+         var _i1:uint = 0;
+         while(_i1<this.targetIds.length)
+         {
+            output.writeInt(this.targetIds[_i1]);
+            _i1++;
+         }
+         output.writeShort(this.targetCells.length);
+         var _i2:uint = 0;
+         while(_i2<this.targetCells.length)
+         {
+            if((this.targetCells[_i2]>-1)||(this.targetCells[_i2]<559))
             {
-                
-                param1.writeInt(this.targetIds[_loc_2]);
-                _loc_2 = _loc_2 + 1;
+               throw new Error("Forbidden value ("+this.targetCells[_i2]+") on element 2 (starting at 1) of targetCells.");
             }
-            param1.writeShort(this.targetCells.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.targetCells.length)
+            else
             {
-                
-                if (this.targetCells[_loc_3] < -1 || this.targetCells[_loc_3] > 559)
-                {
-                    throw new Error("Forbidden value (" + this.targetCells[_loc_3] + ") on element 2 (starting at 1) of targetCells.");
-                }
-                param1.writeShort(this.targetCells[_loc_3]);
-                _loc_3 = _loc_3 + 1;
+               output.writeShort(this.targetCells[_i2]);
+               _i2++;
+               continue;
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ChallengeTargetsListMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChallengeTargetsListMessage(input);
+      }
 
-        public function deserializeAs_ChallengeTargetsListMessage(param1:IDataInput) : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
+      public function deserializeAs_ChallengeTargetsListMessage(input:IDataInput) : void {
+         var _val1:* = 0;
+         var _val2:* = 0;
+         var _targetIdsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_targetIdsLen)
+         {
+            _val1=input.readInt();
+            this.targetIds.push(_val1);
+            _i1++;
+         }
+         var _targetCellsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_targetCellsLen)
+         {
+            _val2=input.readShort();
+            if((_val2>-1)||(_val2<559))
             {
-                
-                _loc_6 = param1.readInt();
-                this.targetIds.push(_loc_6);
-                _loc_3 = _loc_3 + 1;
+               throw new Error("Forbidden value ("+_val2+") on elements of targetCells.");
             }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
+            else
             {
-                
-                _loc_7 = param1.readShort();
-                if (_loc_7 < -1 || _loc_7 > 559)
-                {
-                    throw new Error("Forbidden value (" + _loc_7 + ") on elements of targetCells.");
-                }
-                this.targetCells.push(_loc_7);
-                _loc_5 = _loc_5 + 1;
+               this.targetCells.push(_val2);
+               _i2++;
+               continue;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

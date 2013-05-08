@@ -1,59 +1,59 @@
-﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
-    import com.ankamagames.dofus.datacenter.items.*;
-    import com.ankamagames.dofus.datacenter.jobs.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.misc.lists.*;
+   import com.ankamagames.dofus.datacenter.jobs.Skill;
+   import com.ankamagames.dofus.logic.game.common.misc.IStorageView;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.datacenter.items.Item;
+   import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
+   import com.ankamagames.dofus.misc.lists.InventoryHookList;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.dofus.logic.game.common.misc.HookLock;
 
-    public class StorageSmithMagicFilterView extends StorageGenericView
-    {
-        private var _skill:Skill;
-        private var _parent:IStorageView;
-        private static const SMITHMAGIC_RUNE_ID:int = 78;
-        private static const SMITHMAGIC_POTION_ID:int = 26;
-        private static const SIGNATURE_RUNE_ID:int = 7508;
 
-        public function StorageSmithMagicFilterView(param1:HookLock, param2:IStorageView, param3:Skill)
-        {
-            super(param1);
-            this._skill = param3;
-            this._parent = param2;
-            return;
-        }// end function
+   public class StorageSmithMagicFilterView extends StorageGenericView
+   {
+         
 
-        override public function get name() : String
-        {
-            return "storageSmithMagicFilter";
-        }// end function
+      public function StorageSmithMagicFilterView(hookLock:HookLock, parentView:IStorageView, skill:Skill) {
+         super(hookLock);
+         this._skill=skill;
+         this._parent=parentView;
+      }
 
-        override public function isListening(param1:ItemWrapper) : Boolean
-        {
-            var _loc_2:* = Item.getItemById(param1.objectGID);
-            return this._parent.isListening(param1) && super.isListening(param1) && (_loc_2.typeId == this._skill.modifiableItemType || _loc_2.typeId == SMITHMAGIC_RUNE_ID || _loc_2.typeId == SMITHMAGIC_POTION_ID || param1.objectGID == SIGNATURE_RUNE_ID);
-        }// end function
+      private static const SMITHMAGIC_RUNE_ID:int = 78;
 
-        override public function updateView() : void
-        {
-            super.updateView();
-            if (StorageOptionManager.getInstance().currentStorageView == this)
-            {
-                _hookLock.addHook(InventoryHookList.StorageViewContent, [content, InventoryManager.getInstance().inventory.localKamas]);
-            }
-            return;
-        }// end function
+      private static const SMITHMAGIC_POTION_ID:int = 26;
 
-        public function set parent(param1:IStorageView) : void
-        {
-            this._parent = param1;
-            return;
-        }// end function
+      private static const SIGNATURE_RUNE_ID:int = 7508;
 
-        public function get parent() : IStorageView
-        {
-            return this._parent;
-        }// end function
+      private var _skill:Skill;
 
-    }
+      private var _parent:IStorageView;
+
+      override public function get name() : String {
+         return "storageSmithMagicFilter";
+      }
+
+      override public function isListening(item:ItemWrapper) : Boolean {
+         var data:Item = Item.getItemById(item.objectGID);
+         return (this._parent.isListening(item))&&(super.isListening(item))&&((data.typeId==this._skill.modifiableItemType)||(data.typeId==SMITHMAGIC_RUNE_ID)||(data.typeId==SMITHMAGIC_POTION_ID)||(item.objectGID==SIGNATURE_RUNE_ID));
+      }
+
+      override public function updateView() : void {
+         super.updateView();
+         if(StorageOptionManager.getInstance().currentStorageView==this)
+         {
+            _hookLock.addHook(InventoryHookList.StorageViewContent,[content,InventoryManager.getInstance().inventory.localKamas]);
+         }
+      }
+
+      public function set parent(view:IStorageView) : void {
+         this._parent=view;
+      }
+
+      public function get parent() : IStorageView {
+         return this._parent;
+      }
+   }
+
 }

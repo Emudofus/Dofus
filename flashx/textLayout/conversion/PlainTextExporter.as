@@ -1,99 +1,98 @@
-﻿package flashx.textLayout.conversion
+package flashx.textLayout.conversion
 {
-    import flashx.textLayout.conversion.*;
-    import flashx.textLayout.elements.*;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.ParagraphElement;
+   import flashx.textLayout.elements.FlowLeafElement;
 
-    public class PlainTextExporter extends ConverterBase implements IPlainTextExporter
-    {
-        private var _stripDiscretionaryHyphens:Boolean;
-        private var _paragraphSeparator:String;
-        private static var _discretionaryHyphen:String = String.fromCharCode(173);
+   use namespace tlf_internal;
 
-        public function PlainTextExporter()
-        {
-            this._stripDiscretionaryHyphens = true;
-            this._paragraphSeparator = "\n";
-            return;
-        }// end function
+   public class PlainTextExporter extends ConverterBase implements IPlainTextExporter
+   {
+         
 
-        public function get stripDiscretionaryHyphens() : Boolean
-        {
-            return this._stripDiscretionaryHyphens;
-        }// end function
+      public function PlainTextExporter() {
+         super();
+         this._stripDiscretionaryHyphens=true;
+         this._paragraphSeparator="\n";
+      }
 
-        public function set stripDiscretionaryHyphens(param1:Boolean) : void
-        {
-            this._stripDiscretionaryHyphens = param1;
-            return;
-        }// end function
+      private static var _discretionaryHyphen:String = String.fromCharCode(173);
 
-        public function get paragraphSeparator() : String
-        {
-            return this._paragraphSeparator;
-        }// end function
+      private var _stripDiscretionaryHyphens:Boolean;
 
-        public function set paragraphSeparator(param1:String) : void
-        {
-            this._paragraphSeparator = param1;
-            return;
-        }// end function
+      private var _paragraphSeparator:String;
 
-        public function export(param1:TextFlow, param2:String) : Object
-        {
-            clear();
-            if (param2 == ConversionType.STRING_TYPE)
+      public function get stripDiscretionaryHyphens() : Boolean {
+         return this._stripDiscretionaryHyphens;
+      }
+
+      public function set stripDiscretionaryHyphens(value:Boolean) : void {
+         this._stripDiscretionaryHyphens=value;
+      }
+
+      public function get paragraphSeparator() : String {
+         return this._paragraphSeparator;
+      }
+
+      public function set paragraphSeparator(value:String) : void {
+         this._paragraphSeparator=value;
+      }
+
+      public function export(source:TextFlow, conversionType:String) : Object {
+         clear();
+         if(conversionType==ConversionType.STRING_TYPE)
+         {
+            return this.exportToString(source);
+         }
+         return null;
+      }
+
+      protected function exportToString(source:TextFlow) : String {
+         var p:ParagraphElement = null;
+         var curString:String = null;
+         var nextLeaf:FlowLeafElement = null;
+         var temparray:Array = null;
+         var lastPara:ParagraphElement = null;
+         var rslt:String = "";
+         var leaf:FlowLeafElement = source.getFirstLeaf();
+         loop0:
+         while(leaf)
+         {
+            p=leaf.getParagraph();
+            do
             {
-                return this.exportToString(param1);
+               curString=leaf.text;
+               if(this._stripDiscretionaryHyphens)
+               {
+                  temparray=curString.split(_discretionaryHyphen);
+                  curString=temparray.join("");
+               }
+               rslt=rslt+curString;
+               nextLeaf=leaf.getNextLeaf(p);
+               if(!nextLeaf)
+               {
+                  leaf=leaf.getNextLeaf();
+                  if(leaf)
+                  {
+                     rslt=rslt+this._paragraphSeparator;
+                  }
+                  continue loop0;
+               }
+               leaf=nextLeaf;
             }
-            return null;
-        }// end function
-
-        protected function exportToString(param1:TextFlow) : String
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_2:* = "";
-            var _loc_3:* = param1.getFirstLeaf();
-            while (_loc_3)
+            while(true);
+         }
+         if(useClipboardAnnotations)
+         {
+            lastPara=source.getLastLeaf().getParagraph();
+            if(lastPara.getStyle(ConverterBase.MERGE_TO_NEXT_ON_PASTE)!="true")
             {
-                
-                _loc_4 = _loc_3.getParagraph();
-                while (true)
-                {
-                    
-                    _loc_5 = _loc_3.text;
-                    if (this._stripDiscretionaryHyphens)
-                    {
-                        _loc_7 = _loc_5.split(_discretionaryHyphen);
-                        _loc_5 = _loc_7.join("");
-                    }
-                    _loc_2 = _loc_2 + _loc_5;
-                    _loc_6 = _loc_3.getNextLeaf(_loc_4);
-                    if (!_loc_6)
-                    {
-                        break;
-                    }
-                    _loc_3 = _loc_6;
-                }
-                _loc_3 = _loc_3.getNextLeaf();
-                if (_loc_3)
-                {
-                    _loc_2 = _loc_2 + this._paragraphSeparator;
-                }
+               rslt=rslt+this._paragraphSeparator;
             }
-            if (useClipboardAnnotations)
-            {
-                _loc_8 = param1.getLastLeaf().getParagraph();
-                if (_loc_8.getStyle(ConverterBase.MERGE_TO_NEXT_ON_PASTE) != "true")
-                {
-                    _loc_2 = _loc_2 + this._paragraphSeparator;
-                }
-            }
-            return _loc_2;
-        }// end function
+         }
+         return rslt;
+      }
+   }
 
-    }
 }

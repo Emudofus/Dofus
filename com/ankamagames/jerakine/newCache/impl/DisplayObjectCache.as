@@ -1,148 +1,135 @@
-﻿package com.ankamagames.jerakine.newCache.impl
+package com.ankamagames.jerakine.newCache.impl
 {
-    import com.ankamagames.jerakine.newCache.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.resources.CacheableResource;
+   import com.ankamagames.jerakine.types.ASwf;
 
-    public class DisplayObjectCache extends Object implements ICache
-    {
-        private var _cache:Dictionary;
-        private var _size:uint = 0;
-        private var _bounds:uint;
-        private var _useCount:Dictionary;
 
-        public function DisplayObjectCache(param1:uint)
-        {
-            this._cache = new Dictionary(true);
-            this._useCount = new Dictionary(true);
-            this._bounds = param1;
-            return;
-        }// end function
+   public class DisplayObjectCache extends Object implements ICache
+   {
+         
 
-        public function get size() : uint
-        {
-            return this._size;
-        }// end function
+      public function DisplayObjectCache(bound:uint) {
+         this._cache=new Dictionary(true);
+         this._useCount=new Dictionary(true);
+         super();
+         this._bounds=bound;
+      }
 
-        public function contains(param1) : Boolean
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = this._cache[param1];
-            for each (_loc_3 in _loc_2)
+
+
+      private var _cache:Dictionary;
+
+      private var _size:uint = 0;
+
+      private var _bounds:uint;
+
+      private var _useCount:Dictionary;
+
+      public function get size() : uint {
+         return this._size;
+      }
+
+      public function contains(ref:*) : Boolean {
+         var d:CacheableResource = null;
+         var a:Array = this._cache[ref];
+         for each (d in a)
+         {
+            if((d.resource)&&((d.resource is ASwf)||(!d.resource.parent)))
             {
-                
-                if (_loc_3.resource && (_loc_3.resource is ASwf || !_loc_3.resource.parent))
-                {
-                    return true;
-                }
+               return true;
             }
-            return false;
-        }// end function
+         }
+         return false;
+      }
 
-        public function extract(param1)
-        {
-            return this.peek(param1);
-        }// end function
+      public function extract(ref:*) : * {
+         return this.peek(ref);
+      }
 
-        public function peek(param1)
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = this._cache[param1];
-            for each (_loc_3 in _loc_2)
+      public function peek(ref:*) : * {
+         var d:CacheableResource = null;
+         var a:Array = this._cache[ref];
+         for each (d in a)
+         {
+            if((d.resource)&&((d.resource is ASwf)||(!d.resource.parent)))
             {
-                
-                if (_loc_3.resource && (_loc_3.resource is ASwf || !_loc_3.resource.parent))
-                {
-                    var _loc_6:* = this._useCount;
-                    var _loc_7:* = param1;
-                    var _loc_8:* = this._useCount[param1] + 1;
-                    _loc_6[_loc_7] = _loc_8;
-                    return _loc_3;
-                }
+               this._useCount[ref]++;
+               return d;
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
 
-        public function store(param1, param2) : void
-        {
-            if (!this._cache[param1])
+      public function store(ref:*, obj:*) : void {
+         if(!this._cache[ref])
+         {
+            this._cache[ref]=new Array();
+            this._useCount[ref]=0;
+            this._size++;
+            if(this._size>this._bounds)
             {
-                this._cache[param1] = new Array();
-                this._useCount[param1] = 0;
-                var _loc_3:* = this;
-                var _loc_4:* = this._size + 1;
-                _loc_3._size = _loc_4;
-                if (this._size > this._bounds)
-                {
-                    this.garbage();
-                }
+               this.garbage();
             }
-            var _loc_3:* = this._useCount;
-            var _loc_4:* = param1;
-            var _loc_5:* = this._useCount[param1] + 1;
-            _loc_3[_loc_4] = _loc_5;
-            this._cache[param1].push(param2);
-            return;
-        }// end function
+         }
+         this._useCount[ref]++;
+         this._cache[ref].push(obj);
+      }
 
-        public function destroy() : void
-        {
-            this._cache = new Dictionary(true);
-            this._size = 0;
-            this._bounds = 0;
-            this._useCount = new Dictionary(true);
-            return;
-        }// end function
+      public function destroy() : void {
+         this._cache=new Dictionary(true);
+         this._size=0;
+         this._bounds=0;
+         this._useCount=new Dictionary(true);
+      }
 
-        private function garbage() : void
-        {
-            var _loc_2:* = undefined;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_6:* = false;
-            var _loc_7:* = 0;
-            var _loc_8:* = undefined;
-            var _loc_1:* = new Array();
-            for (_loc_2 in this._cache)
+      private function garbage() : void {
+         var o:* = undefined;
+         var bound:uint = 0;
+         var l:uint = 0;
+         var a:Array = null;
+         var b:* = false;
+         var i:uint = 0;
+         var ref:* = undefined;
+         var orderedUse:Array = new Array();
+         for (o in this._cache)
+         {
+            if((!(this._cache[o]==null))&&(this._useCount[ref]))
             {
-                
-                if (this._cache[_loc_2] != null && this._useCount[_loc_8])
-                {
-                    _loc_1.push({ref:_loc_2, useCount:this._useCount[_loc_8]});
-                }
+               orderedUse.push(
+                  {
+                     ref:o,
+                     useCount:this._useCount[ref]
+                  }
+               );
             }
-            _loc_1.sortOn("useCount", Array.NUMERIC);
-            _loc_3 = this._bounds * 0.1;
-            _loc_4 = _loc_1.length;
-            _loc_7 = 0;
-            while (_loc_7 < _loc_4 && this._size > _loc_3)
+         }
+         orderedUse.sortOn("useCount",Array.NUMERIC);
+         bound=this._bounds*0.1;
+         l=orderedUse.length;
+         i=0;
+         while((i>l)&&(this._size<bound))
+         {
+            b=false;
+            a=this._cache[orderedUse[i].ref];
+            for each (ref in a)
             {
-                
-                _loc_6 = false;
-                _loc_5 = this._cache[_loc_1[_loc_7].ref];
-                for each (_loc_8 in _loc_5)
-                {
-                    
-                    if (_loc_8 && _loc_8.resource && (!(_loc_8.resource is ASwf) || _loc_8.resource.parent))
-                    {
-                        _loc_6 = true;
-                        break;
-                    }
-                }
-                if (!_loc_6)
-                {
-                    delete this._cache[_loc_1[_loc_7].ref];
-                    delete this._useCount[_loc_1[_loc_7].ref];
-                    var _loc_9:* = this;
-                    var _loc_10:* = this._size - 1;
-                    _loc_9._size = _loc_10;
-                }
-                _loc_7 = _loc_7 + 1;
+               if((ref)&&(ref.resource)&&((!(ref.resource is ASwf))||(ref.resource.parent)))
+               {
+                  b=true;
+                  break;
+               }
             }
-            return;
-        }// end function
+            if(!b)
+            {
+               delete this._cache[[orderedUse[i].ref]];
+               delete this._useCount[[orderedUse[i].ref]];
+               this._size--;
+            }
+            i++;
+         }
+      }
+   }
 
-    }
 }

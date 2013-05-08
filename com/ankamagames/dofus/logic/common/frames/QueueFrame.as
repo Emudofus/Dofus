@@ -1,62 +1,56 @@
-﻿package com.ankamagames.dofus.logic.common.frames
+package com.ankamagames.dofus.logic.common.frames
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.messages.queues.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.messages.queues.LoginQueueStatusMessage;
+   import com.ankamagames.dofus.network.messages.queues.QueueStatusMessage;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
 
-    public class QueueFrame extends Object implements Frame
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(QueueFrame));
 
-        public function QueueFrame()
-        {
-            return;
-        }// end function
+   public class QueueFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function QueueFrame() {
+         super();
+      }
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(QueueFrame));
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            switch(true)
-            {
-                case param1 is LoginQueueStatusMessage:
-                {
-                    _loc_2 = param1 as LoginQueueStatusMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.LoginQueueStatus, _loc_2.position, _loc_2.total);
-                    return true;
-                }
-                case param1 is QueueStatusMessage:
-                {
-                    _loc_3 = param1 as QueueStatusMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.QueueStatus, _loc_3.position, _loc_3.total);
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-    }
+      public function process(msg:Message) : Boolean {
+         var lqsMsg:LoginQueueStatusMessage = null;
+         var qsMsg:QueueStatusMessage = null;
+         switch(true)
+         {
+            case msg is LoginQueueStatusMessage:
+               lqsMsg=msg as LoginQueueStatusMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.LoginQueueStatus,lqsMsg.position,lqsMsg.total);
+               return true;
+            case msg is QueueStatusMessage:
+               qsMsg=msg as QueueStatusMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.QueueStatus,qsMsg.position,qsMsg.total);
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function pulled() : Boolean {
+         return true;
+      }
+   }
+
 }

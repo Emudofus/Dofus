@@ -1,18 +1,20 @@
-﻿package com.ankamagames.berilia.components
+package com.ankamagames.berilia.components
 {
 
-    public class ComponentInternalAccessor extends Object
-    {
 
-        public function ComponentInternalAccessor()
-        {
-            return;
-        }// end function
+   public class ComponentInternalAccessor extends Object
+   {
+         
 
-        public static function access(param1, param2:String)
-        {
-            return param1[param2];
-        }// end function
+      public function ComponentInternalAccessor() {
+         super();
+      }
 
-    }
+      public static function access(target:*, to:String) : * {
+         return target[to];
+      }
+
+
+   }
+
 }

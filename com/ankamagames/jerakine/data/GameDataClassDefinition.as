@@ -1,43 +1,49 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    import __AS3__.vec.*;
-    import flash.utils.*;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataInput;
+   import flash.utils.getDefinitionByName;
 
-    public class GameDataClassDefinition extends Object
-    {
-        private var _class:Class;
-        private var _fields:Vector.<GameDataField>;
 
-        public function GameDataClassDefinition(param1:String, param2:String)
-        {
-            this._class = getDefinitionByName(param1 + "." + param2) as Class;
-            this._fields = new Vector.<GameDataField>;
-            return;
-        }// end function
+   public class GameDataClassDefinition extends Object
+   {
+         
 
-        public function read(param1:String, param2:IDataInput)
-        {
-            var _loc_4:* = null;
-            var _loc_3:* = new this._class();
-            for each (_loc_4 in this._fields)
-            {
-                
-                _loc_3[_loc_4.name] = _loc_4.readData(param1, param2);
-            }
-            if (_loc_3 is IPostInit)
-            {
-                IPostInit(_loc_3).postInit();
-            }
-            return _loc_3;
-        }// end function
+      public function GameDataClassDefinition(packageName:String, className:String) {
+         super();
+         this._class=getDefinitionByName(packageName+"."+className) as Class;
+         this._fields=new Vector.<GameDataField>();
+      }
 
-        public function addField(param1:String, param2:IDataInput) : void
-        {
-            var _loc_3:* = new GameDataField(param1);
-            _loc_3.readType(param2);
-            this._fields.push(_loc_3);
-            return;
-        }// end function
 
-    }
+
+      private var _class:Class;
+
+      private var _fields:Vector.<GameDataField>;
+
+      public function get fields() : Vector.<GameDataField> {
+         return this._fields;
+      }
+
+      public function read(module:String, stream:IDataInput) : * {
+         var field:GameDataField = null;
+         var inst:* = new this._class();
+         for each (field in this._fields)
+         {
+            inst[field.name]=field.readData(module,stream);
+         }
+         if(inst is IPostInit)
+         {
+            IPostInit(inst).postInit();
+         }
+         return inst;
+      }
+
+      public function addField(fieldName:String, stream:IDataInput) : void {
+         var field:GameDataField = new GameDataField(fieldName);
+         field.readType(stream);
+         this._fields.push(field);
+      }
+   }
+
 }

@@ -1,182 +1,182 @@
-﻿package com.ankamagames.tiphon.engine
+package com.ankamagames.tiphon.engine
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.types.*;
-    import com.ankamagames.tiphon.types.cache.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.utils.Dictionary;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.tiphon.types.cache.SpriteCacheInfo;
+   import com.ankamagames.tiphon.types.cache.AnimCache;
+   import com.ankamagames.jerakine.types.Callback;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import flash.events.Event;
+   import com.ankamagames.tiphon.types.ScriptedAnimation;
+   import com.ankamagames.jerakine.types.Swl;
+   import com.ankamagames.tiphon.types.TiphonUtility;
+   import flash.utils.getTimer;
+   import com.ankamagames.jerakine.managers.PerformanceManager;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class TiphonCacheManager extends Object
-    {
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonCacheManager));
-        public static const _cacheList:Dictionary = new Dictionary();
-        private static const _spritesListToRender:Vector.<SpriteCacheInfo> = new Vector.<SpriteCacheInfo>;
-        private static var _processing:Boolean = false;
-        private static var _lastRender:int = 0;
-        private static var _waitRender:int = 0;
 
-        public function TiphonCacheManager()
-        {
-            return;
-        }// end function
+   public class TiphonCacheManager extends Object
+   {
+         
 
-        public static function init() : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            var _loc_1:* = new Array(15, 16, 17, 18, 22, 34, 36, 38, 40, 12, 13, 14);
-            var _loc_2:* = new Array("AnimStatique", "AnimMarche", "AnimCourse");
-            var _loc_3:* = -1;
-            var _loc_4:* = _loc_1.length;
-            var _loc_5:* = _loc_2.length;
-            while (++_loc_3 < _loc_4)
+      public function TiphonCacheManager() {
+         super();
+      }
+
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonCacheManager));
+
+      public static const _cacheList:Dictionary = new Dictionary();
+
+      private static const _spritesListToRender:Vector.<SpriteCacheInfo> = new Vector.<SpriteCacheInfo>();
+
+      private static var _processing:Boolean = false;
+
+      private static var _lastRender:int = 0;
+
+      private static var _waitRender:int = 0;
+
+      public static function init() : void {
+         var bone:* = 0;
+         var k:* = 0;
+         var anim:String = null;
+         var pokemonBones:Array = new Array(15,16,17,18,22,34,36,38,40,12,13,14);
+         var animList:Array = new Array("AnimStatique","AnimMarche","AnimCourse");
+         var i:int = -1;
+         var num:int = pokemonBones.length;
+         var numAnim:int = animList.length;
+         while(++i<num)
+         {
+            bone=pokemonBones[i];
+            k=-1;
+            while(++k<numAnim)
             {
-                
-                _loc_6 = _loc_1[_loc_3];
-                _loc_7 = -1;
-                while (++_loc_7 < _loc_5)
-                {
-                    
-                    _loc_8 = _loc_2[_loc_7];
-                    _cacheList[_loc_6 + "_" + _loc_8] = new AnimCache();
-                    Tiphon.skullLibrary.askResource(_loc_6, _loc_8, new Callback(checkRessourceState), new Callback(onRenderFail));
-                }
+               anim=animList[k];
+               _cacheList[bone+"_"+anim]=new AnimCache();
+               Tiphon.skullLibrary.askResource(bone,anim,new Callback(checkRessourceState),new Callback(onRenderFail));
             }
-            return;
-        }// end function
+         }
+      }
 
-        public static function addSpriteToRender(param1:TiphonSprite, param2:TiphonEntityLook) : void
-        {
-            _spritesListToRender.push(new SpriteCacheInfo(param1, param2));
-            if (!_processing)
+      public static function addSpriteToRender(sprite:TiphonSprite, look:TiphonEntityLook) : void {
+         _spritesListToRender.push(new SpriteCacheInfo(sprite,look));
+         if(!_processing)
+         {
+            StageShareManager.stage.addEventListener(Event.ENTER_FRAME,onEnterFrame);
+         }
+      }
+
+      public static function hasCache(bone:int, anim:String) : Boolean {
+         if(_cacheList[bone+"_"+anim])
+         {
+            return true;
+         }
+         return false;
+      }
+
+      public static function pushScriptedAnimation(scriptedAnimation:ScriptedAnimation) : void {
+         var animCache:AnimCache = _cacheList[scriptedAnimation.bone+"_"+scriptedAnimation.animationName];
+         if(animCache)
+         {
+            animCache.pushAnimation(scriptedAnimation,scriptedAnimation.direction);
+         }
+      }
+
+      public static function getScriptedAnimation(bone:int, anim:String, direction:int) : ScriptedAnimation {
+         var scriptedAnimation:ScriptedAnimation = null;
+         var animClass:Class = null;
+         var lib:Swl = null;
+         var fullAnimName:String = null;
+         var animCache:AnimCache = _cacheList[bone+"_"+anim];
+         if(animCache)
+         {
+            scriptedAnimation=animCache.getAnimation(direction);
+            if(scriptedAnimation)
             {
-                StageShareManager.stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+               return scriptedAnimation;
             }
-            return;
-        }// end function
-
-        public static function hasCache(param1:int, param2:String) : Boolean
-        {
-            if (_cacheList[param1 + "_" + param2])
+            lib=Tiphon.skullLibrary.getResourceById(bone,anim);
+            fullAnimName=anim+"_"+direction;
+            if(lib.hasDefinition(fullAnimName))
             {
-                return true;
-            }
-            return false;
-        }// end function
-
-        public static function pushScriptedAnimation(param1:ScriptedAnimation) : void
-        {
-            var _loc_2:* = _cacheList[param1.bone + "_" + param1.animationName];
-            if (_loc_2)
-            {
-                _loc_2.pushAnimation(param1, param1.direction);
-            }
-            return;
-        }// end function
-
-        public static function getScriptedAnimation(param1:int, param2:String, param3:int) : ScriptedAnimation
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_4:* = _cacheList[param1 + "_" + param2];
-            if (_cacheList[param1 + "_" + param2])
-            {
-                _loc_5 = _loc_4.getAnimation(param3);
-                if (_loc_5)
-                {
-                    return _loc_5;
-                }
-                _loc_7 = Tiphon.skullLibrary.getResourceById(param1, param2);
-                _loc_8 = param2 + "_" + param3;
-                if (_loc_7.hasDefinition(_loc_8))
-                {
-                    _loc_6 = _loc_7.getDefinition(_loc_8) as Class;
-                }
-                else
-                {
-                    _loc_8 = param2 + "_" + TiphonUtility.getFlipDirection(param3);
-                    if (_loc_7.hasDefinition(_loc_8))
-                    {
-                        _loc_6 = _loc_7.getDefinition(_loc_8) as Class;
-                    }
-                }
-                _loc_5 = new _loc_6 as ScriptedAnimation;
-                _loc_5.bone = param1;
-                _loc_5.animationName = param2;
-                _loc_5.direction = param3;
-                _loc_5.inCache = true;
-                return _loc_5;
+               animClass=lib.getDefinition(fullAnimName) as Class;
             }
             else
             {
-                return null;
+               fullAnimName=anim+"_"+TiphonUtility.getFlipDirection(direction);
+               if(lib.hasDefinition(fullAnimName))
+               {
+                  animClass=lib.getDefinition(fullAnimName) as Class;
+               }
             }
-        }// end function
+            scriptedAnimation=new animClass() as ScriptedAnimation;
+            scriptedAnimation.bone=bone;
+            scriptedAnimation.animationName=anim;
+            scriptedAnimation.direction=direction;
+            scriptedAnimation.inCache=true;
+            return scriptedAnimation;
+         }
+         return null;
+      }
 
-        private static function onEnterFrame(event:Event) : void
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            if (_spritesListToRender.length)
+      private static function onEnterFrame(e:Event) : void {
+         var time:* = 0;
+         var spriteInfo:SpriteCacheInfo = null;
+         var sprite:TiphonSprite = null;
+         var currentAnim:String = null;
+         var currentDirection:* = 0;
+         if(_spritesListToRender.length)
+         {
+            time=getTimer();
+            if(time-_lastRender>_waitRender)
             {
-                _loc_2 = getTimer();
-                if (_loc_2 - _lastRender > _waitRender)
-                {
-                    _lastRender = _loc_2;
-                    _loc_3 = _spritesListToRender.shift();
-                    while (_loc_3.sprite.destroyed && _spritesListToRender.length)
-                    {
-                        
-                        _loc_3 = _spritesListToRender.shift();
-                    }
-                    _loc_4 = _loc_3.sprite;
-                    _loc_5 = _loc_4.getAnimation();
-                    _loc_6 = _loc_4.getDirection();
-                    _loc_4.look.updateFrom(_loc_3.look);
-                    _loc_4.setAnimationAndDirection(_loc_5, _loc_6);
-                    if (PerformanceManager.performance == PerformanceManager.NORMAL)
-                    {
-                        _waitRender = 20;
-                    }
-                    else if (PerformanceManager.performance == PerformanceManager.LIMITED)
-                    {
-                        _waitRender = 200;
-                    }
-                    else
-                    {
-                        _waitRender = 500;
-                    }
-                }
+               _lastRender=time;
+               spriteInfo=_spritesListToRender.shift();
+               while((spriteInfo.sprite.destroyed)&&(_spritesListToRender.length))
+               {
+                  spriteInfo=_spritesListToRender.shift();
+               }
+               sprite=spriteInfo.sprite;
+               currentAnim=sprite.getAnimation();
+               currentDirection=sprite.getDirection();
+               sprite.look.updateFrom(spriteInfo.look);
+               sprite.setAnimationAndDirection(currentAnim,currentDirection);
+               if(PerformanceManager.performance==PerformanceManager.NORMAL)
+               {
+                  _waitRender=20;
+               }
+               else
+               {
+                  if(PerformanceManager.performance==PerformanceManager.LIMITED)
+                  {
+                     _waitRender=200;
+                  }
+                  else
+                  {
+                     _waitRender=500;
+                  }
+               }
             }
-            else
-            {
-                StageShareManager.stage.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-                _processing = false;
-            }
-            return;
-        }// end function
+         }
+         else
+         {
+            StageShareManager.stage.removeEventListener(Event.ENTER_FRAME,onEnterFrame);
+            _processing=false;
+         }
+      }
 
-        private static function checkRessourceState() : void
-        {
-            return;
-        }// end function
+      private static function checkRessourceState() : void {
+         
+      }
 
-        private static function onRenderFail() : void
-        {
-            return;
-        }// end function
+      private static function onRenderFail() : void {
+         
+      }
 
-    }
+
+   }
+
 }

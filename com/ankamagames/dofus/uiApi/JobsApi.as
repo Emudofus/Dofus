@@ -1,505 +1,473 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.datacenter.items.*;
-    import com.ankamagames.dofus.datacenter.jobs.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.internalDatacenter.jobs.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.job.*;
-    import com.ankamagames.dofus.network.types.game.interactive.*;
-    import com.ankamagames.dofus.network.types.game.interactive.skill.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.dofus.logic.game.common.frames.JobsFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.internalDatacenter.jobs.KnownJob;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.datacenter.jobs.Job;
+   import com.ankamagames.dofus.network.types.game.interactive.skill.SkillActionDescription;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.job.JobDescription;
+   import com.ankamagames.dofus.datacenter.jobs.Skill;
+   import com.ankamagames.dofus.network.types.game.interactive.skill.SkillActionDescriptionCollect;
+   import com.ankamagames.dofus.network.types.game.interactive.skill.SkillActionDescriptionCraft;
+   import com.ankamagames.dofus.datacenter.items.Item;
+   import com.ankamagames.dofus.datacenter.items.ItemType;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.job.JobExperience;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.datacenter.jobs.Recipe;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.dofus.internalDatacenter.jobs.RecipeWithSkill;
+   import com.ankamagames.dofus.misc.utils.GameDataQuery;
+   import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
+   import com.ankamagames.dofus.network.types.game.interactive.InteractiveElementSkill;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class JobsApi extends Object implements IApi
-    {
-        protected var _log:Logger;
-        private var _module:UiModule;
 
-        public function JobsApi()
-        {
-            this._log = Log.getLogger(getQualifiedClassName(JobsApi));
-            return;
-        }// end function
+   public class JobsApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function JobsApi() {
+         this._log=Log.getLogger(getQualifiedClassName(JobsApi));
+         super();
+      }
 
-        private function get jobsFrame() : JobsFrame
-        {
-            return Kernel.getWorker().getFrame(JobsFrame) as JobsFrame;
-        }// end function
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
 
-        public function getKnownJobs() : Array
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            if (!PlayedCharacterManager.getInstance().jobs)
-            {
-                return null;
-            }
-            var _loc_1:* = new Array();
-            var _loc_2:* = new Array();
-            for each (_loc_3 in PlayedCharacterManager.getInstance().jobs)
-            {
-                
-                if (_loc_3 == null)
-                {
-                    continue;
-                }
-                _loc_1[_loc_3.jobPosition] = Job.getJobById(_loc_3.jobDescription.jobId);
-            }
-            _loc_4 = 0;
-            _loc_5 = 0;
-            while (_loc_5 < 6)
-            {
-                
-                if (_loc_1[_loc_5] && _loc_1[_loc_5].specializationOfId == 0)
-                {
-                    _loc_2.push(_loc_1[_loc_5]);
-                }
-                _loc_5 = _loc_5 + 1;
-            }
-            var _loc_6:* = 0;
-            while (_loc_6 < 6)
-            {
-                
-                if (_loc_1[_loc_6] && _loc_1[_loc_6].specializationOfId > 0)
-                {
-                    _loc_2[3 + _loc_4] = _loc_1[_loc_6];
-                    _loc_4 = _loc_4 + 1;
-                }
-                _loc_6 = _loc_6 + 1;
-            }
-            return _loc_2;
-        }// end function
+      protected var _log:Logger;
 
-        public function getJobSkills(param1:Job) : Array
-        {
-            var _loc_5:* = null;
-            var _loc_2:* = this.getJobDescription(param1.id);
-            if (!_loc_2)
-            {
-                return null;
-            }
-            var _loc_3:* = new Array(_loc_2.skills.length);
-            var _loc_4:* = 0;
-            for each (_loc_5 in _loc_2.skills)
-            {
-                
-                _loc_3[++_loc_4] = Skill.getSkillById(_loc_5.skillId);
-            }
-            return _loc_3;
-        }// end function
+      private var _module:UiModule;
 
-        public function getJobSkillType(param1:Job, param2:Skill) : String
-        {
-            var _loc_3:* = this.getJobDescription(param1.id);
-            if (!_loc_3)
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
+
+      private function get jobsFrame() : JobsFrame {
+         return Kernel.getWorker().getFrame(JobsFrame) as JobsFrame;
+      }
+
+      public function destroy() : void {
+         this._module=null;
+      }
+
+      public function getKnownJobs() : Array {
+         var kj:KnownJob = null;
+         var incr:uint = 0;
+         var iJ:uint = 0;
+         if(!PlayedCharacterManager.getInstance().jobs)
+         {
+            return null;
+         }
+         var knownJobs:Array = new Array();
+         var result:Array = new Array();
+         for each (kj in PlayedCharacterManager.getInstance().jobs)
+         {
+            if(kj==null)
             {
-                return "unknown";
             }
-            var _loc_4:* = this.getSkillActionDescription(_loc_3, param2.id);
-            if (!this.getSkillActionDescription(_loc_3, param2.id))
+            else
             {
-                return "unknown";
+               knownJobs[kj.jobPosition]=Job.getJobById(kj.jobDescription.jobId);
             }
-            switch(true)
+         }
+         incr=0;
+         iJ=0;
+         while(iJ<6)
+         {
+            if((knownJobs[iJ])&&(knownJobs[iJ].specializationOfId==0))
             {
-                case _loc_4 is SkillActionDescriptionCollect:
-                {
-                    return "collect";
-                }
-                case _loc_4 is SkillActionDescriptionCraft:
-                {
-                    return "craft";
-                }
-                default:
-                {
-                    break;
-                }
+               result.push(knownJobs[iJ]);
             }
-            this._log.warn("Unknown SkillActionDescription type : " + _loc_4);
+            iJ++;
+         }
+         var iJ2:uint = 0;
+         while(iJ2<6)
+         {
+            if((knownJobs[iJ2])&&(knownJobs[iJ2].specializationOfId<0))
+            {
+               result[3+incr]=knownJobs[iJ2];
+               incr++;
+            }
+            iJ2++;
+         }
+         return result;
+      }
+
+      public function getJobSkills(job:Job) : Array {
+         var sd:SkillActionDescription = null;
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
+         {
+            return null;
+         }
+         var jobSkills:Array = new Array(jd.skills.length);
+         var index:uint = 0;
+         for each (sd in jd.skills)
+         {
+            jobSkills[index++]=Skill.getSkillById(sd.skillId);
+         }
+         return jobSkills;
+      }
+
+      public function getJobSkillType(job:Job, skill:Skill) : String {
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
+         {
             return "unknown";
-        }// end function
+         }
+         var sd:SkillActionDescription = this.getSkillActionDescription(jd,skill.id);
+         if(!sd)
+         {
+            return "unknown";
+         }
+         switch(true)
+         {
+            case sd is SkillActionDescriptionCollect:
+               return "collect";
+            case sd is SkillActionDescriptionCraft:
+               return "craft";
+            default:
+               this._log.warn("Unknown SkillActionDescription type : "+sd);
+               return "unknown";
+         }
+      }
 
-        public function getJobCollectSkillInfos(param1:Job, param2:Skill) : Object
-        {
-            var _loc_3:* = this.getJobDescription(param1.id);
-            if (!_loc_3)
-            {
-                return null;
-            }
-            var _loc_4:* = this.getSkillActionDescription(_loc_3, param2.id);
-            if (!this.getSkillActionDescription(_loc_3, param2.id))
-            {
-                return null;
-            }
-            if (!(_loc_4 is SkillActionDescriptionCollect))
-            {
-                return null;
-            }
-            var _loc_5:* = _loc_4 as SkillActionDescriptionCollect;
-            var _loc_6:* = new Object();
-            new Object().time = _loc_5.time / 10;
-            _loc_6.minResources = _loc_5.min;
-            _loc_6.maxResources = _loc_5.max;
-            _loc_6.resourceItem = Item.getItemById(param2.gatheredRessourceItem);
-            return _loc_6;
-        }// end function
-
-        public function getMaxSlotsByJobId(param1:int) : int
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_2:* = this.getJobDescription(param1);
-            var _loc_3:* = 0;
-            if (!_loc_2)
-            {
-                return 0;
-            }
-            for each (_loc_4 in _loc_2.skills)
-            {
-                
-                if (_loc_4 is SkillActionDescriptionCraft)
-                {
-                    _loc_5 = _loc_4 as SkillActionDescriptionCraft;
-                    if (_loc_5.maxSlots > _loc_3)
-                    {
-                        _loc_3 = _loc_5.maxSlots;
-                    }
-                }
-            }
-            return _loc_3;
-        }// end function
-
-        public function getJobCraftSkillInfos(param1:Job, param2:Skill) : Object
-        {
-            var _loc_8:* = null;
-            var _loc_3:* = this.getJobDescription(param1.id);
-            if (!_loc_3)
-            {
-                return null;
-            }
-            var _loc_4:* = this.getSkillActionDescription(_loc_3, param2.id);
-            if (!this.getSkillActionDescription(_loc_3, param2.id))
-            {
-                return null;
-            }
-            if (!(_loc_4 is SkillActionDescriptionCraft))
-            {
-                return null;
-            }
-            var _loc_5:* = _loc_4 as SkillActionDescriptionCraft;
-            var _loc_6:* = new Object();
-            new Object().maxSlots = _loc_5.maxSlots;
-            _loc_6.probability = _loc_5.probability;
-            if (_loc_4 is SkillActionDescriptionCraftExtended)
-            {
-                _loc_8 = _loc_4 as SkillActionDescriptionCraftExtended;
-                _loc_6.thresholdSlots = _loc_8.thresholdSlots;
-            }
-            if (param2.modifiableItemType > -1)
-            {
-                _loc_6.modifiableItemType = ItemType.getItemTypeById(param2.modifiableItemType);
-            }
-            if (!(_loc_5 is SkillActionDescriptionCraftExtended))
-            {
-                return _loc_6;
-            }
-            var _loc_7:* = _loc_5 as SkillActionDescriptionCraftExtended;
-            _loc_6.thresholdSlots = _loc_7.thresholdSlots;
-            return _loc_6;
-        }// end function
-
-        public function getJobExperience(param1:Job) : Object
-        {
-            var _loc_2:* = this.getJobExp(param1.id);
-            if (!_loc_2)
-            {
-                return null;
-            }
-            var _loc_3:* = new Object();
-            _loc_3.currentLevel = _loc_2.jobLevel;
-            _loc_3.currentExperience = _loc_2.jobXP;
-            _loc_3.levelExperienceFloor = _loc_2.jobXpLevelFloor;
-            _loc_3.levelExperienceCeil = _loc_2.jobXpNextLevelFloor;
-            return _loc_3;
-        }// end function
-
-        public function getSkillFromId(param1:int) : Object
-        {
-            return Skill.getSkillById(param1);
-        }// end function
-
-        public function getJobRecipes(param1:Job, param2:Array = null, param3:Skill = null, param4:String = null) : Array
-        {
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            var _loc_11:* = 0;
-            var _loc_12:* = false;
-            var _loc_13:* = 0;
-            var _loc_14:* = 0;
-            var _loc_15:* = null;
-            var _loc_5:* = this.getJobDescription(param1.id);
-            if (!this.getJobDescription(param1.id))
-            {
-                return null;
-            }
-            if (param4)
-            {
-                param4 = param4.toLowerCase();
-            }
-            var _loc_6:* = new Array();
-            if (param2)
-            {
-                param2.sort(Array.NUMERIC);
-            }
-            for each (_loc_7 in _loc_5.skills)
-            {
-                
-                if (param3 && _loc_7.skillId != param3.id)
-                {
-                    continue;
-                }
-                _loc_8 = Skill.getSkillById(_loc_7.skillId).craftableItemIds;
-                for each (_loc_9 in _loc_8)
-                {
-                    
-                    _loc_10 = Recipe.getRecipeByResultId(_loc_9);
-                    if (!_loc_10)
-                    {
-                        continue;
-                    }
-                    _loc_11 = _loc_10.ingredientIds.length;
-                    _loc_12 = false;
-                    if (param2)
-                    {
-                        _loc_13 = 0;
-                        while (_loc_13 < param2.length)
-                        {
-                            
-                            _loc_14 = param2[_loc_13];
-                            if (_loc_14 == _loc_11)
-                            {
-                                _loc_12 = true;
-                            }
-                            else if (_loc_14 > _loc_11)
-                            {
-                                break;
-                            }
-                            _loc_13 = _loc_13 + 1;
-                        }
-                    }
-                    else
-                    {
-                        _loc_12 = true;
-                    }
-                    if (_loc_12)
-                    {
-                        if (param4)
-                        {
-                            if (StringUtils.noAccent(Item.getItemById(_loc_9).name).toLowerCase().indexOf(StringUtils.noAccent(param4)) != -1)
-                            {
-                                _loc_6.push(new RecipeWithSkill(_loc_10, Skill.getSkillById(_loc_7.skillId)));
-                            }
-                            else
-                            {
-                                for each (_loc_15 in _loc_10.ingredients)
-                                {
-                                    
-                                    if (StringUtils.noAccent(_loc_15.name).toLowerCase().indexOf(StringUtils.noAccent(param4)) != -1)
-                                    {
-                                        _loc_6.push(new RecipeWithSkill(_loc_10, Skill.getSkillById(_loc_7.skillId)));
-                                    }
-                                }
-                            }
-                            continue;
-                        }
-                        _loc_6.push(new RecipeWithSkill(_loc_10, Skill.getSkillById(_loc_7.skillId)));
-                    }
-                }
-            }
-            _loc_6.sort(this.skillSortFunction);
-            return _loc_6;
-        }// end function
-
-        public function getRecipe(param1:uint) : Recipe
-        {
-            return Recipe.getRecipeByResultId(param1);
-        }// end function
-
-        public function getRecipesList(param1:uint) : Array
-        {
-            var _loc_2:* = Item.getItemById(param1).recipes;
-            if (_loc_2)
-            {
-                return _loc_2;
-            }
-            return new Array();
-        }// end function
-
-        public function getJobName(param1:uint) : String
-        {
-            return Job.getJobById(param1).name;
-        }// end function
-
-        public function getJob(param1:uint) : Object
-        {
-            return Job.getJobById(param1);
-        }// end function
-
-        public function getJobCrafterDirectorySettingsById(param1:uint) : Object
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this.jobsFrame.settings)
-            {
-                
-                if (_loc_2 && param1 == _loc_2.jobId)
-                {
-                    return _loc_2;
-                }
-            }
+      public function getJobCollectSkillInfos(job:Job, skill:Skill) : Object {
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
+         {
             return null;
-        }// end function
-
-        public function getJobCrafterDirectorySettingsByIndex(param1:uint) : Object
-        {
-            return this.jobsFrame.settings[param1];
-        }// end function
-
-        public function getUsableSkillsInMap(param1:int) : Array
-        {
-            var _loc_6:* = false;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_2:* = new Array();
-            var _loc_3:* = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-            var _loc_4:* = _loc_3.entitiesFrame.interactiveElements;
-            var _loc_5:* = _loc_3.getMultiCraftSkills(param1);
-            for each (_loc_7 in _loc_5)
-            {
-                
-                _loc_6 = false;
-                for each (_loc_8 in _loc_4)
-                {
-                    
-                    for each (_loc_9 in _loc_8.enabledSkills)
-                    {
-                        
-                        if (_loc_7 == _loc_9.skillId && _loc_2.indexOf(_loc_9.skillId) == -1)
-                        {
-                            _loc_6 = true;
-                            break;
-                        }
-                    }
-                    if (_loc_6)
-                    {
-                        break;
-                    }
-                }
-                if (_loc_6)
-                {
-                    _loc_2.push(Skill.getSkillById(_loc_7));
-                }
-            }
-            return _loc_2;
-        }// end function
-
-        public function getKnownJob(param1:uint) : KnownJob
-        {
-            if (!PlayedCharacterManager.getInstance().jobs)
-            {
-                return null;
-            }
-            var _loc_2:* = PlayedCharacterManager.getInstance().jobs[param1] as KnownJob;
-            if (!_loc_2)
-            {
-                return null;
-            }
-            return _loc_2;
-        }// end function
-
-        private function skillSortFunction(param1:RecipeWithSkill, param2:RecipeWithSkill) : Number
-        {
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_3:* = param1.recipe.quantities.length;
-            var _loc_4:* = param2.recipe.quantities.length;
-            if (_loc_3 > _loc_4)
-            {
-                return -1;
-            }
-            if (_loc_3 == _loc_4)
-            {
-                _loc_5 = param1.recipe.resultLevel;
-                _loc_6 = param2.recipe.resultLevel;
-                if (_loc_5 > _loc_6)
-                {
-                    return -1;
-                }
-                if (_loc_5 == _loc_6)
-                {
-                    return 0;
-                }
-                return 1;
-            }
-            return 1;
-        }// end function
-
-        private function getJobDescription(param1:uint) : JobDescription
-        {
-            var _loc_2:* = this.getKnownJob(param1);
-            if (!_loc_2)
-            {
-                return null;
-            }
-            return _loc_2.jobDescription;
-        }// end function
-
-        private function getJobExp(param1:uint) : JobExperience
-        {
-            var _loc_2:* = this.getKnownJob(param1);
-            if (!_loc_2)
-            {
-                return null;
-            }
-            return _loc_2.jobExperience;
-        }// end function
-
-        private function getSkillActionDescription(param1:JobDescription, param2:uint) : SkillActionDescription
-        {
-            var _loc_3:* = null;
-            for each (_loc_3 in param1.skills)
-            {
-                
-                if (_loc_3.skillId == param2)
-                {
-                    return _loc_3;
-                }
-            }
+         }
+         var sd:SkillActionDescription = this.getSkillActionDescription(jd,skill.id);
+         if(!sd)
+         {
             return null;
-        }// end function
+         }
+         if(!(sd is SkillActionDescriptionCollect))
+         {
+            return null;
+         }
+         var sdc:SkillActionDescriptionCollect = sd as SkillActionDescriptionCollect;
+         var infos:Object = new Object();
+         infos.time=sdc.time/10;
+         infos.minResources=sdc.min;
+         infos.maxResources=sdc.max;
+         infos.resourceItem=Item.getItemById(skill.gatheredRessourceItem);
+         return infos;
+      }
 
-    }
+      public function getMaxSlotsByJobId(jobId:int) : int {
+         var sd:SkillActionDescription = null;
+         var sdc:SkillActionDescriptionCraft = null;
+         var jd:JobDescription = this.getJobDescription(jobId);
+         var max:int = 0;
+         if(!jd)
+         {
+            return 0;
+         }
+         for each (sd in jd.skills)
+         {
+            if(sd is SkillActionDescriptionCraft)
+            {
+               sdc=sd as SkillActionDescriptionCraft;
+               if(sdc.maxSlots>max)
+               {
+                  max=sdc.maxSlots;
+               }
+            }
+         }
+         return max;
+      }
+
+      public function getJobCraftSkillInfos(job:Job, skill:Skill) : Object {
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
+         {
+            return null;
+         }
+         var sd:SkillActionDescription = this.getSkillActionDescription(jd,skill.id);
+         if(!sd)
+         {
+            return null;
+         }
+         if(!(sd is SkillActionDescriptionCraft))
+         {
+            return null;
+         }
+         var sdc:SkillActionDescriptionCraft = sd as SkillActionDescriptionCraft;
+         var infos:Object = new Object();
+         infos.maxSlots=sdc.maxSlots;
+         infos.probability=sdc.probability;
+         if(skill.modifiableItemType>-1)
+         {
+            infos.modifiableItemType=ItemType.getItemTypeById(skill.modifiableItemType);
+         }
+         return infos;
+      }
+
+      public function getJobExperience(job:Job) : Object {
+         var je:JobExperience = this.getJobExp(job.id);
+         if(!je)
+         {
+            return null;
+         }
+         var xp:Object = new Object();
+         xp.currentLevel=je.jobLevel;
+         xp.currentExperience=je.jobXP;
+         xp.levelExperienceFloor=je.jobXpLevelFloor;
+         xp.levelExperienceCeil=je.jobXpNextLevelFloor;
+         return xp;
+      }
+
+      public function getSkillFromId(skillId:int) : Object {
+         return Skill.getSkillById(skillId);
+      }
+
+      public function getJobRecipes(job:Job, validSlotsCount:Array=null, skill:Skill=null, search:String=null) : Array {
+         var sd:SkillActionDescription = null;
+         var vectoruint:Vector.<uint> = null;
+         var tempSortedArray:Object = null;
+         var recipeWithSkill:Object = null;
+         var recipeId:uint = 0;
+         var craftables:Vector.<int> = null;
+         var result:* = 0;
+         var recipe:Recipe = null;
+         var recipeSlots:uint = 0;
+         var allowed:* = false;
+         var i:uint = 0;
+         var allowedCount:uint = 0;
+         var ingredient:ItemWrapper = null;
+         var jd:JobDescription = this.getJobDescription(job.id);
+         if(!jd)
+         {
+            return null;
+         }
+         if(search)
+         {
+            search=search.toLowerCase();
+         }
+         var recipes:Dictionary = new Dictionary(true);
+         var recipesResult:Array = new Array();
+         if(validSlotsCount)
+         {
+            validSlotsCount.sort(Array.NUMERIC);
+         }
+         for each (sd in jd.skills)
+         {
+            if((skill)&&(!(sd.skillId==skill.id)))
+            {
+            }
+            else
+            {
+               craftables=Skill.getSkillById(sd.skillId).craftableItemIds;
+               for each (result in craftables)
+               {
+                  recipe=Recipe.getRecipeByResultId(result);
+                  if(!recipe)
+                  {
+                  }
+                  else
+                  {
+                     recipeSlots=recipe.ingredientIds.length;
+                     allowed=false;
+                     if(validSlotsCount)
+                     {
+                        i=0;
+                        while(i<validSlotsCount.length)
+                        {
+                           allowedCount=validSlotsCount[i];
+                           if(allowedCount==recipeSlots)
+                           {
+                              allowed=true;
+                           }
+                           else
+                           {
+                              if(allowedCount>recipeSlots)
+                              {
+                                 break;
+                              }
+                           }
+                           i++;
+                        }
+                     }
+                     else
+                     {
+                        allowed=true;
+                     }
+                     if(allowed)
+                     {
+                        if(search)
+                        {
+                           if(StringUtils.noAccent(Item.getItemById(result).name).toLowerCase().indexOf(StringUtils.noAccent(search))!=-1)
+                           {
+                              recipes[recipe.resultId]=new RecipeWithSkill(recipe,Skill.getSkillById(sd.skillId));
+                           }
+                           else
+                           {
+                              for each (ingredient in recipe.ingredients)
+                              {
+                                 if(StringUtils.noAccent(ingredient.name).toLowerCase().indexOf(StringUtils.noAccent(search))!=-1)
+                                 {
+                                    recipes[recipe.resultId]=new RecipeWithSkill(recipe,Skill.getSkillById(sd.skillId));
+                                 }
+                              }
+                           }
+                        }
+                        else
+                        {
+                           recipes[recipe.resultId]=new RecipeWithSkill(recipe,Skill.getSkillById(sd.skillId));
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         vectoruint=new Vector.<uint>();
+         for each (recipeWithSkill in recipes)
+         {
+            if(recipeWithSkill)
+            {
+               vectoruint.push(recipeWithSkill.recipe.resultId);
+            }
+         }
+         tempSortedArray=GameDataQuery.sort(Item,vectoruint,["recipeSlots","level","name"],[false,false,true]);
+         for each (recipeId in tempSortedArray)
+         {
+            recipesResult.push(recipes[recipeId]);
+         }
+         return recipesResult;
+      }
+
+      public function getRecipe(objectId:uint) : Recipe {
+         return Recipe.getRecipeByResultId(objectId);
+      }
+
+      public function getRecipesList(objectId:uint) : Array {
+         var recipeList:Array = Item.getItemById(objectId).recipes;
+         if(recipeList)
+         {
+            return recipeList;
+         }
+         return new Array();
+      }
+
+      public function getJobName(pJobId:uint) : String {
+         return Job.getJobById(pJobId).name;
+      }
+
+      public function getJob(pJobId:uint) : Object {
+         return Job.getJobById(pJobId);
+      }
+
+      public function getJobCrafterDirectorySettingsById(jobId:uint) : Object {
+         var job:Object = null;
+         for each (job in this.jobsFrame.settings)
+         {
+            if((job)&&(jobId==job.jobId))
+            {
+               return job;
+            }
+         }
+         return null;
+      }
+
+      public function getJobCrafterDirectorySettingsByIndex(jobIndex:uint) : Object {
+         return this.jobsFrame.settings[jobIndex];
+      }
+
+      public function getUsableSkillsInMap(playerId:int) : Array {
+         var hasSkill:* = false;
+         var skillId:uint = 0;
+         var ie:InteractiveElement = null;
+         var interactiveSkill:InteractiveElementSkill = null;
+         var interactiveSkill2:InteractiveElementSkill = null;
+         var usableSkills:Array = new Array();
+         var rpContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         var ies:Vector.<InteractiveElement> = rpContextFrame.entitiesFrame.interactiveElements;
+         var skills:Vector.<uint> = rpContextFrame.getMultiCraftSkills(playerId);
+         for each (skillId in skills)
+         {
+            hasSkill=false;
+            for each (ie in ies)
+            {
+               for each (interactiveSkill in ie.enabledSkills)
+               {
+                  if((skillId==interactiveSkill.skillId)&&(usableSkills.indexOf(interactiveSkill.skillId)==-1))
+                  {
+                     hasSkill=true;
+                     break;
+                  }
+               }
+               for each (interactiveSkill2 in ie.disabledSkills)
+               {
+                  if((skillId==interactiveSkill2.skillId)&&(usableSkills.indexOf(interactiveSkill2.skillId)==-1))
+                  {
+                     hasSkill=true;
+                     break;
+                  }
+               }
+               if(hasSkill)
+               {
+                  break;
+               }
+            }
+            if(hasSkill)
+            {
+               usableSkills.push(Skill.getSkillById(skillId));
+            }
+         }
+         return usableSkills;
+      }
+
+      public function getKnownJob(jobId:uint) : KnownJob {
+         if(!PlayedCharacterManager.getInstance().jobs)
+         {
+            return null;
+         }
+         var kj:KnownJob = PlayedCharacterManager.getInstance().jobs[jobId] as KnownJob;
+         if(!kj)
+         {
+            return null;
+         }
+         return kj;
+      }
+
+      private function getJobDescription(jobId:uint) : JobDescription {
+         var kj:KnownJob = this.getKnownJob(jobId);
+         if(!kj)
+         {
+            return null;
+         }
+         return kj.jobDescription;
+      }
+
+      private function getJobExp(jobId:uint) : JobExperience {
+         var kj:KnownJob = this.getKnownJob(jobId);
+         if(!kj)
+         {
+            return null;
+         }
+         return kj.jobExperience;
+      }
+
+      private function getSkillActionDescription(jd:JobDescription, skillId:uint) : SkillActionDescription {
+         var sd:SkillActionDescription = null;
+         for each (sd in jd.skills)
+         {
+            if(sd.skillId==skillId)
+            {
+               return sd;
+            }
+         }
+         return null;
+      }
+   }
+
 }

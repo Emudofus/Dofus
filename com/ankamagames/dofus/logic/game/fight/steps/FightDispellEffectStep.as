@@ -1,32 +1,65 @@
-﻿package com.ankamagames.dofus.logic.game.fight.steps
+package com.ankamagames.dofus.logic.game.fight.steps
 {
-    import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.dofus.logic.game.fight.steps.*;
-    import com.ankamagames.jerakine.sequencer.*;
+   import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.jerakine.sequencer.ISequencableListener;
+   import com.ankamagames.dofus.logic.game.fight.types.StateBuff;
+   import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
+   import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
 
-    public class FightDispellEffectStep extends AbstractSequencable implements IFightStep
-    {
-        private var _fighterId:int;
-        private var _boostUID:int;
 
-        public function FightDispellEffectStep(param1:int, param2:int)
-        {
-            this._fighterId = param1;
-            this._boostUID = param2;
-            return;
-        }// end function
+   public class FightDispellEffectStep extends AbstractSequencable implements IFightStep, ISequencableListener
+   {
+         
 
-        public function get stepType() : String
-        {
-            return "dispellEffect";
-        }// end function
+      public function FightDispellEffectStep(fighterId:int, boostUID:int) {
+         super();
+         this._fighterId=fighterId;
+         this._boostUID=boostUID;
+      }
 
-        override public function start() : void
-        {
-            BuffManager.getInstance().dispellUniqueBuff(this._fighterId, this._boostUID, true, false, true);
+
+
+      private var _fighterId:int;
+
+      private var _boostUID:int;
+
+      private var _virtualStep:IFightStep;
+
+      public function get stepType() : String {
+         return "dispellEffect";
+      }
+
+      override public function start() : void {
+         var sb:StateBuff = null;
+         var buff:BasicBuff = BuffManager.getInstance().getBuff(this._boostUID,this._fighterId);
+         if((buff)&&(buff is StateBuff))
+         {
+            sb=buff as StateBuff;
+            if(sb.actionId==952)
+            {
+               this._virtualStep=new FightEnteringStateStep(sb.targetId,sb.stateId,sb.effects.durationString);
+            }
+            else
+            {
+               this._virtualStep=new FightLeavingStateStep(sb.targetId,sb.stateId);
+            }
+         }
+         BuffManager.getInstance().dispellUniqueBuff(this._fighterId,this._boostUID,true,false,true);
+         if(!this._virtualStep)
+         {
             executeCallbacks();
-            return;
-        }// end function
+         }
+         else
+         {
+            this._virtualStep.addListener(this);
+            this._virtualStep.start();
+         }
+      }
 
-    }
+      public function stepFinished() : void {
+         this._virtualStep.removeListener(this);
+         executeCallbacks();
+      }
+   }
+
 }

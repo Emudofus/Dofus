@@ -1,83 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSellInBid;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeBidHouseItemAddOkMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var itemInfo:ObjectItemToSellInBid;
-        public static const protocolId:uint = 5945;
 
-        public function ExchangeBidHouseItemAddOkMessage()
-        {
-            this.itemInfo = new ObjectItemToSellInBid();
-            return;
-        }// end function
+   public class ExchangeBidHouseItemAddOkMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeBidHouseItemAddOkMessage() {
+         this.itemInfo=new ObjectItemToSellInBid();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5945;
-        }// end function
+      public static const protocolId:uint = 5945;
 
-        public function initExchangeBidHouseItemAddOkMessage(param1:ObjectItemToSellInBid = null) : ExchangeBidHouseItemAddOkMessage
-        {
-            this.itemInfo = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.itemInfo = new ObjectItemToSellInBid();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var itemInfo:ObjectItemToSellInBid;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5945;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeBidHouseItemAddOkMessage(param1);
-            return;
-        }// end function
+      public function initExchangeBidHouseItemAddOkMessage(itemInfo:ObjectItemToSellInBid=null) : ExchangeBidHouseItemAddOkMessage {
+         this.itemInfo=itemInfo;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ExchangeBidHouseItemAddOkMessage(param1:IDataOutput) : void
-        {
-            this.itemInfo.serializeAs_ObjectItemToSellInBid(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.itemInfo=new ObjectItemToSellInBid();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeBidHouseItemAddOkMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ExchangeBidHouseItemAddOkMessage(param1:IDataInput) : void
-        {
-            this.itemInfo = new ObjectItemToSellInBid();
-            this.itemInfo.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseItemAddOkMessage(output);
+      }
+
+      public function serializeAs_ExchangeBidHouseItemAddOkMessage(output:IDataOutput) : void {
+         this.itemInfo.serializeAs_ObjectItemToSellInBid(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseItemAddOkMessage(input);
+      }
+
+      public function deserializeAs_ExchangeBidHouseItemAddOkMessage(input:IDataInput) : void {
+         this.itemInfo=new ObjectItemToSellInBid();
+         this.itemInfo.deserialize(input);
+      }
+   }
+
 }

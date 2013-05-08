@@ -1,656 +1,656 @@
-Ôªøpackage com.ankamagames.berilia.components
+package com.ankamagames.berilia.components
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.messages.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.graphic.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.events.*;
-    import com.ankamagames.tiphon.sequence.*;
-    import com.ankamagames.tiphon.types.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.types.graphic.GraphicContainer;
+   import com.ankamagames.berilia.UIComponent;
+   import com.ankamagames.jerakine.interfaces.IRectangle;
+   import flash.utils.Dictionary;
+   import com.ankamagames.tiphon.types.IAnimationModifier;
+   import com.ankamagames.tiphon.types.ISubEntityBehavior;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import flash.display.Shape;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
+   import flash.events.MouseEvent;
+   import com.ankamagames.jerakine.sequencer.SerialSequencer;
+   import com.ankamagames.tiphon.sequence.SetDirectionStep;
+   import com.ankamagames.tiphon.sequence.PlayAnimationStep;
+   import com.ankamagames.tiphon.sequence.SetAnimationStep;
+   import flash.geom.Point;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.tiphon.events.TiphonEvent;
+   import flash.events.Event;
+   import flash.geom.Rectangle;
+   import com.ankamagames.tiphon.types.DisplayInfoSprite;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.berilia.components.messages.EntityReadyMessage;
+   import flash.display.InteractiveObject;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import flash.geom.ColorTransform;
 
-    public class EntityDisplayer extends GraphicContainer implements UIComponent, IRectangle
-    {
-        private var _entity:TiphonSprite;
-        private var _oldEntity:TiphonSprite;
-        private var _direction:uint = 1;
-        private var _animation:String = "AnimStatique";
-        private var _view:String;
-        private var _scale:Number = 1;
-        private var _mask:Shape;
-        private var _mask2:Shape;
-        private var _lookUpdate:TiphonEntityLook;
-        private var _listenForUpdate:Boolean = false;
-        private var _waitingForEquipement:Array;
-        private var _skipResize:Boolean = false;
-        private var _staticDisplay:Boolean = false;
-        private var _useCache:Boolean = false;
-        private var _fromCache:Boolean = false;
-        private var _cache:Object;
-        private var _gotoAndStop:int = 0;
-        private var _originalScaleX:Number;
-        private var _originalScaleY:Number;
-        public var yOffset:uint = 0;
-        public var xOffset:uint = 0;
-        public var autoSize:Boolean = true;
-        public var useFade:Boolean = true;
-        public var clearSubEntities:Boolean = true;
-        public var clearAuras:Boolean = true;
-        public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-        public static var animationModifier:IAnimationModifier;
-        public static var lookAdaptater:Function;
-        private static const _subEntitiesBehaviors:Dictionary = new Dictionary();
 
-        public function EntityDisplayer()
-        {
-            this._waitingForEquipement = new Array();
-            mouseChildren = false;
-            MEMORY_LOG[this] = 1;
-            return;
-        }// end function
+   public class EntityDisplayer extends GraphicContainer implements UIComponent, IRectangle
+   {
+         
 
-        public function set look(param1) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (lookAdaptater != null)
+      public function EntityDisplayer() {
+         this._waitingForEquipement=new Array();
+         super();
+         mouseChildren=false;
+         MEMORY_LOG[this]=1;
+      }
+
+      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+
+      public static var animationModifier:IAnimationModifier;
+
+      public static var lookAdaptater:Function;
+
+      private static const _subEntitiesBehaviors:Dictionary = new Dictionary();
+
+      public static function setSubEntityDefaultBehavior(category:uint, behavior:ISubEntityBehavior) : void {
+         _subEntitiesBehaviors[category]=behavior;
+      }
+
+      private var _entity:TiphonSprite;
+
+      private var _oldEntity:TiphonSprite;
+
+      private var _direction:uint = 1;
+
+      private var _animation:String = "AnimStatique";
+
+      private var _view:String;
+
+      private var _scale:Number = 1;
+
+      private var _mask:Shape;
+
+      private var _mask2:Shape;
+
+      private var _lookUpdate:TiphonEntityLook;
+
+      private var _listenForUpdate:Boolean = false;
+
+      private var _waitingForEquipement:Array;
+
+      private var _skipResize:Boolean = false;
+
+      private var _staticDisplay:Boolean = false;
+
+      private var _useCache:Boolean = false;
+
+      private var _fromCache:Boolean = false;
+
+      private var _cache:Object;
+
+      private var _gotoAndStop:int = 0;
+
+      private var _originalScaleX:Number;
+
+      private var _originalScaleY:Number;
+
+      public var yOffset:uint = 0;
+
+      public var xOffset:uint = 0;
+
+      public var autoSize:Boolean = true;
+
+      public var useFade:Boolean = true;
+
+      public var clearSubEntities:Boolean = true;
+
+      public var clearAuras:Boolean = true;
+
+      public function set look(rawLook:*) : void {
+         var look:TiphonEntityLook = null;
+         var entity:TiphonSprite = null;
+         if(lookAdaptater!=null)
+         {
+            look=lookAdaptater(rawLook);
+         }
+         else
+         {
+            if(rawLook is TiphonEntityLook)
             {
-                _loc_2 = lookAdaptater(param1);
-            }
-            else if (param1 is TiphonEntityLook)
-            {
-                _loc_2 = param1 as TiphonEntityLook;
+               look=rawLook as TiphonEntityLook;
             }
             else
             {
-                throw new ArgumentError();
+               throw new ArgumentError();
             }
-            if (this._entity)
+         }
+         if(this._entity)
+         {
+            this._entity.visible=!(look==null);
+         }
+         if(look!=null)
+         {
+            if(this.clearSubEntities)
             {
-                this._entity.visible = _loc_2 != null;
-            }
-            if (_loc_2 != null)
-            {
-                if (this.clearSubEntities)
-                {
-                    _loc_2.resetSubEntities();
-                }
-                else if (this.clearAuras)
-                {
-                    _loc_2.removeSubEntity(6);
-                }
-            }
-            if (_loc_2 && this._lookUpdate)
-            {
-                if (_loc_2.toString() == this._lookUpdate.toString())
-                {
-                    return;
-                }
-            }
-            this._lookUpdate = _loc_2 ? (_loc_2.clone()) : (_loc_2);
-            if (this._useCache)
-            {
-                _loc_3 = this._cache[_loc_2.toString()];
-                if (_loc_3)
-                {
-                    if (this._entity)
-                    {
-                        this.destroyOldEntity(this._entity);
-                    }
-                    addChild(_loc_3);
-                    this._entity = _loc_3;
-                    this._fromCache = true;
-                    return;
-                }
-            }
-            this._fromCache = false;
-            this._listenForUpdate = true;
-            EnterFrameDispatcher.addEventListener(this.needUpdate, "EntityDisplayerUpdater");
-            return;
-        }// end function
-
-        public function get look() : TiphonEntityLook
-        {
-            return this._entity ? (this._entity.look) : (this._lookUpdate);
-        }// end function
-
-        public function set direction(param1:uint) : void
-        {
-            this._direction = param1;
-            if (!this._listenForUpdate && this._entity is TiphonSprite)
-            {
-                TiphonSprite(this._entity).setDirection(param1);
-            }
-            return;
-        }// end function
-
-        public function set animation(param1:String) : void
-        {
-            this._animation = param1;
-            if (this._entity is TiphonSprite)
-            {
-                TiphonSprite(this._entity).setAnimation(param1);
-            }
-            return;
-        }// end function
-
-        public function set gotoAndStop(param1:int) : void
-        {
-            if (this._entity)
-            {
-                if (param1 == -1)
-                {
-                    this._entity.stopAnimationAtEnd();
-                }
-                else
-                {
-                    this._entity.stopAnimation(param1);
-                }
+               look.resetSubEntities();
             }
             else
             {
-                this._gotoAndStop = param1;
+               if(this.clearAuras)
+               {
+                  look.removeSubEntity(6);
+               }
             }
-            return;
-        }// end function
-
-        public function set staticDisplay(param1:Boolean) : void
-        {
-            this._staticDisplay = param1;
-            return;
-        }// end function
-
-        public function get staticDisplay() : Boolean
-        {
-            return this._staticDisplay;
-        }// end function
-
-        override public function set scale(param1:Number) : void
-        {
-            this._scale = param1;
-            return;
-        }// end function
-
-        override public function get scale() : Number
-        {
-            return this._scale;
-        }// end function
-
-        public function get direction() : uint
-        {
-            return this._direction;
-        }// end function
-
-        public function get animation() : String
-        {
-            return this._animation;
-        }// end function
-
-        public function set view(param1:String) : void
-        {
-            this._view = param1;
-            if (this._entity is TiphonSprite)
+         }
+         if((look)&&(this._lookUpdate))
+         {
+            if(look.toString()==this._lookUpdate.toString())
             {
-                this._entity.setView(param1);
+               return;
             }
-            return;
-        }// end function
-
-        override public function set HandCursor(param1:Boolean) : void
-        {
-            super.HandCursor = param1;
-            if (param1)
+         }
+         this._lookUpdate=look?look.clone():look;
+         if(this._useCache)
+         {
+            entity=this._cache[look.toString()];
+            if(entity)
             {
-                addEventListener(MouseEvent.MOUSE_OVER, this.mouseOver);
-                addEventListener(MouseEvent.MOUSE_OUT, this.mouseOut);
+               if(this._entity)
+               {
+                  this.destroyOldEntity(this._entity);
+               }
+               addChild(entity);
+               this._entity=entity;
+               this._fromCache=true;
+               return;
+            }
+         }
+         this._fromCache=false;
+         this._listenForUpdate=true;
+         EnterFrameDispatcher.addEventListener(this.needUpdate,"EntityDisplayerUpdater");
+      }
+
+      public function get look() : TiphonEntityLook {
+         return this._entity?this._entity.look:this._lookUpdate;
+      }
+
+      public function set direction(n:uint) : void {
+         this._direction=n;
+         if((!this._listenForUpdate)&&(this._entity is TiphonSprite))
+         {
+            TiphonSprite(this._entity).setDirection(n);
+         }
+      }
+
+      public function set animation(anim:String) : void {
+         this._animation=anim;
+         if(this._entity is TiphonSprite)
+         {
+            TiphonSprite(this._entity).setAnimation(anim);
+         }
+      }
+
+      public function set gotoAndStop(value:int) : void {
+         if(this._entity)
+         {
+            if(value==-1)
+            {
+               this._entity.stopAnimationAtEnd();
             }
             else
             {
-                removeEventListener(MouseEvent.MOUSE_OVER, this.mouseOver);
-                removeEventListener(MouseEvent.MOUSE_OUT, this.mouseOut);
+               this._entity.stopAnimation(value);
             }
-            return;
-        }// end function
+         }
+         else
+         {
+            this._gotoAndStop=value;
+         }
+      }
 
-        public function get useCache() : Boolean
-        {
-            return this._useCache;
-        }// end function
+      public function set staticDisplay(b:Boolean) : void {
+         this._staticDisplay=b;
+      }
 
-        public function set useCache(param1:Boolean) : void
-        {
-            this._useCache = param1;
-            if (!this._cache)
+      public function get staticDisplay() : Boolean {
+         return this._staticDisplay;
+      }
+
+      override public function set scale(n:Number) : void {
+         this._scale=n;
+      }
+
+      override public function get scale() : Number {
+         return this._scale;
+      }
+
+      public function get direction() : uint {
+         return this._direction;
+      }
+
+      public function get animation() : String {
+         return this._animation;
+      }
+
+      public function set view(value:String) : void {
+         this._view=value;
+         if(this._entity is TiphonSprite)
+         {
+            this._entity.setView(value);
+         }
+      }
+
+      override public function set HandCursor(value:Boolean) : void {
+         super.HandCursor=value;
+         if(value)
+         {
+            addEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
+            addEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
+         }
+         else
+         {
+            removeEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
+            removeEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
+         }
+      }
+
+      public function get useCache() : Boolean {
+         return this._useCache;
+      }
+
+      public function set useCache(value:Boolean) : void {
+         this._useCache=value;
+         if(!this._cache)
+         {
+            this._cache=new Object();
+         }
+      }
+
+      override public function get cacheAsBitmap() : Boolean {
+         return super.cacheAsBitmap;
+      }
+
+      override public function set cacheAsBitmap(value:Boolean) : void {
+         _log.fatal("Attention : Il ne faut surtout pas utiliser la propriÈtÈ cacheAsBitmap sur les EntityDisplayer. TiphonSprite le gËre dÈj‡.");
+      }
+
+      public function update() : void {
+         this.needUpdate();
+      }
+
+      public function setAnimationAndDirection(anim:String, dir:uint) : void {
+         var seq:SerialSequencer = null;
+         if(!this._fromCache)
+         {
+            this._animation=anim;
+            this._direction=dir;
+            if(this._entity is TiphonSprite)
             {
-                this._cache = new Object();
+               seq=new SerialSequencer();
+               if(this._animation=="AnimStatique")
+               {
+                  TiphonSprite(this._entity).setAnimationAndDirection("AnimStatique",this._direction);
+               }
+               else
+               {
+                  if(this._animation=="AnimArtwork")
+                  {
+                     TiphonSprite(this._entity).setAnimationAndDirection("AnimArtwork",this._direction);
+                  }
+                  else
+                  {
+                     seq.addStep(new SetDirectionStep(TiphonSprite(this._entity),this._direction));
+                     seq.addStep(new PlayAnimationStep(TiphonSprite(this._entity),this._animation,false));
+                     seq.addStep(new SetAnimationStep(TiphonSprite(this._entity),"AnimStatique"));
+                     seq.start();
+                  }
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        override public function get cacheAsBitmap() : Boolean
-        {
-            return super.cacheAsBitmap;
-        }// end function
-
-        override public function set cacheAsBitmap(param1:Boolean) : void
-        {
-            _log.fatal("Attention : Il ne faut surtout pas utiliser la propri√©t√© cacheAsBitmap sur les EntityDisplayer. TiphonSprite le g√®re d√©j√†.");
-            return;
-        }// end function
-
-        public function setAnimationAndDirection(param1:String, param2:uint) : void
-        {
-            var _loc_3:* = null;
-            if (!this._fromCache)
+      public function equipCharacter(list:Array, numDelete:int=0) : void {
+         var base:Array = null;
+         var tel:TiphonEntityLook = null;
+         var bones:Array = null;
+         var k:* = 0;
+         if(this._entity is TiphonSprite)
+         {
+            base=TiphonSprite(this._entity).look.toString().split("|");
+            if(list.length)
             {
-                this._animation = param1;
-                this._direction = param2;
-                if (this._entity is TiphonSprite)
-                {
-                    _loc_3 = new SerialSequencer();
-                    if (this._animation == "AnimStatique")
-                    {
-                        TiphonSprite(this._entity).setAnimationAndDirection("AnimStatique", this._direction);
-                    }
-                    else if (this._animation == "AnimArtwork")
-                    {
-                        TiphonSprite(this._entity).setAnimationAndDirection("AnimArtwork", this._direction);
-                    }
-                    else
-                    {
-                        _loc_3.addStep(new SetDirectionStep(TiphonSprite(this._entity), this._direction));
-                        _loc_3.addStep(new PlayAnimationStep(TiphonSprite(this._entity), this._animation, false));
-                        _loc_3.addStep(new SetAnimationStep(TiphonSprite(this._entity), "AnimStatique"));
-                        _loc_3.start();
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        public function equipCharacter(param1:Array, param2:int = 0) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            if (this._entity is TiphonSprite)
-            {
-                _loc_3 = TiphonSprite(this._entity).look.toString().split("|");
-                if (param1.length)
-                {
-                    param1.unshift(_loc_3[1].split(","));
-                    _loc_3[1] = param1.join(",");
-                }
-                else if (param2 < _loc_3[1].length)
-                {
-                    _loc_5 = _loc_3[1].split(",");
-                    _loc_6 = 0;
-                    while (_loc_6 < param2)
-                    {
-                        
-                        _loc_5.pop();
-                        _loc_6++;
-                    }
-                    _loc_3[1] = _loc_5.join(",");
-                }
-                _loc_4 = TiphonEntityLook.fromString(_loc_3.join("|"));
-                this._entity.look.updateFrom(_loc_4);
-            }
-            else if (!this._entity && param1.length)
-            {
-                this._waitingForEquipement = param1;
-            }
-            return;
-        }// end function
-
-        public function getSlotPosition(param1:String) : Point
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (this._entity && this._entity is TiphonSprite)
-            {
-                _loc_2 = TiphonSprite(this._entity).getSlot(param1);
-                if (_loc_2)
-                {
-                    _loc_3 = _loc_2.localToGlobal(new Point(_loc_2.x, _loc_2.y));
-                    _loc_4 = this.globalToLocal(_loc_3);
-                    return _loc_4;
-                }
-                _log.error("Null entity, cannot get slot position.");
-                return null;
+               list.unshift(base[1].split(","));
+               base[1]=list.join(",");
             }
             else
             {
-                _log.error("Null entity, cannot get slot position.");
-                return null;
+               if(numDelete<base[1].length)
+               {
+                  bones=base[1].split(",");
+                  k=0;
+                  while(k<numDelete)
+                  {
+                     bones.pop();
+                     k++;
+                  }
+                  base[1]=bones.join(",");
+               }
             }
-        }// end function
+            tel=TiphonEntityLook.fromString(base.join("|"));
+            this._entity.look.updateFrom(tel);
+         }
+         else
+         {
+            if((!this._entity)&&(list.length))
+            {
+               this._waitingForEquipement=list;
+            }
+         }
+      }
 
-        override public function remove() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            if (this._entity)
+      public function getSlotPosition(name:String) : Point {
+         var s:Object = null;
+         var p:Point = null;
+         var point:Point = null;
+         if((this._entity)&&(this._entity is TiphonSprite))
+         {
+            s=TiphonSprite(this._entity).getSlot(name);
+            if(s)
             {
-                (this._entity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED, this.onCharacterReady);
-                this._entity.destroy();
-                this._entity = null;
+               p=s.localToGlobal(new Point(s.x,s.y));
+               point=this.globalToLocal(p);
+               return point;
             }
-            if (this._oldEntity)
-            {
-                (this._oldEntity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED, this.onCharacterReady);
-                this._oldEntity.destroy();
-                this._oldEntity = null;
-            }
-            if (this._cache)
-            {
-                for each (_loc_2 in this._cache)
-                {
-                    
-                    _loc_2.destroy();
-                }
-                this._cache = null;
-            }
-            this._lookUpdate = null;
-            EnterFrameDispatcher.removeEventListener(this.onFade);
-            removeEventListener(MouseEvent.MOUSE_OVER, this.mouseOver);
-            removeEventListener(MouseEvent.MOUSE_OUT, this.mouseOut);
-            for each (_loc_1 in _subEntitiesBehaviors)
-            {
-                
-                if (_loc_1)
-                {
-                    _loc_1.remove();
-                }
-            }
-            super.remove();
-            return;
-        }// end function
+            _log.error("Null entity, cannot get slot position.");
+            return null;
+         }
+         _log.error("Null entity, cannot get slot position.");
+         return null;
+      }
 
-        public function setColor(param1:uint, param2:uint) : void
-        {
-            if (TiphonSprite(this._entity) && TiphonSprite(this._entity).look)
+      override public function remove() : void {
+         var behavior:ISubEntityBehavior = null;
+         var ts:TiphonSprite = null;
+         if(this._entity)
+         {
+            (this._entity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onCharacterReady);
+            this._entity.destroy();
+            this._entity=null;
+         }
+         if(this._oldEntity)
+         {
+            (this._oldEntity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onCharacterReady);
+            this._oldEntity.destroy();
+            this._oldEntity=null;
+         }
+         if(this._cache)
+         {
+            for each (ts in this._cache)
             {
-                TiphonSprite(this._entity).look.setColor(param1, param2);
+               ts.destroy();
             }
-            return;
-        }// end function
+            this._cache=null;
+         }
+         this._lookUpdate=null;
+         EnterFrameDispatcher.removeEventListener(this.onFade);
+         removeEventListener(MouseEvent.MOUSE_OVER,this.mouseOver);
+         removeEventListener(MouseEvent.MOUSE_OUT,this.mouseOut);
+         for each (behavior in _subEntitiesBehaviors)
+         {
+            if(behavior)
+            {
+               behavior.remove();
+            }
+         }
+         super.remove();
+      }
 
-        public function resetColor(param1:uint) : void
-        {
-            if (TiphonSprite(this._entity) && TiphonSprite(this._entity).look)
-            {
-                TiphonSprite(this._entity).look.resetColor(param1);
-            }
-            return;
-        }// end function
+      public function setColor(index:uint, color:uint) : void {
+         if((TiphonSprite(this._entity))&&(TiphonSprite(this._entity).look))
+         {
+            TiphonSprite(this._entity).look.setColor(index,color);
+         }
+      }
 
-        private function onCharacterReady(event:Event) : void
-        {
-            var _loc_2:* = undefined;
-            var _loc_3:* = NaN;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = NaN;
-            var _loc_7:* = NaN;
-            if (this._gotoAndStop)
+      public function resetColor(index:uint) : void {
+         if((TiphonSprite(this._entity))&&(TiphonSprite(this._entity).look))
+         {
+            TiphonSprite(this._entity).look.resetColor(index);
+         }
+      }
+
+      private function onCharacterReady(e:Event) : void {
+         var cat:* = undefined;
+         var entRatio:* = NaN;
+         var b:Rectangle = null;
+         var dis:DisplayInfoSprite = null;
+         var r:* = NaN;
+         var m:* = NaN;
+         (this._entity as EventDispatcher).removeEventListener(TiphonEvent.RENDER_SUCCEED,this.onCharacterReady);
+         if(this._gotoAndStop)
+         {
+            if(this._gotoAndStop==-1)
             {
-                if (this._gotoAndStop == -1)
-                {
-                    this._entity.stopAnimationAtEnd();
-                }
-                else
-                {
-                    this._entity.stopAnimation(this._gotoAndStop);
-                }
-                this._gotoAndStop = 0;
-            }
-            if (this._staticDisplay)
-            {
-                if (this._skipResize)
-                {
-                    return;
-                }
-                this._skipResize = true;
-            }
-            this._entity.x = 0;
-            this._entity.y = 0;
-            if (EntityDisplayer.animationModifier != null)
-            {
-                (this._entity as TiphonSprite).addAnimationModifier(EntityDisplayer.animationModifier);
-            }
-            for (_loc_2 in _subEntitiesBehaviors)
-            {
-                
-                if (_subEntitiesBehaviors[_loc_2])
-                {
-                    (this._entity as TiphonSprite).setSubEntityBehaviour(_loc_2, _subEntitiesBehaviors[_loc_2]);
-                }
-            }
-            this._entity.visible = true;
-            if (this._scale > 1 || this.yOffset != 0)
-            {
-                if (this._mask)
-                {
-                    this._mask.graphics.clear();
-                }
-                else
-                {
-                    this._mask = new Shape();
-                }
-                this._mask.graphics.beginFill(0);
-                this._mask.graphics.drawRect(0, 0, width, height);
-                addChild(this._mask);
-                TiphonSprite(this._entity).mask = this._mask;
-                if (this._oldEntity)
-                {
-                    if (this._mask2)
-                    {
-                        this._mask2.graphics.clear();
-                    }
-                    else
-                    {
-                        this._mask2 = new Shape();
-                    }
-                    this._mask2.graphics.beginFill(0);
-                    this._mask2.graphics.drawRect(0, 0, width, height);
-                    addChild(this._mask2);
-                    TiphonSprite(this._oldEntity).mask = this._mask2;
-                }
+               this._entity.stopAnimationAtEnd();
             }
             else
             {
-                TiphonSprite(this._entity).mask = null;
-                if (this._mask)
-                {
-                    removeChild(this._mask);
-                }
-                this._mask = null;
+               this._entity.stopAnimation(this._gotoAndStop);
             }
-            if (this._oldEntity)
+            this._gotoAndStop=0;
+         }
+         if(this._staticDisplay)
+         {
+            if(this._skipResize)
             {
-                if (this.useFade)
-                {
-                    this._oldEntity.alpha = 1;
-                    this._entity.alpha = 0;
-                    EnterFrameDispatcher.addEventListener(this.onFade, "entityDisplayerFade");
-                }
-                else
-                {
-                    this.destroyOldEntity(this._oldEntity);
-                    this._oldEntity = null;
-                }
+               return;
             }
-            if (!this._entity.height || !this.autoSize)
+            this._skipResize=true;
+         }
+         this._entity.x=0;
+         this._entity.y=0;
+         if(EntityDisplayer.animationModifier!=null)
+         {
+            (this._entity as TiphonSprite).addAnimationModifier(EntityDisplayer.animationModifier);
+         }
+         for (cat in _subEntitiesBehaviors)
+         {
+            if(_subEntitiesBehaviors[cat])
             {
-                Berilia.getInstance().handler.process(new EntityReadyMessage(InteractiveObject(this)));
-                return;
+               (this._entity as TiphonSprite).setSubEntityBehaviour(cat,_subEntitiesBehaviors[cat]);
             }
-            if (this._view != null)
+         }
+         this._entity.visible=true;
+         if((this._scale<1)||(!(this.yOffset==0)))
+         {
+            if(this._mask)
             {
-                _loc_5 = TiphonSprite(this._entity).getDisplayInfoSprite(this._view);
-                if (_loc_5 != null)
-                {
-                    TiphonSprite(this._entity).look.setScales(1, 1);
-                    TiphonSprite(this._entity).setView(this._view);
-                    _loc_3 = this._entity.width / this._entity.height;
-                    if (this._entity.width > this._entity.height)
-                    {
-                        this._entity.height = width / _loc_3 * this._scale;
-                        this._entity.width = width * this._scale;
-                    }
-                    else
-                    {
-                        this._entity.width = height * _loc_3 * this._scale;
-                        this._entity.height = height * this._scale;
-                    }
-                    _loc_4 = TiphonSprite(this._entity).getBounds(this);
-                    this._entity.x = (width - this._entity.width) / 2 - _loc_4.left + this.xOffset;
-                    this._entity.y = (height - this._entity.height) / 2 - _loc_4.top + this.yOffset;
-                    _loc_6 = _loc_5.width / _loc_5.height;
-                    _loc_7 = width / height < _loc_5.width / _loc_5.height ? (width / _loc_5.getRect(this).width) : (height / _loc_5.getRect(this).height);
-                    this._entity.height = this._entity.height * _loc_7;
-                    this._entity.width = this._entity.width * _loc_7;
-                    this._entity.x = this._entity.x - _loc_5.getRect(this).x;
-                    this._entity.y = this._entity.y - _loc_5.getRect(this).y;
-                }
+               this._mask.graphics.clear();
             }
             else
             {
-                _loc_3 = this._entity.width / this._entity.height;
-                if (this._entity.width > this._entity.height)
-                {
-                    this._entity.height = width / _loc_3 * this._scale;
-                    this._entity.width = width * this._scale;
-                }
-                else
-                {
-                    this._entity.width = height * _loc_3 * this._scale;
-                    this._entity.height = height * this._scale;
-                }
-                _loc_4 = TiphonSprite(this._entity).getBounds(this);
-                this._entity.x = (width - this._entity.width) / 2 - _loc_4.left + this.xOffset;
-                this._entity.y = (height - this._entity.height) / 2 - _loc_4.top + this.yOffset;
+               this._mask=new Shape();
             }
-            this._entity.visible = true;
+            this._mask.graphics.beginFill(0);
+            this._mask.graphics.drawRect(0,0,width,height);
+            addChild(this._mask);
+            TiphonSprite(this._entity).mask=this._mask;
+            if(this._oldEntity)
+            {
+               if(this._mask2)
+               {
+                  this._mask2.graphics.clear();
+               }
+               else
+               {
+                  this._mask2=new Shape();
+               }
+               this._mask2.graphics.beginFill(0);
+               this._mask2.graphics.drawRect(0,0,width,height);
+               addChild(this._mask2);
+               TiphonSprite(this._oldEntity).mask=this._mask2;
+            }
+         }
+         else
+         {
+            if((this._mask)&&(this._mask.parent)&&(mask.parent==this))
+            {
+               removeChild(this._mask);
+            }
+            TiphonSprite(this._entity).mask=null;
+            this._mask=null;
+         }
+         if(this._oldEntity)
+         {
+            if(this.useFade)
+            {
+               this._oldEntity.alpha=1;
+               this._entity.alpha=0;
+               EnterFrameDispatcher.addEventListener(this.onFade,"entityDisplayerFade");
+            }
+            else
+            {
+               this.destroyOldEntity(this._oldEntity);
+               this._oldEntity=null;
+            }
+         }
+         if((!this._entity.height)||(!this.autoSize))
+         {
             Berilia.getInstance().handler.process(new EntityReadyMessage(InteractiveObject(this)));
             return;
-        }// end function
-
-        private function destroyOldEntity(param1:TiphonSprite) : void
-        {
-            if (param1.parent)
+         }
+         if(this._view!=null)
+         {
+            dis=TiphonSprite(this._entity).getDisplayInfoSprite(this._view);
+            if(dis!=null)
             {
-                removeChild(param1);
+               TiphonSprite(this._entity).look.setScales(1,1);
+               TiphonSprite(this._entity).setView(this._view);
+               entRatio=this._entity.width/this._entity.height;
+               if(this._entity.width>this._entity.height)
+               {
+                  this._entity.height=width/entRatio*this._scale;
+                  this._entity.width=width*this._scale;
+               }
+               else
+               {
+                  this._entity.width=height*entRatio*this._scale;
+                  this._entity.height=height*this._scale;
+               }
+               b=TiphonSprite(this._entity).getBounds(this);
+               this._entity.x=(width-this._entity.width)/2-b.left+this.xOffset;
+               this._entity.y=(height-this._entity.height)/2-b.top+this.yOffset;
+               r=dis.width/dis.height;
+               m=width/height>dis.width/dis.height?width/dis.getRect(this).width:height/dis.getRect(this).height;
+               this._entity.height=this._entity.height*m;
+               this._entity.width=this._entity.width*m;
+               this._entity.x=this._entity.x-dis.getRect(this).x;
+               this._entity.y=this._entity.y-dis.getRect(this).y;
             }
-            if (!this._useCache)
+         }
+         else
+         {
+            entRatio=this._entity.width/this._entity.height;
+            if(this._entity.width>this._entity.height)
             {
-                param1.destroy();
-            }
-            return;
-        }// end function
-
-        private function needUpdate(event:Event) : void
-        {
-            var _loc_2:* = undefined;
-            var _loc_3:* = null;
-            EnterFrameDispatcher.removeEventListener(this.needUpdate);
-            this._listenForUpdate = false;
-            if (this._oldEntity)
-            {
-                this.destroyOldEntity(this._oldEntity);
-                this._oldEntity = null;
-            }
-            if (!this._lookUpdate)
-            {
-                if (this._entity)
-                {
-                    this.destroyOldEntity(this._entity);
-                    this._entity = null;
-                }
-                return;
-            }
-            this._oldEntity = this._entity;
-            this._entity = new TiphonSprite(SecureCenter.unsecure(this._lookUpdate.clone()));
-            this._entity.visible = false;
-            if (this._useCache)
-            {
-                _loc_3 = this._entity.look.toString();
-                this._cache[_loc_3] = this._entity;
-            }
-            this._originalScaleX = (this._entity as TiphonSprite).look.getScaleX();
-            this._originalScaleY = (this._entity as TiphonSprite).look.getScaleY();
-            if (EntityDisplayer.animationModifier != null)
-            {
-                (this._entity as TiphonSprite).addAnimationModifier(EntityDisplayer.animationModifier);
-            }
-            for (_loc_2 in _subEntitiesBehaviors)
-            {
-                
-                if (_subEntitiesBehaviors[_loc_2])
-                {
-                    (this._entity as TiphonSprite).setSubEntityBehaviour(_loc_2, _subEntitiesBehaviors[_loc_2]);
-                }
-            }
-            (this._entity as EventDispatcher).addEventListener(TiphonEvent.RENDER_SUCCEED, this.onCharacterReady);
-            addChild(this._entity);
-            this.setAnimationAndDirection(this._animation, this._direction);
-            if (this._waitingForEquipement.length)
-            {
-                this.equipCharacter(this._waitingForEquipement, 0);
-            }
-            return;
-        }// end function
-
-        private function onFade(event:Event) : void
-        {
-            if (this._entity)
-            {
-                this._entity.alpha = this._entity.alpha + (1 - this._entity.alpha) / 3;
-                this._oldEntity.alpha = this._oldEntity.alpha + -this._oldEntity.alpha / 3;
-                if (this._oldEntity.alpha < 0.05)
-                {
-                    this._entity.alpha = 1;
-                    this.destroyOldEntity(this._oldEntity);
-                    this._oldEntity = null;
-                    EnterFrameDispatcher.removeEventListener(this.onFade);
-                }
+               this._entity.height=width/entRatio*this._scale;
+               this._entity.width=width*this._scale;
             }
             else
             {
-                EnterFrameDispatcher.removeEventListener(this.onFade);
-                _log.error("entity est null");
+               this._entity.width=height*entRatio*this._scale;
+               this._entity.height=height*this._scale;
+            }
+            b=TiphonSprite(this._entity).getBounds(this);
+            this._entity.x=(width-this._entity.width)/2-b.left+this.xOffset;
+            this._entity.y=(height-this._entity.height)/2-b.top+this.yOffset;
+         }
+         this._entity.visible=true;
+         Berilia.getInstance().handler.process(new EntityReadyMessage(InteractiveObject(this)));
+      }
+
+      private function destroyOldEntity(entity:TiphonSprite) : void {
+         if(entity.parent)
+         {
+            removeChild(entity);
+         }
+         if(!this._useCache)
+         {
+            entity.destroy();
+         }
+      }
+
+      private function needUpdate(e:Event=null) : void {
+         var cat:* = undefined;
+         var key:String = null;
+         EnterFrameDispatcher.removeEventListener(this.needUpdate);
+         this._listenForUpdate=false;
+         if(this._oldEntity)
+         {
+            this.destroyOldEntity(this._oldEntity);
+            this._oldEntity=null;
+         }
+         if(!this._lookUpdate)
+         {
+            if(this._entity)
+            {
+               this.destroyOldEntity(this._entity);
+               this._entity=null;
             }
             return;
-        }// end function
+         }
+         this._oldEntity=this._entity;
+         this._entity=new TiphonSprite(SecureCenter.unsecure(this._lookUpdate.clone()));
+         this._entity.visible=false;
+         if(this._useCache)
+         {
+            key=this._entity.look.toString();
+            this._cache[key]=this._entity;
+         }
+         this._originalScaleX=(this._entity as TiphonSprite).look.getScaleX();
+         this._originalScaleY=(this._entity as TiphonSprite).look.getScaleY();
+         if(EntityDisplayer.animationModifier!=null)
+         {
+            (this._entity as TiphonSprite).addAnimationModifier(EntityDisplayer.animationModifier);
+         }
+         for (cat in _subEntitiesBehaviors)
+         {
+            if(_subEntitiesBehaviors[cat])
+            {
+               (this._entity as TiphonSprite).setSubEntityBehaviour(cat,_subEntitiesBehaviors[cat]);
+            }
+         }
+         (this._entity as EventDispatcher).addEventListener(TiphonEvent.RENDER_SUCCEED,this.onCharacterReady);
+         addChild(this._entity);
+         this.setAnimationAndDirection(this._animation,this._direction);
+         if(this._waitingForEquipement.length)
+         {
+            this.equipCharacter(this._waitingForEquipement,0);
+         }
+      }
 
-        private function mouseOver(event:MouseEvent) : void
-        {
-            this._entity.transform.colorTransform = new ColorTransform(1.3, 1.3, 1.3, 1);
-            return;
-        }// end function
+      private function onFade(e:Event) : void {
+         if(this._entity)
+         {
+            this._entity.alpha=this._entity.alpha+(1-this._entity.alpha)/3;
+            this._oldEntity.alpha=this._oldEntity.alpha+(0-this._oldEntity.alpha)/3;
+            if(this._oldEntity.alpha<0.05)
+            {
+               this._entity.alpha=1;
+               this.destroyOldEntity(this._oldEntity);
+               this._oldEntity=null;
+               EnterFrameDispatcher.removeEventListener(this.onFade);
+            }
+         }
+         else
+         {
+            EnterFrameDispatcher.removeEventListener(this.onFade);
+            _log.error("entity est null");
+         }
+      }
 
-        private function mouseOut(event:MouseEvent) : void
-        {
-            this._entity.transform.colorTransform = new ColorTransform(1, 1, 1, 1);
-            return;
-        }// end function
+      private function mouseOver(e:MouseEvent) : void {
+         this._entity.transform.colorTransform=new ColorTransform(1.3,1.3,1.3,1);
+      }
 
-        public static function setSubEntityDefaultBehavior(param1:uint, param2:ISubEntityBehavior) : void
-        {
-            _subEntitiesBehaviors[param1] = param2;
-            return;
-        }// end function
+      private function mouseOut(e:MouseEvent) : void {
+         this._entity.transform.colorTransform=new ColorTransform(1,1,1,1);
+      }
+   }
 
-    }
 }

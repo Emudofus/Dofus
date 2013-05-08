@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus
+package com.ankamagames.dofus
 {
-    import mx.core.*;
+   import mx.core.ByteArrayAsset;
 
-    public class Constants_SIGNATURE_KEY_DATA extends ByteArrayAsset
-    {
 
-        public function Constants_SIGNATURE_KEY_DATA()
-        {
-            return;
-        }// end function
+   public class Constants_SIGNATURE_KEY_DATA extends ByteArrayAsset
+   {
+         
 
-    }
+      public function Constants_SIGNATURE_KEY_DATA() {
+         super();
+      }
+
+
+
+
+   }
+
 }

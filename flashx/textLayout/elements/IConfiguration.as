@@ -1,52 +1,55 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.IListMarkerFormat;
+   import flashx.textLayout.edit.SelectionFormat;
 
-    public interface IConfiguration
-    {
 
-        public function IConfiguration();
+   public interface IConfiguration
+   {
+         
 
-        function clone() : Configuration;
 
-        function get manageTabKey() : Boolean;
 
-        function get manageEnterKey() : Boolean;
+      function clone() : Configuration;
 
-        function get overflowPolicy() : String;
+      function get manageTabKey() : Boolean;
 
-        function get enableAccessibility() : Boolean;
+      function get manageEnterKey() : Boolean;
 
-        function get defaultLinkNormalFormat() : ITextLayoutFormat;
+      function get overflowPolicy() : String;
 
-        function get defaultLinkHoverFormat() : ITextLayoutFormat;
+      function get enableAccessibility() : Boolean;
 
-        function get defaultLinkActiveFormat() : ITextLayoutFormat;
+      function get defaultLinkNormalFormat() : ITextLayoutFormat;
 
-        function get defaultListMarkerFormat() : IListMarkerFormat;
+      function get defaultLinkHoverFormat() : ITextLayoutFormat;
 
-        function get textFlowInitialFormat() : ITextLayoutFormat;
+      function get defaultLinkActiveFormat() : ITextLayoutFormat;
 
-        function get focusedSelectionFormat() : SelectionFormat;
+      function get defaultListMarkerFormat() : IListMarkerFormat;
 
-        function get unfocusedSelectionFormat() : SelectionFormat;
+      function get textFlowInitialFormat() : ITextLayoutFormat;
 
-        function get inactiveSelectionFormat() : SelectionFormat;
+      function get focusedSelectionFormat() : SelectionFormat;
 
-        function get scrollDragDelay() : Number;
+      function get unfocusedSelectionFormat() : SelectionFormat;
 
-        function get scrollDragPixels() : Number;
+      function get inactiveSelectionFormat() : SelectionFormat;
 
-        function get scrollPagePercentage() : Number;
+      function get scrollDragDelay() : Number;
 
-        function get scrollMouseWheelMultiplier() : Number;
+      function get scrollDragPixels() : Number;
 
-        function get flowComposerClass() : Class;
+      function get scrollPagePercentage() : Number;
 
-        function get releaseLineCreationData() : Boolean;
+      function get scrollMouseWheelMultiplier() : Number;
 
-        function get inlineGraphicResolverFunction() : Function;
+      function get flowComposerClass() : Class;
 
-    }
+      function get releaseLineCreationData() : Boolean;
+
+      function get inlineGraphicResolverFunction() : Function;
+   }
+
 }

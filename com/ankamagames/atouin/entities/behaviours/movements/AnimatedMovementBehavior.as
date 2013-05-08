@@ -1,346 +1,353 @@
-﻿package com.ankamagames.atouin.entities.behaviours.movements
+package com.ankamagames.atouin.entities.behaviours.movements
 {
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.atouin.messages.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.errors.*;
-    import com.ankamagames.jerakine.entities.behaviours.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.tiphon.display.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.entities.behaviours.IMovementBehavior;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.utils.Dictionary;
+   import com.ankamagames.atouin.managers.InteractiveCellManager;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.entities.interfaces.IMovable;
+   import com.ankamagames.jerakine.types.positions.MovementPath;
+   import com.ankamagames.atouin.types.TweenEntityData;
+   import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.atouin.messages.EntityMovementStartMessage;
+   import flash.display.DisplayObject;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.jerakine.entities.interfaces.IAnimated;
+   import com.ankamagames.atouin.utils.errors.AtouinError;
+   import com.ankamagames.jerakine.types.positions.PathElement;
+   import com.ankamagames.atouin.messages.EntityMovementStoppedMessage;
+   import flash.utils.getTimer;
+   import com.ankamagames.atouin.messages.EntityMovementCompleteMessage;
+   import com.ankamagames.jerakine.interfaces.ISoundPositionListener;
+   import flash.geom.Point;
+   import com.ankamagames.atouin.managers.EntitiesDisplayManager;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import flash.display.Sprite;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
 
-    public class AnimatedMovementBehavior extends Object implements IMovementBehavior
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(AnimatedMovementBehavior));
-        static var _movingCount:uint;
-        static var _aEntitiesMoving:Array = new Array();
-        private static var _stoppingEntity:Dictionary = new Dictionary(true);
-        private static var _enterFrameRegistered:Boolean;
-        private static var _cellsManager:InteractiveCellManager = InteractiveCellManager.getInstance();
 
-        public function AnimatedMovementBehavior()
-        {
-            return;
-        }// end function
+   public class AnimatedMovementBehavior extends Object implements IMovementBehavior
+   {
+         
 
-        public function move(param1:IMovable, param2:MovementPath, param3:Function = null) : void
-        {
-            var _loc_4:* = new TweenEntityData();
-            new TweenEntityData().path = param2;
-            _loc_4.entity = param1;
-            if (this.getAnimation())
+      public function AnimatedMovementBehavior() {
+         super();
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AnimatedMovementBehavior));
+
+      protected static var _movingCount:uint;
+
+      protected static var _aEntitiesMoving:Array = new Array();
+
+      private static var _stoppingEntity:Dictionary = new Dictionary(true);
+
+      private static var _enterFrameRegistered:Boolean;
+
+      private static var _cellsManager:InteractiveCellManager = InteractiveCellManager.getInstance();
+
+      public function move(entity:IMovable, path:MovementPath, callback:Function=null) : void {
+         var tweenData:TweenEntityData = new TweenEntityData();
+         tweenData.path=path;
+         tweenData.entity=entity;
+         if(this.getAnimation())
+         {
+            tweenData.animation=this.getAnimation();
+         }
+         tweenData.linearVelocity=this.getLinearVelocity();
+         tweenData.hDiagVelocity=this.getHorizontalDiagonalVelocity();
+         tweenData.vDiagVelocity=this.getVerticalDiagonalVelocity();
+         tweenData.callback=callback;
+         this.initMovement(entity,tweenData);
+         Atouin.getInstance().handler.process(new EntityMovementStartMessage(entity));
+      }
+
+      public function synchroniseSubEntitiesPosition(entityRef:IMovable, subEntityContainer:DisplayObject=null) : void {
+         var ts:TiphonSprite = null;
+         var carriedEntity:IMovable = null;
+         var subEntities:Array = null;
+         var subEntity:* = undefined;
+         var mount:TiphonSprite = null;
+         var subSubEntities:Array = null;
+         var subSubEntity:* = undefined;
+         if(entityRef is TiphonSprite)
+         {
+            ts=entityRef as TiphonSprite;
+            if((subEntityContainer)&&(subEntityContainer is TiphonSprite))
             {
-                _loc_4.animation = this.getAnimation();
+               ts=TiphonSprite(subEntityContainer);
             }
-            _loc_4.linearVelocity = this.getLinearVelocity();
-            _loc_4.hDiagVelocity = this.getHorizontalDiagonalVelocity();
-            _loc_4.vDiagVelocity = this.getVerticalDiagonalVelocity();
-            _loc_4.callback = param3;
-            this.initMovement(param1, _loc_4);
-            Atouin.getInstance().handler.process(new EntityMovementStartMessage(param1));
-            return;
-        }// end function
-
-        public function synchroniseSubEntitiesPosition(param1:IMovable, param2:DisplayObject = null) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = undefined;
-            var _loc_6:* = null;
-            var _loc_7:* = undefined;
-            if (param1 is TiphonSprite)
+            if(ts.carriedEntity)
             {
-                _loc_3 = param1 as TiphonSprite;
-                if (param2 && param2 is TiphonSprite)
-                {
-                    _loc_3 = TiphonSprite(param2);
-                }
-                _loc_4 = _loc_3.getSubEntitiesList();
-                for each (_loc_5 in _loc_4)
-                {
-                    
-                    if (_loc_5 is IMovable)
-                    {
-                        if (_loc_5.position && param1.position)
-                        {
-                            _loc_5.position.x = param1.position.x;
-                            _loc_5.position.y = param1.position.y;
-                        }
-                        if (_loc_5.movementBehavior && _loc_5 != param1)
-                        {
-                            _loc_5.movementBehavior.synchroniseSubEntitiesPosition(_loc_5);
-                        }
-                        continue;
-                    }
-                    if (_loc_5 is TiphonSprite)
-                    {
-                        _loc_6 = TiphonSprite(_loc_5).getSubEntitiesList();
-                        for each (_loc_7 in _loc_6)
-                        {
-                            
-                            if (_loc_7 is IMovable && _loc_7.movementBehavior && _loc_7 != param1)
-                            {
-                                IMovable(_loc_7).movementBehavior.synchroniseSubEntitiesPosition(param1, _loc_5);
-                            }
-                        }
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        public function jump(param1:IMovable, param2:MapPoint) : void
-        {
-            this.processJump(param1, param2);
-            return;
-        }// end function
-
-        public function stop(param1:IMovable, param2:Boolean = false) : void
-        {
-            if (param2)
-            {
-                _aEntitiesMoving[param1.id] = null;
-                delete _aEntitiesMoving[param1.id];
+               carriedEntity=ts.carriedEntity as IMovable;
             }
             else
             {
-                _stoppingEntity[param1] = true;
+               mount=ts.getSubEntitySlot(2,0) as TiphonSprite;
+               if((mount)&&(mount.carriedEntity))
+               {
+                  carriedEntity=mount.carriedEntity as IMovable;
+               }
             }
-            return;
-        }// end function
-
-        public function isMoving(param1:IMovable) : Boolean
-        {
-            return _aEntitiesMoving[param1.id] != null;
-        }// end function
-
-        public function getNextCell(param1:IMovable) : MapPoint
-        {
-            return _aEntitiesMoving[param1.id] != null ? (TweenEntityData(_aEntitiesMoving[param1.id]).nextCell) : (null);
-        }// end function
-
-        protected function getLinearVelocity() : Number
-        {
-            throw new AtouinError("Abstract function call.");
-        }// end function
-
-        protected function getHorizontalDiagonalVelocity() : Number
-        {
-            throw new AtouinError("Abstract function call.");
-        }// end function
-
-        protected function getVerticalDiagonalVelocity() : Number
-        {
-            throw new AtouinError("Abstract function call.");
-        }// end function
-
-        protected function getAnimation() : String
-        {
-            throw new AtouinError("Abstract function call.");
-        }// end function
-
-        protected function mustChangeOrientation() : Boolean
-        {
-            return true;
-        }// end function
-
-        protected function initMovement(param1:IMovable, param2:TweenEntityData, param3:Boolean = false) : void
-        {
-            var _loc_4:* = null;
-            if (_aEntitiesMoving[param1.id] != null)
+            if(carriedEntity)
             {
-                _log.warn("Moving an already moving entity. Replacing the previous move.");
-                var _loc_6:* = _movingCount - 1;
-                _movingCount = _loc_6;
+               carriedEntity.position.x=entityRef.position.x;
+               carriedEntity.position.y=entityRef.position.y;
+               carriedEntity.position.cellId=entityRef.position.cellId;
             }
-            _aEntitiesMoving[param1.id] = param2;
-            var _loc_6:* = _movingCount + 1;
-            _movingCount = _loc_6;
-            if (!param3)
+            subEntities=ts.getSubEntitiesList();
+            for each (subEntity in subEntities)
             {
-                _loc_4 = param2.path.path.shift();
-                if (_loc_4)
-                {
-                    param2.orientation = _loc_4.orientation;
-                }
-                if (this.mustChangeOrientation() && _loc_4)
-                {
-                    IAnimated(param1).setAnimationAndDirection(param2.animation, _loc_4.orientation);
-                }
-                else
-                {
-                    IAnimated(param1).setAnimation(param2.animation);
-                }
+               if(subEntity is IMovable)
+               {
+                  if((subEntity.position)&&(entityRef.position))
+                  {
+                     subEntity.position.x=entityRef.position.x;
+                     subEntity.position.y=entityRef.position.y;
+                  }
+                  if((subEntity.movementBehavior)&&(!(subEntity==entityRef)))
+                  {
+                     subEntity.movementBehavior.synchroniseSubEntitiesPosition(subEntity);
+                  }
+               }
+               else
+               {
+                  if(subEntity is TiphonSprite)
+                  {
+                     subSubEntities=TiphonSprite(subEntity).getSubEntitiesList();
+                     for each (subSubEntity in subSubEntities)
+                     {
+                        if((subSubEntity is IMovable)&&(subSubEntity.movementBehavior)&&(!(subSubEntity==entityRef)))
+                        {
+                           IMovable(subSubEntity).movementBehavior.synchroniseSubEntitiesPosition(entityRef,subEntity);
+                        }
+                     }
+                  }
+               }
             }
-            this.goNextCell(param1);
-            this.checkIfEnterFrameNeeded();
-            return;
-        }// end function
+         }
+      }
 
-        protected function goNextCell(param1:IMovable) : void
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = _aEntitiesMoving[param1.id];
-            _loc_2.currentCell = param1.position;
-            if (_stoppingEntity[param1])
+      public function jump(entity:IMovable, newPosition:MapPoint) : void {
+         this.processJump(entity,newPosition);
+      }
+
+      public function stop(entity:IMovable, forceStop:Boolean=false) : void {
+         if(forceStop)
+         {
+            IAnimated(entity).setAnimation("AnimStatique");
+            _aEntitiesMoving[entity.id]=null;
+            delete _aEntitiesMoving[[entity.id]];
+         }
+         else
+         {
+            _stoppingEntity[entity]=true;
+         }
+      }
+
+      public function isMoving(entity:IMovable) : Boolean {
+         return !(_aEntitiesMoving[entity.id]==null);
+      }
+
+      public function getNextCell(entity:IMovable) : MapPoint {
+         return _aEntitiesMoving[entity.id]!=null?TweenEntityData(_aEntitiesMoving[entity.id]).nextCell:null;
+      }
+
+      protected function getLinearVelocity() : Number {
+         throw new AtouinError("Abstract function call.");
+      }
+
+      protected function getHorizontalDiagonalVelocity() : Number {
+         throw new AtouinError("Abstract function call.");
+      }
+
+      protected function getVerticalDiagonalVelocity() : Number {
+         throw new AtouinError("Abstract function call.");
+      }
+
+      protected function getAnimation() : String {
+         throw new AtouinError("Abstract function call.");
+      }
+
+      protected function mustChangeOrientation() : Boolean {
+         return true;
+      }
+
+      protected function initMovement(oMobile:IMovable, tweenData:TweenEntityData, wasLinked:Boolean=false) : void {
+         var firstPe:PathElement = null;
+         if(_aEntitiesMoving[oMobile.id]!=null)
+         {
+            _log.warn("Moving an already moving entity. Replacing the previous move.");
+            _movingCount--;
+         }
+         _aEntitiesMoving[oMobile.id]=tweenData;
+         _movingCount++;
+         if(!wasLinked)
+         {
+            firstPe=tweenData.path.path.shift();
+            if(firstPe)
             {
-                this.stopMovement(param1);
-                Atouin.getInstance().handler.process(new EntityMovementStoppedMessage(param1));
-                delete _stoppingEntity[param1];
-                return;
+               tweenData.orientation=firstPe.orientation;
             }
-            if (_loc_2.path.path.length > 0)
+            if((this.mustChangeOrientation())&&(firstPe))
             {
-                _loc_3 = _loc_2.path.path.shift() as PathElement;
-                if (this.mustChangeOrientation())
-                {
-                    IAnimated(param1).setAnimationAndDirection(_loc_2.animation, _loc_2.orientation);
-                }
-                else
-                {
-                    IAnimated(param1).setAnimation(_loc_2.animation);
-                }
-                _loc_2.velocity = this.getVelocity(_loc_2, _loc_2.orientation);
-                _loc_2.nextCell = _loc_3.step;
-                _loc_2.orientation = _loc_3.orientation;
-                _loc_2.start = getTimer();
-            }
-            else if (!_loc_2.currentCell.equals(_loc_2.path.end))
-            {
-                _loc_2.velocity = this.getVelocity(_loc_2, IAnimated(param1).getDirection());
-                if (this.mustChangeOrientation())
-                {
-                    IAnimated(param1).setDirection(_loc_2.orientation);
-                }
-                _loc_2.nextCell = _loc_2.path.end;
-                _loc_2.start = getTimer();
+               IAnimated(oMobile).setAnimationAndDirection(tweenData.animation,firstPe.orientation);
             }
             else
             {
-                this.stopMovement(param1);
-                Atouin.getInstance().handler.process(new EntityMovementCompleteMessage(param1));
+               IAnimated(oMobile).setAnimation(tweenData.animation);
             }
-            _loc_2.barycentre = 0;
-            return;
-        }// end function
+         }
+         this.goNextCell(oMobile);
+         this.checkIfEnterFrameNeeded();
+      }
 
-        protected function stopMovement(param1:IMovable) : void
-        {
-            IAnimated(param1).setAnimation("AnimStatique");
-            var _loc_2:* = (_aEntitiesMoving[param1.id] as TweenEntityData).callback;
-            delete _aEntitiesMoving[param1.id];
-            var _loc_4:* = _movingCount - 1;
-            _movingCount = _loc_4;
-            this.checkIfEnterFrameNeeded();
-            if (_loc_2 != null)
-            {
-                this._loc_2();
-            }
+      protected function goNextCell(entity:IMovable) : void {
+         var pe:PathElement = null;
+         var tweenData:TweenEntityData = _aEntitiesMoving[entity.id];
+         tweenData.currentCell=entity.position;
+         if(_stoppingEntity[entity])
+         {
+            this.stopMovement(entity);
+            Atouin.getInstance().handler.process(new EntityMovementStoppedMessage(entity));
+            delete _stoppingEntity[[entity]];
             return;
-        }// end function
-
-        private function getVelocity(param1:TweenEntityData, param2:uint) : Number
-        {
-            if (param2 % 2 == 0)
+         }
+         if(tweenData.path.path.length>0)
+         {
+            pe=tweenData.path.path.shift() as PathElement;
+            if(this.mustChangeOrientation())
             {
-                if (param2 % 4 == 0)
-                {
-                    return param1.hDiagVelocity;
-                }
-                return param1.vDiagVelocity;
+               IAnimated(entity).setAnimationAndDirection(tweenData.animation,tweenData.orientation);
             }
             else
             {
-                return param1.linearVelocity;
+               IAnimated(entity).setAnimation(tweenData.animation);
             }
-        }// end function
+            tweenData.velocity=this.getVelocity(tweenData,tweenData.orientation);
+            tweenData.nextCell=pe.step;
+            tweenData.orientation=pe.orientation;
+            tweenData.start=getTimer();
+         }
+         else
+         {
+            if(!tweenData.currentCell.equals(tweenData.path.end))
+            {
+               tweenData.velocity=this.getVelocity(tweenData,IAnimated(entity).getDirection());
+               if(this.mustChangeOrientation())
+               {
+                  IAnimated(entity).setDirection(tweenData.orientation);
+               }
+               tweenData.nextCell=tweenData.path.end;
+               tweenData.start=getTimer();
+            }
+            else
+            {
+               this.stopMovement(entity);
+               Atouin.getInstance().handler.process(new EntityMovementCompleteMessage(entity));
+            }
+         }
+         tweenData.barycentre=0;
+      }
 
-        protected function processMovement(param1:TweenEntityData, param2:uint) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            param1.barycentre = param1.velocity * (param2 - param1.start);
-            if (param1.barycentre > 1)
-            {
-                param1.barycentre = 1;
-            }
-            if (!param1.currentCellSprite)
-            {
-                param1.currentCellSprite = _cellsManager.getCell(param1.currentCell.cellId);
-                param1.nextCellSprite = _cellsManager.getCell(param1.nextCell.cellId);
-            }
-            var _loc_3:* = DisplayObject(param1.entity);
-            _loc_3.x = (1 - param1.barycentre) * param1.currentCellSprite.x + param1.barycentre * param1.nextCellSprite.x + param1.currentCellSprite.width / 2;
-            _loc_3.y = (1 - param1.barycentre) * param1.currentCellSprite.y + param1.barycentre * param1.nextCellSprite.y + param1.currentCellSprite.height / 2;
-            for each (_loc_4 in Atouin.getInstance().movementListeners)
-            {
-                
-                _loc_5 = new Point(_loc_3.x, _loc_3.y);
-                _loc_4.setSoundSourcePosition(param1.entity.id, _loc_5);
-            }
-            if (!param1.wasOrdered && param1.barycentre > 0.5)
-            {
-                EntitiesDisplayManager.getInstance().orderEntity(_loc_3, param1.nextCellSprite);
-            }
-            if (param1.barycentre >= 1)
-            {
-                param1.clear();
-                IEntity(param1.entity).position = param1.nextCell;
-                this.synchroniseSubEntitiesPosition(IMovable(param1.entity));
-                this.goNextCell(IMovable(param1.entity));
-            }
-            return;
-        }// end function
+      protected function stopMovement(entity:IMovable) : void {
+         IAnimated(entity).setAnimation("AnimStatique");
+         var callback:Function = (_aEntitiesMoving[entity.id] as TweenEntityData).callback;
+         delete _aEntitiesMoving[[entity.id]];
+         _movingCount--;
+         this.checkIfEnterFrameNeeded();
+         if(callback!=null)
+         {
+            callback();
+         }
+      }
 
-        protected function processJump(param1:IMovable, param2:MapPoint) : void
-        {
-            var _loc_3:* = InteractiveCellManager.getInstance().getCell(param2.cellId);
-            var _loc_4:* = param1 as DisplayObject;
-            (param1 as DisplayObject).x = _loc_3.x + _loc_3.width / 2;
-            _loc_4.y = _loc_3.y + _loc_3.height / 2;
-            if (_loc_4.stage != null)
+      private function getVelocity(ted:TweenEntityData, orientation:uint) : Number {
+         if(orientation%2==0)
+         {
+            if(orientation%4==0)
             {
-                EntitiesDisplayManager.getInstance().orderEntity(_loc_4, _loc_3);
+               return ted.hDiagVelocity;
             }
-            param1.position = param2;
-            this.synchroniseSubEntitiesPosition(param1);
-            return;
-        }// end function
+            return ted.vDiagVelocity;
+         }
+         return ted.linearVelocity;
+      }
 
-        private function onEnterFrame(event:Event) : void
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = getTimer();
-            for each (_loc_3 in _aEntitiesMoving)
-            {
-                
-                this.processMovement(_loc_3, _loc_2);
-            }
-            return;
-        }// end function
+      protected function processMovement(tweenData:TweenEntityData, currentTime:uint) : void {
+         var listener:ISoundPositionListener = null;
+         var newPoint:Point = null;
+         tweenData.barycentre=tweenData.velocity*(currentTime-tweenData.start);
+         if(tweenData.barycentre>1)
+         {
+            tweenData.barycentre=1;
+         }
+         if(!tweenData.currentCellSprite)
+         {
+            tweenData.currentCellSprite=_cellsManager.getCell(tweenData.currentCell.cellId);
+            tweenData.nextCellSprite=_cellsManager.getCell(tweenData.nextCell.cellId);
+         }
+         var displayObject:DisplayObject = DisplayObject(tweenData.entity);
+         displayObject.x=(1-tweenData.barycentre)*tweenData.currentCellSprite.x+tweenData.barycentre*tweenData.nextCellSprite.x+tweenData.currentCellSprite.width/2;
+         displayObject.y=(1-tweenData.barycentre)*tweenData.currentCellSprite.y+tweenData.barycentre*tweenData.nextCellSprite.y+tweenData.currentCellSprite.height/2;
+         for each (listener in Atouin.getInstance().movementListeners)
+         {
+            newPoint=new Point(displayObject.x,displayObject.y);
+            listener.setSoundSourcePosition(tweenData.entity.id,newPoint);
+         }
+         if((!tweenData.wasOrdered)&&(tweenData.barycentre<0.5))
+         {
+            EntitiesDisplayManager.getInstance().orderEntity(displayObject,tweenData.nextCellSprite);
+         }
+         if(tweenData.barycentre>=1)
+         {
+            tweenData.clear();
+            IEntity(tweenData.entity).position=tweenData.nextCell;
+            this.synchroniseSubEntitiesPosition(IMovable(tweenData.entity));
+            this.goNextCell(IMovable(tweenData.entity));
+         }
+      }
 
-        protected function checkIfEnterFrameNeeded() : void
-        {
-            if (_movingCount == 0 && _enterFrameRegistered)
-            {
-                EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
-                _enterFrameRegistered = false;
-            }
-            else if (_movingCount > 0 && !_enterFrameRegistered)
-            {
-                EnterFrameDispatcher.addEventListener(this.onEnterFrame, "AnimatedMovementBehaviour", 50);
-                _enterFrameRegistered = true;
-            }
-            return;
-        }// end function
+      protected function processJump(entity:IMovable, newPosition:MapPoint) : void {
+         var newCellSprite:Sprite = InteractiveCellManager.getInstance().getCell(newPosition.cellId);
+         var displayObject:DisplayObject = entity as DisplayObject;
+         displayObject.x=newCellSprite.x+newCellSprite.width/2;
+         displayObject.y=newCellSprite.y+newCellSprite.height/2;
+         if(displayObject.stage!=null)
+         {
+            EntitiesDisplayManager.getInstance().orderEntity(displayObject,newCellSprite);
+         }
+         entity.position=newPosition;
+         this.synchroniseSubEntitiesPosition(entity);
+      }
 
-    }
+      private function onEnterFrame(e:Event) : void {
+         var tweenData:TweenEntityData = null;
+         var currentTime:uint = getTimer();
+         for each (tweenData in _aEntitiesMoving)
+         {
+            this.processMovement(tweenData,currentTime);
+         }
+      }
+
+      protected function checkIfEnterFrameNeeded() : void {
+         if((_movingCount==0)&&(_enterFrameRegistered))
+         {
+            EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
+            _enterFrameRegistered=false;
+         }
+         else
+         {
+            if((_movingCount<0)&&(!_enterFrameRegistered))
+            {
+               EnterFrameDispatcher.addEventListener(this.onEnterFrame,"AnimatedMovementBehaviour",50);
+               _enterFrameRegistered=true;
+            }
+         }
+      }
+   }
+
 }

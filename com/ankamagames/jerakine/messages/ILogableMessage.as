@@ -1,10 +1,14 @@
-﻿package com.ankamagames.jerakine.messages
+package com.ankamagames.jerakine.messages
 {
 
-    public interface ILogableMessage
-    {
 
-        public function ILogableMessage();
+   public interface ILogableMessage
+   {
+         
 
-    }
+
+
+
+   }
+
 }

@@ -1,120 +1,107 @@
-﻿package com.ankamagames.dofus.network.messages.game.pvp
+package com.ankamagames.dofus.network.messages.game.pvp
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AlignmentSubAreasListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var angelsSubAreas:Vector.<int>;
-        public var evilsSubAreas:Vector.<int>;
-        public static const protocolId:uint = 6059;
 
-        public function AlignmentSubAreasListMessage()
-        {
-            this.angelsSubAreas = new Vector.<int>;
-            this.evilsSubAreas = new Vector.<int>;
-            return;
-        }// end function
+   public class AlignmentSubAreasListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function AlignmentSubAreasListMessage() {
+         this.angelsSubAreas=new Vector.<int>();
+         this.evilsSubAreas=new Vector.<int>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6059;
-        }// end function
+      public static const protocolId:uint = 6059;
 
-        public function initAlignmentSubAreasListMessage(param1:Vector.<int> = null, param2:Vector.<int> = null) : AlignmentSubAreasListMessage
-        {
-            this.angelsSubAreas = param1;
-            this.evilsSubAreas = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.angelsSubAreas = new Vector.<int>;
-            this.evilsSubAreas = new Vector.<int>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var angelsSubAreas:Vector.<int>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var evilsSubAreas:Vector.<int>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AlignmentSubAreasListMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6059;
+      }
 
-        public function serializeAs_AlignmentSubAreasListMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.angelsSubAreas.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.angelsSubAreas.length)
-            {
-                
-                param1.writeShort(this.angelsSubAreas[_loc_2]);
-                _loc_2 = _loc_2 + 1;
-            }
-            param1.writeShort(this.evilsSubAreas.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.evilsSubAreas.length)
-            {
-                
-                param1.writeShort(this.evilsSubAreas[_loc_3]);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      public function initAlignmentSubAreasListMessage(angelsSubAreas:Vector.<int>=null, evilsSubAreas:Vector.<int>=null) : AlignmentSubAreasListMessage {
+         this.angelsSubAreas=angelsSubAreas;
+         this.evilsSubAreas=evilsSubAreas;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AlignmentSubAreasListMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.angelsSubAreas=new Vector.<int>();
+         this.evilsSubAreas=new Vector.<int>();
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_AlignmentSubAreasListMessage(param1:IDataInput) : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_6 = param1.readShort();
-                this.angelsSubAreas.push(_loc_6);
-                _loc_3 = _loc_3 + 1;
-            }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_7 = param1.readShort();
-                this.evilsSubAreas.push(_loc_7);
-                _loc_5 = _loc_5 + 1;
-            }
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AlignmentSubAreasListMessage(output);
+      }
+
+      public function serializeAs_AlignmentSubAreasListMessage(output:IDataOutput) : void {
+         output.writeShort(this.angelsSubAreas.length);
+         var _i1:uint = 0;
+         while(_i1<this.angelsSubAreas.length)
+         {
+            output.writeShort(this.angelsSubAreas[_i1]);
+            _i1++;
+         }
+         output.writeShort(this.evilsSubAreas.length);
+         var _i2:uint = 0;
+         while(_i2<this.evilsSubAreas.length)
+         {
+            output.writeShort(this.evilsSubAreas[_i2]);
+            _i2++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AlignmentSubAreasListMessage(input);
+      }
+
+      public function deserializeAs_AlignmentSubAreasListMessage(input:IDataInput) : void {
+         var _val1:* = 0;
+         var _val2:* = 0;
+         var _angelsSubAreasLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_angelsSubAreasLen)
+         {
+            _val1=input.readShort();
+            this.angelsSubAreas.push(_val1);
+            _i1++;
+         }
+         var _evilsSubAreasLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_evilsSubAreasLen)
+         {
+            _val2=input.readShort();
+            this.evilsSubAreas.push(_val2);
+            _i2++;
+         }
+      }
+   }
+
 }

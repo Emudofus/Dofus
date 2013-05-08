@@ -1,30 +1,32 @@
-﻿package com.ankamagames.dofus.internalDatacenter.conquest
+package com.ankamagames.dofus.internalDatacenter.conquest
 {
-    import com.ankamagames.dofus.misc.*;
-    import com.ankamagames.dofus.network.types.game.character.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.tiphon.types.look.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookAndGradeInformations;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
 
-    public class PrismFightersWrapper extends Object implements IDataCenter
-    {
-        public var playerCharactersInformations:CharacterMinimalPlusLookAndGradeInformations;
-        public var entityLook:TiphonEntityLook;
 
-        public function PrismFightersWrapper()
-        {
-            return;
-        }// end function
+   public class PrismFightersWrapper extends Object implements IDataCenter
+   {
+         
 
-        public static function create(param1:CharacterMinimalPlusLookAndGradeInformations) : PrismFightersWrapper
-        {
-            var _loc_2:* = new PrismFightersWrapper;
-            _loc_2.playerCharactersInformations = param1;
-            if (param1.entityLook != null)
-            {
-                _loc_2.entityLook = EntityLookAdapter.getRiderLook(param1.entityLook);
-            }
-            return _loc_2;
-        }// end function
+      public function PrismFightersWrapper() {
+         super();
+      }
 
-    }
+      public static function create(pFightersInformations:CharacterMinimalPlusLookAndGradeInformations) : PrismFightersWrapper {
+         var item:PrismFightersWrapper = new PrismFightersWrapper();
+         item.playerCharactersInformations=pFightersInformations;
+         if(pFightersInformations.entityLook!=null)
+         {
+            item.entityLook=EntityLookAdapter.getRiderLook(pFightersInformations.entityLook);
+         }
+         return item;
+      }
+
+      public var playerCharactersInformations:CharacterMinimalPlusLookAndGradeInformations;
+
+      public var entityLook:TiphonEntityLook;
+   }
+
 }

@@ -1,319 +1,296 @@
-﻿package com.ankamagames.berilia.api
+package com.ankamagames.berilia.api
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.utils.errors.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.utils.Dictionary;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import flash.system.ApplicationDomain;
+   import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.utils.errors.ApiError;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import com.ankamagames.jerakine.utils.misc.CallWithParameters;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class ApiBinder extends Object
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ApiBinder));
-        private static var _apiClass:Array = new Array();
-        private static var _apiInstance:Array = new Array();
-        private static var _apiData:Array = new Array();
-        private static var _isComplexFctCache:Dictionary = new Dictionary();
 
-        public function ApiBinder()
-        {
-            return;
-        }// end function
+   public class ApiBinder extends Object
+   {
+         
 
-        public static function addApi(param1:String, param2:Class) : void
-        {
-            _apiClass[param1] = param2;
-            return;
-        }// end function
+      public function ApiBinder() {
+         super();
+      }
 
-        public static function removeApi(param1:String) : void
-        {
-            delete _apiClass[param1];
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ApiBinder));
 
-        public static function reset() : void
-        {
-            _apiInstance = [];
-            _apiData = [];
-            return;
-        }// end function
+      private static var _apiClass:Array = new Array();
 
-        public static function addApiData(param1:String, param2) : void
-        {
-            _apiData[param1] = param2;
-            return;
-        }// end function
+      private static var _apiInstance:Array = new Array();
 
-        public static function getApiData(param1:String)
-        {
-            return _apiData[param1];
-        }// end function
+      private static var _apiData:Array = new Array();
 
-        public static function removeApiData(param1:String) : void
-        {
-            _apiData[param1] = null;
-            return;
-        }// end function
+      private static var _isComplexFctCache:Dictionary = new Dictionary();
 
-        public static function initApi(param1:Object, param2:UiModule, param3:ApplicationDomain = null) : String
-        {
-            var _loc_4:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = undefined;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            addApiData("module", param2);
-            var _loc_5:* = DescribeTypeCache.typeDescription(param1);
-            for each (_loc_6 in _loc_5..variable)
+      public static function addApi(name:String, apiClass:Class) : void {
+         _apiClass[name]=apiClass;
+      }
+
+      public static function removeApi(name:String) : void {
+         delete _apiClass[[name]];
+      }
+
+      public static function reset() : void {
+         _apiInstance=[];
+         _apiData=[];
+      }
+
+      public static function addApiData(name:String, value:*) : void {
+         _apiData[name]=value;
+      }
+
+      public static function getApiData(name:String) : * {
+         return _apiData[name];
+      }
+
+      public static function removeApiData(name:String) : void {
+         _apiData[name]=null;
+      }
+
+      public static function initApi(target:Object, module:UiModule, sharedDefinition:ApplicationDomain=null) : String {
+         var api:Object = null;
+         var metaTag:XML = null;
+         var metaData:* = undefined;
+         var apiName:String = null;
+         var modName:String = null;
+         addApiData("module",module);
+         var desc:XML = DescribeTypeCache.typeDescription(target);
+         for each (metaTag in desc..variable)
+         {
+            for each (metaData in metaTag.metadata)
             {
-                
-                for each (_loc_7 in _loc_6.metadata)
-                {
-                    
-                    if (_loc_7.@name == "Module" && !UiModuleManager.getInstance().getModules()[_loc_7.arg.@value])
-                    {
-                        return _loc_7.arg.@value;
-                    }
-                }
-                if (_loc_6.@type.toString().indexOf("d2api::") == 0)
-                {
-                    _loc_8 = _loc_6.@type.toString();
-                    _loc_8 = _loc_8.substr(7, _loc_8.length - 10);
-                    _loc_4 = getApiInstance(_loc_8, param2.trusted, param3);
-                    param2.apiList.push(_loc_4);
-                    param1[_loc_6.@name] = _loc_4;
-                    continue;
-                }
-                for each (_loc_7 in _loc_6.metadata)
-                {
-                    
-                    if (_loc_7.@name == "Api")
-                    {
-                        if (_loc_7.arg.@key == "name")
-                        {
-                            _loc_4 = getApiInstance(_loc_7.arg.@value, param2.trusted, param3);
-                            param2.apiList.push(_loc_4);
-                            param1[_loc_6.@name] = _loc_4;
-                        }
-                        else
-                        {
-                            throw new ApiError(param2.id + " module, unknow property \"" + _loc_6..metadata.arg.@key + "\" in Api tag");
-                        }
-                    }
-                    if (_loc_7.@name == "Module")
-                    {
-                        if (_loc_7.arg.@key == "name")
-                        {
-                            _loc_9 = _loc_7.arg.@value;
-                            if (!UiModuleManager.getInstance().getModules()[_loc_9])
-                            {
-                                throw new ApiError("Module " + _loc_9 + " does not exist (in " + param2.id + ")");
-                            }
-                            if (param2.trusted || _loc_9 == "Ankama_Common" || _loc_9 == "Ankama_ContextMenu" || !UiModuleManager.getInstance().getModules()[_loc_9].trusted)
-                            {
-                                param1[_loc_6.@name] = new ModuleReference(UiModule(UiModuleManager.getInstance().getModules()[_loc_9]).mainClass, SecureCenter.ACCESS_KEY);
-                            }
-                            else
-                            {
-                                throw new ApiError(param2.id + ", untrusted module cannot acces to trusted modules " + _loc_9);
-                            }
-                            continue;
-                        }
-                        throw new ApiError(param2.id + " module, unknow property \"" + _loc_7.arg.@key + "\" in Api tag");
-                    }
-                }
+               if((metaData.@name=="Module")&&(!UiModuleManager.getInstance().getModules()[metaData.arg.@value]))
+               {
+                  return metaData.arg.@value;
+               }
             }
-            return null;
-        }// end function
-
-        private static function getApiInstance(param1:String, param2:Boolean, param3:ApplicationDomain) : Object
-        {
-            var apiDesc:XML;
-            var api:Object;
-            var apiRef:*;
-            var instancied:Boolean;
-            var meta:XML;
-            var tag:String;
-            var help:String;
-            var boxing:Boolean;
-            var method:XML;
-            var accessor:XML;
-            var metaData:XML;
-            var metaData2:*;
-            var name:* = param1;
-            var trusted:* = param2;
-            var sharedDefinition:* = param3;
-            if (_apiInstance[name] && _apiInstance[name][trusted])
+            if(metaTag.@type.toString().indexOf("d2api::")==0)
             {
-                return _apiInstance[name][trusted];
-            }
-            if (_apiClass[name])
-            {
-                apiDesc = DescribeTypeCache.typeDescription(_apiClass[name]);
-                api = new (sharedDefinition.getDefinition("d2api::" + name + "Api") as Class)();
-                apiRef = _apiClass[name];
-                instancied;
-                var _loc_5:* = 0;
-                var _loc_6:* = apiDesc..metadata;
-                while (_loc_6 in _loc_5)
-                {
-                    
-                    meta = _loc_6[_loc_5];
-                    if (meta.@name == "InstanciedApi")
-                    {
-                        apiRef = new _apiClass[name];
-                        instancied;
-                        break;
-                    }
-                }
-                var _loc_5:* = 0;
-                var _loc_6:* = apiDesc..method;
-                while (_loc_6 in _loc_5)
-                {
-                    
-                    method = _loc_6[_loc_5];
-                    boxing;
-                    var _loc_7:* = 0;
-                    var _loc_8:* = method.metadata;
-                    while (_loc_8 in _loc_7)
-                    {
-                        
-                        metaData = _loc_8[_loc_7];
-                        if (metaData.@name == "Untrusted" || metaData.@name == "Trusted" || metaData.@name == "Deprecated")
-                        {
-                            tag = metaData.@name;
-                            if (metaData.@name == "Deprecated")
-                            {
-                                var _loc_10:* = 0;
-                                var _loc_11:* = metaData.arg;
-                                var _loc_9:* = new XMLList("");
-                                for each (_loc_12 in _loc_11)
-                                {
-                                    
-                                    var _loc_13:* = _loc_11[_loc_10];
-                                    with (_loc_11[_loc_10])
-                                    {
-                                        if (@key == "help")
-                                        {
-                                            _loc_9[_loc_10] = _loc_12;
-                                        }
-                                    }
-                                }
-                                help = _loc_9.@value;
-                            }
-                        }
-                        if (metaData.@name == "NoBoxing")
-                        {
-                            boxing;
-                        }
-                    }
-                    if (tag != "Untrusted" && tag != "Trusted" && tag != "Deprecated")
-                    {
-                        throw new ApiError("Missing tag [Untrusted / Trusted] before function \"" + method.@name + "\" in " + _apiClass[name]);
-                    }
-                    if (tag == "Untrusted" || (tag == "Trusted" || tag == "Deprecated") && trusted)
-                    {
-                        if (tag == "Deprecated")
-                        {
-                            api[method.@name] = createDepreciatedMethod(apiRef[method.@name], method.@name, help);
-                        }
-                        else if (boxing && !isComplexFct(method))
-                        {
-                            api[method.@name] = SecureCenter.secure(apiRef[method.@name]);
-                        }
-                        else
-                        {
-                            api[method.@name] = apiRef[method.@name];
-                        }
-                        continue;
-                    }
-                    api[method.@name] = GenericApiFunction.getRestrictedFunctionAccess(apiRef[method.@name]);
-                }
-                var _loc_5:* = 0;
-                var _loc_6:* = apiDesc..accessor;
-                while (_loc_6 in _loc_5)
-                {
-                    
-                    accessor = _loc_6[_loc_5];
-                    var _loc_7:* = 0;
-                    var _loc_8:* = accessor.metadata;
-                    while (_loc_8 in _loc_7)
-                    {
-                        
-                        metaData2 = _loc_8[_loc_7];
-                        if (metaData2.@name == "ApiData")
-                        {
-                            apiRef[accessor.@name] = _apiData[metaData2.arg.@value];
-                            break;
-                        }
-                    }
-                }
-                if (!instancied)
-                {
-                    if (!_apiInstance[name])
-                    {
-                        _apiInstance[name] = new Array();
-                    }
-                    _apiInstance[name][trusted] = api;
-                }
-                return api;
+               apiName=metaTag.@type.toString();
+               apiName=apiName.substr(7,apiName.length-10);
+               api=getApiInstance(apiName,module.trusted,sharedDefinition);
+               module.apiList.push(api);
+               target[metaTag.@name]=api;
             }
             else
             {
-                _log.error("Api [" + name + "] is not avaible");
+               for each (metaData in metaTag.metadata)
+               {
+                  if(metaData.@name=="Api")
+                  {
+                     if(metaData.arg.@key=="name")
+                     {
+                        api=getApiInstance(metaData.arg.@value,module.trusted,sharedDefinition);
+                        module.apiList.push(api);
+                        target[metaTag.@name]=api;
+                     }
+                     else
+                     {
+                        throw new ApiError(module.id+" module, unknow property \""+metaTag..metadata.arg.@key+"\" in Api tag");
+                     }
+                  }
+                  if(metaData.@name=="Module")
+                  {
+                     if(metaData.arg.@key=="name")
+                     {
+                        modName=metaData.arg.@value;
+                        if(!UiModuleManager.getInstance().getModules()[modName])
+                        {
+                           throw new ApiError("Module "+modName+" does not exist (in "+module.id+")");
+                        }
+                        else
+                        {
+                           if((module.trusted)||(modName=="Ankama_Common")||(modName=="Ankama_ContextMenu")||(!UiModuleManager.getInstance().getModules()[modName].trusted))
+                           {
+                              target[metaTag.@name]=new ModuleReference(UiModule(UiModuleManager.getInstance().getModules()[modName]).mainClass,SecureCenter.ACCESS_KEY);
+                              continue;
+                           }
+                           throw new ApiError(module.id+", untrusted module cannot acces to trusted modules "+modName);
+                        }
+                     }
+                     else
+                     {
+                        throw new ApiError(module.id+" module, unknow property \""+metaData.arg.@key+"\" in Api tag");
+                     }
+                  }
+                  else
+                  {
+                     continue;
+                  }
+               }
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
 
-        private static function isComplexFct(param1:XML) : Boolean
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1.@declaredBy + "_" + param1.@name;
-            if (_isComplexFctCache[_loc_2] != null)
+      private static function getApiInstance(name:String, trusted:Boolean, sharedDefinition:ApplicationDomain) : Object {
+         var apiDesc:XML = null;
+         var api:Object = null;
+         var apiRef:* = undefined;
+         var instancied:Boolean = false;
+         var meta:XML = null;
+         var tag:String = null;
+         var help:String = null;
+         var boxing:Boolean = false;
+         var method:XML = null;
+         var accessor:XML = null;
+         var metaData:XML = null;
+         var metaData2:* = undefined;
+         if((_apiInstance[name])&&(_apiInstance[name][trusted]))
+         {
+            return _apiInstance[name][trusted];
+         }
+         if(_apiClass[name])
+         {
+            apiDesc=DescribeTypeCache.typeDescription(_apiClass[name]);
+            api=new sharedDefinition.getDefinition("d2api::"+name+"Api") as Class();
+            apiRef=_apiClass[name];
+            instancied=false;
+            for each (meta in apiDesc..metadata)
             {
-                return _isComplexFctCache[_loc_2];
+               if(meta.@name=="InstanciedApi")
+               {
+                  apiRef=new _apiClass[name]();
+                  instancied=true;
+                  break;
+               }
             }
-            var _loc_3:* = ["int", "uint", "Number", "Boolean", "String", "void"];
-            if (_loc_3.indexOf(param1.@returnType.toString()) == -1)
+            for each (method in apiDesc..method)
             {
-                _isComplexFctCache[_loc_2] = false;
-                return false;
+               boxing=true;
+               for each (metaData in method.metadata)
+               {
+                  if((metaData.@name=="Untrusted")||(metaData.@name=="Trusted")||(metaData.@name=="Deprecated"))
+                  {
+                     tag=metaData.@name;
+                     if(metaData.@name=="Deprecated")
+                     {
+                        for each (_loc13_ in metaData.arg)
+                        {
+                           with(_loc13_)
+                           {
+                              
+                              if(@key=="help")
+                              {
+                                 _loc9_[_loc10_]=_loc12_;
+                              }
+                           }
+                        }
+                        help=_loc9_.@value;
+                     }
+                  }
+                  if(metaData.@name=="NoBoxing")
+                  {
+                     boxing=false;
+                  }
+               }
+               if((!(tag=="Untrusted"))&&(!(tag=="Trusted"))&&(!(tag=="Deprecated")))
+               {
+                  throw new ApiError("Missing tag [Untrusted / Trusted] before function \""+method.@name+"\" in "+_apiClass[name]);
+               }
+               else
+               {
+                  if((tag=="Untrusted")||((tag=="Trusted")||(tag=="Deprecated"))&&(trusted))
+                  {
+                     if(tag=="Deprecated")
+                     {
+                        api[method.@name]=createDepreciatedMethod(apiRef[method.@name],method.@name,help);
+                     }
+                     else
+                     {
+                        if((boxing)&&(!isComplexFct(method)))
+                        {
+                           api[method.@name]=SecureCenter.secure(apiRef[method.@name]);
+                        }
+                        else
+                        {
+                           api[method.@name]=apiRef[method.@name];
+                        }
+                     }
+                  }
+                  else
+                  {
+                     api[method.@name]=GenericApiFunction.getRestrictedFunctionAccess(apiRef[method.@name]);
+                  }
+                  continue;
+               }
             }
-            for each (_loc_4 in param1..parameter..@type)
+            for each (accessor in apiDesc..accessor)
             {
-                
-                if (_loc_3.indexOf(_loc_4) == -1)
-                {
-                    _isComplexFctCache[_loc_2] = false;
-                    return false;
-                }
+               for each (metaData2 in accessor.metadata)
+               {
+                  if(metaData2.@name=="ApiData")
+                  {
+                     apiRef[accessor.@name]=_apiData[metaData2.arg.@value];
+                     break;
+                  }
+               }
             }
-            _isComplexFctCache[_loc_2] = true;
-            return true;
-        }// end function
+            if(!instancied)
+            {
+               if(!_apiInstance[name])
+               {
+                  _apiInstance[name]=new Array();
+               }
+               _apiInstance[name][trusted]=api;
+            }
+            return api;
+         }
+         _log.error("Api ["+name+"] is not avaible");
+         return null;
+      }
 
-        private static function createDepreciatedMethod(param1:Function, param2:String, param3:String) : Function
-        {
-            var fct:* = param1;
-            var fctName:* = param2;
-            var help:* = param3;
-            return function (... args)
+      private static function isComplexFct(methodDesc:XML) : Boolean {
+         var paramType:String = null;
+         var cacheKey:String = methodDesc.@declaredBy+"_"+methodDesc.@name;
+         if(_isComplexFctCache[cacheKey]!=null)
+         {
+            return _isComplexFctCache[cacheKey];
+         }
+         var simpleType:Array = ["int","uint","Number","Boolean","String","void"];
+         if(simpleType.indexOf(methodDesc.@returnType.toString())==-1)
+         {
+            _isComplexFctCache[cacheKey]=false;
+            return false;
+         }
+         for each (paramType in methodDesc..parameter..@type)
+         {
+            if(simpleType.indexOf(paramType)==-1)
             {
-                args = new Error();
-                if (args.getStackTrace())
-                {
-                    _log.fatal(fctName + " is a deprecated api function, called at " + args.getStackTrace().split("at ")[2] + (help.length ? (help + "\n") : ("")));
-                }
-                else
-                {
-                    _log.fatal(fctName + " is a deprecated api function. No stack trace available");
-                }
-                return CallWithParameters.callR(fct, args);
-            }// end function
-            ;
-        }// end function
+               _isComplexFctCache[cacheKey]=false;
+               return false;
+            }
+         }
+         _isComplexFctCache[cacheKey]=true;
+         return true;
+      }
 
-    }
+      private static function createDepreciatedMethod(fct:Function, fctName:String, help:String) : Function {
+         return new function(... args):*
+         {
+            var e:* = new Error();
+            if(e.getStackTrace())
+            {
+                  _log.fatal(fctName+" is a deprecated api function, called at "+e.getStackTrace().split("at ")[2]+(help.length?help+"\n":""));
+            }
+            else
+            {
+                  _log.fatal(fctName+" is a deprecated api function. No stack trace available");
+            }
+            return CallWithParameters.callR(fct,args);
+         };
+      }
+
+
+   }
+
 }

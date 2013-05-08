@@ -1,94 +1,86 @@
-﻿package com.ankamagames.dofus.datacenter.sounds
+package com.ankamagames.dofus.datacenter.sounds
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import __AS3__.vec.Vector;
+   import flash.utils.Dictionary;
 
-    public class SoundBones extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var keys:Vector.<String>;
-        public var values:Vector.<Vector.<SoundAnimation>>;
-        private var _cacheDictionary:Dictionary;
-        public static var MODULE:String = "SoundBones";
 
-        public function SoundBones()
-        {
-            return;
-        }// end function
+   public class SoundBones extends Object implements IDataCenter
+   {
+         
 
-        public function getSoundAnimations(param1:String) : Vector.<SoundAnimation>
-        {
-            if (this._cacheDictionary == null)
+      public function SoundBones() {
+         super();
+      }
+
+      public static var MODULE:String = "SoundBones";
+
+      public static function getSoundBonesById(id:uint) : SoundBones {
+         var sb:SoundBones = GameData.getObject(MODULE,id) as SoundBones;
+         return sb;
+      }
+
+      public static function getSoundBones() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var keys:Vector.<String>;
+
+      public var values:Vector.<Vector.<SoundAnimation>>;
+
+      private var _cacheDictionary:Dictionary;
+
+      public function getSoundAnimations(animationName:String) : Vector.<SoundAnimation> {
+         if(this._cacheDictionary==null)
+         {
+            this.makeCacheDictionary();
+         }
+         return this._cacheDictionary[animationName];
+      }
+
+      public function getSoundAnimationByFrame(animationName:String, label:String, frame:uint) : Vector.<SoundAnimation> {
+         var animationList:Vector.<SoundAnimation> = this.getSoundAnimations(animationName);
+         return animationList.filter(new function(a:SoundAnimation):Boolean
+         {
+            return (a.label==label)&&(a.startFrame==frame);
+            });
+      }
+
+      public function getSoundAnimationByLabel(animationName:String, label:String=null) : Vector.<SoundAnimation> {
+         var sa:SoundAnimation = null;
+         if(this._cacheDictionary==null)
+         {
+            this.makeCacheDictionary();
+         }
+         var ret:Vector.<SoundAnimation> = new Vector.<SoundAnimation>();
+         for each (sa in this._cacheDictionary[animationName])
+         {
+            if((sa.label==label)||(label==null)&&(sa.label=="null"))
             {
-                this.makeCacheDictionary();
+               ret.push(sa);
             }
-            return this._cacheDictionary[param1];
-        }// end function
+         }
+         return ret;
+      }
 
-        public function getSoundAnimationByFrame(param1:String, param2:String, param3:uint) : Vector.<SoundAnimation>
-        {
-            var animationName:* = param1;
-            var label:* = param2;
-            var frame:* = param3;
-            var animationList:* = this.getSoundAnimations(animationName);
-            return animationList.filter(function (param1:SoundAnimation) : Boolean
-            {
-                return param1.label == label && param1.startFrame == frame;
-            }// end function
-            );
-        }// end function
+      public function getRandomSoundAnimation(animationName:String, label:String=null) : SoundAnimation {
+         var list:Vector.<SoundAnimation> = this.getSoundAnimationByLabel(animationName,label);
+         var rnd:int = int(Math.random()%list.length);
+         var sa:SoundAnimation = list[rnd];
+         return sa;
+      }
 
-        public function getSoundAnimationByLabel(param1:String, param2:String = null) : Vector.<SoundAnimation>
-        {
-            var _loc_4:* = null;
-            if (this._cacheDictionary == null)
-            {
-                this.makeCacheDictionary();
-            }
-            var _loc_3:* = new Vector.<SoundAnimation>;
-            for each (_loc_4 in this._cacheDictionary[param1])
-            {
-                
-                if (_loc_4.label == param2 || param2 == null && _loc_4.label == "null")
-                {
-                    _loc_3.push(_loc_4);
-                }
-            }
-            return _loc_3;
-        }// end function
+      private function makeCacheDictionary() : void {
+         var i:String = null;
+         this._cacheDictionary=new Dictionary();
+         for (i in this.keys)
+         {
+            this._cacheDictionary[this.keys[i]]=this.values[i];
+         }
+      }
+   }
 
-        public function getRandomSoundAnimation(param1:String, param2:String = null) : SoundAnimation
-        {
-            var _loc_3:* = this.getSoundAnimationByLabel(param1, param2);
-            var _loc_4:* = int(Math.random() % _loc_3.length);
-            var _loc_5:* = _loc_3[_loc_4];
-            return _loc_3[_loc_4];
-        }// end function
-
-        private function makeCacheDictionary() : void
-        {
-            var _loc_1:* = null;
-            this._cacheDictionary = new Dictionary();
-            for (_loc_1 in this.keys)
-            {
-                
-                this._cacheDictionary[this.keys[_loc_1]] = this.values[_loc_1];
-            }
-            return;
-        }// end function
-
-        public static function getSoundBonesById(param1:uint) : SoundBones
-        {
-            var _loc_2:* = GameData.getObject(MODULE, param1) as ;
-            return _loc_2;
-        }// end function
-
-        public static function getSoundBones() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
-
-    }
 }

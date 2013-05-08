@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeBidHouseListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var id:uint = 0;
-        public static const protocolId:uint = 5807;
 
-        public function ExchangeBidHouseListMessage()
-        {
+   public class ExchangeBidHouseListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function ExchangeBidHouseListMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5807;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var id:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5807;
+      }
+
+      public function initExchangeBidHouseListMessage(id:uint=0) : ExchangeBidHouseListMessage {
+         this.id=id;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.id=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseListMessage(output);
+      }
+
+      public function serializeAs_ExchangeBidHouseListMessage(output:IDataOutput) : void {
+         if(this.id<0)
+         {
+            throw new Error("Forbidden value ("+this.id+") on element id.");
+         }
+         else
+         {
+            output.writeInt(this.id);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseListMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5807;
-        }// end function
-
-        public function initExchangeBidHouseListMessage(param1:uint = 0) : ExchangeBidHouseListMessage
-        {
-            this.id = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.id = 0;
-            this._isInitialized = false;
+      public function deserializeAs_ExchangeBidHouseListMessage(input:IDataInput) : void {
+         this.id=input.readInt();
+         if(this.id<0)
+         {
+            throw new Error("Forbidden value ("+this.id+") on element of ExchangeBidHouseListMessage.id.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeBidHouseListMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ExchangeBidHouseListMessage(param1:IDataOutput) : void
-        {
-            if (this.id < 0)
-            {
-                throw new Error("Forbidden value (" + this.id + ") on element id.");
-            }
-            param1.writeInt(this.id);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeBidHouseListMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ExchangeBidHouseListMessage(param1:IDataInput) : void
-        {
-            this.id = param1.readInt();
-            if (this.id < 0)
-            {
-                throw new Error("Forbidden value (" + this.id + ") on element of ExchangeBidHouseListMessage.id.");
-            }
-            return;
-        }// end function
-
-    }
 }

@@ -1,364 +1,348 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.formats.VerticalAlign;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.formats.Float;
 
-    final public class VerticalJustifier extends Object
-    {
+   use namespace tlf_internal;
 
-        public function VerticalJustifier()
-        {
+   public final class VerticalJustifier extends Object
+   {
+         
+
+      public function VerticalJustifier() {
+         super();
+      }
+
+      public static function applyVerticalAlignmentToColumn(controller:ContainerController, verticalAlignAttr:String, lines:Array, startIndex:int, numLines:int, beginFloatIndex:int, endFloatIndex:int) : Number {
+         var helper:IVerticalAdjustmentHelper = null;
+         var i:* = 0;
+         var rslt:* = NaN;
+         var lastLine:IVerticalJustificationLine = null;
+         var bottom:* = NaN;
+         var floatIndex:* = 0;
+         var floatInfo:FloatCompositionData = null;
+         if(controller.rootElement.computedFormat.blockProgression==BlockProgression.RL)
+         {
+            helper=new RL_VJHelper(controller);
+         }
+         else
+         {
+            helper=new TB_VJHelper(controller);
+         }
+         switch(verticalAlignAttr)
+         {
+            case VerticalAlign.MIDDLE:
+            case VerticalAlign.BOTTOM:
+               lastLine=lines[startIndex+numLines-1];
+               bottom=helper.getBottom(lastLine,controller,beginFloatIndex,endFloatIndex);
+               rslt=verticalAlignAttr==VerticalAlign.MIDDLE?helper.computeMiddleAdjustment(bottom):helper.computeBottomAdjustment(bottom);
+               i=startIndex;
+               while(i<startIndex+numLines)
+               {
+                  helper.applyAdjustment(lines[i]);
+                  i++;
+               }
+               floatIndex=beginFloatIndex;
+               while(floatIndex<endFloatIndex)
+               {
+                  floatInfo=controller.getFloatAt(floatIndex);
+                  if(floatInfo.floatType!=Float.NONE)
+                  {
+                     helper.applyAdjustmentToFloat(floatInfo);
+                  }
+                  floatIndex++;
+               }
+               break;
+            case VerticalAlign.JUSTIFY:
+               rslt=helper.computeJustifyAdjustment(lines,startIndex,numLines);
+               helper.applyJustifyAdjustment(lines,startIndex,numLines);
+               break;
+         }
+         return rslt;
+      }
+
+
+   }
+
+}
+
+   import flashx.textLayout.compose.IVerticalJustificationLine;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.compose.FloatCompositionData;
+
+
+   interface IVerticalAdjustmentHelper
+   {
+         
+
+
+
+      function getBottom(param1:IVerticalJustificationLine, param2:ContainerController, param3:int, param4:int) : Number;
+
+      function computeMiddleAdjustment(param1:Number) : Number;
+
+      function applyAdjustment(param1:IVerticalJustificationLine) : void;
+
+      function applyAdjustmentToFloat(param1:FloatCompositionData) : void;
+
+      function computeBottomAdjustment(param1:Number) : Number;
+
+      function computeJustifyAdjustment(param1:Array, param2:int, param3:int) : Number;
+
+      function applyJustifyAdjustment(param1:Array, param2:int, param3:int) : void;
+   }
+
+
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.compose.IVerticalJustificationLine;
+   import flashx.textLayout.compose.FloatCompositionData;
+   import flashx.textLayout.elements.InlineGraphicElement;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.formats.Float;
+   import flashx.textLayout.compose.TextFlowLine;
+
+   use namespace tlf_internal;
+
+   class TB_VJHelper extends Object implements IVerticalAdjustmentHelper
+   {
+         
+
+      function TB_VJHelper(tf:ContainerController) {
+         super();
+         this._textFrame=tf;
+      }
+
+
+
+      private var _textFrame:ContainerController;
+
+      private var adj:Number;
+
+      public function getBottom(line:IVerticalJustificationLine, controller:ContainerController, beginFloat:int, endFloat:int) : Number {
+         var floatInfo:FloatCompositionData = null;
+         var ilg:InlineGraphicElement = null;
+         var maxBottom:Number = this.getBaseline(line)+line.descent;
+         var i:int = beginFloat;
+         while(i<endFloat)
+         {
+            floatInfo=controller.getFloatAt(i);
+            if(floatInfo.floatType!=Float.NONE)
+            {
+               ilg=controller.rootElement.findLeaf(floatInfo.absolutePosition) as InlineGraphicElement;
+               maxBottom=Math.max(maxBottom,floatInfo.y+ilg.elementHeightWithMarginsAndPadding());
+            }
+            i++;
+         }
+         return maxBottom;
+      }
+
+      public function getBottomOfLine(line:IVerticalJustificationLine) : Number {
+         return this.getBaseline(line)+line.descent;
+      }
+
+      private function getBaseline(line:IVerticalJustificationLine) : Number {
+         if(line is TextFlowLine)
+         {
+            return line.y+line.ascent;
+         }
+         return line.y;
+      }
+
+      private function setBaseline(line:IVerticalJustificationLine, pos:Number) : void {
+         if(line is TextFlowLine)
+         {
+            line.y=pos-line.ascent;
+         }
+         else
+         {
+            line.y=pos;
+         }
+      }
+
+      public function computeMiddleAdjustment(contentBottom:Number) : Number {
+         var frameBottom:Number = this._textFrame.compositionHeight-Number(this._textFrame.getTotalPaddingBottom());
+         this.adj=(frameBottom-contentBottom)/2;
+         if(this.adj<0)
+         {
+            this.adj=0;
+         }
+         return this.adj;
+      }
+
+      public function computeBottomAdjustment(contentBottom:Number) : Number {
+         var frameBottom:Number = this._textFrame.compositionHeight-Number(this._textFrame.getTotalPaddingBottom());
+         this.adj=frameBottom-contentBottom;
+         if(this.adj<0)
+         {
+            this.adj=0;
+         }
+         return this.adj;
+      }
+
+      public function applyAdjustment(line:IVerticalJustificationLine) : void {
+         line.y=line.y+this.adj;
+      }
+
+      public function applyAdjustmentToFloat(floatInfo:FloatCompositionData) : void {
+         floatInfo.y=floatInfo.y+this.adj;
+      }
+
+      public function computeJustifyAdjustment(lineArray:Array, firstLineIndex:int, numLines:int) : Number {
+         this.adj=0;
+         if(numLines==1)
+         {
+            return 0;
+         }
+         var firstLine:IVerticalJustificationLine = lineArray[firstLineIndex];
+         var firstBaseLine:Number = this.getBaseline(firstLine);
+         var lastLine:IVerticalJustificationLine = lineArray[firstLineIndex+numLines-1];
+         var frameBottom:Number = this._textFrame.compositionHeight-Number(this._textFrame.getTotalPaddingBottom());
+         var allowance:Number = frameBottom-this.getBottomOfLine(lastLine);
+         if(allowance<0)
+         {
+            return 0;
+         }
+         var lastBaseLine:Number = this.getBaseline(lastLine);
+         this.adj=allowance/(lastBaseLine-firstBaseLine);
+         return this.adj;
+      }
+
+      public function applyJustifyAdjustment(lineArray:Array, firstLineIndex:int, numLines:int) : void {
+         var line:IVerticalJustificationLine = null;
+         var currBaseLine:* = NaN;
+         var currBaseLineUnjustified:* = NaN;
+         if((numLines==1)||(this.adj==0))
+         {
             return;
-        }// end function
+         }
+         var firstLine:IVerticalJustificationLine = lineArray[firstLineIndex];
+         var prevBaseLine:Number = this.getBaseline(firstLine);
+         var prevBaseLineUnjustified:Number = prevBaseLine;
+         var i:int = 1;
+         while(i<numLines)
+         {
+            line=lineArray[i+firstLineIndex];
+            currBaseLineUnjustified=this.getBaseline(line);
+            currBaseLine=prevBaseLine+(currBaseLineUnjustified-prevBaseLineUnjustified)*(1+this.adj);
+            this.setBaseline(line,currBaseLine);
+            prevBaseLineUnjustified=currBaseLineUnjustified;
+            prevBaseLine=currBaseLine;
+            i++;
+         }
+      }
+   }
 
-        public static function applyVerticalAlignmentToColumn(param1:ContainerController, param2:String, param3:Array, param4:int, param5:int, param6:int, param7:int) : Number
-        {
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = NaN;
-            var _loc_11:* = null;
-            var _loc_12:* = NaN;
-            var _loc_13:* = 0;
-            var _loc_14:* = null;
-            if (param1.rootElement.computedFormat.blockProgression == BlockProgression.RL)
+
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.compose.IVerticalJustificationLine;
+   import flashx.textLayout.compose.FloatCompositionData;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.formats.Float;
+
+   use namespace tlf_internal;
+
+   class RL_VJHelper extends Object implements IVerticalAdjustmentHelper
+   {
+         
+
+      function RL_VJHelper(tf:ContainerController) {
+         super();
+         this._textFrame=tf;
+      }
+
+
+
+      private var _textFrame:ContainerController;
+
+      private var adj:Number = 0;
+
+      public function getBottom(lastLine:IVerticalJustificationLine, controller:ContainerController, beginFloat:int, endFloat:int) : Number {
+         var floatInfo:FloatCompositionData = null;
+         var frameWidth:Number = this._textFrame.compositionWidth-Number(this._textFrame.getTotalPaddingLeft());
+         var maxLeft:Number = frameWidth+lastLine.x-lastLine.descent;
+         var i:int = beginFloat;
+         while(i<endFloat)
+         {
+            floatInfo=controller.getFloatAt(i);
+            if(floatInfo.floatType!=Float.NONE)
             {
-                _loc_8 = new RL_VJHelper(param1);
+               maxLeft=Math.min(maxLeft,floatInfo.x+frameWidth);
             }
-            else
-            {
-                _loc_8 = new TB_VJHelper(param1);
-            }
-            switch(param2)
-            {
-                case VerticalAlign.MIDDLE:
-                case VerticalAlign.BOTTOM:
-                {
-                    _loc_11 = param3[param4 + param5 - 1];
-                    _loc_12 = _loc_8.getBottom(_loc_11, param1, param6, param7);
-                    _loc_10 = param2 == VerticalAlign.MIDDLE ? (_loc_8.computeMiddleAdjustment(_loc_12)) : (_loc_8.computeBottomAdjustment(_loc_12));
-                    _loc_9 = param4;
-                    while (_loc_9 < param4 + param5)
-                    {
-                        
-                        _loc_8.applyAdjustment(param3[_loc_9]);
-                        _loc_9++;
-                    }
-                    _loc_13 = param6;
-                    while (_loc_13 < param7)
-                    {
-                        
-                        _loc_14 = param1.getFloatAt(_loc_13);
-                        if (_loc_14.floatType != Float.NONE)
-                        {
-                            _loc_8.applyAdjustmentToFloat(_loc_14);
-                        }
-                        _loc_13++;
-                    }
-                    break;
-                }
-                case VerticalAlign.JUSTIFY:
-                {
-                    _loc_10 = _loc_8.computeJustifyAdjustment(param3, param4, param5);
-                    _loc_8.applyJustifyAdjustment(param3, param4, param5);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return _loc_10;
-        }// end function
+            i++;
+         }
+         return maxLeft;
+      }
 
-    }
-}
+      public function computeMiddleAdjustment(contentLeft:Number) : Number {
+         this.adj=contentLeft/2;
+         if(this.adj<0)
+         {
+            this.adj=0;
+         }
+         return -this.adj;
+      }
 
-import flashx.textLayout.container.*;
+      public function computeBottomAdjustment(contentLeft:Number) : Number {
+         this.adj=contentLeft;
+         if(this.adj<0)
+         {
+            this.adj=0;
+         }
+         return -this.adj;
+      }
 
-import flashx.textLayout.formats.*;
+      public function applyAdjustment(line:IVerticalJustificationLine) : void {
+         line.x=line.x-this.adj;
+      }
 
-interface IVerticalAdjustmentHelper
-{
+      public function applyAdjustmentToFloat(floatInfo:FloatCompositionData) : void {
+         floatInfo.x=floatInfo.x-this.adj;
+      }
 
-    function IVerticalAdjustmentHelper();
-
-    function getBottom(param1:IVerticalJustificationLine, param2:ContainerController, param3:int, param4:int) : Number;
-
-    function computeMiddleAdjustment(param1:Number) : Number;
-
-    function applyAdjustment(param1:IVerticalJustificationLine) : void;
-
-    function applyAdjustmentToFloat(param1:FloatCompositionData) : void;
-
-    function computeBottomAdjustment(param1:Number) : Number;
-
-    function computeJustifyAdjustment(param1:Array, param2:int, param3:int) : Number;
-
-    function applyJustifyAdjustment(param1:Array, param2:int, param3:int) : void;
-
-}
-
-
-import flashx.textLayout.container.*;
-
-import flashx.textLayout.formats.*;
-
-class TB_VJHelper extends Object implements IVerticalAdjustmentHelper
-{
-    private var _textFrame:ContainerController;
-    private var adj:Number;
-
-    function TB_VJHelper(param1:ContainerController) : void
-    {
-        this._textFrame = param1;
-        return;
-    }// end function
-
-    public function getBottom(param1:IVerticalJustificationLine, param2:ContainerController, param3:int, param4:int) : Number
-    {
-        var _loc_7:* = null;
-        var _loc_8:* = null;
-        var _loc_5:* = this.getBaseline(param1) + param1.descent;
-        var _loc_6:* = param3;
-        while (_loc_6 < param4)
-        {
-            
-            _loc_7 = param2.getFloatAt(_loc_6);
-            if (_loc_7.floatType != Float.NONE)
-            {
-                _loc_8 = param2.rootElement.findLeaf(_loc_7.absolutePosition) as InlineGraphicElement;
-                _loc_5 = Math.max(_loc_5, _loc_7.y + _loc_8.elementHeightWithMarginsAndPadding());
-            }
-            _loc_6++;
-        }
-        return _loc_5;
-    }// end function
-
-    public function getBottomOfLine(param1:IVerticalJustificationLine) : Number
-    {
-        return this.getBaseline(param1) + param1.descent;
-    }// end function
-
-    private function getBaseline(param1:IVerticalJustificationLine) : Number
-    {
-        if (param1 is TextFlowLine)
-        {
-            return param1.y + param1.ascent;
-        }
-        return param1.y;
-    }// end function
-
-    private function setBaseline(param1:IVerticalJustificationLine, param2:Number) : void
-    {
-        if (param1 is TextFlowLine)
-        {
-            param1.y = param2 - param1.ascent;
-        }
-        else
-        {
-            param1.y = param2;
-        }
-        return;
-    }// end function
-
-    public function computeMiddleAdjustment(param1:Number) : Number
-    {
-        var _loc_2:* = this._textFrame.compositionHeight - Number(this._textFrame.getTotalPaddingBottom());
-        this.adj = (_loc_2 - param1) / 2;
-        if (this.adj < 0)
-        {
-            this.adj = 0;
-        }
-        return this.adj;
-    }// end function
-
-    public function computeBottomAdjustment(param1:Number) : Number
-    {
-        var _loc_2:* = this._textFrame.compositionHeight - Number(this._textFrame.getTotalPaddingBottom());
-        this.adj = _loc_2 - param1;
-        if (this.adj < 0)
-        {
-            this.adj = 0;
-        }
-        return this.adj;
-    }// end function
-
-    public function applyAdjustment(param1:IVerticalJustificationLine) : void
-    {
-        param1.y = param1.y + this.adj;
-        return;
-    }// end function
-
-    public function applyAdjustmentToFloat(param1:FloatCompositionData) : void
-    {
-        param1.y = param1.y + this.adj;
-        return;
-    }// end function
-
-    public function computeJustifyAdjustment(param1:Array, param2:int, param3:int) : Number
-    {
-        this.adj = 0;
-        if (param3 == 1)
-        {
+      public function computeJustifyAdjustment(lineArray:Array, firstLineIndex:int, numLines:int) : Number {
+         this.adj=0;
+         if(numLines==1)
+         {
             return 0;
-        }
-        var _loc_4:* = param1[param2];
-        var _loc_5:* = this.getBaseline(_loc_4);
-        var _loc_6:* = param1[param2 + param3 - 1];
-        var _loc_7:* = this._textFrame.compositionHeight - Number(this._textFrame.getTotalPaddingBottom());
-        var _loc_8:* = this._textFrame.compositionHeight - Number(this._textFrame.getTotalPaddingBottom()) - this.getBottomOfLine(_loc_6);
-        if (this._textFrame.compositionHeight - Number(this._textFrame.getTotalPaddingBottom()) - this.getBottomOfLine(_loc_6) < 0)
-        {
+         }
+         var firstLine:IVerticalJustificationLine = lineArray[firstLineIndex];
+         var firstBaseLine:Number = firstLine.x;
+         var lastLine:IVerticalJustificationLine = lineArray[firstLineIndex+numLines-1];
+         var frameLeft:Number = Number(this._textFrame.getTotalPaddingLeft())-this._textFrame.compositionWidth;
+         var allowance:Number = lastLine.x-lastLine.descent-frameLeft;
+         if(allowance<0)
+         {
             return 0;
-        }
-        var _loc_9:* = this.getBaseline(_loc_6);
-        this.adj = _loc_8 / (_loc_9 - _loc_5);
-        return this.adj;
-    }// end function
+         }
+         var lastBaseLine:Number = lastLine.x;
+         this.adj=allowance/(firstBaseLine-lastBaseLine);
+         return -this.adj;
+      }
 
-    public function applyJustifyAdjustment(param1:Array, param2:int, param3:int) : void
-    {
-        var _loc_7:* = null;
-        var _loc_8:* = NaN;
-        var _loc_9:* = NaN;
-        if (param3 == 1 || this.adj == 0)
-        {
+      public function applyJustifyAdjustment(lineArray:Array, firstLineIndex:int, numLines:int) : void {
+         var line:IVerticalJustificationLine = null;
+         var currBaseLine:* = NaN;
+         var currBaseLineUnjustified:* = NaN;
+         if((numLines==1)||(this.adj==0))
+         {
             return;
-        }
-        var _loc_4:* = param1[param2];
-        var _loc_5:* = this.getBaseline(_loc_4);
-        var _loc_6:* = this.getBaseline(_loc_4);
-        var _loc_10:* = 1;
-        while (_loc_10 < param3)
-        {
-            
-            _loc_7 = param1[_loc_10 + param2];
-            _loc_9 = this.getBaseline(_loc_7);
-            _loc_8 = _loc_5 + (_loc_9 - _loc_6) * (1 + this.adj);
-            this.setBaseline(_loc_7, _loc_8);
-            _loc_6 = _loc_9;
-            _loc_5 = _loc_8;
-            _loc_10++;
-        }
-        return;
-    }// end function
-
-}
-
-
-import flashx.textLayout.container.*;
-
-import flashx.textLayout.formats.*;
-
-class RL_VJHelper extends Object implements IVerticalAdjustmentHelper
-{
-    private var _textFrame:ContainerController;
-    private var adj:Number = 0;
-
-    function RL_VJHelper(param1:ContainerController) : void
-    {
-        this._textFrame = param1;
-        return;
-    }// end function
-
-    public function getBottom(param1:IVerticalJustificationLine, param2:ContainerController, param3:int, param4:int) : Number
-    {
-        var _loc_8:* = null;
-        var _loc_5:* = this._textFrame.compositionWidth - Number(this._textFrame.getTotalPaddingLeft());
-        var _loc_6:* = this._textFrame.compositionWidth - Number(this._textFrame.getTotalPaddingLeft()) + param1.x - param1.descent;
-        var _loc_7:* = param3;
-        while (_loc_7 < param4)
-        {
-            
-            _loc_8 = param2.getFloatAt(_loc_7);
-            if (_loc_8.floatType != Float.NONE)
-            {
-                _loc_6 = Math.min(_loc_6, _loc_8.x + _loc_5);
-            }
-            _loc_7++;
-        }
-        return _loc_6;
-    }// end function
-
-    public function computeMiddleAdjustment(param1:Number) : Number
-    {
-        this.adj = param1 / 2;
-        if (this.adj < 0)
-        {
-            this.adj = 0;
-        }
-        return -this.adj;
-    }// end function
-
-    public function computeBottomAdjustment(param1:Number) : Number
-    {
-        this.adj = param1;
-        if (this.adj < 0)
-        {
-            this.adj = 0;
-        }
-        return -this.adj;
-    }// end function
-
-    public function applyAdjustment(param1:IVerticalJustificationLine) : void
-    {
-        param1.x = param1.x - this.adj;
-        return;
-    }// end function
-
-    public function applyAdjustmentToFloat(param1:FloatCompositionData) : void
-    {
-        param1.x = param1.x - this.adj;
-        return;
-    }// end function
-
-    public function computeJustifyAdjustment(param1:Array, param2:int, param3:int) : Number
-    {
-        this.adj = 0;
-        if (param3 == 1)
-        {
-            return 0;
-        }
-        var _loc_4:* = param1[param2];
-        var _loc_5:* = param1[param2].x;
-        var _loc_6:* = param1[param2 + param3 - 1];
-        var _loc_7:* = Number(this._textFrame.getTotalPaddingLeft()) - this._textFrame.compositionWidth;
-        var _loc_8:* = _loc_6.x - _loc_6.descent - _loc_7;
-        if (_loc_6.x - _loc_6.descent - _loc_7 < 0)
-        {
-            return 0;
-        }
-        var _loc_9:* = _loc_6.x;
-        this.adj = _loc_8 / (_loc_5 - _loc_9);
-        return -this.adj;
-    }// end function
-
-    public function applyJustifyAdjustment(param1:Array, param2:int, param3:int) : void
-    {
-        var _loc_7:* = null;
-        var _loc_8:* = NaN;
-        var _loc_9:* = NaN;
-        if (param3 == 1 || this.adj == 0)
-        {
-            return;
-        }
-        var _loc_4:* = param1[param2];
-        var _loc_5:* = param1[param2].x;
-        var _loc_6:* = param1[param2].x;
-        var _loc_10:* = 1;
-        while (_loc_10 < param3)
-        {
-            
-            _loc_7 = param1[_loc_10 + param2];
-            _loc_9 = _loc_7.x;
-            _loc_8 = _loc_5 - (_loc_6 - _loc_9) * (1 + this.adj);
-            _loc_7.x = _loc_8;
-            _loc_6 = _loc_9;
-            _loc_5 = _loc_8;
-            _loc_10++;
-        }
-        return;
-    }// end function
-
-}
-
+         }
+         var firstLine:IVerticalJustificationLine = lineArray[firstLineIndex];
+         var prevBaseLine:Number = firstLine.x;
+         var prevBaseLineUnjustified:Number = prevBaseLine;
+         var i:int = 1;
+         while(i<numLines)
+         {
+            line=lineArray[i+firstLineIndex];
+            currBaseLineUnjustified=line.x;
+            currBaseLine=prevBaseLine-(prevBaseLineUnjustified-currBaseLineUnjustified)*(1+this.adj);
+            line.x=currBaseLine;
+            prevBaseLineUnjustified=currBaseLineUnjustified;
+            prevBaseLine=currBaseLine;
+            i++;
+         }
+      }
+   }

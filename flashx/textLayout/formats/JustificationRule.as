@@ -1,15 +1,20 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    final public class JustificationRule extends Object
-    {
-        public static const EAST_ASIAN:String = "eastAsian";
-        public static const SPACE:String = "space";
 
-        public function JustificationRule()
-        {
-            return;
-        }// end function
+   public final class JustificationRule extends Object
+   {
+         
 
-    }
+      public function JustificationRule() {
+         super();
+      }
+
+      public static const EAST_ASIAN:String = "eastAsian";
+
+      public static const SPACE:String = "space";
+
+
+   }
+
 }

@@ -1,37 +1,40 @@
-﻿package com.ankamagames.dofus.logic.game.fight.steps
+package com.ankamagames.dofus.logic.game.fight.steps
 {
-    import com.ankamagames.dofus.logic.game.fight.steps.*;
-    import com.ankamagames.dofus.types.characteristicContextual.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import flash.text.*;
+   import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.dofus.types.characteristicContextual.CharacteristicContextualManager;
+   import flash.text.TextFormat;
+   import com.ankamagames.jerakine.managers.OptionManager;
+   import com.ankamagames.dofus.types.characteristicContextual.CharacteristicContextual;
 
-    public class FightLossAnimStep extends AbstractSequencable implements IFightStep
-    {
-        private var _value:int;
-        private var _target:IEntity;
-        private var _color:uint;
 
-        public function FightLossAnimStep(param1:IEntity, param2:int, param3:uint)
-        {
-            this._value = param2;
-            this._target = param1;
-            this._color = param3;
-            return;
-        }// end function
+   public class FightLossAnimStep extends AbstractSequencable implements IFightStep
+   {
+         
 
-        public function get stepType() : String
-        {
-            return "lifeLossAnim";
-        }// end function
+      public function FightLossAnimStep(pTarget:IEntity, pValue:int, pColor:uint) {
+         super();
+         this._value=pValue;
+         this._target=pTarget;
+         this._color=pColor;
+      }
 
-        override public function start() : void
-        {
-            var _loc_1:* = CharacteristicContextualManager.getInstance().addStatContextual(this._value.toString(), this._target, new TextFormat("Verdana", 24, this._color, true), OptionManager.getOptionManager("tiphon").pointsOverhead);
-            executeCallbacks();
-            return;
-        }// end function
 
-    }
+
+      private var _value:int;
+
+      private var _target:IEntity;
+
+      private var _color:uint;
+
+      public function get stepType() : String {
+         return "lifeLossAnim";
+      }
+
+      override public function start() : void {
+         var ccm:CharacteristicContextual = CharacteristicContextualManager.getInstance().addStatContextual(this._value.toString(),this._target,new TextFormat("Verdana",24,this._color,true),OptionManager.getOptionManager("tiphon").pointsOverhead);
+         executeCallbacks();
+      }
+   }
+
 }

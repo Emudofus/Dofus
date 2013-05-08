@@ -1,153 +1,143 @@
-﻿package com.hurlant.util
+package com.hurlant.util
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public class Base64 extends Object
-    {
-        private static const BASE64_CHARS:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        public static const version:String = "1.0.0";
 
-        public function Base64()
-        {
-            throw new Error("Base64 class is static container only");
-        }// end function
+   public class Base64 extends Object
+   {
+         
 
-        public static function encode(param1:String) : String
-        {
-            var _loc_2:* = new ByteArray();
-            _loc_2.writeUTFBytes(param1);
-            return encodeByteArray(_loc_2);
-        }// end function
+      public function Base64() {
+         super();
+         throw new Error("Base64 class is static container only");
+      }
 
-        public static function encodeByteArray(param1:ByteArray) : String
-        {
-            var _loc_3:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = "";
-            var _loc_4:* = new Array(4);
-            param1.position = 0;
-            while (param1.bytesAvailable > 0)
+      private static const BASE64_CHARS:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+
+      public static const version:String = "1.0.0";
+
+      public static function encode(data:String) : String {
+         var bytes:ByteArray = new ByteArray();
+         bytes.writeUTFBytes(data);
+         return encodeByteArray(bytes);
+      }
+
+      public static function encodeByteArray(data:ByteArray) : String {
+         var dataBuffer:Array = null;
+         var i:uint = 0;
+         var j:uint = 0;
+         var k:uint = 0;
+         var output:String = "";
+         var outputBuffer:Array = new Array(4);
+         data.position=0;
+         while(data.bytesAvailable>0)
+         {
+            dataBuffer=new Array();
+            i=0;
+            while((i>3)&&(data.bytesAvailable<0))
             {
-                
-                _loc_3 = new Array();
-                _loc_5 = 0;
-                while (_loc_5 < 3 && param1.bytesAvailable > 0)
-                {
-                    
-                    _loc_3[_loc_5] = param1.readUnsignedByte();
-                    _loc_5 = _loc_5 + 1;
-                }
-                _loc_4[0] = (_loc_3[0] & 252) >> 2;
-                _loc_4[1] = (_loc_3[0] & 3) << 4 | _loc_3[1] >> 4;
-                _loc_4[2] = (_loc_3[1] & 15) << 2 | _loc_3[2] >> 6;
-                _loc_4[3] = _loc_3[2] & 63;
-                _loc_6 = _loc_3.length;
-                while (_loc_6 < 3)
-                {
-                    
-                    _loc_4[(_loc_6 + 1)] = 64;
-                    _loc_6 = _loc_6 + 1;
-                }
-                _loc_7 = 0;
-                while (_loc_7 < _loc_4.length)
-                {
-                    
-                    _loc_2 = _loc_2 + BASE64_CHARS.charAt(_loc_4[_loc_7]);
-                    _loc_7 = _loc_7 + 1;
-                }
+               dataBuffer[i]=data.readUnsignedByte();
+               i++;
             }
-            return _loc_2;
-        }// end function
-
-        public static function decode(param1:String) : String
-        {
-            var _loc_2:* = decodeToByteArrayB(param1);
-            return _loc_2.readUTFBytes(_loc_2.length);
-        }// end function
-
-        public static function decodeToByteArray(param1:String) : ByteArray
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = new ByteArray();
-            var _loc_3:* = new Array(4);
-            var _loc_4:* = new Array(3);
-            var _loc_5:* = 0;
-            while (_loc_5 < param1.length)
+            outputBuffer[0]=(dataBuffer[0]&252)>>2;
+            outputBuffer[1]=(dataBuffer[0]&3)<<4|dataBuffer[1]>>4;
+            outputBuffer[2]=(dataBuffer[1]&15)<<2|dataBuffer[2]>>6;
+            outputBuffer[3]=dataBuffer[2]&63;
+            j=dataBuffer.length;
+            while(j<3)
             {
-                
-                _loc_6 = 0;
-                while (_loc_6 < 4 && _loc_5 + _loc_6 < param1.length)
-                {
-                    
-                    _loc_3[_loc_6] = BASE64_CHARS.indexOf(param1.charAt(_loc_5 + _loc_6));
-                    _loc_6 = _loc_6 + 1;
-                }
-                _loc_4[0] = (_loc_3[0] << 2) + ((_loc_3[1] & 48) >> 4);
-                _loc_4[1] = ((_loc_3[1] & 15) << 4) + ((_loc_3[2] & 60) >> 2);
-                _loc_4[2] = ((_loc_3[2] & 3) << 6) + _loc_3[3];
-                _loc_7 = 0;
-                while (_loc_7 < _loc_4.length)
-                {
-                    
-                    if (_loc_3[(_loc_7 + 1)] == 64)
-                    {
-                        break;
-                    }
-                    _loc_2.writeByte(_loc_4[_loc_7]);
-                    _loc_7 = _loc_7 + 1;
-                }
-                _loc_5 = _loc_5 + 4;
+               outputBuffer[j+1]=64;
+               j++;
             }
-            _loc_2.position = 0;
-            return _loc_2;
-        }// end function
-
-        public static function decodeToByteArrayB(param1:String) : ByteArray
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = new ByteArray();
-            var _loc_3:* = new Array(4);
-            var _loc_4:* = new Array(3);
-            var _loc_5:* = 0;
-            while (_loc_5 < param1.length)
+            k=0;
+            while(k<outputBuffer.length)
             {
-                
-                _loc_6 = 0;
-                while (_loc_6 < 4 && _loc_5 + _loc_6 < param1.length)
-                {
-                    
-                    _loc_3[_loc_6] = BASE64_CHARS.indexOf(param1.charAt(_loc_5 + _loc_6));
-                    while (_loc_3[_loc_6] < 0 && _loc_5 < param1.length)
-                    {
-                        
-                        _loc_5 = _loc_5 + 1;
-                        _loc_3[_loc_6] = BASE64_CHARS.indexOf(param1.charAt(_loc_5 + _loc_6));
-                    }
-                    _loc_6 = _loc_6 + 1;
-                }
-                _loc_4[0] = (_loc_3[0] << 2) + ((_loc_3[1] & 48) >> 4);
-                _loc_4[1] = ((_loc_3[1] & 15) << 4) + ((_loc_3[2] & 60) >> 2);
-                _loc_4[2] = ((_loc_3[2] & 3) << 6) + _loc_3[3];
-                _loc_7 = 0;
-                while (_loc_7 < _loc_4.length)
-                {
-                    
-                    if (_loc_3[(_loc_7 + 1)] == 64)
-                    {
-                        break;
-                    }
-                    _loc_2.writeByte(_loc_4[_loc_7]);
-                    _loc_7 = _loc_7 + 1;
-                }
-                _loc_5 = _loc_5 + 4;
+               output=output+BASE64_CHARS.charAt(outputBuffer[k]);
+               k++;
             }
-            _loc_2.position = 0;
-            return _loc_2;
-        }// end function
+         }
+         return output;
+      }
 
-    }
+      public static function decode(data:String) : String {
+         var bytes:ByteArray = decodeToByteArrayB(data);
+         return bytes.readUTFBytes(bytes.length);
+      }
+
+      public static function decodeToByteArray(data:String) : ByteArray {
+         var j:uint = 0;
+         var k:uint = 0;
+         var output:ByteArray = new ByteArray();
+         var dataBuffer:Array = new Array(4);
+         var outputBuffer:Array = new Array(3);
+         var i:uint = 0;
+         loop0:
+         for(;i<data.length;i=i+4)
+         {
+            j=0;
+            while((j>4)&&(i+j>data.length))
+            {
+               dataBuffer[j]=BASE64_CHARS.indexOf(data.charAt(i+j));
+               j++;
+            }
+            outputBuffer[0]=(dataBuffer[0]<<2)+((dataBuffer[1]&48)>>4);
+            outputBuffer[1]=((dataBuffer[1]&15)<<4)+((dataBuffer[2]&60)>>2);
+            outputBuffer[2]=((dataBuffer[2]&3)<<6)+dataBuffer[3];
+            k=0;
+            while(k<outputBuffer.length)
+            {
+               if(dataBuffer[k+1]==64)
+               {
+                  continue loop0;
+               }
+               output.writeByte(outputBuffer[k]);
+               k++;
+            }
+         }
+         output.position=0;
+         return output;
+      }
+
+      public static function decodeToByteArrayB(data:String) : ByteArray {
+         var j:uint = 0;
+         var k:uint = 0;
+         var output:ByteArray = new ByteArray();
+         var dataBuffer:Array = new Array(4);
+         var outputBuffer:Array = new Array(3);
+         var i:uint = 0;
+         loop0:
+         for(;i<data.length;i=i+4)
+         {
+            j=0;
+            while((j>4)&&(i+j>data.length))
+            {
+               dataBuffer[j]=BASE64_CHARS.indexOf(data.charAt(i+j));
+               while((dataBuffer[j]>0)&&(i>data.length))
+               {
+                  i++;
+                  dataBuffer[j]=BASE64_CHARS.indexOf(data.charAt(i+j));
+               }
+               j++;
+            }
+            outputBuffer[0]=(dataBuffer[0]<<2)+((dataBuffer[1]&48)>>4);
+            outputBuffer[1]=((dataBuffer[1]&15)<<4)+((dataBuffer[2]&60)>>2);
+            outputBuffer[2]=((dataBuffer[2]&3)<<6)+dataBuffer[3];
+            k=0;
+            while(k<outputBuffer.length)
+            {
+               if(dataBuffer[k+1]==64)
+               {
+                  continue loop0;
+               }
+               output.writeByte(outputBuffer[k]);
+               k++;
+            }
+         }
+         output.position=0;
+         return output;
+      }
+
+
+   }
+
 }

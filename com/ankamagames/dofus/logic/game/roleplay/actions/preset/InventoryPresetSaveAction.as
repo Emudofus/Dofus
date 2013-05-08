@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions.preset
+package com.ankamagames.dofus.logic.game.roleplay.actions.preset
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class InventoryPresetSaveAction extends Object implements Action
-    {
-        public var presetId:uint;
-        public var symbolId:uint;
-        public var saveEquipment:Boolean;
 
-        public function InventoryPresetSaveAction()
-        {
-            return;
-        }// end function
+   public class InventoryPresetSaveAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint, param3:Boolean) : InventoryPresetSaveAction
-        {
-            var _loc_4:* = new InventoryPresetSaveAction;
-            new InventoryPresetSaveAction.presetId = param1;
-            _loc_4.symbolId = param2;
-            _loc_4.saveEquipment = param3;
-            return _loc_4;
-        }// end function
+      public function InventoryPresetSaveAction() {
+         super();
+      }
 
-    }
+      public static function create(presetId:uint, symbolId:uint, saveEquipment:Boolean) : InventoryPresetSaveAction {
+         var a:InventoryPresetSaveAction = new InventoryPresetSaveAction();
+         a.presetId=presetId;
+         a.symbolId=symbolId;
+         a.saveEquipment=saveEquipment;
+         return a;
+      }
+
+      public var presetId:uint;
+
+      public var symbolId:uint;
+
+      public var saveEquipment:Boolean;
+   }
+
 }

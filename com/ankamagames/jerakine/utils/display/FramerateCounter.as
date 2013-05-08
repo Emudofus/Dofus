@@ -1,104 +1,99 @@
-﻿package com.ankamagames.jerakine.utils.display
+package com.ankamagames.jerakine.utils.display
 {
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.Event;
+   import flash.utils.getTimer;
 
-    public class FramerateCounter extends Object
-    {
-        private static var _refreshRate:uint = 5000;
-        private static var _lastThreshold:uint;
-        private static var _framesCountSinceThreshold:uint;
-        private static var _frameRate:uint;
-        private static var _delayBetweenFrames:uint;
-        private static var _lastFrame:uint;
-        private static var _listeners:Array = new Array();
-        private static var _enterFrameListened:Boolean;
 
-        public function FramerateCounter()
-        {
-            return;
-        }// end function
+   public class FramerateCounter extends Object
+   {
+         
 
-        public static function get listeners() : Array
-        {
-            return _listeners;
-        }// end function
+      public function FramerateCounter() {
+         super();
+      }
 
-        public static function get refreshRate() : uint
-        {
-            return _refreshRate;
-        }// end function
+      private static var _refreshRate:uint = 5000;
 
-        public static function set refreshRate(param1:uint) : void
-        {
-            _refreshRate = param1;
-            return;
-        }// end function
+      private static var _lastThreshold:uint;
 
-        public static function get frameRate() : uint
-        {
-            return _frameRate;
-        }// end function
+      private static var _framesCountSinceThreshold:uint;
 
-        public static function get delayBetweenFrames() : uint
-        {
-            return _delayBetweenFrames;
-        }// end function
+      private static var _frameRate:uint;
 
-        public static function addListener(param1:IFramerateListener) : void
-        {
-            _listeners.push(param1);
-            if (!_enterFrameListened)
-            {
-                EnterFrameDispatcher.addEventListener(onEnterFrame, "FramerateCounter", 0);
-                _enterFrameListened = true;
-            }
-            return;
-        }// end function
+      private static var _delayBetweenFrames:uint;
 
-        public static function removeListener(param1:IFramerateListener) : void
-        {
-            var _loc_2:* = _listeners.indexOf(param1);
-            if (_loc_2 > -1)
-            {
-                _listeners.splice(_loc_2, 1);
-            }
-            if (_listeners.length <= 0)
-            {
-                EnterFrameDispatcher.removeEventListener(onEnterFrame);
-                _enterFrameListened = false;
-            }
-            return;
-        }// end function
+      private static var _lastFrame:uint;
 
-        private static function dispatchFps() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in _listeners)
-            {
-                
-                _loc_1.onFps(_frameRate);
-            }
-            return;
-        }// end function
+      private static var _listeners:Array = new Array();
 
-        private static function onEnterFrame(event:Event) : void
-        {
-            var _loc_5:* = _framesCountSinceThreshold + 1;
-            _framesCountSinceThreshold = _loc_5;
-            var _loc_2:* = getTimer();
-            _delayBetweenFrames = _loc_2 - _lastFrame;
-            _lastFrame = _loc_2;
-            var _loc_3:* = _loc_2 - _lastThreshold;
-            if (_loc_3 > _refreshRate)
-            {
-                _frameRate = 1000 * _framesCountSinceThreshold / _loc_3;
-                _framesCountSinceThreshold = 0;
-                _lastThreshold = _loc_2;
-                dispatchFps();
-            }
-            return;
-        }// end function
+      private static var _enterFrameListened:Boolean;
 
-    }
+      public static function get listeners() : Array {
+         return _listeners;
+      }
+
+      public static function get refreshRate() : uint {
+         return _refreshRate;
+      }
+
+      public static function set refreshRate(value:uint) : void {
+         _refreshRate=value;
+      }
+
+      public static function get frameRate() : uint {
+         return _frameRate;
+      }
+
+      public static function get delayBetweenFrames() : uint {
+         return _delayBetweenFrames;
+      }
+
+      public static function addListener(listener:IFramerateListener) : void {
+         _listeners.push(listener);
+         if(!_enterFrameListened)
+         {
+            EnterFrameDispatcher.addEventListener(onEnterFrame,"FramerateCounter",0);
+            _enterFrameListened=true;
+         }
+      }
+
+      public static function removeListener(listener:IFramerateListener) : void {
+         var index:int = _listeners.indexOf(listener);
+         if(index>-1)
+         {
+            _listeners.splice(index,1);
+         }
+         if(_listeners.length<=0)
+         {
+            EnterFrameDispatcher.removeEventListener(onEnterFrame);
+            _enterFrameListened=false;
+         }
+      }
+
+      private static function dispatchFps() : void {
+         var listener:IFramerateListener = null;
+         for each (listener in _listeners)
+         {
+            listener.onFps(_frameRate);
+         }
+      }
+
+      private static function onEnterFrame(e:Event) : void {
+         _framesCountSinceThreshold++;
+         var now:uint = getTimer();
+         _delayBetweenFrames=now-_lastFrame;
+         _lastFrame=now;
+         var delay:uint = now-_lastThreshold;
+         if(delay>_refreshRate)
+         {
+            _frameRate=1000*_framesCountSinceThreshold/delay;
+            _framesCountSinceThreshold=0;
+            _lastThreshold=now;
+            dispatchFps();
+         }
+      }
+
+
+   }
+
 }

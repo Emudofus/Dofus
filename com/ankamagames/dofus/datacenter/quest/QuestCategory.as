@@ -1,61 +1,65 @@
-﻿package com.ankamagames.dofus.datacenter.quest
+package com.ankamagames.dofus.datacenter.quest
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class QuestCategory extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var nameId:uint;
-        public var order:uint;
-        public var questIds:Vector.<uint>;
-        private var _name:String;
-        private var _quests:Vector.<Quest>;
-        private static const MODULE:String = "QuestCategory";
 
-        public function QuestCategory()
-        {
-            return;
-        }// end function
+   public class QuestCategory extends Object implements IDataCenter
+   {
+         
 
-        public function get name() : String
-        {
-            if (!this._name)
+      public function QuestCategory() {
+         super();
+      }
+
+      public static const MODULE:String = "QuestCategory";
+
+      public static function getQuestCategoryById(id:int) : QuestCategory {
+         return GameData.getObject(MODULE,id) as QuestCategory;
+      }
+
+      public static function getQuestCategories() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var nameId:uint;
+
+      public var order:uint;
+
+      public var questIds:Vector.<uint>;
+
+      private var _name:String;
+
+      private var _quests:Vector.<Quest>;
+
+      public function get name() : String {
+         if(!this._name)
+         {
+            this._name=I18n.getText(this.nameId);
+         }
+         return this._name;
+      }
+
+      public function get quests() : Vector.<Quest> {
+         var i:* = 0;
+         var len:* = 0;
+         if(!this._quests)
+         {
+            len=this.questIds.length;
+            this._quests=new Vector.<Quest>(len,true);
+            i=0;
+            while(i<len)
             {
-                this._name = I18n.getText(this.nameId);
+               this._quests[i]=Quest.getQuestById(this.questIds[i]);
+               i=i+1;
             }
-            return this._name;
-        }// end function
+         }
+         return this._quests;
+      }
+   }
 
-        public function get quests() : Vector.<Quest>
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = 0;
-            if (!this._quests)
-            {
-                _loc_2 = this.questIds.length;
-                this._quests = new Vector.<Quest>(_loc_2, true);
-                _loc_1 = 0;
-                while (_loc_1 < _loc_2)
-                {
-                    
-                    this._quests[_loc_1] = Quest.getQuestById(this.questIds[_loc_1]);
-                    _loc_1 = _loc_1 + 1;
-                }
-            }
-            return this._quests;
-        }// end function
-
-        public static function getQuestCategoryById(param1:int) : QuestCategory
-        {
-            return GameData.getObject(MODULE, param1) as QuestCategory;
-        }// end function
-
-        public static function getQuestCategories() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
-
-    }
 }

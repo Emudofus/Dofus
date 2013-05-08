@@ -1,45 +1,54 @@
-﻿package com.ankamagames.dofus.datacenter.livingObjects
+package com.ankamagames.dofus.datacenter.livingObjects
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class SpeakingItemText extends Object implements IDataCenter
-    {
-        public var textId:int;
-        public var textProba:Number;
-        public var textStringId:uint;
-        public var textLevel:int;
-        public var textSound:int;
-        public var textRestriction:String;
-        private var _textString:String;
-        private static const MODULE:String = "SpeakingItemsText";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(SpeakingItemText));
 
-        public function SpeakingItemText()
-        {
-            return;
-        }// end function
+   public class SpeakingItemText extends Object implements IDataCenter
+   {
+         
 
-        public function get textString() : String
-        {
-            if (!this._textString)
-            {
-                this._textString = I18n.getText(this.textStringId);
-            }
-            return this._textString;
-        }// end function
+      public function SpeakingItemText() {
+         super();
+      }
 
-        public static function getSpeakingItemTextById(param1:int) : SpeakingItemText
-        {
-            return GameData.getObject(MODULE, param1) as SpeakingItemText;
-        }// end function
+      public static const MODULE:String = "SpeakingItemsText";
 
-        public static function getSpeakingItemsText() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpeakingItemText));
 
-    }
+      public static function getSpeakingItemTextById(id:int) : SpeakingItemText {
+         return GameData.getObject(MODULE,id) as SpeakingItemText;
+      }
+
+      public static function getSpeakingItemsText() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var textId:int;
+
+      public var textProba:Number;
+
+      public var textStringId:uint;
+
+      public var textLevel:int;
+
+      public var textSound:int;
+
+      public var textRestriction:String;
+
+      private var _textString:String;
+
+      public function get textString() : String {
+         if(!this._textString)
+         {
+            this._textString=I18n.getText(this.textStringId);
+         }
+         return this._textString;
+      }
+   }
+
 }

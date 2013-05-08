@@ -1,49 +1,50 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.types
+package com.ankamagames.dofus.logic.game.roleplay.types
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
 
-    public class Fight extends Object
-    {
-        public var fightId:uint;
-        public var teams:Vector.<FightTeam>;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Fight));
 
-        public function Fight(param1:uint, param2:Vector.<FightTeam>)
-        {
-            this.fightId = param1;
-            this.teams = param2;
-            return;
-        }// end function
+   public class Fight extends Object
+   {
+         
 
-        public function getTeamByType(param1:uint) : FightTeam
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this.teams)
+      public function Fight(fightId:uint, teams:Vector.<FightTeam>) {
+         super();
+         this.fightId=fightId;
+         this.teams=teams;
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Fight));
+
+      public var fightId:uint;
+
+      public var teams:Vector.<FightTeam>;
+
+      public function getTeamByType(teamType:uint) : FightTeam {
+         var team:FightTeam = null;
+         for each (team in this.teams)
+         {
+            if(team.teamType==teamType)
             {
-                
-                if (_loc_2.teamType == param1)
-                {
-                    return _loc_2;
-                }
+               return team;
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
 
-        public function getTeamById(param1:uint) : FightTeam
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this.teams)
+      public function getTeamById(teamId:uint) : FightTeam {
+         var team:FightTeam = null;
+         for each (team in this.teams)
+         {
+            if(team.teamInfos.teamId==teamId)
             {
-                
-                if (_loc_2.teamInfos.teamId == param1)
-                {
-                    return _loc_2;
-                }
+               return team;
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
+   }
 
-    }
 }

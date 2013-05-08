@@ -1,20 +1,26 @@
-﻿package org.audiofx.mp3
+package org.audiofx.mp3
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    class ByteArraySegment extends Object
-    {
-        public var start:uint;
-        public var length:uint;
-        public var byteArray:ByteArray;
 
-        function ByteArraySegment(param1:ByteArray, param2:uint, param3:uint)
-        {
-            this.byteArray = param1;
-            this.start = param2;
-            this.length = param3;
-            return;
-        }// end function
+   class ByteArraySegment extends Object
+   {
+         
 
-    }
+      function ByteArraySegment(ba:ByteArray, start:uint, length:uint) {
+         super();
+         this.byteArray=ba;
+         this.start=start;
+         this.length=length;
+      }
+
+
+
+      public var start:uint;
+
+      public var length:uint;
+
+      public var byteArray:ByteArray;
+   }
+
 }

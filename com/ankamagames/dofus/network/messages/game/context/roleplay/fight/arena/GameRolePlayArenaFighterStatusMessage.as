@@ -1,98 +1,98 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
+package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayArenaFighterStatusMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fightId:int = 0;
-        public var playerId:uint = 0;
-        public var accepted:Boolean = false;
-        public static const protocolId:uint = 6281;
 
-        public function GameRolePlayArenaFighterStatusMessage()
-        {
+   public class GameRolePlayArenaFighterStatusMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function GameRolePlayArenaFighterStatusMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6281;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var fightId:int = 0;
+
+      public var playerId:uint = 0;
+
+      public var accepted:Boolean = false;
+
+      override public function getMessageId() : uint {
+         return 6281;
+      }
+
+      public function initGameRolePlayArenaFighterStatusMessage(fightId:int=0, playerId:uint=0, accepted:Boolean=false) : GameRolePlayArenaFighterStatusMessage {
+         this.fightId=fightId;
+         this.playerId=playerId;
+         this.accepted=accepted;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.fightId=0;
+         this.playerId=0;
+         this.accepted=false;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayArenaFighterStatusMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayArenaFighterStatusMessage(output:IDataOutput) : void {
+         output.writeInt(this.fightId);
+         if(this.playerId<0)
+         {
+            throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
+         }
+         else
+         {
+            output.writeInt(this.playerId);
+            output.writeBoolean(this.accepted);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayArenaFighterStatusMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6281;
-        }// end function
-
-        public function initGameRolePlayArenaFighterStatusMessage(param1:int = 0, param2:uint = 0, param3:Boolean = false) : GameRolePlayArenaFighterStatusMessage
-        {
-            this.fightId = param1;
-            this.playerId = param2;
-            this.accepted = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.fightId = 0;
-            this.playerId = 0;
-            this.accepted = false;
-            this._isInitialized = false;
+      public function deserializeAs_GameRolePlayArenaFighterStatusMessage(input:IDataInput) : void {
+         this.fightId=input.readInt();
+         this.playerId=input.readInt();
+         if(this.playerId<0)
+         {
+            throw new Error("Forbidden value ("+this.playerId+") on element of GameRolePlayArenaFighterStatusMessage.playerId.");
+         }
+         else
+         {
+            this.accepted=input.readBoolean();
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayArenaFighterStatusMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_GameRolePlayArenaFighterStatusMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.fightId);
-            if (this.playerId < 0)
-            {
-                throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
-            }
-            param1.writeInt(this.playerId);
-            param1.writeBoolean(this.accepted);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayArenaFighterStatusMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_GameRolePlayArenaFighterStatusMessage(param1:IDataInput) : void
-        {
-            this.fightId = param1.readInt();
-            this.playerId = param1.readInt();
-            if (this.playerId < 0)
-            {
-                throw new Error("Forbidden value (" + this.playerId + ") on element of GameRolePlayArenaFighterStatusMessage.playerId.");
-            }
-            this.accepted = param1.readBoolean();
-            return;
-        }// end function
-
-    }
 }

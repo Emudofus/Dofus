@@ -1,48 +1,47 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.AbstractEntitiesFrame;
 
-    public class RideItemCriterion extends ItemCriterion implements IDataCenter
-    {
 
-        public function RideItemCriterion(param1:String)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class RideItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            var _loc_1:* = null;
-            if (_operator.text == ItemCriterionOperator.EQUAL && _criterionValue == 1 || _operator.text == ItemCriterionOperator.DIFFERENT && _criterionValue == 0)
-            {
-                _loc_1 = I18n.getUiText("ui.tooltip.mountEquiped");
-            }
-            if (_operator.text == ItemCriterionOperator.EQUAL && _criterionValue == 0 || _operator.text == ItemCriterionOperator.DIFFERENT && _criterionValue == 1)
-            {
-                _loc_1 = I18n.getUiText("ui.tooltip.mountNonEquiped");
-            }
-            return _loc_1;
-        }// end function
+      public function RideItemCriterion(pCriterion:String) {
+         super(pCriterion);
+      }
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new RideItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
 
-        override protected function getCriterion() : int
-        {
-            var _loc_1:* = (Kernel.getWorker().getFrame(AbstractEntitiesFrame) as AbstractEntitiesFrame).playerIsOnRide;
-            if (_loc_1)
-            {
-                return 1;
-            }
-            return 0;
-        }// end function
 
-    }
+      override public function get text() : String {
+         var readableCriterion:String = null;
+         if((_operator.text==ItemCriterionOperator.EQUAL)&&(_criterionValue==1)||(_operator.text==ItemCriterionOperator.DIFFERENT)&&(_criterionValue==0))
+         {
+            readableCriterion=I18n.getUiText("ui.tooltip.mountEquiped");
+         }
+         if((_operator.text==ItemCriterionOperator.EQUAL)&&(_criterionValue==0)||(_operator.text==ItemCriterionOperator.DIFFERENT)&&(_criterionValue==1))
+         {
+            readableCriterion=I18n.getUiText("ui.tooltip.mountNonEquiped");
+         }
+         return readableCriterion;
+      }
+
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:RideItemCriterion = new RideItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
+
+      override protected function getCriterion() : int {
+         var isOnRide:Boolean = (Kernel.getWorker().getFrame(AbstractEntitiesFrame) as AbstractEntitiesFrame).playerIsOnRide;
+         if(isOnRide)
+         {
+            return 1;
+         }
+         return 0;
+      }
+   }
+
 }

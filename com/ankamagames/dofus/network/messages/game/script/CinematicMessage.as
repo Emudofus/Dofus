@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.script
+package com.ankamagames.dofus.network.messages.game.script
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class CinematicMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var cinematicId:uint = 0;
-        public static const protocolId:uint = 6053;
 
-        public function CinematicMessage()
-        {
+   public class CinematicMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function CinematicMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6053;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var cinematicId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6053;
+      }
+
+      public function initCinematicMessage(cinematicId:uint=0) : CinematicMessage {
+         this.cinematicId=cinematicId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.cinematicId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CinematicMessage(output);
+      }
+
+      public function serializeAs_CinematicMessage(output:IDataOutput) : void {
+         if(this.cinematicId<0)
+         {
+            throw new Error("Forbidden value ("+this.cinematicId+") on element cinematicId.");
+         }
+         else
+         {
+            output.writeShort(this.cinematicId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CinematicMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6053;
-        }// end function
-
-        public function initCinematicMessage(param1:uint = 0) : CinematicMessage
-        {
-            this.cinematicId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.cinematicId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_CinematicMessage(input:IDataInput) : void {
+         this.cinematicId=input.readShort();
+         if(this.cinematicId<0)
+         {
+            throw new Error("Forbidden value ("+this.cinematicId+") on element of CinematicMessage.cinematicId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_CinematicMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_CinematicMessage(param1:IDataOutput) : void
-        {
-            if (this.cinematicId < 0)
-            {
-                throw new Error("Forbidden value (" + this.cinematicId + ") on element cinematicId.");
-            }
-            param1.writeShort(this.cinematicId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_CinematicMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_CinematicMessage(param1:IDataInput) : void
-        {
-            this.cinematicId = param1.readShort();
-            if (this.cinematicId < 0)
-            {
-                throw new Error("Forbidden value (" + this.cinematicId + ") on element of CinematicMessage.cinematicId.");
-            }
-            return;
-        }// end function
-
-    }
 }

@@ -1,80 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.game.friend
+package com.ankamagames.dofus.network.messages.game.friend
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class FriendSetWarnOnLevelGainMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var enable:Boolean = false;
-        public static const protocolId:uint = 6077;
 
-        public function FriendSetWarnOnLevelGainMessage()
-        {
-            return;
-        }// end function
+   public class FriendSetWarnOnLevelGainMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function FriendSetWarnOnLevelGainMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6077;
-        }// end function
+      public static const protocolId:uint = 6077;
 
-        public function initFriendSetWarnOnLevelGainMessage(param1:Boolean = false) : FriendSetWarnOnLevelGainMessage
-        {
-            this.enable = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.enable = false;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var enable:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6077;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_FriendSetWarnOnLevelGainMessage(param1);
-            return;
-        }// end function
+      public function initFriendSetWarnOnLevelGainMessage(enable:Boolean=false) : FriendSetWarnOnLevelGainMessage {
+         this.enable=enable;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_FriendSetWarnOnLevelGainMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.enable);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.enable=false;
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_FriendSetWarnOnLevelGainMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_FriendSetWarnOnLevelGainMessage(param1:IDataInput) : void
-        {
-            this.enable = param1.readBoolean();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendSetWarnOnLevelGainMessage(output);
+      }
+
+      public function serializeAs_FriendSetWarnOnLevelGainMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.enable);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendSetWarnOnLevelGainMessage(input);
+      }
+
+      public function deserializeAs_FriendSetWarnOnLevelGainMessage(input:IDataInput) : void {
+         this.enable=input.readBoolean();
+      }
+   }
+
 }

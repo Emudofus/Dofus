@@ -1,373 +1,385 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.managers
+package com.ankamagames.dofus.logic.game.roleplay.managers
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.datacenter.monsters.*;
-    import com.ankamagames.dofus.datacenter.npcs.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.logic.game.roleplay.types.*;
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.dofus.types.entities.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.jerakine.utils.prng.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.sequence.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.datacenter.npcs.AnimFunNpcData;
+   import com.ankamagames.dofus.datacenter.monsters.AnimFunMonsterData;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.logic.game.roleplay.types.AnimFunTimer;
+   import com.ankamagames.jerakine.utils.prng.ParkMillerCarta;
+   import com.ankamagames.jerakine.utils.prng.PRNG;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
+   import com.ankamagames.jerakine.sequencer.SerialSequencer;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayGroupMonsterInformations;
+   import com.ankamagames.dofus.datacenter.monsters.Monster;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
+   import com.ankamagames.dofus.datacenter.npcs.Npc;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.tiphon.sequence.PlayAnimationStep;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import flash.utils.Dictionary;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    final public class AnimFunManager extends Object
-    {
-        private var _animFunNpcData:AnimFunNpcData;
-        private var _animFunMonsterData:AnimFunMonsterData;
-        private var _timerList:Vector.<AnimFunTimer>;
-        private var _animDelays:Array;
-        private var _animDelaysSum:uint;
-        private var _minDelay:int = 40000;
-        private var _maxDelay:int = 80000;
-        private var _mapId:int = -1;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(AnimFunManager));
-        public static const ANIM_FUN_TIMER_MIN:int = 40000;
-        public static const ANIM_FUN_TIMER_MAX:int = 80000;
-        public static const FAST_ANIM_FUN_TIMER_MIN:int = 1000;
-        public static const FAST_ANIM_FUN_TIMER_MAX:int = 5000;
-        public static const ANIM_DELAY_SIZE:uint = 20;
-        private static var _self:AnimFunManager;
 
-        public function AnimFunManager()
-        {
-            this._timerList = new Vector.<AnimFunTimer>;
-            if (_self)
-            {
-                throw new SingletonError();
-            }
-            this.fastDelay = false;
+   public final class AnimFunManager extends Object
+   {
+         
+
+      public function AnimFunManager() {
+         this._timerList=new Vector.<AnimFunTimer>();
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            this.fastDelay=false;
             return;
-        }// end function
+         }
+      }
 
-        public function set fastDelay(param1:Boolean) : void
-        {
-            if (param1 != this.fastDelay)
-            {
-                if (param1)
-                {
-                    this._minDelay = FAST_ANIM_FUN_TIMER_MIN;
-                    this._maxDelay = FAST_ANIM_FUN_TIMER_MAX;
-                }
-                else
-                {
-                    this._minDelay = ANIM_FUN_TIMER_MAX;
-                    this._maxDelay = ANIM_FUN_TIMER_MAX;
-                }
-                if (this._mapId != -1)
-                {
-                    this.initializeByMap(this._mapId);
-                }
-            }
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AnimFunManager));
 
-        public function get fastDelay() : Boolean
-        {
-            return this._minDelay == 1000;
-        }// end function
+      public static const ANIM_FUN_TIMER_MIN:int = 40000;
 
-        public function initializeByMap(param1:uint) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            _log.info("Initialize AnimFunManager for map " + param1);
-            this._mapId = param1;
-            var _loc_2:* = new ParkMillerCarta();
-            _loc_2.seed(param1 + 5435);
-            this._animDelays = new Array();
-            this._animDelaysSum = 0;
-            var _loc_3:* = 0;
-            while (_loc_3 < ANIM_DELAY_SIZE)
-            {
-                
-                _loc_4 = _loc_2.nextIntR(this._minDelay, this._maxDelay);
-                _loc_5 = _loc_2.nextInt();
-                _loc_6 = _loc_2.nextInt();
-                this._animDelays.push({delay:_loc_4, actor:_loc_5, anim:_loc_6});
-                this._animDelaysSum = this._animDelaysSum + _loc_4;
-                _loc_3 = _loc_3 + 1;
-            }
-            this.stopAllTimer();
-            this.initNextAnimFun();
-            return;
-        }// end function
+      public static const ANIM_FUN_TIMER_MAX:int = 80000;
 
-        public function get running() : Boolean
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._timerList)
-            {
-                
-                if (_loc_1.running)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }// end function
+      public static const FAST_ANIM_FUN_TIMER_MIN:int = 1000;
 
-        public function restart() : void
-        {
-            if (!this.running)
-            {
-                this.initNextAnimFun();
-            }
-            return;
-        }// end function
+      public static const FAST_ANIM_FUN_TIMER_MAX:int = 5000;
 
-        public function newAnimFunTimer(param1:int, param2:int, param3:int) : void
-        {
-            this._timerList.push(new AnimFunTimer(param1, param2, param3, this.onTimer));
-            return;
-        }// end function
+      public static const ANIM_DELAY_SIZE:uint = 20;
 
-        public function stopAllTimer() : void
-        {
-            var _loc_1:* = this._timerList.length;
-            var _loc_2:* = 0;
-            while (_loc_2 < _loc_1)
-            {
-                
-                this._timerList[_loc_2].destroy();
-                _loc_2++;
-            }
-            this._timerList = new Vector.<AnimFunTimer>;
-            return;
-        }// end function
+      private static var _self:AnimFunManager;
 
-        private function onTimer(param1:AnimFunTimer) : void
-        {
-            var _loc_2:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            _log.info("Timer reached, run animFun.");
-            var _loc_3:* = this._timerList.indexOf(param1);
-            if (_loc_3 != -1)
-            {
-                param1.destroy();
-                this._timerList.splice(_loc_3, 1);
-            }
-            if (this.getIsMapStatic())
-            {
-                _loc_4 = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-                if (!_loc_4)
-                {
-                    return;
-                }
-                _loc_5 = DofusEntities.getEntity(param1.actorId) as TiphonSprite;
-                if (!_loc_5)
-                {
-                    return;
-                }
-                _loc_6 = _loc_4.getEntityInfos(param1.actorId);
-                if (_loc_6 is GameRolePlayGroupMonsterInformations)
-                {
-                    _loc_8 = _loc_6 as GameRolePlayGroupMonsterInformations;
-                    _loc_9 = Monster.getMonsterById(_loc_8.staticInfos.mainCreatureLightInfos.creatureGenericId);
-                    if (!_loc_9 || _loc_9.animFunList.length == 0)
-                    {
-                        return;
-                    }
-                    _loc_2 = _loc_9.animFunList;
-                }
-                else if (_loc_6 is GameRolePlayNpcInformations)
-                {
-                    _loc_10 = _loc_6 as GameRolePlayNpcInformations;
-                    _loc_11 = Npc.getNpcById(_loc_10.npcId);
-                    if (!_loc_11)
-                    {
-                        return;
-                    }
-                    _loc_2 = _loc_11.animFunList;
-                }
-                else
-                {
-                    return;
-                }
-                _loc_7 = new SerialSequencer();
-                _loc_7.addStep(new PlayAnimationStep(_loc_5, _loc_2[param1.animId].animName));
-                _loc_7.start();
-            }
-            this.initNextAnimFun();
-            return;
-        }// end function
+      public static function getInstance() : AnimFunManager {
+         if(!_self)
+         {
+            _self=new AnimFunManager();
+         }
+         return _self;
+      }
 
-        private function initNextAnimFun() : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            if (this._animDelaysSum == 0)
-            {
-                _log.error("try to init a new animFun with a 0 delay sum");
-                return;
-            }
-            var _loc_1:* = TimeManager.getInstance().getTimestamp();
-            _loc_1 = _loc_1 % this._animDelaysSum;
-            for each (_loc_2 in this._animDelays)
-            {
-                
-                if (_loc_1 > _loc_2.delay)
-                {
-                    _loc_1 = _loc_1 - _loc_2.delay;
-                    continue;
-                }
-                _loc_3 = this.randomActor(_loc_2.actor);
-                _loc_4 = this.randomAnim(_loc_3, _loc_2.anim);
-                if (_loc_3 != 0)
-                {
-                    _log.info("waiting " + (_loc_2.delay - _loc_1) + " until next anim fun");
-                    this.newAnimFunTimer(_loc_3, _loc_2.delay - _loc_1, _loc_4);
-                }
-                return;
-            }
-            return;
-        }// end function
+      private var _animFunNpcData:AnimFunNpcData;
 
-        private function randomActor(param1:int) : int
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_2:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-            var _loc_3:* = _loc_2.getEntitiesDictionnary();
-            var _loc_4:* = new Array();
-            for each (_loc_5 in _loc_3)
-            {
-                
-                if (_loc_5 is GameRolePlayGroupMonsterInformations)
-                {
-                    _loc_6 = Monster.getMonsterById((_loc_5 as GameRolePlayGroupMonsterInformations).staticInfos.mainCreatureLightInfos.creatureGenericId);
-                    if (_loc_6 && _loc_6.animFunList.length != 0)
-                    {
-                        _loc_4.push(_loc_5);
-                    }
-                    continue;
-                }
-                if (_loc_5 is GameRolePlayNpcInformations)
-                {
-                    _loc_7 = Npc.getNpcById((_loc_5 as GameRolePlayNpcInformations).npcId);
-                    if (_loc_7 && _loc_7.animFunList.length != 0)
-                    {
-                        _loc_4.push(_loc_5);
-                    }
-                }
-            }
-            if (_loc_4.length)
-            {
-                _loc_8 = param1 % _loc_4.length;
-                return _loc_4[_loc_8].contextualId;
-            }
-            return 0;
-        }// end function
+      private var _animFunMonsterData:AnimFunMonsterData;
 
-        private function randomAnim(param1:int, param2:int) : int
-        {
-            var _loc_3:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_4:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-            if (!(Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame))
+      private var _timerList:Vector.<AnimFunTimer>;
+
+      private var _animDelays:Array;
+
+      private var _animDelaysSum:uint;
+
+      private var _minDelay:int = 40000;
+
+      private var _maxDelay:int = 80000;
+
+      private var _mapId:int = -1;
+
+      public function set fastDelay(value:Boolean) : void {
+         if(value!=this.fastDelay)
+         {
+            if(value)
             {
-                return 0;
-            }
-            var _loc_5:* = _loc_4.getEntityInfos(param1);
-            if (_loc_4.getEntityInfos(param1) is GameRolePlayGroupMonsterInformations)
-            {
-                _loc_11 = _loc_5 as GameRolePlayGroupMonsterInformations;
-                _loc_12 = Monster.getMonsterById(_loc_11.staticInfos.mainCreatureLightInfos.creatureGenericId);
-                if (!_loc_12)
-                {
-                    return 0;
-                }
-                _loc_3 = _loc_12.animFunList;
-            }
-            else if (_loc_5 is GameRolePlayNpcInformations)
-            {
-                _loc_13 = _loc_5 as GameRolePlayNpcInformations;
-                _loc_14 = Npc.getNpcById(_loc_13.npcId);
-                if (!_loc_14)
-                {
-                    return 0;
-                }
-                _loc_3 = _loc_14.animFunList;
+               this._minDelay=FAST_ANIM_FUN_TIMER_MIN;
+               this._maxDelay=FAST_ANIM_FUN_TIMER_MAX;
             }
             else
             {
-                return 0;
+               this._minDelay=ANIM_FUN_TIMER_MAX;
+               this._maxDelay=ANIM_FUN_TIMER_MAX;
             }
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = _loc_3.length;
-            var _loc_9:* = 0;
-            while (_loc_9 < _loc_8)
+            if(this._mapId!=-1)
             {
-                
-                _loc_7 = _loc_7 + _loc_3[_loc_9].animWeight;
-                _loc_9++;
+               this.initializeByMap(this._mapId);
             }
-            var _loc_10:* = param2 % _loc_7;
-            _loc_7 = 0;
-            _loc_9 = 0;
-            while (_loc_9 < _loc_8)
+         }
+      }
+
+      public function get fastDelay() : Boolean {
+         return this._minDelay==1000;
+      }
+
+      public function initializeByMap(mapId:uint) : void {
+         var num:uint = 0;
+         var actor:uint = 0;
+         var idAnim:uint = 0;
+         _log.info("Initialize AnimFunManager for map "+mapId);
+         this._mapId=mapId;
+         var rnd:PRNG = new ParkMillerCarta();
+         rnd.seed(mapId+5435);
+         this._animDelays=new Array();
+         this._animDelaysSum=0;
+         var i:uint = 0;
+         while(i<ANIM_DELAY_SIZE)
+         {
+            num=rnd.nextIntR(this._minDelay,this._maxDelay);
+            actor=rnd.nextInt();
+            idAnim=rnd.nextInt();
+            this._animDelays.push(
+               {
+                  delay:num,
+                  actor:actor,
+                  anim:idAnim
+               }
+            );
+            this._animDelaysSum=this._animDelaysSum+num;
+            i++;
+         }
+         this.stopAllTimer();
+         this.initNextAnimFun();
+      }
+
+      public function get running() : Boolean {
+         var t:AnimFunTimer = null;
+         for each (t in this._timerList)
+         {
+            if(t.running)
             {
-                
-                _loc_7 = _loc_7 + _loc_3[_loc_9].animWeight;
-                if (_loc_7 > _loc_10)
-                {
-                    return _loc_9;
-                }
-                _loc_9++;
+               return true;
             }
+         }
+         return false;
+      }
+
+      public function restart() : void {
+         if(!this.running)
+         {
+            this.initNextAnimFun();
+         }
+      }
+
+      public function newAnimFunTimer(actorId:int, delay:int, anim:int) : void {
+         this._timerList.push(new AnimFunTimer(actorId,delay,anim,this.onTimer));
+      }
+
+      public function stopAllTimer() : void {
+         var num:int = this._timerList.length;
+         var i:int = 0;
+         while(i<num)
+         {
+            this._timerList[i].destroy();
+            i++;
+         }
+         this._timerList=new Vector.<AnimFunTimer>();
+      }
+
+      private function onTimer(animFunTimer:AnimFunTimer) : void {
+         var list:Object = null;
+         var roleplayEntitiesFrame:RoleplayEntitiesFrame = null;
+         var entity:TiphonSprite = null;
+         var entityInfo:GameContextActorInformations = null;
+         var sq:SerialSequencer = null;
+         var groupMonsterInfo:GameRolePlayGroupMonsterInformations = null;
+         var monster:Monster = null;
+         var npcInfo:GameRolePlayNpcInformations = null;
+         var npc:Npc = null;
+         _log.info("Timer reached, run animFun.");
+         var index:int = this._timerList.indexOf(animFunTimer);
+         if(index!=-1)
+         {
+            animFunTimer.destroy();
+            this._timerList.splice(index,1);
+         }
+         if(this.getIsMapStatic())
+         {
+            roleplayEntitiesFrame=Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+            if(!roleplayEntitiesFrame)
+            {
+               return;
+            }
+            entity=DofusEntities.getEntity(animFunTimer.actorId) as TiphonSprite;
+            if(!entity)
+            {
+               return;
+            }
+            entityInfo=roleplayEntitiesFrame.getEntityInfos(animFunTimer.actorId);
+            if(entityInfo is GameRolePlayGroupMonsterInformations)
+            {
+               groupMonsterInfo=entityInfo as GameRolePlayGroupMonsterInformations;
+               monster=Monster.getMonsterById(groupMonsterInfo.staticInfos.mainCreatureLightInfos.creatureGenericId);
+               if((!monster)||(monster.animFunList.length==0))
+               {
+                  return;
+               }
+               list=monster.animFunList;
+            }
+            else
+            {
+               if(entityInfo is GameRolePlayNpcInformations)
+               {
+                  npcInfo=entityInfo as GameRolePlayNpcInformations;
+                  npc=Npc.getNpcById(npcInfo.npcId);
+                  if(!npc)
+                  {
+                     return;
+                  }
+                  list=npc.animFunList;
+               }
+               else
+               {
+                  return;
+               }
+            }
+            sq=new SerialSequencer();
+            sq.addStep(new PlayAnimationStep(entity,list[animFunTimer.animId].animName));
+            sq.start();
+         }
+         this.initNextAnimFun();
+      }
+
+      private function initNextAnimFun() : void {
+         var delay:Object = null;
+         var actorId:* = 0;
+         var anim:* = 0;
+         if(this._animDelaysSum==0)
+         {
+            _log.error("try to init a new animFun with a 0 delay sum");
+            return;
+         }
+         var timestamp:Number = TimeManager.getInstance().getTimestamp();
+         timestamp=timestamp%this._animDelaysSum;
+         for each (delay in this._animDelays)
+         {
+            if(timestamp>delay.delay)
+            {
+               timestamp=timestamp-delay.delay;
+               continue;
+            }
+            actorId=this.randomActor(delay.actor);
+            anim=this.randomAnim(actorId,delay.anim);
+            if(actorId!=0)
+            {
+               _log.info("waiting "+(delay.delay-timestamp)+" until next anim fun");
+               this.newAnimFunTimer(actorId,delay.delay-timestamp,anim);
+            }
+            return;
+         }
+      }
+
+      private function randomActor(monsterSeed:int) : int {
+         var entity:GameContextActorInformations = null;
+         var monster:Monster = null;
+         var npc:Npc = null;
+         var rnd:* = 0;
+         var entitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         var entities:Dictionary = entitiesFrame.getEntitiesDictionnary();
+         var list:Array = new Array();
+         for each (entity in entities)
+         {
+            if(entity is GameRolePlayGroupMonsterInformations)
+            {
+               monster=Monster.getMonsterById((entity as GameRolePlayGroupMonsterInformations).staticInfos.mainCreatureLightInfos.creatureGenericId);
+               if((monster)&&(!(monster.animFunList.length==0)))
+               {
+                  list.push(entity);
+               }
+            }
+            else
+            {
+               if(entity is GameRolePlayNpcInformations)
+               {
+                  npc=Npc.getNpcById((entity as GameRolePlayNpcInformations).npcId);
+                  if((npc)&&(!(npc.animFunList.length==0)))
+                  {
+                     list.push(entity);
+                  }
+               }
+            }
+         }
+         if(list.length)
+         {
+            rnd=monsterSeed%list.length;
+            return list[rnd].contextualId;
+         }
+         return 0;
+      }
+
+      private function randomAnim(actorId:int, animSeed:int) : int {
+         var list:Object = null;
+         var groupMonsterInfo:GameRolePlayGroupMonsterInformations = null;
+         var monster:Monster = null;
+         var npcInfo:GameRolePlayNpcInformations = null;
+         var npc:Npc = null;
+         var roleplayEntitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(!roleplayEntitiesFrame)
+         {
             return 0;
-        }// end function
-
-        private function getIsMapStatic() : Boolean
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_1:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-            var _loc_2:* = _loc_1.getEntitiesDictionnary();
-            var _loc_3:* = new Array();
-            for each (_loc_4 in _loc_2)
+         }
+         var entity:GameContextActorInformations = roleplayEntitiesFrame.getEntityInfos(actorId);
+         if(entity is GameRolePlayGroupMonsterInformations)
+         {
+            groupMonsterInfo=entity as GameRolePlayGroupMonsterInformations;
+            monster=Monster.getMonsterById(groupMonsterInfo.staticInfos.mainCreatureLightInfos.creatureGenericId);
+            if(!monster)
             {
-                
-                _loc_5 = DofusEntities.getEntity(_loc_4.contextualId) as AnimatedCharacter;
-                if (_loc_5 && _loc_5.isMoving)
-                {
-                    return false;
-                }
+               return 0;
             }
-            return true;
-        }// end function
-
-        public static function getInstance() : AnimFunManager
-        {
-            if (!_self)
+            list=monster.animFunList;
+         }
+         else
+         {
+            if(entity is GameRolePlayNpcInformations)
             {
-                _self = new AnimFunManager;
+               npcInfo=entity as GameRolePlayNpcInformations;
+               npc=Npc.getNpcById(npcInfo.npcId);
+               if(!npc)
+               {
+                  return 0;
+               }
+               list=npc.animFunList;
             }
-            return _self;
-        }// end function
+            else
+            {
+               return 0;
+            }
+         }
+         var animIndex:int = 0;
+         var max:int = 0;
+         var num:int = list.length;
+         var i:int = 0;
+         while(i<num)
+         {
+            max=max+list[i].animWeight;
+            i++;
+         }
+         var rand:Number = animSeed%max;
+         max=0;
+         i=0;
+         while(i<num)
+         {
+            max=max+list[i].animWeight;
+            if(max>rand)
+            {
+               return i;
+            }
+            i++;
+         }
+         return 0;
+      }
 
-    }
+      private function getIsMapStatic() : Boolean {
+         var entity:GameContextActorInformations = null;
+         var sprite:AnimatedCharacter = null;
+         var entitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         var entities:Dictionary = entitiesFrame.getEntitiesDictionnary();
+         var monsters:Array = new Array();
+         for each (entity in entities)
+         {
+            sprite=DofusEntities.getEntity(entity.contextualId) as AnimatedCharacter;
+            if((sprite)&&(sprite.isMoving))
+            {
+               return false;
+            }
+         }
+         return true;
+      }
+   }
+
 }

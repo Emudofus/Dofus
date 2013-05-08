@@ -1,59 +1,58 @@
-﻿package flashx.textLayout.edit
+package flashx.textLayout.edit
 {
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.elements.TextRange;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.TextFlow;
 
-    public class SelectionState extends TextRange
-    {
-        private var _pointFormat:ITextLayoutFormat;
-        private var _selectionManagerOperationState:Boolean;
+   use namespace tlf_internal;
 
-        public function SelectionState(param1:TextFlow, param2:int, param3:int, param4:ITextLayoutFormat = null)
-        {
-            super(param1, param2, param3);
-            if (param4)
-            {
-                this._pointFormat = param4;
-            }
-            return;
-        }// end function
+   public class SelectionState extends TextRange
+   {
+         
 
-        override public function updateRange(param1:int, param2:int) : Boolean
-        {
-            if (super.updateRange(param1, param2))
-            {
-                this._pointFormat = null;
-                return true;
-            }
-            return false;
-        }// end function
+      public function SelectionState(root:TextFlow, anchorPosition:int, activePosition:int, format:ITextLayoutFormat=null) {
+         super(root,anchorPosition,activePosition);
+         if(format)
+         {
+            this._pointFormat=format;
+         }
+      }
 
-        public function get pointFormat() : ITextLayoutFormat
-        {
-            return this._pointFormat;
-        }// end function
 
-        public function set pointFormat(param1:ITextLayoutFormat) : void
-        {
-            this._pointFormat = param1;
-            return;
-        }// end function
 
-        function get selectionManagerOperationState() : Boolean
-        {
-            return this._selectionManagerOperationState;
-        }// end function
+      private var _pointFormat:ITextLayoutFormat;
 
-        function set selectionManagerOperationState(param1:Boolean) : void
-        {
-            this._selectionManagerOperationState = param1;
-            return;
-        }// end function
+      private var _selectionManagerOperationState:Boolean;
 
-        function clone() : SelectionState
-        {
-            return new SelectionState(textFlow, anchorPosition, activePosition, this.pointFormat);
-        }// end function
+      override public function updateRange(newAnchorPosition:int, newActivePosition:int) : Boolean {
+         if(super.updateRange(newAnchorPosition,newActivePosition))
+         {
+            this._pointFormat=null;
+            return true;
+         }
+         return false;
+      }
 
-    }
+      public function get pointFormat() : ITextLayoutFormat {
+         return this._pointFormat;
+      }
+
+      public function set pointFormat(format:ITextLayoutFormat) : void {
+         this._pointFormat=format;
+      }
+
+      tlf_internal function get selectionManagerOperationState() : Boolean {
+         return this._selectionManagerOperationState;
+      }
+
+      tlf_internal function set selectionManagerOperationState(val:Boolean) : void {
+         this._selectionManagerOperationState=val;
+      }
+
+      tlf_internal function clone() : SelectionState {
+         return new SelectionState(textFlow,anchorPosition,activePosition,this.pointFormat);
+      }
+   }
+
 }

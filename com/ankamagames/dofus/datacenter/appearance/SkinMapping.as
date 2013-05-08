@@ -1,31 +1,35 @@
-﻿package com.ankamagames.dofus.datacenter.appearance
+package com.ankamagames.dofus.datacenter.appearance
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class SkinMapping extends Object implements IDataCenter
-    {
-        public var id:int;
-        public var lowDefId:int;
-        private static const MODULE:String = "SkinMappings";
-        private static var _log:Logger = Log.getLogger(getQualifiedClassName(SkinMapping));
 
-        public function SkinMapping()
-        {
-            return;
-        }// end function
+   public class SkinMapping extends Object implements IDataCenter
+   {
+         
 
-        public static function getSkinMappingById(param1:int) : SkinMapping
-        {
-            return GameData.getObject(MODULE, param1) as ;
-        }// end function
+      public function SkinMapping() {
+         super();
+      }
 
-        public static function getSkinMappings() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static const MODULE:String = "SkinMappings";
 
-    }
+      private static var _log:Logger = Log.getLogger(getQualifiedClassName(SkinMapping));
+
+      public static function getSkinMappingById(id:int) : SkinMapping {
+         return GameData.getObject(MODULE,id) as SkinMapping;
+      }
+
+      public static function getSkinMappings() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:int;
+
+      public var lowDefId:int;
+   }
+
 }

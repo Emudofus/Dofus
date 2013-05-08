@@ -1,21 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenCurrentFightAction extends Object implements Action
-    {
-        private var _name:String;
-        public var value:String;
 
-        public function OpenCurrentFightAction()
-        {
-            return;
-        }// end function
+   public class OpenCurrentFightAction extends Object implements Action
+   {
+         
 
-        public static function create() : OpenCurrentFightAction
-        {
-            return new OpenCurrentFightAction;
-        }// end function
+      public function OpenCurrentFightAction() {
+         super();
+      }
 
-    }
+      public static function create() : OpenCurrentFightAction {
+         return new OpenCurrentFightAction();
+      }
+
+      private var _name:String;
+
+      public var value:String;
+   }
+
 }

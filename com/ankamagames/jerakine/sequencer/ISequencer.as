@@ -1,26 +1,27 @@
-﻿package com.ankamagames.jerakine.sequencer
+package com.ankamagames.jerakine.sequencer
 {
-    import com.ankamagames.jerakine.sequencer.*;
-    import flash.events.*;
+   import flash.events.IEventDispatcher;
 
-    public interface ISequencer extends ISequencableListener, IEventDispatcher
-    {
 
-        public function ISequencer();
+   public interface ISequencer extends ISequencableListener, IEventDispatcher
+   {
+         
 
-        function addStep(param1:ISequencable) : void;
 
-        function start() : void;
 
-        function toString() : String;
+      function addStep(param1:ISequencable) : void;
 
-        function get length() : uint;
+      function start() : void;
 
-        function get steps() : Array;
+      function toString() : String;
 
-        function clear() : void;
+      function get length() : uint;
 
-        function get running() : Boolean;
+      function get steps() : Array;
 
-    }
+      function clear() : void;
+
+      function get running() : Boolean;
+   }
+
 }

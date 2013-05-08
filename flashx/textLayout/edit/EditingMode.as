@@ -1,16 +1,22 @@
-﻿package flashx.textLayout.edit
+package flashx.textLayout.edit
 {
 
-    final public class EditingMode extends Object
-    {
-        public static const READ_ONLY:String = "readOnly";
-        public static const READ_WRITE:String = "readWrite";
-        public static const READ_SELECT:String = "readSelect";
 
-        public function EditingMode()
-        {
-            return;
-        }// end function
+   public final class EditingMode extends Object
+   {
+         
 
-    }
+      public function EditingMode() {
+         super();
+      }
+
+      public static const READ_ONLY:String = "readOnly";
+
+      public static const READ_WRITE:String = "readWrite";
+
+      public static const READ_SELECT:String = "readSelect";
+
+
+   }
+
 }

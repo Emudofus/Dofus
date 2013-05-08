@@ -1,14 +1,15 @@
-﻿package com.ankamagames.dofus.logic.game.common.misc
+package com.ankamagames.dofus.logic.game.common.misc
 {
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
 
-    public interface IStorageView extends IInventoryView
-    {
 
-        public function IStorageView();
+   public interface IStorageView extends IInventoryView
+   {
+         
 
-        function get types() : Dictionary;
 
-    }
+
+      function get types() : Dictionary;
+   }
+
 }

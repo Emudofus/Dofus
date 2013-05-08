@@ -1,33 +1,32 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.tiphon.engine.*;
+   import com.ankamagames.jerakine.types.Swl;
+   import com.ankamagames.tiphon.engine.BoneIndexManager;
 
-    public class AnimLibrary extends GraphicLibrary
-    {
 
-        public function AnimLibrary(param1:uint, param2:Boolean = false)
-        {
-            super(param1, param2);
-            return;
-        }// end function
+   public class AnimLibrary extends GraphicLibrary
+   {
+         
 
-        override public function addSwl(param1:Swl, param2:String) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            super.addSwl(param1, param2);
-            for each (_loc_3 in param1.getDefinitions())
+      public function AnimLibrary(pGfxId:uint, isBone:Boolean=false) {
+         super(pGfxId,isBone);
+      }
+
+
+
+      override public function addSwl(swl:Swl, url:String) : void {
+         var className:String = null;
+         var animInfo:Array = null;
+         super.addSwl(swl,url);
+         for each (className in swl.getDefinitions())
+         {
+            if(className.indexOf("_to_")!=-1)
             {
-                
-                if (_loc_3.indexOf("_to_") != -1)
-                {
-                    _loc_4 = _loc_3.split("_");
-                    BoneIndexManager.getInstance().addTransition(gfxId, _loc_4[0], _loc_4[2], parseInt(_loc_4[3]), _loc_4[0] + "_to_" + _loc_4[2]);
-                }
+               animInfo=className.split("_");
+               BoneIndexManager.getInstance().addTransition(gfxId,animInfo[0],animInfo[2],parseInt(animInfo[3]),animInfo[0]+"_to_"+animInfo[2]);
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

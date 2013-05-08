@@ -1,83 +1,70 @@
-﻿package com.ankamagames.tubul.factory
+package com.ankamagames.tubul.factory
 {
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.tubul.enum.*;
-    import com.ankamagames.tubul.interfaces.*;
-    import com.ankamagames.tubul.types.sounds.*;
-    import flash.filesystem.*;
+   import com.ankamagames.tubul.interfaces.ISound;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.filesystem.File;
+   import com.ankamagames.tubul.types.sounds.LocalizedSound;
+   import com.ankamagames.tubul.types.sounds.UnlocalizedSound;
+   import com.ankamagames.tubul.enum.EnumSoundType;
 
-    public class SoundFactory extends Object
-    {
-        private static var _id:uint = 0;
 
-        public function SoundFactory()
-        {
-            return;
-        }// end function
+   public class SoundFactory extends Object
+   {
+         
 
-        public static function getSound(param1:uint, param2:Uri) : ISound
-        {
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_3:* = false;
-            var _loc_4:* = param2.path;
-            var _loc_5:* = param2.path.split("/")[_loc_4.split("/").length - 2];
-            var _loc_6:* = _loc_4.substring(0, _loc_4.indexOf(param2.fileName)) + _loc_5 + "_mono";
-            var _loc_7:* = new File(File.applicationDirectory.nativePath + "/" + _loc_6);
-            if (new File(File.applicationDirectory.nativePath + "/" + _loc_6).exists)
+      public function SoundFactory() {
+         super();
+      }
+
+      private static var _id:uint = 0;
+
+      public static function getSound(pType:uint, pUri:Uri) : ISound {
+         var newUriPath:String = null;
+         var fileChecker:File = null;
+         var isStereo:Boolean = false;
+         var uriPath:String = pUri.path;
+         var parentDirectory:String = uriPath.split("/")[uriPath.split("/").length-2];
+         var test:String = uriPath.substring(0,uriPath.indexOf(pUri.fileName))+parentDirectory+"_mono";
+         var subDirectory:File = new File(File.applicationDirectory.nativePath+"/"+test);
+         if(subDirectory.exists)
+         {
+            isStereo=true;
+            newUriPath=uriPath.substring(0,uriPath.indexOf(pUri.fileName))+parentDirectory+"_mono/"+pUri.fileName;
+            fileChecker=new File(File.applicationDirectory.nativePath+"/"+pUri.path);
+            if(!fileChecker.exists)
             {
-                _loc_3 = true;
-                _loc_8 = _loc_4.substring(0, _loc_4.indexOf(param2.fileName)) + _loc_5 + "_mono/" + param2.fileName;
-                _loc_9 = new File(File.applicationDirectory.nativePath + "/" + param2.path);
-                if (!_loc_9.exists)
-                {
-                    _loc_9 = new File(File.applicationDirectory.nativePath + "/" + _loc_8);
-                    if (_loc_9.exists)
-                    {
-                        param2 = new Uri(_loc_8);
-                        _loc_3 = false;
-                    }
-                }
+               fileChecker=new File(File.applicationDirectory.nativePath+"/"+newUriPath);
+               if(fileChecker.exists)
+               {
+                  pUri=new Uri(newUriPath);
+                  isStereo=false;
+               }
             }
-            switch(param1)
-            {
-                case EnumSoundType.LOCALIZED_SOUND:
-                {
-                    switch(param2.fileType.toUpperCase())
-                    {
-                        case "MP3":
-                        {
-                            return new LocalizedSound(_id++, param2, _loc_3);
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                    throw new ArgumentError("Unknown type file " + param2.fileType.toUpperCase());
-                }
-                case EnumSoundType.UNLOCALIZED_SOUND:
-                {
-                    switch(param2.fileType.toUpperCase())
-                    {
-                        case "MP3":
-                        {
-                            return new UnlocalizedSound(_id++, param2, _loc_3);
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                    throw new ArgumentError("Unknown type file " + param2.fileType.toUpperCase());
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            throw new ArgumentError("Unknown sound type " + param1 + ". See EnumSoundType");
-        }// end function
+         }
+         switch(pType)
+         {
+            case EnumSoundType.LOCALIZED_SOUND:
+               switch(pUri.fileType.toUpperCase())
+               {
+                  case "MP3":
+                     return new LocalizedSound(_id++,pUri,isStereo);
+                  default:
+                     throw new ArgumentError("Unknown type file "+pUri.fileType.toUpperCase());
+               }
+            case EnumSoundType.UNLOCALIZED_SOUND:
+               switch(pUri.fileType.toUpperCase())
+               {
+                  case "MP3":
+                     return new UnlocalizedSound(_id++,pUri,isStereo);
+                  default:
+                     throw new ArgumentError("Unknown type file "+pUri.fileType.toUpperCase());
+               }
+            default:
+               throw new ArgumentError("Unknown sound type "+pType+". See EnumSoundType");
+         }
+      }
 
-    }
+
+   }
+
 }

@@ -1,70 +1,63 @@
-﻿package com.ankamagames.dofus.network.messages.game.character.choice
+package com.ankamagames.dofus.network.messages.game.character.choice
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class CharacterSelectedErrorMessage extends NetworkMessage implements INetworkMessage
-    {
-        public static const protocolId:uint = 5836;
 
-        public function CharacterSelectedErrorMessage()
-        {
-            return;
-        }// end function
+   public class CharacterSelectedErrorMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return true;
-        }// end function
+      public function CharacterSelectedErrorMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5836;
-        }// end function
+      public static const protocolId:uint = 5836;
 
-        public function initCharacterSelectedErrorMessage() : CharacterSelectedErrorMessage
-        {
-            return this;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return true;
+      }
 
-        override public function reset() : void
-        {
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5836;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public function initCharacterSelectedErrorMessage() : CharacterSelectedErrorMessage {
+         return this;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function serializeAs_CharacterSelectedErrorMessage(param1:IDataOutput) : void
-        {
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            return;
-        }// end function
+      public function serialize(output:IDataOutput) : void {
+         
+      }
 
-        public function deserializeAs_CharacterSelectedErrorMessage(param1:IDataInput) : void
-        {
-            return;
-        }// end function
+      public function serializeAs_CharacterSelectedErrorMessage(output:IDataOutput) : void {
+         
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         
+      }
+
+      public function deserializeAs_CharacterSelectedErrorMessage(input:IDataInput) : void {
+         
+      }
+   }
+
 }

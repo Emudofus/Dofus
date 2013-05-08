@@ -1,22 +1,25 @@
-﻿package com.ankamagames.dofus.logic.common.actions
+package com.ankamagames.dofus.logic.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class RemoveBehaviorToStackAction extends Object implements Action
-    {
-        public var behavior:String;
 
-        public function RemoveBehaviorToStackAction()
-        {
-            return;
-        }// end function
+   public class RemoveBehaviorToStackAction extends Object implements Action
+   {
+         
 
-        public function create(param1:String) : RemoveBehaviorToStackAction
-        {
-            var _loc_2:* = new RemoveBehaviorToStackAction();
-            _loc_2.behavior = param1;
-            return _loc_2;
-        }// end function
+      public function RemoveBehaviorToStackAction() {
+         super();
+      }
 
-    }
+
+
+      public var behavior:String;
+
+      public function create(name:String) : RemoveBehaviorToStackAction {
+         var s:RemoveBehaviorToStackAction = new RemoveBehaviorToStackAction();
+         s.behavior=name;
+         return s;
+      }
+   }
+
 }

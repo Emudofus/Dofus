@@ -1,118 +1,116 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeStartOkTaxCollectorMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var collectorId:int = 0;
-        public var objectsInfos:Vector.<ObjectItem>;
-        public var goldInfo:uint = 0;
-        public static const protocolId:uint = 5780;
 
-        public function ExchangeStartOkTaxCollectorMessage()
-        {
-            this.objectsInfos = new Vector.<ObjectItem>;
+   public class ExchangeStartOkTaxCollectorMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function ExchangeStartOkTaxCollectorMessage() {
+         this.objectsInfos=new Vector.<ObjectItem>();
+         super();
+      }
+
+      public static const protocolId:uint = 5780;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var collectorId:int = 0;
+
+      public var objectsInfos:Vector.<ObjectItem>;
+
+      public var goldInfo:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5780;
+      }
+
+      public function initExchangeStartOkTaxCollectorMessage(collectorId:int=0, objectsInfos:Vector.<ObjectItem>=null, goldInfo:uint=0) : ExchangeStartOkTaxCollectorMessage {
+         this.collectorId=collectorId;
+         this.objectsInfos=objectsInfos;
+         this.goldInfo=goldInfo;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.collectorId=0;
+         this.objectsInfos=new Vector.<ObjectItem>();
+         this.goldInfo=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeStartOkTaxCollectorMessage(output);
+      }
+
+      public function serializeAs_ExchangeStartOkTaxCollectorMessage(output:IDataOutput) : void {
+         output.writeInt(this.collectorId);
+         output.writeShort(this.objectsInfos.length);
+         var _i2:uint = 0;
+         while(_i2<this.objectsInfos.length)
+         {
+            (this.objectsInfos[_i2] as ObjectItem).serializeAs_ObjectItem(output);
+            _i2++;
+         }
+         if(this.goldInfo<0)
+         {
+            throw new Error("Forbidden value ("+this.goldInfo+") on element goldInfo.");
+         }
+         else
+         {
+            output.writeInt(this.goldInfo);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeStartOkTaxCollectorMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5780;
-        }// end function
-
-        public function initExchangeStartOkTaxCollectorMessage(param1:int = 0, param2:Vector.<ObjectItem> = null, param3:uint = 0) : ExchangeStartOkTaxCollectorMessage
-        {
-            this.collectorId = param1;
-            this.objectsInfos = param2;
-            this.goldInfo = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.collectorId = 0;
-            this.objectsInfos = new Vector.<ObjectItem>;
-            this.goldInfo = 0;
-            this._isInitialized = false;
+      public function deserializeAs_ExchangeStartOkTaxCollectorMessage(input:IDataInput) : void {
+         var _item2:ObjectItem = null;
+         this.collectorId=input.readInt();
+         var _objectsInfosLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_objectsInfosLen)
+         {
+            _item2=new ObjectItem();
+            _item2.deserialize(input);
+            this.objectsInfos.push(_item2);
+            _i2++;
+         }
+         this.goldInfo=input.readInt();
+         if(this.goldInfo<0)
+         {
+            throw new Error("Forbidden value ("+this.goldInfo+") on element of ExchangeStartOkTaxCollectorMessage.goldInfo.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeStartOkTaxCollectorMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ExchangeStartOkTaxCollectorMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.collectorId);
-            param1.writeShort(this.objectsInfos.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.objectsInfos.length)
-            {
-                
-                (this.objectsInfos[_loc_2] as ObjectItem).serializeAs_ObjectItem(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            if (this.goldInfo < 0)
-            {
-                throw new Error("Forbidden value (" + this.goldInfo + ") on element goldInfo.");
-            }
-            param1.writeInt(this.goldInfo);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeStartOkTaxCollectorMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ExchangeStartOkTaxCollectorMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.collectorId = param1.readInt();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new ObjectItem();
-                _loc_4.deserialize(param1);
-                this.objectsInfos.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            this.goldInfo = param1.readInt();
-            if (this.goldInfo < 0)
-            {
-                throw new Error("Forbidden value (" + this.goldInfo + ") on element of ExchangeStartOkTaxCollectorMessage.goldInfo.");
-            }
-            return;
-        }// end function
-
-    }
 }

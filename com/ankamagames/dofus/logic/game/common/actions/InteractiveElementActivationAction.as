@@ -1,28 +1,31 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.dofus.network.types.game.interactive.*;
-    import com.ankamagames.jerakine.handlers.messages.*;
-    import com.ankamagames.jerakine.types.positions.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
+   import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
 
-    public class InteractiveElementActivationAction extends Object implements Action
-    {
-        public var interactiveElement:InteractiveElement;
-        public var position:MapPoint;
-        public var skillInstanceId:uint;
 
-        public function InteractiveElementActivationAction()
-        {
-            return;
-        }// end function
+   public class InteractiveElementActivationAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:InteractiveElement, param2:MapPoint, param3:uint) : InteractiveElementActivationAction
-        {
-            var _loc_4:* = new InteractiveElementActivationAction;
-            new InteractiveElementActivationAction.interactiveElement = param1;
-            _loc_4.position = param2;
-            _loc_4.skillInstanceId = param3;
-            return _loc_4;
-        }// end function
+      public function InteractiveElementActivationAction() {
+         super();
+      }
 
-    }
+      public static function create(ie:InteractiveElement, position:MapPoint, skillInstanceId:uint) : InteractiveElementActivationAction {
+         var a:InteractiveElementActivationAction = new InteractiveElementActivationAction();
+         a.interactiveElement=ie;
+         a.position=position;
+         a.skillInstanceId=skillInstanceId;
+         return a;
+      }
+
+      public var interactiveElement:InteractiveElement;
+
+      public var position:MapPoint;
+
+      public var skillInstanceId:uint;
+   }
+
 }

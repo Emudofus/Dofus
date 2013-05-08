@@ -1,67 +1,69 @@
-﻿package com.ankamagames.dofus.logic.common.managers
+package com.ankamagames.dofus.logic.common.managers
 {
-    import avmplus.*;
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.datacenter.quest.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.geom.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.datacenter.quest.Achievement;
+   import flash.geom.Rectangle;
+   import com.ankamagames.berilia.types.data.TextTooltipInfo;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.enums.StrataEnum;
+   import com.ankamagames.jerakine.logger.Log;
+   import avmplus.getQualifiedClassName;
 
-    public class HyperlinkShowAchievementManager extends Object
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(HyperlinkShowAchievementManager));
-        private static var _achList:Array = new Array();
-        private static var _achId:uint = 0;
 
-        public function HyperlinkShowAchievementManager()
-        {
-            return;
-        }// end function
+   public class HyperlinkShowAchievementManager extends Object
+   {
+         
 
-        public static function showAchievement(param1:uint) : void
-        {
-            var _loc_2:* = new Object();
-            _loc_2.achievementId = param1;
-            _loc_2.forceOpen = true;
-            KernelEventsManager.getInstance().processCallback(HookList.OpenBook, "achievementTab", _loc_2);
-            return;
-        }// end function
+      public function HyperlinkShowAchievementManager() {
+         super();
+      }
 
-        public static function addAchievement(param1:uint) : String
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = Achievement.getAchievementById(param1);
-            if (_loc_2)
-            {
-                _achList[_achId] = _loc_2;
-                _loc_3 = "{chatachievement," + param1 + "::[" + _loc_2.name + "]}";
-                var _loc_5:* = _achId + 1;
-                _achId = _loc_5;
-                return _loc_3;
-            }
-            return "[null]";
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(HyperlinkShowAchievementManager));
 
-        public static function getAchievementName(param1:uint) : String
-        {
-            var _loc_2:* = Achievement.getAchievementById(param1);
-            if (_loc_2)
-            {
-                return "[" + _loc_2.name + "]";
-            }
-            return "[null]";
-        }// end function
+      private static var _achList:Array = new Array();
 
-        public static function rollOver(param1:int, param2:int, param3:uint, param4:uint = 0) : void
-        {
-            var _loc_5:* = new Rectangle(param1, param2, 10, 10);
-            var _loc_6:* = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.achievement"));
-            TooltipManager.show(_loc_6, _loc_5, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
-            return;
-        }// end function
+      private static var _achId:uint = 0;
 
-    }
+      public static function showAchievement(achId:uint) : void {
+         var data:Object = new Object();
+         data.achievementId=achId;
+         data.forceOpen=true;
+         KernelEventsManager.getInstance().processCallback(HookList.OpenBook,"achievementTab",data);
+      }
+
+      public static function addAchievement(achId:uint) : String {
+         var code:String = null;
+         var ach:Achievement = Achievement.getAchievementById(achId);
+         if(ach)
+         {
+            _achList[_achId]=ach;
+            code="{chatachievement,"+achId+"::["+ach.name+"]}";
+            _achId++;
+            return code;
+         }
+         return "[null]";
+      }
+
+      public static function getAchievementName(achId:uint) : String {
+         var ach:Achievement = Achievement.getAchievementById(achId);
+         if(ach)
+         {
+            return "["+ach.name+"]";
+         }
+         return "[null]";
+      }
+
+      public static function rollOver(pX:int, pY:int, objectGID:uint, achId:uint=0) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.achievement"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      }
+
+
+   }
+
 }

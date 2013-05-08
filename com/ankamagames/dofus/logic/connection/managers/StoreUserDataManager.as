@@ -1,206 +1,213 @@
-﻿package com.ankamagames.dofus.logic.connection.managers
+package com.ankamagames.dofus.logic.connection.managers
 {
-    import by.blooddy.crypto.*;
-    import com.ankamagames.dofus.*;
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.dofus.misc.interClient.*;
-    import com.ankamagames.dofus.misc.utils.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.hurlant.util.*;
-    import flash.events.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.CustomSharedObject;
+   import com.ankamagames.dofus.misc.utils.RpcServiceManager;
+   import com.ankamagames.jerakine.utils.system.CommandLineArguments;
+   import com.hurlant.util.Base64;
+   import com.ankamagames.dofus.logic.common.managers.PlayerManager;
+   import com.ankamagames.dofus.misc.interClient.InterClientManager;
+   import flash.system.Capabilities;
+   import by.blooddy.crypto.MD5;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   import com.ankamagames.dofus.BuildInfos;
+   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
 
-    public class StoreUserDataManager extends Object
-    {
-        private var _so:CustomSharedObject;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(StoreUserDataManager));
-        private static var BASE_URL:String = "http://api.ankama.";
-        private static var _self:StoreUserDataManager;
 
-        public function StoreUserDataManager()
-        {
-            if (_self != null)
+   public class StoreUserDataManager extends Object
+   {
+         
+
+      public function StoreUserDataManager() {
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("StoreUserDataManager is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
+            if((BuildInfos.BUILD_TYPE==BuildTypeEnum.RELEASE)||(BuildInfos.BUILD_TYPE==BuildTypeEnum.BETA)||(BuildInfos.BUILD_TYPE==BuildTypeEnum.ALPHA))
             {
-                throw new SingletonError("StoreUserDataManager is a singleton and should not be instanciated directly.");
-            }
-            if (BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA || BuildInfos.BUILD_TYPE == BuildTypeEnum.ALPHA)
-            {
-                BASE_URL = BASE_URL + "com";
+               BASE_URL=BASE_URL+"com";
             }
             else
             {
-                BASE_URL = BASE_URL + "lan";
+               BASE_URL=BASE_URL+"lan";
             }
             return;
-        }// end function
+         }
+      }
 
-        public function savePlayerData() : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            arguments = false;
-            arguments = Dofus.getInstance().invokeArgs;
-            var _loc_3:* = "";
-            for each (_loc_4 in arguments)
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StoreUserDataManager));
+
+      private static var BASE_URL:String = "http://api.ankama.";
+
+      private static var _self:StoreUserDataManager;
+
+      public static function getInstance() : StoreUserDataManager {
+         if(_self==null)
+         {
+            _self=new StoreUserDataManager();
+         }
+         return _self;
+      }
+
+      private var _so:CustomSharedObject;
+
+      public function savePlayerData() : void {
+         var data:String = null;
+         var key:String = null;
+         var value:String = null;
+         var newValue:String = null;
+         var obj:Object = null;
+         var osNoFormate:String = null;
+         var tmp:Array = null;
+         var url:String = null;
+         var rpcService:RpcServiceManager = null;
+         var isUsingUpdater:Boolean = false;
+         var val:String = "";
+         if(CommandLineArguments.getInstance().hasArgument("sysinfos"))
+         {
+            val=Base64.decode(CommandLineArguments.getInstance().getArgument("sysinfos"));
+            isUsingUpdater=true;
+         }
+         var datas:Array = val.split("\n");
+         var dict:Array = new Array();
+         for each (data in datas)
+         {
+            data=data.replace("\n","");
+            if((data=="")||(data.search(":")==-1))
             {
-                
-                if (_loc_4.search("sysinfos") != -1)
-                {
-                    _loc_3 = Base64.decode(_loc_4.replace("--sysinfos=", ""));
-                    arguments = true;
-                    break;
-                }
-            }
-            _loc_5 = _loc_3.split("\n");
-            _loc_9 = new Array();
-            for each (_loc_6 in _loc_5)
-            {
-                
-                _loc_6 = _loc_6.replace("\n", "");
-                if (_loc_6 == "" || _loc_6.search(":") == -1)
-                {
-                    continue;
-                }
-                _loc_15 = _loc_6.split(":");
-                _loc_7 = _loc_15[0];
-                _loc_8 = _loc_15[1];
-                if (_loc_8 == "" || _loc_7 == "")
-                {
-                    continue;
-                }
-                switch(_loc_7)
-                {
-                    case "RAM_FREE":
-                    case "DISK_FREE":
-                    {
-                        break;
-                    }
-                    case "VIDEO_DRIVER_INSTALLATION_DATE":
-                    {
-                        _loc_8 = _loc_8.substr(0, 6);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                        break;
-                    }
-                }
-                _loc_9.push({key:_loc_7, value:_loc_8});
-            }
-            _loc_9.sortOn("key");
-            _loc_10 = "";
-            for each (_loc_11 in _loc_9)
-            {
-                
-                _loc_10 = _loc_10 + (_loc_11.key + ":" + _loc_11.value + ";");
-            }
-            _loc_10 = _loc_10 + ("isAbo:" + (PlayerManager.getInstance().subscriptionEndDate > 0 || PlayerManager.getInstance().hasRights) + ";");
-            _loc_10 = _loc_10 + ("creationAbo:" + PlayerManager.getInstance().accountCreation + ";");
-            _loc_10 = _loc_10 + ("flashKey:" + InterClientManager.getInstance().flashKey + ";");
-            _loc_10 = _loc_10 + ("screenResolution:" + Capabilities.screenResolutionX + "x" + Capabilities.screenResolutionY + ";");
-            _loc_12 = Capabilities.os.toLowerCase();
-            _loc_10 = _loc_10 + "os:";
-            if (_loc_12.search("windows") != -1)
-            {
-                _loc_10 = _loc_10 + "windows";
-            }
-            else if (_loc_12.search("mac") != -1)
-            {
-                _loc_10 = _loc_10 + "mac";
-            }
-            else if (_loc_12.search("linux") != -1)
-            {
-                _loc_10 = _loc_10 + "linux";
             }
             else
             {
-                _loc_10 = _loc_10 + "other";
+               tmp=data.split(":");
+               key=tmp[0];
+               value=tmp[1];
+               if((value=="")||(key==""))
+               {
+               }
+               else
+               {
+                  switch(key)
+                  {
+                     case "RAM_FREE":
+                     case "DISK_FREE":
+                        continue;
+                        break;
+                     case "VIDEO_DRIVER_INSTALLATION_DATE":
+                        value=value.substr(0,6);
+                        break;
+                  }
+                  dict.push(
+                     {
+                        key:key,
+                        value:value
+                     }
+                  );
+               }
             }
-            _loc_10 = _loc_10 + ";";
-            _loc_10 = _loc_10 + "supports:";
-            if (Capabilities.supports32BitProcesses && !Capabilities.supports64BitProcesses)
+         }
+         dict.sortOn("key");
+         newValue="";
+         for each (obj in dict)
+         {
+            newValue=newValue+(obj.key+":"+obj.value+";");
+         }
+         newValue=newValue+("isAbo:"+(PlayerManager.getInstance().subscriptionEndDate<0||PlayerManager.getInstance().hasRights)+";");
+         newValue=newValue+("creationAbo:"+PlayerManager.getInstance().accountCreation+";");
+         newValue=newValue+("flashKey:"+InterClientManager.getInstance().flashKey+";");
+         newValue=newValue+("screenResolution:"+Capabilities.screenResolutionX+"x"+Capabilities.screenResolutionY+";");
+         osNoFormate=Capabilities.os.toLowerCase();
+         newValue=newValue+"os:";
+         if(osNoFormate.search("windows")!=-1)
+         {
+            newValue=newValue+"windows";
+         }
+         else
+         {
+            if(osNoFormate.search("mac")!=-1)
             {
-                _loc_10 = _loc_10 + "32Bits";
-            }
-            else if (Capabilities.supports64BitProcesses)
-            {
-                _loc_10 = _loc_10 + "64Bits";
+               newValue=newValue+"mac";
             }
             else
             {
-                _loc_10 = _loc_10 + "none";
+               if(osNoFormate.search("linux")!=-1)
+               {
+                  newValue=newValue+"linux";
+               }
+               else
+               {
+                  newValue=newValue+"other";
+               }
             }
-            _loc_10 = _loc_10 + ";";
-            _loc_10 = _loc_10 + ("isUsingUpdater:" + arguments + ";");
-            var _loc_13:* = MD5.hash(_loc_10);
-            var _loc_14:* = PlayerManager.getInstance().accountId;
-            this._so = CustomSharedObject.getLocal("playerData_" + _loc_14);
-            if (this._so.data && (this._so.data == _loc_13 || arguments && arguments.length == 0 && this._so.data.length != 0))
+         }
+         newValue=newValue+";";
+         newValue=newValue+"supports:";
+         if((Capabilities.supports32BitProcesses)&&(!Capabilities.supports64BitProcesses))
+         {
+            newValue=newValue+"32Bits";
+         }
+         else
+         {
+            if(Capabilities.supports64BitProcesses)
             {
-                return;
+               newValue=newValue+"64Bits";
             }
-            this._so.data = _loc_13;
-            _loc_16 = BASE_URL + "/dofus/logger.json";
-            _loc_17 = new RpcServiceManager(_loc_16, "json");
-            _loc_17.addEventListener(Event.COMPLETE, this.onDataSavedComplete);
-            _loc_17.addEventListener(IOErrorEvent.IO_ERROR, this.onDataSavedError);
-            _loc_17.addEventListener(RpcServiceManager.SERVER_ERROR, this.onDataSavedError);
-            _loc_17.callMethod("Log", {sUid:MD5.hash(_loc_14.toString()), aValues:{config:_loc_10}});
-            return;
-        }// end function
-
-        private function onDataSavedComplete(event:Event) : void
-        {
-            var _loc_2:* = event.currentTarget as RpcServiceManager;
-            if (this._so != null)
+            else
             {
-                _log.debug("User data saved.");
-                this._so.flush();
+               newValue=newValue+"none";
             }
-            this.clearService(_loc_2);
+         }
+         newValue=newValue+";";
+         newValue=newValue+("isUsingUpdater:"+isUsingUpdater+";");
+         var md5value:String = MD5.hash(newValue);
+         var playerId:uint = PlayerManager.getInstance().accountId;
+         this._so=CustomSharedObject.getLocal("playerData_"+playerId);
+         if((this._so.data)&&((this._so.data==md5value)||(((arguments)&&(arguments.length==0))&&(!(this._so.data.length==0)))))
+         {
             return;
-        }// end function
-
-        private function onDataSavedError(event:Event) : void
-        {
-            _log.error("Can\'t send player\'s data to server !");
-            var _loc_2:* = event.currentTarget as RpcServiceManager;
-            this.clearService(_loc_2);
-            return;
-        }// end function
-
-        private function clearService(param1:RpcServiceManager) : void
-        {
-            param1.removeEventListener(Event.COMPLETE, this.onDataSavedComplete);
-            param1.removeEventListener(IOErrorEvent.IO_ERROR, this.onDataSavedError);
-            param1.removeEventListener(RpcServiceManager.SERVER_ERROR, this.onDataSavedError);
-            param1.destroy();
-            return;
-        }// end function
-
-        public static function getInstance() : StoreUserDataManager
-        {
-            if (_self == null)
+         }
+         this._so.data=md5value;
+         url=BASE_URL+"/dofus/logger.json";
+         rpcService=new RpcServiceManager(url,"json");
+         rpcService.addEventListener(Event.COMPLETE,this.onDataSavedComplete);
+         rpcService.addEventListener(IOErrorEvent.IO_ERROR,this.onDataSavedError);
+         rpcService.addEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
+         rpcService.callMethod("Log",
             {
-                _self = new StoreUserDataManager;
+               sUid:MD5.hash(playerId.toString()),
+               aValues:{config:newValue}
             }
-            return _self;
-        }// end function
+         );
+      }
 
-    }
+      private function onDataSavedComplete(pEvt:Event) : void {
+         var rpcService:RpcServiceManager = pEvt.currentTarget as RpcServiceManager;
+         if(this._so!=null)
+         {
+            _log.debug("User data saved.");
+            this._so.flush();
+         }
+         this.clearService(rpcService);
+      }
+
+      private function onDataSavedError(pEvt:Event) : void {
+         _log.error("Can\'t send player\'s data to server !");
+         var rpcService:RpcServiceManager = pEvt.currentTarget as RpcServiceManager;
+         this.clearService(rpcService);
+      }
+
+      private function clearService(rpcService:RpcServiceManager) : void {
+         rpcService.removeEventListener(Event.COMPLETE,this.onDataSavedComplete);
+         rpcService.removeEventListener(IOErrorEvent.IO_ERROR,this.onDataSavedError);
+         rpcService.removeEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
+         rpcService.destroy();
+      }
+   }
+
 }

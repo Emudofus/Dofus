@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.logic.connection.messages
+package com.ankamagames.dofus.logic.connection.messages
 {
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.Message;
 
-    public class GameStartingMessage extends Object implements Message
-    {
 
-        public function GameStartingMessage()
-        {
-            return;
-        }// end function
+   public class GameStartingMessage extends Object implements Message
+   {
+         
 
-    }
+      public function GameStartingMessage() {
+         super();
+      }
+
+
+
+
+   }
+
 }

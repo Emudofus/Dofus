@@ -1,80 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ObjectErrorMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var reason:int = 0;
-        public static const protocolId:uint = 3004;
 
-        public function ObjectErrorMessage()
-        {
-            return;
-        }// end function
+   public class ObjectErrorMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ObjectErrorMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 3004;
-        }// end function
+      public static const protocolId:uint = 3004;
 
-        public function initObjectErrorMessage(param1:int = 0) : ObjectErrorMessage
-        {
-            this.reason = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.reason = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var reason:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 3004;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ObjectErrorMessage(param1);
-            return;
-        }// end function
+      public function initObjectErrorMessage(reason:int=0) : ObjectErrorMessage {
+         this.reason=reason;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ObjectErrorMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.reason);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.reason=0;
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ObjectErrorMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ObjectErrorMessage(param1:IDataInput) : void
-        {
-            this.reason = param1.readByte();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectErrorMessage(output);
+      }
+
+      public function serializeAs_ObjectErrorMessage(output:IDataOutput) : void {
+         output.writeByte(this.reason);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectErrorMessage(input);
+      }
+
+      public function deserializeAs_ObjectErrorMessage(input:IDataInput) : void {
+         this.reason=input.readByte();
+      }
+   }
+
 }

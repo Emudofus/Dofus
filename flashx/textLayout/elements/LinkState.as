@@ -1,17 +1,26 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
+   import flashx.textLayout.tlf_internal;
 
-    final public class LinkState extends Object
-    {
-        public static const LINK:String = "link";
-        public static const HOVER:String = "hover";
-        public static const ACTIVE:String = "active";
-        static const SUPPRESSED:String = "supressed";
+   use namespace tlf_internal;
 
-        public function LinkState()
-        {
-            return;
-        }// end function
+   public final class LinkState extends Object
+   {
+         
 
-    }
+      public function LinkState() {
+         super();
+      }
+
+      public static const LINK:String = "link";
+
+      public static const HOVER:String = "hover";
+
+      public static const ACTIVE:String = "active";
+
+      tlf_internal  static const SUPPRESSED:String = "supressed";
+
+
+   }
+
 }

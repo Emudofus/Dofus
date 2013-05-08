@@ -1,24 +1,26 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
 
-    public interface IVerticalJustificationLine
-    {
 
-        public function IVerticalJustificationLine();
+   public interface IVerticalJustificationLine
+   {
+         
 
-        function get x() : Number;
 
-        function set x(param1:Number) : void;
 
-        function get y() : Number;
+      function get x() : Number;
 
-        function set y(param1:Number) : void;
+      function set x(param1:Number) : void;
 
-        function get ascent() : Number;
+      function get y() : Number;
 
-        function get descent() : Number;
+      function set y(param1:Number) : void;
 
-        function get height() : Number;
+      function get ascent() : Number;
 
-    }
+      function get descent() : Number;
+
+      function get height() : Number;
+   }
+
 }

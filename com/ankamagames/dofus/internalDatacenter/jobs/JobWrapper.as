@@ -1,144 +1,133 @@
-﻿package com.ankamagames.dofus.internalDatacenter.jobs
+package com.ankamagames.dofus.internalDatacenter.jobs
 {
-    import com.ankamagames.dofus.datacenter.jobs.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import flash.utils.Proxy;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
+   import com.ankamagames.dofus.datacenter.jobs.Job;
+   import flash.utils.flash_proxy;
 
-    public class JobWrapper extends Proxy implements IDataCenter, ISlotData
-    {
-        private var _uri:Uri;
-        private var _id:uint = 0;
-        private var _gfxId:uint = 0;
-        private static var _cache:Array = new Array();
+   use namespace flash_proxy;
 
-        public function JobWrapper()
-        {
-            return;
-        }// end function
+   public class JobWrapper extends Proxy implements IDataCenter, ISlotData
+   {
+         
 
-        public function get iconUri() : Uri
-        {
-            if (!this._uri)
+      public function JobWrapper() {
+         super();
+      }
+
+      private static var _cache:Array = new Array();
+
+      public static function create(jobID:uint, useCache:Boolean=true) : JobWrapper {
+         var job:JobWrapper = null;
+         if((!_cache[jobID])||(!useCache))
+         {
+            job=new JobWrapper();
+            job.jobId=jobID;
+            if(useCache)
             {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/jobs/").concat(this._id).concat(".png"));
+               _cache[jobID]=job;
             }
-            return this._uri;
-        }// end function
+         }
+         else
+         {
+            job=_cache[jobID];
+         }
+         job.jobId=jobID;
+         job.gfxId=jobID;
+         return job;
+      }
 
-        public function get fullSizeIconUri() : Uri
-        {
-            return this.iconUri;
-        }// end function
+      private var _uri:Uri;
 
-        public function get errorIconUri() : Uri
-        {
-            return null;
-        }// end function
+      private var _id:uint = 0;
 
-        public function get info1() : String
-        {
-            return null;
-        }// end function
+      private var _gfxId:uint = 0;
 
-        public function get timer() : int
-        {
-            return 0;
-        }// end function
+      public function get iconUri() : Uri {
+         if(!this._uri)
+         {
+            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/jobs/").concat(this._id).concat(".png"));
+         }
+         return this._uri;
+      }
 
-        public function get active() : Boolean
-        {
-            return true;
-        }// end function
+      public function get fullSizeIconUri() : Uri {
+         return this.iconUri;
+      }
 
-        public function addHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      public function get errorIconUri() : Uri {
+         return null;
+      }
 
-        public function removeHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      public function get info1() : String {
+         return null;
+      }
 
-        public function set jobId(param1:uint) : void
-        {
-            this._id = this.jobId;
-            return;
-        }// end function
+      public function get timer() : int {
+         return 0;
+      }
 
-        public function get jobId() : uint
-        {
-            return this._id;
-        }// end function
+      public function get active() : Boolean {
+         return true;
+      }
 
-        public function set gfxId(param1:uint) : void
-        {
-            this._gfxId = param1;
-            return;
-        }// end function
+      public function addHolder(h:ISlotDataHolder) : void {
+         
+      }
 
-        public function get gfxId() : uint
-        {
-            return this._gfxId;
-        }// end function
+      public function removeHolder(h:ISlotDataHolder) : void {
+         
+      }
 
-        public function get job() : Job
-        {
-            return Job.getJobById(this._id);
-        }// end function
+      public function set jobId(val:uint) : void {
+         this._id=this.jobId;
+      }
 
-        override function getProperty(param1)
-        {
-            var l:*;
-            var r:*;
-            var name:* = param1;
-            if (isAttribute(name))
-            {
-                return this[name];
-            }
-            l = this.job;
-            if (!l)
-            {
-                r;
-            }
-            try
-            {
-                return l[name];
-            }
-            catch (e:Error)
-            {
-                return "Error_on_job_" + name;
-            }
-            return;
-        }// end function
+      public function get jobId() : uint {
+         return this._id;
+      }
 
-        override function hasProperty(param1) : Boolean
-        {
-            return isAttribute(param1);
-        }// end function
+      public function set gfxId(val:uint) : void {
+         this._gfxId=val;
+      }
 
-        public static function create(param1:uint, param2:Boolean = true) : JobWrapper
-        {
-            var _loc_3:* = null;
-            if (!_cache[param1] || !param2)
-            {
-                _loc_3 = new JobWrapper;
-                _loc_3.jobId = param1;
-                if (param2)
-                {
-                    _cache[param1] = _loc_3;
-                }
-            }
-            else
-            {
-                _loc_3 = _cache[param1];
-            }
-            _loc_3.jobId = param1;
-            _loc_3.gfxId = param1;
-            return _loc_3;
-        }// end function
+      public function get gfxId() : uint {
+         return this._gfxId;
+      }
 
-    }
+      public function get job() : Job {
+         return Job.getJobById(this._id);
+      }
+
+      override flash_proxy function getProperty(name:*) : * {
+         var l:* = undefined;
+         var r:* = undefined;
+         if(isAttribute(name))
+         {
+            return this[name];
+         }
+         l=this.job;
+         if(!l)
+         {
+            r="";
+         }
+         try
+         {
+            return l[name];
+         }
+         catch(e:Error)
+         {
+            return "Error_on_job_"+name;
+         }
+      }
+
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
+      }
+   }
+
 }

@@ -1,32 +1,34 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.tiphon.engine.*;
-    import flash.display.*;
-    import flash.geom.*;
+   import com.ankamagames.jerakine.entities.interfaces.ISubEntityContainer;
+   import flash.display.Sprite;
+   import flash.geom.ColorTransform;
+   import com.ankamagames.tiphon.engine.TiphonEventsManager;
 
-    public interface IAnimationSpriteHandler extends ISubEntityContainer
-    {
 
-        public function IAnimationSpriteHandler();
+   public interface IAnimationSpriteHandler extends ISubEntityContainer
+   {
+         
 
-        function registerColoredSprite(param1:ColoredSprite, param2:uint) : void;
 
-        function registerInfoSprite(param1:DisplayInfoSprite, param2:String) : void;
 
-        function getSkinSprite(param1:EquipmentSprite) : Sprite;
+      function registerColoredSprite(param1:ColoredSprite, param2:uint) : void;
 
-        function onAnimationEvent(param1:String, param2:String = "") : void;
+      function registerInfoSprite(param1:DisplayInfoSprite, param2:String) : void;
 
-        function getColorTransform(param1:uint) : ColorTransform;
+      function getSkinSprite(param1:EquipmentSprite) : Sprite;
 
-        function get tiphonEventManager() : TiphonEventsManager;
+      function onAnimationEvent(param1:String, param2:String="") : void;
 
-        function get maxFrame() : uint;
+      function getColorTransform(param1:uint) : ColorTransform;
 
-        function getAnimation() : String;
+      function get tiphonEventManager() : TiphonEventsManager;
 
-        function getDirection() : uint;
+      function get maxFrame() : uint;
 
-    }
+      function getAnimation() : String;
+
+      function getDirection() : uint;
+   }
+
 }

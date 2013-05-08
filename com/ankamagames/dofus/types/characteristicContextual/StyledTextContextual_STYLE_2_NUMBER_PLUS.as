@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.types.characteristicContextual
+package com.ankamagames.dofus.types.characteristicContextual
 {
-    import mx.core.*;
+   import mx.core.SpriteAsset;
 
-    public class StyledTextContextual_STYLE_2_NUMBER_PLUS extends SpriteAsset
-    {
 
-        public function StyledTextContextual_STYLE_2_NUMBER_PLUS()
-        {
-            return;
-        }// end function
+   public class StyledTextContextual_STYLE_2_NUMBER_PLUS extends SpriteAsset
+   {
+         
 
-    }
+      public function StyledTextContextual_STYLE_2_NUMBER_PLUS() {
+         super();
+      }
+
+
+
+
+   }
+
 }

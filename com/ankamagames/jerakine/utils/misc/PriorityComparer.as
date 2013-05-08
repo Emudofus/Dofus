@@ -1,26 +1,28 @@
-﻿package com.ankamagames.jerakine.utils.misc
+package com.ankamagames.jerakine.utils.misc
 {
 
-    final public class PriorityComparer extends Object
-    {
 
-        public function PriorityComparer()
-        {
-            return;
-        }// end function
+   public final class PriorityComparer extends Object
+   {
+         
 
-        public static function compare(param1:Prioritizable, param2:Prioritizable) : Number
-        {
-            if (param1.priority > param2.priority)
-            {
-                return -1;
-            }
-            if (param1.priority < param2.priority)
-            {
-                return 1;
-            }
-            return 0;
-        }// end function
+      public function PriorityComparer() {
+         super();
+      }
 
-    }
+      public static function compare(x:Prioritizable, y:Prioritizable) : Number {
+         if(x.priority>y.priority)
+         {
+            return -1;
+         }
+         if(x.priority<y.priority)
+         {
+            return 1;
+         }
+         return 0;
+      }
+
+
+   }
+
 }

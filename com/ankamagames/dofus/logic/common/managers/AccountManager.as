@@ -1,91 +1,104 @@
-﻿package com.ankamagames.dofus.logic.common.managers
+package com.ankamagames.dofus.logic.common.managers
 {
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.fight.frames.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterNamedInformations;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
 
-    public class AccountManager extends Object
-    {
-        private var _accounts:Dictionary;
-        private static var _singleton:AccountManager;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(AccountManager));
 
-        public function AccountManager()
-        {
-            this._accounts = new Dictionary();
-            return;
-        }// end function
+   public class AccountManager extends Object
+   {
+         
 
-        public function getIsKnowAccount(param1:String) : Boolean
-        {
-            return this._accounts.hasOwnProperty(param1);
-        }// end function
+      public function AccountManager() {
+         super();
+         this._accounts=new Dictionary();
+      }
 
-        public function getAccountId(param1:String) : int
-        {
-            if (this._accounts[param1])
+      private static var _singleton:AccountManager;
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AccountManager));
+
+      public static function getInstance() : AccountManager {
+         if(!_singleton)
+         {
+            _singleton=new AccountManager();
+         }
+         return _singleton;
+      }
+
+      private var _accounts:Dictionary;
+
+      public function getIsKnowAccount(playerName:String) : Boolean {
+         return this._accounts.hasOwnProperty(playerName);
+      }
+
+      public function getAccountId(playerName:String) : int {
+         if(this._accounts[playerName])
+         {
+            return this._accounts[playerName].id;
+         }
+         return 0;
+      }
+
+      public function getAccountName(playerName:String) : String {
+         if(this._accounts[playerName])
+         {
+            return this._accounts[playerName].name;
+         }
+         return "";
+      }
+
+      public function setAccount(playerName:String, accountId:int, accountName:String=null) : void {
+         this._accounts[playerName]=
             {
-                return this._accounts[param1].id;
+               id:accountId,
+               name:accountName
             }
-            return 0;
-        }// end function
+         ;
+      }
 
-        public function getAccountName(param1:String) : String
-        {
-            if (this._accounts[param1])
+      public function setAccountFromId(playerId:int, accountId:int, accountName:String=null) : void {
+         var entityInfo:GameRolePlayNamedActorInformations = null;
+         var _fightEntityFrame:FightEntitiesFrame = null;
+         var fightInfo:GameFightFighterNamedInformations = null;
+         var _roleplayEntityFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(_roleplayEntityFrame)
+         {
+            entityInfo=_roleplayEntityFrame.getEntityInfos(playerId) as GameRolePlayNamedActorInformations;
+            if(entityInfo)
             {
-                return this._accounts[param1].name;
+               this._accounts[entityInfo.name]=
+                  {
+                     id:accountId,
+                     name:accountName
+                  }
+               ;
             }
-            return "";
-        }// end function
-
-        public function setAccount(param1:String, param2:int, param3:String = null) : void
-        {
-            this._accounts[param1] = {id:param2, name:param3};
-            return;
-        }// end function
-
-        public function setAccountFromId(param1:int, param2:int, param3:String = null) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_4:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-            if (Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame)
+         }
+         else
+         {
+            _fightEntityFrame=Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
+            if(_fightEntityFrame)
             {
-                _loc_5 = _loc_4.getEntityInfos(param1) as GameRolePlayNamedActorInformations;
-                if (_loc_5)
-                {
-                    this._accounts[_loc_5.name] = {id:param2, name:param3};
-                }
+               fightInfo=_fightEntityFrame.getEntityInfos(playerId) as GameFightFighterNamedInformations;
+               if(fightInfo)
+               {
+                  this._accounts[fightInfo.name]=
+                     {
+                        id:accountId,
+                        name:accountName
+                     }
+                  ;
+               }
             }
-            else
-            {
-                _loc_6 = Kernel.getWorker().getFrame(FightEntitiesFrame) as FightEntitiesFrame;
-                if (_loc_6)
-                {
-                    _loc_7 = _loc_6.getEntityInfos(param1) as GameFightFighterNamedInformations;
-                    if (_loc_7)
-                    {
-                        this._accounts[_loc_7.name] = {id:param2, name:param3};
-                    }
-                }
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-        public static function getInstance() : AccountManager
-        {
-            if (!_singleton)
-            {
-                _singleton = new AccountManager;
-            }
-            return _singleton;
-        }// end function
-
-    }
 }

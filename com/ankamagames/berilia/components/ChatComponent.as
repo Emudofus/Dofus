@@ -1,1029 +1,924 @@
-﻿package com.ankamagames.berilia.components
+package com.ankamagames.berilia.components
 {
-    import __AS3__.vec.*;
-    import com.adobe.utils.*;
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.events.*;
-    import com.ankamagames.berilia.factories.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.types.graphic.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.filesystem.*;
-    import flash.text.engine.*;
-    import flash.utils.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.events.*;
-    import flashx.textLayout.formats.*;
+   import com.ankamagames.berilia.types.graphic.GraphicContainer;
+   import com.ankamagames.berilia.UIComponent;
+   import com.ankamagames.jerakine.interfaces.IRectangle;
+   import com.ankamagames.berilia.FinalizableUIComponent;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.elements.TextFlow;
+   import flash.display.Sprite;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import com.ankamagames.berilia.types.data.ExtendedStyleSheet;
+   import com.ankamagames.jerakine.types.Uri;
+   import __AS3__.vec.Vector;
+   import com.adobe.utils.StringUtil;
+   import flashx.textLayout.elements.ParagraphElement;
+   import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManager;
+   import com.ankamagames.berilia.factories.HyperlinkFactory;
+   import com.ankamagames.berilia.managers.CssManager;
+   import com.ankamagames.jerakine.types.Callback;
+   import flashx.textLayout.compose.TextFlowLine;
+   import flashx.textLayout.elements.Configuration;
+   import flash.text.engine.FontWeight;
+   import flashx.textLayout.formats.TextDecoration;
+   import com.ankamagames.berilia.types.graphic.ChatTextContainer;
+   import flashx.textLayout.compose.StandardFlowComposer;
+   import flashx.textLayout.container.ScrollPolicy;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.edit.SelectionManager;
+   import flashx.textLayout.events.FlowElementMouseEvent;
+   import flashx.textLayout.events.SelectionEvent;
+   import flash.events.MouseEvent;
+   import flashx.textLayout.events.TextLayoutEvent;
+   import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
+   import flash.events.Event;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import flashx.textLayout.edit.ElementRange;
+   import flashx.textLayout.elements.FlowLeafElement;
+   import flashx.textLayout.elements.LinkElement;
+   import com.ankamagames.berilia.events.LinkInteractionEvent;
+   import flash.events.TextEvent;
+   import flashx.textLayout.events.ScrollEvent;
+   import com.ankamagames.berilia.types.graphic.UiRootContainer;
+   import flashx.textLayout.events.DamageEvent;
+   import flashx.textLayout.formats.VerticalAlign;
+   import flashx.textLayout.elements.SpanElement;
+   import com.ankamagames.berilia.managers.HtmlManager;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import flash.utils.Dictionary;
+   import flashx.textLayout.elements.InlineGraphicElement;
+   import flash.display.BitmapData;
+   import flash.display.Bitmap;
+   import flash.display.Loader;
+   import flashx.textLayout.compose.IFlowComposer;
+   import flash.utils.ByteArray;
+   import flash.text.engine.TextBaseline;
+   import flash.filesystem.FileStream;
+   import flash.filesystem.File;
+   import flash.filesystem.FileMode;
 
-    public class ChatComponent extends GraphicContainer implements UIComponent, IRectangle, FinalizableUIComponent
-    {
-        private var _finalized:Boolean = false;
-        private var _controller:ContainerController;
-        private var _textFlow:TextFlow;
-        private var _textContainer:Sprite;
-        private var _sbScrollBar:ScrollBar;
-        private var _TLFFormat:TextLayoutFormat;
-        private var _sCssClass:String;
-        private var _ssSheet:ExtendedStyleSheet;
-        private var _sCssUrl:Uri;
-        private var _aStyleObj:Array;
-        private var _cssApplied:Boolean;
-        private var _nScrollPos:int = 5;
-        private var _scrollTopMargin:int = 0;
-        private var _scrollBottomMargin:int = 0;
-        private var _smiliesUri:String;
-        private var _smilies:Vector.<Smiley>;
-        private var _smiliesActivated:Boolean = false;
-        private var _isDamaged:Boolean = false;
-        private var _currentSelection:String = "";
-        private var _magicbool:Boolean = true;
-        private var _bmpdtList:Dictionary;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatComponent));
-        public static var KAMA_PATTERN:RegExp = /(?:\s|^)([0-9.,\s]+\s?)\/k(?=\W|$)""(?:\s|^)([0-9.,\s]+\s?)\/k(?=\W|$)/gi;
-        public static var TAGS_PATTERN:RegExp = /<([a-zA-Z]+)(>|(\s*([^>]*)+)>)(.*?)<\/\1>""<([a-zA-Z]+)(>|(\s*([^>]*)+)>)(.*?)<\/\1>/gi;
-        public static var QUOTE_PATTERN:RegExp = /(''|"")""('|")/gi;
-        public static var BOLD_PATTERN:RegExp = /<\/?b>""<\/?b>/gi;
-        public static var UNDERLINE_PATTERN:RegExp = /<\/?u>""<\/?u>/gi;
-        public static var ITALIC_PATTERN:RegExp = /<\/?i>""<\/?i>/gi;
-        private static var IMAGE_SIZE:int = 20;
-        public static var LINE_HEIGHT:int = 20;
 
-        public function ChatComponent()
-        {
-            this._bmpdtList = new Dictionary();
-            this._sbScrollBar = new ScrollBar();
-            this._sbScrollBar.min = 1;
-            this._sbScrollBar.max = 1;
-            this._sbScrollBar.step = 1;
-            this._sbScrollBar.scrollSpeed = 1 / 6;
-            this._sbScrollBar.addEventListener(Event.CHANGE, this.onScroll);
-            addChild(this._sbScrollBar);
-            this._aStyleObj = new Array();
-            this._cssApplied = false;
-            this.createTextField();
-            return;
-        }// end function
+   public class ChatComponent extends GraphicContainer implements UIComponent, IRectangle, FinalizableUIComponent
+   {
+         
 
-        override public function remove() : void
-        {
-            super.remove();
-            return;
-        }// end function
+      public function ChatComponent() {
+         this._bmpdtList=new Dictionary();
+         super();
+         this._sbScrollBar=new ScrollBar();
+         this._sbScrollBar.min=1;
+         this._sbScrollBar.max=1;
+         this._sbScrollBar.step=1;
+         this._sbScrollBar.scrollSpeed=1/6;
+         this._sbScrollBar.addEventListener(Event.CHANGE,this.onScroll);
+         addChild(this._sbScrollBar);
+         this._aStyleObj=new Array();
+         this._cssApplied=false;
+         this.createTextField();
+      }
 
-        public function initSmileyTab(param1:String, param2:Object) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            this._smiliesUri = param1;
-            this._smilies = new Vector.<Smiley>;
-            for each (_loc_3 in param2)
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatComponent));
+
+      public static var KAMA_PATTERN:RegExp = new RegExp("(?:\\s|^)([0-9.,\\s]+\\s?)\\/k(?=\\W|$)","gi");
+
+      public static var TAGS_PATTERN:RegExp = new RegExp("<([a-zA-Z]+)(>|(\\s*([^>]*)+)>)(.*?)<\\/\\1>","gi");
+
+      public static var QUOTE_PATTERN:RegExp = new RegExp("(\'|\")","gi");
+
+      public static var BOLD_PATTERN:RegExp = new RegExp("<\\/?b>","gi");
+
+      public static var UNDERLINE_PATTERN:RegExp = new RegExp("<\\/?u>","gi");
+
+      public static var ITALIC_PATTERN:RegExp = new RegExp("<\\/?i>","gi");
+
+      private static var IMAGE_SIZE:int = 20;
+
+      public static var LINE_HEIGHT:int = 20;
+
+      public static function supprSpace(val:String) : String {
+         var regExp:RegExp = new RegExp("_","g");
+         return val;
+      }
+
+      public static function isValidSmiley(sTxt:String, indexOfSmiley:int, triggerTxt:String) : Boolean {
+         if((indexOfSmiley==0)&&(sTxt.length==triggerTxt.length)||(indexOfSmiley<0)&&(sTxt.length==indexOfSmiley+triggerTxt.length)&&(sTxt.charAt(indexOfSmiley-1)==" ")||(indexOfSmiley==0)&&(sTxt.length<triggerTxt.length)&&(sTxt.charAt(indexOfSmiley+triggerTxt.length)==" ")||(indexOfSmiley<0)&&(indexOfSmiley+triggerTxt.length>sTxt.length)&&(sTxt.charAt(indexOfSmiley-1)==" ")&&(sTxt.charAt(indexOfSmiley+triggerTxt.length)==" "))
+         {
+            return true;
+         }
+         return false;
+      }
+
+      private var _finalized:Boolean = false;
+
+      private var _controller:ContainerController;
+
+      private var _textFlow:TextFlow;
+
+      private var _textContainer:Sprite;
+
+      private var _sbScrollBar:ScrollBar;
+
+      private var _TLFFormat:TextLayoutFormat;
+
+      private var _sCssClass:String;
+
+      private var _ssSheet:ExtendedStyleSheet;
+
+      private var _sCssUrl:Uri;
+
+      private var _aStyleObj:Array;
+
+      private var _cssApplied:Boolean;
+
+      private var _nScrollPos:int = 5;
+
+      private var _scrollTopMargin:int = 0;
+
+      private var _scrollBottomMargin:int = 0;
+
+      private var _smiliesUri:String;
+
+      private var _smilies:Vector.<Smiley>;
+
+      private var _smiliesActivated:Boolean = false;
+
+      override public function remove() : void {
+         super.remove();
+      }
+
+      public function initSmileyTab(uri:String, data:Object) : void {
+         var t:Object = null;
+         var smiley:Smiley = null;
+         var i:* = 0;
+         var len:* = 0;
+         var trigger:String = null;
+         this._smiliesUri=uri;
+         this._smilies=new Vector.<Smiley>();
+         for each (t in data)
+         {
+            if((!(t.triggers==null))&&(t.triggers.length<0))
             {
-                
-                if (_loc_3.triggers != null && _loc_3.triggers.length > 0)
-                {
-                    _loc_4 = new Smiley(_loc_3.gfxId);
-                    _loc_4.triggers = new Vector.<String>(_loc_3.triggers.length);
-                    _loc_6 = _loc_3.triggers.length;
-                    _loc_5 = 0;
-                    while (_loc_5 < _loc_6)
-                    {
-                        
-                        _loc_7 = _loc_3.triggers[_loc_5];
-                        _loc_7 = StringUtil.replace(_loc_7, "&", "&amp;");
-                        _loc_7 = StringUtil.replace(_loc_7, "<", "&lt;");
-                        _loc_7 = StringUtil.replace(_loc_7, ">", "&gt;");
-                        _loc_4.triggers[_loc_5] = _loc_7;
-                        _loc_5++;
-                    }
-                    this._smilies.push(_loc_4);
-                }
+               smiley=new Smiley(t.gfxId);
+               smiley.triggers=new Vector.<String>(t.triggers.length);
+               len=t.triggers.length;
+               i=0;
+               while(i<len)
+               {
+                  trigger=t.triggers[i];
+                  trigger=StringUtil.replace(trigger,"&","&amp;");
+                  trigger=StringUtil.replace(trigger,"<","&lt;");
+                  trigger=StringUtil.replace(trigger,">","&gt;");
+                  smiley.triggers[i]=trigger;
+                  i++;
+               }
+               this._smilies.push(smiley);
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function clearText() : void
-        {
-            var _loc_1:* = null;
-            while (this._textFlow.numChildren > 0)
-            {
-                
-                this.removeFirstLine();
-            }
-            this._isDamaged = true;
-            this.updateScrollBar(true);
-            return;
-        }// end function
+      public function clearText() : void {
+         var p:ParagraphElement = null;
+         while(this._textFlow.numChildren>0)
+         {
+            this.removeFirstLine();
+         }
+         this._isDamaged=true;
+         this.updateScrollBar(true);
+      }
 
-        public function removeFirstLine() : void
-        {
-            if (this._textFlow.numChildren > 0)
-            {
-                this._textFlow.removeChildAt(0);
-            }
-            return;
-        }// end function
+      public function removeFirstLine() : void {
+         if(this._textFlow.numChildren>0)
+         {
+            this._textFlow.removeChildAt(0);
+         }
+      }
 
-        public function removeLines(param1:int) : void
-        {
-            var _loc_2:* = 0;
-            _loc_2 = 0;
-            while (_loc_2 < param1)
-            {
-                
-                this.removeFirstLine();
-                _loc_2++;
-            }
-            this._isDamaged = true;
-            return;
-        }// end function
+      public function removeLines(value:int) : void {
+         var i:* = 0;
+         i=0;
+         while(i<value)
+         {
+            this.removeFirstLine();
+            i++;
+         }
+         this._isDamaged=true;
+      }
 
-        public function get smiliesActivated() : Boolean
-        {
-            return this._smiliesActivated;
-        }// end function
+      public function get smiliesActivated() : Boolean {
+         return this._smiliesActivated;
+      }
 
-        public function set smiliesActivated(param1:Boolean) : void
-        {
-            this._smiliesActivated = param1;
-            return;
-        }// end function
+      public function set smiliesActivated(value:Boolean) : void {
+         this._smiliesActivated=value;
+      }
 
-        override public function set width(param1:Number) : void
-        {
-            param1 = param1 - this._sbScrollBar.width;
-            super.width = param1;
-            this._controller.setCompositionSize(param1, this._controller.compositionHeight);
-            this._isDamaged = true;
-            if (this._finalized)
-            {
-                this.updateScrollBarPos();
-            }
-            return;
-        }// end function
-
-        override public function set height(param1:Number) : void
-        {
-            if (param1 != super.height || param1 != this._sbScrollBar.height - this._scrollTopMargin - this._scrollBottomMargin)
-            {
-                param1 = param1 + 2;
-                super.height = param1;
-                this._sbScrollBar.height = param1 - this._scrollTopMargin - this._scrollBottomMargin;
-                this._controller.setCompositionSize(this._controller.compositionWidth, param1);
-                this._isDamaged = true;
-                if (this._finalized)
-                {
-                    this.updateScrollBar();
-                }
-            }
-            return;
-        }// end function
-
-        public function set scrollPos(param1:int) : void
-        {
-            this._nScrollPos = param1;
-            return;
-        }// end function
-
-        public function get scrollBottomMargin() : int
-        {
-            return this._scrollBottomMargin;
-        }// end function
-
-        public function set scrollBottomMargin(param1:int) : void
-        {
-            this._scrollBottomMargin = param1;
-            this._sbScrollBar.height = this._controller.compositionHeight - this._scrollTopMargin - this._scrollBottomMargin;
-            return;
-        }// end function
-
-        public function get scrollTopMargin() : int
-        {
-            return this._scrollTopMargin;
-        }// end function
-
-        public function set scrollTopMargin(param1:int) : void
-        {
-            this._scrollTopMargin = param1;
-            this._sbScrollBar.y = this._scrollTopMargin;
-            this._sbScrollBar.height = this._controller.compositionHeight - this._scrollTopMargin - this._scrollBottomMargin;
-            return;
-        }// end function
-
-        public function appendText(param1:String, param2:String = null, param3:Boolean = true) : ParagraphElement
-        {
-            FpsManager.getInstance().startTracking("chat", 4972530);
-            if (param2 && this._aStyleObj[param2])
-            {
-                this._TLFFormat = this._ssSheet.TLFTransform(this._aStyleObj[param2]);
-            }
-            param1 = HyperlinkFactory.decode(param1);
-            var _loc_4:* = this.createParagraphe(param1);
-            if (param3)
-            {
-                this._textFlow.addChild(_loc_4);
-                this._isDamaged = true;
-                if (this._finalized)
-                {
-                    this.updateScrollBar();
-                }
-            }
-            FpsManager.getInstance().stopTracking("chat");
-            return _loc_4;
-        }// end function
-
-        public function set css(param1:Uri) : void
-        {
-            this._cssApplied = false;
-            this.applyCSS(param1);
-            return;
-        }// end function
-
-        public function applyCSS(param1:Uri) : void
-        {
-            if (param1 == null)
-            {
-                return;
-            }
-            if (param1 != this._sCssUrl)
-            {
-                this._sCssUrl = param1;
-                CssManager.getInstance().askCss(param1.uri, new Callback(this.bindCss));
-            }
-            return;
-        }// end function
-
-        public function set cssClass(param1:String) : void
-        {
-            this._sCssClass = param1 == "" ? ("p") : (param1);
-            this.bindCss();
-            return;
-        }// end function
-
-        private function bindCss() : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_1:* = this._ssSheet;
-            this._ssSheet = CssManager.getInstance().getCss(this._sCssUrl.uri);
-            for each (_loc_3 in this._ssSheet.styleNames)
-            {
-                
-                if (!_loc_2 || _loc_3 == this._sCssClass || this._sCssClass != _loc_2 && _loc_3 == "p")
-                {
-                    _loc_2 = _loc_3;
-                }
-                if (this._ssSheet != _loc_1 || !this._aStyleObj[_loc_3])
-                {
-                    this._aStyleObj[_loc_3] = this._ssSheet.getStyle(_loc_3);
-                }
-            }
-            this._TLFFormat = this._ssSheet.TLFTransform(this._aStyleObj[_loc_2]);
-            return;
-        }// end function
-
-        public function setCssColor(param1:String, param2:String = null) : void
-        {
-            this.changeCssClassColor(param1, param2);
-            return;
-        }// end function
-
-        public function setCssSize(param1:uint, param2:uint, param3:String = null) : void
-        {
-            this.changeCssClassSize(param1, param2, param3);
-            return;
-        }// end function
-
-        private function changeCssClassSize(param1:uint, param2:uint, param3:String = null) : void
-        {
-            var _loc_4:* = undefined;
-            if (param3)
-            {
-                this._aStyleObj[param3].fontSize = param1 + "px";
-            }
-            else
-            {
-                for each (_loc_4 in this._aStyleObj)
-                {
-                    
-                    _loc_4.fontSize = param1 + "px";
-                }
-            }
-            this.bindCss();
-            this._textFlow.lineHeight = param2;
-            return;
-        }// end function
-
-        private function changeCssClassColor(param1:String, param2:String = null) : void
-        {
-            var _loc_3:* = undefined;
-            if (param2)
-            {
-                if (this._aStyleObj[param2] == null)
-                {
-                    this._aStyleObj[param2] = new Object();
-                }
-                this._aStyleObj[param2].color = param1;
-                this._TLFFormat.concat(this._ssSheet.TLFTransform(this._aStyleObj[param2]));
-            }
-            else
-            {
-                for each (_loc_3 in this._aStyleObj)
-                {
-                    
-                    _loc_3.color = param1;
-                }
-            }
-            return;
-        }// end function
-
-        public function get scrollV() : int
-        {
-            return Math.round((this._controller.verticalScrollPosition + this._controller.compositionHeight) / this._textFlow.lineHeight);
-        }// end function
-
-        public function set scrollV(param1:int) : void
-        {
-            this._controller.verticalScrollPosition = param1 * this._textFlow.lineHeight - this._controller.compositionHeight;
-            return;
-        }// end function
-
-        public function get maxScrollV() : int
-        {
-            this._textFlow.flowComposer.composeToPosition();
-            return this._textFlow.flowComposer.numLines;
-        }// end function
-
-        public function get textHeight() : Number
-        {
-            var _loc_3:* = 0;
-            var _loc_1:* = 0;
-            var _loc_2:* = this._textFlow.numChildren;
-            _loc_3 = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_1 = _loc_1 + this.getParagraphHeight(this._textFlow.getChildAt(_loc_3) as ParagraphElement);
-                _loc_3++;
-            }
-            return _loc_1;
-        }// end function
-
-        private function getParagraphHeight(param1:ParagraphElement) : Number
-        {
-            var _loc_5:* = null;
-            var _loc_2:* = 0;
-            var _loc_3:* = param1.getAbsoluteStart();
-            var _loc_4:* = _loc_3 + param1.textLength;
-            while (_loc_3 < _loc_4)
-            {
-                
-                _loc_5 = param1.getTextFlow().flowComposer.findLineAtPosition(_loc_3);
-                _loc_2 = _loc_2 + _loc_5.height;
-                _loc_3 = _loc_3 + _loc_5.textLength;
-            }
-            return _loc_2;
-        }// end function
-
-        public function set scrollCss(param1:Uri) : void
-        {
-            this._sbScrollBar.css = param1;
-            return;
-        }// end function
-
-        public function get scrollCss() : Uri
-        {
-            return this._sbScrollBar.css;
-        }// end function
-
-        private function createTextField() : void
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = new TextLayoutFormat();
-            _loc_1.fontWeight = FontWeight.BOLD;
-            _loc_1.color = "#ff0000";
-            _loc_1.textDecoration = TextDecoration.NONE;
-            _loc_2 = new Configuration();
-            _loc_2.defaultLinkNormalFormat = _loc_1;
-            TextFlow.defaultConfiguration = _loc_2;
-            this._textContainer = new ChatTextContainer();
-            this._textContainer.x = this._sbScrollBar.width;
-            addChild(this._textContainer);
-            this._textFlow = new TextFlow(_loc_2);
-            this._textFlow.paddingBottom = 2;
-            this._textFlow.flowComposer = new StandardFlowComposer();
-            this._controller = new ContainerController(this._textContainer, width, height);
-            this._controller.horizontalScrollPolicy = ScrollPolicy.ON;
-            this._controller.blockProgression = BlockProgression.TB;
-            this._textFlow.interactionManager = new SelectionManager();
-            this._textFlow.addEventListener(FlowElementMouseEvent.ROLL_OVER, this.onMouseOverLink);
-            this._textFlow.addEventListener(FlowElementMouseEvent.ROLL_OUT, this.onMouseOutLink);
-            this._textFlow.addEventListener(SelectionEvent.SELECTION_CHANGE, this.selectionChanged);
-            this._textContainer.addEventListener(MouseEvent.ROLL_OUT, this.onRollOutChat);
-            this._textFlow.addEventListener(TextLayoutEvent.SCROLL, this.scrollTextFlow);
-            this._textFlow.flowComposer.addController(this._controller);
-            this._textFlow.flowComposer.updateAllControllers();
-            EnterFrameDispatcher.addEventListener(this.onEnterFrame, "updateChatControllers");
-            return;
-        }// end function
-
-        private function onEnterFrame(event:Event) : void
-        {
-            if (this._isDamaged)
-            {
-                this._isDamaged = false;
-                this._textFlow.flowComposer.updateAllControllers();
-            }
-            return;
-        }// end function
-
-        private function onRollOutChat(event:MouseEvent) : void
-        {
-            TooltipManager.hideAll();
-            return;
-        }// end function
-
-        private function selectionChanged(event:SelectionEvent) : void
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = event.selectionState ? (ElementRange.createElementRange(event.selectionState.textFlow, event.selectionState.absoluteStart, event.selectionState.absoluteEnd)) : (null);
-            this._currentSelection = "";
-            var _loc_4:* = _loc_2.firstLeaf;
-            do
-            {
-                
-                if (_loc_3 != null && _loc_3 != _loc_4.getParagraph())
-                {
-                    this._currentSelection = this._currentSelection + "\n";
-                    _loc_3 = _loc_4.getParagraph();
-                }
-                this._currentSelection = this._currentSelection + _loc_4.text;
-                var _loc_5:* = _loc_4.getNextLeaf();
-                _loc_4 = _loc_4.getNextLeaf();
-            }while (_loc_5)
-            return;
-        }// end function
-
-        private function onMouseOverLink(event:FlowElementMouseEvent) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            if (event.flowElement is LinkElement)
-            {
-                _loc_2 = event.flowElement as LinkElement;
-                _loc_3 = _loc_2.href.replace("event:", "").split(",");
-                _loc_4 = _loc_3.shift();
-                _loc_5 = _loc_4 + "," + Math.round(event.originalEvent.stageX) + "," + Math.round(event.originalEvent.stageY) + "," + _loc_3.join(",");
-                dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OVER, _loc_5));
-            }
-            return;
-        }// end function
-
-        private function onMouseOutLink(event:FlowElementMouseEvent) : void
-        {
-            TooltipManager.hideAll();
-            dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OUT));
-            return;
-        }// end function
-
-        private function onTextClick(event:FlowElementMouseEvent) : void
-        {
-            TooltipManager.hideAll();
-            var _loc_2:* = (event.flowElement as LinkElement).href;
-            if (_loc_2 != "")
-            {
-                dispatchEvent(new TextEvent(TextEvent.LINK, false, false, _loc_2.replace("event:", "")));
-            }
-            return;
-        }// end function
-
-        private function onScroll(event:Event) : void
-        {
-            this._magicbool = false;
-            this._controller.verticalScrollPosition = this._sbScrollBar.value / this._sbScrollBar.max * this.maxScrollV * this._textFlow.lineHeight - this._controller.compositionHeight;
-            return;
-        }// end function
-
-        private function scrollTextFlow(event:Event) : void
-        {
-            var _loc_2:* = null;
-            if (event is ScrollEvent)
-            {
-                _loc_2 = event as ScrollEvent;
-                if (this._magicbool)
-                {
-                    _loc_2.delta = _loc_2.delta / 3 * -1;
-                    this._sbScrollBar.onWheel(event, false);
-                }
-                else
-                {
-                    this._magicbool = true;
-                }
-            }
-            return;
-        }// end function
-
-        private function updateScrollBar(param1:Boolean = false) : void
-        {
-            this._sbScrollBar.visible = true;
-            this._sbScrollBar.disabled = false;
-            this._sbScrollBar.total = this.maxScrollV;
-            this._sbScrollBar.max = this.maxScrollV - Math.floor(this._controller.compositionHeight / this._textFlow.lineHeight);
-            if (param1)
-            {
-                this._controller.verticalScrollPosition = 0;
-                this._sbScrollBar.value = 0;
-            }
-            else
-            {
-                this._sbScrollBar.value = this.scrollV;
-            }
-            return;
-        }// end function
-
-        private function updateScrollBarPos() : void
-        {
-            if (this._nScrollPos >= 0)
-            {
-                this._sbScrollBar.x = this._controller.compositionWidth - this._sbScrollBar.width;
-            }
-            else
-            {
-                this._sbScrollBar.x = 0;
-            }
-            return;
-        }// end function
-
-        public function get finalized() : Boolean
-        {
-            return this._finalized;
-        }// end function
-
-        public function set finalized(param1:Boolean) : void
-        {
-            this._finalized = param1;
-            return;
-        }// end function
-
-        public function finalize() : void
-        {
-            this._sbScrollBar.finalize();
+      override public function set width(val:Number) : void {
+         var val:Number = val-this._sbScrollBar.width;
+         super.width=val;
+         this._controller.setCompositionSize(val,this._controller.compositionHeight);
+         this._isDamaged=true;
+         if(this._finalized)
+         {
             this.updateScrollBarPos();
-            this.updateScrollBar();
-            HyperlinkFactory.createTextClickHandler(this);
-            HyperlinkFactory.createRollOverHandler(this);
-            this._finalized = true;
-            var _loc_1:* = getUi();
-            if (_loc_1 != null)
+         }
+      }
+
+      override public function set height(val:Number) : void {
+         if((!(val==super.height))||(!(val==this._sbScrollBar.height-this._scrollTopMargin-this._scrollBottomMargin)))
+         {
+            val=val+2;
+            super.height=val;
+            this._sbScrollBar.height=val-this._scrollTopMargin-this._scrollBottomMargin;
+            this._controller.setCompositionSize(this._controller.compositionWidth,val);
+            this._isDamaged=true;
+            if(this._finalized)
             {
-                _loc_1.iAmFinalized(this);
+               this.updateScrollBar();
             }
+         }
+      }
+
+      public function set scrollPos(nValue:int) : void {
+         this._nScrollPos=nValue;
+      }
+
+      public function get scrollBottomMargin() : int {
+         return this._scrollBottomMargin;
+      }
+
+      public function set scrollBottomMargin(value:int) : void {
+         this._scrollBottomMargin=value;
+         this._sbScrollBar.height=this._controller.compositionHeight-this._scrollTopMargin-this._scrollBottomMargin;
+      }
+
+      public function get scrollTopMargin() : int {
+         return this._scrollTopMargin;
+      }
+
+      public function set scrollTopMargin(value:int) : void {
+         this._scrollTopMargin=value;
+         this._sbScrollBar.y=this._scrollTopMargin;
+         this._sbScrollBar.height=this._controller.compositionHeight-this._scrollTopMargin-this._scrollBottomMargin;
+      }
+
+      public function appendText(sTxt:String, style:String=null, addToChat:Boolean=true) : ParagraphElement {
+         FpsManager.getInstance().startTracking("chat",4972530);
+         if((style)&&(this._aStyleObj[style]))
+         {
+            this._TLFFormat=this._ssSheet.TLFTransform(this._aStyleObj[style]);
+         }
+         var sTxt:String = HyperlinkFactory.decode(sTxt);
+         var p:ParagraphElement = this.createParagraphe(sTxt);
+         if(addToChat)
+         {
+            this._textFlow.addChild(p);
+            this._isDamaged=true;
+            if(this._finalized)
+            {
+               this.updateScrollBar();
+            }
+         }
+         FpsManager.getInstance().stopTracking("chat");
+         return p;
+      }
+
+      public function set css(sFile:Uri) : void {
+         this._cssApplied=false;
+         this.applyCSS(sFile);
+      }
+
+      public function applyCSS(sFile:Uri) : void {
+         if(sFile==null)
+         {
             return;
-        }// end function
+         }
+         if(sFile!=this._sCssUrl)
+         {
+            this._sCssUrl=sFile;
+            CssManager.getInstance().askCss(sFile.uri,new Callback(this.bindCss));
+         }
+      }
 
-        private function createParagraphe(param1:String) : ParagraphElement
-        {
-            this._textFlow.addEventListener(DamageEvent.DAMAGE, this.onDamage);
-            var _loc_2:* = new ParagraphElement();
-            _loc_2.format = this._TLFFormat;
-            _loc_2.verticalAlign = VerticalAlign.MIDDLE;
-            var _loc_3:* = new RegExp(TAGS_PATTERN).exec(param1);
-            while (_loc_3 != null)
+      public function set cssClass(c:String) : void {
+         this._sCssClass=c==""?"p":c;
+         this.bindCss();
+      }
+
+      private function bindCss() : void {
+         var styleToDisplay:String = null;
+         var sProperty:String = null;
+         var oldCss:ExtendedStyleSheet = this._ssSheet;
+         this._ssSheet=CssManager.getInstance().getCss(this._sCssUrl.uri);
+         for each (sProperty in this._ssSheet.styleNames)
+         {
+            if((!styleToDisplay)||(sProperty==this._sCssClass)||(!(this._sCssClass==styleToDisplay))&&(sProperty=="p"))
             {
-                
-                if (_loc_3.index > 0)
-                {
-                    this.createSpan(_loc_2, param1.substring(0, _loc_3.index), false);
-                }
-                this.createSpan(_loc_2, _loc_3[0], true);
-                param1 = param1.substring(_loc_3.index + _loc_3[0].length);
-                _loc_3 = new RegExp(TAGS_PATTERN).exec(param1);
+               styleToDisplay=sProperty;
             }
-            if (param1.length > 0)
+            if((!(this._ssSheet==oldCss))||(!this._aStyleObj[sProperty]))
             {
-                this.createSpan(_loc_2, param1, false);
+               this._aStyleObj[sProperty]=this._ssSheet.getStyle(sProperty);
             }
-            return _loc_2;
-        }// end function
+         }
+         this._TLFFormat=this._ssSheet.TLFTransform(this._aStyleObj[styleToDisplay]);
+      }
 
-        private function onDamage(event:DamageEvent) : void
-        {
-            this._textFlow.removeEventListener(DamageEvent.DAMAGE, this.onDamage);
-            this._isDamaged = true;
-            return;
-        }// end function
+      public function setCssColor(color:String, style:String=null) : void {
+         this.changeCssClassColor(color,style);
+      }
 
-        private function createLinkElement(param1:ParagraphElement, param2:Object) : void
-        {
-            var _loc_7:* = null;
-            var _loc_3:* = new LinkElement();
-            _loc_3.addEventListener(FlowElementMouseEvent.CLICK, this.onTextClick);
-            var _loc_4:* = new SpanElement();
-            var _loc_5:* = "";
-            var _loc_6:* = param2[3].split(" ");
-            for each (_loc_7 in _loc_6)
+      public function setCssSize(size:uint, lineHeight:uint, style:String=null) : void {
+         this.changeCssClassSize(size,lineHeight,style);
+      }
+
+      private function changeCssClassSize(size:uint, lineHeight:uint, style:String=null) : void {
+         var i:* = undefined;
+         if(style)
+         {
+            this._aStyleObj[style].fontSize=size+"px";
+         }
+         else
+         {
+            for each (i in this._aStyleObj)
             {
-                
-                if (_loc_7.search("href") != -1)
-                {
-                    _loc_3.href = this.getAttributeValue(_loc_7);
-                    continue;
-                }
-                if (_loc_7.search("style") != -1)
-                {
-                    _loc_5 = this.getAttributeValue(_loc_7);
-                }
+               i.fontSize=size+"px";
             }
-            _loc_4.fontWeight = FontWeight.BOLD;
-            _loc_4.color = this._TLFFormat.color;
-            _loc_4 = HtmlManager.formateSpan(_loc_4, _loc_5);
-            _loc_4.text = param2[5].replace(BOLD_PATTERN, "").replace(UNDERLINE_PATTERN, "");
-            _loc_3.addChild(_loc_4);
-            param1.addChild(_loc_3);
-            return;
-        }// end function
+         }
+         this.bindCss();
+         this._textFlow.lineHeight=lineHeight;
+      }
 
-        private function getAttributeValue(param1:String) : String
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = param1.split("=");
-            _loc_2.shift();
-            if (_loc_2.length > 1)
+      private function changeCssClassColor(color:String, style:String=null) : void {
+         var i:* = undefined;
+         if(style)
+         {
+            if(this._aStyleObj[style]==null)
             {
-                _loc_3 = _loc_2.join("=");
+               this._aStyleObj[style]=new Object();
+            }
+            this._aStyleObj[style].color=color;
+            this._TLFFormat.concat(this._ssSheet.TLFTransform(this._aStyleObj[style]));
+         }
+         else
+         {
+            for each (i in this._aStyleObj)
+            {
+               i.color=color;
+            }
+         }
+      }
+
+      public function get scrollV() : int {
+         return Math.round((this._controller.verticalScrollPosition+this._controller.compositionHeight)/this._textFlow.lineHeight);
+      }
+
+      public function set scrollV(val:int) : void {
+         this._controller.verticalScrollPosition=val*this._textFlow.lineHeight-this._controller.compositionHeight;
+      }
+
+      public function get maxScrollV() : int {
+         this._textFlow.flowComposer.composeToPosition();
+         return this._textFlow.flowComposer.numLines;
+      }
+
+      public function get textHeight() : Number {
+         var i:* = 0;
+         var height:Number = 0;
+         var len:int = this._textFlow.numChildren;
+         i=0;
+         while(i<len)
+         {
+            height=height+this.getParagraphHeight(this._textFlow.getChildAt(i) as ParagraphElement);
+            i++;
+         }
+         return height;
+      }
+
+      private function getParagraphHeight(p:ParagraphElement) : Number {
+         var line:TextFlowLine = null;
+         var height:Number = 0;
+         var pos:int = p.getAbsoluteStart();
+         var endPos:int = pos+p.textLength;
+         while(pos<endPos)
+         {
+            line=p.getTextFlow().flowComposer.findLineAtPosition(pos);
+            height=height+line.height;
+            pos=pos+line.textLength;
+         }
+         return height;
+      }
+
+      public function set scrollCss(sUrl:Uri) : void {
+         this._sbScrollBar.css=sUrl;
+      }
+
+      public function get scrollCss() : Uri {
+         return this._sbScrollBar.css;
+      }
+
+      private function createTextField() : void {
+         var conf:Configuration = null;
+         var ca:TextLayoutFormat = new TextLayoutFormat();
+         ca.fontWeight=FontWeight.BOLD;
+         ca.color="#ff0000";
+         ca.textDecoration=TextDecoration.NONE;
+         conf=new Configuration();
+         conf.defaultLinkNormalFormat=ca;
+         TextFlow.defaultConfiguration=conf;
+         this._textContainer=new ChatTextContainer();
+         this._textContainer.x=this._sbScrollBar.width;
+         addChild(this._textContainer);
+         this._textFlow=new TextFlow(conf);
+         this._textFlow.paddingBottom=2;
+         this._textFlow.flowComposer=new StandardFlowComposer();
+         this._controller=new ContainerController(this._textContainer,width,height);
+         this._controller.horizontalScrollPolicy=ScrollPolicy.ON;
+         this._controller.blockProgression=BlockProgression.TB;
+         this._textFlow.interactionManager=new SelectionManager();
+         this._textFlow.addEventListener(FlowElementMouseEvent.ROLL_OVER,this.onMouseOverLink);
+         this._textFlow.addEventListener(FlowElementMouseEvent.ROLL_OUT,this.onMouseOutLink);
+         this._textFlow.addEventListener(SelectionEvent.SELECTION_CHANGE,this.selectionChanged);
+         this._textContainer.addEventListener(MouseEvent.ROLL_OUT,this.onRollOutChat);
+         this._textFlow.addEventListener(TextLayoutEvent.SCROLL,this.scrollTextFlow);
+         this._textFlow.flowComposer.addController(this._controller);
+         this._textFlow.flowComposer.updateAllControllers();
+         EnterFrameDispatcher.addEventListener(this.onEnterFrame,"updateChatControllers");
+      }
+
+      private var _isDamaged:Boolean = false;
+
+      private function onEnterFrame(pEvt:Event) : void {
+         if(this._isDamaged)
+         {
+            this._isDamaged=false;
+            this._textFlow.flowComposer.updateAllControllers();
+         }
+      }
+
+      private function onRollOutChat(pEvt:MouseEvent) : void {
+         TooltipManager.hideAll();
+      }
+
+      private var _currentSelection:String = "";
+
+      private function selectionChanged(pEvt:SelectionEvent) : void {
+         var prevPara:ParagraphElement = null;
+         var range:ElementRange = pEvt.selectionState?ElementRange.createElementRange(pEvt.selectionState.textFlow,pEvt.selectionState.absoluteStart,pEvt.selectionState.absoluteEnd):null;
+         this._currentSelection="";
+         var leaf:FlowLeafElement = range.firstLeaf;
+         while(true)
+         {
+            if((!(prevPara==null))&&(!(prevPara==leaf.getParagraph())))
+            {
+               this._currentSelection=this._currentSelection+"\n";
+               prevPara=leaf.getParagraph();
+            }
+            this._currentSelection=this._currentSelection+leaf.text;
+            if(!(leaf=leaf.getNextLeaf()))
+            {
+               return;
+            }
+            continue loop0;
+         }
+      }
+
+      private function onMouseOverLink(pEvt:FlowElementMouseEvent) : void {
+         var link:LinkElement = null;
+         var params:Array = null;
+         var type:String = null;
+         var data:String = null;
+         if(pEvt.flowElement is LinkElement)
+         {
+            link=pEvt.flowElement as LinkElement;
+            params=link.href.replace("event:","").split(",");
+            type=params.shift();
+            data=type+","+Math.round(pEvt.originalEvent.stageX)+","+Math.round(pEvt.originalEvent.stageY)+","+params.join(",");
+            dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OVER,data));
+         }
+      }
+
+      private function onMouseOutLink(pEvt:FlowElementMouseEvent) : void {
+         TooltipManager.hideAll();
+         dispatchEvent(new LinkInteractionEvent(LinkInteractionEvent.ROLL_OUT));
+      }
+
+      private function onTextClick(pEvt:FlowElementMouseEvent) : void {
+         TooltipManager.hideAll();
+         var text:String = (pEvt.flowElement as LinkElement).href;
+         if(text!="")
+         {
+            dispatchEvent(new TextEvent(TextEvent.LINK,false,false,text.replace("event:","")));
+         }
+      }
+
+      private var _magicbool:Boolean = true;
+
+      private function onScroll(pEvt:Event) : void {
+         this._magicbool=false;
+         this._controller.verticalScrollPosition=this._sbScrollBar.value/this._sbScrollBar.max*this.maxScrollV*this._textFlow.lineHeight-this._controller.compositionHeight;
+      }
+
+      private function scrollTextFlow(pEvt:Event) : void {
+         var evt:ScrollEvent = null;
+         if(pEvt is ScrollEvent)
+         {
+            evt=pEvt as ScrollEvent;
+            if(this._magicbool)
+            {
+               evt.delta=evt.delta/3*-1;
+               this._sbScrollBar.onWheel(pEvt,false);
             }
             else
             {
-                _loc_3 = _loc_2[0];
+               this._magicbool=true;
             }
-            return _loc_3.replace(QUOTE_PATTERN, "");
-        }// end function
+         }
+      }
 
-        private function createSpan(param1:ParagraphElement, param2:String, param3:Boolean, param4:String = "") : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_5:* = 0;
-            while (param2.length > 0)
+      private function updateScrollBar(reset:Boolean=false) : void {
+         this._sbScrollBar.visible=true;
+         this._sbScrollBar.disabled=false;
+         this._sbScrollBar.total=this.maxScrollV;
+         this._sbScrollBar.max=this.maxScrollV-Math.floor(this._controller.compositionHeight/this._textFlow.lineHeight);
+         if(reset)
+         {
+            this._controller.verticalScrollPosition=0;
+            this._sbScrollBar.value=0;
+         }
+         else
+         {
+            this._sbScrollBar.value=this.scrollV;
+         }
+      }
+
+      private function updateScrollBarPos() : void {
+         if(this._nScrollPos>=0)
+         {
+            this._sbScrollBar.x=this._controller.compositionWidth-this._sbScrollBar.width;
+         }
+         else
+         {
+            this._sbScrollBar.x=0;
+         }
+      }
+
+      public function get finalized() : Boolean {
+         return this._finalized;
+      }
+
+      public function set finalized(b:Boolean) : void {
+         this._finalized=b;
+      }
+
+      public function finalize() : void {
+         this._sbScrollBar.finalize();
+         this.updateScrollBarPos();
+         this.updateScrollBar();
+         HyperlinkFactory.createTextClickHandler(this);
+         HyperlinkFactory.createRollOverHandler(this);
+         this._finalized=true;
+         var uiRoot:UiRootContainer = getUi();
+         if(uiRoot!=null)
+         {
+            uiRoot.iAmFinalized(this);
+         }
+      }
+
+      private function createParagraphe(text:String) : ParagraphElement {
+         this._textFlow.addEventListener(DamageEvent.DAMAGE,this.onDamage);
+         var p:ParagraphElement = new ParagraphElement();
+         p.format=this._TLFFormat;
+         p.verticalAlign=VerticalAlign.MIDDLE;
+         var result:Object = new RegExp(TAGS_PATTERN).exec(text);
+         while(result!=null)
+         {
+            if(result.index>0)
             {
-                
-                _loc_6 = this._smiliesActivated ? (this.getSmileyFromText(param2)) : (null);
-                _loc_7 = param2.substring(0, _loc_6 != null ? (_loc_6.position) : (param2.length));
-                if (_loc_7.length > 0 || _loc_6 == null)
-                {
-                    if (this._smiliesActivated)
-                    {
-                        _loc_8 = _loc_7.search(KAMA_PATTERN);
-                        while (_loc_8 != -1)
+               this.createSpan(p,text.substring(0,result.index),false);
+            }
+            this.createSpan(p,result[0],true);
+            text=text.substring(result.index+result[0].length);
+            result=new RegExp(TAGS_PATTERN).exec(text);
+         }
+         if(text.length>0)
+         {
+            this.createSpan(p,text,false);
+         }
+         return p;
+      }
+
+      private function onDamage(pEvt:DamageEvent) : void {
+         this._textFlow.removeEventListener(DamageEvent.DAMAGE,this.onDamage);
+         this._isDamaged=true;
+      }
+
+      private function createLinkElement(p:ParagraphElement, oText:Object) : void {
+         var att:String = null;
+         var link:LinkElement = new LinkElement();
+         link.addEventListener(FlowElementMouseEvent.CLICK,this.onTextClick);
+         var span:SpanElement = new SpanElement();
+         var style:String = "";
+         var attributes:Array = oText[3].split(" ");
+         for each (att in attributes)
+         {
+            if(att.search("href")!=-1)
+            {
+               link.href=this.getAttributeValue(att);
+            }
+            else
+            {
+               if(att.search("style")!=-1)
+               {
+                  style=this.getAttributeValue(att);
+               }
+            }
+         }
+         span.fontWeight=FontWeight.BOLD;
+         span.color=this._TLFFormat.color;
+         span=HtmlManager.formateSpan(span,style);
+         span.text=oText[5].replace(BOLD_PATTERN,"").replace(UNDERLINE_PATTERN,"");
+         link.addChild(span);
+         p.addChild(link);
+      }
+
+      private function getAttributeValue(inText:String) : String {
+         var realvalue:String = null;
+         var tmp:Array = inText.split("=");
+         tmp.shift();
+         if(tmp.length>1)
+         {
+            realvalue=tmp.join("=");
+         }
+         else
+         {
+            realvalue=tmp[0];
+         }
+         return realvalue.replace(QUOTE_PATTERN,"");
+      }
+
+      private function createSpan(p:ParagraphElement, sText:String, handleHtmlTags:Boolean, pStyle:String="") : void {
+         var smiley:Smiley = null;
+         var textToShow:String = null;
+         var kamaIndex:* = 0;
+         var reg:RegExp = null;
+         var data:Object = null;
+         var sub:String = null;
+         var intValue:String = null;
+         var cursor:int = 0;
+         while(sText.length>0)
+         {
+            smiley=this._smiliesActivated?this.getSmileyFromText(sText):null;
+            textToShow=sText.substring(0,!(smiley==null)?smiley.position:sText.length);
+            if((textToShow.length<0)||(smiley==null))
+            {
+               if(this._smiliesActivated)
+               {
+                  kamaIndex=textToShow.search(KAMA_PATTERN);
+                  while(kamaIndex!=-1)
+                  {
+                     reg=new RegExp(KAMA_PATTERN);
+                     data=reg.exec(textToShow);
+                     sub=textToShow.substring(0,kamaIndex);
+                     if(sub!="")
+                     {
+                        intValue=StringUtil.trim(data[1]);
+                        if((intValue.indexOf(".")==-1)&&(intValue.indexOf(",")==-1)&&(intValue.indexOf(" ")==-1))
                         {
-                            
-                            _loc_9 = new RegExp(KAMA_PATTERN);
-                            _loc_10 = _loc_9.exec(_loc_7);
-                            _loc_11 = _loc_7.substring(0, _loc_8);
-                            if (_loc_11 != "")
-                            {
-                                _loc_12 = StringUtil.trim(_loc_10[1]);
-                                if (_loc_12.indexOf(".") == -1 && _loc_12.indexOf(",") == -1 && _loc_12.indexOf(" ") == -1)
-                                {
-                                    _loc_12 = StringUtils.formateIntToString(parseInt(_loc_12));
-                                }
-                                param1.addChild(this.createSpanElement(_loc_7.substring(0, (_loc_8 + 1)) + _loc_12, param4));
-                            }
-                            param1.addChild(this.createImage(new Uri(XmlConfig.getInstance().getEntry("config.ui.skin") + "assets.swf|tx_kama"), "/k"));
-                            _loc_7 = _loc_7.substr(_loc_8 + _loc_10[0].length);
-                            _loc_8 = _loc_7.search(KAMA_PATTERN);
+                           intValue=StringUtils.formateIntToString(parseInt(intValue));
                         }
-                    }
-                    if (!param3)
-                    {
-                        param1.addChild(this.createSpanElement(_loc_7, param4));
-                    }
-                    else
-                    {
-                        this.createSpanElementsFromHtmlTags(param1, _loc_7, param4);
-                    }
-                    if (_loc_6 == null)
-                    {
-                        break;
-                    }
-                }
-                if (_loc_6.position != -1)
-                {
-                    param1.addChild(this.createImage(this._smiliesUri + _loc_6.pictoId + ".png", _loc_6.currentTrigger));
-                    param2 = param2.substring(_loc_6.position + _loc_6.currentTrigger.length);
-                }
+                        p.addChild(this.createSpanElement(textToShow.substring(0,kamaIndex+1)+intValue,pStyle));
+                     }
+                     p.addChild(this.createImage(new Uri(XmlConfig.getInstance().getEntry("config.ui.skin")+"assets.swf|tx_kama"),"/k"));
+                     textToShow=textToShow.substr(kamaIndex+data[0].length);
+                     kamaIndex=textToShow.search(KAMA_PATTERN);
+                  }
+               }
+               if(!handleHtmlTags)
+               {
+                  p.addChild(this.createSpanElement(textToShow,pStyle));
+               }
+               else
+               {
+                  this.createSpanElementsFromHtmlTags(p,textToShow,pStyle);
+               }
+               if(smiley==null)
+               {
+               }
             }
-            return;
-        }// end function
+            if(smiley.position!=-1)
+            {
+               p.addChild(this.createImage(this._smiliesUri+smiley.pictoId+".png",smiley.currentTrigger));
+               sText=sText.substring(smiley.position+smiley.currentTrigger.length);
+            }
+         }
+      }
 
-        private function createSpanElement(param1:String, param2:String) : SpanElement
-        {
-            var _loc_3:* = new SpanElement();
-            var _loc_4:* = param1;
-            _loc_4 = StringUtil.replace(_loc_4, "&amp;", "&");
-            _loc_4 = StringUtil.replace(_loc_4, "&lt;", "<");
-            _loc_4 = StringUtil.replace(_loc_4, "&gt;", ">");
-            _loc_3.text = _loc_4;
-            _loc_3 = HtmlManager.formateSpan(_loc_3, param2);
-            return _loc_3;
-        }// end function
+      private function createSpanElement(pText:String, pStyle:String) : SpanElement {
+         var span:SpanElement = new SpanElement();
+         var txt:String = pText;
+         txt=StringUtil.replace(txt,"&amp;","&");
+         txt=StringUtil.replace(txt,"&lt;","<");
+         txt=StringUtil.replace(txt,"&gt;",">");
+         span.text=txt;
+         span=HtmlManager.formateSpan(span,pStyle);
+         return span;
+      }
 
-        private function createSpanElementsFromHtmlTags(param1:ParagraphElement, param2:String, param3:String) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            _loc_4 = new RegExp(TAGS_PATTERN).exec(param2);
-            while (_loc_4 != null)
+      private function createSpanElementsFromHtmlTags(p:ParagraphElement, pText:String, pStyle:String) : void {
+         var result:Object = null;
+         var style:String = null;
+         var attributes:Array = null;
+         var att:String = null;
+         result=new RegExp(TAGS_PATTERN).exec(pText);
+         while(result!=null)
+         {
+            if(result.index>0)
             {
-                
-                if (_loc_4.index > 0)
-                {
-                    param1.addChild(this.createSpanElement(param2.substring(0, _loc_4.index), param3));
-                }
-                switch(_loc_4[1])
-                {
-                    case "p":
-                    case "span":
-                    {
-                        _loc_6 = _loc_4[3].split(" ");
-                        for each (_loc_7 in _loc_6)
-                        {
-                            
-                            if (_loc_7.search("style") != -1)
-                            {
-                                _loc_5 = this.getAttributeValue(_loc_7);
-                            }
-                        }
-                        this.createSpan(param1, _loc_4[5], true, _loc_5 == "" ? (param3) : (_loc_5));
-                        break;
-                    }
-                    case "a":
-                    {
-                        this.createLinkElement(param1, _loc_4);
-                        break;
-                    }
-                    case "i":
-                    {
-                        this.createSpanElementsFromHtmlTags(param1, _loc_4[0].replace(ITALIC_PATTERN, ""), HtmlManager.addValueToInlineStyle(param3, "font-style", "italic"));
-                        break;
-                    }
-                    case "b":
-                    {
-                        this.createSpanElementsFromHtmlTags(param1, _loc_4[0].replace(BOLD_PATTERN, ""), HtmlManager.addValueToInlineStyle(param3, "font-weight", "bold"));
-                        break;
-                    }
-                    case "u":
-                    {
-                        this.createSpanElementsFromHtmlTags(param1, _loc_4[0].replace(UNDERLINE_PATTERN, ""), HtmlManager.addValueToInlineStyle(param3, "text-decoration", "underline"));
-                        break;
-                    }
-                    default:
-                    {
-                        trace("On fait rien: " + _loc_4[1] + " " + _loc_4[0]);
-                        break;
-                        break;
-                    }
-                }
-                param2 = param2.substring(_loc_4.index + _loc_4[0].length);
-                _loc_4 = new RegExp(TAGS_PATTERN).exec(param2);
+               p.addChild(this.createSpanElement(pText.substring(0,result.index),pStyle));
             }
-            if (param2.length > 0)
+            switch(result[1])
             {
-                param1.addChild(this.createSpanElement(param2, param3));
+               case "p":
+               case "span":
+                  attributes=result[3].split(" ");
+                  for each (att in attributes)
+                  {
+                     if(att.search("style")!=-1)
+                     {
+                        style=this.getAttributeValue(att);
+                     }
+                  }
+                  this.createSpan(p,result[5],true,style==""?pStyle:style);
+                  break;
+               case "a":
+                  this.createLinkElement(p,result);
+                  break;
+               case "i":
+                  this.createSpanElementsFromHtmlTags(p,result[0].replace(ITALIC_PATTERN,""),HtmlManager.addValueToInlineStyle(pStyle,"font-style","italic"));
+                  break;
+               case "b":
+                  this.createSpanElementsFromHtmlTags(p,result[0].replace(BOLD_PATTERN,""),HtmlManager.addValueToInlineStyle(pStyle,"font-weight","bold"));
+                  break;
+               case "u":
+                  this.createSpanElementsFromHtmlTags(p,result[0].replace(UNDERLINE_PATTERN,""),HtmlManager.addValueToInlineStyle(pStyle,"text-decoration","underline"));
+                  break;
+               default:
+                  trace("On fait rien: "+result[1]+" "+result[0]);
             }
-            return;
-        }// end function
+            pText=pText.substring(result.index+result[0].length);
+            result=new RegExp(TAGS_PATTERN).exec(pText);
+         }
+         if(pText.length>0)
+         {
+            p.addChild(this.createSpanElement(pText,pStyle));
+         }
+      }
 
-        private function createImage(param1, param2:String) : InlineGraphicElement
-        {
-            var inlineGraphic:InlineGraphicElement;
-            var imgTx:Texture;
-            var bmpdt:BitmapData;
-            var bmp:Bitmap;
-            var loader:Loader;
-            var flcomposer:IFlowComposer;
-            var list:Dictionary;
-            var ba:ByteArray;
-            var pUri:* = param1;
-            var pTrigger:* = param2;
-            inlineGraphic = new InlineGraphicElement(pTrigger);
-            inlineGraphic.alignmentBaseline = TextBaseline.DESCENT;
-            if (pUri is Uri)
+      private var _bmpdtList:Dictionary;
+
+      private function createImage(pUri:*, pTrigger:String) : InlineGraphicElement {
+         var inlineGraphic:InlineGraphicElement = null;
+         var imgTx:Texture = null;
+         var bmpdt:BitmapData = null;
+         var bmp:Bitmap = null;
+         var loader:Loader = null;
+         var flcomposer:IFlowComposer = null;
+         var list:Dictionary = null;
+         var ba:ByteArray = null;
+         inlineGraphic=new InlineGraphicElement(pTrigger);
+         inlineGraphic.alignmentBaseline=TextBaseline.DESCENT;
+         if(pUri is Uri)
+         {
+            imgTx=new Texture();
+            imgTx.uri=pUri;
+            imgTx.finalize();
+            inlineGraphic.source=imgTx;
+         }
+         else
+         {
+            if(pUri is String)
             {
-                imgTx = new Texture();
-                imgTx.uri = pUri;
-                imgTx.finalize();
-                inlineGraphic.source = imgTx;
-            }
-            else if (pUri is String)
-            {
-                if (this._bmpdtList[pUri] != null)
-                {
-                    bmpdt = this._bmpdtList[pUri];
-                    bmp = new Bitmap(bmpdt.clone(), "auto", true);
-                    inlineGraphic.source = bmp;
-                }
-                else
-                {
-                    loader = new Loader();
-                    flcomposer = this._textFlow.flowComposer;
-                    list = this._bmpdtList;
-                    loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function (event:Event) : void
-            {
-                var _loc_2:* = loader.content as Bitmap;
-                inlineGraphic.source = _loc_2;
-                list[pUri] = _loc_2.bitmapData;
-                _isDamaged = true;
-                return;
-            }// end function
-            );
-                    ba = this.getFile(pUri);
-                    if (ba)
-                    {
+               if(this._bmpdtList[pUri]!=null)
+               {
+                  bmpdt=this._bmpdtList[pUri];
+                  bmp=new Bitmap(bmpdt.clone(),"auto",true);
+                  inlineGraphic.source=bmp;
+               }
+               else
+               {
+                  loader=new Loader();
+                  flcomposer=this._textFlow.flowComposer;
+                  list=this._bmpdtList;
+                  loader.contentLoaderInfo.addEventListener(Event.COMPLETE,new function(pEvt:Event):void
+                  {
+                     var bmp:Bitmap = loader.content as Bitmap;
+                     inlineGraphic.source=bmp;
+                     list[pUri]=bmp.bitmapData;
+                     _isDamaged=true;
+                     });
+                     ba=this.getFile(pUri);
+                     if(ba)
+                     {
                         loader.loadBytes(ba);
-                    }
-                }
+                     }
+                  }
+               }
             }
             return inlineGraphic;
-        }// end function
+      }
 
-        private function getFile(param1:String) : ByteArray
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_2:* = new File(param1);
-            if (_loc_2.exists)
+      private function getFile(uri:String) : ByteArray {
+         var fs:FileStream = null;
+         var ba:ByteArray = null;
+         var f:File = new File(uri);
+         if(f.exists)
+         {
+            fs=new FileStream();
+            fs.open(f,FileMode.READ);
+            ba=new ByteArray();
+            fs.readBytes(ba);
+            fs.close();
+            return ba;
+         }
+         return null;
+      }
+
+      public function getLastParagrapheElement() : ParagraphElement {
+         return this._textFlow.getChildAt(this._textFlow.numChildren-1) as ParagraphElement;
+      }
+
+      public function insertParagraphes(data:Array) : void {
+         var p:ParagraphElement = null;
+         for each (p in data)
+         {
+            p.fontSize=this._TLFFormat.fontSize;
+            this._textFlow.addChild(p);
+         }
+         this._isDamaged=true;
+         this.scrollV=this.maxScrollV;
+         this.updateScrollBar();
+      }
+
+      private function getSmileyFromText(sTxt:String) : Smiley {
+         var indexOfSmiley:* = 0;
+         var currentSmiley:Smiley = null;
+         var smiley:Smiley = null;
+         var trigger:String = null;
+         for each (smiley in this._smilies)
+         {
+            for each (trigger in smiley.triggers)
             {
-                _loc_3 = new FileStream();
-                _loc_3.open(_loc_2, FileMode.READ);
-                _loc_4 = new ByteArray();
-                _loc_3.readBytes(_loc_4);
-                _loc_3.close();
-                return _loc_4;
-            }
-            return null;
-        }// end function
-
-        public function getLastParagrapheElement() : ParagraphElement
-        {
-            return this._textFlow.getChildAt((this._textFlow.numChildren - 1)) as ParagraphElement;
-        }// end function
-
-        public function insertParagraphes(param1:Array) : void
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in param1)
-            {
-                
-                _loc_2.fontSize = this._TLFFormat.fontSize;
-                this._textFlow.addChild(_loc_2);
-            }
-            this._isDamaged = true;
-            this.scrollV = this.maxScrollV;
-            this.updateScrollBar();
-            return;
-        }// end function
-
-        private function getSmileyFromText(param1:String) : Smiley
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            for each (_loc_4 in this._smilies)
-            {
-                
-                for each (_loc_5 in _loc_4.triggers)
-                {
-                    
-                    if (_loc_5 == null)
-                    {
-                        continue;
-                    }
-                    _loc_2 = param1.toLowerCase().indexOf(_loc_5.toLowerCase());
-                    if (_loc_2 != -1)
-                    {
-                        if (isValidSmiley(param1, _loc_2, _loc_5))
+               if(trigger==null)
+               {
+               }
+               else
+               {
+                  indexOfSmiley=sTxt.toLowerCase().indexOf(trigger.toLowerCase());
+                  if(indexOfSmiley!=-1)
+                  {
+                     if(isValidSmiley(sTxt,indexOfSmiley,trigger))
+                     {
+                        if((currentSmiley==null)||(!(currentSmiley==null))&&(currentSmiley.position<indexOfSmiley))
                         {
-                            if (_loc_3 == null || _loc_3 != null && _loc_3.position > _loc_2)
-                            {
-                                _loc_4.position = _loc_2;
-                                _loc_4.currentTrigger = _loc_5;
-                                _loc_3 = _loc_4;
-                            }
+                           smiley.position=indexOfSmiley;
+                           smiley.currentTrigger=trigger;
+                           currentSmiley=smiley;
                         }
-                    }
-                }
+                     }
+                  }
+               }
             }
-            return _loc_3;
-        }// end function
-
-        public static function supprSpace(param1:String) : String
-        {
-            var _loc_2:* = /_""_/g;
-            return param1;
-        }// end function
-
-        public static function isValidSmiley(param1:String, param2:int, param3:String) : Boolean
-        {
-            if (param2 == 0 && param1.length == param3.length || param2 > 0 && param1.length == param2 + param3.length && param1.charAt((param2 - 1)) == " " || param2 == 0 && param1.length > param3.length && param1.charAt(param2 + param3.length) == " " || param2 > 0 && param2 + param3.length < param1.length && param1.charAt((param2 - 1)) == " " && param1.charAt(param2 + param3.length) == " ")
-            {
-                return true;
-            }
-            return false;
-        }// end function
-
-    }
-}
-
-import __AS3__.vec.*;
-
-import com.adobe.utils.*;
-
-import com.ankamagames.berilia.*;
-
-import com.ankamagames.berilia.events.*;
-
-import com.ankamagames.berilia.factories.*;
-
-import com.ankamagames.berilia.managers.*;
-
-import com.ankamagames.berilia.types.data.*;
-
-import com.ankamagames.berilia.types.graphic.*;
-
-import com.ankamagames.jerakine.data.*;
-
-import com.ankamagames.jerakine.interfaces.*;
-
-import com.ankamagames.jerakine.logger.*;
-
-import com.ankamagames.jerakine.types.*;
-
-import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
-
-import com.ankamagames.jerakine.utils.display.*;
-
-import com.ankamagames.jerakine.utils.misc.*;
-
-import flash.display.*;
-
-import flash.events.*;
-
-import flash.filesystem.*;
-
-import flash.text.engine.*;
-
-import flash.utils.*;
-
-import flashx.textLayout.compose.*;
-
-import flashx.textLayout.container.*;
-
-import flashx.textLayout.edit.*;
-
-import flashx.textLayout.elements.*;
-
-import flashx.textLayout.events.*;
-
-import flashx.textLayout.formats.*;
-
-class Smiley extends Object
-{
-    public var pictoId:String;
-    public var triggers:Vector.<String>;
-    public var position:int;
-    public var currentTrigger:String;
-
-    function Smiley(param1:String) : void
-    {
-        this.pictoId = param1;
-        this.position = -1;
-        return;
-    }// end function
+         }
+         return currentSmiley;
+      }
+   }
 
 }
 
+   import __AS3__.vec.Vector;
+
+
+   class Smiley extends Object
+   {
+         
+
+      function Smiley(pId:String) {
+         super();
+         this.pictoId=pId;
+         this.position=-1;
+      }
+
+
+
+      public var pictoId:String;
+
+      public var triggers:Vector.<String>;
+
+      public var position:int;
+
+      public var currentTrigger:String;
+   }

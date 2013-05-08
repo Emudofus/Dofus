@@ -1,176 +1,191 @@
-﻿package com.ankamagames.berilia.frames
+package com.ankamagames.berilia.frames
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.shortcut.*;
-    import com.ankamagames.berilia.utils.*;
-    import com.ankamagames.jerakine.handlers.*;
-    import com.ankamagames.jerakine.handlers.messages.keyboard.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.replay.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import flash.system.*;
-    import flash.text.*;
-    import flash.ui.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyDownMessage;
+   import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
+   import com.ankamagames.berilia.types.shortcut.Bind;
+   import com.ankamagames.berilia.types.shortcut.Shortcut;
+   import flash.text.TextField;
+   import flash.ui.Keyboard;
+   import com.ankamagames.berilia.managers.BindsManager;
+   import com.ankamagames.jerakine.handlers.FocusHandler;
+   import com.ankamagames.berilia.Berilia;
+   import flash.system.IME;
+   import com.ankamagames.berilia.components.Input;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.berilia.utils.BeriliaHookList;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import flash.text.TextFieldType;
+   import com.ankamagames.jerakine.replay.LogFrame;
+   import com.ankamagames.jerakine.replay.LogTypeEnum;
+   import com.ankamagames.jerakine.replay.KeyboardShortcut;
 
-    public class ShortcutsFrame extends Object implements Frame
-    {
-        private var _lastCtrlKey:Boolean = false;
-        private var _isProcessingDirectInteraction:Boolean;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ShortcutsFrame));
-        public static var shiftKey:Boolean = false;
-        public static var ctrlKey:Boolean = false;
-        public static var altKey:Boolean = false;
-        public static var shortcutsEnabled:Boolean = true;
 
-        public function ShortcutsFrame()
-        {
-            return;
-        }// end function
+   public class ShortcutsFrame extends Object implements Frame
+   {
+         
 
-        public function get isProcessingDirectInteraction() : Boolean
-        {
-            return this._isProcessingDirectInteraction;
-        }// end function
+      public function ShortcutsFrame() {
+         super();
+      }
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ShortcutsFrame));
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = false;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            this._isProcessingDirectInteraction = false;
-            if (!shortcutsEnabled)
-            {
-                return false;
-            }
-            switch(true)
-            {
-                case param1 is KeyboardKeyDownMessage:
-                {
-                    _loc_2 = KeyboardKeyDownMessage(param1);
-                    shiftKey = _loc_2.keyboardEvent.shiftKey;
-                    ctrlKey = _loc_2.keyboardEvent.ctrlKey;
-                    altKey = _loc_2.keyboardEvent.altKey;
-                    this._lastCtrlKey = false;
-                    return false;
-                }
-                case param1 is KeyboardKeyUpMessage:
-                {
-                    _loc_3 = KeyboardKeyUpMessage(param1);
-                    shiftKey = _loc_3.keyboardEvent.shiftKey;
-                    ctrlKey = _loc_3.keyboardEvent.ctrlKey;
-                    altKey = _loc_3.keyboardEvent.altKey;
-                    _loc_4 = _loc_3.keyboardEvent.keyCode;
-                    if (_loc_4 == Keyboard.CONTROL)
-                    {
-                        this._lastCtrlKey = true;
-                    }
-                    else if (this._lastCtrlKey)
-                    {
-                        this._lastCtrlKey = false;
-                        return false;
-                    }
-                    this._isProcessingDirectInteraction = true;
-                    if (_loc_3.keyboardEvent.shiftKey && _loc_3.keyboardEvent.keyCode == 52)
-                    {
-                        _loc_5 = 39;
-                    }
-                    else if (_loc_3.keyboardEvent.shiftKey && _loc_3.keyboardEvent.keyCode == 54)
-                    {
-                        _loc_5 = 45;
-                    }
-                    else
-                    {
-                        _loc_5 = _loc_3.keyboardEvent.charCode;
-                    }
-                    _loc_6 = BindsManager.getInstance().getShortcutString(_loc_3.keyboardEvent.keyCode, _loc_5);
-                    if (FocusHandler.getInstance().getFocus() is TextField && Berilia.getInstance().useIME && IME.enabled)
-                    {
-                        _loc_11 = FocusHandler.getInstance().getFocus() as TextField;
-                        if (_loc_11.parent is Input)
-                        {
-                            _loc_7 = _loc_11.text != Input(_loc_11.parent).lastTextOnInput;
-                            if (!_loc_7 && Input(_loc_11.parent).imeActive)
-                            {
-                                Input(_loc_11.parent).imeActive = false;
-                                _loc_7 = true;
-                            }
-                            else
-                            {
-                                Input(_loc_11.parent).imeActive = _loc_7;
-                            }
-                        }
-                    }
-                    if (_loc_6 == null || _loc_7)
-                    {
-                        this._isProcessingDirectInteraction = false;
-                        return true;
-                    }
-                    _loc_8 = new Bind(_loc_6, "", _loc_3.keyboardEvent.altKey, _loc_3.keyboardEvent.ctrlKey, _loc_3.keyboardEvent.shiftKey);
-                    _loc_9 = BindsManager.getInstance().getBind(_loc_8);
-                    if (_loc_9 != null)
-                    {
-                        _loc_10 = Shortcut.getShortcutByName(_loc_9.targetedShortcut);
-                    }
-                    if (BindsManager.getInstance().canBind(_loc_8) && (_loc_10 != null && !_loc_10.disable || _loc_10 == null))
-                    {
-                        KernelEventsManager.getInstance().processCallback(BeriliaHookList.KeyboardShortcut, _loc_8, _loc_3.keyboardEvent.keyCode);
-                    }
-                    if (_loc_9 != null && _loc_10 && !_loc_10.disable)
-                    {
-                        if (!Shortcut.getShortcutByName(_loc_9.targetedShortcut))
-                        {
-                            break;
-                        }
-                        _loc_12 = StageShareManager.stage.focus as TextField;
-                        if (_loc_12 && _loc_12.type == TextFieldType.INPUT)
-                        {
-                            if (!Shortcut.getShortcutByName(_loc_9.targetedShortcut).textfieldEnabled)
-                            {
-                                break;
-                            }
-                        }
-                        LogFrame.log(LogTypeEnum.SHORTCUT, new KeyboardShortcut(_loc_9.targetedShortcut));
-                        BindsManager.getInstance().processCallback(_loc_9, _loc_9.targetedShortcut);
-                    }
-                    this._isProcessingDirectInteraction = false;
-                    return false;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            this._isProcessingDirectInteraction = false;
+      public static var shiftKey:Boolean = false;
+
+      public static var ctrlKey:Boolean = false;
+
+      public static var altKey:Boolean = false;
+
+      public static var shortcutsEnabled:Boolean = true;
+
+      private var _lastCtrlKey:Boolean = false;
+
+      private var _isProcessingDirectInteraction:Boolean;
+
+      public function get isProcessingDirectInteraction() : Boolean {
+         return this._isProcessingDirectInteraction;
+      }
+
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
+
+      public function process(msg:Message) : Boolean {
+         var kdmsg:KeyboardKeyDownMessage = null;
+         var kumsg:KeyboardKeyUpMessage = null;
+         var keyCode:* = 0;
+         var charCode:* = 0;
+         var sShortcut:String = null;
+         var imeActive:* = false;
+         var bind:Bind = null;
+         var shortcut:Bind = null;
+         var sh:Shortcut = null;
+         var tf:TextField = null;
+         var focusAsTextField:TextField = null;
+         this._isProcessingDirectInteraction=false;
+         if(!shortcutsEnabled)
+         {
             return false;
-        }// end function
+         }
+         switch(true)
+         {
+            case msg is KeyboardKeyDownMessage:
+               kdmsg=KeyboardKeyDownMessage(msg);
+               shiftKey=kdmsg.keyboardEvent.shiftKey;
+               ctrlKey=kdmsg.keyboardEvent.ctrlKey;
+               altKey=kdmsg.keyboardEvent.altKey;
+               this._lastCtrlKey=false;
+               return false;
+               break;
+            case msg is KeyboardKeyUpMessage:
+               kumsg=KeyboardKeyUpMessage(msg);
+               shiftKey=kumsg.keyboardEvent.shiftKey;
+               ctrlKey=kumsg.keyboardEvent.ctrlKey;
+               altKey=kumsg.keyboardEvent.altKey;
+               keyCode=kumsg.keyboardEvent.keyCode;
+               if(keyCode==Keyboard.CONTROL)
+               {
+                  this._lastCtrlKey=true;
+               }
+               else
+               {
+                  if(this._lastCtrlKey)
+                  {
+                     this._lastCtrlKey=false;
+                     return false;
+                  }
+               }
+               this._isProcessingDirectInteraction=true;
+               if((kumsg.keyboardEvent.shiftKey)&&(kumsg.keyboardEvent.keyCode==52))
+               {
+                  charCode=39;
+               }
+               else
+               {
+                  if((kumsg.keyboardEvent.shiftKey)&&(kumsg.keyboardEvent.keyCode==54))
+                  {
+                     charCode=45;
+                  }
+                  else
+                  {
+                     charCode=kumsg.keyboardEvent.charCode;
+                  }
+               }
+               sShortcut=BindsManager.getInstance().getShortcutString(kumsg.keyboardEvent.keyCode,charCode);
+               if((FocusHandler.getInstance().getFocus() is TextField)&&(Berilia.getInstance().useIME)&&(IME.enabled))
+               {
+                  tf=FocusHandler.getInstance().getFocus() as TextField;
+                  if(tf.parent is Input)
+                  {
+                     imeActive=!(tf.text==Input(tf.parent).lastTextOnInput);
+                     if((!imeActive)&&(Input(tf.parent).imeActive))
+                     {
+                        Input(tf.parent).imeActive=false;
+                        imeActive=true;
+                     }
+                     else
+                     {
+                        Input(tf.parent).imeActive=imeActive;
+                     }
+                  }
+               }
+               else
+               {
+                  IME.enabled=false;
+               }
+               if((sShortcut==null)||(imeActive))
+               {
+                  this._isProcessingDirectInteraction=false;
+                  return true;
+               }
+               bind=new Bind(sShortcut,"",kumsg.keyboardEvent.altKey,kumsg.keyboardEvent.ctrlKey,kumsg.keyboardEvent.shiftKey);
+               shortcut=BindsManager.getInstance().getBind(bind);
+               if(shortcut!=null)
+               {
+                  sh=Shortcut.getShortcutByName(shortcut.targetedShortcut);
+               }
+               if((BindsManager.getInstance().canBind(bind))&&((!(sh==null))&&(!sh.disable)||(sh==null)))
+               {
+                  KernelEventsManager.getInstance().processCallback(BeriliaHookList.KeyboardShortcut,bind,kumsg.keyboardEvent.keyCode);
+               }
+               if((!(shortcut==null))&&(sh)&&(!sh.disable))
+               {
+                  if(!Shortcut.getShortcutByName(shortcut.targetedShortcut))
+                  {
+                     break;
+                  }
+                  focusAsTextField=StageShareManager.stage.focus as TextField;
+                  if((focusAsTextField)&&(focusAsTextField.type==TextFieldType.INPUT))
+                  {
+                     if(!Shortcut.getShortcutByName(shortcut.targetedShortcut).textfieldEnabled)
+                     {
+                        break;
+                     }
+                  }
+                  LogFrame.log(LogTypeEnum.SHORTCUT,new KeyboardShortcut(shortcut.targetedShortcut));
+                  BindsManager.getInstance().processCallback(shortcut,shortcut.targetedShortcut);
+               }
+               this._isProcessingDirectInteraction=false;
+               return false;
+               break;
+         }
+         this._isProcessingDirectInteraction=false;
+         return false;
+      }
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function pulled() : Boolean {
+         return true;
+      }
+   }
 
-    }
 }

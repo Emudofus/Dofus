@@ -1,148 +1,153 @@
-﻿package com.ankamagames.jerakine.resources.protocols.impl
+package com.ankamagames.jerakine.resources.protocols.impl
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.newCache.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.protocols.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.filesystem.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.resources.protocols.AbstractFileProtocol;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.IResourceObserver;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import flash.filesystem.File;
 
-    public class FileProtocol extends AbstractFileProtocol
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(FileProtocol));
-        public static var localDirectory:String;
 
-        public function FileProtocol()
-        {
-            return;
-        }// end function
+   public class FileProtocol extends AbstractFileProtocol
+   {
+         
 
-        override public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void
-        {
-            if (param6 && (param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0))
+      public function FileProtocol() {
+         super();
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FileProtocol));
+
+      public static var localDirectory:String;
+
+      override public function load(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, cache:ICache, forcedAdapter:Class, singleFile:Boolean) : void {
+         if((singleFile)&&((!(uri.fileType=="swf"))||(!uri.subPath)||(uri.subPath.length==0)))
+         {
+            singleLoadingFile[uri]=observer;
+            this.loadDirectly(uri,this,dispatchProgress,forcedAdapter);
+         }
+         else
+         {
+            if(loadingFile[getUrl(uri)])
             {
-                singleLoadingFile[param1] = param2;
-                this.loadDirectly(param1, this, param3, param5);
-            }
-            else if (loadingFile[getUrl(param1)])
-            {
-                loadingFile[getUrl(param1)].push(param2);
+               loadingFile[getUrl(uri)].push(observer);
             }
             else
             {
-                loadingFile[getUrl(param1)] = [param2];
-                this.loadDirectly(param1, this, param3, param5);
+               loadingFile[getUrl(uri)]=[observer];
+               this.loadDirectly(uri,this,dispatchProgress,forcedAdapter);
             }
-            return;
-        }// end function
+         }
+      }
 
-        override protected function loadDirectly(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void
-        {
-            getAdapter(param1, param4);
-            _adapter.com.ankamagames.jerakine.resources.adapters:IAdapter::loadDirectly(param1, this.extractPath(param1.path), param2, param3);
-            return;
-        }// end function
+      override protected function loadDirectly(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
+         getAdapter(uri,forcedAdapter);
+         _adapter.loadDirectly(uri,this.extractPath(uri.path),observer,dispatchProgress);
+      }
 
-        override protected function extractPath(param1:String) : String
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (param1.indexOf("..") != -1)
+      override protected function extractPath(path:String) : String {
+         var absolutePath:String = null;
+         var absoluteFile:File = null;
+         if(path.indexOf("..")!=-1)
+         {
+            if(path.indexOf("./")==0)
             {
-                if (param1.indexOf("./") == 0)
-                {
-                    _loc_2 = File.applicationDirectory.nativePath + File.separator + param1;
-                }
-                else if (param1.indexOf("/./") != -1)
-                {
-                    _loc_2 = File.applicationDirectory.nativePath + File.separator + param1.substr(param1.indexOf("/./") + 3);
-                }
-                else
-                {
-                    _loc_2 = param1;
-                }
-                _loc_3 = new File(_loc_2);
-                param1 = _loc_3.url.replace("file:///", "");
+               absolutePath=File.applicationDirectory.nativePath+File.separator+path;
             }
-            if (param1.indexOf("\\\\") != -1)
+            else
             {
-                param1 = "file://" + param1.substr(param1.indexOf("\\\\"));
+               if(path.indexOf("/./")!=-1)
+               {
+                  absolutePath=File.applicationDirectory.nativePath+File.separator+path.substr(path.indexOf("/./")+3);
+               }
+               else
+               {
+                  absolutePath=path;
+               }
             }
-            if (localDirectory != null && param1.indexOf("./") == 0)
-            {
-                param1 = localDirectory + param1.substr(2);
-            }
-            return param1;
-        }// end function
+            absoluteFile=new File(absolutePath);
+            path=absoluteFile.url.replace("file:///","");
+         }
+         if(path.indexOf("\\\\")!=-1)
+         {
+            path="file://"+path.substr(path.indexOf("\\\\"));
+         }
+         if((!(localDirectory==null))&&(path.indexOf("./")==0))
+         {
+            path=localDirectory+path.substr(2);
+         }
+         return path;
+      }
 
-        override public function onLoaded(param1:Uri, param2:uint, param3) : void
-        {
-            var _loc_5:* = null;
-            _log.trace("onLoaded " + param1);
-            var _loc_4:* = singleLoadingFile[param1];
-            if (singleLoadingFile[param1])
+      override public function onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
+         var waiting:Array = null;
+         _log.trace("onLoaded "+uri);
+         var observer:IResourceObserver = singleLoadingFile[uri];
+         if(observer)
+         {
+            observer.onLoaded(uri,resourceType,resource);
+            delete singleLoadingFile[[uri]];
+         }
+         else
+         {
+            if((loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)].length))
             {
-                _loc_4.onLoaded(param1, param2, param3);
-                delete singleLoadingFile[param1];
+               waiting=loadingFile[getUrl(uri)];
+               delete loadingFile[[getUrl(uri)]];
+               for each (observer in waiting)
+               {
+                  IResourceObserver(observer).onLoaded(uri,resourceType,resource);
+               }
             }
-            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
-            {
-                _loc_5 = loadingFile[getUrl(param1)];
-                delete loadingFile[getUrl(param1)];
-                for each (_loc_4 in _loc_5)
-                {
-                    
-                    IResourceObserver(_loc_4).onLoaded(param1, param2, param3);
-                }
-            }
-            return;
-        }// end function
+         }
+      }
 
-        override public function onFailed(param1:Uri, param2:String, param3:uint) : void
-        {
-            var _loc_5:* = null;
-            _log.warn("onFailed " + param1);
-            var _loc_4:* = singleLoadingFile[param1];
-            if (singleLoadingFile[param1])
+      override public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         var waiting:Array = null;
+         _log.warn("onFailed "+uri);
+         var observer:IResourceObserver = singleLoadingFile[uri];
+         if(observer)
+         {
+            observer.onFailed(uri,errorMsg,errorCode);
+            delete singleLoadingFile[[uri]];
+         }
+         else
+         {
+            if((loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)].length))
             {
-                _loc_4.onFailed(param1, param2, param3);
-                delete singleLoadingFile[param1];
+               waiting=loadingFile[getUrl(uri)];
+               delete loadingFile[[getUrl(uri)]];
+               for each (observer in waiting)
+               {
+                  IResourceObserver(observer).onFailed(uri,errorMsg,errorCode);
+               }
             }
-            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
-            {
-                _loc_5 = loadingFile[getUrl(param1)];
-                delete loadingFile[getUrl(param1)];
-                for each (_loc_4 in _loc_5)
-                {
-                    
-                    IResourceObserver(_loc_4).onFailed(param1, param2, param3);
-                }
-            }
-            return;
-        }// end function
+         }
+      }
 
-        override public function onProgress(param1:Uri, param2:uint, param3:uint) : void
-        {
-            var _loc_5:* = null;
-            var _loc_4:* = singleLoadingFile[param1];
-            if (singleLoadingFile[param1])
+      override public function onProgress(uri:Uri, bytesLoaded:uint, bytesTotal:uint) : void {
+         var waiting:Array = null;
+         var observer:IResourceObserver = singleLoadingFile[uri];
+         if(observer)
+         {
+            observer.onProgress(uri,bytesLoaded,bytesTotal);
+            delete singleLoadingFile[[uri]];
+         }
+         else
+         {
+            if((loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)].length))
             {
-                _loc_4.onProgress(param1, param2, param3);
-                delete singleLoadingFile[param1];
+               waiting=loadingFile[getUrl(uri)];
+               delete loadingFile[[getUrl(uri)]];
+               for each (observer in waiting)
+               {
+                  IResourceObserver(observer).onProgress(uri,bytesLoaded,bytesTotal);
+               }
             }
-            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
-            {
-                _loc_5 = loadingFile[getUrl(param1)];
-                delete loadingFile[getUrl(param1)];
-                for each (_loc_4 in _loc_5)
-                {
-                    
-                    IResourceObserver(_loc_4).onProgress(param1, param2, param3);
-                }
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class CloseInventoryAction extends Object implements Action
-    {
 
-        public function CloseInventoryAction()
-        {
-            return;
-        }// end function
+   public class CloseInventoryAction extends Object implements Action
+   {
+         
 
-        public static function create() : CloseInventoryAction
-        {
-            var _loc_1:* = new CloseInventoryAction;
-            return _loc_1;
-        }// end function
+      public function CloseInventoryAction() {
+         super();
+      }
 
-    }
+      public static function create() : CloseInventoryAction {
+         var a:CloseInventoryAction = new CloseInventoryAction();
+         return a;
+      }
+
+
+   }
+
 }

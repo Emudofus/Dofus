@@ -1,63 +1,58 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
-    import com.ankamagames.jerakine.types.positions.*;
-    import flash.display.*;
+   import flash.display.Sprite;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
 
-    public class CellInteractionMessage extends MapMessage
-    {
-        private var _cellId:uint;
-        private var _cellDepth:uint;
-        private var _cellContainer:Sprite;
-        private var _cellCoords:MapPoint;
 
-        public function CellInteractionMessage()
-        {
-            return;
-        }// end function
+   public class CellInteractionMessage extends MapMessage
+   {
+         
 
-        public function get cellId() : uint
-        {
-            return this._cellId;
-        }// end function
+      public function CellInteractionMessage() {
+         super();
+      }
 
-        public function set cellId(param1:uint) : void
-        {
-            this._cellId = param1;
-            return;
-        }// end function
 
-        public function get cellContainer() : Sprite
-        {
-            return this._cellContainer;
-        }// end function
 
-        public function set cellContainer(param1:Sprite) : void
-        {
-            this._cellContainer = param1;
-            return;
-        }// end function
+      private var _cellId:uint;
 
-        public function get cellDepth() : uint
-        {
-            return this._cellDepth;
-        }// end function
+      private var _cellDepth:uint;
 
-        public function set cellDepth(param1:uint) : void
-        {
-            this._cellDepth = param1;
-            return;
-        }// end function
+      private var _cellContainer:Sprite;
 
-        public function get cell() : MapPoint
-        {
-            return this._cellCoords;
-        }// end function
+      private var _cellCoords:MapPoint;
 
-        public function set cell(param1:MapPoint) : void
-        {
-            this._cellCoords = param1;
-            return;
-        }// end function
+      public function get cellId() : uint {
+         return this._cellId;
+      }
 
-    }
+      public function set cellId(nValue:uint) : void {
+         this._cellId=nValue;
+      }
+
+      public function get cellContainer() : Sprite {
+         return this._cellContainer;
+      }
+
+      public function set cellContainer(sSprite:Sprite) : void {
+         this._cellContainer=sSprite;
+      }
+
+      public function get cellDepth() : uint {
+         return this._cellDepth;
+      }
+
+      public function set cellDepth(nValue:uint) : void {
+         this._cellDepth=nValue;
+      }
+
+      public function get cell() : MapPoint {
+         return this._cellCoords;
+      }
+
+      public function set cell(pValue:MapPoint) : void {
+         this._cellCoords=pValue;
+      }
+   }
+
 }

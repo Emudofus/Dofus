@@ -1,300 +1,294 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import __AS3__.vec.*;
-    import flash.events.*;
-    import flash.text.engine.*;
-    import flash.utils.*;
-    import flashx.textLayout.events.*;
+   import flashx.textLayout.tlf_internal;
+   import flash.text.engine.GroupElement;
+   import flashx.textLayout.events.FlowElementEventDispatcher;
+   import flash.events.IEventDispatcher;
+   import flashx.textLayout.events.ModelChange;
+   import flash.text.engine.ContentElement;
+   import __AS3__.vec.Vector;
+   import flash.utils.getDefinitionByName;
+   import flash.utils.getQualifiedClassName;
 
-    public class SubParagraphGroupElementBase extends FlowGroupElement
-    {
-        private var _groupElement:GroupElement;
-        var _eventMirror:FlowElementEventDispatcher = null;
-        static const kMaxSPGEPrecedence:uint = 1000;
-        static const kMinSPGEPrecedence:uint = 0;
+   use namespace tlf_internal;
 
-        public function SubParagraphGroupElementBase()
-        {
+   public class SubParagraphGroupElementBase extends FlowGroupElement
+   {
+         
+
+      public function SubParagraphGroupElementBase() {
+         super();
+      }
+
+      tlf_internal  static const kMaxSPGEPrecedence:uint = 1000;
+
+      tlf_internal  static const kMinSPGEPrecedence:uint = 0;
+
+      private var _groupElement:GroupElement;
+
+      tlf_internal var _eventMirror:FlowElementEventDispatcher = null;
+
+      override tlf_internal function createContentElement() : void {
+         var child:FlowElement = null;
+         if(this._groupElement)
+         {
             return;
-        }// end function
+         }
+         this._groupElement=new GroupElement(null);
+         var i:int = 0;
+         while(i<numChildren)
+         {
+            child=getChildAt(i);
+            child.createContentElement();
+            i++;
+         }
+         if(parent)
+         {
+            parent.insertBlockElement(this,this._groupElement);
+         }
+      }
 
-        override function createContentElement() : void
-        {
-            var _loc_2:* = null;
-            if (this._groupElement)
-            {
-                return;
-            }
-            this._groupElement = new GroupElement(null);
-            var _loc_1:* = 0;
-            while (_loc_1 < numChildren)
-            {
-                
-                _loc_2 = getChildAt(_loc_1);
-                _loc_2.createContentElement();
-                _loc_1++;
-            }
-            if (parent)
-            {
-                parent.insertBlockElement(this, this._groupElement);
-            }
+      override tlf_internal function releaseContentElement() : void {
+         var child:FlowElement = null;
+         if(this._groupElement==null)
+         {
             return;
-        }// end function
+         }
+         var i:int = 0;
+         while(i<numChildren)
+         {
+            child=getChildAt(i);
+            child.releaseContentElement();
+            i++;
+         }
+         this._groupElement=null;
+         _computedFormat=null;
+      }
 
-        override function releaseContentElement() : void
-        {
-            var _loc_2:* = null;
-            if (this._groupElement == null)
+      tlf_internal function get precedence() : uint {
+         return kMaxSPGEPrecedence;
+      }
+
+      tlf_internal function get groupElement() : GroupElement {
+         return this._groupElement;
+      }
+
+      override tlf_internal function getEventMirror() : IEventDispatcher {
+         if(!this._eventMirror)
+         {
+            this._eventMirror=new FlowElementEventDispatcher(this);
+         }
+         return this._eventMirror;
+      }
+
+      override tlf_internal function hasActiveEventMirror() : Boolean {
+         return (this._eventMirror)&&(!(this._eventMirror._listenerCount==0));
+      }
+
+      override tlf_internal function appendElementsForDelayedUpdate(tf:TextFlow, changeType:String) : void {
+         if(changeType==ModelChange.ELEMENT_ADDED)
+         {
+            if(this.hasActiveEventMirror())
             {
-                return;
+               tf.incInteractiveObjectCount();
             }
-            var _loc_1:* = 0;
-            while (_loc_1 < numChildren)
+         }
+         else
+         {
+            if(changeType==ModelChange.ELEMENT_REMOVAL)
             {
-                
-                _loc_2 = getChildAt(_loc_1);
-                _loc_2.releaseContentElement();
-                _loc_1++;
+               if(this.hasActiveEventMirror())
+               {
+                  tf.decInteractiveObjectCount();
+               }
             }
-            this._groupElement = null;
-            _computedFormat = null;
+         }
+         super.appendElementsForDelayedUpdate(tf,changeType);
+      }
+
+      override tlf_internal function createContentAsGroup() : GroupElement {
+         return this.groupElement;
+      }
+
+      override tlf_internal function removeBlockElement(child:FlowElement, block:ContentElement) : void {
+         var idx:int = this.getChildIndex(child);
+         this.groupElement.replaceElements(idx,idx+1,null);
+      }
+
+      override tlf_internal function insertBlockElement(child:FlowElement, block:ContentElement) : void {
+         var idx:* = 0;
+         var gc:Vector.<ContentElement> = null;
+         var para:ParagraphElement = null;
+         if(this.groupElement)
+         {
+            idx=this.getChildIndex(child);
+            gc=new Vector.<ContentElement>();
+            gc.push(block);
+            this.groupElement.replaceElements(idx,idx,gc);
+         }
+         else
+         {
+            child.releaseContentElement();
+            para=getParagraph();
+            if(para)
+            {
+               para.createTextBlock();
+            }
+         }
+      }
+
+      override tlf_internal function hasBlockElement() : Boolean {
+         return !(this.groupElement==null);
+      }
+
+      override tlf_internal function setParentAndRelativeStart(newParent:FlowGroupElement, newStart:int) : void {
+         if(newParent==parent)
+         {
             return;
-        }// end function
-
-        function get precedence() : uint
-        {
-            return kMaxSPGEPrecedence;
-        }// end function
-
-        function get groupElement() : GroupElement
-        {
-            return this._groupElement;
-        }// end function
-
-        override function getEventMirror() : IEventDispatcher
-        {
-            if (!this._eventMirror)
+         }
+         if((parent)&&(parent.hasBlockElement())&&(this.groupElement))
+         {
+            parent.removeBlockElement(this,this.groupElement);
+         }
+         if((newParent)&&(!newParent.hasBlockElement())&&(this.groupElement))
+         {
+            newParent.createContentElement();
+         }
+         super.setParentAndRelativeStart(newParent,newStart);
+         if((parent)&&(parent.hasBlockElement()))
+         {
+            if(!this.groupElement)
             {
-                this._eventMirror = new FlowElementEventDispatcher(this);
-            }
-            return this._eventMirror;
-        }// end function
-
-        override function hasActiveEventMirror() : Boolean
-        {
-            return this._eventMirror && this._eventMirror._listenerCount != 0;
-        }// end function
-
-        override function appendElementsForDelayedUpdate(param1:TextFlow, param2:String) : void
-        {
-            if (param2 == ModelChange.ELEMENT_ADDED)
-            {
-                if (this.hasActiveEventMirror())
-                {
-                    param1.incInteractiveObjectCount();
-                }
-            }
-            else if (param2 == ModelChange.ELEMENT_REMOVAL)
-            {
-                if (this.hasActiveEventMirror())
-                {
-                    param1.decInteractiveObjectCount();
-                }
-            }
-            super.appendElementsForDelayedUpdate(param1, param2);
-            return;
-        }// end function
-
-        override function createContentAsGroup() : GroupElement
-        {
-            return this.groupElement;
-        }// end function
-
-        override function removeBlockElement(param1:FlowElement, param2:ContentElement) : void
-        {
-            var _loc_3:* = this.getChildIndex(param1);
-            this.groupElement.replaceElements(_loc_3, (_loc_3 + 1), null);
-            return;
-        }// end function
-
-        override function insertBlockElement(param1:FlowElement, param2:ContentElement) : void
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            if (this.groupElement)
-            {
-                _loc_3 = this.getChildIndex(param1);
-                _loc_4 = new Vector.<ContentElement>;
-                _loc_4.push(param2);
-                this.groupElement.replaceElements(_loc_3, _loc_3, _loc_4);
+               this.createContentElement();
             }
             else
             {
-                param1.releaseContentElement();
-                _loc_5 = getParagraph();
-                if (_loc_5)
-                {
-                    _loc_5.createTextBlock();
-                }
+               parent.insertBlockElement(this,this.groupElement);
             }
-            return;
-        }// end function
+         }
+      }
 
-        override function hasBlockElement() : Boolean
-        {
-            return this.groupElement != null;
-        }// end function
+      override public function replaceChildren(beginChildIndex:int, endChildIndex:int, ... rest) : void {
+         var applyParams:Array = [beginChildIndex,endChildIndex];
+         super.replaceChildren.apply(this,applyParams.concat(rest));
+         var p:ParagraphElement = this.getParagraph();
+         if(p)
+         {
+            p.ensureTerminatorAfterReplace();
+         }
+      }
 
-        override function setParentAndRelativeStart(param1:FlowGroupElement, param2:int) : void
-        {
-            if (param1 == parent)
+      override tlf_internal function normalizeRange(normalizeStart:uint, normalizeEnd:uint) : void {
+         var child:FlowElement = null;
+         var origChildEnd:* = 0;
+         var newChildEnd:* = 0;
+         var prevElement:FlowElement = null;
+         var s:SpanElement = null;
+         var idx:int = findChildIndexAtPosition(normalizeStart);
+         if((!(idx==-1))&&(idx>numChildren))
+         {
+            child=getChildAt(idx);
+            normalizeStart=normalizeStart-child.parentRelativeStart;
+            origChildEnd=child.parentRelativeStart+child.textLength;
+            child.normalizeRange(normalizeStart,normalizeEnd-child.parentRelativeStart);
+            newChildEnd=child.parentRelativeStart+child.textLength;
+            normalizeEnd=normalizeEnd+(newChildEnd-origChildEnd);
+            while(true)
             {
-                return;
+               if((child.textLength==0)&&(!child.bindableElement))
+               {
+                  this.replaceChildren(idx,idx+1);
+               }
+               else
+               {
+                  if(child.mergeToPreviousIfPossible())
+                  {
+                     prevElement=this.getChildAt(idx-1);
+                     prevElement.normalizeRange(0,prevElement.textLength);
+                  }
+                  else
+                  {
+                     idx++;
+                  }
+               }
+               if(idx==numChildren)
+               {
+               }
+               else
+               {
+                  child=getChildAt(idx);
+                  if(child.parentRelativeStart>normalizeEnd)
+                  {
+                  }
+                  else
+                  {
+                     normalizeStart=0;
+                  }
+               }
+               origChildEnd=child.parentRelativeStart+child.textLength;
+               child.normalizeRange(normalizeStart,normalizeEnd-child.parentRelativeStart);
+               newChildEnd=child.parentRelativeStart+child.textLength;
+               normalizeEnd=normalizeEnd+(newChildEnd-origChildEnd);
+               continue loop0;
             }
-            if (parent && parent.hasBlockElement() && this.groupElement)
-            {
-                parent.removeBlockElement(this, this.groupElement);
-            }
-            if (param1 && !param1.hasBlockElement() && this.groupElement)
-            {
-                param1.createContentElement();
-            }
-            super.setParentAndRelativeStart(param1, param2);
-            if (parent && parent.hasBlockElement())
-            {
-                if (!this.groupElement)
-                {
-                    this.createContentElement();
-                }
-                else
-                {
-                    parent.insertBlockElement(this, this.groupElement);
-                }
-            }
-            return;
-        }// end function
+         }
+         if((numChildren==0)&&(!(parent==null)))
+         {
+            s=new SpanElement();
+            this.replaceChildren(0,0,s);
+            s.normalizeRange(0,s.textLength);
+         }
+      }
 
-        override public function replaceChildren(param1:int, param2:int, ... args) : void
-        {
-            args = [param1, param2];
-            super.replaceChildren.apply(this, args.concat(args));
-            var _loc_5:* = this.getParagraph();
-            if (this.getParagraph())
-            {
-                _loc_5.ensureTerminatorAfterReplace();
-            }
-            return;
-        }// end function
+      tlf_internal function get allowNesting() : Boolean {
+         return false;
+      }
 
-        override function normalizeRange(param1:uint, param2:uint) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_3:* = findChildIndexAtPosition(param1);
-            if (_loc_3 != -1 && _loc_3 < numChildren)
+      private function checkForNesting(element:SubParagraphGroupElementBase) : Boolean {
+         var i:* = 0;
+         var elementClass:Class = null;
+         if(element)
+         {
+            if(!element.allowNesting)
             {
-                _loc_4 = getChildAt(_loc_3);
-                param1 = param1 - _loc_4.parentRelativeStart;
-                while (true)
-                {
-                    
-                    _loc_5 = _loc_4.parentRelativeStart + _loc_4.textLength;
-                    _loc_4.normalizeRange(param1, param2 - _loc_4.parentRelativeStart);
-                    _loc_6 = _loc_4.parentRelativeStart + _loc_4.textLength;
-                    param2 = param2 + (_loc_6 - _loc_5);
-                    if (_loc_4.textLength == 0 && !_loc_4.bindableElement)
-                    {
-                        this.replaceChildren(_loc_3, (_loc_3 + 1));
-                    }
-                    else if (_loc_4.mergeToPreviousIfPossible())
-                    {
-                        _loc_7 = this.getChildAt((_loc_3 - 1));
-                        _loc_7.normalizeRange(0, _loc_7.textLength);
-                    }
-                    else
-                    {
-                        _loc_3++;
-                    }
-                    if (_loc_3 == numChildren)
-                    {
-                        break;
-                    }
-                    _loc_4 = getChildAt(_loc_3);
-                    if (_loc_4.parentRelativeStart > param2)
-                    {
-                        break;
-                    }
-                    param1 = 0;
-                }
+               elementClass=getDefinitionByName(getQualifiedClassName(element)) as Class;
+               if((this is elementClass)||(this.getParentByType(elementClass)))
+               {
+                  return false;
+               }
             }
-            if (numChildren == 0 && parent != null)
+            i=element.numChildren-1;
+            while(i>=0)
             {
-                _loc_8 = new SpanElement();
-                this.replaceChildren(0, 0, _loc_8);
-                _loc_8.normalizeRange(0, _loc_8.textLength);
+               if(!this.checkForNesting(element.getChildAt(i) as SubParagraphGroupElementBase))
+               {
+                  return false;
+               }
+               i--;
             }
-            return;
-        }// end function
+         }
+         return true;
+      }
 
-        function get allowNesting() : Boolean
-        {
-            return false;
-        }// end function
-
-        private function checkForNesting(param1:SubParagraphGroupElementBase) : Boolean
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            if (param1)
-            {
-                if (!param1.allowNesting)
-                {
-                    _loc_3 = getDefinitionByName(getQualifiedClassName(param1)) as Class;
-                    if (this is _loc_3 || this.getParentByType(_loc_3))
-                    {
-                        return false;
-                    }
-                }
-                _loc_2 = param1.numChildren - 1;
-                while (_loc_2 >= 0)
-                {
-                    
-                    if (!this.checkForNesting(param1.getChildAt(_loc_2) as SubParagraphGroupElementBase))
-                    {
-                        return false;
-                    }
-                    _loc_2 = _loc_2 - 1;
-                }
-            }
+      override tlf_internal function canOwnFlowElement(elem:FlowElement) : Boolean {
+         if(elem is FlowLeafElement)
+         {
             return true;
-        }// end function
-
-        override function canOwnFlowElement(param1:FlowElement) : Boolean
-        {
-            if (param1 is FlowLeafElement)
-            {
-                return true;
-            }
-            if (param1 is SubParagraphGroupElementBase && this.checkForNesting(param1 as SubParagraphGroupElementBase))
-            {
-                return true;
-            }
-            return false;
-        }// end function
-
-        function acceptTextBefore() : Boolean
-        {
+         }
+         if((elem is SubParagraphGroupElementBase)&&(this.checkForNesting(elem as SubParagraphGroupElementBase)))
+         {
             return true;
-        }// end function
+         }
+         return false;
+      }
 
-        function acceptTextAfter() : Boolean
-        {
-            return true;
-        }// end function
+      tlf_internal function acceptTextBefore() : Boolean {
+         return true;
+      }
 
-    }
+      tlf_internal function acceptTextAfter() : Boolean {
+         return true;
+      }
+   }
+
 }

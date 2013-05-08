@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.connection.actions
+package com.ankamagames.dofus.logic.connection.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class NicknameChoiceRequestAction extends Object implements Action
-    {
-        public var nickname:String;
 
-        public function NicknameChoiceRequestAction()
-        {
-            return;
-        }// end function
+   public class NicknameChoiceRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : NicknameChoiceRequestAction
-        {
-            var _loc_2:* = new NicknameChoiceRequestAction;
-            _loc_2.nickname = param1;
-            return _loc_2;
-        }// end function
+      public function NicknameChoiceRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(nickname:String) : NicknameChoiceRequestAction {
+         var a:NicknameChoiceRequestAction = new NicknameChoiceRequestAction();
+         a.nickname=nickname;
+         return a;
+      }
+
+      public var nickname:String;
+   }
+
 }

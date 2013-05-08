@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenSocialAction extends Object implements Action
-    {
-        public var name:String;
 
-        public function OpenSocialAction()
-        {
-            return;
-        }// end function
+   public class OpenSocialAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String = null) : OpenSocialAction
-        {
-            var _loc_2:* = new OpenSocialAction;
-            _loc_2.name = param1;
-            return _loc_2;
-        }// end function
+      public function OpenSocialAction() {
+         super();
+      }
 
-    }
+      public static function create(name:String=null) : OpenSocialAction {
+         var a:OpenSocialAction = new OpenSocialAction();
+         a.name=name;
+         return a;
+      }
+
+      public var name:String;
+   }
+
 }

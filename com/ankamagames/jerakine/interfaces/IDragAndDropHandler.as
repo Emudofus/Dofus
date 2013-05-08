@@ -1,22 +1,24 @@
-﻿package com.ankamagames.jerakine.interfaces
+package com.ankamagames.jerakine.interfaces
 {
 
-    public interface IDragAndDropHandler
-    {
 
-        public function IDragAndDropHandler();
+   public interface IDragAndDropHandler
+   {
+         
 
-        function set dropValidator(param1:Function) : void;
 
-        function get dropValidator() : Function;
 
-        function set removeDropSource(param1:Function) : void;
+      function set dropValidator(param1:Function) : void;
 
-        function get removeDropSource() : Function;
+      function get dropValidator() : Function;
 
-        function set processDrop(param1:Function) : void;
+      function set removeDropSource(param1:Function) : void;
 
-        function get processDrop() : Function;
+      function get removeDropSource() : Function;
 
-    }
+      function set processDrop(param1:Function) : void;
+
+      function get processDrop() : Function;
+   }
+
 }

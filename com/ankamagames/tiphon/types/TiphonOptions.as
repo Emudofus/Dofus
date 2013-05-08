@@ -1,19 +1,23 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.jerakine.managers.*;
+   import com.ankamagames.jerakine.managers.OptionManager;
 
-    dynamic public class TiphonOptions extends OptionManager
-    {
 
-        public function TiphonOptions() : void
-        {
-            super("tiphon");
-            add("pointsOverhead", 2);
-            add("aura", true);
-            add("alwaysShowAuraOnFront", false);
-            add("creaturesMode", 20);
-            return;
-        }// end function
+   public dynamic class TiphonOptions extends OptionManager
+   {
+         
 
-    }
+      public function TiphonOptions() {
+         super("tiphon");
+         add("pointsOverhead",2);
+         add("aura",true);
+         add("alwaysShowAuraOnFront",false);
+         add("creaturesMode",20);
+      }
+
+
+
+
+   }
+
 }

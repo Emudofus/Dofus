@@ -1,104 +1,92 @@
-﻿package com.ankamagames.dofus.network.messages.game.friend
+package com.ankamagames.dofus.network.messages.game.friend
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.friend.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.friend.IgnoredInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class IgnoredListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var ignoredList:Vector.<IgnoredInformations>;
-        public static const protocolId:uint = 5674;
 
-        public function IgnoredListMessage()
-        {
-            this.ignoredList = new Vector.<IgnoredInformations>;
-            return;
-        }// end function
+   public class IgnoredListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function IgnoredListMessage() {
+         this.ignoredList=new Vector.<IgnoredInformations>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5674;
-        }// end function
+      public static const protocolId:uint = 5674;
 
-        public function initIgnoredListMessage(param1:Vector.<IgnoredInformations> = null) : IgnoredListMessage
-        {
-            this.ignoredList = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.ignoredList = new Vector.<IgnoredInformations>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var ignoredList:Vector.<IgnoredInformations>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5674;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_IgnoredListMessage(param1);
-            return;
-        }// end function
+      public function initIgnoredListMessage(ignoredList:Vector.<IgnoredInformations>=null) : IgnoredListMessage {
+         this.ignoredList=ignoredList;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_IgnoredListMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.ignoredList.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.ignoredList.length)
-            {
-                
-                param1.writeShort((this.ignoredList[_loc_2] as IgnoredInformations).getTypeId());
-                (this.ignoredList[_loc_2] as IgnoredInformations).serialize(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.ignoredList=new Vector.<IgnoredInformations>();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_IgnoredListMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_IgnoredListMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUnsignedShort();
-                _loc_5 = ProtocolTypeManager.getInstance(IgnoredInformations, _loc_4);
-                _loc_5.deserialize(param1);
-                this.ignoredList.push(_loc_5);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IgnoredListMessage(output);
+      }
+
+      public function serializeAs_IgnoredListMessage(output:IDataOutput) : void {
+         output.writeShort(this.ignoredList.length);
+         var _i1:uint = 0;
+         while(_i1<this.ignoredList.length)
+         {
+            output.writeShort((this.ignoredList[_i1] as IgnoredInformations).getTypeId());
+            (this.ignoredList[_i1] as IgnoredInformations).serialize(output);
+            _i1++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IgnoredListMessage(input);
+      }
+
+      public function deserializeAs_IgnoredListMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:IgnoredInformations = null;
+         var _ignoredListLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_ignoredListLen)
+         {
+            _id1=input.readUnsignedShort();
+            _item1=ProtocolTypeManager.getInstance(IgnoredInformations,_id1);
+            _item1.deserialize(input);
+            this.ignoredList.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

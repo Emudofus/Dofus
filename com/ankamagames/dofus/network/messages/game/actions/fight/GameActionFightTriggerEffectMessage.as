@@ -1,79 +1,67 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions.fight
+package com.ankamagames.dofus.network.messages.game.actions.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameActionFightTriggerEffectMessage extends GameActionFightDispellEffectMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 6147;
 
-        public function GameActionFightTriggerEffectMessage()
-        {
-            return;
-        }// end function
+   public class GameActionFightTriggerEffectMessage extends GameActionFightDispellEffectMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function GameActionFightTriggerEffectMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6147;
-        }// end function
+      public static const protocolId:uint = 6147;
 
-        public function initGameActionFightTriggerEffectMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 0) : GameActionFightTriggerEffectMessage
-        {
-            super.initGameActionFightDispellEffectMessage(param1, param2, param3, param4);
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6147;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public function initGameActionFightTriggerEffectMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, boostUID:uint=0) : GameActionFightTriggerEffectMessage {
+         super.initGameActionFightDispellEffectMessage(actionId,sourceId,targetId,boostUID);
+         this._isInitialized=true;
+         return this;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameActionFightTriggerEffectMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this._isInitialized=false;
+      }
 
-        public function serializeAs_GameActionFightTriggerEffectMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_GameActionFightDispellEffectMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameActionFightTriggerEffectMessage(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserializeAs_GameActionFightTriggerEffectMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightTriggerEffectMessage(output);
+      }
 
-    }
+      public function serializeAs_GameActionFightTriggerEffectMessage(output:IDataOutput) : void {
+         super.serializeAs_GameActionFightDispellEffectMessage(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightTriggerEffectMessage(input);
+      }
+
+      public function deserializeAs_GameActionFightTriggerEffectMessage(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

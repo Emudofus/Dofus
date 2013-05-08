@@ -1,122 +1,114 @@
-﻿package com.ankamagames.atouin.types
+package com.ankamagames.atouin.types
 {
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.jerakine.data.*;
-    import flash.display.*;
-    import flash.geom.*;
+   import flash.display.Sprite;
+   import flash.geom.ColorTransform;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import flash.display.DisplayObject;
+   import flash.display.Bitmap;
 
-    public class CellContainer extends Sprite implements ICellContainer
-    {
-        private var _cellId:int = 0;
-        private var _layerId:int = 0;
-        private var _startX:int = 0;
-        private var _startY:int = 0;
-        private var _depth:int = 0;
-        private static var _ratio:Number;
-        private static var cltr:ColorTransform;
 
-        public function CellContainer(param1:uint)
-        {
-            this.cellId = param1;
-            name = "Cell_" + this.cellId;
-            return;
-        }// end function
+   public class CellContainer extends Sprite implements ICellContainer
+   {
+         
 
-        public function get cellId() : uint
-        {
-            return this._cellId;
-        }// end function
+      public function CellContainer(id:uint) {
+         super();
+         this.cellId=id;
+         name="Cell_"+this.cellId;
+      }
 
-        public function set cellId(param1:uint) : void
-        {
-            this._cellId = param1;
-            return;
-        }// end function
+      private static var _ratio:Number;
 
-        public function get layerId() : int
-        {
-            return this._layerId;
-        }// end function
+      private static var cltr:ColorTransform;
 
-        public function set layerId(param1:int) : void
-        {
-            this._layerId = param1;
-            return;
-        }// end function
+      private var _cellId:int = 0;
 
-        public function get startX() : int
-        {
-            return this._startX;
-        }// end function
+      public function get cellId() : uint {
+         return this._cellId;
+      }
 
-        public function set startX(param1:int) : void
-        {
-            this._startX = param1;
-            return;
-        }// end function
+      public function set cellId(val:uint) : void {
+         this._cellId=val;
+      }
 
-        public function get startY() : int
-        {
-            return this._startY;
-        }// end function
+      private var _layerId:int = 0;
 
-        public function set startY(param1:int) : void
-        {
-            this._startY = param1;
-            return;
-        }// end function
+      public function get layerId() : int {
+         return this._layerId;
+      }
 
-        public function get depth() : int
-        {
-            return this._depth;
-        }// end function
+      public function set layerId(val:int) : void {
+         this._layerId=val;
+      }
 
-        public function set depth(param1:int) : void
-        {
-            this._depth = param1;
-            return;
-        }// end function
+      private var _startX:int = 0;
 
-        public function addFakeChild(param1:Object, param2:Object, param3:Object) : void
-        {
-            var _loc_5:* = undefined;
-            if (isNaN(_ratio))
+      public function get startX() : int {
+         return this._startX;
+      }
+
+      public function set startX(val:int) : void {
+         this._startX=val;
+      }
+
+      private var _startY:int = 0;
+
+      public function get startY() : int {
+         return this._startY;
+      }
+
+      public function set startY(val:int) : void {
+         this._startY=val;
+      }
+
+      private var _depth:int = 0;
+
+      public function get depth() : int {
+         return this._depth;
+      }
+
+      public function set depth(val:int) : void {
+         this._depth=val;
+      }
+
+      public function addFakeChild(pChild:Object, pData:Object, colors:Object) : void {
+         var val:* = undefined;
+         if(isNaN(_ratio))
+         {
+            val=XmlConfig.getInstance().getEntry("config.gfx.world.scaleRatio");
+            _ratio=val==null?1:parseFloat(val);
+         }
+         var child:DisplayObject = pChild as DisplayObject;
+         if(pChild is Bitmap)
+         {
+            child.x=pData.x*_ratio;
+            child.y=pData.y*_ratio;
+         }
+         else
+         {
+            child.x=pData.x;
+            child.y=pData.y;
+         }
+         if(pData!=null)
+         {
+            child.alpha=pData.alpha;
+            child.scaleX=pData.scaleX;
+            child.scaleY=pData.scaleY;
+         }
+         if(colors!=null)
+         {
+            if(cltr==null)
             {
-                _loc_5 = XmlConfig.getInstance().getEntry("config.gfx.world.scaleRatio");
-                _ratio = _loc_5 == null ? (1) : (parseFloat(_loc_5));
+               cltr=new ColorTransform();
             }
-            var _loc_4:* = param1 as DisplayObject;
-            if (param1 is Bitmap)
-            {
-                _loc_4.x = param2.x * _ratio;
-                _loc_4.y = param2.y * _ratio;
-            }
-            else
-            {
-                _loc_4.x = param2.x;
-                _loc_4.y = param2.y;
-            }
-            if (param2 != null)
-            {
-                _loc_4.alpha = param2.alpha;
-                _loc_4.scaleX = param2.scaleX;
-                _loc_4.scaleY = param2.scaleY;
-            }
-            if (param3 != null)
-            {
-                if (cltr == null)
-                {
-                    cltr = new ColorTransform();
-                }
-                cltr.redMultiplier = param3.red;
-                cltr.greenMultiplier = param3.green;
-                cltr.blueMultiplier = param3.blue;
-                cltr.alphaMultiplier = param3.alpha;
-                _loc_4.transform.colorTransform = cltr;
-            }
-            addChild(_loc_4);
-            return;
-        }// end function
+            cltr.redMultiplier=colors.red;
+            cltr.greenMultiplier=colors.green;
+            cltr.blueMultiplier=colors.blue;
+            cltr.alphaMultiplier=colors.alpha;
+            child.transform.colorTransform=cltr;
+         }
+         addChild(child);
+      }
+   }
 
-    }
 }

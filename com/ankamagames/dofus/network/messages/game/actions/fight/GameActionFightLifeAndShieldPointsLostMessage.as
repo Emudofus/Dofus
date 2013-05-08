@@ -1,92 +1,89 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions.fight
+package com.ankamagames.dofus.network.messages.game.actions.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameActionFightLifeAndShieldPointsLostMessage extends GameActionFightLifePointsLostMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var shieldLoss:uint = 0;
-        public static const protocolId:uint = 6310;
 
-        public function GameActionFightLifeAndShieldPointsLostMessage()
-        {
+   public class GameActionFightLifeAndShieldPointsLostMessage extends GameActionFightLifePointsLostMessage implements INetworkMessage
+   {
+         
+
+      public function GameActionFightLifeAndShieldPointsLostMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6310;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
+
+      public var shieldLoss:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6310;
+      }
+
+      public function initGameActionFightLifeAndShieldPointsLostMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, loss:uint=0, permanentDamages:uint=0, shieldLoss:uint=0) : GameActionFightLifeAndShieldPointsLostMessage {
+         super.initGameActionFightLifePointsLostMessage(actionId,sourceId,targetId,loss,permanentDamages);
+         this.shieldLoss=shieldLoss;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.shieldLoss=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightLifeAndShieldPointsLostMessage(output);
+      }
+
+      public function serializeAs_GameActionFightLifeAndShieldPointsLostMessage(output:IDataOutput) : void {
+         super.serializeAs_GameActionFightLifePointsLostMessage(output);
+         if(this.shieldLoss<0)
+         {
+            throw new Error("Forbidden value ("+this.shieldLoss+") on element shieldLoss.");
+         }
+         else
+         {
+            output.writeShort(this.shieldLoss);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6310;
-        }// end function
-
-        public function initGameActionFightLifeAndShieldPointsLostMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 0, param5:uint = 0, param6:uint = 0) : GameActionFightLifeAndShieldPointsLostMessage
-        {
-            super.initGameActionFightLifePointsLostMessage(param1, param2, param3, param4, param5);
-            this.shieldLoss = param6;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.shieldLoss = 0;
-            this._isInitialized = false;
+      public function deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.shieldLoss=input.readShort();
+         if(this.shieldLoss<0)
+         {
+            throw new Error("Forbidden value ("+this.shieldLoss+") on element of GameActionFightLifeAndShieldPointsLostMessage.shieldLoss.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_GameActionFightLifePointsLostMessage(param1);
-            if (this.shieldLoss < 0)
-            {
-                throw new Error("Forbidden value (" + this.shieldLoss + ") on element shieldLoss.");
-            }
-            param1.writeShort(this.shieldLoss);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_GameActionFightLifeAndShieldPointsLostMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.shieldLoss = param1.readShort();
-            if (this.shieldLoss < 0)
-            {
-                throw new Error("Forbidden value (" + this.shieldLoss + ") on element of GameActionFightLifeAndShieldPointsLostMessage.shieldLoss.");
-            }
-            return;
-        }// end function
-
-    }
 }

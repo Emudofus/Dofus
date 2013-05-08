@@ -1,13 +1,14 @@
-﻿package com.ankamagames.jerakine.logger.targets
+package com.ankamagames.jerakine.logger.targets
 {
-    import com.ankamagames.jerakine.logger.targets.*;
 
-    public interface ConfigurableLoggingTarget extends LoggingTarget
-    {
 
-        public function ConfigurableLoggingTarget();
+   public interface ConfigurableLoggingTarget extends LoggingTarget
+   {
+         
 
-        function configure(param1:XML) : void;
 
-    }
+
+      function configure(param1:XML) : void;
+   }
+
 }

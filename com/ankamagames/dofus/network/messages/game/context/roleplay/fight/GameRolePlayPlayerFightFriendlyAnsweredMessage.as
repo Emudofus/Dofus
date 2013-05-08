@@ -1,111 +1,118 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
+package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayPlayerFightFriendlyAnsweredMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fightId:int = 0;
-        public var sourceId:uint = 0;
-        public var targetId:uint = 0;
-        public var accept:Boolean = false;
-        public static const protocolId:uint = 5733;
 
-        public function GameRolePlayPlayerFightFriendlyAnsweredMessage()
-        {
-            return;
-        }// end function
+   public class GameRolePlayPlayerFightFriendlyAnsweredMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameRolePlayPlayerFightFriendlyAnsweredMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5733;
-        }// end function
+      public static const protocolId:uint = 5733;
 
-        public function initGameRolePlayPlayerFightFriendlyAnsweredMessage(param1:int = 0, param2:uint = 0, param3:uint = 0, param4:Boolean = false) : GameRolePlayPlayerFightFriendlyAnsweredMessage
-        {
-            this.fightId = param1;
-            this.sourceId = param2;
-            this.targetId = param3;
-            this.accept = param4;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fightId = 0;
-            this.sourceId = 0;
-            this.targetId = 0;
-            this.accept = false;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fightId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var sourceId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1);
-            return;
-        }// end function
+      public var targetId:uint = 0;
 
-        public function serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.fightId);
-            if (this.sourceId < 0)
+      public var accept:Boolean = false;
+
+      override public function getMessageId() : uint {
+         return 5733;
+      }
+
+      public function initGameRolePlayPlayerFightFriendlyAnsweredMessage(fightId:int=0, sourceId:uint=0, targetId:uint=0, accept:Boolean=false) : GameRolePlayPlayerFightFriendlyAnsweredMessage {
+         this.fightId=fightId;
+         this.sourceId=sourceId;
+         this.targetId=targetId;
+         this.accept=accept;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.fightId=0;
+         this.sourceId=0;
+         this.targetId=0;
+         this.accept=false;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(output:IDataOutput) : void {
+         output.writeInt(this.fightId);
+         if(this.sourceId<0)
+         {
+            throw new Error("Forbidden value ("+this.sourceId+") on element sourceId.");
+         }
+         else
+         {
+            output.writeInt(this.sourceId);
+            if(this.targetId<0)
             {
-                throw new Error("Forbidden value (" + this.sourceId + ") on element sourceId.");
+               throw new Error("Forbidden value ("+this.targetId+") on element targetId.");
             }
-            param1.writeInt(this.sourceId);
-            if (this.targetId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+               output.writeInt(this.targetId);
+               output.writeBoolean(this.accept);
+               return;
             }
-            param1.writeInt(this.targetId);
-            param1.writeBoolean(this.accept);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(input);
+      }
 
-        public function deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(param1:IDataInput) : void
-        {
-            this.fightId = param1.readInt();
-            this.sourceId = param1.readInt();
-            if (this.sourceId < 0)
+      public function deserializeAs_GameRolePlayPlayerFightFriendlyAnsweredMessage(input:IDataInput) : void {
+         this.fightId=input.readInt();
+         this.sourceId=input.readInt();
+         if(this.sourceId<0)
+         {
+            throw new Error("Forbidden value ("+this.sourceId+") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.sourceId.");
+         }
+         else
+         {
+            this.targetId=input.readInt();
+            if(this.targetId<0)
             {
-                throw new Error("Forbidden value (" + this.sourceId + ") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.sourceId.");
+               throw new Error("Forbidden value ("+this.targetId+") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.targetId.");
             }
-            this.targetId = param1.readInt();
-            if (this.targetId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.targetId + ") on element of GameRolePlayPlayerFightFriendlyAnsweredMessage.targetId.");
+               this.accept=input.readBoolean();
+               return;
             }
-            this.accept = param1.readBoolean();
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

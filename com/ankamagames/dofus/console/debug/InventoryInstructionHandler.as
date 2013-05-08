@@ -1,130 +1,120 @@
-ï»¿package com.ankamagames.dofus.console.debug
+package com.ankamagames.dofus.console.debug
 {
-    import com.ankamagames.dofus.datacenter.items.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.network.messages.authorized.*;
-    import com.ankamagames.jerakine.console.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.console.ConsoleHandler;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.datacenter.items.Item;
+   import com.ankamagames.dofus.network.messages.authorized.AdminQuietCommandMessage;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.jerakine.utils.misc.Chrono;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.dofus.misc.utils.GameDataQuery;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
 
-    public class InventoryInstructionHandler extends Object implements ConsoleInstructionHandler
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(InventoryInstructionHandler));
 
-        public function InventoryInstructionHandler()
-        {
-            return;
-        }// end function
+   public class InventoryInstructionHandler extends Object implements ConsoleInstructionHandler
+   {
+         
 
-        public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            switch(param2)
-            {
-                case "listinventory":
-                {
-                    for each (_loc_9 in InventoryManager.getInstance().realInventory)
-                    {
-                        
-                        param1.output("[UID: " + _loc_9.objectUID + ", ID:" + _loc_9.objectGID + "] " + _loc_9.quantity + " x " + _loc_9["name"]);
-                    }
-                    break;
-                }
-                case "searchitem":
-                {
-                    if (param3.length < 1)
-                    {
-                        param1.output(param2 + " need an argument to search for");
+      public function InventoryInstructionHandler() {
+         super();
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InventoryInstructionHandler));
+
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var matchItems:Array = null;
+         var searchWord:String = null;
+         var ids:Vector.<uint> = null;
+         var items:Vector.<Object> = null;
+         var items2:Array = null;
+         var len:uint = 0;
+         var item:ItemWrapper = null;
+         var currentItem:Item = null;
+         var currentItem2:Item = null;
+         var aqcmsg:AdminQuietCommandMessage = null;
+         switch(cmd)
+         {
+            case "listinventory":
+               for each (item in InventoryManager.getInstance().realInventory)
+               {
+                  console.output("[UID: "+item.objectUID+", ID:"+item.objectGID+"] "+item.quantity+" x "+item["name"]);
+               }
+               break;
+            case "searchitem":
+               if(args.length<1)
+               {
+                  console.output(cmd+" need an argument to search for");
+               }
+               else
+               {
+                  Chrono.start("Général");
+                  matchItems=new Array();
+                  searchWord=StringUtils.noAccent(args.join(" ").toLowerCase());
+                  Chrono.start("Query");
+                  ids=GameDataQuery.queryString(Item,"name",searchWord);
+                  Chrono.stop();
+                  Chrono.start("Instance");
+                  items=GameDataQuery.returnInstance(Item,ids);
+                  Chrono.stop();
+                  Chrono.start("Add");
+                  for each (currentItem in items)
+                  {
+                     matchItems.push("\t"+currentItem.name+" (id : "+currentItem.id+")");
+                  }
+                  Chrono.stop();
+                  Chrono.stop();
+                  _log.debug("sur "+items.length+" iterations");
+                  matchItems.sort(Array.CASEINSENSITIVE);
+                  console.output(matchItems.join("\n"));
+                  console.output("\tRESULT : "+matchItems.length+" items founded");
+               }
+               break;
+            case "makeinventory":
+               items2=Item.getItems();
+               len=parseInt(args[0],10);
+               for each (currentItem2 in items2)
+               {
+                  if(!currentItem2)
+                  {
+                  }
+                  else
+                  {
+                     if(!len)
+                     {
                         break;
-                    }
-                    Chrono.start();
-                    _loc_4 = Item.getItems();
-                    _loc_5 = new Array();
-                    _loc_6 = param3.join(" ").toLowerCase();
-                    for each (_loc_10 in _loc_4)
-                    {
-                        
-                        if (_loc_10 && StringUtils.noAccent(_loc_10.name).toLowerCase().indexOf(StringUtils.noAccent(_loc_6)) != -1)
-                        {
-                            _loc_5.push("\t" + _loc_10.name + " (id : " + _loc_10.id + ")");
-                        }
-                    }
-                    Chrono.stop();
-                    _log.debug("sur " + _loc_4.length + " iterations");
-                    _loc_5.sort(Array.CASEINSENSITIVE);
-                    param1.output(_loc_5.join("\n"));
-                    param1.output("\tRESULT : " + _loc_5.length + " items founded");
-                    break;
-                }
-                case "makeinventory":
-                {
-                    _loc_7 = Item.getItems();
-                    _loc_8 = parseInt(param3[0], 10);
-                    for each (_loc_11 in _loc_7)
-                    {
-                        
-                        if (!_loc_11)
-                        {
-                            continue;
-                        }
-                        if (!_loc_8)
-                        {
-                            break;
-                        }
-                        _loc_12 = new AdminQuietCommandMessage();
-                        _loc_12.initAdminQuietCommandMessage("item * " + _loc_11.id + " " + Math.ceil(Math.random() * 10));
-                        ConnectionsHandler.getConnection().send(_loc_12);
-                        _loc_8 = _loc_8 - 1;
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+                     }
+                     aqcmsg=new AdminQuietCommandMessage();
+                     aqcmsg.initAdminQuietCommandMessage("item * "+currentItem2.id+" "+Math.ceil(Math.random()*10));
+                     ConnectionsHandler.getConnection().send(aqcmsg);
+                     len--;
+                  }
+               }
+               break;
+         }
+      }
 
-        public function getHelp(param1:String) : String
-        {
-            switch(param1)
-            {
-                case "listinventory":
-                {
-                    return "List player inventory content.";
-                }
-                case "searchitem":
-                {
-                    return "Search item name/id, param : [part of searched item name]";
-                }
-                case "makeinventory":
-                {
-                    return "Create an inventory";
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return "Unknown command \'" + param1 + "\'.";
-        }// end function
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
+         {
+            case "listinventory":
+               return "List player inventory content.";
+            case "searchitem":
+               return "Search item name/id, param : [part of searched item name]";
+            case "makeinventory":
+               return "Create an inventory";
+            default:
+               return "Unknown command \'"+cmd+"\'.";
+         }
+      }
 
-        public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
-        {
-            return [];
-        }// end function
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         return [];
+      }
+   }
 
-    }
 }

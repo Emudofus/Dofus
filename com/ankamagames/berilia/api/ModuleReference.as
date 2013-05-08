@@ -1,67 +1,74 @@
-﻿package com.ankamagames.berilia.api
+package com.ankamagames.berilia.api
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.utils.memory.*;
-    import flash.errors.*;
-    import flash.utils.*;
+   import flash.utils.Proxy;
+   import com.ankamagames.jerakine.interfaces.Secure;
+   import com.ankamagames.jerakine.utils.memory.WeakReference;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import flash.errors.IllegalOperationError;
+   import flash.utils.flash_proxy;
+   import flash.utils.getQualifiedClassName;
 
-    public class ModuleReference extends Proxy implements Secure
-    {
-        private var _object:WeakReference;
+   use namespace flash_proxy;
 
-        public function ModuleReference(param1:Object, param2:Object)
-        {
-            SecureCenter.checkAccessKey(param2);
-            this._object = new WeakReference(param1);
-            return;
-        }// end function
+   public class ModuleReference extends Proxy implements Secure
+   {
+         
 
-        public function getObject(param1:Object)
-        {
-            if (param1 != SecureCenter.ACCESS_KEY)
-            {
-                throw new IllegalOperationError();
-            }
+      public function ModuleReference(o:Object, accessKey:Object) {
+         super();
+         SecureCenter.checkAccessKey(accessKey);
+         this._object=new WeakReference(o);
+      }
+
+
+
+      private var _object:WeakReference;
+
+      public function getObject(accessKey:Object) : * {
+         if(accessKey!=SecureCenter.ACCESS_KEY)
+         {
+            throw new IllegalOperationError();
+         }
+         else
+         {
             return this._object.object;
-        }// end function
+         }
+      }
 
-        override function callProperty(param1, ... args)
-        {
-            args = this._object.object[param1].apply(this, args);
-            this.verify(args);
-            return args;
-        }// end function
+      override flash_proxy function callProperty(name:*, ... rest) : * {
+         var result:* = this._object.object[name].apply(this,rest);
+         this.verify(result);
+         return result;
+      }
 
-        override function getProperty(param1)
-        {
-            var _loc_2:* = this._object.object[param1];
-            if (_loc_2 is Function)
-            {
-                return _loc_2;
-            }
-            throw new IllegalOperationError("You cannot access to property. You have access only to functions");
-        }// end function
+      override flash_proxy function getProperty(name:*) : * {
+         var result:* = this._object.object[name];
+         if(result is Function)
+         {
+            return result;
+         }
+         throw new IllegalOperationError("You cannot access to property. You have access only to functions");
+      }
 
-        override function setProperty(param1, param2) : void
-        {
-            throw new IllegalOperationError("You cannot access to property. You have access only to functions");
-        }// end function
+      override flash_proxy function setProperty(name:*, value:*) : void {
+         throw new IllegalOperationError("You cannot access to property. You have access only to functions");
+      }
 
-        override function hasProperty(param1) : Boolean
-        {
-            return this._object.object.hasOwnProperty(param1);
-        }// end function
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return this._object.object.hasOwnProperty(name);
+      }
 
-        private function verify(param1) : void
-        {
-            var _loc_2:* = getQualifiedClassName(param1);
-            if (_loc_2.indexOf("d2api") == 0)
-            {
-                throw new IllegalOperationError("You cannot get API from an other module");
-            }
+      private function verify(o:*) : void {
+         var pkg:String = getQualifiedClassName(o);
+         if(pkg.indexOf("d2api")==0)
+         {
+            throw new IllegalOperationError("You cannot get API from an other module");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

@@ -1,53 +1,55 @@
-﻿package com.ankamagames.jerakine.handlers
+package com.ankamagames.jerakine.handlers
 {
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.jerakine.utils.memory.*;
-    import flash.display.*;
+   import com.ankamagames.jerakine.utils.memory.WeakReference;
+   import flash.display.InteractiveObject;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
 
-    public class FocusHandler extends Object
-    {
-        private static var _self:FocusHandler;
-        private static var _currentFocus:WeakReference;
 
-        public function FocusHandler()
-        {
-            if (_self != null)
-            {
-                throw new SingletonError("FocusHandler constructor should not be called directly.");
-            }
-            StageShareManager.stage.stageFocusRect = false;
+   public class FocusHandler extends Object
+   {
+         
+
+      public function FocusHandler() {
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("FocusHandler constructor should not be called directly.");
+         }
+         else
+         {
+            StageShareManager.stage.stageFocusRect=false;
             return;
-        }// end function
+         }
+      }
 
-        public function setFocus(param1:InteractiveObject) : void
-        {
-            _currentFocus = new WeakReference(param1);
-            return;
-        }// end function
+      private static var _self:FocusHandler;
 
-        public function getFocus() : InteractiveObject
-        {
-            return _currentFocus ? (_currentFocus.object as InteractiveObject) : (null);
-        }// end function
+      private static var _currentFocus:WeakReference;
 
-        public function hasFocus(param1:InteractiveObject) : Boolean
-        {
-            if (_currentFocus)
-            {
-                return _currentFocus.object == param1;
-            }
-            return false;
-        }// end function
+      public static function getInstance() : FocusHandler {
+         if(_self==null)
+         {
+            _self=new FocusHandler();
+         }
+         return _self;
+      }
 
-        public static function getInstance() : FocusHandler
-        {
-            if (_self == null)
-            {
-                _self = new FocusHandler;
-            }
-            return _self;
-        }// end function
+      public function setFocus(target:InteractiveObject) : void {
+         _currentFocus=new WeakReference(target);
+      }
 
-    }
+      public function getFocus() : InteractiveObject {
+         return _currentFocus?_currentFocus.object as InteractiveObject:null;
+      }
+
+      public function hasFocus(io:InteractiveObject) : Boolean {
+         if(_currentFocus)
+         {
+            return _currentFocus.object==io;
+         }
+         return false;
+      }
+   }
+
 }

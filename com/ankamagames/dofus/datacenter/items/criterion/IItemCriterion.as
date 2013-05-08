@@ -1,21 +1,23 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import __AS3__.vec.*;
+   import __AS3__.vec.Vector;
 
-    public interface IItemCriterion
-    {
 
-        public function IItemCriterion();
+   public interface IItemCriterion
+   {
+         
 
-        function get inlineCriteria() : Vector.<IItemCriterion>;
 
-        function get isRespected() : Boolean;
 
-        function get text() : String;
+      function get inlineCriteria() : Vector.<IItemCriterion>;
 
-        function get basicText() : String;
+      function get isRespected() : Boolean;
 
-        function clone() : IItemCriterion;
+      function get text() : String;
 
-    }
+      function get basicText() : String;
+
+      function clone() : IItemCriterion;
+   }
+
 }

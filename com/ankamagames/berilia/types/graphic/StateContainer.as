@@ -1,247 +1,233 @@
-﻿package com.ankamagames.berilia.types.graphic
+package com.ankamagames.berilia.types.graphic
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.UIComponent;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.berilia.enums.StatesEnum;
+   import com.ankamagames.jerakine.utils.misc.DescribeTypeCache;
 
-    public class StateContainer extends GraphicContainer implements UIComponent
-    {
-        protected var _state:Object;
-        protected var _snapshot:Array;
-        protected var _describeType:Function;
-        protected var _lockedProperties:Array;
-        protected var _lockedPropertiesStr:String;
-        private var _changingStateData:Array;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(StateContainer));
 
-        public function StateContainer()
-        {
-            this._describeType = DescribeTypeCache.typeDescription;
-            this._state = StatesEnum.STATE_NORMAL;
-            this._snapshot = new Array();
-            this._lockedProperties = new Array();
-            this._lockedPropertiesStr = "";
-            this.lockedProperties = "x,y,width,height,selected";
+   public class StateContainer extends GraphicContainer implements UIComponent
+   {
+         
+
+      public function StateContainer() {
+         this._describeType=DescribeTypeCache.typeDescription;
+         super();
+         this._state=StatesEnum.STATE_NORMAL;
+         this._snapshot=new Array();
+         this._lockedProperties=new Array();
+         this._lockedPropertiesStr="";
+         this.lockedProperties="x,y,width,height,selected";
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(StateContainer));
+
+      protected var _state;
+
+      protected var _snapshot:Array;
+
+      protected var _describeType:Function;
+
+      protected var _lockedProperties:Array;
+
+      protected var _lockedPropertiesStr:String;
+
+      private var _changingStateData:Array;
+
+      public function get changingStateData() : Array {
+         return this._changingStateData;
+      }
+
+      public function set changingStateData(value:Array) : void {
+         this._changingStateData=value;
+      }
+
+      public function set state(newState:*) : void {
+         if(this._state==newState)
+         {
             return;
-        }// end function
+         }
+         if(newState==null)
+         {
+            newState=StatesEnum.STATE_NORMAL;
+         }
+         this.changeState(newState);
+         this._state=newState;
+      }
 
-        public function get changingStateData() : Array
-        {
-            return this._changingStateData;
-        }// end function
+      public function get state() : * {
+         return this._state;
+      }
 
-        public function set changingStateData(param1:Array) : void
-        {
-            this._changingStateData = param1;
-            return;
-        }// end function
+      override public function free() : void {
+         super.free();
+         this._state=null;
+         this._snapshot=null;
+      }
 
-        public function set state(param1) : void
-        {
-            if (this._state == param1)
+      override public function remove() : void {
+         super.remove();
+         this._snapshot=null;
+         this._state=null;
+      }
+
+      public function get lockedProperties() : String {
+         return this._lockedPropertiesStr;
+      }
+
+      public function set lockedProperties(s:String) : void {
+         var tmp:Array = null;
+         var propName:String = null;
+         this._lockedPropertiesStr=s;
+         this._lockedProperties=[];
+         if(this._lockedPropertiesStr)
+         {
+            tmp=s.split(",");
+            for each (propName in tmp)
             {
-                return;
+               this._lockedProperties[propName]=true;
             }
-            if (param1 == null)
-            {
-                param1 = StatesEnum.STATE_NORMAL;
-            }
-            this.changeState(param1);
-            this._state = param1;
+         }
+      }
+
+      protected function changeState(newState:*) : void {
+         var target:GraphicContainer = null;
+         var properties:Array = null;
+         var ui:UiRootContainer = null;
+         var key:String = null;
+         var property:String = null;
+         if(!this._snapshot)
+         {
             return;
-        }// end function
-
-        public function get state()
-        {
-            return this._state;
-        }// end function
-
-        override public function free() : void
-        {
-            super.free();
-            this._state = null;
-            this._snapshot = null;
-            return;
-        }// end function
-
-        override public function remove() : void
-        {
-            super.remove();
-            this._snapshot = null;
-            this._state = null;
-            return;
-        }// end function
-
-        public function get lockedProperties() : String
-        {
-            return this._lockedPropertiesStr;
-        }// end function
-
-        public function set lockedProperties(param1:String) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            this._lockedPropertiesStr = param1;
-            this._lockedProperties = [];
-            if (this._lockedPropertiesStr)
+         }
+         if(newState==StatesEnum.STATE_NORMAL)
+         {
+            this._state=newState;
+            this.restoreSnapshot(StatesEnum.STATE_NORMAL);
+         }
+         else
+         {
+            if((!(this.changingStateData==null))&&(this.changingStateData[newState]))
             {
-                _loc_2 = param1.split(",");
-                for each (_loc_3 in _loc_2)
-                {
-                    
-                    this._lockedProperties[_loc_3] = true;
-                }
-            }
-            return;
-        }// end function
-
-        protected function changeState(param1) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            if (!this._snapshot)
-            {
-                return;
-            }
-            if (param1 == StatesEnum.STATE_NORMAL)
-            {
-                this._state = param1;
-                this.restoreSnapshot(StatesEnum.STATE_NORMAL);
-            }
-            else if (this.changingStateData != null && this.changingStateData[param1])
-            {
-                this._snapshot[this._state] = new Array();
-                if (this._state != StatesEnum.STATE_NORMAL)
-                {
-                    this.restoreSnapshot(StatesEnum.STATE_NORMAL);
-                }
-                for (_loc_5 in this.changingStateData[param1])
-                {
-                    
-                    _loc_4 = getUi();
-                    if (!_loc_4)
-                    {
-                        break;
-                    }
-                    _loc_2 = _loc_4.getElement(_loc_5);
-                    if (_loc_2)
-                    {
-                        if (this._state == StatesEnum.STATE_NORMAL)
-                        {
-                            this.makeSnapshot(StatesEnum.STATE_NORMAL, _loc_2);
-                        }
-                        _loc_3 = this.changingStateData[param1][_loc_5];
-                        for (_loc_6 in _loc_3)
-                        {
-                            
-                            _loc_2[_loc_6] = _loc_3[_loc_6];
-                        }
-                        this.makeSnapshot(this._state, _loc_2);
-                    }
-                }
+               this._snapshot[this._state]=new Array();
+               if(this._state!=StatesEnum.STATE_NORMAL)
+               {
+                  this.restoreSnapshot(StatesEnum.STATE_NORMAL);
+               }
+               for (key in this.changingStateData[newState])
+               {
+                  ui=getUi();
+                  if(!ui)
+                  {
+                     break;
+                  }
+                  target=ui.getElement(key);
+                  if(target)
+                  {
+                     if(this._state==StatesEnum.STATE_NORMAL)
+                     {
+                        this.makeSnapshot(StatesEnum.STATE_NORMAL,target);
+                     }
+                     properties=this.changingStateData[newState][key];
+                     for (property in properties)
+                     {
+                        target[property]=properties[property];
+                     }
+                     this.makeSnapshot(this._state,target);
+                  }
+               }
             }
             else
             {
-                _log.warn(name + " : No data for state \'" + param1 + "\' (" + this.changingStateData.length + " states)");
+               _log.warn(name+" : No data for state \'"+newState+"\' ("+this.changingStateData.length+" states)");
+            }
+         }
+      }
+
+      protected function makeSnapshot(currentState:*, target:GraphicContainer) : void {
+         var property:String = null;
+         var propertyXml:XML = null;
+         if(!this._snapshot[currentState])
+         {
+            this._snapshot[currentState]=new Object();
+         }
+         if(!this._snapshot[currentState][target.name])
+         {
+            this._snapshot[currentState][target.name]=new Object();
+            def=this._describeType(target);
+            for each (propertyXml in def..accessor)
+            {
+               if(propertyXml.@access!="readwrite")
+               {
+               }
+               else
+               {
+                  property=propertyXml.@name;
+                  if(this._lockedProperties[property])
+                  {
+                  }
+                  else
+                  {
+                     switch(true)
+                     {
+                        case target[property] is Boolean:
+                        case target[property] is uint:
+                        case target[property] is int:
+                        case target[property] is Number:
+                        case target[property] is String:
+                        case target[property]==null:
+                           this._snapshot[currentState][target.name][property]=target[property];
+                     }
+                  }
+               }
             }
             return;
-        }// end function
+         }
+      }
 
-        protected function makeSnapshot(param1, param2:GraphicContainer) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            if (!this._snapshot[param1])
+      protected function restoreSnapshot(currentState:*) : void {
+         var component:GraphicContainer = null;
+         var ui:UiRootContainer = null;
+         var target:String = null;
+         var property:String = null;
+         if(!this._snapshot)
+         {
+            return;
+         }
+         for (target in this._snapshot[currentState])
+         {
+            ui=getUi();
+            if(!ui)
             {
-                this._snapshot[param1] = new Object();
+               break;
             }
-            if (!this._snapshot[param1][param2.name])
+            component=ui.getElement(target);
+            if(!component)
             {
-                this._snapshot[param1][param2.name] = new Object();
             }
             else
             {
-                return;
-            }
-            var _loc_3:* = this._describeType(param2);
-            for each (_loc_5 in _loc_3..accessor)
-            {
-                
-                if (_loc_5.@access != "readwrite")
-                {
-                    continue;
-                }
-                _loc_4 = _loc_5.@name;
-                if (this._lockedProperties[_loc_4])
-                {
-                    continue;
-                }
-                switch(true)
-                {
-                    case param2[_loc_4] is Boolean:
-                    case param2[_loc_4] is uint:
-                    case param2[_loc_4] is int:
-                    case param2[_loc_4] is Number:
-                    case param2[_loc_4] is String:
-                    case param2[_loc_4] == null:
-                    {
-                        this._snapshot[param1][param2.name][_loc_4] = param2[_loc_4];
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        protected function restoreSnapshot(param1) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            if (!this._snapshot)
-            {
-                return;
-            }
-            for (_loc_4 in this._snapshot[param1])
-            {
-                
-                _loc_3 = getUi();
-                if (!_loc_3)
-                {
-                    break;
-                }
-                _loc_2 = _loc_3.getElement(_loc_4);
-                if (!_loc_2)
-                {
-                    continue;
-                }
-                for (_loc_5 in this._snapshot[param1][_loc_4])
-                {
-                    
-                    if (_loc_2[_loc_5] !== this._snapshot[param1][_loc_4][_loc_5])
-                    {
-                        if (!(_loc_2 is ButtonContainer) || _loc_5 != "selected")
+               for (property in this._snapshot[currentState][target])
+               {
+                  if(component[property]!==this._snapshot[currentState][target][property])
+                  {
+                     if((!(component is ButtonContainer))||(!(property=="selected")))
+                     {
+                        if(this._lockedProperties[property])
                         {
-                            if (this._lockedProperties[_loc_5])
-                            {
-                                continue;
-                            }
-                            _loc_2[_loc_5] = this._snapshot[param1][_loc_4][_loc_5];
                         }
-                    }
-                }
+                        else
+                        {
+                           component[property]=this._snapshot[currentState][target][property];
+                        }
+                     }
+                  }
+               }
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

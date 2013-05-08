@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.craft
+package com.ankamagames.dofus.logic.game.common.actions.craft
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangePlayerMultiCraftRequestAction extends Object implements Action
-    {
-        public var exchangeType:int;
-        public var target:uint;
-        public var skillId:uint;
 
-        public function ExchangePlayerMultiCraftRequestAction()
-        {
-            return;
-        }// end function
+   public class ExchangePlayerMultiCraftRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int, param2:uint, param3:uint) : ExchangePlayerMultiCraftRequestAction
-        {
-            var _loc_4:* = new ExchangePlayerMultiCraftRequestAction;
-            new ExchangePlayerMultiCraftRequestAction.exchangeType = param1;
-            _loc_4.target = param2;
-            _loc_4.skillId = param3;
-            return _loc_4;
-        }// end function
+      public function ExchangePlayerMultiCraftRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pExchangeType:int, pTarget:uint, pSkillId:uint) : ExchangePlayerMultiCraftRequestAction {
+         var action:ExchangePlayerMultiCraftRequestAction = new ExchangePlayerMultiCraftRequestAction();
+         action.exchangeType=pExchangeType;
+         action.target=pTarget;
+         action.skillId=pSkillId;
+         return action;
+      }
+
+      public var exchangeType:int;
+
+      public var target:uint;
+
+      public var skillId:uint;
+   }
+
 }

@@ -1,92 +1,91 @@
-﻿package com.ankamagames.jerakine.utils.system
+package com.ankamagames.jerakine.utils.system
 {
-    import com.ankamagames.jerakine.enum.*;
-    import flash.desktop.*;
-    import flash.display.*;
-    import flash.system.*;
+   import flash.display.NativeWindow;
+   import flash.desktop.NativeApplication;
+   import com.ankamagames.jerakine.enum.OperatingSystem;
+   import flash.desktop.DockIcon;
+   import flash.desktop.NotificationType;
+   import flash.system.Capabilities;
 
-    public class SystemManager extends Object
-    {
-        private var _os:String;
-        private var _version:String;
-        private var _cpu:String;
-        private static var _singleton:SystemManager;
 
-        public function SystemManager()
-        {
-            this.parseSystemInfo();
-            return;
-        }// end function
+   public class SystemManager extends Object
+   {
+         
 
-        public function get os() : String
-        {
-            return this._os;
-        }// end function
+      public function SystemManager() {
+         super();
+         this.parseSystemInfo();
+      }
 
-        public function get version() : String
-        {
-            return this._version;
-        }// end function
+      private static var _singleton:SystemManager;
 
-        public function get cpu() : String
-        {
-            return this._cpu;
-        }// end function
+      public static function getSingleton() : SystemManager {
+         if(!_singleton)
+         {
+            _singleton=new SystemManager();
+         }
+         return _singleton;
+      }
 
-        public function notifyUser(param1:Boolean = false) : void
-        {
-            var _loc_2:* = null;
-            try
+      private var _os:String;
+
+      private var _version:String;
+
+      private var _cpu:String;
+
+      public function get os() : String {
+         return this._os;
+      }
+
+      public function get version() : String {
+         return this._version;
+      }
+
+      public function get cpu() : String {
+         return this._cpu;
+      }
+
+      public function notifyUser(always:Boolean=false) : void {
+         var currentWindow:NativeWindow = null;
+         currentWindow=NativeApplication.nativeApplication.openedWindows[0];
+         if((always)||(!currentWindow.active))
+         {
+            if(this.os==OperatingSystem.MAC_OS)
             {
-                _loc_2 = NativeApplication.nativeApplication.openedWindows[0];
-                if (param1 || !_loc_2.active)
-                {
-                    if (this.os == OperatingSystem.MAC_OS)
-                    {
-                        DockIcon(NativeApplication.nativeApplication.icon).bounce(NotificationType.CRITICAL);
-                    }
-                    else
-                    {
-                        _loc_2.notifyUser(NotificationType.CRITICAL);
-                    }
-                }
+               DockIcon(NativeApplication.nativeApplication.icon).bounce(NotificationType.CRITICAL);
             }
-            catch (e:Error)
+            else
             {
+               currentWindow.notifyUser(NotificationType.CRITICAL);
             }
-            return;
-        }// end function
+         }
+      }
 
-        private function parseSystemInfo() : void
-        {
-            var _loc_1:* = Capabilities.os;
-            if (_loc_1 == OperatingSystem.LINUX)
+      private function parseSystemInfo() : void {
+         var cos:String = Capabilities.os;
+         if(cos==OperatingSystem.LINUX)
+         {
+            this._os=OperatingSystem.LINUX;
+            this._version="unknow";
+         }
+         else
+         {
+            if(cos.substr(0,OperatingSystem.MAC_OS.length)==OperatingSystem.MAC_OS)
             {
-                this._os = OperatingSystem.LINUX;
-                this._version = "unknow";
+               this._os=OperatingSystem.MAC_OS;
+               this._version=cos.substr(OperatingSystem.MAC_OS.length+1);
             }
-            else if (_loc_1.substr(0, OperatingSystem.MAC_OS.length) == OperatingSystem.MAC_OS)
+            else
             {
-                this._os = OperatingSystem.MAC_OS;
-                this._version = _loc_1.substr((OperatingSystem.MAC_OS.length + 1));
+               if(cos.substr(0,OperatingSystem.WINDOWS.length)==OperatingSystem.WINDOWS)
+               {
+                  this._os=OperatingSystem.WINDOWS;
+                  this._version=cos.substr(OperatingSystem.WINDOWS.length+1);
+               }
             }
-            else if (_loc_1.substr(0, OperatingSystem.WINDOWS.length) == OperatingSystem.WINDOWS)
-            {
-                this._os = OperatingSystem.WINDOWS;
-                this._version = _loc_1.substr((OperatingSystem.WINDOWS.length + 1));
-            }
-            this._cpu = Capabilities.cpuArchitecture;
-            return;
-        }// end function
+         }
+         this._cpu=Capabilities.cpuArchitecture;
+      }
+   }
 
-        public static function getSingleton() : SystemManager
-        {
-            if (!_singleton)
-            {
-                _singleton = new SystemManager;
-            }
-            return _singleton;
-        }// end function
-
-    }
 }

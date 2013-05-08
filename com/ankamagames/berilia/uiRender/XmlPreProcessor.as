@@ -1,176 +1,170 @@
-﻿package com.ankamagames.berilia.uiRender
+package com.ankamagames.berilia.uiRender
 {
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.event.*;
-    import com.ankamagames.berilia.types.template.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import flash.events.*;
-    import flash.utils.*;
-    import flash.xml.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.xml.XMLDocument;
+   import com.ankamagames.berilia.managers.TemplateManager;
+   import com.ankamagames.berilia.types.event.TemplateLoadedEvent;
+   import com.ankamagames.berilia.types.event.PreProcessEndEvent;
+   import flash.xml.XMLNode;
+   import com.ankamagames.berilia.enums.XmlTagsEnum;
+   import com.ankamagames.berilia.enums.XmlAttributesEnum;
+   import com.ankamagames.jerakine.managers.LangManager;
+   import com.ankamagames.berilia.types.template.TemplateParam;
 
-    public class XmlPreProcessor extends EventDispatcher
-    {
-        private var _xDoc:XMLDocument;
-        private var _bMustBeRendered:Boolean = true;
-        private var _aImportFile:Array;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(XmlPreProcessor));
 
-        public function XmlPreProcessor(param1:XMLDocument)
-        {
-            this._xDoc = param1;
+   public class XmlPreProcessor extends EventDispatcher
+   {
+         
+
+      public function XmlPreProcessor(xDoc:XMLDocument) {
+         super();
+         this._xDoc=xDoc;
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(XmlPreProcessor));
+
+      private var _xDoc:XMLDocument;
+
+      private var _bMustBeRendered:Boolean = true;
+
+      private var _aImportFile:Array;
+
+      public function get importedFiles() : int {
+         return this._aImportFile.length;
+      }
+
+      public function processTemplate() : void {
+         this._aImportFile=new Array();
+         TemplateManager.getInstance().addEventListener(TemplateLoadedEvent.EVENT_TEMPLATE_LOADED,this.onTemplateLoaded);
+         this.matchImport(this._xDoc.firstChild);
+         if(!this._aImportFile.length)
+         {
+            dispatchEvent(new PreProcessEndEvent(this));
+            TemplateManager.getInstance().removeEventListener(TemplateLoadedEvent.EVENT_TEMPLATE_LOADED,this.onTemplateLoaded);
             return;
-        }// end function
+         }
+         var i:uint = 0;
+         while(i<this._aImportFile.length)
+         {
+            TemplateManager.getInstance().register(this._aImportFile[i]);
+            i++;
+         }
+      }
 
-        public function get importedFiles() : int
-        {
-            return this._aImportFile.length;
-        }// end function
-
-        public function processTemplate() : void
-        {
-            this._aImportFile = new Array();
-            TemplateManager.getInstance().addEventListener(TemplateLoadedEvent.EVENT_TEMPLATE_LOADED, this.onTemplateLoaded);
-            this.matchImport(this._xDoc.firstChild);
-            if (!this._aImportFile.length)
+      private function matchImport(node:XMLNode) : void {
+         var currNode:XMLNode = null;
+         var i:uint = 0;
+         while(i<node.childNodes.length)
+         {
+            currNode=node.childNodes[i];
+            if(currNode.nodeName==XmlTagsEnum.TAG_IMPORT)
             {
-                dispatchEvent(new PreProcessEndEvent(this));
-                TemplateManager.getInstance().removeEventListener(TemplateLoadedEvent.EVENT_TEMPLATE_LOADED, this.onTemplateLoaded);
-                return;
+               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_URL]==null)
+               {
+                  _log.warn("Attribute \'"+XmlAttributesEnum.ATTRIBUTE_URL+"\' is missing in "+XmlTagsEnum.TAG_IMPORT+" tag.");
+               }
+               else
+               {
+                  this._aImportFile.push(LangManager.getInstance().replaceKey(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_URL]));
+               }
+               currNode.removeNode();
+               i--;
             }
-            var _loc_1:* = 0;
-            while (_loc_1 < this._aImportFile.length)
+            else
             {
-                
-                TemplateManager.getInstance().register(this._aImportFile[_loc_1]);
-                _loc_1 = _loc_1 + 1;
+               if(currNode!=null)
+               {
+                  this.matchImport(currNode);
+               }
             }
-            return;
-        }// end function
+            i++;
+         }
+      }
 
-        private function matchImport(param1:XMLNode) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.childNodes.length)
+      private function replaceTemplateCall(node:XMLNode) : Boolean {
+         var currNode:XMLNode = null;
+         var currVarNode:XMLNode = null;
+         var templateNode:XMLNode = null;
+         var insertedNode:XMLNode = null;
+         var j:uint = 0;
+         var s:String = null;
+         var n:uint = 0;
+         var aTmp:Array = null;
+         var sFileName:String = null;
+         var aTemplateVar:Array = null;
+         var replace:* = false;
+         var content:String = null;
+         var varNode:XMLNode = null;
+         var bRes:Boolean = false;
+         var i:uint = 0;
+         while(i<node.childNodes.length)
+         {
+            currNode=node.childNodes[i];
+            replace=false;
+            j=0;
+            while(j<this._aImportFile.length)
             {
-                
-                _loc_2 = param1.childNodes[_loc_3];
-                if (_loc_2.nodeName == XmlTagsEnum.TAG_IMPORT)
-                {
-                    if (_loc_2.attributes[XmlAttributesEnum.ATTRIBUTE_URL] == null)
-                    {
-                        _log.warn("Attribute \'" + XmlAttributesEnum.ATTRIBUTE_URL + "\' is missing in " + XmlTagsEnum.TAG_IMPORT + " tag.");
-                    }
-                    else
-                    {
-                        this._aImportFile.push(LangManager.getInstance().replaceKey(_loc_2.attributes[XmlAttributesEnum.ATTRIBUTE_URL]));
-                    }
-                    _loc_2.removeNode();
-                    _loc_3 = _loc_3 - 1;
-                }
-                else if (_loc_2 != null)
-                {
-                    this.matchImport(_loc_2);
-                }
-                _loc_3 = _loc_3 + 1;
+               aTmp=this._aImportFile[j].split("/");
+               sFileName=aTmp[aTmp.length-1];
+               if(sFileName.toUpperCase()==(currNode.nodeName+".xml").toUpperCase())
+               {
+                  aTemplateVar=new Array();
+                  for (s in currNode.attributes)
+                  {
+                     aTemplateVar[s]=new TemplateParam(s,currNode.attributes[s]);
+                  }
+                  n=0;
+                  while(n<currNode.childNodes.length)
+                  {
+                     currVarNode=currNode.childNodes[n];
+                     content="";
+                     for each (varNode in currVarNode.childNodes)
+                     {
+                        content=content+varNode;
+                     }
+                     aTemplateVar[currVarNode.nodeName]=new TemplateParam(currVarNode.nodeName,content);
+                     n++;
+                  }
+                  templateNode=TemplateManager.getInstance().getTemplate(sFileName).makeTemplate(aTemplateVar);
+                  n=0;
+                  while(n<templateNode.firstChild.childNodes.length)
+                  {
+                     insertedNode=templateNode.firstChild.childNodes[n].cloneNode(true);
+                     currNode.parentNode.insertBefore(insertedNode,currNode);
+                     n++;
+                  }
+                  currNode.removeNode();
+                  bRes=replace=true;
+               }
+               j++;
             }
-            return;
-        }// end function
-
-        private function replaceTemplateCall(param1:XMLNode) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_14:* = false;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_6:* = false;
-            var _loc_13:* = 0;
-            while (_loc_13 < param1.childNodes.length)
+            if(!replace)
             {
-                
-                _loc_2 = param1.childNodes[_loc_13];
-                _loc_14 = false;
-                _loc_7 = 0;
-                while (_loc_7 < this._aImportFile.length)
-                {
-                    
-                    _loc_10 = this._aImportFile[_loc_7].split("/");
-                    _loc_11 = this._aImportFile[_loc_7].split("/")[(_loc_10.length - 1)];
-                    if (_loc_11.toUpperCase() == (_loc_2.nodeName + ".xml").toUpperCase())
-                    {
-                        _loc_12 = new Array();
-                        for (_loc_8 in _loc_2.attributes)
-                        {
-                            
-                            _loc_12[_loc_8] = new TemplateParam(_loc_8, _loc_2.attributes[_loc_8]);
-                        }
-                        _loc_9 = 0;
-                        while (_loc_9 < _loc_2.childNodes.length)
-                        {
-                            
-                            _loc_3 = _loc_2.childNodes[_loc_9];
-                            _loc_15 = "";
-                            for each (_loc_16 in _loc_3.childNodes)
-                            {
-                                
-                                _loc_15 = _loc_15 + _loc_16;
-                            }
-                            _loc_12[_loc_3.nodeName] = new TemplateParam(_loc_3.nodeName, _loc_15);
-                            _loc_9 = _loc_9 + 1;
-                        }
-                        _loc_4 = TemplateManager.getInstance().getTemplate(_loc_11).makeTemplate(_loc_12);
-                        _loc_9 = 0;
-                        while (_loc_9 < _loc_4.firstChild.childNodes.length)
-                        {
-                            
-                            _loc_5 = _loc_4.firstChild.childNodes[_loc_9].cloneNode(true);
-                            _loc_2.parentNode.insertBefore(_loc_5, _loc_2);
-                            _loc_9 = _loc_9 + 1;
-                        }
-                        _loc_2.removeNode();
-                        var _loc_17:* = true;
-                        _loc_14 = true;
-                        _loc_6 = _loc_17;
-                    }
-                    _loc_7 = _loc_7 + 1;
-                }
-                if (!_loc_14)
-                {
-                    _loc_6 = this.replaceTemplateCall(_loc_2) || _loc_6;
-                }
-                _loc_13 = _loc_13 + 1;
+               bRes=(this.replaceTemplateCall(currNode))||(bRes);
             }
-            return _loc_6;
-        }// end function
+            i++;
+         }
+         return bRes;
+      }
 
-        private function onTemplateLoaded(event:TemplateLoadedEvent) : void
-        {
-            if (TemplateManager.getInstance().areLoaded(this._aImportFile) && this._bMustBeRendered)
+      private function onTemplateLoaded(e:TemplateLoadedEvent) : void {
+         if((TemplateManager.getInstance().areLoaded(this._aImportFile))&&(this._bMustBeRendered))
+         {
+            this._bMustBeRendered=this.replaceTemplateCall(this._xDoc.firstChild);
+            if(this._bMustBeRendered)
             {
-                this._bMustBeRendered = this.replaceTemplateCall(this._xDoc.firstChild);
-                if (this._bMustBeRendered)
-                {
-                    this.processTemplate();
-                }
-                else
-                {
-                    dispatchEvent(new PreProcessEndEvent(this));
-                    TemplateManager.getInstance().removeEventListener(TemplateLoadedEvent.EVENT_TEMPLATE_LOADED, this.onTemplateLoaded);
-                }
+               this.processTemplate();
             }
-            return;
-        }// end function
+            else
+            {
+               dispatchEvent(new PreProcessEndEvent(this));
+               TemplateManager.getInstance().removeEventListener(TemplateLoadedEvent.EVENT_TEMPLATE_LOADED,this.onTemplateLoaded);
+            }
+         }
+      }
+   }
 
-    }
 }

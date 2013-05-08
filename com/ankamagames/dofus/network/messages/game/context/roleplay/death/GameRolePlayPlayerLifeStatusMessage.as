@@ -1,84 +1,78 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.death
+package com.ankamagames.dofus.network.messages.game.context.roleplay.death
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayPlayerLifeStatusMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var state:uint = 0;
-        public static const protocolId:uint = 5996;
 
-        public function GameRolePlayPlayerLifeStatusMessage()
-        {
+   public class GameRolePlayPlayerLifeStatusMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function GameRolePlayPlayerLifeStatusMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5996;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var state:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5996;
+      }
+
+      public function initGameRolePlayPlayerLifeStatusMessage(state:uint=0) : GameRolePlayPlayerLifeStatusMessage {
+         this.state=state;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.state=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayPlayerLifeStatusMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayPlayerLifeStatusMessage(output:IDataOutput) : void {
+         output.writeByte(this.state);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayPlayerLifeStatusMessage(input);
+      }
+
+      public function deserializeAs_GameRolePlayPlayerLifeStatusMessage(input:IDataInput) : void {
+         this.state=input.readByte();
+         if(this.state<0)
+         {
+            throw new Error("Forbidden value ("+this.state+") on element of GameRolePlayPlayerLifeStatusMessage.state.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 5996;
-        }// end function
-
-        public function initGameRolePlayPlayerLifeStatusMessage(param1:uint = 0) : GameRolePlayPlayerLifeStatusMessage
-        {
-            this.state = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.state = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayPlayerLifeStatusMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_GameRolePlayPlayerLifeStatusMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.state);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayPlayerLifeStatusMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_GameRolePlayPlayerLifeStatusMessage(param1:IDataInput) : void
-        {
-            this.state = param1.readByte();
-            if (this.state < 0)
-            {
-                throw new Error("Forbidden value (" + this.state + ") on element of GameRolePlayPlayerLifeStatusMessage.state.");
-            }
-            return;
-        }// end function
-
-    }
 }

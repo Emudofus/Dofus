@@ -1,82 +1,99 @@
-ï»¿package com.ankamagames.dofus.logic.game.roleplay.types
+package com.ankamagames.dofus.logic.game.roleplay.types
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.datacenter.appearance.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayHumanoidInformations;
+   import com.ankamagames.berilia.managers.CssManager;
+   import com.ankamagames.berilia.types.data.ExtendedStyleSheet;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
+   import com.ankamagames.dofus.datacenter.appearance.Title;
+   import com.ankamagames.dofus.datacenter.appearance.Ornament;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.jerakine.types.Callback;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionTitle;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.HumanOptionOrnament;
 
-    public class CharacterTooltipInformation extends Object
-    {
-        private var _cssUri:String;
-        public var infos:GameRolePlayHumanoidInformations;
-        public var wingsEffect:int;
-        public var titleName:String;
-        public var titleColor:String;
-        public var ornamentAssetId:int;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(CharacterTooltipInformation));
 
-        public function CharacterTooltipInformation(param1:GameRolePlayHumanoidInformations, param2:int)
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = undefined;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            this._cssUri = XmlConfig.getInstance().getEntry("config.ui.skin") + "css/tooltip_title.css";
-            this.infos = param1;
-            this.wingsEffect = param2;
-            if (param1 is GameRolePlayCharacterInformations)
+   public class CharacterTooltipInformation extends Object
+   {
+         
+
+      public function CharacterTooltipInformation(pInfos:GameRolePlayHumanoidInformations, pWingsEffect:int) {
+         var playerInfo:GameRolePlayCharacterInformations = null;
+         var titleId:* = 0;
+         var titleParam:String = null;
+         var ornamentId:* = 0;
+         var option:* = undefined;
+         var title:Title = null;
+         var ornament:Ornament = null;
+         this._cssUri=XmlConfig.getInstance().getEntry("config.ui.skin")+"css/tooltip_title.css";
+         super();
+         this.infos=pInfos;
+         this.wingsEffect=pWingsEffect;
+         if(pInfos is GameRolePlayCharacterInformations)
+         {
+            playerInfo=pInfos as GameRolePlayCharacterInformations;
+            CssManager.getInstance().askCss(this._cssUri,new Callback(this.onCssLoaded));
+            for each (option in pInfos.humanoidInfo.options)
             {
-                _loc_3 = param1 as GameRolePlayCharacterInformations;
-                CssManager.getInstance().askCss(this._cssUri, new Callback(this.onCssLoaded));
-                for each (_loc_7 in param1.humanoidInfo.options)
-                {
-                    
-                    if (_loc_7 is HumanOptionTitle)
-                    {
-                        _loc_4 = _loc_7.titleId;
-                        _loc_5 = _loc_7.titleParam;
-                    }
-                    if (_loc_7 is HumanOptionOrnament)
-                    {
-                        _loc_6 = _loc_7.ornamentId;
-                    }
-                }
-                if (_loc_4)
-                {
-                    _loc_8 = Title.getTitleById(_loc_4);
-                    if (_loc_8)
-                    {
-                        this.titleName = "Â« " + _loc_8.name + " Â»";
-                        if (_loc_5)
-                        {
-                            this.titleName = this.titleName.split("%1").join(_loc_5);
-                        }
-                    }
-                }
-                if (_loc_6)
-                {
-                    _loc_9 = Ornament.getOrnamentById(_loc_6);
-                    this.ornamentAssetId = _loc_9.assetId;
-                }
+               if(option is HumanOptionTitle)
+               {
+                  titleId=option.titleId;
+                  titleParam=option.titleParam;
+               }
+               if(option is HumanOptionOrnament)
+               {
+                  ornamentId=option.ornamentId;
+               }
             }
-            return;
-        }// end function
+            if(titleId)
+            {
+               title=Title.getTitleById(titleId);
+               if(title)
+               {
+                  if(pInfos.humanoidInfo.sex==0)
+                  {
+                     this.titleName="« "+title.nameMale+" »";
+                  }
+                  else
+                  {
+                     this.titleName="« "+title.nameFemale+" »";
+                  }
+                  if(titleParam)
+                  {
+                     this.titleName=this.titleName.split("%1").join(titleParam);
+                  }
+               }
+            }
+            if(ornamentId)
+            {
+               ornament=Ornament.getOrnamentById(ornamentId);
+               this.ornamentAssetId=ornament.assetId;
+            }
+         }
+      }
 
-        private function onCssLoaded() : void
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = CssManager.getInstance().getCss(this._cssUri);
-            _loc_2 = _loc_1.getStyle("itemset");
-            this.titleColor = _loc_2["color"];
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CharacterTooltipInformation));
 
-    }
+      private var _cssUri:String;
+
+      public var infos:GameRolePlayHumanoidInformations;
+
+      public var wingsEffect:int;
+
+      public var titleName:String;
+
+      public var titleColor:String;
+
+      public var ornamentAssetId:int;
+
+      private function onCssLoaded() : void {
+         var styleObj:Object = null;
+         var _ssSheet:ExtendedStyleSheet = CssManager.getInstance().getCss(this._cssUri);
+         styleObj=_ssSheet.getStyle("itemset");
+         this.titleColor=styleObj["color"];
+      }
+   }
+
 }

@@ -1,118 +1,107 @@
-﻿package com.ankamagames.jerakine.utils.benchmark.monitoring
+package com.ankamagames.jerakine.utils.benchmark.monitoring
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.utils.benchmark.monitoring.ui.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import flash.utils.getTimer;
+   import com.ankamagames.jerakine.utils.benchmark.monitoring.ui.Graph;
+   import __AS3__.vec.Vector;
+   import flash.system.Capabilities;
 
-    public class FpsManagerUtils extends Object
-    {
 
-        public function FpsManagerUtils()
-        {
-            return;
-        }// end function
+   public class FpsManagerUtils extends Object
+   {
+         
 
-        public static function countKeys(param1:Dictionary) : int
-        {
-            var _loc_3:* = undefined;
-            var _loc_2:* = 0;
-            for (_loc_3 in param1)
+      public function FpsManagerUtils() {
+         super();
+      }
+
+      public static function countKeys(myDictionary:Dictionary) : int {
+         var key:* = undefined;
+         var n:int = 0;
+         for (key in myDictionary)
+         {
+            n++;
+         }
+         return n;
+      }
+
+      public static function calculateMB(value:uint) : Number {
+         var newValue:Number = Math.round(value/1024/1024*100);
+         return newValue/100;
+      }
+
+      public static function getTimeFromNow(value:int) : String {
+         var mls:int = getTimer()-value;
+         var sec:int = mls/1000;
+         var min:int = sec/60;
+         sec=sec-min*60;
+         return (min<0?min.toString()+" min ":"")+sec.toString()+" sec";
+      }
+
+      public static function isSpecialGraph(pIndice:String) : Boolean {
+         var g:Object = null;
+         for each (g in FpsManagerConst.SPECIAL_GRAPH)
+         {
+            if(g.name==pIndice)
             {
-                
-                _loc_2++;
+               return true;
             }
-            return _loc_2;
-        }// end function
+         }
+         return false;
+      }
 
-        public static function calculateMB(param1:uint) : Number
-        {
-            var _loc_2:* = Math.round(param1 / 1024 / 1024 * 100);
-            return _loc_2 / 100;
-        }// end function
-
-        public static function getTimeFromNow(param1:int) : String
-        {
-            var _loc_2:* = getTimer() - param1;
-            var _loc_3:* = _loc_2 / 1000;
-            var _loc_4:* = _loc_3 / 60;
-            _loc_3 = _loc_3 - _loc_4 * 60;
-            return (_loc_4 > 0 ? (_loc_4.toString() + " min ") : ("")) + _loc_3.toString() + " sec";
-        }// end function
-
-        public static function isSpecialGraph(param1:String) : Boolean
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in FpsManagerConst.SPECIAL_GRAPH)
+      public static function numberOfSpecialGraphDisplayed(graphList:Dictionary) : int {
+         var g:Graph = null;
+         var cpt:int = 0;
+         for each (g in graphList)
+         {
+            if(FpsManagerUtils.isSpecialGraph(g.indice))
             {
-                
-                if (_loc_2.name == param1)
-                {
-                    return true;
-                }
+               cpt++;
             }
-            return false;
-        }// end function
+         }
+         return cpt;
+      }
 
-        public static function numberOfSpecialGraphDisplayed(param1:Dictionary) : int
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = 0;
-            for each (_loc_3 in param1)
+      public static function getVectorMaxValue(vector:Vector.<Number>) : Number {
+         var v:* = NaN;
+         var value:Number = 0;
+         for each (v in vector)
+         {
+            if(v>value)
             {
-                
-                if (FpsManagerUtils.isSpecialGraph(_loc_3.indice))
-                {
-                    _loc_2++;
-                }
+               value=v;
             }
-            return _loc_2;
-        }// end function
+         }
+         return value;
+      }
 
-        public static function getVectorMaxValue(param1:Vector.<Number>) : Number
-        {
-            var _loc_3:* = NaN;
-            var _loc_2:* = 0;
-            for each (_loc_3 in param1)
-            {
-                
-                if (_loc_3 > _loc_2)
-                {
-                    _loc_2 = _loc_3;
-                }
-            }
-            return _loc_2;
-        }// end function
+      public static function getVersion() : Number {
+         var _fullInfo:String = Capabilities.version;
+         var _osSplitArr:Array = _fullInfo.split(" ");
+         var _versionSplitArr:Array = _osSplitArr[1].split(",");
+         var _versionInfo:Number = _versionSplitArr[0];
+         return _versionInfo;
+      }
 
-        public static function getVersion() : Number
-        {
-            var _loc_1:* = Capabilities.version;
-            var _loc_2:* = _loc_1.split(" ");
-            var _loc_3:* = _loc_2[1].split(",");
-            var _loc_4:* = _loc_3[0];
-            return _loc_3[0];
-        }// end function
+      public static function getBrightRandomColor() : uint {
+         var color:uint = getRandomColor();
+         while(color<8000000)
+         {
+            color=getRandomColor();
+         }
+         return color;
+      }
 
-        public static function getBrightRandomColor() : uint
-        {
-            var _loc_1:* = getRandomColor();
-            while (_loc_1 < 8000000)
-            {
-                
-                _loc_1 = getRandomColor();
-            }
-            return _loc_1;
-        }// end function
+      public static function getRandomColor() : uint {
+         return Math.random()*16777215;
+      }
 
-        public static function getRandomColor() : uint
-        {
-            return Math.random() * 16777215;
-        }// end function
+      public static function addAlphaToColor(rgb:uint, alpha:uint) : uint {
+         return (alpha<<24)+rgb;
+      }
 
-        public static function addAlphaToColor(param1:uint, param2:uint) : uint
-        {
-            return (param2 << 24) + param1;
-        }// end function
 
-    }
+   }
+
 }

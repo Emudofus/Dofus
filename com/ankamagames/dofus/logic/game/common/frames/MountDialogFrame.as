@@ -1,84 +1,76 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeLeaveMessage;
+   import com.ankamagames.dofus.network.enums.DialogTypeEnum;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeMountStableErrorMessage;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.ExchangeHookList;
+   import com.ankamagames.dofus.misc.lists.MountHookList;
 
-    public class MountDialogFrame extends Object implements Frame
-    {
-        private var _inStable:Boolean = false;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(MountDialogFrame));
 
-        public function MountDialogFrame()
-        {
-            return;
-        }// end function
+   public class MountDialogFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return 0;
-        }// end function
+      public function MountDialogFrame() {
+         super();
+      }
 
-        public function get inStable() : Boolean
-        {
-            return this._inStable;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MountDialogFrame));
 
-        public function pushed() : Boolean
-        {
-            this._inStable = true;
-            this.sendStartOkMount();
-            return true;
-        }// end function
+      public static function get mountFrame() : MountFrame {
+         return Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+      }
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            switch(true)
-            {
-                case param1 is ExchangeMountStableErrorMessage:
-                {
-                    return true;
-                }
-                case param1 is ExchangeLeaveMessage:
-                {
-                    _loc_2 = param1 as ExchangeLeaveMessage;
-                    if (_loc_2.dialogType == DialogTypeEnum.DIALOG_EXCHANGE)
-                    {
-                        Kernel.getWorker().removeFrame(this);
-                    }
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      private var _inStable:Boolean = false;
 
-        public function pulled() : Boolean
-        {
-            this._inStable = false;
-            KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeLeave, true);
-            return true;
-        }// end function
+      public function get priority() : int {
+         return 0;
+      }
 
-        private function sendStartOkMount() : void
-        {
-            KernelEventsManager.getInstance().processCallback(MountHookList.ExchangeStartOkMount, mountFrame.stableList, mountFrame.paddockList);
-            return;
-        }// end function
+      public function get inStable() : Boolean {
+         return this._inStable;
+      }
 
-        public static function get mountFrame() : MountFrame
-        {
-            return Kernel.getWorker().getFrame(MountFrame) as MountFrame;
-        }// end function
+      public function pushed() : Boolean {
+         this._inStable=true;
+         this.sendStartOkMount();
+         return true;
+      }
 
-    }
+      public function process(msg:Message) : Boolean {
+         var elm:ExchangeLeaveMessage = null;
+         switch(true)
+         {
+            case msg is ExchangeMountStableErrorMessage:
+               return true;
+            case msg is ExchangeLeaveMessage:
+               elm=msg as ExchangeLeaveMessage;
+               if(elm.dialogType==DialogTypeEnum.DIALOG_EXCHANGE)
+               {
+                  Kernel.getWorker().removeFrame(this);
+               }
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function pulled() : Boolean {
+         this._inStable=false;
+         KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeLeave,true);
+         return true;
+      }
+
+      private function sendStartOkMount() : void {
+         KernelEventsManager.getInstance().processCallback(MountHookList.ExchangeStartOkMount,mountFrame.stableList,mountFrame.paddockList);
+      }
+   }
+
 }

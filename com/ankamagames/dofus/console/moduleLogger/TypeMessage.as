@@ -1,234 +1,254 @@
-﻿package com.ankamagames.dofus.console.moduleLogger
+package com.ankamagames.dofus.console.moduleLogger
 {
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.types.shortcut.*;
-    import com.ankamagames.jerakine.handlers.messages.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import flash.display.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.types.shortcut.Bind;
+   import com.ankamagames.jerakine.messages.Message;
+   import flash.display.DisplayObject;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.berilia.types.data.Hook;
+   import com.ankamagames.jerakine.logger.LogLevel;
+   import com.ankamagames.jerakine.handlers.messages.Action;
+   import flash.utils.describeType;
 
-    final public class TypeMessage extends Object
-    {
-        public var name:String = "";
-        public var textInfo:String;
-        public var type:int = -1;
-        public var logType:int = -1;
-        private var search1:RegExp;
-        private var search2:RegExp;
-        private var vectorExp:RegExp;
-        public static const TYPE_HOOK:int = 0;
-        public static const TYPE_UI:int = 1;
-        public static const TYPE_ACTION:int = 2;
-        public static const TYPE_SHORTCUT:int = 3;
-        public static const TYPE_MODULE_LOG:int = 4;
-        public static const LOG:int = 5;
-        public static const LOG_CHAT:int = 17;
-        public static const TAB:String = "                  • ";
 
-        public function TypeMessage(... args)
-        {
-            args = new activation;
-            var object:Object;
-            var args:* = args;
-            this.search1 = new RegExp("<", "g");
-            this.search2 = new RegExp(">", "g");
-            this.vectorExp = new RegExp("Vector.<(.*)::(.*)>", "g");
-            try
-            {
-                object = [0];
-                if ( is String && length == 2)
-                {
-                    this.displayLog( as String, [1]);
-                }
-                else if ( is Hook)
-                {
-                    this.displayHookInformations( as Hook, [1]);
-                }
-                else if ( is Action)
-                {
-                    this.displayActionInformations( as Action);
-                }
-                else if ( is Message)
-                {
-                    this.displayInteractionMessage( as Message, [1]);
-                }
-                else if ( is Bind)
-                {
-                    this.displayBind( as Bind, [1]);
-                }
-                else
-                {
-                    this.name = "trace";
-                    this.textInfo =  as String;
-                    this.type = LOG;
-                }
-            }
-            catch (e:Error)
-            {
-                if (!(e is String))
-                {
-                    name = "trace";
-                    textInfo = "<span class=\'red\'>" + e.getStackTrace() + "</span>";
-                }
-            }
-            return;
-        }// end function
+   public final class TypeMessage extends Object
+   {
+         
 
-        private function displayBind(param1:Bind, param2:Object) : void
-        {
-            this.type = TYPE_SHORTCUT;
-            var _loc_3:* = "Shortcut : " + param1.key.toUpperCase() + " --&gt; \"" + param1.targetedShortcut + "\" " + (param1.alt ? ("Alt+") : ("")) + (param1.ctrl ? ("Ctrl+") : ("")) + (param1.shift ? ("Shift+") : (""));
-            this.name = "Shortcut";
-            this.textInfo = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'yellow\'> BIND   : <a href=\'event:@shortcut\'>" + _loc_3 + "</a></span>" + "\n<span class=\'gray+\'>" + TAB + "target : " + param2 + "</span>\n";
-            return;
-        }// end function
-
-        private function displayInteractionMessage(param1:Message, param2:DisplayObject) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            this.type = TYPE_UI;
-            var _loc_3:* = getQualifiedClassName(param1);
-            if (_loc_3.indexOf("::") != -1)
+      public function TypeMessage(... args) {
+         var object:Object = null;
+         this.search1=new RegExp("<","g");
+         this.search2=new RegExp(">","g");
+         this.vectorExp=new RegExp("Vector.<(.*)::(.*)>","g");
+         super();
+         object=args[0];
+         if((object is String)&&(args.length==2))
+         {
+            this.displayLog(object as String,args[1]);
+         }
+         else
+         {
+            if(object is Hook)
             {
-                _loc_3 = _loc_3.split("::")[1];
-            }
-            this.name = _loc_3;
-            var _loc_4:* = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'green\'> UI     : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "\n<span class=\'gray+\'>" + TAB + "target : " + param2.name + "</span><span class=\'gray\'>";
-            var _loc_5:* = String(param1);
-            if (String(param1).indexOf("@") != -1)
-            {
-                _loc_6 = _loc_5.split("@");
-                _loc_7 = _loc_6.length;
-                _loc_8 = 1;
-                while (_loc_8 < _loc_7)
-                {
-                    
-                    _loc_4 = _loc_4 + ("\n" + TAB + _loc_6[_loc_8]);
-                    _loc_8++;
-                }
-            }
-            this.textInfo = _loc_4 + "</span>\n";
-            return;
-        }// end function
-
-        private function displayHookInformations(param1:Hook, param2:Array) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            this.type = TYPE_HOOK;
-            this.name = param1.name;
-            var _loc_3:* = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'blue\'> HOOK   : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
-            var _loc_4:* = param2.length;
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_6 = param2[_loc_5];
-                _loc_7 = getQualifiedClassName(_loc_6);
-                _loc_7 = _loc_7.replace(this.vectorExp, "Vector.<$2>");
-                _loc_7 = _loc_7.replace(this.search1, "&lt;");
-                _loc_7 = _loc_7.replace(this.search2, "&gt;");
-                if (_loc_7.indexOf("::") != -1)
-                {
-                    _loc_7 = _loc_7.split("::")[1];
-                }
-                if (_loc_6 != null)
-                {
-                    _loc_8 = _loc_6.toString();
-                    _loc_8 = _loc_8.replace(this.search1, "&lt;");
-                    _loc_8 = _loc_8.replace(this.search2, "&gt;");
-                }
-                _loc_3 = _loc_3 + ("\n" + TAB + "arg" + _loc_5 + ":" + _loc_7 + " = " + _loc_8);
-                _loc_5++;
-            }
-            _loc_3 = _loc_3 + "</span>\n";
-            this.textInfo = _loc_3;
-            return;
-        }// end function
-
-        private function displayLog(param1:String, param2:int) : void
-        {
-            var _loc_3:* = null;
-            this.name = param1;
-            if (param2 == LogLevel.DEBUG)
-            {
-                _loc_3 = "<span class=\'blue\'>";
-            }
-            else if (param2 == LogLevel.TRACE)
-            {
-                _loc_3 = "<span class=\'green\'>";
-            }
-            else if (param2 == LogLevel.INFO)
-            {
-                _loc_3 = "<span class=\'yellow\'>";
-            }
-            else if (param2 == LogLevel.WARN)
-            {
-                _loc_3 = "<span class=\'orange\'>";
-            }
-            else if (param2 == LogLevel.ERROR)
-            {
-                _loc_3 = "<span class=\'red\'>";
-            }
-            else if (param2 == LogLevel.FATAL)
-            {
-                _loc_3 = "<span class=\'red+\'>";
-            }
-            else if (param2 == LOG_CHAT)
-            {
-                this.logType = LOG_CHAT;
-                _loc_3 = "<span class=\'white\'>";
+               this.displayHookInformations(object as Hook,args[1]);
             }
             else
             {
-                _loc_3 = "<span class=\'gray\'>";
+               if(object is Action)
+               {
+                  this.displayActionInformations(object as Action);
+               }
+               else
+               {
+                  if(object is Message)
+                  {
+                     this.displayInteractionMessage(object as Message,args[1]);
+                  }
+                  else
+                  {
+                     if(object is Bind)
+                     {
+                        this.displayBind(object as Bind,args[1]);
+                     }
+                     else
+                     {
+                        this.name="trace";
+                        this.textInfo=object as String;
+                        this.type=LOG;
+                     }
+                  }
+               }
             }
-            _loc_3 = _loc_3 + ("[" + this.getDate() + "] " + param1 + "</span>");
-            this.textInfo = _loc_3;
-            return;
-        }// end function
+         }
+      }
 
-        private function displayActionInformations(param1:Action) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            this.type = TYPE_ACTION;
-            var _loc_2:* = getQualifiedClassName(param1).split("::")[1];
-            this.name = _loc_2;
-            var _loc_3:* = "<span class=\'gray\'>[" + this.getDate() + "]</span>" + "<span class=\'pink\'> ACTION : <a href=\'event:@" + this.name + "\'>" + this.name + "</a></span>" + "<span class=\'gray\'>";
-            var _loc_4:* = describeType(param1);
-            var _loc_5:* = describeType(param1).elements("variable");
-            for each (_loc_6 in _loc_5)
+      public static const TYPE_HOOK:int = 0;
+
+      public static const TYPE_UI:int = 1;
+
+      public static const TYPE_ACTION:int = 2;
+
+      public static const TYPE_SHORTCUT:int = 3;
+
+      public static const TYPE_MODULE_LOG:int = 4;
+
+      public static const LOG:int = 5;
+
+      public static const LOG_CHAT:int = 17;
+
+      public static const TAB:String = "                  � ";
+
+      public var name:String = "";
+
+      public var textInfo:String;
+
+      public var type:int = -1;
+
+      public var logType:int = -1;
+
+      private var search1:RegExp;
+
+      private var search2:RegExp;
+
+      private function displayBind(bind:Bind, ui:Object) : void {
+         this.type=TYPE_SHORTCUT;
+         var textBind:String = "Shortcut : "+bind.key.toUpperCase()+" --&gt; \""+bind.targetedShortcut+"\" "+(bind.alt?"Alt+":"")+(bind.ctrl?"Ctrl+":"")+(bind.shift?"Shift+":"");
+         this.name="Shortcut";
+         this.textInfo="<span class=\'gray\'>["+this.getDate()+"]</span>"+"<span class=\'yellow\'> BIND   : <a href=\'event:@shortcut\'>"+textBind+"</a></span>"+"\n<span class=\'gray+\'>"+TAB+"target : "+ui+"</span>\n";
+      }
+
+      private function displayInteractionMessage(msg:Message, ui:DisplayObject) : void {
+         var infos:Array = null;
+         var num:* = 0;
+         var i:* = 0;
+         this.type=TYPE_UI;
+         var className:String = getQualifiedClassName(msg);
+         if(className.indexOf("::")!=-1)
+         {
+            className=className.split("::")[1];
+         }
+         this.name=className;
+         var text:String = "<span class=\'gray\'>["+this.getDate()+"]</span>"+"<span class=\'green\'> UI     : <a href=\'event:@"+this.name+"\'>"+this.name+"</a></span>"+"\n<span class=\'gray+\'>"+TAB+"target : "+ui.name+"</span><span class=\'gray\'>";
+         var baseName:String = String(msg);
+         if(baseName.indexOf("@")!=-1)
+         {
+            infos=baseName.split("@");
+            num=infos.length;
+            i=1;
+            while(i<num)
             {
-                
-                _loc_7 = _loc_6.attribute("name");
-                _loc_8 = _loc_6.attribute("type");
-                _loc_8 = _loc_8.replace(this.search1, "&lt;");
-                _loc_8 = _loc_8.replace(this.search2, "&gt;");
-                _loc_9 = String(param1[_loc_7]);
-                _loc_9 = _loc_9.replace(this.search1, "&lt;");
-                _loc_9 = _loc_9.replace(this.search2, "&gt;");
-                _loc_3 = _loc_3 + ("\n" + TAB + _loc_7 + ":" + _loc_8 + " = " + _loc_9);
+               text=text+("\n"+TAB+infos[i]);
+               i++;
             }
-            _loc_3 = _loc_3 + "</span>\n";
-            this.textInfo = _loc_3;
-            return;
-        }// end function
+         }
+         this.textInfo=text+"</span>\n";
+      }
 
-        private function getDate() : String
-        {
-            var _loc_1:* = new Date();
-            var _loc_2:* = _loc_1.hours;
-            var _loc_3:* = _loc_1.minutes;
-            var _loc_4:* = _loc_1.seconds;
-            return (_loc_2 < 10 ? ("0" + _loc_2) : (_loc_2)) + ":" + (_loc_3 < 10 ? ("0" + _loc_3) : (_loc_3)) + ":" + (_loc_4 < 10 ? ("0" + _loc_4) : (_loc_4));
-        }// end function
+      private var vectorExp:RegExp;
 
-    }
+      private function displayHookInformations(hook:Hook, args:Array) : void {
+         var arg:Object = null;
+         var className:String = null;
+         var textArg:String = null;
+         this.type=TYPE_HOOK;
+         this.name=hook.name;
+         var text:String = "<span class=\'gray\'>["+this.getDate()+"]</span>"+"<span class=\'blue\'> HOOK   : <a href=\'event:@"+this.name+"\'>"+this.name+"</a></span>"+"<span class=\'gray\'>";
+         var num:int = args.length;
+         var i:int = 0;
+         while(i<num)
+         {
+            arg=args[i];
+            className=getQualifiedClassName(arg);
+            className=className.replace(this.vectorExp,"Vector.<$2>");
+            className=className.replace(this.search1,"&lt;");
+            className=className.replace(this.search2,"&gt;");
+            if(className.indexOf("::")!=-1)
+            {
+               className=className.split("::")[1];
+            }
+            if(arg!=null)
+            {
+               textArg=arg.toString();
+               textArg=textArg.replace(this.search1,"&lt;");
+               textArg=textArg.replace(this.search2,"&gt;");
+            }
+            text=text+("\n"+TAB+"arg"+i+":"+className+" = "+textArg);
+            i++;
+         }
+         text=text+"</span>\n";
+         this.textInfo=text;
+      }
+
+      private function displayLog(text:String, level:int) : void {
+         var finalText:String = null;
+         this.name=text;
+         if(level==LogLevel.DEBUG)
+         {
+            finalText="<span class=\'blue\'>";
+         }
+         else
+         {
+            if(level==LogLevel.TRACE)
+            {
+               finalText="<span class=\'green\'>";
+            }
+            else
+            {
+               if(level==LogLevel.INFO)
+               {
+                  finalText="<span class=\'yellow\'>";
+               }
+               else
+               {
+                  if(level==LogLevel.WARN)
+                  {
+                     finalText="<span class=\'orange\'>";
+                  }
+                  else
+                  {
+                     if(level==LogLevel.ERROR)
+                     {
+                        finalText="<span class=\'red\'>";
+                     }
+                     else
+                     {
+                        if(level==LogLevel.FATAL)
+                        {
+                           finalText="<span class=\'red+\'>";
+                        }
+                        else
+                        {
+                           if(level==LOG_CHAT)
+                           {
+                              this.logType=LOG_CHAT;
+                              finalText="<span class=\'white\'>";
+                           }
+                           else
+                           {
+                              finalText="<span class=\'gray\'>";
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         finalText=finalText+("["+this.getDate()+"] "+text+"</span>");
+         this.textInfo=finalText;
+      }
+
+      private function displayActionInformations(action:Action) : void {
+         var variable:XML = null;
+         var name:String = null;
+         var typel:String = null;
+         var value:String = null;
+         this.type=TYPE_ACTION;
+         var actionName:String = getQualifiedClassName(action).split("::")[1];
+         this.name=actionName;
+         var text:String = "<span class=\'gray\'>["+this.getDate()+"]</span>"+"<span class=\'pink\'> ACTION : <a href=\'event:@"+this.name+"\'>"+this.name+"</a></span>"+"<span class=\'gray\'>";
+         var infos:XML = describeType(action);
+         var variables:XMLList = infos.elements("variable");
+         for each (variable in variables)
+         {
+            name=variable.attribute("name");
+            typel=variable.attribute("type");
+            typel=typel.replace(this.search1,"&lt;");
+            typel=typel.replace(this.search2,"&gt;");
+            value=String(action[name]);
+            value=value.replace(this.search1,"&lt;");
+            value=value.replace(this.search2,"&gt;");
+            text=text+("\n"+TAB+name+":"+typel+" = "+value);
+         }
+         text=text+"</span>\n";
+         this.textInfo=text;
+      }
+
+      private function getDate() : String {
+         var date:Date = new Date();
+         var hours:int = date.hours;
+         var minutes:int = date.minutes;
+         var seconds:int = date.seconds;
+         return (hours>10?"0"+hours:hours)+":"+(minutes>10?"0"+minutes:minutes)+":"+(seconds>10?"0"+seconds:seconds);
+      }
+   }
+
 }

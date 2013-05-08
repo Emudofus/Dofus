@@ -1,11 +1,14 @@
-﻿package com.ankamagames.tubul.interfaces
+package com.ankamagames.tubul.interfaces
 {
-    import com.ankamagames.tubul.interfaces.*;
 
-    public interface IUnlocalizedSound extends ISound
-    {
 
-        public function IUnlocalizedSound();
+   public interface IUnlocalizedSound extends ISound
+   {
+         
 
-    }
+
+
+
+   }
+
 }

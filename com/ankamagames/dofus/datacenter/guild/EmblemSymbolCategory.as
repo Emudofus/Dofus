@@ -1,41 +1,46 @@
-﻿package com.ankamagames.dofus.datacenter.guild
+package com.ankamagames.dofus.datacenter.guild
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class EmblemSymbolCategory extends Object implements IDataCenter
-    {
-        public var id:int;
-        public var nameId:uint;
-        private var _name:String;
-        private static const MODULE:String = "EmblemSymbolCategories";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemSymbolCategory));
 
-        public function EmblemSymbolCategory()
-        {
-            return;
-        }// end function
+   public class EmblemSymbolCategory extends Object implements IDataCenter
+   {
+         
 
-        public function get name() : String
-        {
-            if (!this._name)
-            {
-                this._name = I18n.getText(this.nameId);
-            }
-            return this._name;
-        }// end function
+      public function EmblemSymbolCategory() {
+         super();
+      }
 
-        public static function getEmblemSymbolCategoryById(param1:int) : EmblemSymbolCategory
-        {
-            return GameData.getObject(MODULE, param1) as EmblemSymbolCategory;
-        }// end function
+      public static const MODULE:String = "EmblemSymbolCategories";
 
-        public static function getEmblemSymbolCategories() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemSymbolCategory));
 
-    }
+      public static function getEmblemSymbolCategoryById(id:int) : EmblemSymbolCategory {
+         return GameData.getObject(MODULE,id) as EmblemSymbolCategory;
+      }
+
+      public static function getEmblemSymbolCategories() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:int;
+
+      public var nameId:uint;
+
+      private var _name:String;
+
+      public function get name() : String {
+         if(!this._name)
+         {
+            this._name=I18n.getText(this.nameId);
+         }
+         return this._name;
+      }
+   }
+
 }

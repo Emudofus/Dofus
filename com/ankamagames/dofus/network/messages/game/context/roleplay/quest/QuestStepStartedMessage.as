@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
+package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class QuestStepStartedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var questId:uint = 0;
-        public var stepId:uint = 0;
-        public static const protocolId:uint = 6096;
 
-        public function QuestStepStartedMessage()
-        {
-            return;
-        }// end function
+   public class QuestStepStartedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function QuestStepStartedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6096;
-        }// end function
+      public static const protocolId:uint = 6096;
 
-        public function initQuestStepStartedMessage(param1:uint = 0, param2:uint = 0) : QuestStepStartedMessage
-        {
-            this.questId = param1;
-            this.stepId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.questId = 0;
-            this.stepId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var questId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var stepId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_QuestStepStartedMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6096;
+      }
 
-        public function serializeAs_QuestStepStartedMessage(param1:IDataOutput) : void
-        {
-            if (this.questId < 0 || this.questId > 65535)
+      public function initQuestStepStartedMessage(questId:uint=0, stepId:uint=0) : QuestStepStartedMessage {
+         this.questId=questId;
+         this.stepId=stepId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.questId=0;
+         this.stepId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_QuestStepStartedMessage(output);
+      }
+
+      public function serializeAs_QuestStepStartedMessage(output:IDataOutput) : void {
+         if((this.questId>0)||(this.questId<65535))
+         {
+            throw new Error("Forbidden value ("+this.questId+") on element questId.");
+         }
+         else
+         {
+            output.writeShort(this.questId);
+            if((this.stepId>0)||(this.stepId<65535))
             {
-                throw new Error("Forbidden value (" + this.questId + ") on element questId.");
+               throw new Error("Forbidden value ("+this.stepId+") on element stepId.");
             }
-            param1.writeShort(this.questId);
-            if (this.stepId < 0 || this.stepId > 65535)
+            else
             {
-                throw new Error("Forbidden value (" + this.stepId + ") on element stepId.");
+               output.writeShort(this.stepId);
+               return;
             }
-            param1.writeShort(this.stepId);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_QuestStepStartedMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_QuestStepStartedMessage(input);
+      }
 
-        public function deserializeAs_QuestStepStartedMessage(param1:IDataInput) : void
-        {
-            this.questId = param1.readUnsignedShort();
-            if (this.questId < 0 || this.questId > 65535)
+      public function deserializeAs_QuestStepStartedMessage(input:IDataInput) : void {
+         this.questId=input.readUnsignedShort();
+         if((this.questId>0)||(this.questId<65535))
+         {
+            throw new Error("Forbidden value ("+this.questId+") on element of QuestStepStartedMessage.questId.");
+         }
+         else
+         {
+            this.stepId=input.readUnsignedShort();
+            if((this.stepId>0)||(this.stepId<65535))
             {
-                throw new Error("Forbidden value (" + this.questId + ") on element of QuestStepStartedMessage.questId.");
+               throw new Error("Forbidden value ("+this.stepId+") on element of QuestStepStartedMessage.stepId.");
             }
-            this.stepId = param1.readUnsignedShort();
-            if (this.stepId < 0 || this.stepId > 65535)
+            else
             {
-                throw new Error("Forbidden value (" + this.stepId + ") on element of QuestStepStartedMessage.stepId.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

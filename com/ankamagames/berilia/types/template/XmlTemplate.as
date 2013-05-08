@@ -1,218 +1,206 @@
-﻿package com.ankamagames.berilia.types.template
+package com.ankamagames.berilia.types.template
 {
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.jerakine.eval.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
-    import flash.xml.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.xml.XMLDocument;
+   import flash.xml.XMLNode;
+   import com.ankamagames.jerakine.eval.Evaluator;
+   import com.ankamagames.berilia.enums.XmlTagsEnum;
+   import com.ankamagames.berilia.enums.XmlAttributesEnum;
 
-    public class XmlTemplate extends Object
-    {
-        private var _aTemplateParams:Array;
-        private var _sXml:String;
-        private var _xDoc:XMLDocument;
-        private var _aVariablesStack:Array;
-        private var _filename:String;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(XmlTemplate));
 
-        public function XmlTemplate(param1:String = null, param2:String = null)
-        {
-            this._aVariablesStack = new Array();
-            this._filename = param2;
-            if (param1 != null)
+   public class XmlTemplate extends Object
+   {
+         
+
+      public function XmlTemplate(sXml:String=null, sFilename:String=null) {
+         this._aVariablesStack=new Array();
+         super();
+         this._filename=sFilename;
+         if(sXml!=null)
+         {
+            this.xml=sXml;
+         }
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(XmlTemplate));
+
+      private var _aTemplateParams:Array;
+
+      private var _sXml:String;
+
+      private var _xDoc:XMLDocument;
+
+      private var _aVariablesStack:Array;
+
+      private var _filename:String;
+
+      public function get xml() : String {
+         return this._sXml;
+      }
+
+      public function set xml(sXml:String) : void {
+         this._sXml=sXml;
+         this.parseTemplate();
+      }
+
+      public function get filename() : String {
+         return this._filename;
+      }
+
+      public function set filename(s:String) : void {
+         this._filename=s;
+      }
+
+      public function get templateParams() : Array {
+         return this._aTemplateParams;
+      }
+
+      public function get variablesStack() : Array {
+         return this._aVariablesStack;
+      }
+
+      public function makeTemplate(aVar:Array) : XMLNode {
+         var key:String = null;
+         var aVariables:Array = null;
+         var variable:TemplateVar = null;
+         var step:uint = 0;
+         var evaluator:Evaluator = new Evaluator();
+         var newXml:String = this._xDoc.toString();
+         var localVar:Array = [];
+         for (key in this._aTemplateParams)
+         {
+            localVar[key]=this._aTemplateParams[key];
+         }
+         for (key in aVar)
+         {
+            if(!this._aTemplateParams[key])
             {
-                this.xml = param1;
+               _log.error("Template "+this._filename+", param "+key+" is not defined");
+               delete aVar[[key]];
             }
+            else
+            {
+               localVar[key]=aVar[key];
+            }
+         }
+         newXml=this.replaceParam(newXml,localVar,"#");
+         aVariables=new Array();
+         step=0;
+         while(step<this._aVariablesStack.length)
+         {
+            variable=this._aVariablesStack[step].clone();
+            variable.value=evaluator.eval(this.replaceParam(this.replaceParam(variable.value,localVar,"#"),aVariables,"$"));
+            aVariables[variable.name]=variable;
+            step++;
+         }
+         newXml=this.replaceParam(newXml,aVariables,"$");
+         var newDoc:XMLDocument = new XMLDocument();
+         newDoc.parseXML(newXml);
+         return newDoc;
+      }
+
+      private function parseTemplate() : void {
+         this._xDoc=new XMLDocument();
+         this._aTemplateParams=new Array();
+         this._xDoc.ignoreWhite=true;
+         this._xDoc.parseXML(this._sXml);
+         if(this._xDoc.firstChild.nodeName+".xml"!=this._filename)
+         {
+            _log.error("Wrong root node name in "+this._filename+", found "+this._xDoc.firstChild.nodeName+", waiting for "+this._filename.replace(".xml",""));
             return;
-        }// end function
+         }
+         this.matchDynamicsParts(this._xDoc.firstChild);
+      }
 
-        public function get xml() : String
-        {
-            return this._sXml;
-        }// end function
-
-        public function set xml(param1:String) : void
-        {
-            this._sXml = param1;
-            this.parseTemplate();
-            return;
-        }// end function
-
-        public function get filename() : String
-        {
-            return this._filename;
-        }// end function
-
-        public function set filename(param1:String) : void
-        {
-            this._filename = param1;
-            return;
-        }// end function
-
-        public function get templateParams() : Array
-        {
-            return this._aTemplateParams;
-        }// end function
-
-        public function get variablesStack() : Array
-        {
-            return this._aVariablesStack;
-        }// end function
-
-        public function makeTemplate(param1:Array) : XMLNode
-        {
-            var _loc_4:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_2:* = new Evaluator();
-            var _loc_3:* = this._xDoc.toString();
-            var _loc_5:* = [];
-            for (_loc_4 in this._aTemplateParams)
+      private function matchDynamicsParts(node:XMLNode) : void {
+         var currNode:XMLNode = null;
+         var variable:TemplateVar = null;
+         var param:TemplateParam = null;
+         var i:uint = 0;
+         for(;i<node.childNodes.length;i++)
+         {
+            currNode=node.childNodes[i];
+            if(currNode.nodeName==XmlTagsEnum.TAG_VAR)
             {
-                
-                _loc_5[_loc_4] = this._aTemplateParams[_loc_4];
+               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
+               {
+                  variable=new TemplateVar(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
+                  variable.value=currNode.firstChild.toString().replace(new RegExp("&apos;","g"),"\'");
+                  this._aVariablesStack.push(variable);
+                  currNode.removeNode();
+                  i--;
+                  continue;
+               }
+               _log.warn(currNode.nodeName+" must have ["+XmlAttributesEnum.ATTRIBUTE_NAME+"] attribute");
             }
-            for (_loc_4 in param1)
+            if(currNode.nodeName==XmlTagsEnum.TAG_PARAM)
             {
-                
-                if (!this._aTemplateParams[_loc_4])
-                {
-                    _log.error("Template " + this._filename + ", param " + _loc_4 + " is not defined");
-                    delete param1[_loc_4];
-                    continue;
-                }
-                _loc_5[_loc_4] = param1[_loc_4];
+               if(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
+               {
+                  param=new TemplateParam(currNode.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
+                  this._aTemplateParams[param.name]=param;
+                  if(currNode.hasChildNodes())
+                  {
+                     param.defaultValue=currNode.firstChild.toString();
+                  }
+                  else
+                  {
+                     param.defaultValue="";
+                  }
+                  currNode.removeNode();
+                  i--;
+               }
+               else
+               {
+                  _log.warn(currNode.nodeName+" must have ["+XmlAttributesEnum.ATTRIBUTE_NAME+"] attribute");
+               }
             }
-            _loc_3 = this.replaceParam(_loc_3, _loc_5, "#");
-            _loc_6 = new Array();
-            _loc_8 = 0;
-            while (_loc_8 < this._aVariablesStack.length)
-            {
-                
-                _loc_7 = this._aVariablesStack[_loc_8].clone();
-                _loc_7.value = _loc_2.eval(this.replaceParam(this.replaceParam(_loc_7.value, _loc_5, "#"), _loc_6, "$"));
-                _loc_6[_loc_7.name] = _loc_7;
-                _loc_8 = _loc_8 + 1;
-            }
-            _loc_3 = this.replaceParam(_loc_3, _loc_6, "$");
-            var _loc_9:* = new XMLDocument();
-            new XMLDocument().parseXML(_loc_3);
-            return _loc_9;
-        }// end function
+         }
+      }
 
-        private function parseTemplate() : void
-        {
-            this._xDoc = new XMLDocument();
-            this._aTemplateParams = new Array();
-            this._xDoc.ignoreWhite = true;
-            this._xDoc.parseXML(this._sXml);
-            if (this._xDoc.firstChild.nodeName + ".xml" != this._filename)
+      private function replaceParam(txt:String, aVars:Array, prefix:String, recur:uint=1) : String {
+         var value:String = null;
+         var key:String = null;
+         var i:uint = 0;
+         if(!txt)
+         {
+            return txt;
+         }
+         var sortedParam:Array = new Array();
+         for (key in aVars)
+         {
+            sortedParam.push(key);
+         }
+         sortedParam.sort(Array.DESCENDING);
+         i=0;
+         while(i<sortedParam.length)
+         {
+            key=sortedParam[i];
+            if(aVars[key]==null)
             {
-                _log.error("Wrong root node name in " + this._filename + ", found " + this._xDoc.firstChild.nodeName + ", waiting for " + this._filename.replace(".xml", ""));
-                return;
             }
-            this.matchDynamicsParts(this._xDoc.firstChild);
-            return;
-        }// end function
+            else
+            {
+               value=aVars[key].value;
+               if((!value)&&(aVars[key] is TemplateParam))
+               {
+                  value=aVars[key].defaultValue;
+               }
+               if(value==null)
+               {
+                  _log.warn("No value for "+prefix+key);
+               }
+               else
+               {
+                  txt=txt.split(prefix+key).join(value);
+               }
+            }
+            i++;
+         }
+         return txt;
+      }
+   }
 
-        private function matchDynamicsParts(param1:XMLNode) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            while (_loc_5 < param1.childNodes.length)
-            {
-                
-                _loc_2 = param1.childNodes[_loc_5];
-                if (_loc_2.nodeName == XmlTagsEnum.TAG_VAR)
-                {
-                    if (_loc_2.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
-                    {
-                        _loc_3 = new TemplateVar(_loc_2.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
-                        _loc_3.value = _loc_2.firstChild.toString().replace(/&apos;""&apos;/g, "\'");
-                        this._aVariablesStack.push(_loc_3);
-                        _loc_2.removeNode();
-                        _loc_5 = _loc_5 - 1;
-                        ;
-                    }
-                    else
-                    {
-                        _log.warn(_loc_2.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
-                    }
-                }
-                if (_loc_2.nodeName == XmlTagsEnum.TAG_PARAM)
-                {
-                    if (_loc_2.attributes[XmlAttributesEnum.ATTRIBUTE_NAME])
-                    {
-                        _loc_4 = new TemplateParam(_loc_2.attributes[XmlAttributesEnum.ATTRIBUTE_NAME]);
-                        this._aTemplateParams[_loc_4.name] = _loc_4;
-                        if (_loc_2.hasChildNodes())
-                        {
-                            _loc_4.defaultValue = _loc_2.firstChild.toString();
-                        }
-                        else
-                        {
-                            _loc_4.defaultValue = "";
-                        }
-                        _loc_2.removeNode();
-                        _loc_5 = _loc_5 - 1;
-                    }
-                    else
-                    {
-                        _log.warn(_loc_2.nodeName + " must have [" + XmlAttributesEnum.ATTRIBUTE_NAME + "] attribute");
-                    }
-                }
-                _loc_5 = _loc_5 + 1;
-            }
-            return;
-        }// end function
-
-        private function replaceParam(param1:String, param2:Array, param3:String, param4:uint = 1) : String
-        {
-            var _loc_5:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            if (!param1)
-            {
-                return param1;
-            }
-            var _loc_6:* = new Array();
-            for (_loc_7 in param2)
-            {
-                
-                _loc_6.push(_loc_7);
-            }
-            _loc_6.sort(Array.DESCENDING);
-            _loc_8 = 0;
-            while (_loc_8 < _loc_6.length)
-            {
-                
-                _loc_7 = _loc_6[_loc_8];
-                if (param2[_loc_7] == null)
-                {
-                }
-                else
-                {
-                    _loc_5 = param2[_loc_7].value;
-                    if (!_loc_5 && param2[_loc_7] is TemplateParam)
-                    {
-                        _loc_5 = param2[_loc_7].defaultValue;
-                    }
-                    if (_loc_5 == null)
-                    {
-                        _log.warn("No value for " + param3 + _loc_7);
-                    }
-                    else
-                    {
-                        param1 = param1.split(param3 + _loc_7).join(_loc_5);
-                    }
-                }
-                _loc_8 = _loc_8 + 1;
-            }
-            return param1;
-        }// end function
-
-    }
 }

@@ -1,89 +1,84 @@
-﻿package com.ankamagames.dofus.network.messages.game.chat.smiley
+package com.ankamagames.dofus.network.messages.game.chat.smiley
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class MoodSmileyResultMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var resultCode:uint = 1;
-        public var smileyId:int = 0;
-        public static const protocolId:uint = 6196;
 
-        public function MoodSmileyResultMessage()
-        {
+   public class MoodSmileyResultMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function MoodSmileyResultMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6196;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var resultCode:uint = 1;
+
+      public var smileyId:int = 0;
+
+      override public function getMessageId() : uint {
+         return 6196;
+      }
+
+      public function initMoodSmileyResultMessage(resultCode:uint=1, smileyId:int=0) : MoodSmileyResultMessage {
+         this.resultCode=resultCode;
+         this.smileyId=smileyId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.resultCode=1;
+         this.smileyId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MoodSmileyResultMessage(output);
+      }
+
+      public function serializeAs_MoodSmileyResultMessage(output:IDataOutput) : void {
+         output.writeByte(this.resultCode);
+         output.writeByte(this.smileyId);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MoodSmileyResultMessage(input);
+      }
+
+      public function deserializeAs_MoodSmileyResultMessage(input:IDataInput) : void {
+         this.resultCode=input.readByte();
+         if(this.resultCode<0)
+         {
+            throw new Error("Forbidden value ("+this.resultCode+") on element of MoodSmileyResultMessage.resultCode.");
+         }
+         else
+         {
+            this.smileyId=input.readByte();
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 6196;
-        }// end function
-
-        public function initMoodSmileyResultMessage(param1:uint = 1, param2:int = 0) : MoodSmileyResultMessage
-        {
-            this.resultCode = param1;
-            this.smileyId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.resultCode = 1;
-            this.smileyId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_MoodSmileyResultMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_MoodSmileyResultMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.resultCode);
-            param1.writeByte(this.smileyId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_MoodSmileyResultMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_MoodSmileyResultMessage(param1:IDataInput) : void
-        {
-            this.resultCode = param1.readByte();
-            if (this.resultCode < 0)
-            {
-                throw new Error("Forbidden value (" + this.resultCode + ") on element of MoodSmileyResultMessage.resultCode.");
-            }
-            this.smileyId = param1.readByte();
-            return;
-        }// end function
-
-    }
 }

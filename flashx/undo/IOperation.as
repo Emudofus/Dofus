@@ -1,14 +1,16 @@
-﻿package flashx.undo
+package flashx.undo
 {
 
-    public interface IOperation
-    {
 
-        public function IOperation();
+   public interface IOperation
+   {
+         
 
-        function performRedo() : void;
 
-        function performUndo() : void;
 
-    }
+      function performRedo() : void;
+
+      function performUndo() : void;
+   }
+
 }

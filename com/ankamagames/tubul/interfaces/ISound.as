@@ -1,59 +1,61 @@
-﻿package com.ankamagames.tubul.interfaces
+package com.ankamagames.tubul.interfaces
 {
-    import com.ankamagames.jerakine.newCache.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.tubul.interfaces.*;
-    import com.ankamagames.tubul.types.*;
-    import flash.media.*;
+   import com.ankamagames.tubul.types.SoundSilence;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.media.Sound;
+   import com.ankamagames.tubul.types.VolumeFadeEffect;
+   import com.ankamagames.jerakine.newCache.ICache;
 
-    public interface ISound extends ISoundController
-    {
 
-        public function ISound();
+   public interface ISound extends ISoundController
+   {
+         
 
-        function get silence() : SoundSilence;
 
-        function set silence(param1:SoundSilence) : void;
 
-        function get duration() : Number;
+      function get silence() : SoundSilence;
 
-        function get stereo() : Boolean;
+      function set silence(param1:SoundSilence) : void;
 
-        function get totalLoops() : int;
+      function get duration() : Number;
 
-        function get currentLoop() : uint;
+      function get stereo() : Boolean;
 
-        function get uri() : Uri;
+      function get totalLoops() : int;
 
-        function get sound() : Sound;
+      function get currentLoop() : uint;
 
-        function set sound(param1) : void;
+      function get uri() : Uri;
 
-        function get busId() : int;
+      function get sound() : Sound;
 
-        function set busId(param1:int) : void;
+      function set sound(param1:*) : void;
 
-        function get bus() : IAudioBus;
+      function get busId() : int;
 
-        function get id() : int;
+      function set busId(param1:int) : void;
 
-        function get noCutSilence() : Boolean;
+      function get bus() : IAudioBus;
 
-        function set noCutSilence(param1:Boolean) : void;
+      function get id() : int;
 
-        function get isPlaying() : Boolean;
+      function get noCutSilence() : Boolean;
 
-        function play(param1:Boolean = false, param2:int = 0, param3:VolumeFadeEffect = null, param4:VolumeFadeEffect = null) : void;
+      function set noCutSilence(param1:Boolean) : void;
 
-        function stop(param1:VolumeFadeEffect = null) : void;
+      function get isPlaying() : Boolean;
 
-        function loadSound(param1:ICache) : void;
+      function play(param1:Boolean=false, param2:int=0, param3:VolumeFadeEffect=null, param4:VolumeFadeEffect=null) : void;
 
-        function setLoops(param1:int) : void;
+      function stop(param1:VolumeFadeEffect=null) : void;
 
-        function setCurrentLoop(param1:uint) : void;
+      function loadSound(param1:ICache) : void;
 
-        function clone() : ISound;
+      function setLoops(param1:int) : void;
 
-    }
+      function setCurrentLoop(param1:uint) : void;
+
+      function clone() : ISound;
+   }
+
 }

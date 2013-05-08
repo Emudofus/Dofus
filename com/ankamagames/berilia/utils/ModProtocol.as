@@ -1,41 +1,42 @@
-﻿package com.ankamagames.berilia.utils
+package com.ankamagames.berilia.utils
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.protocols.*;
-    import com.ankamagames.jerakine.resources.protocols.impl.*;
-    import com.ankamagames.jerakine.types.*;
+   import com.ankamagames.jerakine.resources.protocols.impl.FileProtocol;
+   import com.ankamagames.jerakine.resources.protocols.IProtocol;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.IResourceObserver;
+   import com.ankamagames.berilia.managers.UiModuleManager;
 
-    public class ModProtocol extends FileProtocol implements IProtocol
-    {
 
-        public function ModProtocol()
-        {
-            return;
-        }// end function
+   public class ModProtocol extends FileProtocol implements IProtocol
+   {
+         
 
-        override protected function loadDirectly(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void
-        {
-            getAdapter(param1, param4);
-            var _loc_5:* = param1.path.substr(0, param1.path.indexOf("/"));
-            var _loc_6:* = UiModuleManager.getInstance().getModulePath(_loc_5);
-            var _loc_7:* = param1.path.substr(param1.path.indexOf("/"));
-            if (_loc_6.charAt((_loc_6.length - 1)) != "/" && _loc_7.charAt(0) != "/")
-            {
-                _loc_6 = _loc_6 + "/";
-            }
-            if (_loc_6.charAt((_loc_6.length - 1)) == "/" && _loc_7.charAt(0) == "/")
-            {
-                _loc_7 = _loc_7.substr(1);
-            }
-            _loc_6 = _loc_6 + _loc_7;
-            if (_loc_6.indexOf("undefine") != -1)
-            {
-                trace("iok");
-            }
-            _adapter.com.ankamagames.jerakine.resources.adapters:IAdapter::loadDirectly(param1, extractPath(_loc_6), param2, param3);
-            return;
-        }// end function
+      public function ModProtocol() {
+         super();
+      }
 
-    }
+
+
+      override protected function loadDirectly(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
+         getAdapter(uri,forcedAdapter);
+         var moduleName:String = uri.path.substr(0,uri.path.indexOf("/"));
+         var path:String = UiModuleManager.getInstance().getModulePath(moduleName);
+         var addPath:String = uri.path.substr(uri.path.indexOf("/"));
+         if((!(path.charAt(path.length-1)=="/"))&&(!(addPath.charAt(0)=="/")))
+         {
+            path=path+"/";
+         }
+         if((path.charAt(path.length-1)=="/")&&(addPath.charAt(0)=="/"))
+         {
+            addPath=addPath.substr(1);
+         }
+         path=path+addPath;
+         if(path.indexOf("undefine")!=-1)
+         {
+            trace("iok");
+         }
+         _adapter.loadDirectly(uri,extractPath(path),observer,dispatchProgress);
+      }
+   }
+
 }

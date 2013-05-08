@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.approach.actions
+package com.ankamagames.dofus.logic.game.approach.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class SubscribersGiftListRequestAction extends Object implements Action
-    {
 
-        public function SubscribersGiftListRequestAction()
-        {
-            return;
-        }// end function
+   public class SubscribersGiftListRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : SubscribersGiftListRequestAction
-        {
-            var _loc_1:* = new SubscribersGiftListRequestAction;
-            return _loc_1;
-        }// end function
+      public function SubscribersGiftListRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : SubscribersGiftListRequestAction {
+         var action:SubscribersGiftListRequestAction = new SubscribersGiftListRequestAction();
+         return action;
+      }
+
+
+   }
+
 }

@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.messages
+package com.ankamagames.jerakine.messages
 {
 
-    public interface IMessageDispatcher
-    {
 
-        public function IMessageDispatcher();
+   public interface IMessageDispatcher
+   {
+         
 
-        function dispatchMessage(param1:MessageHandler, param2:Message) : void;
 
-    }
+
+      function dispatchMessage(param1:MessageHandler, param2:Message) : void;
+   }
+
 }

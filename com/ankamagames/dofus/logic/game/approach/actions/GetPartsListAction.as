@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.approach.actions
+package com.ankamagames.dofus.logic.game.approach.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GetPartsListAction extends Object implements Action
-    {
 
-        public function GetPartsListAction()
-        {
-            return;
-        }// end function
+   public class GetPartsListAction extends Object implements Action
+   {
+         
 
-        public static function create() : GetPartsListAction
-        {
-            var _loc_1:* = new GetPartsListAction;
-            return _loc_1;
-        }// end function
+      public function GetPartsListAction() {
+         super();
+      }
 
-    }
+      public static function create() : GetPartsListAction {
+         var a:GetPartsListAction = new GetPartsListAction();
+         return a;
+      }
+
+
+   }
+
 }

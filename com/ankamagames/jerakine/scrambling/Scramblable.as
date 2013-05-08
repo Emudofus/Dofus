@@ -1,15 +1,17 @@
-﻿package com.ankamagames.jerakine.scrambling
+package com.ankamagames.jerakine.scrambling
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public interface Scramblable
-    {
 
-        public function Scramblable();
+   public interface Scramblable
+   {
+         
 
-        function scramble(param1:ByteArray) : void;
 
-        function unscramble(param1:ByteArray) : void;
 
-    }
+      function scramble(param1:ByteArray) : void;
+
+      function unscramble(param1:ByteArray) : void;
+   }
+
 }

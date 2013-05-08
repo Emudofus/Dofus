@@ -1,100 +1,88 @@
-﻿package com.ankamagames.dofus.network.messages.web.krosmaster
+package com.ankamagames.dofus.network.messages.web.krosmaster
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.web.krosmaster.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.web.krosmaster.KrosmasterFigure;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class KrosmasterInventoryMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var figures:Vector.<KrosmasterFigure>;
-        public static const protocolId:uint = 6350;
 
-        public function KrosmasterInventoryMessage()
-        {
-            this.figures = new Vector.<KrosmasterFigure>;
-            return;
-        }// end function
+   public class KrosmasterInventoryMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function KrosmasterInventoryMessage() {
+         this.figures=new Vector.<KrosmasterFigure>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6350;
-        }// end function
+      public static const protocolId:uint = 6350;
 
-        public function initKrosmasterInventoryMessage(param1:Vector.<KrosmasterFigure> = null) : KrosmasterInventoryMessage
-        {
-            this.figures = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.figures = new Vector.<KrosmasterFigure>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var figures:Vector.<KrosmasterFigure>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6350;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_KrosmasterInventoryMessage(param1);
-            return;
-        }// end function
+      public function initKrosmasterInventoryMessage(figures:Vector.<KrosmasterFigure>=null) : KrosmasterInventoryMessage {
+         this.figures=figures;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_KrosmasterInventoryMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.figures.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.figures.length)
-            {
-                
-                (this.figures[_loc_2] as KrosmasterFigure).serializeAs_KrosmasterFigure(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.figures=new Vector.<KrosmasterFigure>();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_KrosmasterInventoryMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_KrosmasterInventoryMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new KrosmasterFigure();
-                _loc_4.deserialize(param1);
-                this.figures.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_KrosmasterInventoryMessage(output);
+      }
+
+      public function serializeAs_KrosmasterInventoryMessage(output:IDataOutput) : void {
+         output.writeShort(this.figures.length);
+         var _i1:uint = 0;
+         while(_i1<this.figures.length)
+         {
+            (this.figures[_i1] as KrosmasterFigure).serializeAs_KrosmasterFigure(output);
+            _i1++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_KrosmasterInventoryMessage(input);
+      }
+
+      public function deserializeAs_KrosmasterInventoryMessage(input:IDataInput) : void {
+         var _item1:KrosmasterFigure = null;
+         var _figuresLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_figuresLen)
+         {
+            _item1=new KrosmasterFigure();
+            _item1.deserialize(input);
+            this.figures.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

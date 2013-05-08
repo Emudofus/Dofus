@@ -1,61 +1,61 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.datacenter.misc.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.types.data.ApiAction;
+   import com.ankamagames.jerakine.logger.Logger;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.datacenter.misc.ActionDescription;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class DofusApiAction extends ApiAction
-    {
-        private var _description:String;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(DofusApiAction));
-        private static var _actionList:Vector.<DofusApiAction> = new Vector.<DofusApiAction>;
 
-        public function DofusApiAction(param1:String, param2:Class)
-        {
-            _actionList.push(this);
-            super(param1, param2, true, false, 0, 0, false);
-            return;
-        }// end function
+   public class DofusApiAction extends ApiAction
+   {
+         
 
-        public function get description() : String
-        {
-            return this._description;
-        }// end function
+      public function DofusApiAction(name:String, actionClass:Class) {
+         _actionList.push(this);
+         super(name,actionClass,true,false,0,0,false);
+      }
 
-        public static function updateInfo() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            for each (_loc_1 in _actionList)
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DofusApiAction));
+
+      private static var _actionList:Vector.<DofusApiAction> = new Vector.<DofusApiAction>();
+
+      public static function updateInfo() : void {
+         var action:DofusApiAction = null;
+         var actiondesc:ActionDescription = null;
+         for each (action in _actionList)
+         {
+            actiondesc=ActionDescription.getActionDescriptionByName(action.name);
+            if(actiondesc)
             {
-                
-                _loc_2 = ActionDescription.getActionDescriptionByName(_loc_1.name);
-                if (_loc_2)
-                {
-                    _loc_1._trusted = _loc_2.trusted;
-                    _loc_1._needInteraction = _loc_2.needInteraction;
-                    _loc_1._maxUsePerFrame = _loc_2.maxUsePerFrame;
-                    _loc_1._minimalUseInterval = _loc_2.minimalUseInterval;
-                    _loc_1._needConfirmation = _loc_2.needConfirmation;
-                    _loc_1._description = _loc_2.description;
-                    continue;
-                }
-                _log.warn("No data for Action \'" + _loc_1.name + "\'");
+               action._trusted=actiondesc.trusted;
+               action._needInteraction=actiondesc.needInteraction;
+               action._maxUsePerFrame=actiondesc.maxUsePerFrame;
+               action._minimalUseInterval=actiondesc.minimalUseInterval;
+               action._needConfirmation=actiondesc.needConfirmation;
+               action._description=actiondesc.description;
             }
-            return;
-        }// end function
+            else
+            {
+               _log.warn("No data for Action \'"+action.name+"\'");
+            }
+         }
+      }
 
-        public static function getApiActionByName(param1:String) : DofusApiAction
-        {
-            return _apiActionNameList[param1];
-        }// end function
+      public static function getApiActionByName(name:String) : DofusApiAction {
+         return _apiActionNameList[name];
+      }
 
-        public static function getApiActionsList() : Array
-        {
-            return _apiActionNameList;
-        }// end function
+      public static function getApiActionsList() : Array {
+         return _apiActionNameList;
+      }
 
-    }
+      private var _description:String;
+
+      public function get description() : String {
+         return this._description;
+      }
+   }
+
 }

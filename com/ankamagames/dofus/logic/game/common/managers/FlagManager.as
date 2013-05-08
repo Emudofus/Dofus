@@ -1,36 +1,35 @@
-﻿package com.ankamagames.dofus.logic.game.common.managers
+package com.ankamagames.dofus.logic.game.common.managers
 {
 
-    public class FlagManager extends Object
-    {
-        private var _phoenixs:Array;
-        private static var _self:FlagManager;
 
-        public function FlagManager()
-        {
-            this._phoenixs = new Array();
-            return;
-        }// end function
+   public class FlagManager extends Object
+   {
+         
 
-        public function get phoenixs() : Array
-        {
-            return this._phoenixs;
-        }// end function
+      public function FlagManager() {
+         this._phoenixs=new Array();
+         super();
+      }
 
-        public function set phoenixs(param1:Array) : void
-        {
-            this._phoenixs = param1;
-            return;
-        }// end function
+      private static var _self:FlagManager;
 
-        public static function getInstance() : FlagManager
-        {
-            if (!_self)
-            {
-                _self = new FlagManager;
-            }
-            return _self;
-        }// end function
+      public static function getInstance() : FlagManager {
+         if(!_self)
+         {
+            _self=new FlagManager();
+         }
+         return _self;
+      }
 
-    }
+      private var _phoenixs:Array;
+
+      public function get phoenixs() : Array {
+         return this._phoenixs;
+      }
+
+      public function set phoenixs(value:Array) : void {
+         this._phoenixs=value;
+      }
+   }
+
 }

@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import mx.core.*;
+   import mx.core.SpriteAsset;
 
-    public class EmbedAssets_TEAM_CIRCLE_CLIP extends SpriteAsset
-    {
 
-        public function EmbedAssets_TEAM_CIRCLE_CLIP()
-        {
-            return;
-        }// end function
+   public class EmbedAssets_TEAM_CIRCLE_CLIP extends SpriteAsset
+   {
+         
 
-    }
+      public function EmbedAssets_TEAM_CIRCLE_CLIP() {
+         super();
+      }
+
+
+
+
+   }
+
 }

@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild.tax
+package com.ankamagames.dofus.network.messages.game.guild.tax
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GuildFightPlayersEnemyRemoveMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fightId:Number = 0;
-        public var playerId:uint = 0;
-        public static const protocolId:uint = 5929;
 
-        public function GuildFightPlayersEnemyRemoveMessage()
-        {
-            return;
-        }// end function
+   public class GuildFightPlayersEnemyRemoveMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GuildFightPlayersEnemyRemoveMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5929;
-        }// end function
+      public static const protocolId:uint = 5929;
 
-        public function initGuildFightPlayersEnemyRemoveMessage(param1:Number = 0, param2:uint = 0) : GuildFightPlayersEnemyRemoveMessage
-        {
-            this.fightId = param1;
-            this.playerId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fightId = 0;
-            this.playerId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fightId:Number = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var playerId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GuildFightPlayersEnemyRemoveMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5929;
+      }
 
-        public function serializeAs_GuildFightPlayersEnemyRemoveMessage(param1:IDataOutput) : void
-        {
-            if (this.fightId < 0)
+      public function initGuildFightPlayersEnemyRemoveMessage(fightId:Number=0, playerId:uint=0) : GuildFightPlayersEnemyRemoveMessage {
+         this.fightId=fightId;
+         this.playerId=playerId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.fightId=0;
+         this.playerId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildFightPlayersEnemyRemoveMessage(output);
+      }
+
+      public function serializeAs_GuildFightPlayersEnemyRemoveMessage(output:IDataOutput) : void {
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element fightId.");
+         }
+         else
+         {
+            output.writeDouble(this.fightId);
+            if(this.playerId<0)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+               throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
             }
-            param1.writeDouble(this.fightId);
-            if (this.playerId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+               output.writeInt(this.playerId);
+               return;
             }
-            param1.writeInt(this.playerId);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GuildFightPlayersEnemyRemoveMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildFightPlayersEnemyRemoveMessage(input);
+      }
 
-        public function deserializeAs_GuildFightPlayersEnemyRemoveMessage(param1:IDataInput) : void
-        {
-            this.fightId = param1.readDouble();
-            if (this.fightId < 0)
+      public function deserializeAs_GuildFightPlayersEnemyRemoveMessage(input:IDataInput) : void {
+         this.fightId=input.readDouble();
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element of GuildFightPlayersEnemyRemoveMessage.fightId.");
+         }
+         else
+         {
+            this.playerId=input.readInt();
+            if(this.playerId<0)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element of GuildFightPlayersEnemyRemoveMessage.fightId.");
+               throw new Error("Forbidden value ("+this.playerId+") on element of GuildFightPlayersEnemyRemoveMessage.playerId.");
             }
-            this.playerId = param1.readInt();
-            if (this.playerId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.playerId + ") on element of GuildFightPlayersEnemyRemoveMessage.playerId.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

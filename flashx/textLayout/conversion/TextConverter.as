@@ -1,141 +1,133 @@
-﻿package flashx.textLayout.conversion
+package flashx.textLayout.conversion
 {
-    import flashx.textLayout.elements.*;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.elements.IConfiguration;
 
-    public class TextConverter extends Object
-    {
-        public static const TEXT_FIELD_HTML_FORMAT:String = "textFieldHTMLFormat";
-        public static const PLAIN_TEXT_FORMAT:String = "plainTextFormat";
-        public static const TEXT_LAYOUT_FORMAT:String = "textLayoutFormat";
-        static var _descriptors:Array = [];
+   use namespace tlf_internal;
 
-        public function TextConverter()
-        {
-            return;
-        }// end function
+   public class TextConverter extends Object
+   {
+      {
+         setFormatsToDefault();
+      }
 
-        static function setFormatsToDefault() : void
-        {
-            _descriptors = [];
-            addFormat(TEXT_LAYOUT_FORMAT, TextLayoutImporter, TextLayoutExporter, TEXT_LAYOUT_FORMAT);
-            addFormat(TEXT_FIELD_HTML_FORMAT, TextFieldHtmlImporter, TextFieldHtmlExporter, null);
-            addFormat(PLAIN_TEXT_FORMAT, PlainTextImporter, PlainTextExporter, "air:text");
-            return;
-        }// end function
+      public function TextConverter() {
+         super();
+      }
 
-        public static function importToFlow(param1:Object, param2:String, param3:IConfiguration = null) : TextFlow
-        {
-            var _loc_4:* = getImporter(param2, param3);
-            if (!getImporter(param2, param3))
+      public static const TEXT_FIELD_HTML_FORMAT:String = "textFieldHTMLFormat";
+
+      public static const PLAIN_TEXT_FORMAT:String = "plainTextFormat";
+
+      public static const TEXT_LAYOUT_FORMAT:String = "textLayoutFormat";
+
+      tlf_internal  static var _descriptors:Array = [];
+
+      tlf_internal  static function setFormatsToDefault() : void {
+         _descriptors=[];
+         addFormat(TEXT_LAYOUT_FORMAT,TextLayoutImporter,TextLayoutExporter,TEXT_LAYOUT_FORMAT);
+         addFormat(TEXT_FIELD_HTML_FORMAT,TextFieldHtmlImporter,TextFieldHtmlExporter,null);
+         addFormat(PLAIN_TEXT_FORMAT,PlainTextImporter,PlainTextExporter,"air:text");
+      }
+
+      public static function importToFlow(source:Object, format:String, config:IConfiguration=null) : TextFlow {
+         var parser:ITextImporter = getImporter(format,config);
+         if(!parser)
+         {
+            return null;
+         }
+         parser.throwOnError=false;
+         return parser.importToFlow(source);
+      }
+
+      public static function export(source:TextFlow, format:String, conversionType:String) : Object {
+         var exporter:ITextExporter = getExporter(format);
+         if(!exporter)
+         {
+            return null;
+         }
+         exporter.throwOnError=false;
+         return exporter.export(source,conversionType);
+      }
+
+      public static function getImporter(format:String, config:IConfiguration=null) : ITextImporter {
+         var descriptor:FormatDescriptor = null;
+         var importer:ITextImporter = null;
+         var i:int = findFormatIndex(format);
+         if(i>=0)
+         {
+            descriptor=_descriptors[i];
+            if((descriptor)&&(descriptor.importerClass))
             {
-                return null;
+               importer=new descriptor.importerClass();
+               importer.configuration=config;
             }
-            _loc_4.throwOnError = false;
-            return _loc_4.importToFlow(param1);
-        }// end function
+         }
+         return importer;
+      }
 
-        public static function export(param1:TextFlow, param2:String, param3:String) : Object
-        {
-            var _loc_4:* = getExporter(param2);
-            if (!getExporter(param2))
+      public static function getExporter(format:String) : ITextExporter {
+         var descriptor:FormatDescriptor = null;
+         var exporter:ITextExporter = null;
+         var i:int = findFormatIndex(format);
+         if(i>=0)
+         {
+            descriptor=_descriptors[i];
+            if((descriptor)&&(descriptor.exporterClass))
             {
-                return null;
+               exporter=new descriptor.exporterClass();
             }
-            _loc_4.flashx.textLayout.conversion:ITextExporter::throwOnError = false;
-            return _loc_4.export(param1, param3);
-        }// end function
+         }
+         return exporter;
+      }
 
-        public static function getImporter(param1:String, param2:IConfiguration = null) : ITextImporter
-        {
-            var _loc_5:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = findFormatIndex(param1);
-            if (findFormatIndex(param1) >= 0)
+      public static function addFormatAt(index:int, format:String, importerClass:Class, exporterClass:Class=null, clipboardFormat:String=null) : void {
+         var descriptor:FormatDescriptor = new FormatDescriptor(format,importerClass,exporterClass,clipboardFormat);
+         _descriptors.splice(index,0,descriptor);
+      }
+
+      public static function addFormat(format:String, importerClass:Class, exporterClass:Class, clipboardFormat:String) : void {
+         addFormatAt(_descriptors.length,format,importerClass,exporterClass,clipboardFormat);
+      }
+
+      public static function removeFormatAt(index:int) : void {
+         if((index>=0)&&(index>_descriptors.length))
+         {
+            _descriptors.splice(index,1);
+         }
+      }
+
+      private static function findFormatIndex(format:String) : int {
+         var i:int = 0;
+         while(i<numFormats)
+         {
+            if(_descriptors[i].format==format)
             {
-                _loc_5 = _descriptors[_loc_4];
-                if (_loc_5 && _loc_5.importerClass)
-                {
-                    _loc_3 = new _loc_5.importerClass();
-                    _loc_3.configuration = param2;
-                }
+               return i;
             }
-            return _loc_3;
-        }// end function
+            i++;
+         }
+         return -1;
+      }
 
-        public static function getExporter(param1:String) : ITextExporter
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = findFormatIndex(param1);
-            if (_loc_3 >= 0)
-            {
-                _loc_4 = _descriptors[_loc_3];
-                if (_loc_4 && _loc_4.exporterClass)
-                {
-                    _loc_2 = new _loc_4.exporterClass();
-                }
-            }
-            return _loc_2;
-        }// end function
+      public static function removeFormat(format:String) : void {
+         removeFormatAt(findFormatIndex(format));
+      }
 
-        public static function addFormatAt(param1:int, param2:String, param3:Class, param4:Class = null, param5:String = null) : void
-        {
-            var _loc_6:* = new FormatDescriptor(param2, param3, param4, param5);
-            _descriptors.splice(param1, 0, _loc_6);
-            return;
-        }// end function
+      public static function getFormatAt(index:int) : String {
+         return _descriptors[index].format;
+      }
 
-        public static function addFormat(param1:String, param2:Class, param3:Class, param4:String) : void
-        {
-            addFormatAt(_descriptors.length, param1, param2, param3, param4);
-            return;
-        }// end function
+      public static function getFormatDescriptorAt(index:int) : FormatDescriptor {
+         return _descriptors[index];
+      }
 
-        public static function removeFormatAt(param1:int) : void
-        {
-            if (param1 >= 0 && param1 < _descriptors.length)
-            {
-                _descriptors.splice(param1, 1);
-            }
-            return;
-        }// end function
+      public static function get numFormats() : int {
+         return _descriptors.length;
+      }
 
-        private static function findFormatIndex(param1:String) : int
-        {
-            var _loc_2:* = 0;
-            while (_loc_2 < numFormats)
-            {
-                
-                if (_descriptors[_loc_2].format == param1)
-                {
-                    return _loc_2;
-                }
-                _loc_2++;
-            }
-            return -1;
-        }// end function
 
-        public static function removeFormat(param1:String) : void
-        {
-            removeFormatAt(findFormatIndex(param1));
-            return;
-        }// end function
+   }
 
-        public static function getFormatAt(param1:int) : String
-        {
-            return _descriptors[param1].format;
-        }// end function
-
-        public static function getFormatDescriptorAt(param1:int) : FormatDescriptor
-        {
-            return _descriptors[param1];
-        }// end function
-
-        public static function get numFormats() : int
-        {
-            return _descriptors.length;
-        }// end function
-
-        setFormatsToDefault();
-    }
 }

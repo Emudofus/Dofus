@@ -1,90 +1,87 @@
-﻿package com.ankamagames.dofus.network.messages.game.character.choice
+package com.ankamagames.dofus.network.messages.game.character.choice
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class CharacterSelectedErrorMissingMapPackMessage extends CharacterSelectedErrorMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var subAreaId:uint = 0;
-        public static const protocolId:uint = 6300;
 
-        public function CharacterSelectedErrorMissingMapPackMessage()
-        {
+   public class CharacterSelectedErrorMissingMapPackMessage extends CharacterSelectedErrorMessage implements INetworkMessage
+   {
+         
+
+      public function CharacterSelectedErrorMissingMapPackMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6300;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
+
+      public var subAreaId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6300;
+      }
+
+      public function initCharacterSelectedErrorMissingMapPackMessage(subAreaId:uint=0) : CharacterSelectedErrorMissingMapPackMessage {
+         this.subAreaId=subAreaId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.subAreaId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterSelectedErrorMissingMapPackMessage(output);
+      }
+
+      public function serializeAs_CharacterSelectedErrorMissingMapPackMessage(output:IDataOutput) : void {
+         super.serializeAs_CharacterSelectedErrorMessage(output);
+         if(this.subAreaId<0)
+         {
+            throw new Error("Forbidden value ("+this.subAreaId+") on element subAreaId.");
+         }
+         else
+         {
+            output.writeInt(this.subAreaId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterSelectedErrorMissingMapPackMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6300;
-        }// end function
-
-        public function initCharacterSelectedErrorMissingMapPackMessage(param1:uint = 0) : CharacterSelectedErrorMissingMapPackMessage
-        {
-            this.subAreaId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.subAreaId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_CharacterSelectedErrorMissingMapPackMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.subAreaId=input.readInt();
+         if(this.subAreaId<0)
+         {
+            throw new Error("Forbidden value ("+this.subAreaId+") on element of CharacterSelectedErrorMissingMapPackMessage.subAreaId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_CharacterSelectedErrorMissingMapPackMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_CharacterSelectedErrorMissingMapPackMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_CharacterSelectedErrorMessage(param1);
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
-            }
-            param1.writeInt(this.subAreaId);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_CharacterSelectedErrorMissingMapPackMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_CharacterSelectedErrorMissingMapPackMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.subAreaId = param1.readInt();
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element of CharacterSelectedErrorMissingMapPackMessage.subAreaId.");
-            }
-            return;
-        }// end function
-
-    }
 }

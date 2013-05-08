@@ -1,20 +1,24 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.types
+package com.ankamagames.dofus.logic.game.roleplay.types
 {
-    import com.ankamagames.dofus.datacenter.items.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.datacenter.items.Item;
 
-    public class GroundObject extends GameRolePlayActorInformations
-    {
-        public var object:Item;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(GroundObject));
 
-        public function GroundObject(param1:Item)
-        {
-            this.object = param1;
-            return;
-        }// end function
+   public class GroundObject extends GameRolePlayActorInformations
+   {
+         
 
-    }
+      public function GroundObject(pObject:Item) {
+         super();
+         this.object=pObject;
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GroundObject));
+
+      public var object:Item;
+   }
+
 }

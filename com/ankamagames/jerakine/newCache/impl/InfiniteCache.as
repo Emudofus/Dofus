@@ -1,59 +1,52 @@
-﻿package com.ankamagames.jerakine.newCache.impl
+package com.ankamagames.jerakine.newCache.impl
 {
-    import com.ankamagames.jerakine.newCache.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import flash.utils.Dictionary;
 
-    public class InfiniteCache extends Object implements ICache
-    {
-        protected var _cache:Dictionary;
-        protected var _size:uint;
 
-        public function InfiniteCache()
-        {
-            this._cache = new Dictionary(true);
-            return;
-        }// end function
+   public class InfiniteCache extends Object implements ICache
+   {
+         
 
-        public function get size() : uint
-        {
-            return this._size;
-        }// end function
+      public function InfiniteCache() {
+         this._cache=new Dictionary(true);
+         super();
+      }
 
-        public function contains(param1) : Boolean
-        {
-            return this._cache[param1] != null;
-        }// end function
 
-        public function extract(param1)
-        {
-            var _loc_2:* = this._cache[param1];
-            delete this._cache[param1];
-            var _loc_3:* = this;
-            var _loc_4:* = this._size - 1;
-            _loc_3._size = _loc_4;
-            return _loc_2;
-        }// end function
 
-        public function peek(param1)
-        {
-            return this._cache[param1];
-        }// end function
+      protected var _cache:Dictionary;
 
-        public function store(param1, param2) : void
-        {
-            this._cache[param1] = param2;
-            var _loc_3:* = this;
-            var _loc_4:* = this._size + 1;
-            _loc_3._size = _loc_4;
-            return;
-        }// end function
+      protected var _size:uint;
 
-        public function destroy() : void
-        {
-            this._cache = new Dictionary(true);
-            this._size = 0;
-            return;
-        }// end function
+      public function get size() : uint {
+         return this._size;
+      }
 
-    }
+      public function contains(ref:*) : Boolean {
+         return !(this._cache[ref]==null);
+      }
+
+      public function extract(ref:*) : * {
+         var obj:* = this._cache[ref];
+         delete this._cache[[ref]];
+         this._size--;
+         return obj;
+      }
+
+      public function peek(ref:*) : * {
+         return this._cache[ref];
+      }
+
+      public function store(ref:*, obj:*) : void {
+         this._cache[ref]=obj;
+         this._size++;
+      }
+
+      public function destroy() : void {
+         this._cache=new Dictionary(true);
+         this._size=0;
+      }
+   }
+
 }

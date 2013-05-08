@@ -1,51 +1,59 @@
-﻿package flashx.textLayout.edit
+package flashx.textLayout.edit
 {
-    import flash.events.*;
+   import flash.events.Event;
+   import flash.events.KeyboardEvent;
+   import flash.events.FocusEvent;
+   import flash.events.TextEvent;
+   import flash.events.IMEEvent;
+   import flash.events.MouseEvent;
+   import flash.events.ContextMenuEvent;
 
-    public interface IInteractionEventHandler
-    {
 
-        public function IInteractionEventHandler();
+   public interface IInteractionEventHandler
+   {
+         
 
-        function editHandler(event:Event) : void;
 
-        function keyDownHandler(event:KeyboardEvent) : void;
 
-        function keyUpHandler(event:KeyboardEvent) : void;
+      function editHandler(param1:Event) : void;
 
-        function keyFocusChangeHandler(event:FocusEvent) : void;
+      function keyDownHandler(param1:KeyboardEvent) : void;
 
-        function textInputHandler(event:TextEvent) : void;
+      function keyUpHandler(param1:KeyboardEvent) : void;
 
-        function imeStartCompositionHandler(event:IMEEvent) : void;
+      function keyFocusChangeHandler(param1:FocusEvent) : void;
 
-        function softKeyboardActivatingHandler(event:Event) : void;
+      function textInputHandler(param1:TextEvent) : void;
 
-        function mouseDownHandler(event:MouseEvent) : void;
+      function imeStartCompositionHandler(param1:IMEEvent) : void;
 
-        function mouseMoveHandler(event:MouseEvent) : void;
+      function softKeyboardActivatingHandler(param1:Event) : void;
 
-        function mouseUpHandler(event:MouseEvent) : void;
+      function mouseDownHandler(param1:MouseEvent) : void;
 
-        function mouseDoubleClickHandler(event:MouseEvent) : void;
+      function mouseMoveHandler(param1:MouseEvent) : void;
 
-        function mouseOverHandler(event:MouseEvent) : void;
+      function mouseUpHandler(param1:MouseEvent) : void;
 
-        function mouseOutHandler(event:MouseEvent) : void;
+      function mouseDoubleClickHandler(param1:MouseEvent) : void;
 
-        function focusInHandler(event:FocusEvent) : void;
+      function mouseOverHandler(param1:MouseEvent) : void;
 
-        function focusOutHandler(event:FocusEvent) : void;
+      function mouseOutHandler(param1:MouseEvent) : void;
 
-        function activateHandler(event:Event) : void;
+      function focusInHandler(param1:FocusEvent) : void;
 
-        function deactivateHandler(event:Event) : void;
+      function focusOutHandler(param1:FocusEvent) : void;
 
-        function focusChangeHandler(event:FocusEvent) : void;
+      function activateHandler(param1:Event) : void;
 
-        function menuSelectHandler(event:ContextMenuEvent) : void;
+      function deactivateHandler(param1:Event) : void;
 
-        function mouseWheelHandler(event:MouseEvent) : void;
+      function focusChangeHandler(param1:FocusEvent) : void;
 
-    }
+      function menuSelectHandler(param1:ContextMenuEvent) : void;
+
+      function mouseWheelHandler(param1:MouseEvent) : void;
+   }
+
 }

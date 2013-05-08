@@ -1,24 +1,26 @@
-﻿package com.ankamagames.jerakine.utils.crypto
+package com.ankamagames.jerakine.utils.crypto
 {
-    import com.hurlant.crypto.rsa.*;
-    import com.hurlant.util.der.*;
-    import flash.utils.*;
+   import flash.utils.ByteArray;
+   import com.hurlant.util.der.PEM;
+   import com.hurlant.crypto.rsa.RSAKey;
 
-    public class RSA extends Object
-    {
 
-        public function RSA()
-        {
-            return;
-        }// end function
+   public class RSA extends Object
+   {
+         
 
-        public static function publicEncrypt(param1:String, param2:ByteArray) : ByteArray
-        {
-            var _loc_3:* = new ByteArray();
-            var _loc_4:* = PEM.readRSAPublicKey(param1);
-            PEM.readRSAPublicKey(param1).encrypt(param2, _loc_3, param2.length);
-            return _loc_3;
-        }// end function
+      public function RSA() {
+         super();
+      }
 
-    }
+      public static function publicEncrypt(key:String, baIn:ByteArray) : ByteArray {
+         var baOut:ByteArray = new ByteArray();
+         var publicKey:RSAKey = PEM.readRSAPublicKey(key);
+         publicKey.encrypt(baIn,baOut,baIn.length);
+         return baOut;
+      }
+
+
+   }
+
 }

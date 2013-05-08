@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.bid
+package com.ankamagames.dofus.logic.game.common.actions.bid
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class BidSwitchToSellerModeAction extends Object implements Action
-    {
 
-        public function BidSwitchToSellerModeAction()
-        {
-            return;
-        }// end function
+   public class BidSwitchToSellerModeAction extends Object implements Action
+   {
+         
 
-        public static function create() : BidSwitchToSellerModeAction
-        {
-            var _loc_1:* = new BidSwitchToSellerModeAction;
-            return _loc_1;
-        }// end function
+      public function BidSwitchToSellerModeAction() {
+         super();
+      }
 
-    }
+      public static function create() : BidSwitchToSellerModeAction {
+         var a:BidSwitchToSellerModeAction = new BidSwitchToSellerModeAction();
+         return a;
+      }
+
+
+   }
+
 }

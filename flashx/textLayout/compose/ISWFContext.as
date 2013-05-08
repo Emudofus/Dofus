@@ -1,12 +1,14 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
 
-    public interface ISWFContext
-    {
 
-        public function ISWFContext();
+   public interface ISWFContext
+   {
+         
 
-        function callInContext(param1:Function, param2:Object, param3:Array, param4:Boolean = true);
 
-    }
+
+      function callInContext(param1:Function, param2:Object, param3:Array, param4:Boolean=true) : *;
+   }
+
 }

@@ -1,126 +1,121 @@
-﻿package com.ankamagames.tubul.types.effects
+package com.ankamagames.tubul.types.effects
 {
-    import com.ankamagames.tubul.interfaces.*;
+   import com.ankamagames.tubul.interfaces.IEffect;
 
-    public class LowPassFilter extends Object implements IEffect
-    {
-        private var _lfoPhase:Number;
-        private var _lfoAdd:Number;
-        private var _poleLVel:Number;
-        private var _poleLVal:Number;
-        private var _poleRVel:Number;
-        private var _poleRVal:Number;
-        private var _resonance:Number;
-        private var _minFreq:Number;
-        private var _maxFreq:Number;
-        private var _lfoSpeedMs:Number;
 
-        public function LowPassFilter(param1:Number = 0, param2:Number = 0, param3:Number = 0, param4:Number = 0)
-        {
-            this.lfoSpeedMs = param4;
-            this.resonance = param1;
-            this.minFreq = param2;
-            this.maxFreq = param3;
-            this._lfoAdd = 1 / (this.lfoSpeedMs * 44.1);
-            this._lfoPhase = 0;
-            this._resonance = this.resonance;
-            this._minFreq = this.minFreq;
-            this._maxFreq = this.maxFreq;
-            this._poleLVel = 0;
-            this._poleLVal = 0;
-            this._poleRVel = 0;
-            this._poleRVal = 0;
-            return;
-        }// end function
+   public class LowPassFilter extends Object implements IEffect
+   {
+         
 
-        public function get name() : String
-        {
-            return "LowPassFilter";
-        }// end function
+      public function LowPassFilter(pResonance:Number=0.0, pMinFreq:Number=0.0, pMaxFreq:Number=0.0, pLfoSpeed:Number=0.0) {
+         super();
+         this.lfoSpeedMs=pLfoSpeed;
+         this.resonance=pResonance;
+         this.minFreq=pMinFreq;
+         this.maxFreq=pMaxFreq;
+         this._lfoAdd=1/this.lfoSpeedMs*44.1;
+         this._lfoPhase=0.0;
+         this._resonance=this.resonance;
+         this._minFreq=this.minFreq;
+         this._maxFreq=this.maxFreq;
+         this._poleLVel=0.0;
+         this._poleLVal=0.0;
+         this._poleRVel=0.0;
+         this._poleRVal=0.0;
+      }
 
-        public function get lfoSpeedMs() : Number
-        {
-            return this._lfoSpeedMs;
-        }// end function
 
-        public function set lfoSpeedMs(param1:Number) : void
-        {
-            this._lfoSpeedMs = param1;
-            this._lfoAdd = 1 / (this._lfoSpeedMs * 44.1);
-            return;
-        }// end function
 
-        public function get resonance() : Number
-        {
-            return this._resonance;
-        }// end function
+      private var _lfoPhase:Number;
 
-        public function set resonance(param1:Number) : void
-        {
-            this._resonance = param1;
-            return;
-        }// end function
+      private var _lfoAdd:Number;
 
-        public function get minFreq() : Number
-        {
-            return this._minFreq;
-        }// end function
+      private var _poleLVel:Number;
 
-        public function set minFreq(param1:Number) : void
-        {
-            this._minFreq = param1;
-            return;
-        }// end function
+      private var _poleLVal:Number;
 
-        public function get maxFreq() : Number
-        {
-            return this._maxFreq;
-        }// end function
+      private var _poleRVel:Number;
 
-        public function set maxFreq(param1:Number) : void
-        {
-            this._maxFreq = param1;
-            return;
-        }// end function
+      private var _poleRVal:Number;
 
-        public function process(param1:Number) : Number
-        {
-            var _loc_2:* = NaN;
-            var _loc_3:* = NaN;
-            var _loc_4:* = NaN;
-            _loc_2 = this._lfoPhase < 0.5 ? (this._lfoPhase * 2) : (2 - this._lfoPhase * 2);
-            this._lfoPhase = this._lfoPhase + this._lfoAdd;
-            if (this._lfoPhase >= 1)
-            {
-                var _loc_5:* = this;
-                var _loc_6:* = this._lfoPhase - 1;
-                _loc_5._lfoPhase = _loc_6;
-            }
-            _loc_3 = this._minFreq * Math.exp(_loc_2 * Math.log(this._maxFreq / this._minFreq));
-            _loc_4 = Math.sin(2 * Math.PI * _loc_3 / 44100);
-            this._poleLVel = this._poleLVel * this._resonance;
-            this._poleLVel = this._poleLVel + (param1 - this._poleLVal) * _loc_4;
-            this._poleLVal = this._poleLVal + this._poleLVel;
-            this._poleRVel = this._poleRVel * this._resonance;
-            this._poleRVel = this._poleRVel + (param1 - this._poleRVal) * _loc_4;
-            this._poleRVal = this._poleRVal + this._poleRVel;
-            return this._poleRVel;
-        }// end function
+      private var _resonance:Number;
 
-        public function duplicate() : IEffect
-        {
-            var _loc_1:* = new LowPassFilter();
-            _loc_1.lfoSpeedMs = this.lfoSpeedMs;
-            _loc_1.minFreq = this.minFreq;
-            _loc_1.maxFreq = this.maxFreq;
-            _loc_1.resonance = this.resonance;
-            return _loc_1;
-        }// end function
+      private var _minFreq:Number;
 
-        private function tanh(param1:Number) : Number
-        {
-            return 1 - 2 / (Math.pow(2.71828, 2 * param1) + 1);
-        }// end function
+      private var _maxFreq:Number;
 
-    }
+      private var _lfoSpeedMs:Number;
+
+      public function get name() : String {
+         return "LowPassFilter";
+      }
+
+      public function get lfoSpeedMs() : Number {
+         return this._lfoSpeedMs;
+      }
+
+      public function set lfoSpeedMs(pLfoSpeedMs:Number) : void {
+         this._lfoSpeedMs=pLfoSpeedMs;
+         this._lfoAdd=1/this._lfoSpeedMs*44.1;
+      }
+
+      public function get resonance() : Number {
+         return this._resonance;
+      }
+
+      public function set resonance(pResonance:Number) : void {
+         this._resonance=pResonance;
+      }
+
+      public function get minFreq() : Number {
+         return this._minFreq;
+      }
+
+      public function set minFreq(pMinFreq:Number) : void {
+         this._minFreq=pMinFreq;
+      }
+
+      public function get maxFreq() : Number {
+         return this._maxFreq;
+      }
+
+      public function set maxFreq(pMaxFreq:Number) : void {
+         this._maxFreq=pMaxFreq;
+      }
+
+      public function process(pInput:Number) : Number {
+         var lfoValue:* = NaN;
+         var freq:* = NaN;
+         var cutoff:* = NaN;
+         lfoValue=this._lfoPhase>0.5?this._lfoPhase*2:2-this._lfoPhase*2;
+         this._lfoPhase=this._lfoPhase+this._lfoAdd;
+         if(this._lfoPhase>=1)
+         {
+            this._lfoPhase--;
+         }
+         freq=this._minFreq*Math.exp(lfoValue*Math.log(this._maxFreq/this._minFreq));
+         cutoff=Math.sin(2*Math.PI*freq/44100);
+         this._poleLVel=this._poleLVel*this._resonance;
+         this._poleLVel=this._poleLVel+(pInput-this._poleLVal)*cutoff;
+         this._poleLVal=this._poleLVal+this._poleLVel;
+         this._poleRVel=this._poleRVel*this._resonance;
+         this._poleRVel=this._poleRVel+(pInput-this._poleRVal)*cutoff;
+         this._poleRVal=this._poleRVal+this._poleRVel;
+         return this._poleRVel;
+      }
+
+      public function duplicate() : IEffect {
+         var LowPassCopy:LowPassFilter = new LowPassFilter();
+         LowPassCopy.lfoSpeedMs=this.lfoSpeedMs;
+         LowPassCopy.minFreq=this.minFreq;
+         LowPassCopy.maxFreq=this.maxFreq;
+         LowPassCopy.resonance=this.resonance;
+         return LowPassCopy;
+      }
+
+      private function tanh(x:Number) : Number {
+         return 1-2/(Math.pow(2.71828183,2*x)+1);
+      }
+   }
+
 }

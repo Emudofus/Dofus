@@ -1,61 +1,55 @@
-﻿package flashx.textLayout.events
+package flashx.textLayout.events
 {
-    import flash.events.*;
-    import flashx.textLayout.elements.*;
+   import flash.events.Event;
+   import flashx.textLayout.elements.TextFlow;
 
-    public class CompositionCompleteEvent extends Event
-    {
-        private var _compositionStart:int;
-        private var _compositionLength:int;
-        private var _textFlow:TextFlow;
-        public static const COMPOSITION_COMPLETE:String = "compositionComplete";
 
-        public function CompositionCompleteEvent(param1:String, param2:Boolean = false, param3:Boolean = false, param4:TextFlow = null, param5:int = 0, param6:int = 0)
-        {
-            this._compositionStart = param5;
-            this._compositionLength = param6;
-            this._textFlow = param4;
-            super(param1, param2, param3);
-            return;
-        }// end function
+   public class CompositionCompleteEvent extends Event
+   {
+         
 
-        override public function clone() : Event
-        {
-            return new CompositionCompleteEvent(type, bubbles, cancelable, this.textFlow, this.compositionStart, this.compositionLength);
-        }// end function
+      public function CompositionCompleteEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, textFlow:TextFlow=null, compositionStart:int=0, compositionLength:int=0) {
+         this._compositionStart=compositionStart;
+         this._compositionLength=compositionLength;
+         this._textFlow=textFlow;
+         super(type,bubbles,cancelable);
+      }
 
-        public function get compositionStart() : int
-        {
-            return this._compositionStart;
-        }// end function
+      public static const COMPOSITION_COMPLETE:String = "compositionComplete";
 
-        public function set compositionStart(param1:int) : void
-        {
-            this._compositionStart = param1;
-            return;
-        }// end function
+      private var _compositionStart:int;
 
-        public function get compositionLength() : int
-        {
-            return this._compositionLength;
-        }// end function
+      private var _compositionLength:int;
 
-        public function set compositionLength(param1:int) : void
-        {
-            this._compositionLength = param1;
-            return;
-        }// end function
+      private var _textFlow:TextFlow;
 
-        public function get textFlow() : TextFlow
-        {
-            return this._textFlow;
-        }// end function
+      override public function clone() : Event {
+         return new CompositionCompleteEvent(type,bubbles,cancelable,this.textFlow,this.compositionStart,this.compositionLength);
+      }
 
-        public function set textFlow(param1:TextFlow) : void
-        {
-            this._textFlow = param1;
-            return;
-        }// end function
+      public function get compositionStart() : int {
+         return this._compositionStart;
+      }
 
-    }
+      public function set compositionStart(value:int) : void {
+         this._compositionStart=value;
+      }
+
+      public function get compositionLength() : int {
+         return this._compositionLength;
+      }
+
+      public function set compositionLength(value:int) : void {
+         this._compositionLength=value;
+      }
+
+      public function get textFlow() : TextFlow {
+         return this._textFlow;
+      }
+
+      public function set textFlow(value:TextFlow) : void {
+         this._textFlow=value;
+      }
+   }
+
 }

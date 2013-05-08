@@ -1,24 +1,28 @@
-﻿package com.ankamagames.dofus.datacenter.appearance
+package com.ankamagames.dofus.datacenter.appearance
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
 
-    public class Appearance extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var type:uint;
-        public var data:String;
-        public static const MODULE:String = "Appearances";
 
-        public function Appearance()
-        {
-            return;
-        }// end function
+   public class Appearance extends Object implements IDataCenter
+   {
+         
 
-        public static function getAppearanceById(param1:uint) : Appearance
-        {
-            return GameData.getObject(MODULE, param1) as ;
-        }// end function
+      public function Appearance() {
+         super();
+      }
 
-    }
+      public static const MODULE:String = "Appearances";
+
+      public static function getAppearanceById(id:uint) : Appearance {
+         return GameData.getObject(MODULE,id) as Appearance;
+      }
+
+      public var id:uint;
+
+      public var type:uint;
+
+      public var data:String;
+   }
+
 }

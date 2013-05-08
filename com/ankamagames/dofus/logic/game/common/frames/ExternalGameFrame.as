@@ -1,125 +1,115 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.game.common.actions.externalGame.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.messages.web.krosmaster.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTokenRequestAction;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterAuthTokenRequestMessage;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterAuthTokenErrorMessage;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterAuthTokenMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterInventoryRequestAction;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterInventoryRequestMessage;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterInventoryErrorMessage;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterInventoryMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterTransferRequestAction;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterTransferRequestMessage;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterTransferMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.externalGame.KrosmasterPlayingStatusAction;
+   import com.ankamagames.dofus.network.messages.web.krosmaster.KrosmasterPlayingStatusMessage;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
 
-    public class ExternalGameFrame extends Object implements Frame
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalGameFrame));
 
-        public function ExternalGameFrame()
-        {
-            return;
-        }// end function
+   public class ExternalGameFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function ExternalGameFrame() {
+         super();
+      }
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ExternalGameFrame));
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            switch(true)
-            {
-                case param1 is KrosmasterTokenRequestAction:
-                {
-                    _loc_2 = param1 as KrosmasterTokenRequestAction;
-                    _loc_3 = new KrosmasterAuthTokenRequestMessage();
-                    _loc_3.initKrosmasterAuthTokenRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_3);
-                    return true;
-                }
-                case param1 is KrosmasterAuthTokenErrorMessage:
-                {
-                    _loc_4 = param1 as KrosmasterAuthTokenErrorMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.KrosmasterAuthTokenError, _loc_4.reason);
-                    return true;
-                }
-                case param1 is KrosmasterAuthTokenMessage:
-                {
-                    _loc_5 = param1 as KrosmasterAuthTokenMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.KrosmasterAuthToken, _loc_5.token);
-                    return true;
-                }
-                case param1 is KrosmasterInventoryRequestAction:
-                {
-                    _loc_6 = param1 as KrosmasterInventoryRequestAction;
-                    _loc_7 = new KrosmasterInventoryRequestMessage();
-                    _loc_7.initKrosmasterInventoryRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_7);
-                    return true;
-                }
-                case param1 is KrosmasterInventoryErrorMessage:
-                {
-                    _loc_8 = param1 as KrosmasterInventoryErrorMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.KrosmasterInventoryError, _loc_8.reason);
-                    return true;
-                }
-                case param1 is KrosmasterInventoryMessage:
-                {
-                    _loc_9 = param1 as KrosmasterInventoryMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.KrosmasterInventory, _loc_9.figures);
-                    return true;
-                }
-                case param1 is KrosmasterTransferRequestAction:
-                {
-                    _loc_10 = param1 as KrosmasterTransferRequestAction;
-                    _loc_11 = new KrosmasterTransferRequestMessage();
-                    _loc_11.initKrosmasterTransferRequestMessage(_loc_10.figureId);
-                    ConnectionsHandler.getConnection().send(_loc_11);
-                    return true;
-                }
-                case param1 is KrosmasterTransferMessage:
-                {
-                    _loc_12 = param1 as KrosmasterTransferMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.KrosmasterTransfer, _loc_12.uid, _loc_12.failure);
-                    return true;
-                }
-                case param1 is KrosmasterPlayingStatusAction:
-                {
-                    _loc_13 = param1 as KrosmasterPlayingStatusAction;
-                    _loc_14 = new KrosmasterPlayingStatusMessage();
-                    _loc_14.initKrosmasterPlayingStatusMessage(_loc_13.playing);
-                    ConnectionsHandler.getConnection().send(_loc_14);
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-    }
+      public function pulled() : Boolean {
+         return true;
+      }
+
+      public function process(msg:Message) : Boolean {
+         var ktora:KrosmasterTokenRequestAction = null;
+         var katrmsg:KrosmasterAuthTokenRequestMessage = null;
+         var katemsg:KrosmasterAuthTokenErrorMessage = null;
+         var katmsg:KrosmasterAuthTokenMessage = null;
+         var kira:KrosmasterInventoryRequestAction = null;
+         var kirmsg:KrosmasterInventoryRequestMessage = null;
+         var kiemsg:KrosmasterInventoryErrorMessage = null;
+         var kimsg:KrosmasterInventoryMessage = null;
+         var ktra:KrosmasterTransferRequestAction = null;
+         var ktrmsg:KrosmasterTransferRequestMessage = null;
+         var ktmsg:KrosmasterTransferMessage = null;
+         var kpsa:KrosmasterPlayingStatusAction = null;
+         var kpsmsg:KrosmasterPlayingStatusMessage = null;
+         switch(true)
+         {
+            case msg is KrosmasterTokenRequestAction:
+               ktora=msg as KrosmasterTokenRequestAction;
+               katrmsg=new KrosmasterAuthTokenRequestMessage();
+               katrmsg.initKrosmasterAuthTokenRequestMessage();
+               ConnectionsHandler.getConnection().send(katrmsg);
+               return true;
+            case msg is KrosmasterAuthTokenErrorMessage:
+               katemsg=msg as KrosmasterAuthTokenErrorMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.KrosmasterAuthTokenError,katemsg.reason);
+               return true;
+            case msg is KrosmasterAuthTokenMessage:
+               katmsg=msg as KrosmasterAuthTokenMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.KrosmasterAuthToken,katmsg.token);
+               return true;
+            case msg is KrosmasterInventoryRequestAction:
+               kira=msg as KrosmasterInventoryRequestAction;
+               kirmsg=new KrosmasterInventoryRequestMessage();
+               kirmsg.initKrosmasterInventoryRequestMessage();
+               ConnectionsHandler.getConnection().send(kirmsg);
+               return true;
+            case msg is KrosmasterInventoryErrorMessage:
+               kiemsg=msg as KrosmasterInventoryErrorMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.KrosmasterInventoryError,kiemsg.reason);
+               return true;
+            case msg is KrosmasterInventoryMessage:
+               kimsg=msg as KrosmasterInventoryMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.KrosmasterInventory,kimsg.figures);
+               return true;
+            case msg is KrosmasterTransferRequestAction:
+               ktra=msg as KrosmasterTransferRequestAction;
+               ktrmsg=new KrosmasterTransferRequestMessage();
+               ktrmsg.initKrosmasterTransferRequestMessage(ktra.figureId);
+               ConnectionsHandler.getConnection().send(ktrmsg);
+               return true;
+            case msg is KrosmasterTransferMessage:
+               ktmsg=msg as KrosmasterTransferMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.KrosmasterTransfer,ktmsg.uid,ktmsg.failure);
+               return true;
+            case msg is KrosmasterPlayingStatusAction:
+               kpsa=msg as KrosmasterPlayingStatusAction;
+               kpsmsg=new KrosmasterPlayingStatusMessage();
+               kpsmsg.initKrosmasterPlayingStatusMessage(kpsa.playing);
+               ConnectionsHandler.getConnection().send(kpsmsg);
+               return true;
+            default:
+               return false;
+         }
+      }
+   }
+
 }

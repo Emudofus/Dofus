@@ -1,76 +1,90 @@
-﻿package com.ankamagames.jerakine.utils.display
+package com.ankamagames.jerakine.utils.display
 {
 
-    public class ColorUtils extends Object
-    {
 
-        public function ColorUtils()
-        {
-            return;
-        }// end function
+   public class ColorUtils extends Object
+   {
+         
 
-        public static function rgb2hsl(param1:uint) : Object
-        {
-            var _loc_2:* = NaN;
-            var _loc_3:* = NaN;
-            var _loc_4:* = NaN;
-            var _loc_5:* = NaN;
-            var _loc_6:* = NaN;
-            var _loc_7:* = NaN;
-            var _loc_11:* = NaN;
-            var _loc_12:* = NaN;
-            var _loc_13:* = NaN;
-            _loc_2 = (param1 & 16711680) >> 16;
-            _loc_3 = (param1 & 65280) >> 8;
-            _loc_4 = param1 & 255;
-            _loc_2 = _loc_2 / 255;
-            _loc_3 = _loc_3 / 255;
-            _loc_4 = _loc_4 / 255;
-            var _loc_8:* = Math.min(_loc_2, _loc_3, _loc_4);
-            var _loc_9:* = Math.max(_loc_2, _loc_3, _loc_4);
-            var _loc_10:* = Math.max(_loc_2, _loc_3, _loc_4) - _loc_8;
-            _loc_7 = 1 - (_loc_9 + _loc_8) / 2;
-            if (_loc_10 == 0)
+      public function ColorUtils() {
+         super();
+      }
+
+      public static function rgb2hsl(color:uint) : Object {
+         var r:* = NaN;
+         var g:* = NaN;
+         var b:* = NaN;
+         var hue:* = NaN;
+         var sat:* = NaN;
+         var lum:* = NaN;
+         var deltaR:* = NaN;
+         var deltaG:* = NaN;
+         var deltaB:* = NaN;
+         r=(color&16711680)>>16;
+         g=(color&65280)>>8;
+         b=color&255;
+         r=r/255;
+         g=g/255;
+         b=b/255;
+         var min:Number = Math.min(r,g,b);
+         var max:Number = Math.max(r,g,b);
+         var delta:Number = max-min;
+         lum=1-(max+min)/2;
+         if(delta==0)
+         {
+            hue=0;
+            sat=0;
+         }
+         else
+         {
+            if(max+min<1)
             {
-                _loc_5 = 0;
-                _loc_6 = 0;
+               sat=1-delta/(max+min);
             }
             else
             {
-                if (_loc_9 + _loc_8 < 1)
-                {
-                    _loc_6 = 1 - _loc_10 / (_loc_9 + _loc_8);
-                }
-                else
-                {
-                    _loc_6 = 1 - _loc_10 / (2 - _loc_9 - _loc_8);
-                }
-                _loc_11 = ((_loc_9 - _loc_2) / 6 + _loc_10 / 2) / _loc_10;
-                _loc_12 = ((_loc_9 - _loc_3) / 6 + _loc_10 / 2) / _loc_10;
-                _loc_13 = ((_loc_9 - _loc_4) / 6 + _loc_10 / 2) / _loc_10;
-                if (_loc_2 == _loc_9)
-                {
-                    _loc_5 = _loc_13 - _loc_12;
-                }
-                else if (_loc_3 == _loc_9)
-                {
-                    _loc_5 = 1 / 3 + _loc_11 - _loc_13;
-                }
-                else if (_loc_4 == _loc_9)
-                {
-                    _loc_5 = 2 / 3 + _loc_12 - _loc_11;
-                }
-                if (_loc_5 < 0)
-                {
-                    _loc_5 = _loc_5 + 1;
-                }
-                if (_loc_5 > 1)
-                {
-                    _loc_5 = _loc_5 - 1;
-                }
+               sat=1-delta/(2-max-min);
             }
-            return {h:_loc_5, s:_loc_6, l:_loc_7};
-        }// end function
+            deltaR=((max-r)/6+delta/2)/delta;
+            deltaG=((max-g)/6+delta/2)/delta;
+            deltaB=((max-b)/6+delta/2)/delta;
+            if(r==max)
+            {
+               hue=deltaB-deltaG;
+            }
+            else
+            {
+               if(g==max)
+               {
+                  hue=1/3+deltaR-deltaB;
+               }
+               else
+               {
+                  if(b==max)
+                  {
+                     hue=2/3+deltaG-deltaR;
+                  }
+               }
+            }
+            if(hue<0)
+            {
+               hue++;
+            }
+            if(hue>1)
+            {
+               hue--;
+            }
+         }
+         return 
+            {
+               h:hue,
+               s:sat,
+               l:lum
+            }
+         ;
+      }
 
-    }
+
+   }
+
 }

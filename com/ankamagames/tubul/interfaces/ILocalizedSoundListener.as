@@ -1,19 +1,21 @@
-﻿package com.ankamagames.tubul.interfaces
+package com.ankamagames.tubul.interfaces
 {
-    import flash.utils.*;
+   import flash.utils.Dictionary;
 
-    public interface ILocalizedSoundListener
-    {
 
-        public function ILocalizedSoundListener();
+   public interface ILocalizedSoundListener
+   {
+         
 
-        function get entitySounds() : Array;
 
-        function get reverseEntitySounds() : Dictionary;
 
-        function addSoundEntity(param1:ISound, param2:int) : void;
+      function get entitySounds() : Array;
 
-        function removeSoundEntity(param1:ISound) : void;
+      function get reverseEntitySounds() : Dictionary;
 
-    }
+      function addSoundEntity(param1:ISound, param2:int) : void;
+
+      function removeSoundEntity(param1:ISound) : void;
+   }
+
 }

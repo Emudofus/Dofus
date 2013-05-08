@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.jobs
+package com.ankamagames.dofus.logic.game.common.actions.jobs
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class JobCrafterDirectoryListRequestAction extends Object implements Action
-    {
-        public var jobId:uint;
 
-        public function JobCrafterDirectoryListRequestAction()
-        {
-            return;
-        }// end function
+   public class JobCrafterDirectoryListRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : JobCrafterDirectoryListRequestAction
-        {
-            var _loc_2:* = new JobCrafterDirectoryListRequestAction;
-            _loc_2.jobId = param1;
-            return _loc_2;
-        }// end function
+      public function JobCrafterDirectoryListRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(jobId:uint) : JobCrafterDirectoryListRequestAction {
+         var act:JobCrafterDirectoryListRequestAction = new JobCrafterDirectoryListRequestAction();
+         act.jobId=jobId;
+         return act;
+      }
+
+      public var jobId:uint;
+   }
+
 }

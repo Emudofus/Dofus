@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.party
+package com.ankamagames.dofus.logic.game.common.actions.party
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ArenaRegisterAction extends Object implements Action
-    {
-        public var fightTypeId:uint;
 
-        public function ArenaRegisterAction()
-        {
-            return;
-        }// end function
+   public class ArenaRegisterAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : ArenaRegisterAction
-        {
-            var _loc_2:* = new ArenaRegisterAction;
-            _loc_2.fightTypeId = param1;
-            return _loc_2;
-        }// end function
+      public function ArenaRegisterAction() {
+         super();
+      }
 
-    }
+      public static function create(fightTypeId:uint) : ArenaRegisterAction {
+         var a:ArenaRegisterAction = new ArenaRegisterAction();
+         a.fightTypeId=fightTypeId;
+         return a;
+      }
+
+      public var fightTypeId:uint;
+   }
+
 }

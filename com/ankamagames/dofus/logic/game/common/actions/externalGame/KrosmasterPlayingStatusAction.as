@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.externalGame
+package com.ankamagames.dofus.logic.game.common.actions.externalGame
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class KrosmasterPlayingStatusAction extends Object implements Action
-    {
-        public var playing:Boolean;
 
-        public function KrosmasterPlayingStatusAction()
-        {
-            return;
-        }// end function
+   public class KrosmasterPlayingStatusAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : KrosmasterPlayingStatusAction
-        {
-            var _loc_2:* = new KrosmasterPlayingStatusAction;
-            _loc_2.playing = param1;
-            return _loc_2;
-        }// end function
+      public function KrosmasterPlayingStatusAction() {
+         super();
+      }
 
-    }
+      public static function create(playing:Boolean) : KrosmasterPlayingStatusAction {
+         var action:KrosmasterPlayingStatusAction = new KrosmasterPlayingStatusAction();
+         action.playing=playing;
+         return action;
+      }
+
+      public var playing:Boolean;
+   }
+
 }

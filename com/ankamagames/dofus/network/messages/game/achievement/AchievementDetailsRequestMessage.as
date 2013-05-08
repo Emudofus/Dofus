@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.achievement
+package com.ankamagames.dofus.network.messages.game.achievement
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AchievementDetailsRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var achievementId:uint = 0;
-        public static const protocolId:uint = 6380;
 
-        public function AchievementDetailsRequestMessage()
-        {
+   public class AchievementDetailsRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function AchievementDetailsRequestMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6380;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var achievementId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6380;
+      }
+
+      public function initAchievementDetailsRequestMessage(achievementId:uint=0) : AchievementDetailsRequestMessage {
+         this.achievementId=achievementId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.achievementId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AchievementDetailsRequestMessage(output);
+      }
+
+      public function serializeAs_AchievementDetailsRequestMessage(output:IDataOutput) : void {
+         if(this.achievementId<0)
+         {
+            throw new Error("Forbidden value ("+this.achievementId+") on element achievementId.");
+         }
+         else
+         {
+            output.writeShort(this.achievementId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AchievementDetailsRequestMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6380;
-        }// end function
-
-        public function initAchievementDetailsRequestMessage(param1:uint = 0) : AchievementDetailsRequestMessage
-        {
-            this.achievementId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.achievementId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_AchievementDetailsRequestMessage(input:IDataInput) : void {
+         this.achievementId=input.readShort();
+         if(this.achievementId<0)
+         {
+            throw new Error("Forbidden value ("+this.achievementId+") on element of AchievementDetailsRequestMessage.achievementId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AchievementDetailsRequestMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_AchievementDetailsRequestMessage(param1:IDataOutput) : void
-        {
-            if (this.achievementId < 0)
-            {
-                throw new Error("Forbidden value (" + this.achievementId + ") on element achievementId.");
-            }
-            param1.writeShort(this.achievementId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AchievementDetailsRequestMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_AchievementDetailsRequestMessage(param1:IDataInput) : void
-        {
-            this.achievementId = param1.readShort();
-            if (this.achievementId < 0)
-            {
-                throw new Error("Forbidden value (" + this.achievementId + ") on element of AchievementDetailsRequestMessage.achievementId.");
-            }
-            return;
-        }// end function
-
-    }
 }

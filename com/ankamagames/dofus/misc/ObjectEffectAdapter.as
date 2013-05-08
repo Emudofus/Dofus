@@ -1,137 +1,139 @@
-﻿package com.ankamagames.dofus.misc
+package com.ankamagames.dofus.misc
 {
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.dofus.datacenter.effects.instances.*;
-    import com.ankamagames.dofus.datacenter.items.*;
-    import com.ankamagames.dofus.network.types.game.data.items.effects.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import com.ankamagames.dofus.datacenter.items.IncarnationLevel;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectDice;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDate;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceString;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectString;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceInteger;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectInteger;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceMinMax;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectMinMax;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectDate;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDuration;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectDuration;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceLadder;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectLadder;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceCreature;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectCreature;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceMount;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffectMount;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class ObjectEffectAdapter extends Object
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ObjectEffectAdapter));
 
-        public function ObjectEffectAdapter()
-        {
-            return;
-        }// end function
+   public class ObjectEffectAdapter extends Object
+   {
+         
 
-        public static function fromNetwork(param1:ObjectEffect) : EffectInstance
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            if (param1 is ObjectEffectDice && param1.actionId == 669)
+      public function ObjectEffectAdapter() {
+         super();
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ObjectEffectAdapter));
+
+      public static function fromNetwork(oe:ObjectEffect) : EffectInstance {
+         var effect:EffectInstance = null;
+         var level:* = 0;
+         var floor:* = 0;
+         var nextFloor:* = 0;
+         var incLevel:IncarnationLevel = null;
+         var incLevelPlusOne:IncarnationLevel = null;
+         if((oe is ObjectEffectDice)&&(oe.actionId==669))
+         {
+            effect=new EffectInstanceDate();
+            EffectInstanceDate(effect).year=ObjectEffectDice(oe).diceNum;
+            EffectInstanceDate(effect).month=ObjectEffectDice(oe).diceSide*32768+ObjectEffectDice(oe).diceConst;
+            level=1;
+            do
             {
-                _loc_2 = new EffectInstanceDate();
-                EffectInstanceDate(_loc_2).year = ObjectEffectDice(param1).diceNum;
-                EffectInstanceDate(_loc_2).month = ObjectEffectDice(param1).diceSide * 32768 + ObjectEffectDice(param1).diceConst;
-                _loc_3 = 1;
-                do
-                {
-                    
-                    _loc_6 = IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(param1).diceNum, _loc_3);
-                    if (_loc_6)
-                    {
-                        _loc_4 = _loc_6.requiredXp;
-                    }
-                    _loc_3++;
-                    _loc_7 = IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(param1).diceNum, _loc_3);
-                    if (_loc_7)
-                    {
-                        _loc_5 = _loc_7.requiredXp;
-                    }
-                }while (_loc_5 < EffectInstanceDate(_loc_2).month && _loc_3 < 51)
-                _loc_3 = _loc_3 - 1;
-                EffectInstanceDate(_loc_2).day = _loc_3;
-                EffectInstanceDate(_loc_2).hour = 0;
-                EffectInstanceDate(_loc_2).minute = 0;
+               incLevel=IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(oe).diceNum,level);
+               if(incLevel)
+               {
+                  floor=incLevel.requiredXp;
+               }
+               level++;
+               incLevelPlusOne=IncarnationLevel.getIncarnationLevelByIdAndLevel(ObjectEffectDice(oe).diceNum,level);
+               if(incLevelPlusOne)
+               {
+                  nextFloor=incLevelPlusOne.requiredXp;
+               }
+               if(!((nextFloor>EffectInstanceDate(effect).month)&&(level>51)))
+               {
+                  level=level-1;
+                  EffectInstanceDate(effect).day=level;
+                  EffectInstanceDate(effect).hour=0;
+                  EffectInstanceDate(effect).minute=0;
+               }
             }
-            else
+            while(true);
+         }
+         else
+         {
+            switch(true)
             {
-                switch(true)
-                {
-                    case param1 is ObjectEffectString:
-                    {
-                        _loc_2 = new EffectInstanceString();
-                        EffectInstanceString(_loc_2).text = ObjectEffectString(param1).value;
-                        break;
-                    }
-                    case param1 is ObjectEffectInteger:
-                    {
-                        _loc_2 = new EffectInstanceInteger();
-                        EffectInstanceInteger(_loc_2).value = ObjectEffectInteger(param1).value;
-                        break;
-                    }
-                    case param1 is ObjectEffectMinMax:
-                    {
-                        _loc_2 = new EffectInstanceMinMax();
-                        EffectInstanceMinMax(_loc_2).min = ObjectEffectMinMax(param1).min;
-                        EffectInstanceMinMax(_loc_2).max = ObjectEffectMinMax(param1).max;
-                        break;
-                    }
-                    case param1 is ObjectEffectDice:
-                    {
-                        _loc_2 = new EffectInstanceDice();
-                        EffectInstanceDice(_loc_2).diceNum = ObjectEffectDice(param1).diceNum;
-                        EffectInstanceDice(_loc_2).diceSide = ObjectEffectDice(param1).diceSide;
-                        EffectInstanceDice(_loc_2).value = ObjectEffectDice(param1).diceConst;
-                        break;
-                    }
-                    case param1 is ObjectEffectDate:
-                    {
-                        _loc_2 = new EffectInstanceDate();
-                        EffectInstanceDate(_loc_2).year = ObjectEffectDate(param1).year;
-                        EffectInstanceDate(_loc_2).month = ObjectEffectDate(param1).month + 1;
-                        EffectInstanceDate(_loc_2).day = ObjectEffectDate(param1).day;
-                        EffectInstanceDate(_loc_2).hour = ObjectEffectDate(param1).hour;
-                        EffectInstanceDate(_loc_2).minute = ObjectEffectDate(param1).minute;
-                        break;
-                    }
-                    case param1 is ObjectEffectDuration:
-                    {
-                        _loc_2 = new EffectInstanceDuration();
-                        EffectInstanceDuration(_loc_2).days = ObjectEffectDuration(param1).days;
-                        EffectInstanceDuration(_loc_2).hours = ObjectEffectDuration(param1).hours;
-                        EffectInstanceDuration(_loc_2).minutes = ObjectEffectDuration(param1).minutes;
-                        break;
-                    }
-                    case param1 is ObjectEffectLadder:
-                    {
-                        _loc_2 = new EffectInstanceLadder();
-                        EffectInstanceLadder(_loc_2).monsterFamilyId = ObjectEffectLadder(param1).monsterFamilyId;
-                        EffectInstanceLadder(_loc_2).monsterCount = ObjectEffectLadder(param1).monsterCount;
-                        break;
-                    }
-                    case param1 is ObjectEffectCreature:
-                    {
-                        _loc_2 = new EffectInstanceCreature();
-                        EffectInstanceCreature(_loc_2).monsterFamilyId = ObjectEffectCreature(param1).monsterFamilyId;
-                        break;
-                    }
-                    case param1 is ObjectEffectMount:
-                    {
-                        _loc_2 = new EffectInstanceMount();
-                        EffectInstanceMount(_loc_2).date = ObjectEffectMount(param1).date;
-                        EffectInstanceMount(_loc_2).modelId = ObjectEffectMount(param1).modelId;
-                        EffectInstanceMount(_loc_2).mountId = ObjectEffectMount(param1).mountId;
-                        break;
-                    }
-                    default:
-                    {
-                        _loc_2 = new EffectInstance();
-                        break;
-                        break;
-                    }
-                }
+               case oe is ObjectEffectString:
+                  effect=new EffectInstanceString();
+                  EffectInstanceString(effect).text=ObjectEffectString(oe).value;
+                  break;
+               case oe is ObjectEffectInteger:
+                  effect=new EffectInstanceInteger();
+                  EffectInstanceInteger(effect).value=ObjectEffectInteger(oe).value;
+                  break;
+               case oe is ObjectEffectMinMax:
+                  effect=new EffectInstanceMinMax();
+                  EffectInstanceMinMax(effect).min=ObjectEffectMinMax(oe).min;
+                  EffectInstanceMinMax(effect).max=ObjectEffectMinMax(oe).max;
+                  break;
+               case oe is ObjectEffectDice:
+                  effect=new EffectInstanceDice();
+                  EffectInstanceDice(effect).diceNum=ObjectEffectDice(oe).diceNum;
+                  EffectInstanceDice(effect).diceSide=ObjectEffectDice(oe).diceSide;
+                  EffectInstanceDice(effect).value=ObjectEffectDice(oe).diceConst;
+                  break;
+               case oe is ObjectEffectDate:
+                  effect=new EffectInstanceDate();
+                  EffectInstanceDate(effect).year=ObjectEffectDate(oe).year;
+                  EffectInstanceDate(effect).month=ObjectEffectDate(oe).month+1;
+                  EffectInstanceDate(effect).day=ObjectEffectDate(oe).day;
+                  EffectInstanceDate(effect).hour=ObjectEffectDate(oe).hour;
+                  EffectInstanceDate(effect).minute=ObjectEffectDate(oe).minute;
+                  break;
+               case oe is ObjectEffectDuration:
+                  effect=new EffectInstanceDuration();
+                  EffectInstanceDuration(effect).days=ObjectEffectDuration(oe).days;
+                  EffectInstanceDuration(effect).hours=ObjectEffectDuration(oe).hours;
+                  EffectInstanceDuration(effect).minutes=ObjectEffectDuration(oe).minutes;
+                  break;
+               case oe is ObjectEffectLadder:
+                  effect=new EffectInstanceLadder();
+                  EffectInstanceLadder(effect).monsterFamilyId=ObjectEffectLadder(oe).monsterFamilyId;
+                  EffectInstanceLadder(effect).monsterCount=ObjectEffectLadder(oe).monsterCount;
+                  break;
+               case oe is ObjectEffectCreature:
+                  effect=new EffectInstanceCreature();
+                  EffectInstanceCreature(effect).monsterFamilyId=ObjectEffectCreature(oe).monsterFamilyId;
+                  break;
+               case oe is ObjectEffectMount:
+                  effect=new EffectInstanceMount();
+                  EffectInstanceMount(effect).date=ObjectEffectMount(oe).date;
+                  EffectInstanceMount(effect).modelId=ObjectEffectMount(oe).modelId;
+                  EffectInstanceMount(effect).mountId=ObjectEffectMount(oe).mountId;
+                  break;
+               default:
+                  effect=new EffectInstance();
             }
-            _loc_2.effectId = param1.actionId;
-            _loc_2.duration = 0;
-            return _loc_2;
-        }// end function
+         }
+         effect.effectId=oe.actionId;
+         effect.duration=0;
+         return effect;
+      }
 
-    }
+
+   }
+
 }

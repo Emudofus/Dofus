@@ -1,119 +1,124 @@
-﻿package com.ankamagames.dofus.network.messages.game.context
+package com.ankamagames.dofus.network.messages.game.context
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameMapMovementRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var keyMovements:Vector.<uint>;
-        public var mapId:uint = 0;
-        public static const protocolId:uint = 950;
 
-        public function GameMapMovementRequestMessage()
-        {
-            this.keyMovements = new Vector.<uint>;
-            return;
-        }// end function
+   public class GameMapMovementRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameMapMovementRequestMessage() {
+         this.keyMovements=new Vector.<uint>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 950;
-        }// end function
+      public static const protocolId:uint = 950;
 
-        public function initGameMapMovementRequestMessage(param1:Vector.<uint> = null, param2:uint = 0) : GameMapMovementRequestMessage
-        {
-            this.keyMovements = param1;
-            this.mapId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.keyMovements = new Vector.<uint>;
-            this.mapId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var keyMovements:Vector.<uint>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var mapId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameMapMovementRequestMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 950;
+      }
 
-        public function serializeAs_GameMapMovementRequestMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.keyMovements.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.keyMovements.length)
+      public function initGameMapMovementRequestMessage(keyMovements:Vector.<uint>=null, mapId:uint=0) : GameMapMovementRequestMessage {
+         this.keyMovements=keyMovements;
+         this.mapId=mapId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.keyMovements=new Vector.<uint>();
+         this.mapId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameMapMovementRequestMessage(output);
+      }
+
+      public function serializeAs_GameMapMovementRequestMessage(output:IDataOutput) : void {
+         output.writeShort(this.keyMovements.length);
+         var _i1:uint = 0;
+         while(_i1<this.keyMovements.length)
+         {
+            if(this.keyMovements[_i1]<0)
             {
-                
-                if (this.keyMovements[_loc_2] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.keyMovements[_loc_2] + ") on element 1 (starting at 1) of keyMovements.");
-                }
-                param1.writeShort(this.keyMovements[_loc_2]);
-                _loc_2 = _loc_2 + 1;
+               throw new Error("Forbidden value ("+this.keyMovements[_i1]+") on element 1 (starting at 1) of keyMovements.");
             }
-            if (this.mapId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+               output.writeShort(this.keyMovements[_i1]);
+               _i1++;
+               continue;
             }
-            param1.writeInt(this.mapId);
+         }
+         if(this.mapId<0)
+         {
+            throw new Error("Forbidden value ("+this.mapId+") on element mapId.");
+         }
+         else
+         {
+            output.writeInt(this.mapId);
             return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameMapMovementRequestMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameMapMovementRequestMessage(input);
+      }
 
-        public function deserializeAs_GameMapMovementRequestMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
+      public function deserializeAs_GameMapMovementRequestMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _keyMovementsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_keyMovementsLen)
+         {
+            _val1=input.readShort();
+            if(_val1<0)
             {
-                
-                _loc_4 = param1.readShort();
-                if (_loc_4 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_4 + ") on elements of keyMovements.");
-                }
-                this.keyMovements.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
+               throw new Error("Forbidden value ("+_val1+") on elements of keyMovements.");
             }
-            this.mapId = param1.readInt();
-            if (this.mapId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.mapId + ") on element of GameMapMovementRequestMessage.mapId.");
+               this.keyMovements.push(_val1);
+               _i1++;
+               continue;
             }
+         }
+         this.mapId=input.readInt();
+         if(this.mapId<0)
+         {
+            throw new Error("Forbidden value ("+this.mapId+") on element of GameMapMovementRequestMessage.mapId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

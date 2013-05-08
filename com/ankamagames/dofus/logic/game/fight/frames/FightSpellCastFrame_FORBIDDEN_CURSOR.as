@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.logic.game.fight.frames
+package com.ankamagames.dofus.logic.game.fight.frames
 {
-    import mx.core.*;
+   import mx.core.SpriteAsset;
 
-    public class FightSpellCastFrame_FORBIDDEN_CURSOR extends SpriteAsset
-    {
 
-        public function FightSpellCastFrame_FORBIDDEN_CURSOR()
-        {
-            return;
-        }// end function
+   public class FightSpellCastFrame_FORBIDDEN_CURSOR extends SpriteAsset
+   {
+         
 
-    }
+      public function FightSpellCastFrame_FORBIDDEN_CURSOR() {
+         super();
+      }
+
+
+
+
+   }
+
 }

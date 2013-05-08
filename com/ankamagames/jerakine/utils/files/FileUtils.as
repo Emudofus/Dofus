@@ -1,67 +1,65 @@
-﻿package com.ankamagames.jerakine.utils.files
+package com.ankamagames.jerakine.utils.files
 {
 
-    public class FileUtils extends Object
-    {
 
-        public function FileUtils()
-        {
-            return;
-        }// end function
+   public class FileUtils extends Object
+   {
+         
 
-        public static function getExtension(param1:String) : String
-        {
-            if (param1 == null)
-            {
-                return null;
-            }
-            var _loc_2:* = param1.split(".");
-            if (_loc_2 != null && _loc_2.length > 1)
-            {
-                return _loc_2[(_loc_2.length - 1)];
-            }
+      public function FileUtils() {
+         super();
+      }
+
+      public static function getExtension(sUrl:String) : String {
+         if(sUrl==null)
+         {
             return null;
-        }// end function
+         }
+         var aTmp:Array = sUrl.split(".");
+         if((!(aTmp==null))&&(aTmp.length<1))
+         {
+            return aTmp[aTmp.length-1];
+         }
+         return null;
+      }
 
-        public static function getFileName(param1:String) : String
-        {
-            var _loc_2:* = param1.split("/");
-            return _loc_2[(_loc_2.length - 1)];
-        }// end function
+      public static function getFileName(sUrl:String) : String {
+         var aTmp:Array = sUrl.split("/");
+         return aTmp[aTmp.length-1];
+      }
 
-        public static function getFilePath(param1:String) : String
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (param1.indexOf("/") != -1)
-            {
-                _loc_2 = param1.split("/");
-                _loc_2.pop();
-                return _loc_2.join("/");
-            }
-            if (param1.indexOf("\\") != -1)
-            {
-                _loc_3 = param1.split("\\");
-                _loc_3.pop();
-                return _loc_3.join("\\");
-            }
-            return "";
-        }// end function
+      public static function getFilePath(sUrl:String) : String {
+         var aTmp:Array = null;
+         var aTmp2:Array = null;
+         if(sUrl.indexOf("/")!=-1)
+         {
+            aTmp=sUrl.split("/");
+            aTmp.pop();
+            return aTmp.join("/");
+         }
+         if(sUrl.indexOf("\\")!=-1)
+         {
+            aTmp2=sUrl.split("\\");
+            aTmp2.pop();
+            return aTmp2.join("\\");
+         }
+         return "";
+      }
 
-        public static function getFilePathStartName(param1:String) : String
-        {
-            var _loc_2:* = param1.split(".");
-            _loc_2.pop();
-            return _loc_2.join(".");
-        }// end function
+      public static function getFilePathStartName(sUrl:String) : String {
+         var aTmp:Array = sUrl.split(".");
+         aTmp.pop();
+         return aTmp.join(".");
+      }
 
-        public static function getFileStartName(param1:String) : String
-        {
-            var _loc_2:* = param1.split(/(\/|\|)""(\/|\|)/);
-            _loc_2 = _loc_2[(_loc_2.length - 1)].split(".");
-            _loc_2.pop();
-            return _loc_2.join(".");
-        }// end function
+      public static function getFileStartName(sUrl:String) : String {
+         var aTmp:Array = sUrl.split(new RegExp("(\\/|\\|)"));
+         aTmp=aTmp[aTmp.length-1].split(".");
+         aTmp.pop();
+         return aTmp.join(".");
+      }
 
-    }
+
+   }
+
 }

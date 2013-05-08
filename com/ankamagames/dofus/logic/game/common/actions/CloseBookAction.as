@@ -1,21 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class CloseBookAction extends Object implements Action
-    {
-        private var _name:String;
-        public var value:String;
 
-        public function CloseBookAction()
-        {
-            return;
-        }// end function
+   public class CloseBookAction extends Object implements Action
+   {
+         
 
-        public static function create() : CloseBookAction
-        {
-            return new CloseBookAction;
-        }// end function
+      public function CloseBookAction() {
+         super();
+      }
 
-    }
+      public static function create() : CloseBookAction {
+         return new CloseBookAction();
+      }
+
+      private var _name:String;
+
+      public var value:String;
+   }
+
 }

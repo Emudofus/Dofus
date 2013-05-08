@@ -1,151 +1,146 @@
-﻿package com.ankamagames.berilia.types.tooltip
+package com.ankamagames.berilia.types.tooltip
 {
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.newCache.garbage.*;
-    import com.ankamagames.jerakine.newCache.impl.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.newCache.impl.Cache;
+   import com.ankamagames.jerakine.newCache.garbage.LruGarbageCollector;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import com.ankamagames.berilia.types.data.ChunkData;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.logger.Log;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
 
-    public class TooltipBlock extends EventDispatcher
-    {
-        protected var _log:Logger;
-        private var _loader:IResourceLoader;
-        private var _loadedChunk:uint = 0;
-        private var _totalChunk:uint = 0;
-        private var _chunksUri:Array;
-        private var chunks:Array;
-        public var onAllChunkLoadedCallback:Function;
-        public var contentGetter:Function;
-        private static const _chunckCache:Dictionary = new Dictionary();
-        private static const _cache:Cache = Cache.create(50, new LruGarbageCollector(), getQualifiedClassName(TooltipBlock));
 
-        public function TooltipBlock()
-        {
-            this._log = Log.getLogger(getQualifiedClassName());
-            this.chunks = new Array();
-            this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onLoaded);
-            this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onLoadError);
-            return;
-        }// end function
+   public class TooltipBlock extends EventDispatcher
+   {
+         
 
-        public function get loadedChunk() : uint
-        {
-            return this._loadedChunk;
-        }// end function
+      public function TooltipBlock() {
+         this._log=Log.getLogger(getQualifiedClassName(TooltipBlock));
+         this.chunks=new Array();
+         super();
+         this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
+         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoaded);
+         this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onLoadError);
+      }
 
-        public function get totalChunk() : uint
-        {
-            return this._totalChunk;
-        }// end function
+      private static const _chunckCache:Dictionary = new Dictionary();
 
-        public function initChunk(param1:Array) : void
-        {
-            var _loc_2:* = null;
-            var _loc_4:* = null;
-            this._chunksUri = param1;
-            this._totalChunk = param1.length;
-            this._loadedChunk = 0;
-            var _loc_3:* = 0;
-            while (_loc_3 < this._totalChunk)
+      private static const _cache:Cache = Cache.create(50,new LruGarbageCollector(),getQualifiedClassName(TooltipBlock));
+
+      protected var _log:Logger;
+
+      private var _loader:IResourceLoader;
+
+      private var _loadedChunk:uint = 0;
+
+      private var _totalChunk:uint = 0;
+
+      private var _chunksUri:Array;
+
+      private var chunks:Array;
+
+      public var onAllChunkLoadedCallback:Function;
+
+      public var contentGetter:Function;
+
+      public function get loadedChunk() : uint {
+         return this._loadedChunk;
+      }
+
+      public function get totalChunk() : uint {
+         return this._totalChunk;
+      }
+
+      public function initChunk(chunksList:Array) : void {
+         var chunk:ChunkData = null;
+         var chunkCache:String = null;
+         this._chunksUri=chunksList;
+         this._totalChunk=chunksList.length;
+         this._loadedChunk=0;
+         var i:uint = 0;
+         while(i<this._totalChunk)
+         {
+            chunk=chunksList[i];
+            chunkCache=_chunckCache[chunk.uri.path];
+            if(chunkCache)
             {
-                
-                _loc_2 = param1[_loc_3];
-                _loc_4 = _chunckCache[_loc_2.uri.path];
-                if (_loc_4)
-                {
-                    this.chunks[_loc_2.name] = _loc_4;
-                    this._chunksUri.splice(_loc_3, 1);
-                    _loc_3 = _loc_3 - 1;
-                    var _loc_5:* = this;
-                    var _loc_6:* = this._totalChunk - 1;
-                    _loc_5._totalChunk = _loc_6;
-                }
-                else
-                {
-                    _loc_2.uri.tag = _loc_2.name;
-                }
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
-
-        public function init() : void
-        {
-            var _loc_1:* = 0;
-            this._totalChunk = this._chunksUri.length;
-            if (this._totalChunk)
-            {
-                this._loadedChunk = 0;
-                _loc_1 = 0;
-                while (_loc_1 < this._totalChunk)
-                {
-                    
-                    this._loader.load(ChunkData(this._chunksUri[_loc_1]).uri);
-                    _loc_1 = _loc_1 + 1;
-                }
+               this.chunks[chunk.name]=chunkCache;
+               this._chunksUri.splice(i,1);
+               i--;
+               this._totalChunk--;
             }
             else
             {
-                this.onAllChunkLoaded();
+               chunk.uri.tag=chunk.name;
             }
-            return;
-        }// end function
+            i++;
+         }
+      }
 
-        public function getChunk(param1:String) : TooltipChunk
-        {
-            var _loc_2:* = this.chunks[param1];
-            return new TooltipChunk(_loc_2);
-        }// end function
-
-        public function get content() : String
-        {
-            if (this.contentGetter != null)
+      public function init() : void {
+         var i:uint = 0;
+         this._totalChunk=this._chunksUri.length;
+         if(this._totalChunk)
+         {
+            this._loadedChunk=0;
+            i=0;
+            while(i<this._totalChunk)
             {
-                return this.contentGetter();
+               this._loader.load(ChunkData(this._chunksUri[i]).uri);
+               i++;
             }
-            return "[Abstract tooltip]";
-        }// end function
+         }
+         else
+         {
+            this.onAllChunkLoaded();
+         }
+      }
 
-        protected function onAllChunkLoaded() : void
-        {
-            if (this.onAllChunkLoadedCallback != null)
-            {
-                this.onAllChunkLoadedCallback();
-            }
-            dispatchEvent(new Event(Event.COMPLETE));
-            return;
-        }// end function
+      public function getChunk(name:String) : TooltipChunk {
+         var data:String = this.chunks[name];
+         return new TooltipChunk(data);
+      }
 
-        private function onLoaded(event:ResourceLoadedEvent) : void
-        {
-            var _loc_2:* = this;
-            var _loc_3:* = this._loadedChunk + 1;
-            _loc_2._loadedChunk = _loc_3;
-            _chunckCache[event.uri.path] = event.resource;
-            this.chunks[event.uri.tag] = event.resource;
-            if (this._loadedChunk == this._totalChunk)
-            {
-                this.onAllChunkLoaded();
-            }
-            return;
-        }// end function
+      public function get content() : String {
+         if(this.contentGetter!=null)
+         {
+            return this.contentGetter();
+         }
+         return "[Abstract tooltip]";
+      }
 
-        private function onLoadError(event:ResourceErrorEvent) : void
-        {
-            var _loc_2:* = this;
-            var _loc_3:* = this._loadedChunk + 1;
-            _loc_2._loadedChunk = _loc_3;
-            if (this._loadedChunk == this._totalChunk)
-            {
-                this.onAllChunkLoaded();
-            }
-            this.chunks[event.uri.tag] = new TooltipChunk("[loading error on " + event.uri.tag + "]");
-            return;
-        }// end function
+      protected function onAllChunkLoaded() : void {
+         if(this.onAllChunkLoadedCallback!=null)
+         {
+            this.onAllChunkLoadedCallback();
+         }
+         dispatchEvent(new Event(Event.COMPLETE));
+      }
 
-    }
+      private function onLoaded(e:ResourceLoadedEvent) : void {
+         this._loadedChunk++;
+         _chunckCache[e.uri.path]=e.resource;
+         this.chunks[e.uri.tag]=e.resource;
+         if(this._loadedChunk==this._totalChunk)
+         {
+            this.onAllChunkLoaded();
+         }
+      }
+
+      private function onLoadError(e:ResourceErrorEvent) : void {
+         this._loadedChunk++;
+         if(this._loadedChunk==this._totalChunk)
+         {
+            this.onAllChunkLoaded();
+         }
+         this.chunks[e.uri.tag]=new TooltipChunk("[loading error on "+e.uri.tag+"]");
+      }
+   }
+
 }

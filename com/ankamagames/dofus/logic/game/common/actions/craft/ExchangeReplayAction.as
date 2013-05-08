@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.craft
+package com.ankamagames.dofus.logic.game.common.actions.craft
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeReplayAction extends Object implements Action
-    {
-        public var count:int;
 
-        public function ExchangeReplayAction()
-        {
-            return;
-        }// end function
+   public class ExchangeReplayAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : ExchangeReplayAction
-        {
-            var _loc_2:* = new ExchangeReplayAction;
-            _loc_2.count = param1;
-            return _loc_2;
-        }// end function
+      public function ExchangeReplayAction() {
+         super();
+      }
 
-    }
+      public static function create(pCount:int) : ExchangeReplayAction {
+         var action:ExchangeReplayAction = new ExchangeReplayAction();
+         action.count=pCount;
+         return action;
+      }
+
+      public var count:int;
+   }
+
 }
