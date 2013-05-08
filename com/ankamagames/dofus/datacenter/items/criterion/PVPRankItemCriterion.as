@@ -1,32 +1,31 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class PVPRankItemCriterion extends ItemCriterion implements IDataCenter
-    {
 
-        public function PVPRankItemCriterion(param1:String)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class PVPRankItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            return I18n.getUiText("ui.pvp.rank") + " " + _operator.text + " " + _criterionValue;
-        }// end function
+      public function PVPRankItemCriterion(pCriterion:String) {
+         super(pCriterion);
+      }
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new PVPRankItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
 
-        override protected function getCriterion() : int
-        {
-            return 0;
-        }// end function
 
-    }
+      override public function get text() : String {
+         return I18n.getUiText("ui.pvp.rank")+" "+_operator.text+" "+_criterionValue;
+      }
+
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:PVPRankItemCriterion = new PVPRankItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
+
+      override protected function getCriterion() : int {
+         return 0;
+      }
+   }
+
 }

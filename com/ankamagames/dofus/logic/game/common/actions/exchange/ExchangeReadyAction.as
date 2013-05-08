@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.exchange
+package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeReadyAction extends Object implements Action
-    {
-        public var isReady:Boolean;
 
-        public function ExchangeReadyAction()
-        {
-            return;
-        }// end function
+   public class ExchangeReadyAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : ExchangeReadyAction
-        {
-            var _loc_2:* = new ExchangeReadyAction;
-            _loc_2.isReady = param1;
-            return _loc_2;
-        }// end function
+      public function ExchangeReadyAction() {
+         super();
+      }
 
-    }
+      public static function create(pIsReady:Boolean) : ExchangeReadyAction {
+         var a:ExchangeReadyAction = new ExchangeReadyAction();
+         a.isReady=pIsReady;
+         return a;
+      }
+
+      public var isReady:Boolean;
+   }
+
 }

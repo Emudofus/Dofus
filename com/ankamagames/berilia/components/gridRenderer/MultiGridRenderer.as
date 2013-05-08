@@ -1,271 +1,319 @@
-﻿package com.ankamagames.berilia.components.gridRenderer
+package com.ankamagames.berilia.components.gridRenderer
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.graphic.*;
-    import com.ankamagames.berilia.types.uiDefinition.*;
-    import com.ankamagames.berilia.uiRender.*;
-    import com.ankamagames.berilia.utils.errors.*;
-    import com.ankamagames.jerakine.messages.*;
-    import flash.display.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IGridRenderer;
+   import com.ankamagames.berilia.components.Grid;
+   import flash.utils.Dictionary;
+   import com.ankamagames.berilia.uiRender.UiRenderer;
+   import flash.geom.ColorTransform;
+   import com.ankamagames.berilia.types.graphic.UiRootContainer;
+   import flash.display.DisplayObject;
+   import com.ankamagames.berilia.types.graphic.GraphicContainer;
+   import flash.display.Sprite;
+   import com.ankamagames.berilia.utils.errors.BeriliaError;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import flash.display.DisplayObjectContainer;
+   import com.ankamagames.berilia.types.uiDefinition.ContainerElement;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.berilia.UIComponent;
+   import com.ankamagames.berilia.types.uiDefinition.BasicElement;
+   import com.ankamagames.berilia.types.uiDefinition.StateContainerElement;
+   import flash.utils.getDefinitionByName;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.berilia.types.uiDefinition.ButtonElement;
 
-    public class MultiGridRenderer extends Object implements IGridRenderer
-    {
-        private var _grid:Grid;
-        private var _cptNameReferences:Dictionary;
-        private var _componentReferences:Dictionary;
-        private var _componentReferencesByInstance:Dictionary;
-        private var _elemID:uint;
-        private var _containerCache:Dictionary;
-        private var _uiRenderer:UiRenderer;
-        private var _containerDefinition:Dictionary;
-        private var _bgColor1:ColorTransform;
-        private var _bgColor2:ColorTransform;
-        private var _color1:Number = -1;
-        private var _color2:Number = -1;
-        private var _updateFunctionName:String;
-        private var _getLineTypeFunctionName:String;
-        private var _getDataLengthFunctionName:String;
 
-        public function MultiGridRenderer(param1:String)
-        {
-            var _loc_2:* = param1.split(",");
-            this._updateFunctionName = _loc_2[0];
-            this._getLineTypeFunctionName = _loc_2[1];
-            this._getDataLengthFunctionName = _loc_2[2];
-            if (_loc_2[3])
+   public class MultiGridRenderer extends Object implements IGridRenderer
+   {
+         
+
+      public function MultiGridRenderer(args:String) {
+         var params:Array = null;
+         super();
+         if(args)
+         {
+            params=args.split(",");
+            this._updateFunctionName=params[0];
+            this._getLineTypeFunctionName=params[1];
+            this._getDataLengthFunctionName=params[2];
+            if(params[3])
             {
-                this._bgColor1 = new ColorTransform();
-                this._color1 = parseInt(_loc_2[3], 16);
-                this._bgColor1.color = this._color1;
+               this._bgColor1=new ColorTransform();
+               this._color1=parseInt(params[3],16);
+               this._bgColor1.color=this._color1;
             }
-            if (_loc_2[4])
+            if(params[4])
             {
-                this._bgColor2 = new ColorTransform();
-                this._color2 = parseInt(_loc_2[4], 16);
-                this._bgColor2.color = this._color2;
+               this._bgColor2=new ColorTransform();
+               this._color2=parseInt(params[4],16);
+               this._bgColor2.color=this._color2;
             }
-            this._cptNameReferences = new Dictionary();
-            this._componentReferences = new Dictionary();
-            this._containerDefinition = new Dictionary();
-            this._componentReferencesByInstance = new Dictionary(true);
-            this._uiRenderer = new UiRenderer();
-            this._containerCache = new Dictionary();
+         }
+         this._cptNameReferences=new Dictionary();
+         this._componentReferences=new Dictionary();
+         this._containerDefinition=new Dictionary();
+         this._componentReferencesByInstance=new Dictionary(true);
+         this._uiRenderer=new UiRenderer();
+         this._containerCache=new Dictionary();
+      }
+
+
+
+      protected var _grid:Grid;
+
+      protected var _cptNameReferences:Dictionary;
+
+      protected var _componentReferences:Dictionary;
+
+      protected var _componentReferencesByInstance:Dictionary;
+
+      protected var _elemID:uint;
+
+      protected var _containerCache:Dictionary;
+
+      protected var _uiRenderer:UiRenderer;
+
+      protected var _containerDefinition:Dictionary;
+
+      protected var _bgColor1:ColorTransform;
+
+      protected var _bgColor2:ColorTransform;
+
+      protected var _color1:Number = -1;
+
+      protected var _color2:Number = -1;
+
+      protected var _updateFunctionName:String;
+
+      protected var _getLineTypeFunctionName:String;
+
+      protected var _defaultLineType:String;
+
+      protected var _getDataLengthFunctionName:String;
+
+      public function set grid(g:Grid) : void {
+         if(!this._grid)
+         {
+            this._grid=g;
+         }
+         g.mouseEnabled=true;
+         var ui:UiRootContainer = this._grid.getUi();
+         this._uiRenderer.postInit(ui);
+      }
+
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+         var container:GraphicContainer = new GraphicContainer();
+         this.update(data,index,container,selected,subIndex);
+         return container;
+      }
+
+      public function update(data:*, index:uint, target:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+         var s:Sprite = null;
+         var ui:UiRootContainer = this._grid.getUi();
+         if((!ui.uiClass.hasOwnProperty(this._getLineTypeFunctionName))&&(!this._defaultLineType)||(!ui.uiClass.hasOwnProperty(this._updateFunctionName)))
+         {
+            throw new BeriliaError("GetLineType function or update function is not define.");
+         }
+         else
+         {
+            containerName=this._defaultLineType?this._defaultLineType:ui.uiClass[this._getLineTypeFunctionName](SecureCenter.secure(data),subIndex);
+            if(target.name!=containerName)
+            {
+               this.buildLine(target as Sprite,containerName);
+            }
+            if(target is Sprite)
+            {
+               s=target as Sprite;
+               if(index%2==0)
+               {
+                  s.graphics.clear();
+                  if(this._color1)
+                  {
+                     s.graphics.beginFill(this._color1);
+                     s.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
+                     s.graphics.endFill();
+                  }
+               }
+               if(index%2==1)
+               {
+                  s.graphics.clear();
+                  if(this._color2)
+                  {
+                     s.graphics.beginFill(this._color2);
+                     s.graphics.drawRect(0,0,this._grid.slotWidth,this._grid.slotHeight);
+                     s.graphics.endFill();
+                  }
+               }
+            }
+            this.uiUpdate(ui,target,data,selected,subIndex);
             return;
-        }// end function
+         }
+      }
 
-        public function set grid(param1:Grid) : void
-        {
-            if (!this._grid)
+      protected function uiUpdate(ui:UiRootContainer, target:DisplayObject, data:*, selected:Boolean, subIndex:uint) : void {
+         if(DisplayObjectContainer(target).numChildren)
+         {
+            ui.uiClass[this._updateFunctionName](SecureCenter.secure(data),this._cptNameReferences[DisplayObjectContainer(target).getChildAt(0)],selected,subIndex);
+         }
+      }
+
+      public function remove(dispObj:DisplayObject) : void {
+         dispObj.visible=false;
+      }
+
+      public function destroy() : void {
+         var o:Object = null;
+         var o2:Object = null;
+         var o3:Object = null;
+         for each (o in this._componentReferences)
+         {
+            o2=SecureCenter.unsecure(o);
+            for each (o3 in o2)
             {
-                this._grid = param1;
+               if(o3 is GraphicContainer)
+               {
+                  o3.remove();
+               }
             }
-            var _loc_2:* = this._grid.getUi();
-            this._uiRenderer.postInit(_loc_2);
+         }
+         this._componentReferences=null;
+         this._componentReferencesByInstance=null;
+         this._grid=null;
+      }
+
+      public function getDataLength(data:*, selected:Boolean) : uint {
+         var ui:UiRootContainer = this._grid.getUi();
+         if(ui.uiClass.hasOwnProperty(this._getDataLengthFunctionName))
+         {
+            return ui.uiClass[this._getDataLengthFunctionName](data,selected);
+         }
+         return 1;
+      }
+
+      public function renderModificator(childs:Array) : Array {
+         var container:ContainerElement = null;
+         for each (this._containerDefinition[container.name] in childs)
+         {
+         }
+         return [];
+      }
+
+      public function eventModificator(msg:Message, functionName:String, args:Array, target:UIComponent) : String {
+         return functionName;
+      }
+
+      protected function buildLine(container:Sprite, name:String) : void {
+         var key:String = null;
+         var multiGridMarkerIndex:* = 0;
+         var realElemName:String = null;
+         if(container.name==name)
+         {
             return;
-        }// end function
-
-        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
-        {
-            var _loc_5:* = new Sprite();
-            this.update(param1, param2, _loc_5, param3, param4);
-            return _loc_5;
-        }// end function
-
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
-        {
-            var _loc_8:* = null;
-            var _loc_6:* = this._grid.getUi();
-            if (!this._grid.getUi().uiClass.hasOwnProperty(this._getLineTypeFunctionName) || !_loc_6.uiClass.hasOwnProperty(this._updateFunctionName))
+         }
+         if(!this._containerCache[name])
+         {
+            this._containerCache[name]=[];
+         }
+         if(this._containerDefinition[container.name])
+         {
+            if(!this._containerCache[container.name])
             {
-                throw new BeriliaError("GetLineType function or update function is not define.");
+               this._containerCache[container.name]=[];
             }
-            var _loc_9:* = _loc_6.uiClass;
-            var _loc_7:* = _loc_9._loc_6.uiClass[this._getLineTypeFunctionName](SecureCenter.secure(param1), param5);
-            if (param3.name != _loc_7)
+            if(container.numChildren)
             {
-                this.buildLine(param3 as Sprite, _loc_7);
+               this._containerCache[container.name].push(container.getChildAt(0));
+               container.removeChildAt(0);
             }
-            if (param3 is Sprite)
-            {
-                _loc_8 = param3 as Sprite;
-                if (param2 % 2 == 0 && this._color1)
-                {
-                    _loc_8.graphics.clear();
-                    _loc_8.graphics.beginFill(this._color1);
-                    _loc_8.graphics.drawRect(0, 0, this._grid.slotWidth, this._grid.slotHeight);
-                    _loc_8.graphics.endFill();
-                }
-                if (param2 % 2 == 1 && this._color2)
-                {
-                    _loc_8.graphics.clear();
-                    _loc_8.graphics.beginFill(this._color2);
-                    _loc_8.graphics.drawRect(0, 0, this._grid.slotWidth, this._grid.slotHeight);
-                    _loc_8.graphics.endFill();
-                }
-            }
-            if (DisplayObjectContainer(param3).numChildren)
-            {
-                var _loc_9:* = _loc_6.uiClass;
-                _loc_9._loc_6.uiClass[this._updateFunctionName](SecureCenter.secure(param1), this._cptNameReferences[DisplayObjectContainer(param3).getChildAt(0)], param4, param5);
-            }
+         }
+         container.name=name?name:"#########EMPTY";
+         if(!name)
+         {
             return;
-        }// end function
-
-        public function remove(param1:DisplayObject) : void
-        {
+         }
+         if(this._containerCache[name].length)
+         {
+            container.addChild(this._containerCache[name].pop());
             return;
-        }// end function
+         }
+         var elemContainer:GraphicContainer = new GraphicContainer();
+         elemContainer.mouseEnabled=false;
+         container.addChild(elemContainer);
+         var cptNames:Array = [];
+         this._uiRenderer.makeChilds([this.copyElement(this._containerDefinition[name],cptNames)],elemContainer,true);
+         this._grid.getUi().render();
+         var components:Object = {};
+         var ui:UiRootContainer = this._grid.getUi();
+         for (key in cptNames)
+         {
+            multiGridMarkerIndex=key.indexOf("_m_");
+            realElemName=key;
+            if(multiGridMarkerIndex!=-1)
+            {
+               realElemName=realElemName.substr(0,multiGridMarkerIndex);
+            }
+            components[realElemName]=SecureCenter.secure(ui.getElement(cptNames[key]),SecureCenter.ACCESS_KEY);
+         }
+         this._cptNameReferences[elemContainer]=components;
+         this._elemID++;
+      }
 
-        public function destroy() : void
-        {
-            return;
-        }// end function
+      protected function copyElement(basicElement:BasicElement, names:Object) : BasicElement {
+         var childs:Array = null;
+         var elem:BasicElement = null;
+         var nsce:StateContainerElement = null;
+         var sce:StateContainerElement = null;
+         var stateChangingProperties:Array = null;
+         var state:uint = 0;
+         var stateStr:String = null;
+         var elemName:String = null;
+         var newElement:BasicElement = new getDefinitionByName(getQualifiedClassName(basicElement)) as Class();
+         basicElement.copy(newElement);
+         if(newElement.name)
+         {
+            newElement.setName(newElement.name+"_m_"+this._grid.name+"_"+this._elemID);
+            names[basicElement.name]=newElement.name;
+         }
+         else
+         {
+            newElement.setName("elem_m_"+this._grid.name+"_"+Math.random()*1.0E10);
+         }
+         if(newElement is ContainerElement)
+         {
+            childs=new Array();
+            for each (elem in ContainerElement(basicElement).childs)
+            {
+               childs.push(this.copyElement(elem,names));
+            }
+            ContainerElement(newElement).childs=childs;
+         }
+         if(newElement is StateContainerElement)
+         {
+            nsce=newElement as StateContainerElement;
+            sce=basicElement as StateContainerElement;
+            stateChangingProperties=new Array();
+            for (stateStr in sce.stateChangingProperties)
+            {
+               state=parseInt(stateStr);
+               for (elemName in sce.stateChangingProperties[state])
+               {
+                  if(!stateChangingProperties[state])
+                  {
+                     stateChangingProperties[state]=[];
+                  }
+                  stateChangingProperties[state][elemName+"_m_"+this._grid.name+"_"+this._elemID]=sce.stateChangingProperties[state][elemName];
+               }
+            }
+            nsce.stateChangingProperties=stateChangingProperties;
+         }
+         if(newElement is ButtonElement)
+         {
+            if(newElement.properties["linkedTo"])
+            {
+               newElement.properties["linkedTo"]=newElement.properties["linkedTo"]+"_m_"+this._grid.name+"_"+this._elemID;
+            }
+         }
+         return newElement;
+      }
+   }
 
-        public function getDataLength(param1, param2:Boolean) : uint
-        {
-            var _loc_3:* = this._grid.getUi();
-            if (_loc_3.uiClass.hasOwnProperty(this._getDataLengthFunctionName))
-            {
-                var _loc_4:* = _loc_3.uiClass;
-                return _loc_4._loc_3.uiClass[this._getDataLengthFunctionName](param1, param2);
-            }
-            return 1;
-        }// end function
-
-        public function renderModificator(param1:Array) : Array
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in param1)
-            {
-                
-                this._containerDefinition[_loc_2.name] = _loc_2;
-            }
-            return [];
-        }// end function
-
-        public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String
-        {
-            return param2;
-        }// end function
-
-        private function buildLine(param1:Sprite, param2:String) : void
-        {
-            var _loc_7:* = null;
-            if (param1.name == param2)
-            {
-                return;
-            }
-            if (!this._containerCache[param2])
-            {
-                this._containerCache[param2] = [];
-            }
-            if (this._containerDefinition[param1.name])
-            {
-                if (!this._containerCache[param1.name])
-                {
-                    this._containerCache[param1.name] = [];
-                }
-                if (param1.numChildren)
-                {
-                    this._containerCache[param1.name].push(param1.getChildAt(0));
-                    param1.removeChildAt(0);
-                }
-            }
-            param1.name = param2 ? (param2) : ("#########EMPTY");
-            if (!param2)
-            {
-                return;
-            }
-            if (this._containerCache[param2].length)
-            {
-                param1.addChild(this._containerCache[param2].pop());
-                return;
-            }
-            var _loc_3:* = new GraphicContainer();
-            param1.addChild(_loc_3);
-            var _loc_4:* = [];
-            this._uiRenderer.makeChilds([this.copyElement(this._containerDefinition[param2], _loc_4)], _loc_3);
-            this._grid.getUi().render();
-            var _loc_5:* = {};
-            var _loc_6:* = this._grid.getUi();
-            for (_loc_7 in _loc_4)
-            {
-                
-                _loc_5[_loc_7] = _loc_6.getElement(_loc_4[_loc_7]);
-            }
-            this._cptNameReferences[_loc_3] = _loc_5;
-            var _loc_8:* = this;
-            var _loc_9:* = this._elemID + 1;
-            _loc_8._elemID = _loc_9;
-            return;
-        }// end function
-
-        private function copyElement(param1:BasicElement, param2:Object) : BasicElement
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_3:* = new (getDefinitionByName(getQualifiedClassName(param1)) as Class)();
-            param1.copy(_loc_3);
-            if (_loc_3.name)
-            {
-                _loc_3.setName(_loc_3.name + "_m_" + this._elemID);
-                param2[param1.name] = _loc_3.name;
-            }
-            else
-            {
-                _loc_3.setName("elem_m_" + Math.random() * 10000000000);
-            }
-            if (_loc_3 is ContainerElement)
-            {
-                _loc_4 = new Array();
-                for each (_loc_5 in ContainerElement(param1).childs)
-                {
-                    
-                    _loc_4.push(this.copyElement(_loc_5, param2));
-                }
-                ContainerElement(_loc_3).childs = _loc_4;
-            }
-            if (_loc_3 is StateContainerElement)
-            {
-                _loc_6 = _loc_3 as StateContainerElement;
-                _loc_7 = param1 as StateContainerElement;
-                _loc_8 = new Array();
-                for (_loc_10 in _loc_7.stateChangingProperties)
-                {
-                    
-                    _loc_9 = parseInt(_loc_10);
-                    for (_loc_11 in _loc_7.stateChangingProperties[_loc_9])
-                    {
-                        
-                        if (!_loc_8[_loc_9])
-                        {
-                            _loc_8[_loc_9] = [];
-                        }
-                        _loc_8[_loc_9][_loc_11 + "_m_" + this._elemID] = _loc_7.stateChangingProperties[_loc_9][_loc_11];
-                    }
-                }
-                _loc_6.stateChangingProperties = _loc_8;
-            }
-            if (_loc_3 is ButtonElement)
-            {
-                if (_loc_3.properties["linkedTo"])
-                {
-                    _loc_3.properties["linkedTo"] = _loc_3.properties["linkedTo"] + "_" + this._elemID;
-                }
-            }
-            return _loc_3;
-        }// end function
-
-    }
 }

@@ -1,80 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeBidHouseGenericItemAddedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var objGenericId:int = 0;
-        public static const protocolId:uint = 5947;
 
-        public function ExchangeBidHouseGenericItemAddedMessage()
-        {
-            return;
-        }// end function
+   public class ExchangeBidHouseGenericItemAddedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeBidHouseGenericItemAddedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5947;
-        }// end function
+      public static const protocolId:uint = 5947;
 
-        public function initExchangeBidHouseGenericItemAddedMessage(param1:int = 0) : ExchangeBidHouseGenericItemAddedMessage
-        {
-            this.objGenericId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.objGenericId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var objGenericId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5947;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeBidHouseGenericItemAddedMessage(param1);
-            return;
-        }// end function
+      public function initExchangeBidHouseGenericItemAddedMessage(objGenericId:int=0) : ExchangeBidHouseGenericItemAddedMessage {
+         this.objGenericId=objGenericId;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ExchangeBidHouseGenericItemAddedMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.objGenericId);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.objGenericId=0;
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeBidHouseGenericItemAddedMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ExchangeBidHouseGenericItemAddedMessage(param1:IDataInput) : void
-        {
-            this.objGenericId = param1.readInt();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseGenericItemAddedMessage(output);
+      }
+
+      public function serializeAs_ExchangeBidHouseGenericItemAddedMessage(output:IDataOutput) : void {
+         output.writeInt(this.objGenericId);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseGenericItemAddedMessage(input);
+      }
+
+      public function deserializeAs_ExchangeBidHouseGenericItemAddedMessage(input:IDataInput) : void {
+         this.objGenericId=input.readInt();
+      }
+   }
+
 }

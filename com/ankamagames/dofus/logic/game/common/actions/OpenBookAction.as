@@ -1,25 +1,28 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenBookAction extends Object implements Action
-    {
-        private var _name:String;
-        public var value:String;
-        public var param:Object;
 
-        public function OpenBookAction()
-        {
-            return;
-        }// end function
+   public class OpenBookAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String = null, param2:Object = null) : OpenBookAction
-        {
-            var _loc_3:* = new OpenBookAction;
-            _loc_3.value = param1;
-            _loc_3.param = param2;
-            return _loc_3;
-        }// end function
+      public function OpenBookAction() {
+         super();
+      }
 
-    }
+      public static function create(name:String=null, param:Object=null) : OpenBookAction {
+         var action:OpenBookAction = new OpenBookAction();
+         action.value=name;
+         action.param=param;
+         return action;
+      }
+
+      private var _name:String;
+
+      public var value:String;
+
+      public var param:Object;
+   }
+
 }

@@ -1,43 +1,42 @@
-﻿package com.ankamagames.jerakine.tasking
+package com.ankamagames.jerakine.tasking
 {
-    import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.events.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.utils.misc.Prioritizable;
+   import com.ankamagames.jerakine.utils.errors.AbstractMethodCallError;
+   import com.ankamagames.jerakine.types.enums.Priority;
 
-    public class SplittedTask extends EventDispatcher implements Prioritizable
-    {
-        private var _nPriority:int;
 
-        public function SplittedTask()
-        {
-            return;
-        }// end function
+   public class SplittedTask extends EventDispatcher implements Prioritizable
+   {
+         
 
-        public function step() : Boolean
-        {
-            throw new AbstractMethodCallError("step() must be redefined");
-        }// end function
+      public function SplittedTask() {
+         super();
+      }
 
-        public function stepsPerFrame() : uint
-        {
-            throw new AbstractMethodCallError("stepsPerFrame() must be redefined");
-        }// end function
 
-        public function get priority() : int
-        {
-            if (isNaN(this._nPriority))
-            {
-                return Priority.NORMAL;
-            }
-            return this._nPriority;
-        }// end function
 
-        public function set priority(param1:int) : void
-        {
-            this._nPriority = param1;
-            return;
-        }// end function
+      private var _nPriority:int;
 
-    }
+      public function step() : Boolean {
+         throw new AbstractMethodCallError("step() must be redefined");
+      }
+
+      public function stepsPerFrame() : uint {
+         throw new AbstractMethodCallError("stepsPerFrame() must be redefined");
+      }
+
+      public function get priority() : int {
+         if(isNaN(this._nPriority))
+         {
+            return Priority.NORMAL;
+         }
+         return this._nPriority;
+      }
+
+      public function set priority(p:int) : void {
+         this._nPriority=p;
+      }
+   }
+
 }

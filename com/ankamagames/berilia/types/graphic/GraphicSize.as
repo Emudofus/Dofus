@@ -1,61 +1,59 @@
-﻿package com.ankamagames.berilia.types.graphic
+package com.ankamagames.berilia.types.graphic
 {
-    import com.ankamagames.berilia.types.uiDefinition.*;
-    import flash.geom.*;
+   import flash.geom.Point;
+   import com.ankamagames.berilia.types.uiDefinition.SizeElement;
 
-    public class GraphicSize extends Point
-    {
-        private var _nXUnit:uint;
-        private var _nYUnit:uint;
-        public static const SIZE_PIXEL:uint = 0;
-        public static const SIZE_PRC:uint = 1;
 
-        public function GraphicSize()
-        {
-            x = NaN;
-            y = NaN;
-            return;
-        }// end function
+   public class GraphicSize extends Point
+   {
+         
 
-        public function setX(param1:Number, param2:uint) : void
-        {
-            x = param1;
-            this._nXUnit = param2;
-            return;
-        }// end function
+      public function GraphicSize() {
+         super();
+         x=NaN;
+         y=NaN;
+      }
 
-        public function setY(param1:Number, param2:uint) : void
-        {
-            y = param1;
-            this._nYUnit = param2;
-            return;
-        }// end function
+      public static const SIZE_PIXEL:uint = 0;
 
-        public function get xUnit() : uint
-        {
-            return this._nXUnit;
-        }// end function
+      public static const SIZE_PRC:uint = 1;
 
-        public function get yUnit() : uint
-        {
-            return this._nYUnit;
-        }// end function
+      private var _nXUnit:uint;
 
-        public function toSizeElement() : SizeElement
-        {
-            var _loc_1:* = new SizeElement();
-            if (!isNaN(x))
-            {
-                _loc_1.x = x;
-                _loc_1.xUnit = this._nXUnit;
-            }
-            if (!isNaN(y))
-            {
-                _loc_1.y = y;
-                _loc_1.yUnit = this._nYUnit;
-            }
-            return _loc_1;
-        }// end function
+      private var _nYUnit:uint;
 
-    }
+      public function setX(nX:Number, nType:uint) : void {
+         x=nX;
+         this._nXUnit=nType;
+      }
+
+      public function setY(nY:Number, nType:uint) : void {
+         y=nY;
+         this._nYUnit=nType;
+      }
+
+      public function get xUnit() : uint {
+         return this._nXUnit;
+      }
+
+      public function get yUnit() : uint {
+         return this._nYUnit;
+      }
+
+      public function toSizeElement() : SizeElement {
+         var se:SizeElement = new SizeElement();
+         if(!isNaN(x))
+         {
+            se.x=x;
+            se.xUnit=this._nXUnit;
+         }
+         if(!isNaN(y))
+         {
+            se.y=y;
+            se.yUnit=this._nYUnit;
+         }
+         return se;
+      }
+   }
+
 }

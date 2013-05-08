@@ -1,140 +1,154 @@
-﻿package com.ankamagames.dofus.logic.common.frames
+package com.ankamagames.dofus.logic.common.frames
 {
-    import __AS3__.vec.*;
-    import by.blooddy.crypto.*;
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.messages.game.approach.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.*;
-    import com.ankamagames.dofus.network.messages.security.*;
-    import com.ankamagames.jerakine.handlers.messages.mouse.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import flash.display.*;
-    import flash.filesystem.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.house.AccountHouseInformations;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseRightClickMessage;
+   import flash.display.DisplayObject;
+   import flash.display.Stage;
+   import flash.display.DisplayObjectContainer;
+   import com.ankamagames.dofus.network.messages.security.CheckFileRequestMessage;
+   import flash.filesystem.FileStream;
+   import flash.utils.ByteArray;
+   import com.ankamagames.dofus.network.messages.security.CheckFileMessage;
+   import com.ankamagames.dofus.network.messages.game.approach.ServerOptionalFeaturesMessage;
+   import com.ankamagames.dofus.network.messages.game.approach.ServerSettingsMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.houses.AccountHouseMessage;
+   import flash.filesystem.File;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import by.blooddy.crypto.MD5;
+   import flash.filesystem.FileMode;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.logic.common.managers.PlayerManager;
+   import com.ankamagames.jerakine.types.enums.Priority;
 
-    public class MiscFrame extends Object implements Frame
-    {
-        private var _optionalAuthorizedFeatures:Array;
-        private var _accountHouses:Vector.<AccountHouseInformations>;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(MiscFrame));
 
-        public function MiscFrame()
-        {
-            return;
-        }// end function
+   public class MiscFrame extends Object implements Frame
+   {
+         
 
-        public function isOptionalFeatureActive(param1:uint) : Boolean
-        {
-            if (this._optionalAuthorizedFeatures && this._optionalAuthorizedFeatures.indexOf(param1) > -1)
-            {
-                return true;
-            }
-            return false;
-        }// end function
+      public function MiscFrame() {
+         super();
+      }
 
-        public function get accountHouses() : Vector.<AccountHouseInformations>
-        {
-            return this._accountHouses;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MiscFrame));
 
-        public function pushed() : Boolean
-        {
+      private var _optionalAuthorizedFeatures:Array;
+
+      private var _accountHouses:Vector.<AccountHouseInformations>;
+
+      public function isOptionalFeatureActive(id:uint) : Boolean {
+         if((this._optionalAuthorizedFeatures)&&(this._optionalAuthorizedFeatures.indexOf(id)<-1))
+         {
             return true;
-        }// end function
+         }
+         return false;
+      }
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function get accountHouses() : Vector.<AccountHouseInformations> {
+         return this._accountHouses;
+      }
 
-        public function process(param1:Message) : Boolean
-        {
-            var mrcMsg:MouseRightClickMessage;
-            var current:DisplayObject;
-            var stage:Stage;
-            var worldContainer:DisplayObjectContainer;
-            var beriliaContainer:DisplayObjectContainer;
-            var cfrmsg:CheckFileRequestMessage;
-            var fileStream:FileStream;
-            var fileByte:ByteArray;
-            var value:String;
-            var filenameHash:String;
-            var cfmsg:CheckFileMessage;
-            var sofmsg:ServerOptionalFeaturesMessage;
-            var ssmsg:ServerSettingsMessage;
-            var ahm:AccountHouseMessage;
-            var file:File;
-            var featureId:int;
-            var msg:* = param1;
-            switch(true)
-            {
-                case msg is MouseRightClickMessage:
-                {
-                    mrcMsg = msg as MouseRightClickMessage;
-                    current = mrcMsg.target;
-                    stage = StageShareManager.stage;
-                    worldContainer = Atouin.getInstance().worldContainer;
-                    beriliaContainer = Berilia.getInstance().docMain;
-                    while (current != stage && current)
-                    {
-                        
-                        if (beriliaContainer == current)
-                        {
-                            return false;
-                        }
-                        current = current.parent;
-                    }
-                    KernelEventsManager.getInstance().processCallback(HookList.WorldRightClick);
-                    return true;
-                }
-                case msg is CheckFileRequestMessage:
-                {
-                    cfrmsg = msg as CheckFileRequestMessage;
-                    fileStream = new FileStream();
-                    fileByte = new ByteArray();
-                    value;
-                    filenameHash = MD5.hash(cfrmsg.filename);
-                    try
-                    {
-                        file = File.applicationDirectory;
-                        if (!file || !file.exists)
-                        {
-                            value;
-                        }
-                        else
-                        {
-                            file = file.resolvePath("./" + cfrmsg.filename);
-                            fileStream.open(file, FileMode.READ);
-                            fileStream.readBytes(fileByte);
-                            fileStream.close();
-                        }
-                    }
-                    catch (e:Error)
-                    {
-                        if (e)
-                        {
-                            _log.error(e.getStackTrace());
-                            value;
-                        }
-                    }
-                    finally
-                    {
-                    }
-                    return false;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-        public function get priority() : int
-        {
-            return Priority.LOWEST;
-        }// end function
+      public function pulled() : Boolean {
+         return true;
+      }
 
-    }
+      public function process(msg:Message) : Boolean {
+         var mrcMsg:MouseRightClickMessage = null;
+         var current:DisplayObject = null;
+         var stage:Stage = null;
+         var worldContainer:DisplayObjectContainer = null;
+         var beriliaContainer:DisplayObjectContainer = null;
+         var cfrmsg:CheckFileRequestMessage = null;
+         var fileStream:FileStream = null;
+         var fileByte:ByteArray = null;
+         var value:String = null;
+         var filenameHash:String = null;
+         var cfmsg:CheckFileMessage = null;
+         var sofmsg:ServerOptionalFeaturesMessage = null;
+         var ssmsg:ServerSettingsMessage = null;
+         var ahm:AccountHouseMessage = null;
+         var file:File = null;
+         var featureId:int = 0;
+         switch(true)
+         {
+            case msg is MouseRightClickMessage:
+               mrcMsg=msg as MouseRightClickMessage;
+               current=mrcMsg.target;
+               stage=StageShareManager.stage;
+               worldContainer=Atouin.getInstance().worldContainer;
+               beriliaContainer=Berilia.getInstance().docMain;
+               while((!(current==stage))&&(current))
+               {
+                  if(beriliaContainer==current)
+                  {
+                     return false;
+                  }
+                  current=current.parent;
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.WorldRightClick);
+               return true;
+            case msg is CheckFileRequestMessage:
+               cfrmsg=msg as CheckFileRequestMessage;
+               fileStream=new FileStream();
+               fileByte=new ByteArray();
+               value="";
+               filenameHash=MD5.hash(cfrmsg.filename);
+               file=File.applicationDirectory;
+               if((!file)||(!file.exists))
+               {
+                  value="-1";
+               }
+               else
+               {
+                  file=file.resolvePath("./"+cfrmsg.filename);
+                  fileStream.open(file,FileMode.READ);
+                  fileStream.readBytes(fileByte);
+                  fileStream.close();
+               }
+               if(fileStream)
+               {
+                  fileStream.close();
+               }
+            case msg is ServerOptionalFeaturesMessage:
+               sofmsg=msg as ServerOptionalFeaturesMessage;
+               this._optionalAuthorizedFeatures=new Array();
+               for each (featureId in sofmsg.features)
+               {
+                  this._optionalAuthorizedFeatures.push(featureId);
+               }
+               return true;
+            case msg is ServerSettingsMessage:
+               ssmsg=msg as ServerSettingsMessage;
+               PlayerManager.getInstance().serverCommunityId=ssmsg.community;
+               PlayerManager.getInstance().serverLang=ssmsg.lang;
+               PlayerManager.getInstance().serverGameType=ssmsg.gameType;
+               return true;
+            case msg is AccountHouseMessage:
+               ahm=msg as AccountHouseMessage;
+               this._accountHouses=ahm.houses;
+               KernelEventsManager.getInstance().processCallback(HookList.HouseInformations,ahm.houses);
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function get priority() : int {
+         return Priority.LOWEST;
+      }
+   }
+
 }

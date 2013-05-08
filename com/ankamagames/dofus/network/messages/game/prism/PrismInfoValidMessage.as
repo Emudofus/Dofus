@@ -1,83 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.prism
+package com.ankamagames.dofus.network.messages.game.prism
 {
-    import com.ankamagames.dofus.network.types.game.fight.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.fight.ProtectedEntityWaitingForHelpInfo;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PrismInfoValidMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo;
-        public static const protocolId:uint = 5858;
 
-        public function PrismInfoValidMessage()
-        {
-            this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
-            return;
-        }// end function
+   public class PrismInfoValidMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PrismInfoValidMessage() {
+         this.waitingForHelpInfo=new ProtectedEntityWaitingForHelpInfo();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5858;
-        }// end function
+      public static const protocolId:uint = 5858;
 
-        public function initPrismInfoValidMessage(param1:ProtectedEntityWaitingForHelpInfo = null) : PrismInfoValidMessage
-        {
-            this.waitingForHelpInfo = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5858;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PrismInfoValidMessage(param1);
-            return;
-        }// end function
+      public function initPrismInfoValidMessage(waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo=null) : PrismInfoValidMessage {
+         this.waitingForHelpInfo=waitingForHelpInfo;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_PrismInfoValidMessage(param1:IDataOutput) : void
-        {
-            this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.waitingForHelpInfo=new ProtectedEntityWaitingForHelpInfo();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PrismInfoValidMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_PrismInfoValidMessage(param1:IDataInput) : void
-        {
-            this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
-            this.waitingForHelpInfo.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismInfoValidMessage(output);
+      }
+
+      public function serializeAs_PrismInfoValidMessage(output:IDataOutput) : void {
+         this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismInfoValidMessage(input);
+      }
+
+      public function deserializeAs_PrismInfoValidMessage(input:IDataInput) : void {
+         this.waitingForHelpInfo=new ProtectedEntityWaitingForHelpInfo();
+         this.waitingForHelpInfo.deserialize(input);
+      }
+   }
+
 }

@@ -1,98 +1,92 @@
-﻿package com.hurlant.math
+package com.hurlant.math
 {
-    import com.hurlant.math.*;
 
-    class MontgomeryReduction extends Object implements IReduction
-    {
-        private var m:BigInteger;
-        private var mp:int;
-        private var mpl:int;
-        private var mph:int;
-        private var um:int;
-        private var mt2:int;
+   use namespace bi_internal;
 
-        function MontgomeryReduction(param1:BigInteger)
-        {
-            this.m = param1;
-            this.mp = param1.invDigit();
-            this.mpl = this.mp & 32767;
-            this.mph = this.mp >> 15;
-            this.um = (1 << BigInteger.DB - 15) - 1;
-            this.mt2 = 2 * param1.t;
-            return;
-        }// end function
+   class MontgomeryReduction extends Object implements IReduction
+   {
+         
 
-        public function convert(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            param1.abs().dlShiftTo(this.m.t, _loc_2);
-            _loc_2.divRemTo(this.m, null, _loc_2);
-            if (param1.s < 0 && _loc_2.compareTo(BigInteger.ZERO) > 0)
+      function MontgomeryReduction(m:BigInteger) {
+         super();
+         this.m=m;
+         this.mp=m.invDigit();
+         this.mpl=this.mp&32767;
+         this.mph=this.mp>>15;
+         this.um=(1<<BigInteger.DB-15)-1;
+         this.mt2=2*m.t;
+      }
+
+
+
+      private var m:BigInteger;
+
+      private var mp:int;
+
+      private var mpl:int;
+
+      private var mph:int;
+
+      private var um:int;
+
+      private var mt2:int;
+
+      public function convert(x:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         x.abs().dlShiftTo(this.m.t,r);
+         r.divRemTo(this.m,null,r);
+         if((x.s>0)&&(r.compareTo(BigInteger.ZERO)<0))
+         {
+            this.m.subTo(r,r);
+         }
+         return r;
+      }
+
+      public function revert(x:BigInteger) : BigInteger {
+         var r:BigInteger = new BigInteger();
+         x.copyTo(r);
+         this.reduce(r);
+         return r;
+      }
+
+      public function reduce(x:BigInteger) : void {
+         var j:* = 0;
+         var u0:* = 0;
+         while(x.t<=this.mt2)
+         {
+            x.a[x.t++]=0;
+         }
+         var i:int = 0;
+         while(i<this.m.t)
+         {
+            j=x.a[i]&32767;
+            u0=j*this.mpl+((j*this.mph+(x.a[i]>>15)*this.mpl&this.um)<<15)&BigInteger.DM;
+            j=i+this.m.t;
+            x.a[j]=x.a[j]+this.m.am(0,u0,x,i,0,this.m.t);
+            while(x.a[j]>=BigInteger.DV)
             {
-                this.m.subTo(_loc_2, _loc_2);
+               x.a[j]=x.a[j]-BigInteger.DV;
+               x.a[++j]++;
             }
-            return _loc_2;
-        }// end function
+            i++;
+         }
+         x.clamp();
+         x.drShiftTo(this.m.t,x);
+         if(x.compareTo(this.m)>=0)
+         {
+            x.subTo(this.m,x);
+         }
+      }
 
-        public function revert(param1:BigInteger) : BigInteger
-        {
-            var _loc_2:* = new BigInteger();
-            param1.copyTo(_loc_2);
-            this.reduce(_loc_2);
-            return _loc_2;
-        }// end function
+      public function sqrTo(x:BigInteger, r:BigInteger) : void {
+         x.squareTo(r);
+         this.reduce(r);
+      }
 
-        public function reduce(param1:BigInteger) : void
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            while (param1.t <= this.mt2)
-            {
-                
-                var _loc_6:* = param1;
-                _loc_6.t = param1.t + 1;
-                param1.a[++param1.t] = 0;
-            }
-            var _loc_2:* = 0;
-            while (_loc_2 < this.m.t)
-            {
-                
-                _loc_3 = param1.a[_loc_2] & 32767;
-                _loc_4 = _loc_3 * this.mpl + ((_loc_3 * this.mph + (param1.a[_loc_2] >> 15) * this.mpl & this.um) << 15) & BigInteger.DM;
-                _loc_3 = _loc_2 + this.m.t;
-                param1.a[_loc_3] = param1.a[_loc_3] + this.m.am(0, _loc_4, param1, _loc_2, 0, this.m.t);
-                while (param1.a[++_loc_3] >= BigInteger.DV)
-                {
-                    
-                    param1.a[_loc_3] = param1.a[_loc_3] - BigInteger.DV;
-                    var _loc_5:* = param1.a;
-                    var _loc_7:* = param1.a[++_loc_3] + 1;
-                    _loc_5[++_loc_3] = _loc_7;
-                }
-                _loc_2++;
-            }
-            param1.clamp();
-            param1.drShiftTo(this.m.t, param1);
-            if (param1.compareTo(this.m) >= 0)
-            {
-                param1.subTo(this.m, param1);
-            }
-            return;
-        }// end function
+      public function mulTo(x:BigInteger, y:BigInteger, r:BigInteger) : void {
+         x.multiplyTo(y,r);
+         this.reduce(r);
+      }
+   }
 
-        public function sqrTo(param1:BigInteger, param2:BigInteger) : void
-        {
-            param1.squareTo(param2);
-            this.reduce(param2);
-            return;
-        }// end function
-
-        public function mulTo(param1:BigInteger, param2:BigInteger, param3:BigInteger) : void
-        {
-            param1.multiplyTo(param2, param3);
-            this.reduce(param3);
-            return;
-        }// end function
-
-    }
 }

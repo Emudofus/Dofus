@@ -1,92 +1,89 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ObjectUseOnCellMessage extends ObjectUseMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var cells:uint = 0;
-        public static const protocolId:uint = 3013;
 
-        public function ObjectUseOnCellMessage()
-        {
+   public class ObjectUseOnCellMessage extends ObjectUseMessage implements INetworkMessage
+   {
+         
+
+      public function ObjectUseOnCellMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 3013;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
+
+      public var cells:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 3013;
+      }
+
+      public function initObjectUseOnCellMessage(objectUID:uint=0, cells:uint=0) : ObjectUseOnCellMessage {
+         super.initObjectUseMessage(objectUID);
+         this.cells=cells;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.cells=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectUseOnCellMessage(output);
+      }
+
+      public function serializeAs_ObjectUseOnCellMessage(output:IDataOutput) : void {
+         super.serializeAs_ObjectUseMessage(output);
+         if((this.cells>0)||(this.cells<559))
+         {
+            throw new Error("Forbidden value ("+this.cells+") on element cells.");
+         }
+         else
+         {
+            output.writeShort(this.cells);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectUseOnCellMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 3013;
-        }// end function
-
-        public function initObjectUseOnCellMessage(param1:uint = 0, param2:uint = 0) : ObjectUseOnCellMessage
-        {
-            super.initObjectUseMessage(param1);
-            this.cells = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.cells = 0;
-            this._isInitialized = false;
+      public function deserializeAs_ObjectUseOnCellMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.cells=input.readShort();
+         if((this.cells>0)||(this.cells<559))
+         {
+            throw new Error("Forbidden value ("+this.cells+") on element of ObjectUseOnCellMessage.cells.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ObjectUseOnCellMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ObjectUseOnCellMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_ObjectUseMessage(param1);
-            if (this.cells < 0 || this.cells > 559)
-            {
-                throw new Error("Forbidden value (" + this.cells + ") on element cells.");
-            }
-            param1.writeShort(this.cells);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ObjectUseOnCellMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ObjectUseOnCellMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.cells = param1.readShort();
-            if (this.cells < 0 || this.cells > 559)
-            {
-                throw new Error("Forbidden value (" + this.cells + ") on element of ObjectUseOnCellMessage.cells.");
-            }
-            return;
-        }// end function
-
-    }
 }

@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.mount
+package com.ankamagames.dofus.logic.game.common.actions.mount
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class MountSterilizeRequestAction extends Object implements Action
-    {
 
-        public function MountSterilizeRequestAction()
-        {
-            return;
-        }// end function
+   public class MountSterilizeRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : MountSterilizeRequestAction
-        {
-            return new MountSterilizeRequestAction;
-        }// end function
+      public function MountSterilizeRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : MountSterilizeRequestAction {
+         return new MountSterilizeRequestAction();
+      }
+
+
+   }
+
 }

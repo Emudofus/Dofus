@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.exchange
+package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeObjectTransfertExistingToInvAction extends Object implements Action
-    {
 
-        public function ExchangeObjectTransfertExistingToInvAction()
-        {
-            return;
-        }// end function
+   public class ExchangeObjectTransfertExistingToInvAction extends Object implements Action
+   {
+         
 
-        public static function create() : ExchangeObjectTransfertExistingToInvAction
-        {
-            return new ExchangeObjectTransfertExistingToInvAction;
-        }// end function
+      public function ExchangeObjectTransfertExistingToInvAction() {
+         super();
+      }
 
-    }
+      public static function create() : ExchangeObjectTransfertExistingToInvAction {
+         return new ExchangeObjectTransfertExistingToInvAction();
+      }
+
+
+   }
+
 }

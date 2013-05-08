@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.common.actions
+package com.ankamagames.dofus.logic.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class AddBehaviorToStackAction extends Object implements Action
-    {
-        public var behavior:Array;
 
-        public function AddBehaviorToStackAction(param1:Array = null)
-        {
-            this.behavior = param1 != null ? (param1) : (new Array());
-            return;
-        }// end function
+   public class AddBehaviorToStackAction extends Object implements Action
+   {
+         
 
-        public static function create() : AddBehaviorToStackAction
-        {
-            var _loc_1:* = new AddBehaviorToStackAction(new Array());
-            return _loc_1;
-        }// end function
+      public function AddBehaviorToStackAction(data:Array=null) {
+         super();
+         this.behavior=!(data==null)?data:new Array();
+      }
 
-    }
+      public static function create() : AddBehaviorToStackAction {
+         var s:AddBehaviorToStackAction = new AddBehaviorToStackAction(new Array());
+         return s;
+      }
+
+      public var behavior:Array;
+   }
+
 }

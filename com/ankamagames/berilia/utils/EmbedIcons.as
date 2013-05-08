@@ -1,15 +1,19 @@
-﻿package com.ankamagames.berilia.utils
+package com.ankamagames.berilia.utils
 {
-    import flash.display.*;
+   import flash.display.BitmapData;
 
-    public class EmbedIcons extends Object
-    {
-        public static var SLOT_DEFAULT_ICON:BitmapData;
 
-        public function EmbedIcons()
-        {
-            return;
-        }// end function
+   public class EmbedIcons extends Object
+   {
+         
 
-    }
+      public function EmbedIcons() {
+         super();
+      }
+
+      public static var SLOT_DEFAULT_ICON:BitmapData;
+
+
+   }
+
 }

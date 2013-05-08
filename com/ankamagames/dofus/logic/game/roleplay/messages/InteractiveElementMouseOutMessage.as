@@ -1,22 +1,25 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.messages
+package com.ankamagames.dofus.logic.game.roleplay.messages
 {
-    import com.ankamagames.dofus.network.types.game.interactive.*;
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
 
-    public class InteractiveElementMouseOutMessage extends Object implements Message
-    {
-        private var _ie:InteractiveElement;
 
-        public function InteractiveElementMouseOutMessage(param1:InteractiveElement)
-        {
-            this._ie = param1;
-            return;
-        }// end function
+   public class InteractiveElementMouseOutMessage extends Object implements Message
+   {
+         
 
-        public function get interactiveElement() : InteractiveElement
-        {
-            return this._ie;
-        }// end function
+      public function InteractiveElementMouseOutMessage(ie:InteractiveElement) {
+         super();
+         this._ie=ie;
+      }
 
-    }
+
+
+      private var _ie:InteractiveElement;
+
+      public function get interactiveElement() : InteractiveElement {
+         return this._ie;
+      }
+   }
+
 }

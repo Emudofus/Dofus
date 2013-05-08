@@ -1,288 +1,294 @@
-﻿package com.ankamagames.tiphon.types.look
+package com.ankamagames.tiphon.types.look
 {
-    import __AS3__.vec.*;
+   import __AS3__.vec.Vector;
 
-    public class EntityLookParser extends Object
-    {
-        private static const CURRENT_FORMAT_VERSION:uint = 0;
-        private static const DEFAULT_NUMBER_BASE:uint = 10;
 
-        public function EntityLookParser()
-        {
-            return;
-        }// end function
+   public class EntityLookParser extends Object
+   {
+         
 
-        public static function fromString(param1:String, param2:uint = 0, param3:uint = 10) : TiphonEntityLook
-        {
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_15:* = 0;
-            var _loc_16:* = 0;
-            var _loc_17:* = null;
-            var _loc_18:* = NaN;
-            var _loc_19:* = null;
-            var _loc_20:* = 0;
-            var _loc_21:* = null;
-            var _loc_22:* = null;
-            var _loc_23:* = 0;
-            var _loc_24:* = null;
-            var _loc_25:* = null;
-            var _loc_26:* = null;
-            var _loc_27:* = 0;
-            var _loc_28:* = 0;
-            var _loc_4:* = new TiphonEntityLook();
-            new TiphonEntityLook().lock();
-            var _loc_5:* = CURRENT_FORMAT_VERSION;
-            var _loc_6:* = DEFAULT_NUMBER_BASE;
-            if (param1.charAt(0) == "[")
+      public function EntityLookParser() {
+         super();
+      }
+
+      private static const CURRENT_FORMAT_VERSION:uint = 0;
+
+      private static const DEFAULT_NUMBER_BASE:uint = 10;
+
+      public static function fromString(str:String, pFormatVersion:uint=0, pNumberBase:uint=10) : TiphonEntityLook {
+         var headersStr:String = null;
+         var headers:Array = null;
+         var skins:Array = null;
+         var skin:String = null;
+         var colors:Array = null;
+         var color:String = null;
+         var colorPair:Array = null;
+         var colorIndex:uint = 0;
+         var colorValue:uint = 0;
+         var scales:Array = null;
+         var commonScale:* = NaN;
+         var subEntitiesStr:String = null;
+         var i:uint = 0;
+         var subEntities:Array = null;
+         var subEntity:String = null;
+         var subEnd:* = 0;
+         var subEntityHeader:String = null;
+         var subEntityBody:String = null;
+         var subEntityBinding:Array = null;
+         var bindingCategory:uint = 0;
+         var bindingIndex:uint = 0;
+         var el:TiphonEntityLook = new TiphonEntityLook();
+         el.lock();
+         var formatVersion:uint = CURRENT_FORMAT_VERSION;
+         var numberBase:uint = DEFAULT_NUMBER_BASE;
+         if(str.charAt(0)=="[")
+         {
+            headersStr=str.substring(1,str.indexOf("]"));
+            if(headersStr.indexOf(",")>0)
             {
-                _loc_8 = param1.substring(1, param1.indexOf("]"));
-                if (_loc_8.indexOf(",") > 0)
-                {
-                    _loc_9 = _loc_8.split(",");
-                    if (_loc_9.length != 2)
-                    {
-                        throw new Error("Malformated headers in an Entity Look string.");
-                    }
-                    _loc_5 = uint(_loc_9[0]);
-                    _loc_6 = getNumberBase(_loc_9[1]);
-                }
-                else
-                {
-                    _loc_5 = uint(_loc_8);
-                }
-                param1 = param1.substr((param1.indexOf("]") + 1));
-            }
-            if (param1.charAt(0) != "{" || param1.charAt((param1.length - 1)) != "}")
-            {
-                throw new Error("Malformed body in an Entity Look string.");
-            }
-            param1 = param1.substring(1, (param1.length - 1));
-            var _loc_7:* = param1.split("|");
-            _loc_4.setBone(parseInt(_loc_7[0], _loc_6));
-            if (_loc_7.length > 1 && _loc_7[1].length > 0)
-            {
-                _loc_10 = _loc_7[1].split(",");
-                for each (_loc_11 in _loc_10)
-                {
-                    
-                    _loc_4.addSkin(parseInt(_loc_11, _loc_6));
-                }
-            }
-            if (_loc_7.length > 2 && _loc_7[2].length > 0)
-            {
-                _loc_12 = _loc_7[2].split(",");
-                for each (_loc_13 in _loc_12)
-                {
-                    
-                    _loc_14 = _loc_13.split("=");
-                    if (_loc_14.length != 2)
-                    {
-                        throw new Error("Malformed color in an Entity Look string.");
-                    }
-                    _loc_15 = parseInt(_loc_14[0], _loc_6);
-                    _loc_16 = 0;
-                    if (_loc_14[1].charAt(0) == "#")
-                    {
-                        _loc_16 = parseInt(_loc_14[1].substr(1), 16);
-                    }
-                    else
-                    {
-                        _loc_16 = parseInt(_loc_14[1], _loc_6);
-                    }
-                    _loc_4.setColor(_loc_15, _loc_16);
-                }
-            }
-            if (_loc_7.length > 3 && _loc_7[3].length > 0)
-            {
-                _loc_17 = _loc_7[3].split(",");
-                if (_loc_17.length == 1)
-                {
-                    _loc_18 = parseInt(_loc_17[0], _loc_6) / 100;
-                    _loc_4.setScales(_loc_18, _loc_18);
-                }
-                else if (_loc_17.length == 2)
-                {
-                    _loc_4.setScales(parseInt(_loc_17[0], _loc_6) / 100, parseInt(_loc_17[1], _loc_6) / 100);
-                }
-                else
-                {
-                    throw new Error("Malformed scale in an Entity Look string.");
-                }
+               headers=headersStr.split(",");
+               if(headers.length!=2)
+               {
+                  throw new Error("Malformated headers in an Entity Look string.");
+               }
+               else
+               {
+                  formatVersion=uint(headers[0]);
+                  numberBase=getNumberBase(headers[1]);
+               }
             }
             else
             {
-                _loc_4.setScales(1, 1);
+               formatVersion=uint(headersStr);
             }
-            if (_loc_7.length > 4 && _loc_7[4].length > 0)
+            str=str.substr(str.indexOf("]")+1);
+         }
+         if((!(str.charAt(0)=="{"))||(!(str.charAt(str.length-1)=="}")))
+         {
+            throw new Error("Malformed body in an Entity Look string.");
+         }
+         else
+         {
+            str=str.substring(1,str.length-1);
+            body=str.split("|");
+            el.setBone(parseInt(body[0],numberBase));
+            if((body.length<1)&&(body[1].length<0))
             {
-                _loc_19 = "";
-                _loc_20 = 4;
-                while (_loc_20 < _loc_7.length)
-                {
-                    
-                    _loc_19 = _loc_19 + (_loc_7[_loc_20] + "|");
-                    _loc_20 = _loc_20 + 1;
-                }
-                _loc_19 = _loc_19.substr(0, (_loc_19.length - 1));
-                _loc_21 = [];
-                while (true)
-                {
-                    
-                    _loc_23 = _loc_19.indexOf("}");
-                    if (_loc_23 == -1)
-                    {
-                        break;
-                    }
-                    _loc_21.push(_loc_19.substr(0, (_loc_23 + 1)));
-                    _loc_19 = _loc_19.substr((_loc_23 + 1));
-                }
-                for each (_loc_22 in _loc_21)
-                {
-                    
-                    _loc_24 = _loc_22.substring(0, _loc_22.indexOf("="));
-                    _loc_25 = _loc_22.substr((_loc_22.indexOf("=") + 1));
-                    _loc_26 = _loc_24.split("@");
-                    if (_loc_26.length != 2)
-                    {
-                        throw new Error("Malformed subentity binding in an Entity Look string.");
-                    }
-                    _loc_27 = parseInt(_loc_26[0], _loc_6);
-                    _loc_28 = parseInt(_loc_26[1], _loc_6);
-                    _loc_4.addSubEntity(_loc_27, _loc_28, EntityLookParser.fromString(_loc_25, _loc_5, _loc_6));
-                }
+               skins=body[1].split(",");
+               for each (skin in skins)
+               {
+                  el.addSkin(parseInt(skin,numberBase));
+               }
             }
-            _loc_4.unlock(true);
-            return _loc_4;
-        }// end function
-
-        public static function toString(param1:TiphonEntityLook) : String
-        {
-            var _loc_8:* = 0;
-            var _loc_9:* = false;
-            var _loc_10:* = 0;
-            var _loc_11:* = false;
-            var _loc_12:* = null;
-            var _loc_13:* = false;
-            var _loc_14:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_2:* = "{";
-            _loc_2 = _loc_2 + param1.getBone().toString(DEFAULT_NUMBER_BASE);
-            _loc_2 = _loc_2 + "|";
-            var _loc_3:* = param1.getSkins(true);
-            if (_loc_3 != null)
+            if((body.length<2)&&(body[2].length<0))
             {
-                _loc_8 = 0;
-                _loc_9 = true;
-                for each (_loc_10 in _loc_3)
-                {
-                    
-                    if (_loc_8++ == 0 && param1.defaultSkin != -1)
-                    {
-                        continue;
-                    }
-                    if (_loc_9)
-                    {
-                        _loc_9 = false;
-                    }
-                    else
-                    {
-                        _loc_2 = _loc_2 + ",";
-                    }
-                    _loc_2 = _loc_2 + _loc_10.toString(DEFAULT_NUMBER_BASE);
-                }
+               colors=body[2].split(",");
+               for each (color in colors)
+               {
+                  colorPair=color.split("=");
+                  if(colorPair.length!=2)
+                  {
+                     throw new Error("Malformed color in an Entity Look string.");
+                  }
+                  else
+                  {
+                     colorIndex=parseInt(colorPair[0],numberBase);
+                     colorValue=0;
+                     if(colorPair[1].charAt(0)=="#")
+                     {
+                        colorValue=parseInt(colorPair[1].substr(1),16);
+                     }
+                     else
+                     {
+                        colorValue=parseInt(colorPair[1],numberBase);
+                     }
+                     el.setColor(colorIndex,colorValue);
+                     continue;
+                  }
+               }
             }
-            _loc_2 = _loc_2 + "|";
-            var _loc_4:* = param1.getColors(true);
-            if (param1.getColors(true) != null)
+            if((body.length<3)&&(body[3].length<0))
             {
-                _loc_11 = true;
-                for (_loc_12 in _loc_4)
-                {
-                    
-                    if (_loc_11)
-                    {
-                        _loc_11 = false;
-                    }
-                    else
-                    {
-                        _loc_2 = _loc_2 + ",";
-                    }
-                    _loc_2 = _loc_2 + (uint(_loc_12).toString(DEFAULT_NUMBER_BASE) + "=" + uint(_loc_4[_loc_12]).toString(DEFAULT_NUMBER_BASE));
-                }
+               scales=body[3].split(",");
+               if(scales.length==1)
+               {
+                  commonScale=parseInt(scales[0],numberBase)/100;
+                  el.setScales(commonScale,commonScale);
+               }
+               else
+               {
+                  if(scales.length==2)
+                  {
+                     el.setScales(parseInt(scales[0],numberBase)/100,parseInt(scales[1],numberBase)/100);
+                  }
+                  else
+                  {
+                     throw new Error("Malformed scale in an Entity Look string.");
+                  }
+               }
             }
-            _loc_2 = _loc_2 + "|";
-            var _loc_5:* = param1.getScaleX();
-            var _loc_6:* = param1.getScaleY();
-            if (_loc_5 != 1 || _loc_6 != 1)
+            else
             {
-                _loc_2 = _loc_2 + Math.round(_loc_5 * 100).toString(DEFAULT_NUMBER_BASE);
-                if (_loc_6 != _loc_5)
-                {
-                    _loc_2 = _loc_2 + ("," + Math.round(_loc_6 * 100).toString(DEFAULT_NUMBER_BASE));
-                }
+               el.setScales(1,1);
             }
-            _loc_2 = _loc_2 + "|";
-            var _loc_7:* = param1.getSubEntities(true);
-            if (param1.getSubEntities(true) != null)
+            if((body.length<4)&&(body[4].length<0))
             {
-                _loc_13 = true;
-                for (_loc_14 in _loc_7)
-                {
-                    
-                    for (_loc_15 in _loc_7[_loc_14])
-                    {
-                        
-                        _loc_16 = _loc_7[_loc_14][_loc_15];
-                        if (_loc_13)
+               subEntitiesStr="";
+               i=4;
+               while(i<body.length)
+               {
+                  subEntitiesStr=subEntitiesStr+(body[i]+"|");
+                  i++;
+               }
+               subEntitiesStr=subEntitiesStr.substr(0,subEntitiesStr.length-1);
+               subEntities=[];
+               do
+               {
+                  subEnd=subEntitiesStr.indexOf("}");
+                  if(subEnd==-1)
+                  {
+                     for each (subEntity in subEntities)
+                     {
+                        subEntityHeader=subEntity.substring(0,subEntity.indexOf("="));
+                        subEntityBody=subEntity.substr(subEntity.indexOf("=")+1);
+                        subEntityBinding=subEntityHeader.split("@");
+                        if(subEntityBinding.length!=2)
                         {
-                            _loc_13 = false;
+                           throw new Error("Malformed subentity binding in an Entity Look string.");
                         }
                         else
                         {
-                            _loc_2 = _loc_2 + ",";
+                           bindingCategory=parseInt(subEntityBinding[0],numberBase);
+                           bindingIndex=parseInt(subEntityBinding[1],numberBase);
+                           el.addSubEntity(bindingCategory,bindingIndex,EntityLookParser.fromString(subEntityBody,formatVersion,numberBase));
+                           continue;
                         }
-                        _loc_2 = _loc_2 + (uint(_loc_14).toString(DEFAULT_NUMBER_BASE) + "@" + uint(_loc_15).toString(DEFAULT_NUMBER_BASE) + "=" + _loc_16.toString());
-                    }
-                }
+                     }
+                  }
+                  else
+                  {
+                     subEntities.push(subEntitiesStr.substr(0,subEnd+1));
+                     subEntitiesStr=subEntitiesStr.substr(subEnd+1);
+                     continue;
+                  }
+               }
+               while(true);
             }
-            while (_loc_2.charAt((_loc_2.length - 1)) == "|")
-            {
-                
-                _loc_2 = _loc_2.substr(0, (_loc_2.length - 1));
-            }
-            return _loc_2 + "}";
-        }// end function
+            el.unlock(true);
+            return el;
+         }
+      }
 
-        private static function getNumberBase(param1:String) : uint
-        {
-            switch(param1)
+      public static function toString(el:TiphonEntityLook) : String {
+         var i:uint = 0;
+         var isFirstSkin:* = false;
+         var skin:uint = 0;
+         var isFirstColor:* = false;
+         var colorIndex:String = null;
+         var isFirstSubEntity:* = false;
+         var subEntitiesCategory:String = null;
+         var subEntityIndex:String = null;
+         var subEntityLook:TiphonEntityLook = null;
+         var out:String = "{";
+         out=out+el.getBone().toString(DEFAULT_NUMBER_BASE);
+         out=out+"|";
+         var skins:Vector.<uint> = el.getSkins(true);
+         if(skins!=null)
+         {
+            i=0;
+            isFirstSkin=true;
+            for each (skin in skins)
             {
-                case "A":
-                {
-                    return 10;
-                }
-                case "G":
-                {
-                    return 16;
-                }
-                case "Z":
-                {
-                    return 36;
-                }
-                default:
-                {
-                    break;
-                }
+               if((i++==0)&&(!(el.defaultSkin==-1)))
+               {
+               }
+               else
+               {
+                  if(isFirstSkin)
+                  {
+                     isFirstSkin=false;
+                  }
+                  else
+                  {
+                     out=out+",";
+                  }
+                  out=out+skin.toString(DEFAULT_NUMBER_BASE);
+               }
             }
-            throw new Error("Unknown number base type \'" + param1 + "\' in an Entity Look string.");
-        }// end function
+         }
+         out=out+"|";
+         var colors:Array = el.getColors(true);
+         if(colors!=null)
+         {
+            isFirstColor=true;
+            for (colorIndex in colors)
+            {
+               if(isFirstColor)
+               {
+                  isFirstColor=false;
+               }
+               else
+               {
+                  out=out+",";
+               }
+               out=out+(uint(colorIndex).toString(DEFAULT_NUMBER_BASE)+"="+uint(colors[colorIndex]).toString(DEFAULT_NUMBER_BASE));
+            }
+         }
+         out=out+"|";
+         var scaleX:Number = el.getScaleX();
+         var scaleY:Number = el.getScaleY();
+         if((!(scaleX==1))||(!(scaleY==1)))
+         {
+            out=out+Math.round(scaleX*100).toString(DEFAULT_NUMBER_BASE);
+            if(scaleY!=scaleX)
+            {
+               out=out+(","+Math.round(scaleY*100).toString(DEFAULT_NUMBER_BASE));
+            }
+         }
+         out=out+"|";
+         var subEntities:Array = el.getSubEntities(true);
+         if(subEntities!=null)
+         {
+            isFirstSubEntity=true;
+            for (subEntitiesCategory in subEntities)
+            {
+               for (subEntityIndex in subEntities[subEntitiesCategory])
+               {
+                  subEntityLook=subEntities[subEntitiesCategory][subEntityIndex];
+                  if(isFirstSubEntity)
+                  {
+                     isFirstSubEntity=false;
+                  }
+                  else
+                  {
+                     out=out+",";
+                  }
+                  out=out+(uint(subEntitiesCategory).toString(DEFAULT_NUMBER_BASE)+"@"+uint(subEntityIndex).toString(DEFAULT_NUMBER_BASE)+"="+subEntityLook.toString());
+               }
+            }
+         }
+         while(out.charAt(out.length-1)=="|")
+         {
+            out=out.substr(0,out.length-1);
+         }
+         return out+"}";
+      }
 
-    }
+      private static function getNumberBase(l:String) : uint {
+         switch(l)
+         {
+            case "A":
+               return 10;
+            case "G":
+               return 16;
+            case "Z":
+               return 36;
+            default:
+               throw new Error("Unknown number base type \'"+l+"\' in an Entity Look string.");
+         }
+      }
+
+
+   }
+
 }

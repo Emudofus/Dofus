@@ -1,17 +1,24 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    final public class VerticalAlign extends Object
-    {
-        public static const TOP:String = "top";
-        public static const BOTTOM:String = "bottom";
-        public static const MIDDLE:String = "middle";
-        public static const JUSTIFY:String = "justify";
 
-        public function VerticalAlign()
-        {
-            return;
-        }// end function
+   public final class VerticalAlign extends Object
+   {
+         
 
-    }
+      public function VerticalAlign() {
+         super();
+      }
+
+      public static const TOP:String = "top";
+
+      public static const BOTTOM:String = "bottom";
+
+      public static const MIDDLE:String = "middle";
+
+      public static const JUSTIFY:String = "justify";
+
+
+   }
+
 }

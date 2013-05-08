@@ -1,913 +1,880 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.net.*;
-    import flash.system.*;
-    import flash.text.engine.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.events.*;
-    import flashx.textLayout.formats.*;
-    import flashx.textLayout.property.*;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.property.Property;
+   import flash.display.DisplayObject;
+   import flash.display.DisplayObjectContainer;
+   import flash.display.Loader;
+   import flash.display.MovieClip;
+   import flash.text.engine.ContentElement;
+   import flash.system.Capabilities;
+   import flashx.textLayout.formats.FormatValue;
+   import flash.text.engine.TextRotation;
+   import flashx.textLayout.formats.Float;
+   import flash.display.Sprite;
+   import flash.text.engine.GraphicElement;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.events.ModelChange;
+   import flash.events.ErrorEvent;
+   import flashx.textLayout.events.StatusChangeEvent;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import flash.display.LoaderInfo;
+   import flash.net.URLRequest;
+   import flash.display.Shape;
+   import flash.text.engine.TextLine;
+   import flash.text.engine.ElementFormat;
+   import flash.text.engine.TextBaseline;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.compose.ISWFContext;
+   import flash.text.engine.FontMetrics;
+   import flashx.textLayout.compose.TextFlowLine;
+   import flashx.textLayout.formats.JustificationRule;
 
-    final public class InlineGraphicElement extends FlowLeafElement
-    {
-        private var _source:Object;
-        private var _graphic:DisplayObject;
-        private var _placeholderGraphic:Sprite;
-        private var _elementWidth:Number;
-        private var _elementHeight:Number;
-        private var _graphicStatus:Object;
-        private var okToUpdateHeightAndWidth:Boolean;
-        private var _width:Object;
-        private var _height:Object;
-        private var _measuredWidth:Number;
-        private var _measuredHeight:Number;
-        private var _float:Object;
-        private var _effectiveFloat:String;
-        private static const graphicElementText:String = String.fromCharCode(ContentElement.GRAPHIC_ELEMENT);
-        private static const LOAD_INITIATED:String = "loadInitiated";
-        private static const OPEN_RECEIVED:String = "openReceived";
-        private static const LOAD_COMPLETE:String = "loadComplete";
-        private static const EMBED_LOADED:String = "embedLoaded";
-        private static const DISPLAY_OBJECT:String = "displayObject";
-        private static const NULL_GRAPHIC:String = "nullGraphic";
-        private static var isMac:Boolean = Capabilities.os.search("Mac OS") > -1;
-        static const heightPropertyDefinition:Property = Property.NewNumberOrPercentOrEnumProperty("height", FormatValue.AUTO, false, null, 0, 32000, "0%", "1000000%", FormatValue.AUTO);
-        static const widthPropertyDefinition:Property = Property.NewNumberOrPercentOrEnumProperty("width", FormatValue.AUTO, false, null, 0, 32000, "0%", "1000000%", FormatValue.AUTO);
-        static const rotationPropertyDefinition:Property = Property.NewEnumStringProperty("rotation", TextRotation.ROTATE_0, false, null, TextRotation.ROTATE_0, TextRotation.ROTATE_90, TextRotation.ROTATE_180, TextRotation.ROTATE_270);
-        static const floatPropertyDefinition:Property = Property.NewEnumStringProperty("float", Float.NONE, false, null, Float.NONE, Float.LEFT, Float.RIGHT, Float.START, Float.END);
+   use namespace tlf_internal;
 
-        public function InlineGraphicElement(param1:String = "")
-        {
-            this.okToUpdateHeightAndWidth = false;
-            this._measuredWidth = 0;
-            this._measuredHeight = 0;
-            this.internalSetWidth(undefined);
-            this.internalSetHeight(undefined);
-            this._graphicStatus = InlineGraphicElementStatus.LOAD_PENDING;
-            setTextLength(1);
-            _text = param1 == "" ? (graphicElementText) : (param1);
-            return;
-        }// end function
+   public final class InlineGraphicElement extends FlowLeafElement
+   {
+         
 
-        override function createContentElement() : void
-        {
-            if (_blockElement)
+      public function InlineGraphicElement(pAltText:String="") {
+         super();
+         this.okToUpdateHeightAndWidth=false;
+         this._measuredWidth=0;
+         this._measuredHeight=0;
+         this.internalSetWidth(undefined);
+         this.internalSetHeight(undefined);
+         this._graphicStatus=InlineGraphicElementStatus.LOAD_PENDING;
+         setTextLength(1);
+         _text=pAltText==""?graphicElementText:pAltText;
+      }
+
+      private static const graphicElementText:String = String.fromCharCode(ContentElement.GRAPHIC_ELEMENT);
+
+      private static const LOAD_INITIATED:String = "loadInitiated";
+
+      private static const OPEN_RECEIVED:String = "openReceived";
+
+      private static const LOAD_COMPLETE:String = "loadComplete";
+
+      private static const EMBED_LOADED:String = "embedLoaded";
+
+      private static const DISPLAY_OBJECT:String = "displayObject";
+
+      private static const NULL_GRAPHIC:String = "nullGraphic";
+
+      private static var isMac:Boolean = Capabilities.os.search("Mac OS")<-1;
+
+      tlf_internal  static const heightPropertyDefinition:Property = Property.NewNumberOrPercentOrEnumProperty("height",FormatValue.AUTO,false,null,0,32000,"0%","1000000%",FormatValue.AUTO);
+
+      tlf_internal  static const widthPropertyDefinition:Property = Property.NewNumberOrPercentOrEnumProperty("width",FormatValue.AUTO,false,null,0,32000,"0%","1000000%",FormatValue.AUTO);
+
+      tlf_internal  static const rotationPropertyDefinition:Property = Property.NewEnumStringProperty("rotation",TextRotation.ROTATE_0,false,null,TextRotation.ROTATE_0,TextRotation.ROTATE_90,TextRotation.ROTATE_180,TextRotation.ROTATE_270);
+
+      tlf_internal  static const floatPropertyDefinition:Property = Property.NewEnumStringProperty("float",Float.NONE,false,null,Float.NONE,Float.LEFT,Float.RIGHT,Float.START,Float.END);
+
+      private static function recursiveShutDownGraphic(graphic:DisplayObject) : void {
+         var container:DisplayObjectContainer = null;
+         var idx:* = 0;
+         if(graphic is Loader)
+         {
+            Loader(graphic).unloadAndStop();
+         }
+         else
+         {
+            if(graphic)
             {
-                return;
+               container=graphic as DisplayObjectContainer;
+               if(container)
+               {
+                  idx=0;
+                  while(idx<container.numChildren)
+                  {
+                     recursiveShutDownGraphic(container.getChildAt(idx));
+                     idx++;
+                  }
+               }
+               if(graphic is MovieClip)
+               {
+                  MovieClip(graphic).stop();
+               }
             }
-            var _loc_1:* = new GraphicElement();
-            _blockElement = _loc_1;
+         }
+      }
+
+      private var _source:Object;
+
+      private var _graphic:DisplayObject;
+
+      private var _placeholderGraphic:Sprite;
+
+      private var _elementWidth:Number;
+
+      private var _elementHeight:Number;
+
+      private var _graphicStatus:Object;
+
+      private var okToUpdateHeightAndWidth:Boolean;
+
+      private var _width;
+
+      private var _height;
+
+      private var _measuredWidth:Number;
+
+      private var _measuredHeight:Number;
+
+      private var _float;
+
+      override tlf_internal function createContentElement() : void {
+         if(_blockElement)
+         {
+            return;
+         }
+         var graphicElement:GraphicElement = new GraphicElement();
+         _blockElement=graphicElement;
+         this.updateContentElement();
+         super.createContentElement();
+      }
+
+      private function updateContentElement() : void {
+         var height:* = NaN;
+         var width:* = NaN;
+         var graphicElement:GraphicElement = _blockElement as GraphicElement;
+         if(!this._placeholderGraphic)
+         {
+            this._placeholderGraphic=new Sprite();
+         }
+         graphicElement.graphic=this._placeholderGraphic;
+         if(this.effectiveFloat!=Float.NONE)
+         {
+            if(graphicElement.elementHeight!=0)
+            {
+               graphicElement.elementHeight=0;
+            }
+            if(graphicElement.elementWidth!=0)
+            {
+               graphicElement.elementWidth=0;
+            }
+         }
+         else
+         {
+            height=this.elementHeightWithMarginsAndPadding();
+            if(graphicElement.elementHeight!=height)
+            {
+               graphicElement.elementHeight=height;
+            }
+            width=this.elementWidthWithMarginsAndPadding();
+            if(graphicElement.elementWidth!=width)
+            {
+               graphicElement.elementWidth=width;
+            }
+         }
+      }
+
+      override public function get computedFormat() : ITextLayoutFormat {
+         var updateGraphicElement:Boolean = _computedFormat==null;
+         if((updateGraphicElement)&&(_blockElement))
+         {
             this.updateContentElement();
-            super.createContentElement();
-            return;
-        }// end function
+         }
+         return _computedFormat;
+      }
 
-        private function updateContentElement() : void
-        {
-            var _loc_2:* = NaN;
-            var _loc_3:* = NaN;
-            var _loc_1:* = _blockElement as GraphicElement;
-            if (!this._placeholderGraphic)
-            {
-                this._placeholderGraphic = new Sprite();
-            }
-            _loc_1.graphic = this._placeholderGraphic;
-            if (this.effectiveFloat != Float.NONE)
-            {
-                if (_loc_1.elementHeight != 0)
-                {
-                    _loc_1.elementHeight = 0;
-                }
-                if (_loc_1.elementWidth != 0)
-                {
-                    _loc_1.elementWidth = 0;
-                }
-            }
-            else
-            {
-                _loc_2 = this.elementHeightWithMarginsAndPadding();
-                if (_loc_1.elementHeight != _loc_2)
-                {
-                    _loc_1.elementHeight = _loc_2;
-                }
-                _loc_3 = this.elementWidthWithMarginsAndPadding();
-                if (_loc_1.elementWidth != _loc_3)
-                {
-                    _loc_1.elementWidth = _loc_3;
-                }
-            }
-            return;
-        }// end function
-
-        override public function get computedFormat() : ITextLayoutFormat
-        {
-            var _loc_1:* = _computedFormat == null;
-            if (_loc_1 && _blockElement)
-            {
-                this.updateContentElement();
-            }
-            return _computedFormat;
-        }// end function
-
-        function elementWidthWithMarginsAndPadding() : Number
-        {
-            var _loc_1:* = getTextFlow();
-            if (!_loc_1)
-            {
-                return this.elementWidth;
-            }
-            var _loc_2:* = _loc_1.computedFormat.blockProgression == BlockProgression.RL ? (getEffectivePaddingTop() + getEffectivePaddingBottom()) : (getEffectivePaddingLeft() + getEffectivePaddingRight());
-            return this.elementWidth + _loc_2;
-        }// end function
-
-        function elementHeightWithMarginsAndPadding() : Number
-        {
-            var _loc_1:* = getTextFlow();
-            if (!_loc_1)
-            {
-                return this.elementWidth;
-            }
-            var _loc_2:* = _loc_1.computedFormat.blockProgression == BlockProgression.RL ? (getEffectivePaddingLeft() + getEffectivePaddingRight()) : (getEffectivePaddingTop() + getEffectivePaddingBottom());
-            return this.elementHeight + _loc_2;
-        }// end function
-
-        public function get graphic() : DisplayObject
-        {
-            return this._graphic;
-        }// end function
-
-        private function setGraphic(param1:DisplayObject) : void
-        {
-            this._graphic = param1;
-            return;
-        }// end function
-
-        function get placeholderGraphic() : Sprite
-        {
-            return this._placeholderGraphic;
-        }// end function
-
-        function get elementWidth() : Number
-        {
-            return this._elementWidth;
-        }// end function
-
-        function set elementWidth(param1:Number) : void
-        {
-            this._elementWidth = param1;
-            if (_blockElement)
-            {
-                (_blockElement as GraphicElement).elementWidth = this.effectiveFloat != Float.NONE ? (0) : (this.elementWidthWithMarginsAndPadding());
-            }
-            modelChanged(ModelChange.ELEMENT_MODIFIED, this, 0, textLength, true, false);
-            return;
-        }// end function
-
-        function get elementHeight() : Number
-        {
-            return this._elementHeight;
-        }// end function
-
-        function set elementHeight(param1:Number) : void
-        {
-            this._elementHeight = param1;
-            if (_blockElement)
-            {
-                (_blockElement as GraphicElement).elementHeight = this.effectiveFloat != Float.NONE ? (0) : (this.elementHeightWithMarginsAndPadding());
-            }
-            modelChanged(ModelChange.ELEMENT_MODIFIED, this, 0, textLength, true, false);
-            return;
-        }// end function
-
-        public function get status() : String
-        {
-            switch(this._graphicStatus)
-            {
-                case LOAD_INITIATED:
-                case OPEN_RECEIVED:
-                {
-                    return InlineGraphicElementStatus.LOADING;
-                }
-                case LOAD_COMPLETE:
-                case EMBED_LOADED:
-                case DISPLAY_OBJECT:
-                case NULL_GRAPHIC:
-                {
-                    return InlineGraphicElementStatus.READY;
-                }
-                case InlineGraphicElementStatus.LOAD_PENDING:
-                case InlineGraphicElementStatus.SIZE_PENDING:
-                {
-                    return String(this._graphicStatus);
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return InlineGraphicElementStatus.ERROR;
-        }// end function
-
-        private function changeGraphicStatus(param1:Object) : void
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = this.status;
-            this._graphicStatus = param1;
-            var _loc_3:* = this.status;
-            if (_loc_2 != _loc_3 || param1 is ErrorEvent)
-            {
-                _loc_4 = getTextFlow();
-                if (_loc_4)
-                {
-                    if (_loc_3 == InlineGraphicElementStatus.SIZE_PENDING)
-                    {
-                        _loc_4.processAutoSizeImageLoaded(this);
-                    }
-                    _loc_4.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE, false, false, this, _loc_3, param1 as ErrorEvent));
-                }
-            }
-            return;
-        }// end function
-
-        public function get width()
-        {
-            return this._width;
-        }// end function
-
-        public function set width(param1) : void
-        {
-            this.internalSetWidth(param1);
-            modelChanged(ModelChange.ELEMENT_MODIFIED, this, 0, textLength);
-            return;
-        }// end function
-
-        public function get measuredWidth() : Number
-        {
-            return this._measuredWidth;
-        }// end function
-
-        public function get actualWidth() : Number
-        {
+      tlf_internal function elementWidthWithMarginsAndPadding() : Number {
+         var textFlow:TextFlow = getTextFlow();
+         if(!textFlow)
+         {
             return this.elementWidth;
-        }// end function
+         }
+         var paddingAmount:Number = textFlow.computedFormat.blockProgression==BlockProgression.RL?getEffectivePaddingTop()+getEffectivePaddingBottom():getEffectivePaddingLeft()+getEffectivePaddingRight();
+         return this.elementWidth+paddingAmount;
+      }
 
-        private function widthIsComputed() : Boolean
-        {
-            return this.internalWidth is String;
-        }// end function
+      tlf_internal function elementHeightWithMarginsAndPadding() : Number {
+         var textFlow:TextFlow = getTextFlow();
+         if(!textFlow)
+         {
+            return this.elementWidth;
+         }
+         var paddingAmount:Number = textFlow.computedFormat.blockProgression==BlockProgression.RL?getEffectivePaddingLeft()+getEffectivePaddingRight():getEffectivePaddingTop()+getEffectivePaddingBottom();
+         return this.elementHeight+paddingAmount;
+      }
 
-        private function get internalWidth() : Object
-        {
-            return this._width === undefined ? (widthPropertyDefinition.defaultValue) : (this._width);
-        }// end function
+      public function get graphic() : DisplayObject {
+         return this._graphic;
+      }
 
-        private function computeWidth() : Number
-        {
-            var _loc_1:* = NaN;
-            if (this.internalWidth == FormatValue.AUTO)
+      private function setGraphic(value:DisplayObject) : void {
+         this._graphic=value;
+      }
+
+      tlf_internal function get placeholderGraphic() : Sprite {
+         return this._placeholderGraphic;
+      }
+
+      tlf_internal function get elementWidth() : Number {
+         return this._elementWidth;
+      }
+
+      tlf_internal function set elementWidth(value:Number) : void {
+         this._elementWidth=value;
+         if(_blockElement)
+         {
+            (_blockElement as GraphicElement).elementWidth=this.effectiveFloat!=Float.NONE?0:this.elementWidthWithMarginsAndPadding();
+         }
+         modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength,true,false);
+      }
+
+      tlf_internal function get elementHeight() : Number {
+         return this._elementHeight;
+      }
+
+      tlf_internal function set elementHeight(value:Number) : void {
+         this._elementHeight=value;
+         if(_blockElement)
+         {
+            (_blockElement as GraphicElement).elementHeight=this.effectiveFloat!=Float.NONE?0:this.elementHeightWithMarginsAndPadding();
+         }
+         modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength,true,false);
+      }
+
+      public function get status() : String {
+         switch(this._graphicStatus)
+         {
+            case LOAD_INITIATED:
+            case OPEN_RECEIVED:
+               return InlineGraphicElementStatus.LOADING;
+            case LOAD_COMPLETE:
+            case EMBED_LOADED:
+            case DISPLAY_OBJECT:
+            case NULL_GRAPHIC:
+               return InlineGraphicElementStatus.READY;
+            case InlineGraphicElementStatus.LOAD_PENDING:
+            case InlineGraphicElementStatus.SIZE_PENDING:
+               return String(this._graphicStatus);
+            default:
+               return InlineGraphicElementStatus.ERROR;
+         }
+      }
+
+      private function changeGraphicStatus(stat:Object) : void {
+         var tf:TextFlow = null;
+         var oldStatus:String = this.status;
+         this._graphicStatus=stat;
+         var newStatus:String = this.status;
+         if((!(oldStatus==newStatus))||(stat is ErrorEvent))
+         {
+            tf=getTextFlow();
+            if(tf)
             {
-                if (this.internalHeight == FormatValue.AUTO)
-                {
-                    return this._measuredWidth;
-                }
-                if (this._measuredHeight == 0 || this._measuredWidth == 0)
-                {
-                    return 0;
-                }
-                _loc_1 = this.heightIsComputed() ? (this.computeHeight()) : (Number(this.internalHeight));
-                return _loc_1 / this._measuredHeight * this._measuredWidth;
+               if(newStatus==InlineGraphicElementStatus.SIZE_PENDING)
+               {
+                  tf.processAutoSizeImageLoaded(this);
+               }
+               tf.dispatchEvent(new StatusChangeEvent(StatusChangeEvent.INLINE_GRAPHIC_STATUS_CHANGE,false,false,this,newStatus,stat as ErrorEvent));
             }
-            return widthPropertyDefinition.computeActualPropertyValue(this.internalWidth, this._measuredWidth);
-        }// end function
+         }
+      }
 
-        private function internalSetWidth(param1) : void
-        {
-            this._width = widthPropertyDefinition.setHelper(this.width, param1);
-            this.elementWidth = this.widthIsComputed() ? (0) : (Number(this.internalWidth));
-            if (this.okToUpdateHeightAndWidth && this.graphic)
+      public function get width() : * {
+         return this._width;
+      }
+
+      public function set width(w:*) : void {
+         this.internalSetWidth(w);
+         modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength);
+      }
+
+      public function get measuredWidth() : Number {
+         return this._measuredWidth;
+      }
+
+      public function get actualWidth() : Number {
+         return this.elementWidth;
+      }
+
+      private function widthIsComputed() : Boolean {
+         return this.internalWidth is String;
+      }
+
+      private function get internalWidth() : Object {
+         return this._width===undefined?widthPropertyDefinition.defaultValue:this._width;
+      }
+
+      private function computeWidth() : Number {
+         var effHeight:* = NaN;
+         if(this.internalWidth==FormatValue.AUTO)
+         {
+            if(this.internalHeight==FormatValue.AUTO)
             {
-                if (this.widthIsComputed())
-                {
-                    this.elementWidth = this.computeWidth();
-                }
-                this.graphic.width = this.elementWidth;
-                if (this.internalHeight == FormatValue.AUTO)
-                {
-                    this.elementHeight = this.computeHeight();
-                    this.graphic.height = this.elementHeight;
-                }
+               return this._measuredWidth;
             }
-            return;
-        }// end function
-
-        public function get height()
-        {
-            return this._height;
-        }// end function
-
-        public function set height(param1) : void
-        {
-            this.internalSetHeight(param1);
-            modelChanged(ModelChange.ELEMENT_MODIFIED, this, 0, textLength);
-            return;
-        }// end function
-
-        private function get internalHeight() : Object
-        {
-            return this._height === undefined ? (heightPropertyDefinition.defaultValue) : (this._height);
-        }// end function
-
-        function get computedFloat()
-        {
-            if (this._float === undefined)
+            if((this._measuredHeight==0)||(this._measuredWidth==0))
             {
-                return floatPropertyDefinition.defaultValue;
+               return 0;
             }
-            return this._float;
-        }// end function
+            effHeight=this.heightIsComputed()?this.computeHeight():Number(this.internalHeight);
+            return effHeight/this._measuredHeight*this._measuredWidth;
+         }
+         return widthPropertyDefinition.computeActualPropertyValue(this.internalWidth,this._measuredWidth);
+      }
 
-        function get effectiveFloat()
-        {
-            return this._effectiveFloat ? (this._effectiveFloat) : (this.computedFloat);
-        }// end function
-
-        function setEffectiveFloat(param1:String) : void
-        {
-            if (this._effectiveFloat != param1)
+      private function internalSetWidth(w:*) : void {
+         this._width=widthPropertyDefinition.setHelper(this.width,w);
+         this.elementWidth=this.widthIsComputed()?0:Number(this.internalWidth);
+         if((this.okToUpdateHeightAndWidth)&&(this.graphic))
+         {
+            if(this.widthIsComputed())
             {
-                this._effectiveFloat = param1;
-                if (_blockElement)
-                {
-                    this.updateContentElement();
-                }
+               this.elementWidth=this.computeWidth();
             }
-            return;
-        }// end function
-
-        public function get float()
-        {
-            return this._float;
-        }// end function
-
-        public function set float(param1)
-        {
-            param1 = floatPropertyDefinition.setHelper(this.float, param1) as String;
-            if (this._float != param1)
+            this.graphic.width=this.elementWidth;
+            if(this.internalHeight==FormatValue.AUTO)
             {
-                this._float = param1;
-                if (_blockElement)
-                {
-                    this.updateContentElement();
-                }
-                modelChanged(ModelChange.ELEMENT_MODIFIED, this, 0, textLength);
+               this.elementHeight=this.computeHeight();
+               this.graphic.height=this.elementHeight;
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function get measuredHeight() : Number
-        {
-            return this._measuredHeight;
-        }// end function
+      public function get height() : * {
+         return this._height;
+      }
 
-        public function get actualHeight() : Number
-        {
-            return this.elementHeight;
-        }// end function
+      public function set height(h:*) : void {
+         this.internalSetHeight(h);
+         modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength);
+      }
 
-        private function heightIsComputed() : Boolean
-        {
-            return this.internalHeight is String;
-        }// end function
+      private function get internalHeight() : Object {
+         return this._height===undefined?heightPropertyDefinition.defaultValue:this._height;
+      }
 
-        private function computeHeight() : Number
-        {
-            var _loc_1:* = NaN;
-            if (this.internalHeight == FormatValue.AUTO)
+      tlf_internal function get computedFloat() : * {
+         if(this._float===undefined)
+         {
+            return floatPropertyDefinition.defaultValue;
+         }
+         return this._float;
+      }
+
+      private var _effectiveFloat:String;
+
+      tlf_internal function get effectiveFloat() : * {
+         return this._effectiveFloat?this._effectiveFloat:this.computedFloat;
+      }
+
+      tlf_internal function setEffectiveFloat(floatValue:String) : void {
+         if(this._effectiveFloat!=floatValue)
+         {
+            this._effectiveFloat=floatValue;
+            if(_blockElement)
             {
-                if (this.internalWidth == FormatValue.AUTO)
-                {
-                    return this._measuredHeight;
-                }
-                if (this._measuredHeight == 0 || this._measuredWidth == 0)
-                {
-                    return 0;
-                }
-                _loc_1 = this.widthIsComputed() ? (this.computeWidth()) : (Number(this.internalWidth));
-                return _loc_1 / this._measuredWidth * this._measuredHeight;
+               this.updateContentElement();
             }
-            return heightPropertyDefinition.computeActualPropertyValue(this.internalHeight, this._measuredHeight);
-        }// end function
+         }
+      }
 
-        private function internalSetHeight(param1) : void
-        {
-            this._height = heightPropertyDefinition.setHelper(this.height, param1);
-            this.elementHeight = this.heightIsComputed() ? (0) : (Number(this.internalHeight));
-            if (this.okToUpdateHeightAndWidth && this.graphic != null)
-            {
-                if (this.heightIsComputed())
-                {
-                    this.elementHeight = this.computeHeight();
-                }
-                this.graphic.height = this.elementHeight;
-                if (this.internalWidth == FormatValue.AUTO)
-                {
-                    this.elementWidth = this.computeWidth();
-                    this.graphic.width = this.elementWidth;
-                }
-            }
-            return;
-        }// end function
+      public function get float() : * {
+         return this._float;
+      }
 
-        private function loadCompleteHandler(event:Event) : void
-        {
-            this.removeDefaultLoadHandlers(this.graphic as Loader);
-            this.okToUpdateHeightAndWidth = true;
-            var _loc_2:* = this.graphic;
-            this._measuredWidth = _loc_2.width;
-            this._measuredHeight = _loc_2.height;
-            if (!this.widthIsComputed())
+      public function set float(value:*) : * {
+         var value:* = floatPropertyDefinition.setHelper(this.float,value) as String;
+         if(this._float!=value)
+         {
+            this._float=value;
+            if(_blockElement)
             {
-                _loc_2.width = this.elementWidth;
+               this.updateContentElement();
             }
-            if (!this.heightIsComputed())
+            modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength);
+         }
+      }
+
+      public function get measuredHeight() : Number {
+         return this._measuredHeight;
+      }
+
+      public function get actualHeight() : Number {
+         return this.elementHeight;
+      }
+
+      private function heightIsComputed() : Boolean {
+         return this.internalHeight is String;
+      }
+
+      private function computeHeight() : Number {
+         var effWidth:* = NaN;
+         if(this.internalHeight==FormatValue.AUTO)
+         {
+            if(this.internalWidth==FormatValue.AUTO)
             {
-                _loc_2.height = this.elementHeight;
+               return this._measuredHeight;
             }
-            if (event is IOErrorEvent)
+            if((this._measuredHeight==0)||(this._measuredWidth==0))
             {
-                this.changeGraphicStatus(event);
+               return 0;
             }
-            else if (this.widthIsComputed() || this.heightIsComputed())
+            effWidth=this.widthIsComputed()?this.computeWidth():Number(this.internalWidth);
+            return effWidth/this._measuredWidth*this._measuredHeight;
+         }
+         return heightPropertyDefinition.computeActualPropertyValue(this.internalHeight,this._measuredHeight);
+      }
+
+      private function internalSetHeight(h:*) : void {
+         this._height=heightPropertyDefinition.setHelper(this.height,h);
+         this.elementHeight=this.heightIsComputed()?0:Number(this.internalHeight);
+         if((this.okToUpdateHeightAndWidth)&&(!(this.graphic==null)))
+         {
+            if(this.heightIsComputed())
             {
-                _loc_2.visible = false;
-                this.changeGraphicStatus(InlineGraphicElementStatus.SIZE_PENDING);
+               this.elementHeight=this.computeHeight();
+            }
+            this.graphic.height=this.elementHeight;
+            if(this.internalWidth==FormatValue.AUTO)
+            {
+               this.elementWidth=this.computeWidth();
+               this.graphic.width=this.elementWidth;
+            }
+         }
+      }
+
+      private function loadCompleteHandler(e:Event) : void {
+         this.removeDefaultLoadHandlers(this.graphic as Loader);
+         this.okToUpdateHeightAndWidth=true;
+         var g:DisplayObject = this.graphic;
+         this._measuredWidth=g.width;
+         this._measuredHeight=g.height;
+         if(!this.widthIsComputed())
+         {
+            g.width=this.elementWidth;
+         }
+         if(!this.heightIsComputed())
+         {
+            g.height=this.elementHeight;
+         }
+         if(e is IOErrorEvent)
+         {
+            this.changeGraphicStatus(e);
+         }
+         else
+         {
+            if((this.widthIsComputed())||(this.heightIsComputed()))
+            {
+               g.visible=false;
+               this.changeGraphicStatus(InlineGraphicElementStatus.SIZE_PENDING);
             }
             else
             {
-                this.changeGraphicStatus(LOAD_COMPLETE);
+               this.changeGraphicStatus(LOAD_COMPLETE);
             }
-            return;
-        }// end function
+         }
+      }
 
-        private function openHandler(event:Event) : void
-        {
-            this.changeGraphicStatus(OPEN_RECEIVED);
-            return;
-        }// end function
+      private function openHandler(e:Event) : void {
+         this.changeGraphicStatus(OPEN_RECEIVED);
+      }
 
-        private function addDefaultLoadHandlers(param1:Loader) : void
-        {
-            var _loc_2:* = param1.contentLoaderInfo;
-            _loc_2.addEventListener(Event.OPEN, this.openHandler, false, 0, true);
-            _loc_2.addEventListener(Event.COMPLETE, this.loadCompleteHandler, false, 0, true);
-            _loc_2.addEventListener(IOErrorEvent.IO_ERROR, this.loadCompleteHandler, false, 0, true);
-            return;
-        }// end function
+      private function addDefaultLoadHandlers(loader:Loader) : void {
+         var loaderInfo:LoaderInfo = loader.contentLoaderInfo;
+         loaderInfo.addEventListener(Event.OPEN,this.openHandler,false,0,true);
+         loaderInfo.addEventListener(Event.COMPLETE,this.loadCompleteHandler,false,0,true);
+         loaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.loadCompleteHandler,false,0,true);
+      }
 
-        private function removeDefaultLoadHandlers(param1:Loader) : void
-        {
-            param1.contentLoaderInfo.removeEventListener(Event.OPEN, this.openHandler);
-            param1.contentLoaderInfo.removeEventListener(Event.COMPLETE, this.loadCompleteHandler);
-            param1.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, this.loadCompleteHandler);
-            return;
-        }// end function
+      private function removeDefaultLoadHandlers(loader:Loader) : void {
+         loader.contentLoaderInfo.removeEventListener(Event.OPEN,this.openHandler);
+         loader.contentLoaderInfo.removeEventListener(Event.COMPLETE,this.loadCompleteHandler);
+         loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR,this.loadCompleteHandler);
+      }
 
-        public function get source() : Object
-        {
-            return this._source;
-        }// end function
+      public function get source() : Object {
+         return this._source;
+      }
 
-        public function set source(param1:Object) : void
-        {
-            this.stop(true);
-            this._source = param1;
-            this.changeGraphicStatus(InlineGraphicElementStatus.LOAD_PENDING);
-            modelChanged(ModelChange.ELEMENT_MODIFIED, this, 0, textLength);
-            return;
-        }// end function
+      public function set source(value:Object) : void {
+         this.stop(true);
+         this._source=value;
+         this.changeGraphicStatus(InlineGraphicElementStatus.LOAD_PENDING);
+         modelChanged(ModelChange.ELEMENT_MODIFIED,this,0,textLength);
+      }
 
-        override function applyDelayedElementUpdate(param1:TextFlow, param2:Boolean, param3:Boolean) : void
-        {
-            var source:Object;
-            var elem:DisplayObject;
-            var inlineGraphicResolver:Function;
-            var loader:Loader;
-            var myPattern:RegExp;
-            var src:String;
-            var pictURLReq:URLRequest;
-            var cls:Class;
-            var textFlow:* = param1;
-            var okToUnloadGraphics:* = param2;
-            var hasController:* = param3;
-            if (textFlow != this.getTextFlow())
+      override tlf_internal function applyDelayedElementUpdate(textFlow:TextFlow, okToUnloadGraphics:Boolean, hasController:Boolean) : void {
+         var source:Object = null;
+         var elem:DisplayObject = null;
+         var inlineGraphicResolver:Function = null;
+         var loader:Loader = null;
+         var myPattern:RegExp = null;
+         var src:String = null;
+         var pictURLReq:URLRequest = null;
+         var cls:Class = null;
+         if(textFlow!=this.getTextFlow())
+         {
+         }
+         if(this._graphicStatus==InlineGraphicElementStatus.LOAD_PENDING)
+         {
+            if(hasController)
             {
-                hasController;
-            }
-            if (this._graphicStatus == InlineGraphicElementStatus.LOAD_PENDING)
-            {
-                if (hasController)
-                {
-                    source = this._source;
-                    if (source is String)
-                    {
-                        inlineGraphicResolver = textFlow.configuration.inlineGraphicResolverFunction;
-                        if (inlineGraphicResolver != null)
+               source=this._source;
+               if(source is String)
+               {
+                  inlineGraphicResolver=textFlow.configuration.inlineGraphicResolverFunction;
+                  if(inlineGraphicResolver!=null)
+                  {
+                     source=inlineGraphicResolver(this);
+                  }
+               }
+               if((source is String)||(source is URLRequest))
+               {
+                  this.okToUpdateHeightAndWidth=false;
+                  loader=new Loader();
+                  try
+                  {
+                     this.addDefaultLoadHandlers(loader);
+                     if(source is String)
+                     {
+                        myPattern=new RegExp("\\\\","g");
+                        src=source as String;
+                        src=src.replace(myPattern,"/");
+                        if(isMac)
                         {
-                            source = this.inlineGraphicResolver(this);
+                           pictURLReq=new URLRequest(encodeURI(src));
                         }
-                    }
-                    if (source is String || source is URLRequest)
-                    {
-                        this.okToUpdateHeightAndWidth = false;
-                        loader = new Loader();
-                        try
+                        else
                         {
-                            this.addDefaultLoadHandlers(loader);
-                            if (source is String)
-                            {
-                                myPattern = /\\\"""\\/g;
-                                src = source as String;
-                                src = src.replace(myPattern, "/");
-                                if (isMac)
-                                {
-                                    pictURLReq = new URLRequest(encodeURI(src));
-                                }
-                                else
-                                {
-                                    pictURLReq = new URLRequest(src);
-                                }
-                                loader.load(pictURLReq);
-                            }
-                            else
-                            {
-                                loader.load(URLRequest(source));
-                            }
-                            this.setGraphic(loader);
-                            this.changeGraphicStatus(LOAD_INITIATED);
+                           pictURLReq=new URLRequest(src);
                         }
-                        catch (e:Error)
-                        {
-                            removeDefaultLoadHandlers(loader);
-                            elem = new Shape();
-                            changeGraphicStatus(NULL_GRAPHIC);
-                        }
-                    }
-                    else if (source is Class)
-                    {
-                        cls = source as Class;
-                        elem = DisplayObject(new cls);
-                        this.changeGraphicStatus(EMBED_LOADED);
-                    }
-                    else if (source is DisplayObject)
-                    {
-                        elem = DisplayObject(source);
+                        loader.load(pictURLReq);
+                     }
+                     else
+                     {
+                        loader.load(URLRequest(source));
+                     }
+                     this.setGraphic(loader);
+                     this.changeGraphicStatus(LOAD_INITIATED);
+                  }
+                  catch(e:Error)
+                  {
+                     removeDefaultLoadHandlers(loader);
+                     elem=new Shape();
+                     changeGraphicStatus(NULL_GRAPHIC);
+                  }
+               }
+               else
+               {
+                  if(source is Class)
+                  {
+                     cls=source as Class;
+                     elem=DisplayObject(new cls());
+                     this.changeGraphicStatus(EMBED_LOADED);
+                  }
+                  else
+                  {
+                     if(source is DisplayObject)
+                     {
+                        elem=DisplayObject(source);
                         this.changeGraphicStatus(DISPLAY_OBJECT);
-                    }
-                    else
-                    {
-                        elem = new Shape();
+                     }
+                     else
+                     {
+                        elem=new Shape();
                         this.changeGraphicStatus(NULL_GRAPHIC);
-                    }
-                    if (this._graphicStatus != LOAD_INITIATED)
-                    {
-                        this.okToUpdateHeightAndWidth = true;
-                        this._measuredWidth = elem ? (elem.width) : (0);
-                        this._measuredHeight = elem ? (elem.height) : (0);
-                        if (this.widthIsComputed())
-                        {
-                            if (elem)
-                            {
-                                var _loc_5:* = this.computeWidth();
-                                this.elementWidth = this.computeWidth();
-                                elem.width = _loc_5;
-                            }
-                            else
-                            {
-                                this.elementWidth = 0;
-                            }
-                        }
-                        else
-                        {
-                            elem.width = Number(this.width);
-                        }
-                        if (this.heightIsComputed())
-                        {
-                            if (elem)
-                            {
-                                var _loc_5:* = this.computeHeight();
-                                this.elementHeight = this.computeHeight();
-                                elem.height = _loc_5;
-                            }
-                            else
-                            {
-                                this.elementHeight = 0;
-                            }
-                        }
-                        else
-                        {
-                            elem.height = Number(this.height);
-                        }
-                        this.setGraphic(elem);
-                    }
-                }
+                     }
+                  }
+               }
+               if(this._graphicStatus!=LOAD_INITIATED)
+               {
+                  this.okToUpdateHeightAndWidth=true;
+                  this._measuredWidth=elem?elem.width:0;
+                  this._measuredHeight=elem?elem.height:0;
+                  if(this.widthIsComputed())
+                  {
+                     if(elem)
+                     {
+                        elem.width=this.elementWidth=this.computeWidth();
+                     }
+                     else
+                     {
+                        this.elementWidth=0;
+                     }
+                  }
+                  else
+                  {
+                     elem.width=Number(this.width);
+                  }
+                  if(this.heightIsComputed())
+                  {
+                     if(elem)
+                     {
+                        elem.height=this.elementHeight=this.computeHeight();
+                     }
+                     else
+                     {
+                        this.elementHeight=0;
+                     }
+                  }
+                  else
+                  {
+                     elem.height=Number(this.height);
+                  }
+                  this.setGraphic(elem);
+               }
             }
-            else
+         }
+         else
+         {
+            if(this._graphicStatus==InlineGraphicElementStatus.SIZE_PENDING)
             {
-                if (this._graphicStatus == InlineGraphicElementStatus.SIZE_PENDING)
-                {
-                    this.updateAutoSizes();
-                    this.graphic.visible = true;
-                    this.changeGraphicStatus(LOAD_COMPLETE);
-                }
-                if (!hasController)
-                {
-                    this.stop(okToUnloadGraphics);
-                }
+               this.updateAutoSizes();
+               this.graphic.visible=true;
+               this.changeGraphicStatus(LOAD_COMPLETE);
             }
-            return;
-        }// end function
+            if(!hasController)
+            {
+               this.stop(okToUnloadGraphics);
+            }
+         }
+      }
 
-        override function updateForMustUseComposer(param1:TextFlow) : Boolean
-        {
-            this.applyDelayedElementUpdate(param1, false, true);
-            return this.status != InlineGraphicElementStatus.READY;
-        }// end function
+      override tlf_internal function updateForMustUseComposer(textFlow:TextFlow) : Boolean {
+         this.applyDelayedElementUpdate(textFlow,false,true);
+         return !(this.status==InlineGraphicElementStatus.READY);
+      }
 
-        private function updateAutoSizes() : void
-        {
-            if (this.widthIsComputed())
-            {
-                this.elementWidth = this.computeWidth();
-                this.graphic.width = this.elementWidth;
-            }
-            if (this.heightIsComputed())
-            {
-                this.elementHeight = this.computeHeight();
-                this.graphic.height = this.elementHeight;
-            }
-            return;
-        }// end function
+      private function updateAutoSizes() : void {
+         if(this.widthIsComputed())
+         {
+            this.elementWidth=this.computeWidth();
+            this.graphic.width=this.elementWidth;
+         }
+         if(this.heightIsComputed())
+         {
+            this.elementHeight=this.computeHeight();
+            this.graphic.height=this.elementHeight;
+         }
+      }
 
-        function stop(param1:Boolean) : Boolean
-        {
-            var loader:Loader;
-            var okToUnloadGraphics:* = param1;
-            if (this._graphicStatus == OPEN_RECEIVED || this._graphicStatus == LOAD_INITIATED)
+      tlf_internal function stop(okToUnloadGraphics:Boolean) : Boolean {
+         var loader:Loader = null;
+         if((this._graphicStatus==OPEN_RECEIVED)||(this._graphicStatus==LOAD_INITIATED))
+         {
+            loader=this.graphic as Loader;
+            try
             {
-                loader = this.graphic as Loader;
-                try
-                {
-                    loader.close();
-                }
-                catch (e:Error)
-                {
-                }
-                this.removeDefaultLoadHandlers(loader);
+               loader.close();
             }
-            if (this._graphicStatus != DISPLAY_OBJECT)
+            catch(e:Error)
             {
-                if (okToUnloadGraphics)
-                {
-                    recursiveShutDownGraphic(this.graphic);
-                    this.setGraphic(null);
-                }
-                if (this.widthIsComputed())
-                {
-                    this.elementWidth = 0;
-                }
-                if (this.heightIsComputed())
-                {
-                    this.elementHeight = 0;
-                }
-                this.changeGraphicStatus(InlineGraphicElementStatus.LOAD_PENDING);
             }
-            return true;
-        }// end function
+            this.removeDefaultLoadHandlers(loader);
+         }
+         if(this._graphicStatus!=DISPLAY_OBJECT)
+         {
+            if(okToUnloadGraphics)
+            {
+               recursiveShutDownGraphic(this.graphic);
+               this.setGraphic(null);
+            }
+            if(this.widthIsComputed())
+            {
+               this.elementWidth=0;
+            }
+            if(this.heightIsComputed())
+            {
+               this.elementHeight=0;
+            }
+            this.changeGraphicStatus(InlineGraphicElementStatus.LOAD_PENDING);
+         }
+         return true;
+      }
 
-        override function getEffectiveFontSize() : Number
-        {
-            if (this.effectiveFloat != Float.NONE)
-            {
-                return 0;
-            }
-            var _loc_1:* = super.getEffectiveFontSize();
-            return Math.max(_loc_1, this.elementHeightWithMarginsAndPadding());
-        }// end function
-
-        override function getEffectiveLineHeight(param1:String) : Number
-        {
-            if (this.effectiveFloat != Float.NONE)
-            {
-                return 0;
-            }
-            return super.getEffectiveLineHeight(param1);
-        }// end function
-
-        function getTypographicAscent(param1:TextLine) : Number
-        {
-            var _loc_3:* = null;
-            if (this.effectiveFloat != Float.NONE)
-            {
-                return 0;
-            }
-            var _loc_2:* = this.elementHeightWithMarginsAndPadding();
-            if (this._computedFormat.dominantBaseline != FormatValue.AUTO)
-            {
-                _loc_3 = this._computedFormat.dominantBaseline;
-            }
-            else
-            {
-                _loc_3 = this.getParagraph().getEffectiveDominantBaseline();
-            }
-            var _loc_4:* = _blockElement ? (_blockElement.elementFormat) : (computeElementFormat());
-            var _loc_5:* = (_blockElement ? (_blockElement.elementFormat) : (computeElementFormat())).alignmentBaseline == TextBaseline.USE_DOMINANT_BASELINE ? (_loc_3) : (_loc_4.alignmentBaseline);
-            var _loc_6:* = 0;
-            if (_loc_3 == TextBaseline.IDEOGRAPHIC_CENTER)
-            {
-                _loc_6 = _loc_6 + _loc_2 / 2;
-            }
-            else if (_loc_3 == TextBaseline.IDEOGRAPHIC_BOTTOM || _loc_3 == TextBaseline.DESCENT || _loc_3 == TextBaseline.ROMAN)
-            {
-                _loc_6 = _loc_6 + _loc_2;
-            }
-            _loc_6 = _loc_6 + (param1.getBaselinePosition(TextBaseline.ROMAN) - param1.getBaselinePosition(_loc_5));
-            _loc_6 = _loc_6 + _loc_4.baselineShift;
-            return _loc_6;
-        }// end function
-
-        override function getCSSInlineBox(param1:String, param2:TextLine, param3:ParagraphElement = null, param4:ISWFContext = null) : Rectangle
-        {
-            if (this.effectiveFloat != Float.NONE)
-            {
-                return null;
-            }
-            var _loc_5:* = new Rectangle();
-            new Rectangle().top = -this.getTypographicAscent(param2);
-            _loc_5.height = this.elementHeightWithMarginsAndPadding();
-            _loc_5.width = this.elementWidth;
-            return _loc_5;
-        }// end function
-
-        override function updateIMEAdornments(param1:TextLine, param2:String, param3:String) : void
-        {
-            if (this.effectiveFloat == Float.NONE)
-            {
-                super.updateIMEAdornments(param1, param2, param3);
-            }
-            return;
-        }// end function
-
-        override function updateAdornments(param1:TextLine, param2:String) : int
-        {
-            if (this.effectiveFloat == Float.NONE)
-            {
-                return super.updateAdornments(param1, param2);
-            }
+      override tlf_internal function getEffectiveFontSize() : Number {
+         if(this.effectiveFloat!=Float.NONE)
+         {
             return 0;
-        }// end function
+         }
+         var defaultLeading:Number = super.getEffectiveFontSize();
+         return Math.max(defaultLeading,this.elementHeightWithMarginsAndPadding());
+      }
 
-        override public function shallowCopy(param1:int = 0, param2:int = -1) : FlowElement
-        {
-            if (param2 == -1)
-            {
-                param2 = textLength;
-            }
-            var _loc_3:* = super.shallowCopy(param1, param2) as InlineGraphicElement;
-            _loc_3.source = this.source;
-            _loc_3.width = this.width;
-            _loc_3.height = this.height;
-            _loc_3.float = this.float;
-            return _loc_3;
-        }// end function
+      override tlf_internal function getEffectiveLineHeight(blockProgression:String) : Number {
+         if(this.effectiveFloat!=Float.NONE)
+         {
+            return 0;
+         }
+         return super.getEffectiveLineHeight(blockProgression);
+      }
 
-        override protected function get abstract() : Boolean
-        {
-            return false;
-        }// end function
+      tlf_internal function getTypographicAscent(textLine:TextLine) : Number {
+         var dominantBaselineString:String = null;
+         if(this.effectiveFloat!=Float.NONE)
+         {
+            return 0;
+         }
+         var effectiveHeight:Number = this.elementHeightWithMarginsAndPadding();
+         if(this._computedFormat.dominantBaseline!=FormatValue.AUTO)
+         {
+            dominantBaselineString=this._computedFormat.dominantBaseline;
+         }
+         else
+         {
+            dominantBaselineString=this.getParagraph().getEffectiveDominantBaseline();
+         }
+         var elementFormat:ElementFormat = _blockElement?_blockElement.elementFormat:computeElementFormat();
+         var alignmentBaseline:String = elementFormat.alignmentBaseline==TextBaseline.USE_DOMINANT_BASELINE?dominantBaselineString:elementFormat.alignmentBaseline;
+         var top:Number = 0;
+         if(dominantBaselineString==TextBaseline.IDEOGRAPHIC_CENTER)
+         {
+            top=top+effectiveHeight/2;
+         }
+         else
+         {
+            if((dominantBaselineString==TextBaseline.IDEOGRAPHIC_BOTTOM)||(dominantBaselineString==TextBaseline.DESCENT)||(dominantBaselineString==TextBaseline.ROMAN))
+            {
+               top=top+effectiveHeight;
+            }
+         }
+         top=top+(textLine.getBaselinePosition(TextBaseline.ROMAN)-textLine.getBaselinePosition(alignmentBaseline));
+         top=top+elementFormat.baselineShift;
+         return top;
+      }
 
-        override function get defaultTypeName() : String
-        {
-            return "img";
-        }// end function
+      override tlf_internal function getCSSInlineBox(blockProgression:String, textLine:TextLine, para:ParagraphElement=null, swfContext:ISWFContext=null) : Rectangle {
+         if(this.effectiveFloat!=Float.NONE)
+         {
+            return null;
+         }
+         var inlineBox:Rectangle = new Rectangle();
+         inlineBox.top=-this.getTypographicAscent(textLine);
+         inlineBox.height=this.elementHeightWithMarginsAndPadding();
+         inlineBox.width=this.elementWidth;
+         return inlineBox;
+      }
 
-        override function appendElementsForDelayedUpdate(param1:TextFlow, param2:String) : void
-        {
-            if (param2 == ModelChange.ELEMENT_ADDED)
-            {
-                param1.incGraphicObjectCount();
-            }
-            else if (param2 == ModelChange.ELEMENT_REMOVAL)
-            {
-                param1.decGraphicObjectCount();
-            }
-            if (this.status != InlineGraphicElementStatus.READY || param2 == ModelChange.ELEMENT_REMOVAL)
-            {
-                param1.appendOneElementForUpdate(this);
-            }
-            return;
-        }// end function
+      override tlf_internal function updateIMEAdornments(tLine:TextLine, blockProgression:String, imeStatus:String) : void {
+         if(this.effectiveFloat==Float.NONE)
+         {
+            super.updateIMEAdornments(tLine,blockProgression,imeStatus);
+         }
+      }
 
-        override function calculateStrikeThrough(param1:TextLine, param2:String, param3:FontMetrics) : Number
-        {
-            var _loc_6:* = NaN;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            if (!this.graphic || this.status != InlineGraphicElementStatus.READY)
-            {
-                return super.calculateStrikeThrough(param1, param2, param3);
-            }
-            var _loc_4:* = 0;
-            var _loc_5:* = this._placeholderGraphic.parent;
-            if (this._placeholderGraphic.parent)
-            {
-                if (param2 != BlockProgression.RL)
-                {
-                    _loc_4 = this.placeholderGraphic.parent.y + (this.elementHeight / 2 + Number(getEffectivePaddingTop()));
-                }
-                else
-                {
-                    _loc_6 = getEffectivePaddingRight();
-                    _loc_7 = param1.userData as TextFlowLine;
-                    _loc_8 = this.getAbsoluteStart() - _loc_7.absoluteStart;
-                    if (param1.getAtomTextRotation(_loc_8) != TextRotation.ROTATE_0)
-                    {
-                        _loc_4 = this._placeholderGraphic.parent.x - (this.elementHeight / 2 + _loc_6);
-                    }
-                    else
-                    {
-                        _loc_4 = this._placeholderGraphic.parent.x - (this.elementWidth / 2 + _loc_6);
-                    }
-                }
-            }
-            return param2 == BlockProgression.TB ? (_loc_4) : (-_loc_4);
-        }// end function
+      override tlf_internal function updateAdornments(tLine:TextLine, blockProgression:String) : int {
+         if(this.effectiveFloat==Float.NONE)
+         {
+            return super.updateAdornments(tLine,blockProgression);
+         }
+         return 0;
+      }
 
-        override function calculateUnderlineOffset(param1:Number, param2:String, param3:FontMetrics, param4:TextLine) : Number
-        {
-            if (!this.graphic || this.status != InlineGraphicElementStatus.READY)
-            {
-                return super.calculateUnderlineOffset(param1, param2, param3, param4);
-            }
-            var _loc_5:* = this.getParagraph();
-            var _loc_6:* = 0;
-            var _loc_7:* = this._placeholderGraphic.parent;
-            if (this._placeholderGraphic.parent)
-            {
-                if (param2 == BlockProgression.TB)
-                {
-                    _loc_6 = _loc_7.y + this.elementHeightWithMarginsAndPadding();
-                }
-                else
-                {
-                    if (_loc_5.computedFormat.locale.toLowerCase().indexOf("zh") == 0)
-                    {
-                        _loc_6 = _loc_7.x - this.elementHeightWithMarginsAndPadding();
-                        _loc_6 = _loc_6 - (param3.underlineOffset + param3.underlineThickness / 2);
-                        return _loc_6;
-                    }
-                    _loc_6 = _loc_7.x - getEffectivePaddingLeft();
-                }
-            }
-            _loc_6 = _loc_6 + (param3.underlineOffset + param3.underlineThickness / 2);
-            var _loc_8:* = _loc_5.getEffectiveJustificationRule();
-            if (_loc_5.getEffectiveJustificationRule() == JustificationRule.EAST_ASIAN)
-            {
-                _loc_6 = _loc_6 + 1;
-            }
-            return _loc_6;
-        }// end function
+      override public function shallowCopy(startPos:int=0, endPos:int=-1) : FlowElement {
+         if(endPos==-1)
+         {
+            endPos=textLength;
+         }
+         var retFlow:InlineGraphicElement = super.shallowCopy(startPos,endPos) as InlineGraphicElement;
+         retFlow.source=this.source;
+         retFlow.width=this.width;
+         retFlow.height=this.height;
+         retFlow.float=this.float;
+         return retFlow;
+      }
 
-        private static function recursiveShutDownGraphic(param1:DisplayObject) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            if (param1 is Loader)
-            {
-                Loader(param1).unloadAndStop();
-            }
-            else if (param1)
-            {
-                _loc_2 = param1 as DisplayObjectContainer;
-                if (_loc_2)
-                {
-                    _loc_3 = 0;
-                    while (_loc_3 < _loc_2.numChildren)
-                    {
-                        
-                        recursiveShutDownGraphic(_loc_2.getChildAt(_loc_3));
-                        _loc_3++;
-                    }
-                }
-                if (param1 is MovieClip)
-                {
-                    MovieClip(param1).stop();
-                }
-            }
-            return;
-        }// end function
+      override protected function get abstract() : Boolean {
+         return false;
+      }
 
-    }
+      override tlf_internal function get defaultTypeName() : String {
+         return "img";
+      }
+
+      override tlf_internal function appendElementsForDelayedUpdate(tf:TextFlow, changeType:String) : void {
+         if(changeType==ModelChange.ELEMENT_ADDED)
+         {
+            tf.incGraphicObjectCount();
+         }
+         else
+         {
+            if(changeType==ModelChange.ELEMENT_REMOVAL)
+            {
+               tf.decGraphicObjectCount();
+            }
+         }
+         if((!(this.status==InlineGraphicElementStatus.READY))||(changeType==ModelChange.ELEMENT_REMOVAL))
+         {
+            tf.appendOneElementForUpdate(this);
+         }
+      }
+
+      override tlf_internal function calculateStrikeThrough(tLine:TextLine, blockProgression:String, metrics:FontMetrics) : Number {
+         var paddingRight:* = NaN;
+         var line:TextFlowLine = null;
+         var elemIdx:* = 0;
+         if((!this.graphic)||(!(this.status==InlineGraphicElementStatus.READY)))
+         {
+            return super.calculateStrikeThrough(tLine,blockProgression,metrics);
+         }
+         var stOffset:Number = 0;
+         var inlineHolder:DisplayObjectContainer = this._placeholderGraphic.parent;
+         if(inlineHolder)
+         {
+            if(blockProgression!=BlockProgression.RL)
+            {
+               stOffset=this.placeholderGraphic.parent.y+(this.elementHeight/2+Number(getEffectivePaddingTop()));
+            }
+            else
+            {
+               paddingRight=getEffectivePaddingRight();
+               line=tLine.userData as TextFlowLine;
+               elemIdx=this.getAbsoluteStart()-line.absoluteStart;
+               if(tLine.getAtomTextRotation(elemIdx)!=TextRotation.ROTATE_0)
+               {
+                  stOffset=this._placeholderGraphic.parent.x-this.elementHeight/2+paddingRight;
+               }
+               else
+               {
+                  stOffset=this._placeholderGraphic.parent.x-this.elementWidth/2+paddingRight;
+               }
+            }
+         }
+         return blockProgression==BlockProgression.TB?stOffset:-stOffset;
+      }
+
+      override tlf_internal function calculateUnderlineOffset(stOffset:Number, blockProgression:String, metrics:FontMetrics, tLine:TextLine) : Number {
+         if((!this.graphic)||(!(this.status==InlineGraphicElementStatus.READY)))
+         {
+            return super.calculateUnderlineOffset(stOffset,blockProgression,metrics,tLine);
+         }
+         var para:ParagraphElement = this.getParagraph();
+         var ulOffset:Number = 0;
+         var inlineHolder:DisplayObjectContainer = this._placeholderGraphic.parent;
+         if(inlineHolder)
+         {
+            if(blockProgression==BlockProgression.TB)
+            {
+               ulOffset=inlineHolder.y+this.elementHeightWithMarginsAndPadding();
+            }
+            else
+            {
+               if(para.computedFormat.locale.toLowerCase().indexOf("zh")==0)
+               {
+                  ulOffset=inlineHolder.x-this.elementHeightWithMarginsAndPadding();
+                  ulOffset=ulOffset-metrics.underlineOffset+metrics.underlineThickness/2;
+                  return ulOffset;
+               }
+               ulOffset=inlineHolder.x-getEffectivePaddingLeft();
+            }
+         }
+         ulOffset=ulOffset+(metrics.underlineOffset+metrics.underlineThickness/2);
+         var justRule:String = para.getEffectiveJustificationRule();
+         if(justRule==JustificationRule.EAST_ASIAN)
+         {
+            ulOffset=ulOffset+1;
+         }
+         return ulOffset;
+      }
+   }
+
 }

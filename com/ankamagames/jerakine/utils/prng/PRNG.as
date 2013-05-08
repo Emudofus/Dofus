@@ -1,20 +1,22 @@
-﻿package com.ankamagames.jerakine.utils.prng
+package com.ankamagames.jerakine.utils.prng
 {
 
-    public interface PRNG
-    {
 
-        public function PRNG();
+   public interface PRNG
+   {
+         
 
-        function seed(param1:uint) : void;
 
-        function nextInt() : uint;
 
-        function nextDouble() : Number;
+      function seed(param1:uint) : void;
 
-        function nextIntR(param1:Number, param2:Number) : uint;
+      function nextInt() : uint;
 
-        function nextDoubleR(param1:Number, param2:Number) : Number;
+      function nextDouble() : Number;
 
-    }
+      function nextIntR(param1:Number, param2:Number) : uint;
+
+      function nextDoubleR(param1:Number, param2:Number) : Number;
+   }
+
 }

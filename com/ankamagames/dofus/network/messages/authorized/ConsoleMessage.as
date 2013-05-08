@@ -1,89 +1,84 @@
-﻿package com.ankamagames.dofus.network.messages.authorized
+package com.ankamagames.dofus.network.messages.authorized
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ConsoleMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var type:uint = 0;
-        public var content:String = "";
-        public static const protocolId:uint = 75;
 
-        public function ConsoleMessage()
-        {
+   public class ConsoleMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function ConsoleMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 75;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var type:uint = 0;
+
+      public var content:String = "";
+
+      override public function getMessageId() : uint {
+         return 75;
+      }
+
+      public function initConsoleMessage(type:uint=0, content:String="") : ConsoleMessage {
+         this.type=type;
+         this.content=content;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.type=0;
+         this.content="";
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ConsoleMessage(output);
+      }
+
+      public function serializeAs_ConsoleMessage(output:IDataOutput) : void {
+         output.writeByte(this.type);
+         output.writeUTF(this.content);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ConsoleMessage(input);
+      }
+
+      public function deserializeAs_ConsoleMessage(input:IDataInput) : void {
+         this.type=input.readByte();
+         if(this.type<0)
+         {
+            throw new Error("Forbidden value ("+this.type+") on element of ConsoleMessage.type.");
+         }
+         else
+         {
+            this.content=input.readUTF();
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 75;
-        }// end function
-
-        public function initConsoleMessage(param1:uint = 0, param2:String = "") : ConsoleMessage
-        {
-            this.type = param1;
-            this.content = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.type = 0;
-            this.content = "";
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ConsoleMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ConsoleMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.type);
-            param1.writeUTF(this.content);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ConsoleMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ConsoleMessage(param1:IDataInput) : void
-        {
-            this.type = param1.readByte();
-            if (this.type < 0)
-            {
-                throw new Error("Forbidden value (" + this.type + ") on element of ConsoleMessage.type.");
-            }
-            this.content = param1.readUTF();
-            return;
-        }// end function
-
-    }
 }

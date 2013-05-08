@@ -1,171 +1,157 @@
-﻿package com.ankamagames.dofus.scripts.api
+package com.ankamagames.dofus.scripts.api
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.types.sequences.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.dofus.logic.game.fight.steps.*;
-    import com.ankamagames.dofus.scripts.*;
-    import com.ankamagames.dofus.types.sequences.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.types.zones.*;
-    import com.ankamagames.jerakine.utils.display.spellZone.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.sequence.*;
-    import com.ankamagames.tiphon.types.*;
-    import flash.display.*;
+   import com.ankamagames.jerakine.sequencer.ISequencer;
+   import com.ankamagames.jerakine.sequencer.SerialSequencer;
+   import com.ankamagames.jerakine.sequencer.ISequencable;
+   import com.ankamagames.jerakine.sequencer.ParallelStartSequenceStep;
+   import com.ankamagames.jerakine.sequencer.StartSequenceStep;
+   import com.ankamagames.dofus.scripts.FxRunner;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.dofus.types.sequences.AddGfxEntityStep;
+   import flash.display.DisplayObject;
+   import com.ankamagames.dofus.scripts.SpellFxRunner;
+   import com.ankamagames.dofus.types.sequences.AddGlyphGfxStep;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.tiphon.sequence.PlayAnimationStep;
+   import com.ankamagames.tiphon.sequence.SetDirectionStep;
+   import com.ankamagames.atouin.types.sequences.ParableGfxMovementStep;
+   import com.ankamagames.jerakine.entities.interfaces.IMovable;
+   import com.ankamagames.tiphon.types.CarriedSprite;
+   import com.ankamagames.dofus.types.sequences.AddGfxInLineStep;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.jerakine.types.zones.IZone;
+   import com.ankamagames.jerakine.types.zones.Cross;
+   import com.ankamagames.atouin.utils.DataMapProvider;
+   import com.ankamagames.jerakine.types.zones.Line;
+   import com.ankamagames.jerakine.types.zones.Lozenge;
+   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
+   import com.ankamagames.atouin.types.sequences.AddWorldEntityStep;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.atouin.types.sequences.DestroyEntityStep;
+   import com.ankamagames.dofus.logic.game.fight.steps.FightDestroyEntityStep;
+   import com.ankamagames.jerakine.sequencer.DebugStep;
 
-    public class SequenceApi extends Object
-    {
 
-        public function SequenceApi()
-        {
-            return;
-        }// end function
+   public class SequenceApi extends Object
+   {
+         
 
-        public static function CreateSerialSequencer() : ISequencer
-        {
-            return new SerialSequencer();
-        }// end function
+      public function SequenceApi() {
+         super();
+      }
 
-        public static function CreateParallelStartSequenceStep(param1:Array, param2:Boolean = true, param3:Boolean = false) : ISequencable
-        {
-            return new ParallelStartSequenceStep(param1, param2, param3);
-        }// end function
+      public static function CreateSerialSequencer() : ISequencer {
+         return new SerialSequencer();
+      }
 
-        public static function CreateStartSequenceStep(param1:ISequencer) : ISequencable
-        {
-            return new StartSequenceStep(param1);
-        }// end function
+      public static function CreateParallelStartSequenceStep(aSequence:Array, waitAllSequenceEnd:Boolean=true, waitFirstEndSequence:Boolean=false) : ISequencable {
+         return new ParallelStartSequenceStep(aSequence,waitAllSequenceEnd,waitFirstEndSequence);
+      }
 
-        public static function CreateAddGfxEntityStep(param1:FxRunner, param2:uint, param3:MapPoint, param4:Number = 0, param5:int = 0, param6:uint = 0, param7:MapPoint = null, param8:MapPoint = null, param9:Boolean = false) : ISequencable
-        {
-            return new AddGfxEntityStep(param2, param3.cellId, param4, (-DisplayObject(param1.caster).height) * param5 / 10, param6, param7, param8, param9);
-        }// end function
+      public static function CreateStartSequenceStep(sequence:ISequencer) : ISequencable {
+         return new StartSequenceStep(sequence);
+      }
 
-        public static function CreateAddGlyphGfxStep(param1:SpellFxRunner, param2:uint, param3:MapPoint, param4:int) : ISequencable
-        {
-            return new AddGlyphGfxStep(param2, param3.cellId, param4, param1.castingSpell.markType);
-        }// end function
+      public static function CreateAddGfxEntityStep(runner:FxRunner, gfxId:uint, cell:MapPoint, angle:Number=0, yOffset:int=0, mode:uint=0, startCell:MapPoint=null, endCell:MapPoint=null, popUnderPlayer:Boolean=false) : ISequencable {
+         return new AddGfxEntityStep(gfxId,cell.cellId,angle,-DisplayObject(runner.caster).height*yOffset/10,mode,startCell,endCell,popUnderPlayer);
+      }
 
-        public static function CreatePlayAnimationStep(param1:TiphonSprite, param2:String, param3:Boolean, param4:Boolean, param5:String = "animation_event_end", param6:int = 1) : ISequencable
-        {
-            return new PlayAnimationStep(param1, param2, param3, param4, param5, param6);
-        }// end function
+      public static function CreateAddGlyphGfxStep(runner:SpellFxRunner, gfxId:uint, cell:MapPoint, markId:int) : ISequencable {
+         return new AddGlyphGfxStep(gfxId,cell.cellId,markId,runner.castingSpell.markType);
+      }
 
-        public static function CreateSetDirectionStep(param1:TiphonSprite, param2:uint) : ISequencable
-        {
-            return new SetDirectionStep(param1, param2);
-        }// end function
+      public static function CreatePlayAnimationStep(target:TiphonSprite, animationName:String, backToLastAnimationAtEnd:Boolean, waitForEvent:Boolean, eventEnd:String="animation_event_end", loop:int=1) : ISequencable {
+         return new PlayAnimationStep(target,animationName,backToLastAnimationAtEnd,waitForEvent,eventEnd,loop);
+      }
 
-        public static function CreateParableGfxMovementStep(param1:FxRunner, param2:IMovable, param3:MapPoint, param4:Number = 100, param5:Number = 0.5, param6:int = 0, param7:Boolean = true) : ParableGfxMovementStep
-        {
-            var _loc_8:* = 0;
-            var _loc_9:* = TiphonSprite(param1.caster).parent;
-            while (_loc_9)
+      public static function CreateSetDirectionStep(target:TiphonSprite, nDirection:uint) : ISequencable {
+         return new SetDirectionStep(target,nDirection);
+      }
+
+      public static function CreateParableGfxMovementStep(runner:FxRunner, gfxEntity:IMovable, targetPoint:MapPoint, speed:Number=100, curvePrc:Number=0.5, yOffset:int=0, waitEnd:Boolean=true) : ParableGfxMovementStep {
+         var subEntityOffset:int = 0;
+         var p:DisplayObject = TiphonSprite(runner.caster).parent;
+         while(p)
+         {
+            if(p is CarriedSprite)
             {
-                
-                if (_loc_9 is CarriedSprite)
-                {
-                    _loc_8 = _loc_8 + _loc_9.y;
-                }
-                _loc_9 = _loc_9.parent;
+               subEntityOffset=subEntityOffset+p.y;
             }
-            return new ParableGfxMovementStep(param2, param3, param4, param5, (-DisplayObject(param1.caster).height) * param6 / 10 + _loc_8, param7);
-        }// end function
+            p=p.parent;
+         }
+         return new ParableGfxMovementStep(gfxEntity,targetPoint,speed,curvePrc,-DisplayObject(runner.caster).height*yOffset/10+subEntityOffset,waitEnd);
+      }
 
-        public static function CreateAddGfxInLineStep(param1:SpellFxRunner, param2:uint, param3:MapPoint, param4:MapPoint, param5:Number = 0, param6:uint = 0, param7:Number = 0, param8:Number = 0, param9:Boolean = false, param10:Boolean = false, param11:Boolean = false, param12:Boolean = false, param13:Boolean = false) : AddGfxInLineStep
-        {
-            var _loc_16:* = null;
-            var _loc_17:* = 0;
-            var _loc_18:* = 0;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            var _loc_21:* = null;
-            var _loc_14:* = param1.castingSpell.spell.spellLevels.indexOf(param1.castingSpell.spellRank.id);
-            var _loc_15:* = 1 + (param7 + (param8 - param7) * _loc_14 / 6) / 10;
-            if (param12)
+      public static function CreateAddGfxInLineStep(runner:SpellFxRunner, gfxId:uint, startCell:MapPoint, endCell:MapPoint, yOffset:Number=0, mode:uint=0, minScale:Number=0, maxScale:Number=0, addOnStartCell:Boolean=false, addOnEndCell:Boolean=false, showUnder:Boolean=false, useSpellZone:Boolean=false, useOnlySpellZone:Boolean=false) : AddGfxInLineStep {
+         var cells:Vector.<uint> = null;
+         var shape:uint = 0;
+         var ray:uint = 0;
+         var i:EffectInstance = null;
+         var zone:IZone = null;
+         var shapeT:Cross = null;
+         var level:uint = runner.castingSpell.spell.spellLevels.indexOf(runner.castingSpell.spellRank.id);
+         var scale:Number = 1+(minScale+(maxScale-minScale)*level/6)/10;
+         if(useSpellZone)
+         {
+            shape=88;
+            ray=666;
+            for each (i in runner.castingSpell.spellRank.effects)
             {
-                _loc_17 = 88;
-                _loc_18 = 666;
-                for each (_loc_19 in param1.castingSpell.spellRank.effects)
-                {
-                    
-                    if (_loc_19.zoneShape != 0 && _loc_19.zoneSize < _loc_18 && _loc_19.zoneSize > 0)
-                    {
-                        _loc_18 = _loc_19.zoneSize;
-                        _loc_17 = _loc_19.zoneShape;
-                    }
-                }
-                if (_loc_18 == 666)
-                {
-                    _loc_18 = 0;
-                }
-                switch(_loc_17)
-                {
-                    case SpellShapeEnum.X:
-                    {
-                        _loc_20 = new Cross(0, _loc_18, DataMapProvider.getInstance());
-                        break;
-                    }
-                    case SpellShapeEnum.L:
-                    {
-                        _loc_20 = new Line(_loc_18, DataMapProvider.getInstance());
-                        break;
-                    }
-                    case SpellShapeEnum.T:
-                    {
-                        _loc_21 = new Cross(0, _loc_18, DataMapProvider.getInstance());
-                        _loc_21.onlyPerpendicular = true;
-                        _loc_20 = _loc_21;
-                        break;
-                    }
-                    case SpellShapeEnum.D:
-                    {
-                        _loc_20 = new Cross(0, _loc_18, DataMapProvider.getInstance());
-                        break;
-                    }
-                    case SpellShapeEnum.C:
-                    {
-                        _loc_20 = new Lozenge(0, _loc_18, DataMapProvider.getInstance());
-                        break;
-                    }
-                    case SpellShapeEnum.O:
-                    {
-                        _loc_20 = new Cross((_loc_18 - 1), _loc_18, DataMapProvider.getInstance());
-                        break;
-                    }
-                    case SpellShapeEnum.P:
-                    {
-                    }
-                    default:
-                    {
-                        _loc_20 = new Cross(0, 0, DataMapProvider.getInstance());
-                        break;
-                    }
-                }
-                _loc_20.direction = param3.advancedOrientationTo(param1.castingSpell.targetedCell);
-                _loc_16 = _loc_20.getCells(param1.castingSpell.targetedCell.cellId);
+               if((!(i.zoneShape==0))&&(i.zoneSize>ray)&&(i.zoneSize<0))
+               {
+                  ray=i.zoneSize;
+                  shape=i.zoneShape;
+               }
             }
-            return new AddGfxInLineStep(param2, param3, param4, (-DisplayObject(param1.caster).height) * param5 / 10, param6, _loc_15, param9, param10, _loc_16, param13, param11);
-        }// end function
+            if(ray==666)
+            {
+               ray=0;
+            }
+            switch(shape)
+            {
+               case SpellShapeEnum.X:
+                  zone=new Cross(0,ray,DataMapProvider.getInstance());
+                  break;
+               case SpellShapeEnum.L:
+                  zone=new Line(ray,DataMapProvider.getInstance());
+                  break;
+               case SpellShapeEnum.T:
+                  shapeT=new Cross(0,ray,DataMapProvider.getInstance());
+                  shapeT.onlyPerpendicular=true;
+                  zone=shapeT;
+                  break;
+               case SpellShapeEnum.D:
+                  zone=new Cross(0,ray,DataMapProvider.getInstance());
+                  break;
+               case SpellShapeEnum.C:
+                  zone=new Lozenge(0,ray,DataMapProvider.getInstance());
+                  break;
+               case SpellShapeEnum.O:
+                  zone=new Cross(ray-1,ray,DataMapProvider.getInstance());
+                  break;
+               case SpellShapeEnum.P:
+            }
+            zone=new Cross(0,0,DataMapProvider.getInstance());
+            zone.direction=startCell.advancedOrientationTo(runner.castingSpell.targetedCell);
+            cells=zone.getCells(runner.castingSpell.targetedCell.cellId);
+         }
+         return new AddGfxInLineStep(gfxId,startCell,endCell,-DisplayObject(runner.caster).height*yOffset/10,mode,scale,addOnStartCell,addOnEndCell,cells,useOnlySpellZone,showUnder);
+      }
 
-        public static function CreateAddWorldEntityStep(param1:IEntity) : AddWorldEntityStep
-        {
-            return new AddWorldEntityStep(param1);
-        }// end function
+      public static function CreateAddWorldEntityStep(entity:IEntity) : AddWorldEntityStep {
+         return new AddWorldEntityStep(entity);
+      }
 
-        public static function CreateDestroyEntityStep(param1:IEntity) : DestroyEntityStep
-        {
-            return new FightDestroyEntityStep(param1);
-        }// end function
+      public static function CreateDestroyEntityStep(entity:IEntity) : DestroyEntityStep {
+         return new FightDestroyEntityStep(entity);
+      }
 
-        public static function CreateDebugStep(param1:String) : DebugStep
-        {
-            return new DebugStep(param1);
-        }// end function
+      public static function CreateDebugStep(text:String) : DebugStep {
+         return new DebugStep(text);
+      }
 
-    }
+
+   }
+
 }

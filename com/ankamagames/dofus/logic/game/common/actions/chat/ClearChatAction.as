@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ClearChatAction extends Object implements Action
-    {
-        public var channel:Array;
 
-        public function ClearChatAction()
-        {
-            return;
-        }// end function
+   public class ClearChatAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Array) : ClearChatAction
-        {
-            var _loc_2:* = new ClearChatAction;
-            _loc_2.channel = param1;
-            return _loc_2;
-        }// end function
+      public function ClearChatAction() {
+         super();
+      }
 
-    }
+      public static function create(channel:Array) : ClearChatAction {
+         var a:ClearChatAction = new ClearChatAction();
+         a.channel=channel;
+         return a;
+      }
+
+      public var channel:Array;
+   }
+
 }

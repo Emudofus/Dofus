@@ -1,86 +1,82 @@
-﻿package com.ankamagames.jerakine.utils.misc
+package com.ankamagames.jerakine.utils.misc
 {
 
-    public class Levenshtein extends Object
-    {
 
-        public function Levenshtein()
-        {
-            return;
-        }// end function
+   public class Levenshtein extends Object
+   {
+         
 
-        public static function distance(param1:String, param2:String) : Number
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = NaN;
-            var _loc_6:* = new Array();
-            if (param1.length == 0)
-            {
-                return param2.length;
-            }
-            if (param2.length == 0)
-            {
-                return param1.length;
-            }
-            _loc_3 = 0;
-            while (_loc_3 <= param1.length)
-            {
-                
-                _loc_6[_loc_3] = new Array();
-                _loc_6[_loc_3][0] = _loc_3;
-                _loc_3 = _loc_3 + 1;
-            }
-            _loc_4 = 0;
-            while (_loc_4 <= param2.length)
-            {
-                
-                _loc_6[0][_loc_4] = _loc_4;
-                _loc_4 = _loc_4 + 1;
-            }
-            _loc_3 = 1;
-            while (_loc_3 <= param1.length)
-            {
-                
-                _loc_4 = 1;
-                while (_loc_4 <= param2.length)
-                {
-                    
-                    if (param1.charAt((_loc_3 - 1)) == param2.charAt((_loc_4 - 1)))
-                    {
-                        _loc_5 = 0;
-                    }
-                    else
-                    {
-                        _loc_5 = 1;
-                    }
-                    _loc_6[_loc_3][_loc_4] = Math.min((_loc_6[(_loc_3 - 1)][_loc_4] + 1), (_loc_6[_loc_3][(_loc_4 - 1)] + 1), _loc_6[(_loc_3 - 1)][(_loc_4 - 1)] + _loc_5);
-                    _loc_4 = _loc_4 + 1;
-                }
-                _loc_3 = _loc_3 + 1;
-            }
-            return _loc_6[param1.length][param2.length];
-        }// end function
+      public function Levenshtein() {
+         super();
+      }
 
-        public static function suggest(param1:String, param2:Array, param3:uint = 5) : String
-        {
-            var _loc_4:* = null;
-            var _loc_6:* = 0;
-            var _loc_5:* = 100000;
-            var _loc_7:* = 0;
-            while (_loc_7 < param2.length)
+      public static function distance(a:String, b:String) : Number {
+         var i:uint = 0;
+         var j:uint = 0;
+         var cost:* = NaN;
+         var d:Array = new Array();
+         if(a.length==0)
+         {
+            return b.length;
+         }
+         if(b.length==0)
+         {
+            return a.length;
+         }
+         i=0;
+         while(i<=a.length)
+         {
+            d[i]=new Array();
+            d[i][0]=i;
+            i++;
+         }
+         j=0;
+         while(j<=b.length)
+         {
+            d[0][j]=j;
+            j++;
+         }
+         i=1;
+         while(i<=a.length)
+         {
+            j=1;
+            while(j<=b.length)
             {
-                
-                _loc_6 = distance(param1, param2[_loc_7]);
-                if (_loc_5 > _loc_6 && _loc_6 <= param3)
-                {
-                    _loc_5 = _loc_6;
-                    _loc_4 = param2[_loc_7];
-                }
-                _loc_7 = _loc_7 + 1;
+               if(a.charAt(i-1)==b.charAt(j-1))
+               {
+                  cost=0;
+               }
+               else
+               {
+                  cost=1;
+               }
+               d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+cost);
+               j++;
             }
-            return _loc_4;
-        }// end function
+            i++;
+         }
+         return d[a.length][b.length];
+      }
 
-    }
+      public static function suggest(word:String, aPossibility:Array, max:uint=5) : String {
+         var res:String = null;
+         var value:uint = 0;
+         var min:uint = 100000;
+         var i:uint = 0;
+         while(i<aPossibility.length)
+         {
+            value=distance(word,aPossibility[i]);
+            if((min<value)&&(value<=max))
+            {
+               min=value;
+               res=aPossibility[i];
+            }
+            i++;
+         }
+         return res;
+      }
+
+
+   }
+
 }

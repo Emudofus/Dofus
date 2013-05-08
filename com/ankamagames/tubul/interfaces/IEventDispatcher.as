@@ -1,13 +1,15 @@
-﻿package com.ankamagames.tubul.interfaces
+package com.ankamagames.tubul.interfaces
 {
-    import flash.events.*;
+   import flash.events.EventDispatcher;
 
-    public interface IEventDispatcher
-    {
 
-        public function IEventDispatcher();
+   public interface IEventDispatcher
+   {
+         
 
-        function get eventDispatcher() : EventDispatcher;
 
-    }
+
+      function get eventDispatcher() : EventDispatcher;
+   }
+
 }

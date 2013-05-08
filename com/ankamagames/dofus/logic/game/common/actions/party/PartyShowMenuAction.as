@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.party
+package com.ankamagames.dofus.logic.game.common.actions.party
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PartyShowMenuAction extends Object implements Action
-    {
-        public var playerId:uint;
-        public var partyId:int;
 
-        public function PartyShowMenuAction()
-        {
-            return;
-        }// end function
+   public class PartyShowMenuAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:int) : PartyShowMenuAction
-        {
-            var _loc_3:* = new PartyShowMenuAction;
-            _loc_3.playerId = param1;
-            _loc_3.partyId = param2;
-            return _loc_3;
-        }// end function
+      public function PartyShowMenuAction() {
+         super();
+      }
 
-    }
+      public static function create(pPlayerId:uint, pPartyId:int) : PartyShowMenuAction {
+         var a:PartyShowMenuAction = new PartyShowMenuAction();
+         a.playerId=pPlayerId;
+         a.partyId=pPartyId;
+         return a;
+      }
+
+      public var playerId:uint;
+
+      public var partyId:int;
+   }
+
 }

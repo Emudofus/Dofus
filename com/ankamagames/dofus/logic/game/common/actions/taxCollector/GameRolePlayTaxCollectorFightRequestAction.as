@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.taxCollector
+package com.ankamagames.dofus.logic.game.common.actions.taxCollector
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GameRolePlayTaxCollectorFightRequestAction extends Object implements Action
-    {
-        public var taxCollectorId:uint;
 
-        public function GameRolePlayTaxCollectorFightRequestAction()
-        {
-            return;
-        }// end function
+   public class GameRolePlayTaxCollectorFightRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : GameRolePlayTaxCollectorFightRequestAction
-        {
-            var _loc_2:* = new GameRolePlayTaxCollectorFightRequestAction;
-            _loc_2.taxCollectorId = param1;
-            return _loc_2;
-        }// end function
+      public function GameRolePlayTaxCollectorFightRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pTaxCollectorId:uint) : GameRolePlayTaxCollectorFightRequestAction {
+         var action:GameRolePlayTaxCollectorFightRequestAction = new GameRolePlayTaxCollectorFightRequestAction();
+         action.taxCollectorId=pTaxCollectorId;
+         return action;
+      }
+
+      public var taxCollectorId:uint;
+   }
+
 }

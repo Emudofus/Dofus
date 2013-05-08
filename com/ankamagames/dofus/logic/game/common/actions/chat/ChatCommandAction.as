@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ChatCommandAction extends Object implements Action
-    {
-        public var command:String;
 
-        public function ChatCommandAction()
-        {
-            return;
-        }// end function
+   public class ChatCommandAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : ChatCommandAction
-        {
-            var _loc_2:* = new ChatCommandAction;
-            _loc_2.command = param1;
-            return _loc_2;
-        }// end function
+      public function ChatCommandAction() {
+         super();
+      }
 
-    }
+      public static function create(command:String) : ChatCommandAction {
+         var a:ChatCommandAction = new ChatCommandAction();
+         a.command=command;
+         return a;
+      }
+
+      public var command:String;
+   }
+
 }

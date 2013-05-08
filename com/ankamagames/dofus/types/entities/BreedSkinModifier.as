@@ -1,37 +1,39 @@
-﻿package com.ankamagames.dofus.types.entities
+package com.ankamagames.dofus.types.entities
 {
-    import com.ankamagames.tiphon.types.*;
-    import com.ankamagames.tiphon.types.look.*;
+   import com.ankamagames.tiphon.types.ISkinModifier;
+   import com.ankamagames.tiphon.types.Skin;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
 
-    public class BreedSkinModifier extends Object implements ISkinModifier
-    {
 
-        public function BreedSkinModifier()
-        {
-            return;
-        }// end function
+   public class BreedSkinModifier extends Object implements ISkinModifier
+   {
+         
 
-        public function getModifiedSkin(param1:Skin, param2:String, param3:TiphonEntityLook) : String
-        {
-            var _loc_5:* = null;
-            if (!param3 || !param3.skins || !param2 || !param1)
+      public function BreedSkinModifier() {
+         super();
+      }
+
+
+
+      public function getModifiedSkin(skin:Skin, requestedPart:String, look:TiphonEntityLook) : String {
+         var newPart:String = null;
+         if((!look)||(!look.skins)||(!requestedPart)||(!skin))
+         {
+            return requestedPart;
+         }
+         var partInfo:Array = requestedPart.split("_");
+         var i:int = look.skins.length-1;
+         while(i>=0)
+         {
+            newPart=partInfo[0]+"_"+look.skins[i]+"_"+partInfo[1];
+            if(skin.getPart(newPart)!=null)
             {
-                return param2;
+               return newPart;
             }
-            var _loc_4:* = param2.split("_");
-            var _loc_6:* = param3.skins.length - 1;
-            while (_loc_6 >= 0)
-            {
-                
-                _loc_5 = _loc_4[0] + "_" + param3.skins[_loc_6] + "_" + _loc_4[1];
-                if (param1.getPart(_loc_5) != null)
-                {
-                    return _loc_5;
-                }
-                _loc_6 = _loc_6 - 1;
-            }
-            return param2;
-        }// end function
+            i--;
+         }
+         return requestedPart;
+      }
+   }
 
-    }
 }

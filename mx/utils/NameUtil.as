@@ -1,92 +1,98 @@
-﻿package mx.utils
+package mx.utils
 {
-    import flash.display.*;
-    import flash.utils.*;
-    import mx.core.*;
+   import mx.core.mx_internal;
+   import flash.utils.getQualifiedClassName;
+   import flash.display.DisplayObject;
+   import mx.core.IRepeaterClient;
 
-    public class NameUtil extends Object
-    {
-        static const VERSION:String = "4.6.0.23201";
-        private static var counter:int = 0;
+   use namespace mx_internal;
 
-        public function NameUtil()
-        {
-            return;
-        }// end function
+   public class NameUtil extends Object
+   {
+         
 
-        public static function createUniqueName(param1:Object) : String
-        {
-            if (!param1)
-            {
-                return null;
-            }
-            var _loc_2:* = getQualifiedClassName(param1);
-            var _loc_3:* = _loc_2.indexOf("::");
-            if (_loc_3 != -1)
-            {
-                _loc_2 = _loc_2.substr(_loc_3 + 2);
-            }
-            var _loc_4:* = _loc_2.charCodeAt((_loc_2.length - 1));
-            if (_loc_2.charCodeAt((_loc_2.length - 1)) >= 48 && _loc_4 <= 57)
-            {
-                _loc_2 = _loc_2 + "_";
-            }
-            return _loc_2 + counter++;
-        }// end function
+      public function NameUtil() {
+         super();
+      }
 
-        public static function displayObjectToString(param1:DisplayObject) : String
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            try
-            {
-                _loc_3 = param1;
-                while (_loc_3 != null)
-                {
-                    
-                    if (_loc_3.parent && _loc_3.stage && _loc_3.parent == _loc_3.stage)
-                    {
-                        break;
-                    }
-                    _loc_4 = "id" in _loc_3 && _loc_3["id"] ? (_loc_3["id"]) : (_loc_3.name);
-                    if (_loc_3 is IRepeaterClient)
-                    {
-                        _loc_5 = IRepeaterClient(_loc_3).instanceIndices;
-                        if (_loc_5)
-                        {
-                            _loc_4 = _loc_4 + ("[" + _loc_5.join("][") + "]");
-                        }
-                    }
-                    _loc_2 = _loc_2 == null ? (_loc_4) : (_loc_4 + "." + _loc_2);
-                    _loc_3 = _loc_3.parent;
-                }
-            }
-            catch (e:SecurityError)
-            {
-            }
-            return _loc_2;
-        }// end function
+      mx_internal  static const VERSION:String = "4.6.0.23201";
 
-        public static function getUnqualifiedClassName(param1:Object) : String
-        {
-            var _loc_2:* = null;
-            if (param1 is String)
-            {
-                _loc_2 = param1 as String;
-            }
-            else
-            {
-                _loc_2 = getQualifiedClassName(param1);
-            }
-            var _loc_3:* = _loc_2.indexOf("::");
-            if (_loc_3 != -1)
-            {
-                _loc_2 = _loc_2.substr(_loc_3 + 2);
-            }
-            return _loc_2;
-        }// end function
+      private static var counter:int = 0;
 
-    }
+      public static function createUniqueName(object:Object) : String {
+         if(!object)
+         {
+            return null;
+         }
+         var name:String = getQualifiedClassName(object);
+         var index:int = name.indexOf("::");
+         if(index!=-1)
+         {
+            name=name.substr(index+2);
+         }
+         var charCode:int = name.charCodeAt(name.length-1);
+         if((charCode>=48)&&(charCode<=57))
+         {
+            name=name+"_";
+         }
+         return name+counter++;
+      }
+
+      public static function displayObjectToString(displayObject:DisplayObject) : String {
+         var result:String = null;
+         var o:DisplayObject = null;
+         var s:String = null;
+         var indices:Array = null;
+         try
+         {
+            o=displayObject;
+            while(o!=null)
+            {
+               if((o.parent)&&(o.stage)&&(o.parent==o.stage))
+               {
+               }
+               else
+               {
+                  s=("id" in o)&&(o["id"])?o["id"]:o.name;
+                  if(o is IRepeaterClient)
+                  {
+                     indices=IRepeaterClient(o).instanceIndices;
+                     if(indices)
+                     {
+                        s=s+("["+indices.join("][")+"]");
+                     }
+                  }
+                  result=result==null?s:s+"."+result;
+                  o=o.parent;
+                  continue;
+               }
+            }
+         }
+         catch(e:SecurityError)
+         {
+         }
+         return result;
+      }
+
+      public static function getUnqualifiedClassName(object:Object) : String {
+         var name:String = null;
+         if(object is String)
+         {
+            name=object as String;
+         }
+         else
+         {
+            name=getQualifiedClassName(object);
+         }
+         var index:int = name.indexOf("::");
+         if(index!=-1)
+         {
+            name=name.substr(index+2);
+         }
+         return name;
+      }
+
+
+   }
+
 }

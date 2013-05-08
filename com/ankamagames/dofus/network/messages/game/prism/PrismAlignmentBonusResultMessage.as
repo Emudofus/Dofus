@@ -1,83 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.prism
+package com.ankamagames.dofus.network.messages.game.prism
 {
-    import com.ankamagames.dofus.network.types.game.prism.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.prism.AlignmentBonusInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PrismAlignmentBonusResultMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var alignmentBonus:AlignmentBonusInformations;
-        public static const protocolId:uint = 5842;
 
-        public function PrismAlignmentBonusResultMessage()
-        {
-            this.alignmentBonus = new AlignmentBonusInformations();
-            return;
-        }// end function
+   public class PrismAlignmentBonusResultMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PrismAlignmentBonusResultMessage() {
+         this.alignmentBonus=new AlignmentBonusInformations();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5842;
-        }// end function
+      public static const protocolId:uint = 5842;
 
-        public function initPrismAlignmentBonusResultMessage(param1:AlignmentBonusInformations = null) : PrismAlignmentBonusResultMessage
-        {
-            this.alignmentBonus = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.alignmentBonus = new AlignmentBonusInformations();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var alignmentBonus:AlignmentBonusInformations;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5842;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PrismAlignmentBonusResultMessage(param1);
-            return;
-        }// end function
+      public function initPrismAlignmentBonusResultMessage(alignmentBonus:AlignmentBonusInformations=null) : PrismAlignmentBonusResultMessage {
+         this.alignmentBonus=alignmentBonus;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_PrismAlignmentBonusResultMessage(param1:IDataOutput) : void
-        {
-            this.alignmentBonus.serializeAs_AlignmentBonusInformations(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.alignmentBonus=new AlignmentBonusInformations();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PrismAlignmentBonusResultMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_PrismAlignmentBonusResultMessage(param1:IDataInput) : void
-        {
-            this.alignmentBonus = new AlignmentBonusInformations();
-            this.alignmentBonus.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismAlignmentBonusResultMessage(output);
+      }
+
+      public function serializeAs_PrismAlignmentBonusResultMessage(output:IDataOutput) : void {
+         this.alignmentBonus.serializeAs_AlignmentBonusInformations(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismAlignmentBonusResultMessage(input);
+      }
+
+      public function deserializeAs_PrismAlignmentBonusResultMessage(input:IDataInput) : void {
+         this.alignmentBonus=new AlignmentBonusInformations();
+         this.alignmentBonus.deserialize(input);
+      }
+   }
+
 }

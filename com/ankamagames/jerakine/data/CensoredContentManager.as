@@ -1,57 +1,62 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class CensoredContentManager extends Object
-    {
-        private var _data:Dictionary;
-        private var _emtptyData:Dictionary;
-        private static var _self:CensoredContentManager;
 
-        public function CensoredContentManager()
-        {
-            this._data = new Dictionary();
-            this._emtptyData = new Dictionary();
-            if (_self)
-            {
-                throw new SingletonError();
-            }
+   public class CensoredContentManager extends Object
+   {
+         
+
+      public function CensoredContentManager() {
+         this._data=new Dictionary();
+         this._emtptyData=new Dictionary();
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function init(param1:Array, param2:String) : void
-        {
-            var _loc_3:* = null;
-            for each (_loc_3 in param1)
+      private static var _self:CensoredContentManager;
+
+      public static function getInstance() : CensoredContentManager {
+         if(!_self)
+         {
+            _self=new CensoredContentManager();
+         }
+         return _self;
+      }
+
+      private var _data:Dictionary;
+
+      private var _emtptyData:Dictionary;
+
+      public function init(content:Array, lang:String) : void {
+         var censoredData:ICensoredDataItem = null;
+         for each (censoredData in content)
+         {
+            if(censoredData.lang!=lang)
             {
-                
-                if (_loc_3.lang != param2)
-                {
-                    continue;
-                }
-                if (!this._data[_loc_3.type])
-                {
-                    this._data[_loc_3.type] = new Dictionary();
-                }
-                this._data[_loc_3.type][_loc_3.oldValue] = _loc_3.newValue;
             }
-            return;
-        }// end function
-
-        public function getCensoredIndex(param1:int) : Dictionary
-        {
-            return this._data[param1] ? (this._data[param1]) : (this._emtptyData);
-        }// end function
-
-        public static function getInstance() : CensoredContentManager
-        {
-            if (!_self)
+            else
             {
-                _self = new CensoredContentManager;
+               if(!this._data[censoredData.type])
+               {
+                  this._data[censoredData.type]=new Dictionary();
+               }
+               this._data[censoredData.type][censoredData.oldValue]=censoredData.newValue;
             }
-            return _self;
-        }// end function
+         }
+      }
 
-    }
+      public function getCensoredIndex(type:int) : Dictionary {
+         return this._data[type]?this._data[type]:this._emtptyData;
+      }
+   }
+
 }

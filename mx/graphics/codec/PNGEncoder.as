@@ -1,168 +1,159 @@
-﻿package mx.graphics.codec
+package mx.graphics.codec
 {
-    import flash.display.*;
-    import flash.utils.*;
-    import mx.graphics.codec.*;
+   import mx.core.mx_internal;
+   import flash.utils.ByteArray;
+   import flash.display.BitmapData;
 
-    public class PNGEncoder extends Object implements IImageEncoder
-    {
-        private var crcTable:Array;
-        static const VERSION:String = "4.6.0.23201";
-        private static const CONTENT_TYPE:String = "image/png";
+   use namespace mx_internal;
 
-        public function PNGEncoder()
-        {
-            this.initializeCRCTable();
-            return;
-        }// end function
+   public class PNGEncoder extends Object implements IImageEncoder
+   {
+         
 
-        public function get contentType() : String
-        {
-            return CONTENT_TYPE;
-        }// end function
+      public function PNGEncoder() {
+         super();
+         this.initializeCRCTable();
+      }
 
-        public function encode(param1:BitmapData) : ByteArray
-        {
-            return this.internalEncode(param1, param1.width, param1.height, param1.transparent);
-        }// end function
+      mx_internal  static const VERSION:String = "4.6.0.23201";
 
-        public function encodeByteArray(param1:ByteArray, param2:int, param3:int, param4:Boolean = true) : ByteArray
-        {
-            return this.internalEncode(param1, param2, param3, param4);
-        }// end function
+      private static const CONTENT_TYPE:String = "image/png";
 
-        private function initializeCRCTable() : void
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = 0;
-            this.crcTable = [];
-            var _loc_1:* = 0;
-            while (_loc_1 < 256)
+      private var crcTable:Array;
+
+      public function get contentType() : String {
+         return CONTENT_TYPE;
+      }
+
+      public function encode(bitmapData:BitmapData) : ByteArray {
+         return this.internalEncode(bitmapData,bitmapData.width,bitmapData.height,bitmapData.transparent);
+      }
+
+      public function encodeByteArray(byteArray:ByteArray, width:int, height:int, transparent:Boolean=true) : ByteArray {
+         return this.internalEncode(byteArray,width,height,transparent);
+      }
+
+      private function initializeCRCTable() : void {
+         var c:uint = 0;
+         var k:uint = 0;
+         this.crcTable=[];
+         var n:uint = 0;
+         while(n<256)
+         {
+            c=n;
+            k=0;
+            while(k<8)
             {
-                
-                _loc_2 = _loc_1;
-                _loc_3 = 0;
-                while (_loc_3 < 8)
-                {
-                    
-                    if (_loc_2 & 1)
-                    {
-                        _loc_2 = uint(uint(3988292384) ^ uint(_loc_2 >>> 1));
-                    }
-                    else
-                    {
-                        _loc_2 = uint(_loc_2 >>> 1);
-                    }
-                    _loc_3 = _loc_3 + 1;
-                }
-                this.crcTable[_loc_1] = _loc_2;
-                _loc_1 = _loc_1 + 1;
+               if(c&1)
+               {
+                  c=uint(uint(3.988292384E9)^uint(c>>>1));
+               }
+               else
+               {
+                  c=uint(c>>>1);
+               }
+               k++;
             }
-            return;
-        }// end function
+            this.crcTable[n]=c;
+            n++;
+         }
+      }
 
-        private function internalEncode(param1:Object, param2:int, param3:int, param4:Boolean = true) : ByteArray
-        {
-            var _loc_11:* = 0;
-            var _loc_12:* = 0;
-            var _loc_5:* = param1 as BitmapData;
-            var _loc_6:* = param1 as ByteArray;
-            if (param1 as ByteArray)
+      private function internalEncode(source:Object, width:int, height:int, transparent:Boolean=true) : ByteArray {
+         var x:* = 0;
+         var pixel:uint = 0;
+         var sourceBitmapData:BitmapData = source as BitmapData;
+         var sourceByteArray:ByteArray = source as ByteArray;
+         if(sourceByteArray)
+         {
+            sourceByteArray.position=0;
+         }
+         var png:ByteArray = new ByteArray();
+         png.writeUnsignedInt(2.303741511E9);
+         png.writeUnsignedInt(218765834);
+         var IHDR:ByteArray = new ByteArray();
+         IHDR.writeInt(width);
+         IHDR.writeInt(height);
+         IHDR.writeByte(8);
+         IHDR.writeByte(6);
+         IHDR.writeByte(0);
+         IHDR.writeByte(0);
+         IHDR.writeByte(0);
+         this.writeChunk(png,1229472850,IHDR);
+         var IDAT:ByteArray = new ByteArray();
+         var y:int = 0;
+         while(y<height)
+         {
+            IDAT.writeByte(0);
+            if(!transparent)
             {
-                _loc_6.position = 0;
+               x=0;
+               while(x<width)
+               {
+                  if(sourceBitmapData)
+                  {
+                     pixel=sourceBitmapData.getPixel(x,y);
+                  }
+                  else
+                  {
+                     pixel=sourceByteArray.readUnsignedInt();
+                  }
+                  IDAT.writeUnsignedInt(uint((pixel&16777215)<<8|255));
+                  x++;
+               }
             }
-            var _loc_7:* = new ByteArray();
-            new ByteArray().writeUnsignedInt(2303741511);
-            _loc_7.writeUnsignedInt(218765834);
-            var _loc_8:* = new ByteArray();
-            new ByteArray().writeInt(param2);
-            _loc_8.writeInt(param3);
-            _loc_8.writeByte(8);
-            _loc_8.writeByte(6);
-            _loc_8.writeByte(0);
-            _loc_8.writeByte(0);
-            _loc_8.writeByte(0);
-            this.writeChunk(_loc_7, 1229472850, _loc_8);
-            var _loc_9:* = new ByteArray();
-            var _loc_10:* = 0;
-            while (_loc_10 < param3)
+            else
             {
-                
-                _loc_9.writeByte(0);
-                if (!param4)
-                {
-                    _loc_11 = 0;
-                    while (_loc_11 < param2)
-                    {
-                        
-                        if (_loc_5)
-                        {
-                            _loc_12 = _loc_5.getPixel(_loc_11, _loc_10);
-                        }
-                        else
-                        {
-                            _loc_12 = _loc_6.readUnsignedInt();
-                        }
-                        _loc_9.writeUnsignedInt(uint((_loc_12 & 16777215) << 8 | 255));
-                        _loc_11++;
-                    }
-                }
-                else
-                {
-                    _loc_11 = 0;
-                    while (_loc_11 < param2)
-                    {
-                        
-                        if (_loc_5)
-                        {
-                            _loc_12 = _loc_5.getPixel32(_loc_11, _loc_10);
-                        }
-                        else
-                        {
-                            _loc_12 = _loc_6.readUnsignedInt();
-                        }
-                        _loc_9.writeUnsignedInt(uint((_loc_12 & 16777215) << 8 | _loc_12 >>> 24));
-                        _loc_11++;
-                    }
-                }
-                _loc_10++;
+               x=0;
+               while(x<width)
+               {
+                  if(sourceBitmapData)
+                  {
+                     pixel=sourceBitmapData.getPixel32(x,y);
+                  }
+                  else
+                  {
+                     pixel=sourceByteArray.readUnsignedInt();
+                  }
+                  IDAT.writeUnsignedInt(uint((pixel&16777215)<<8|pixel>>>24));
+                  x++;
+               }
             }
-            _loc_9.compress();
-            this.writeChunk(_loc_7, 1229209940, _loc_9);
-            this.writeChunk(_loc_7, 1229278788, null);
-            _loc_7.position = 0;
-            return _loc_7;
-        }// end function
+            y++;
+         }
+         IDAT.compress();
+         this.writeChunk(png,1229209940,IDAT);
+         this.writeChunk(png,1229278788,null);
+         png.position=0;
+         return png;
+      }
 
-        private function writeChunk(param1:ByteArray, param2:uint, param3:ByteArray) : void
-        {
-            var _loc_4:* = 0;
-            if (param3)
-            {
-                _loc_4 = param3.length;
-            }
-            param1.writeUnsignedInt(_loc_4);
-            var _loc_5:* = param1.position;
-            param1.writeUnsignedInt(param2);
-            if (param3)
-            {
-                param1.writeBytes(param3);
-            }
-            var _loc_6:* = param1.position;
-            param1.position = _loc_5;
-            var _loc_7:* = 4294967295;
-            var _loc_8:* = _loc_5;
-            while (_loc_8 < _loc_6)
-            {
-                
-                _loc_7 = uint(this.crcTable[(_loc_7 ^ param1.readUnsignedByte()) & uint(255)] ^ uint(_loc_7 >>> 8));
-                _loc_8 = _loc_8 + 1;
-            }
-            _loc_7 = uint(_loc_7 ^ uint(4294967295));
-            param1.position = _loc_6;
-            param1.writeUnsignedInt(_loc_7);
-            return;
-        }// end function
+      private function writeChunk(png:ByteArray, type:uint, data:ByteArray) : void {
+         var len:uint = 0;
+         if(data)
+         {
+            len=data.length;
+         }
+         png.writeUnsignedInt(len);
+         var typePos:uint = png.position;
+         png.writeUnsignedInt(type);
+         if(data)
+         {
+            png.writeBytes(data);
+         }
+         var crcPos:uint = png.position;
+         png.position=typePos;
+         var crc:uint = 4.294967295E9;
+         var i:uint = typePos;
+         while(i<crcPos)
+         {
+            crc=uint(this.crcTable[(crc^png.readUnsignedByte())&uint(255)]^uint(crc>>>8));
+            i++;
+         }
+         crc=uint(crc^uint(4.294967295E9));
+         png.position=crcPos;
+         png.writeUnsignedInt(crc);
+      }
+   }
 
-    }
 }

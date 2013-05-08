@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenMapAction extends Object implements Action
-    {
-        public var conquest:Boolean;
 
-        public function OpenMapAction()
-        {
-            return;
-        }// end function
+   public class OpenMapAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean = false) : OpenMapAction
-        {
-            var _loc_2:* = new OpenMapAction;
-            _loc_2.conquest = param1;
-            return _loc_2;
-        }// end function
+      public function OpenMapAction() {
+         super();
+      }
 
-    }
+      public static function create(conquest:Boolean=false) : OpenMapAction {
+         var a:OpenMapAction = new OpenMapAction();
+         a.conquest=conquest;
+         return a;
+      }
+
+      public var conquest:Boolean;
+   }
+
 }

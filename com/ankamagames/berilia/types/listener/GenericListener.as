@@ -1,94 +1,91 @@
-﻿package com.ankamagames.berilia.types.listener
+package com.ankamagames.berilia.types.listener
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.memory.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.utils.memory.WeakReference;
 
-    public class GenericListener extends Object
-    {
-        private var _sEvent:String;
-        private var _oListener:Object;
-        private var _fCallback:Function;
-        private var _nSortIndex:int;
-        private var _nListenerType:uint;
-        private var _nListenerContext:WeakReference;
-        public static const LISTENER_TYPE_UI:uint = 0;
-        public static const LISTENER_TYPE_MODULE:uint = 1;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(GenericListener));
 
-        public function GenericListener(param1:String = null, param2 = null, param3:Function = null, param4:int = 0, param5:uint = 1, param6:WeakReference = null)
-        {
-            if (param1 != null)
-            {
-                this._sEvent = param1;
-            }
-            if (param2 != null)
-            {
-                this.listener = param2;
-            }
-            if (param3 != null)
-            {
-                this._fCallback = param3;
-            }
-            this._nSortIndex = param4;
-            this._nListenerType = param5;
-            this._nListenerContext = param6;
-            return;
-        }// end function
+   public class GenericListener extends Object
+   {
+         
 
-        public function get event() : String
-        {
-            return this._sEvent;
-        }// end function
+      public function GenericListener(sEvent:String=null, oListener:*=null, fCallback:Function=null, nSortIndex:int=0, listener_type:uint=1, listenerContext:WeakReference=null) {
+         super();
+         if(sEvent!=null)
+         {
+            this._sEvent=sEvent;
+         }
+         if(oListener!=null)
+         {
+            this.listener=oListener;
+         }
+         if(fCallback!=null)
+         {
+            this._fCallback=fCallback;
+         }
+         this._nSortIndex=nSortIndex;
+         this._nListenerType=listener_type;
+         this._nListenerContext=listenerContext;
+      }
 
-        public function set event(param1:String) : void
-        {
-            this._sEvent = param1;
-            return;
-        }// end function
+      public static const LISTENER_TYPE_UI:uint = 0;
 
-        public function get listener()
-        {
-            return this._oListener;
-        }// end function
+      public static const LISTENER_TYPE_MODULE:uint = 1;
 
-        public function set listener(param1) : void
-        {
-            this._oListener = param1;
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GenericListener));
 
-        public function getCallback() : Function
-        {
-            return this._fCallback;
-        }// end function
+      private var _sEvent:String;
 
-        public function set callback(param1:Function) : void
-        {
-            this._fCallback = param1;
-            return;
-        }// end function
+      private var _oListener;
 
-        public function get sortIndex() : int
-        {
-            return this._nSortIndex;
-        }// end function
+      private var _fCallback:Function;
 
-        public function set sortIndex(param1:int) : void
-        {
-            this._nSortIndex = param1;
-            return;
-        }// end function
+      private var _nSortIndex:int;
 
-        public function get listenerType() : uint
-        {
-            return this._nListenerType;
-        }// end function
+      private var _nListenerType:uint;
 
-        public function get listenerContext() : WeakReference
-        {
-            return this._nListenerContext;
-        }// end function
+      private var _nListenerContext:WeakReference;
 
-    }
+      public function get event() : String {
+         return this._sEvent;
+      }
+
+      public function set event(sEvent:String) : void {
+         this._sEvent=sEvent;
+      }
+
+      public function get listener() : * {
+         return this._oListener;
+      }
+
+      public function set listener(oListener:*) : void {
+         this._oListener=oListener;
+      }
+
+      public function getCallback() : Function {
+         return this._fCallback;
+      }
+
+      public function set callback(fCallback:Function) : void {
+         this._fCallback=fCallback;
+      }
+
+      public function get sortIndex() : int {
+         return this._nSortIndex;
+      }
+
+      public function set sortIndex(n:int) : void {
+         this._nSortIndex=n;
+      }
+
+      public function get listenerType() : uint {
+         return this._nListenerType;
+      }
+
+      public function get listenerContext() : WeakReference {
+         return this._nListenerContext;
+      }
+   }
+
 }

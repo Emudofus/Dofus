@@ -1,120 +1,115 @@
-﻿package com.ankamagames.jerakine.logger.targets
+package com.ankamagames.jerakine.logger.targets
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.logger.targets.*;
+   import com.ankamagames.jerakine.logger.InvalidFilterError;
+   import com.ankamagames.jerakine.logger.LogEvent;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.LogTargetFilter;
 
-    public class AbstractTarget extends Object implements LoggingTarget
-    {
-        private var _loggers:Array;
-        private var _filters:Array;
-        private static const FILTERS_FORBIDDEN_CHARS:String = "[]~$^&/(){}<>+=`!#%?,:;\'\"@";
 
-        public function AbstractTarget()
-        {
-            this._loggers = new Array();
-            this._filters = new Array();
+   public class AbstractTarget extends Object implements LoggingTarget
+   {
+         
+
+      public function AbstractTarget() {
+         this._loggers=new Array();
+         this._filters=new Array();
+         super();
+      }
+
+      private static const FILTERS_FORBIDDEN_CHARS:String = "[]~$^&/(){}<>+=`!#%?,:;\'\"@";
+
+      private var _loggers:Array;
+
+      private var _filters:Array;
+
+      public function set filters(value:Array) : void {
+         if(!this.checkIsFiltersValid(value))
+         {
+            throw new InvalidFilterError("These characters are invalid on a filter : "+FILTERS_FORBIDDEN_CHARS);
+         }
+         else
+         {
+            this._filters=value;
             return;
-        }// end function
+         }
+      }
 
-        public function set filters(param1:Array) : void
-        {
-            if (!this.checkIsFiltersValid(param1))
+      public function get filters() : Array {
+         return this._filters;
+      }
+
+      public function logEvent(event:LogEvent) : void {
+         
+      }
+
+      public function addLogger(logger:Logger) : void {
+         this._loggers.push(logger);
+      }
+
+      public function removeLogger(logger:Logger) : void {
+         var index:int = this._loggers.indexOf(logger);
+         if(index>-1)
+         {
+            this._loggers.splice(index,1);
+         }
+      }
+
+      private function checkIsFiltersValid(filters:Array) : Boolean {
+         var filter:LogTargetFilter = null;
+         for each (filter in filters)
+         {
+            if(!this.checkIsFilterValid(filter.target))
             {
-                throw new InvalidFilterError("These characters are invalid on a filter : " + FILTERS_FORBIDDEN_CHARS);
+               return false;
             }
-            this._filters = param1;
-            return;
-        }// end function
+         }
+         return true;
+      }
 
-        public function get filters() : Array
-        {
-            return this._filters;
-        }// end function
-
-        public function logEvent(event:LogEvent) : void
-        {
-            return;
-        }// end function
-
-        public function addLogger(param1:Logger) : void
-        {
-            this._loggers.push(param1);
-            return;
-        }// end function
-
-        public function removeLogger(param1:Logger) : void
-        {
-            var _loc_2:* = this._loggers.indexOf(param1);
-            if (_loc_2 > -1)
+      private function checkIsFilterValid(filter:String) : Boolean {
+         var i:int = 0;
+         while(i<FILTERS_FORBIDDEN_CHARS.length)
+         {
+            if(filter.indexOf(FILTERS_FORBIDDEN_CHARS.charAt(i))>-1)
             {
-                this._loggers.splice(_loc_2, 1);
+               return false;
             }
-            return;
-        }// end function
+            i++;
+         }
+         return true;
+      }
 
-        private function checkIsFiltersValid(param1:Array) : Boolean
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in param1)
+      public function onLog(e:LogEvent) : void {
+         var filter:LogTargetFilter = null;
+         var reg:RegExp = null;
+         var testResult:* = false;
+         var passing:Boolean = false;
+         if(this._filters.length>0)
+         {
+            for each (filter in this._filters)
             {
-                
-                if (!this.checkIsFilterValid(_loc_2.target))
-                {
-                    return false;
-                }
+               reg=new RegExp(filter.target.replace("*",".*"),"i");
+               testResult=reg.test(e.category);
+               if((e.category==filter.target)&&(!filter.allow))
+               {
+                  passing=false;
+                  break;
+               }
+               if((testResult)&&(filter.allow))
+               {
+                  passing=true;
+               }
             }
-            return true;
-        }// end function
+         }
+         else
+         {
+            passing=true;
+         }
+         if(passing)
+         {
+            this.logEvent(e);
+         }
+      }
+   }
 
-        private function checkIsFilterValid(param1:String) : Boolean
-        {
-            var _loc_2:* = 0;
-            while (_loc_2 < FILTERS_FORBIDDEN_CHARS.length)
-            {
-                
-                if (param1.indexOf(FILTERS_FORBIDDEN_CHARS.charAt(_loc_2)) > -1)
-                {
-                    return false;
-                }
-                _loc_2++;
-            }
-            return true;
-        }// end function
-
-        public function onLog(event:LogEvent) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = false;
-            var _loc_2:* = false;
-            if (this._filters.length > 0)
-            {
-                for each (_loc_3 in this._filters)
-                {
-                    
-                    _loc_4 = new RegExp(_loc_3.target.replace("*", ".*"), "i");
-                    _loc_5 = _loc_4.test(event.category);
-                    if (event.category == _loc_3.target && !_loc_3.allow)
-                    {
-                        _loc_2 = false;
-                        break;
-                    }
-                    if (_loc_5 && _loc_3.allow)
-                    {
-                        _loc_2 = true;
-                    }
-                }
-            }
-            else
-            {
-                _loc_2 = true;
-            }
-            if (_loc_2)
-            {
-                this.logEvent(event);
-            }
-            return;
-        }// end function
-
-    }
 }

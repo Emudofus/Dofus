@@ -1,64 +1,57 @@
-﻿package com.ankamagames.dofus.datacenter.effects.instances
+package com.ankamagames.dofus.datacenter.effects.instances
 {
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
 
-    public class EffectInstanceMinMax extends EffectInstance implements IDataCenter
-    {
-        public var min:uint;
-        public var max:uint;
 
-        public function EffectInstanceMinMax()
-        {
-            return;
-        }// end function
+   public class EffectInstanceMinMax extends EffectInstance implements IDataCenter
+   {
+         
 
-        override public function clone() : EffectInstance
-        {
-            var _loc_1:* = new EffectInstanceMinMax();
-            _loc_1.rawZone = rawZone;
-            _loc_1.effectId = effectId;
-            _loc_1.duration = duration;
-            _loc_1.delay = delay;
-            _loc_1.min = this.min;
-            _loc_1.max = this.max;
-            _loc_1.random = random;
-            _loc_1.group = group;
-            _loc_1.targetId = targetId;
-            return _loc_1;
-        }// end function
+      public function EffectInstanceMinMax() {
+         super();
+      }
 
-        override public function get parameter0() : Object
-        {
-            return this.min;
-        }// end function
 
-        override public function get parameter1() : Object
-        {
-            return this.min != this.max ? (this.max) : (null);
-        }// end function
 
-        override public function setParameter(param1:uint, param2) : void
-        {
-            switch(param1)
-            {
-                case 0:
-                {
-                    this.min = uint(param2);
-                    break;
-                }
-                case 1:
-                {
-                    this.max = uint(param2);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public var min:uint;
 
-    }
+      public var max:uint;
+
+      override public function clone() : EffectInstance {
+         var o:EffectInstanceMinMax = new EffectInstanceMinMax();
+         o.rawZone=rawZone;
+         o.effectId=effectId;
+         o.duration=duration;
+         o.delay=delay;
+         o.min=this.min;
+         o.max=this.max;
+         o.random=random;
+         o.group=group;
+         o.targetId=targetId;
+         o.targetMask=targetMask;
+         return o;
+      }
+
+      override public function get parameter0() : Object {
+         return this.min;
+      }
+
+      override public function get parameter1() : Object {
+         return !(this.min==this.max)?this.max:null;
+      }
+
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         switch(paramIndex)
+         {
+            case 0:
+               this.min=uint(value);
+               break;
+            case 1:
+               this.max=uint(value);
+               break;
+         }
+      }
+   }
+
 }

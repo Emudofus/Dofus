@@ -1,71 +1,73 @@
-﻿package flashx.textLayout.edit
+package flashx.textLayout.edit
 {
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flashx.textLayout.elements.TextRange;
 
-    public interface ISelectionManager extends IInteractionEventHandler
-    {
 
-        public function ISelectionManager();
+   public interface ISelectionManager extends IInteractionEventHandler
+   {
+         
 
-        function get textFlow() : TextFlow;
 
-        function set textFlow(param1:TextFlow) : void;
 
-        function get absoluteStart() : int;
+      function get textFlow() : TextFlow;
 
-        function get absoluteEnd() : int;
+      function set textFlow(param1:TextFlow) : void;
 
-        function selectRange(param1:int, param2:int) : void;
+      function get absoluteStart() : int;
 
-        function selectAll() : void;
+      function get absoluteEnd() : int;
 
-        function get anchorPosition() : int;
+      function selectRange(param1:int, param2:int) : void;
 
-        function get activePosition() : int;
+      function selectAll() : void;
 
-        function hasSelection() : Boolean;
+      function get anchorPosition() : int;
 
-        function isRangeSelection() : Boolean;
+      function get activePosition() : int;
 
-        function getSelectionState() : SelectionState;
+      function hasSelection() : Boolean;
 
-        function setSelectionState(param1:SelectionState) : void;
+      function isRangeSelection() : Boolean;
 
-        function refreshSelection() : void;
+      function getSelectionState() : SelectionState;
 
-        function setFocus() : void;
+      function setSelectionState(param1:SelectionState) : void;
 
-        function get focused() : Boolean;
+      function refreshSelection() : void;
 
-        function get windowActive() : Boolean;
+      function setFocus() : void;
 
-        function get currentSelectionFormat() : SelectionFormat;
+      function get focused() : Boolean;
 
-        function getCommonCharacterFormat(param1:TextRange = null) : TextLayoutFormat;
+      function get windowActive() : Boolean;
 
-        function getCommonParagraphFormat(param1:TextRange = null) : TextLayoutFormat;
+      function get currentSelectionFormat() : SelectionFormat;
 
-        function getCommonContainerFormat(param1:TextRange = null) : TextLayoutFormat;
+      function getCommonCharacterFormat(param1:TextRange=null) : TextLayoutFormat;
 
-        function get editingMode() : String;
+      function getCommonParagraphFormat(param1:TextRange=null) : TextLayoutFormat;
 
-        function get focusedSelectionFormat() : SelectionFormat;
+      function getCommonContainerFormat(param1:TextRange=null) : TextLayoutFormat;
 
-        function set focusedSelectionFormat(param1:SelectionFormat) : void;
+      function get editingMode() : String;
 
-        function get unfocusedSelectionFormat() : SelectionFormat;
+      function get focusedSelectionFormat() : SelectionFormat;
 
-        function set unfocusedSelectionFormat(param1:SelectionFormat) : void;
+      function set focusedSelectionFormat(param1:SelectionFormat) : void;
 
-        function get inactiveSelectionFormat() : SelectionFormat;
+      function get unfocusedSelectionFormat() : SelectionFormat;
 
-        function set inactiveSelectionFormat(param1:SelectionFormat) : void;
+      function set unfocusedSelectionFormat(param1:SelectionFormat) : void;
 
-        function flushPendingOperations() : void;
+      function get inactiveSelectionFormat() : SelectionFormat;
 
-        function notifyInsertOrDelete(param1:int, param2:int) : void;
+      function set inactiveSelectionFormat(param1:SelectionFormat) : void;
 
-    }
+      function flushPendingOperations() : void;
+
+      function notifyInsertOrDelete(param1:int, param2:int) : void;
+   }
+
 }

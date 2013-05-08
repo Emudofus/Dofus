@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.frames
+package com.ankamagames.dofus.logic.game.roleplay.frames
 {
-    import mx.core.*;
+   import mx.core.SpriteAsset;
 
-    public class RoleplayInteractivesFrame_INTERACTIVE_CURSOR_DISABLED extends SpriteAsset
-    {
 
-        public function RoleplayInteractivesFrame_INTERACTIVE_CURSOR_DISABLED()
-        {
-            return;
-        }// end function
+   public class RoleplayInteractivesFrame_INTERACTIVE_CURSOR_DISABLED extends SpriteAsset
+   {
+         
 
-    }
+      public function RoleplayInteractivesFrame_INTERACTIVE_CURSOR_DISABLED() {
+         super();
+      }
+
+
+
+
+   }
+
 }

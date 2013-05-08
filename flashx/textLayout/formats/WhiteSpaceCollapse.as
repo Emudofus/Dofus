@@ -1,15 +1,20 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    final public class WhiteSpaceCollapse extends Object
-    {
-        public static const COLLAPSE:String = "collapse";
-        public static const PRESERVE:String = "preserve";
 
-        public function WhiteSpaceCollapse()
-        {
-            return;
-        }// end function
+   public final class WhiteSpaceCollapse extends Object
+   {
+         
 
-    }
+      public function WhiteSpaceCollapse() {
+         super();
+      }
+
+      public static const COLLAPSE:String = "collapse";
+
+      public static const PRESERVE:String = "preserve";
+
+
+   }
+
 }

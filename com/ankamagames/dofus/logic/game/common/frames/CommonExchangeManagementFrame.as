@@ -1,231 +1,186 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.game.common.actions.exchange.*;
-    import com.ankamagames.dofus.logic.game.common.actions.humanVendor.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.dialog.*;
-    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
-    import com.ankamagames.dofus.network.messages.game.inventory.items.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeAcceptMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeReadyAction;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeReadyMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectModifiedMessage;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectAddedMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeObjectRemovedMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeObjectMoveAction;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectMoveMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeIsReadyMessage;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.dofus.network.messages.game.inventory.items.ExchangeKamaModifiedMessage;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.network.enums.ExchangeTypeEnum;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.ExchangeHookList;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.dofus.logic.game.common.actions.humanVendor.LeaveShopStockAction;
+   import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeAcceptAction;
+   import com.ankamagames.dofus.logic.game.common.actions.exchange.ExchangeRefuseAction;
 
-    public class CommonExchangeManagementFrame extends Object implements Frame
-    {
-        private var _exchangeType:uint;
-        private var _numCurrentSequence:int;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(CommonExchangeManagementFrame));
 
-        public function CommonExchangeManagementFrame(param1:uint)
-        {
-            this._exchangeType = param1;
-            this._numCurrentSequence = 0;
-            return;
-        }// end function
+   public class CommonExchangeManagementFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function CommonExchangeManagementFrame(pExchangeType:uint) {
+         super();
+         this._exchangeType=pExchangeType;
+         this._numCurrentSequence=0;
+      }
 
-        public function get craftFrame() : CraftFrame
-        {
-            return Kernel.getWorker().getFrame(CraftFrame) as CraftFrame;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CommonExchangeManagementFrame));
 
-        public function incrementEchangeSequence() : void
-        {
-            var _loc_1:* = this;
-            var _loc_2:* = this._numCurrentSequence + 1;
-            _loc_1._numCurrentSequence = _loc_2;
-            return;
-        }// end function
+      private var _exchangeType:uint;
 
-        public function resetEchangeSequence() : void
-        {
-            this._numCurrentSequence = 0;
-            return;
-        }// end function
+      private var _numCurrentSequence:int;
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            var _loc_18:* = null;
-            switch(true)
-            {
-                case param1 is LeaveShopStockAction:
-                {
-                    _loc_2 = new LeaveDialogRequestMessage();
-                    _loc_2.initLeaveDialogRequestMessage();
-                    _loc_3 = Kernel.getWorker().getFrame(BidHouseManagementFrame) as BidHouseManagementFrame;
-                    if (_loc_3)
-                    {
-                        _loc_3.switching = false;
-                    }
-                    ConnectionsHandler.getConnection().send(_loc_2);
-                    return true;
-                }
-                case param1 is ExchangeAcceptAction:
-                {
-                    _loc_4 = new ExchangeAcceptMessage();
-                    _loc_4.initExchangeAcceptMessage();
-                    ConnectionsHandler.getConnection().send(_loc_4);
-                    return true;
-                }
-                case param1 is ExchangeRefuseAction:
-                {
-                    _loc_5 = new LeaveDialogRequestMessage();
-                    _loc_5.initLeaveDialogRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_5);
-                    return true;
-                }
-                case param1 is ExchangeReadyAction:
-                {
-                    _loc_6 = param1 as ExchangeReadyAction;
-                    _loc_7 = new ExchangeReadyMessage();
-                    _loc_7.initExchangeReadyMessage(_loc_6.isReady, this._numCurrentSequence);
-                    ConnectionsHandler.getConnection().send(_loc_7);
-                    return true;
-                }
-                case param1 is ExchangeObjectModifiedMessage:
-                {
-                    _loc_8 = param1 as ExchangeObjectModifiedMessage;
-                    var _loc_19:* = this;
-                    var _loc_20:* = this._numCurrentSequence + 1;
-                    _loc_19._numCurrentSequence = _loc_20;
-                    _loc_9 = ItemWrapper.create(_loc_8.object.position, _loc_8.object.objectUID, _loc_8.object.objectGID, _loc_8.object.quantity, _loc_8.object.effects, false);
-                    switch(this._exchangeType)
-                    {
-                        case ExchangeTypeEnum.CRAFT:
-                        {
-                            this.craftFrame.modifyCraftComponent(_loc_8.remote, _loc_9);
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectModified, _loc_9);
-                    return true;
-                }
-                case param1 is ExchangeObjectAddedMessage:
-                {
-                    _loc_10 = param1 as ExchangeObjectAddedMessage;
-                    var _loc_19:* = this;
-                    var _loc_20:* = this._numCurrentSequence + 1;
-                    _loc_19._numCurrentSequence = _loc_20;
-                    _loc_11 = ItemWrapper.create(_loc_10.object.position, _loc_10.object.objectUID, _loc_10.object.objectGID, _loc_10.object.quantity, _loc_10.object.effects, false);
-                    switch(this._exchangeType)
-                    {
-                        case ExchangeTypeEnum.CRAFT:
-                        {
-                            this.craftFrame.addCraftComponent(_loc_10.remote, _loc_11);
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectAdded, _loc_11);
-                    return true;
-                }
-                case param1 is ExchangeObjectRemovedMessage:
-                {
-                    _loc_12 = param1 as ExchangeObjectRemovedMessage;
-                    var _loc_19:* = this;
-                    var _loc_20:* = this._numCurrentSequence + 1;
-                    _loc_19._numCurrentSequence = _loc_20;
-                    switch(this._exchangeType)
-                    {
-                        case ExchangeTypeEnum.CRAFT:
-                        {
-                            this.craftFrame.removeCraftComponent(_loc_12.remote, _loc_12.objectUID);
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectRemoved, _loc_12.objectUID);
-                    return true;
-                }
-                case param1 is ExchangeObjectMoveAction:
-                {
-                    _loc_13 = param1 as ExchangeObjectMoveAction;
-                    _loc_14 = new ExchangeObjectMoveMessage();
-                    _loc_14.initExchangeObjectMoveMessage(_loc_13.objectUID, _loc_13.quantity);
-                    ConnectionsHandler.getConnection().send(_loc_14);
-                    return true;
-                }
-                case param1 is ExchangeIsReadyMessage:
-                {
-                    _loc_15 = param1 as ExchangeIsReadyMessage;
-                    _loc_16 = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-                    _loc_17 = (_loc_16.getEntityInfos(_loc_15.id) as GameRolePlayNamedActorInformations).name;
-                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeIsReady, _loc_17, _loc_15.ready);
-                    return true;
-                }
-                case param1 is ExchangeKamaModifiedMessage:
-                {
-                    _loc_18 = param1 as ExchangeKamaModifiedMessage;
-                    var _loc_19:* = this;
-                    var _loc_20:* = this._numCurrentSequence + 1;
-                    _loc_19._numCurrentSequence = _loc_20;
-                    if (!_loc_18.remote)
-                    {
-                        InventoryManager.getInstance().inventory.hiddedKamas = _loc_18.quantity;
-                    }
-                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeKamaModified, _loc_18.quantity, _loc_18.remote);
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function get craftFrame() : CraftFrame {
+         return Kernel.getWorker().getFrame(CraftFrame) as CraftFrame;
+      }
 
-        public function pulled() : Boolean
-        {
-            if (Kernel.getWorker().contains(CraftFrame))
-            {
-                Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(CraftFrame));
-            }
-            return true;
-        }// end function
+      public function incrementEchangeSequence() : void {
+         this._numCurrentSequence++;
+      }
 
-    }
+      public function resetEchangeSequence() : void {
+         this._numCurrentSequence=0;
+      }
+
+      public function pushed() : Boolean {
+         return true;
+      }
+
+      public function process(msg:Message) : Boolean {
+         var ldrmsg:LeaveDialogRequestMessage = null;
+         var bidhouseManagementFrame:BidHouseManagementFrame = null;
+         var exchangeAcceptMessage:ExchangeAcceptMessage = null;
+         var ldrmsg2:LeaveDialogRequestMessage = null;
+         var era:ExchangeReadyAction = null;
+         var ermsg:ExchangeReadyMessage = null;
+         var eommsg:ExchangeObjectModifiedMessage = null;
+         var iwModified:ItemWrapper = null;
+         var eoamsg:ExchangeObjectAddedMessage = null;
+         var iwAdded:ItemWrapper = null;
+         var eormsg:ExchangeObjectRemovedMessage = null;
+         var eoma:ExchangeObjectMoveAction = null;
+         var eomvmsg:ExchangeObjectMoveMessage = null;
+         var eirmsg:ExchangeIsReadyMessage = null;
+         var roleplayEntitiesFrame:RoleplayEntitiesFrame = null;
+         var playerName:String = null;
+         var ekmmsg:ExchangeKamaModifiedMessage = null;
+         switch(true)
+         {
+            case msg is LeaveShopStockAction:
+               ldrmsg=new LeaveDialogRequestMessage();
+               ldrmsg.initLeaveDialogRequestMessage();
+               bidhouseManagementFrame=Kernel.getWorker().getFrame(BidHouseManagementFrame) as BidHouseManagementFrame;
+               if(bidhouseManagementFrame)
+               {
+                  bidhouseManagementFrame.switching=false;
+               }
+               ConnectionsHandler.getConnection().send(ldrmsg);
+               return true;
+            case msg is ExchangeAcceptAction:
+               exchangeAcceptMessage=new ExchangeAcceptMessage();
+               exchangeAcceptMessage.initExchangeAcceptMessage();
+               ConnectionsHandler.getConnection().send(exchangeAcceptMessage);
+               return true;
+            case msg is ExchangeRefuseAction:
+               ldrmsg2=new LeaveDialogRequestMessage();
+               ldrmsg2.initLeaveDialogRequestMessage();
+               ConnectionsHandler.getConnection().send(ldrmsg2);
+               return true;
+            case msg is ExchangeReadyAction:
+               era=msg as ExchangeReadyAction;
+               ermsg=new ExchangeReadyMessage();
+               ermsg.initExchangeReadyMessage(era.isReady,this._numCurrentSequence);
+               ConnectionsHandler.getConnection().send(ermsg);
+               return true;
+            case msg is ExchangeObjectModifiedMessage:
+               eommsg=msg as ExchangeObjectModifiedMessage;
+               this._numCurrentSequence++;
+               iwModified=ItemWrapper.create(eommsg.object.position,eommsg.object.objectUID,eommsg.object.objectGID,eommsg.object.quantity,eommsg.object.effects,false);
+               switch(this._exchangeType)
+               {
+                  case ExchangeTypeEnum.CRAFT:
+                     this.craftFrame.modifyCraftComponent(eommsg.remote,iwModified);
+                     break;
+               }
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectModified,iwModified);
+               return true;
+            case msg is ExchangeObjectAddedMessage:
+               eoamsg=msg as ExchangeObjectAddedMessage;
+               this._numCurrentSequence++;
+               iwAdded=ItemWrapper.create(eoamsg.object.position,eoamsg.object.objectUID,eoamsg.object.objectGID,eoamsg.object.quantity,eoamsg.object.effects,false);
+               switch(this._exchangeType)
+               {
+                  case ExchangeTypeEnum.CRAFT:
+                     this.craftFrame.addCraftComponent(eoamsg.remote,iwAdded);
+                     break;
+               }
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectAdded,iwAdded);
+               return true;
+            case msg is ExchangeObjectRemovedMessage:
+               eormsg=msg as ExchangeObjectRemovedMessage;
+               this._numCurrentSequence++;
+               switch(this._exchangeType)
+               {
+                  case ExchangeTypeEnum.CRAFT:
+                     this.craftFrame.removeCraftComponent(eormsg.remote,eormsg.objectUID);
+                     break;
+               }
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeObjectRemoved,eormsg.objectUID);
+               return true;
+            case msg is ExchangeObjectMoveAction:
+               eoma=msg as ExchangeObjectMoveAction;
+               eomvmsg=new ExchangeObjectMoveMessage();
+               eomvmsg.initExchangeObjectMoveMessage(eoma.objectUID,eoma.quantity);
+               ConnectionsHandler.getConnection().send(eomvmsg);
+               return true;
+            case msg is ExchangeIsReadyMessage:
+               eirmsg=msg as ExchangeIsReadyMessage;
+               roleplayEntitiesFrame=Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+               playerName=(roleplayEntitiesFrame.getEntityInfos(eirmsg.id) as GameRolePlayNamedActorInformations).name;
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeIsReady,playerName,eirmsg.ready);
+               return true;
+            case msg is ExchangeKamaModifiedMessage:
+               ekmmsg=msg as ExchangeKamaModifiedMessage;
+               this._numCurrentSequence++;
+               if(!ekmmsg.remote)
+               {
+                  InventoryManager.getInstance().inventory.hiddedKamas=ekmmsg.quantity;
+               }
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeKamaModified,ekmmsg.quantity,ekmmsg.remote);
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function pulled() : Boolean {
+         if(Kernel.getWorker().contains(CraftFrame))
+         {
+            Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(CraftFrame));
+         }
+         return true;
+      }
+   }
+
 }

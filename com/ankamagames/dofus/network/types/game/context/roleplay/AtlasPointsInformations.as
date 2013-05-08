@@ -1,87 +1,82 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay
+package com.ankamagames.dofus.network.types.game.context.roleplay
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.context.MapCoordinatesExtended;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class AtlasPointsInformations extends Object implements INetworkType
-    {
-        public var type:uint = 0;
-        public var coords:Vector.<MapCoordinatesExtended>;
-        public static const protocolId:uint = 175;
 
-        public function AtlasPointsInformations()
-        {
-            this.coords = new Vector.<MapCoordinatesExtended>;
-            return;
-        }// end function
+   public class AtlasPointsInformations extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 175;
-        }// end function
+      public function AtlasPointsInformations() {
+         this.coords=new Vector.<MapCoordinatesExtended>();
+         super();
+      }
 
-        public function initAtlasPointsInformations(param1:uint = 0, param2:Vector.<MapCoordinatesExtended> = null) : AtlasPointsInformations
-        {
-            this.type = param1;
-            this.coords = param2;
-            return this;
-        }// end function
+      public static const protocolId:uint = 175;
 
-        public function reset() : void
-        {
-            this.type = 0;
-            this.coords = new Vector.<MapCoordinatesExtended>;
-            return;
-        }// end function
+      public var type:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AtlasPointsInformations(param1);
-            return;
-        }// end function
+      public var coords:Vector.<MapCoordinatesExtended>;
 
-        public function serializeAs_AtlasPointsInformations(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.type);
-            param1.writeShort(this.coords.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.coords.length)
+      public function getTypeId() : uint {
+         return 175;
+      }
+
+      public function initAtlasPointsInformations(type:uint=0, coords:Vector.<MapCoordinatesExtended>=null) : AtlasPointsInformations {
+         this.type=type;
+         this.coords=coords;
+         return this;
+      }
+
+      public function reset() : void {
+         this.type=0;
+         this.coords=new Vector.<MapCoordinatesExtended>();
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AtlasPointsInformations(output);
+      }
+
+      public function serializeAs_AtlasPointsInformations(output:IDataOutput) : void {
+         output.writeByte(this.type);
+         output.writeShort(this.coords.length);
+         var _i2:uint = 0;
+         while(_i2<this.coords.length)
+         {
+            (this.coords[_i2] as MapCoordinatesExtended).serializeAs_MapCoordinatesExtended(output);
+            _i2++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AtlasPointsInformations(input);
+      }
+
+      public function deserializeAs_AtlasPointsInformations(input:IDataInput) : void {
+         var _item2:MapCoordinatesExtended = null;
+         this.type=input.readByte();
+         if(this.type<0)
+         {
+            throw new Error("Forbidden value ("+this.type+") on element of AtlasPointsInformations.type.");
+         }
+         else
+         {
+            _coordsLen=input.readUnsignedShort();
+            _i2=0;
+            while(_i2<_coordsLen)
             {
-                
-                (this.coords[_loc_2] as MapCoordinatesExtended).serializeAs_MapCoordinatesExtended(param1);
-                _loc_2 = _loc_2 + 1;
+               _item2=new MapCoordinatesExtended();
+               _item2.deserialize(input);
+               this.coords.push(_item2);
+               _i2++;
             }
             return;
-        }// end function
+         }
+      }
+   }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AtlasPointsInformations(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_AtlasPointsInformations(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.type = param1.readByte();
-            if (this.type < 0)
-            {
-                throw new Error("Forbidden value (" + this.type + ") on element of AtlasPointsInformations.type.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new MapCoordinatesExtended();
-                _loc_4.deserialize(param1);
-                this.coords.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
-
-    }
 }

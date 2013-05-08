@@ -1,14 +1,18 @@
-﻿package com.ankamagames.jerakine.utils.errors
+package com.ankamagames.jerakine.utils.errors
 {
 
-    public class FileTypeError extends Error
-    {
 
-        public function FileTypeError(param1:String = "", param2:int = 0)
-        {
-            super(param1, param2);
-            return;
-        }// end function
+   public class FileTypeError extends Error
+   {
+         
 
-    }
+      public function FileTypeError(message:String="", id:int=0) {
+         super(message,id);
+      }
+
+
+
+
+   }
+
 }

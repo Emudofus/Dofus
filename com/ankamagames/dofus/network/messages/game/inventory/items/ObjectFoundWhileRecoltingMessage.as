@@ -1,114 +1,126 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ObjectFoundWhileRecoltingMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var genericId:uint = 0;
-        public var quantity:uint = 0;
-        public var ressourceGenericId:uint = 0;
-        public static const protocolId:uint = 6017;
 
-        public function ObjectFoundWhileRecoltingMessage()
-        {
-            return;
-        }// end function
+   public class ObjectFoundWhileRecoltingMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ObjectFoundWhileRecoltingMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6017;
-        }// end function
+      public static const protocolId:uint = 6017;
 
-        public function initObjectFoundWhileRecoltingMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0) : ObjectFoundWhileRecoltingMessage
-        {
-            this.genericId = param1;
-            this.quantity = param2;
-            this.ressourceGenericId = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.genericId = 0;
-            this.quantity = 0;
-            this.ressourceGenericId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var genericId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var quantity:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ObjectFoundWhileRecoltingMessage(param1);
-            return;
-        }// end function
+      public var ressourceGenericId:uint = 0;
 
-        public function serializeAs_ObjectFoundWhileRecoltingMessage(param1:IDataOutput) : void
-        {
-            if (this.genericId < 0)
+      override public function getMessageId() : uint {
+         return 6017;
+      }
+
+      public function initObjectFoundWhileRecoltingMessage(genericId:uint=0, quantity:uint=0, ressourceGenericId:uint=0) : ObjectFoundWhileRecoltingMessage {
+         this.genericId=genericId;
+         this.quantity=quantity;
+         this.ressourceGenericId=ressourceGenericId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.genericId=0;
+         this.quantity=0;
+         this.ressourceGenericId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectFoundWhileRecoltingMessage(output);
+      }
+
+      public function serializeAs_ObjectFoundWhileRecoltingMessage(output:IDataOutput) : void {
+         if(this.genericId<0)
+         {
+            throw new Error("Forbidden value ("+this.genericId+") on element genericId.");
+         }
+         else
+         {
+            output.writeInt(this.genericId);
+            if(this.quantity<0)
             {
-                throw new Error("Forbidden value (" + this.genericId + ") on element genericId.");
+               throw new Error("Forbidden value ("+this.quantity+") on element quantity.");
             }
-            param1.writeInt(this.genericId);
-            if (this.quantity < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+               output.writeInt(this.quantity);
+               if(this.ressourceGenericId<0)
+               {
+                  throw new Error("Forbidden value ("+this.ressourceGenericId+") on element ressourceGenericId.");
+               }
+               else
+               {
+                  output.writeInt(this.ressourceGenericId);
+                  return;
+               }
             }
-            param1.writeInt(this.quantity);
-            if (this.ressourceGenericId < 0)
-            {
-                throw new Error("Forbidden value (" + this.ressourceGenericId + ") on element ressourceGenericId.");
-            }
-            param1.writeInt(this.ressourceGenericId);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ObjectFoundWhileRecoltingMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectFoundWhileRecoltingMessage(input);
+      }
 
-        public function deserializeAs_ObjectFoundWhileRecoltingMessage(param1:IDataInput) : void
-        {
-            this.genericId = param1.readInt();
-            if (this.genericId < 0)
+      public function deserializeAs_ObjectFoundWhileRecoltingMessage(input:IDataInput) : void {
+         this.genericId=input.readInt();
+         if(this.genericId<0)
+         {
+            throw new Error("Forbidden value ("+this.genericId+") on element of ObjectFoundWhileRecoltingMessage.genericId.");
+         }
+         else
+         {
+            this.quantity=input.readInt();
+            if(this.quantity<0)
             {
-                throw new Error("Forbidden value (" + this.genericId + ") on element of ObjectFoundWhileRecoltingMessage.genericId.");
+               throw new Error("Forbidden value ("+this.quantity+") on element of ObjectFoundWhileRecoltingMessage.quantity.");
             }
-            this.quantity = param1.readInt();
-            if (this.quantity < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.quantity + ") on element of ObjectFoundWhileRecoltingMessage.quantity.");
+               this.ressourceGenericId=input.readInt();
+               if(this.ressourceGenericId<0)
+               {
+                  throw new Error("Forbidden value ("+this.ressourceGenericId+") on element of ObjectFoundWhileRecoltingMessage.ressourceGenericId.");
+               }
+               else
+               {
+                  return;
+               }
             }
-            this.ressourceGenericId = param1.readInt();
-            if (this.ressourceGenericId < 0)
-            {
-                throw new Error("Forbidden value (" + this.ressourceGenericId + ") on element of ObjectFoundWhileRecoltingMessage.ressourceGenericId.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

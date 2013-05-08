@@ -1,32 +1,32 @@
-﻿package com.ankamagames.dofus.logic.game.fight.steps
+package com.ankamagames.dofus.logic.game.fight.steps
 {
-    import com.ankamagames.dofus.internalDatacenter.spells.*;
-    import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.dofus.logic.game.fight.steps.*;
-    import com.ankamagames.dofus.network.types.game.character.characteristic.*;
-    import com.ankamagames.jerakine.sequencer.*;
+   import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
+   import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
 
-    public class FightFighterStatsUpdateStep extends AbstractSequencable implements IFightStep
-    {
-        private var _stats:CharacterCharacteristicsInformations;
 
-        public function FightFighterStatsUpdateStep(param1:CharacterCharacteristicsInformations)
-        {
-            this._stats = param1;
-            return;
-        }// end function
+   public class FightFighterStatsUpdateStep extends AbstractSequencable implements IFightStep
+   {
+         
 
-        public function get stepType() : String
-        {
-            return "fighterStatsUpdate";
-        }// end function
+      public function FightFighterStatsUpdateStep(stats:CharacterCharacteristicsInformations) {
+         super();
+         this._stats=stats;
+      }
 
-        override public function start() : void
-        {
-            CurrentPlayedFighterManager.getInstance().setCharacteristicsInformations(CurrentPlayedFighterManager.getInstance().currentFighterId, this._stats);
-            SpellWrapper.refreshAllPlayerSpellHolder(CurrentPlayedFighterManager.getInstance().currentFighterId);
-            return;
-        }// end function
 
-    }
+
+      private var _stats:CharacterCharacteristicsInformations;
+
+      public function get stepType() : String {
+         return "fighterStatsUpdate";
+      }
+
+      override public function start() : void {
+         CurrentPlayedFighterManager.getInstance().setCharacteristicsInformations(CurrentPlayedFighterManager.getInstance().currentFighterId,this._stats);
+         SpellWrapper.refreshAllPlayerSpellHolder(CurrentPlayedFighterManager.getInstance().currentFighterId);
+      }
+   }
+
 }

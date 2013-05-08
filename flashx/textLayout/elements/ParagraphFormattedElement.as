@@ -1,18 +1,20 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
 
-    public class ParagraphFormattedElement extends FlowGroupElement
-    {
 
-        public function ParagraphFormattedElement()
-        {
-            return;
-        }// end function
+   public class ParagraphFormattedElement extends FlowGroupElement
+   {
+         
 
-        override public function shallowCopy(param1:int = 0, param2:int = -1) : FlowElement
-        {
-            return super.shallowCopy(param1, param2) as ParagraphFormattedElement;
-        }// end function
+      public function ParagraphFormattedElement() {
+         super();
+      }
 
-    }
+
+
+      override public function shallowCopy(startPos:int=0, endPos:int=-1) : FlowElement {
+         return super.shallowCopy(startPos,endPos) as ParagraphFormattedElement;
+      }
+   }
+
 }

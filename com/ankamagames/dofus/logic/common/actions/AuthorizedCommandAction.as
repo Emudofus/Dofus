@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.common.actions
+package com.ankamagames.dofus.logic.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class AuthorizedCommandAction extends Object implements Action
-    {
-        public var command:String;
 
-        public function AuthorizedCommandAction()
-        {
-            return;
-        }// end function
+   public class AuthorizedCommandAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : AuthorizedCommandAction
-        {
-            var _loc_2:* = new AuthorizedCommandAction;
-            _loc_2.command = param1;
-            return _loc_2;
-        }// end function
+      public function AuthorizedCommandAction() {
+         super();
+      }
 
-    }
+      public static function create(command:String) : AuthorizedCommandAction {
+         var a:AuthorizedCommandAction = new AuthorizedCommandAction();
+         a.command=command;
+         return a;
+      }
+
+      public var command:String;
+   }
+
 }

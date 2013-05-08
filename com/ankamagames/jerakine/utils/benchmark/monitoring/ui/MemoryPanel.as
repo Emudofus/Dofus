@@ -1,231 +1,220 @@
-﻿package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
+package com.ankamagames.jerakine.utils.benchmark.monitoring.ui
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.benchmark.monitoring.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.system.*;
-    import flash.text.*;
-    import flash.utils.*;
+   import flash.display.Sprite;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import flash.display.Bitmap;
+   import __AS3__.vec.Vector;
+   import flash.text.TextField;
+   import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManagerConst;
+   import flash.text.TextFormat;
+   import flash.events.MouseEvent;
+   import flash.system.System;
+   import flash.utils.getTimer;
+   import com.ankamagames.jerakine.utils.benchmark.monitoring.FpsManagerUtils;
+   import flash.display.BitmapData;
+   import com.ankamagames.jerakine.utils.benchmark.monitoring.MonitoredObject;
+   import flash.geom.Rectangle;
 
-    public class MemoryPanel extends Sprite
-    {
-        private var _otherData:Dictionary;
-        private var _memGraph:Bitmap;
-        private var _memoryGraph:Vector.<Number>;
-        private var _memoryLimits:Vector.<Number>;
-        private var _lastTimer:int = 0;
-        private var _infosTf:TextField;
-        public var lastGc:int;
-        private static var MAX_THEO_VALUE:int = 250;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(MemoryPanel));
 
-        public function MemoryPanel()
-        {
-            this.drawBG();
-            this.init();
-            return;
-        }// end function
+   public class MemoryPanel extends Sprite
+   {
+         
 
-        private function drawBG() : void
-        {
-            graphics.beginFill(FpsManagerConst.BOX_COLOR, 0.7);
-            graphics.lineStyle(2, FpsManagerConst.BOX_COLOR);
-            graphics.drawRoundRect(0, 0, FpsManagerConst.BOX_WIDTH, FpsManagerConst.BOX_HEIGHT, 8, 8);
-            graphics.endFill();
-            return;
-        }// end function
+      public function MemoryPanel() {
+         super();
+         this.drawBG();
+         this.init();
+      }
 
-        private function init() : void
-        {
-            this._memoryGraph = new Vector.<Number>;
-            this._memoryLimits = new Vector.<Number>;
-            this._otherData = new Dictionary();
-            var _loc_1:* = new TextFormat("Verdana", 13);
-            _loc_1.color = 16777215;
-            this._infosTf = new TextField();
-            this._infosTf.y = FpsManagerConst.BOX_HEIGHT - 20;
-            this._infosTf.x = 4;
-            this._infosTf.defaultTextFormat = _loc_1;
-            this._infosTf.selectable = false;
-            this._infosTf.addEventListener(MouseEvent.MOUSE_UP, this.forceGC);
-            addChild(this._infosTf);
-            return;
-        }// end function
+      private static var MAX_THEO_VALUE:int = 250;
 
-        private function forceGC(event:MouseEvent) : void
-        {
-            System.gc();
-            this.lastGc = getTimer();
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MemoryPanel));
 
-        public function updateData() : void
-        {
-            this._memoryGraph.push(FpsManagerUtils.calculateMB(System.totalMemory));
-            this._memoryLimits.push(MAX_THEO_VALUE);
-            if (this._memoryGraph.length > FpsManagerConst.BOX_WIDTH)
+      private var _otherData:Dictionary;
+
+      private var _memGraph:Bitmap;
+
+      private var _memoryGraph:Vector.<Number>;
+
+      private var _memoryLimits:Vector.<Number>;
+
+      private var _lastTimer:int = 0;
+
+      private var _infosTf:TextField;
+
+      public var lastGc:int;
+
+      private function drawBG() : void {
+         graphics.beginFill(FpsManagerConst.BOX_COLOR,0.7);
+         graphics.lineStyle(2,FpsManagerConst.BOX_COLOR);
+         graphics.drawRoundRect(0,0,FpsManagerConst.BOX_WIDTH,FpsManagerConst.BOX_HEIGHT,8,8);
+         graphics.endFill();
+      }
+
+      private function init() : void {
+         this._memoryGraph=new Vector.<Number>();
+         this._memoryLimits=new Vector.<Number>();
+         this._otherData=new Dictionary();
+         var tf:TextFormat = new TextFormat("Verdana",13);
+         tf.color=16777215;
+         this._infosTf=new TextField();
+         this._infosTf.y=FpsManagerConst.BOX_HEIGHT-20;
+         this._infosTf.x=4;
+         this._infosTf.defaultTextFormat=tf;
+         this._infosTf.selectable=false;
+         this._infosTf.addEventListener(MouseEvent.MOUSE_UP,this.forceGC);
+         addChild(this._infosTf);
+      }
+
+      private function forceGC(pEvt:MouseEvent) : void {
+         System.gc();
+         this.lastGc=getTimer();
+      }
+
+      public function updateData() : void {
+         this._memoryGraph.push(FpsManagerUtils.calculateMB(System.totalMemory));
+         this._memoryLimits.push(MAX_THEO_VALUE);
+         if(this._memoryGraph.length>FpsManagerConst.BOX_WIDTH)
+         {
+            this._memoryGraph.shift();
+            this._memoryLimits.shift();
+         }
+      }
+
+      public function initMemGraph() : void {
+         if(this._memGraph==null)
+         {
+            this._memGraph=new Bitmap(new BitmapData(FpsManagerConst.BOX_WIDTH,FpsManagerConst.BOX_HEIGHT,true,0));
+            this._memGraph.smoothing=true;
+            addChild(this._memGraph);
+         }
+         this.drawLine(this._memoryGraph,this._memoryLimits,4.294967295E9);
+      }
+
+      public function render() : void {
+         var mo:MonitoredObject = null;
+         this._memGraph.bitmapData.lock();
+         this._memGraph.bitmapData.scroll(-1,0);
+         this._memGraph.bitmapData.fillRect(new Rectangle(FpsManagerConst.BOX_WIDTH-1,1,1,FpsManagerConst.BOX_HEIGHT),16711680);
+         for each (mo in this._otherData)
+         {
+            if((!(mo==null))&&(mo.selected))
             {
-                this._memoryGraph.shift();
-                this._memoryLimits.shift();
+               this.drawGraphValue(mo.data,mo.limits,FpsManagerUtils.addAlphaToColor(mo.color,4.294967295E9));
             }
-            return;
-        }// end function
+         }
+         this.drawGraphValue(this._memoryGraph,this._memoryLimits,4.294967295E9);
+         this._memGraph.bitmapData.unlock();
+      }
 
-        public function initMemGraph() : void
-        {
-            if (this._memGraph == null)
-            {
-                this._memGraph = new Bitmap(new BitmapData(FpsManagerConst.BOX_WIDTH, FpsManagerConst.BOX_HEIGHT, true, 0));
-                this._memGraph.smoothing = true;
-                addChild(this._memGraph);
-            }
-            this.drawLine(this._memoryGraph, this._memoryLimits, 4294967295);
-            return;
-        }// end function
+      private function drawGraphValue(pData:Vector.<Number>, pLimits:Vector.<Number>, pColor:uint) : void {
+         var py:* = 0;
+         var previousLimit:* = NaN;
+         var px:int = FpsManagerConst.BOX_WIDTH-1;
+         var currentLimit:Number = pLimits==null?MAX_THEO_VALUE:pLimits[pData.length-1];
+         py=this.getGraphValue(pData,pData.length-1,currentLimit);
+         if(pData.length>=2)
+         {
+            previousLimit=pLimits==null?MAX_THEO_VALUE:pLimits[pData.length-2];
+            this.linkGraphValues(px,py,this.getGraphValue(pData,pData.length-2,previousLimit),pColor);
+         }
+         this._memGraph.bitmapData.setPixel32(px,py,pColor);
+      }
 
-        public function render() : void
-        {
-            var _loc_1:* = null;
-            this._memGraph.bitmapData.lock();
-            this._memGraph.bitmapData.scroll(-1, 0);
-            this._memGraph.bitmapData.fillRect(new Rectangle((FpsManagerConst.BOX_WIDTH - 1), 1, 1, FpsManagerConst.BOX_HEIGHT), 16711680);
-            for each (_loc_1 in this._otherData)
+      public function clearOtherGraph() : void {
+         var mo:MonitoredObject = null;
+         for each (mo in this._otherData)
+         {
+            if(mo!=null)
             {
-                
-                if (_loc_1 != null && _loc_1.selected)
-                {
-                    this.drawGraphValue(_loc_1.data, _loc_1.limits, FpsManagerUtils.addAlphaToColor(_loc_1.color, 4294967295));
-                }
+               this.removeGraph(mo);
             }
-            this.drawGraphValue(this._memoryGraph, this._memoryLimits, 4294967295);
-            this._memGraph.bitmapData.unlock();
-            return;
-        }// end function
+         }
+         removeChild(this._memGraph);
+         this._memGraph.bitmapData.dispose();
+         this._memGraph=null;
+      }
 
-        private function drawGraphValue(param1:Vector.<Number>, param2:Vector.<Number>, param3:uint) : void
-        {
-            var _loc_5:* = 0;
-            var _loc_7:* = NaN;
-            var _loc_4:* = FpsManagerConst.BOX_WIDTH - 1;
-            var _loc_6:* = param2 == null ? (MAX_THEO_VALUE) : (param2[(param1.length - 1)]);
-            _loc_5 = this.getGraphValue(param1, (param1.length - 1), _loc_6);
-            if (param1.length >= 2)
-            {
-                _loc_7 = param2 == null ? (MAX_THEO_VALUE) : (param2[param1.length - 2]);
-                this.linkGraphValues(_loc_4, _loc_5, this.getGraphValue(param1, param1.length - 2, _loc_7), param3);
-            }
-            this._memGraph.bitmapData.setPixel32(_loc_4, _loc_5, param3);
-            return;
-        }// end function
+      public function addNewGraph(o:MonitoredObject) : void {
+         if(this._otherData[o.name]!=null)
+         {
+            this.removeGraph(o);
+         }
+         else
+         {
+            o.selected=true;
+            this._otherData[o.name]=o;
+            this.drawLine(o.data,o.limits,FpsManagerUtils.addAlphaToColor(o.color,4.294967295E9));
+         }
+      }
 
-        public function clearOtherGraph() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._otherData)
-            {
-                
-                if (_loc_1 != null)
-                {
-                    this.removeGraph(_loc_1);
-                }
-            }
-            removeChild(this._memGraph);
-            this._memGraph.bitmapData.dispose();
-            this._memGraph = null;
-            return;
-        }// end function
+      public function removeGraph(o:MonitoredObject) : void {
+         o.selected=false;
+         this._otherData[o.name]=null;
+         this.drawLine(o.data,o.limits);
+      }
 
-        public function addNewGraph(param1:MonitoredObject) : void
-        {
-            if (this._otherData[param1.name] != null)
+      private function drawLine(pData:Vector.<Number>, pLimits:Vector.<Number>, pColor:uint=16711680) : void {
+         var currentLimit:* = NaN;
+         var previousLimit:* = NaN;
+         var px:int = 0;
+         var py:int = 0;
+         var len:int = pData.length;
+         var it:int = 0;
+         it=0;
+         while(it<len)
+         {
+            px=len<FpsManagerConst.BOX_WIDTH?FpsManagerConst.BOX_WIDTH-len+it:it;
+            currentLimit=pLimits==null?MAX_THEO_VALUE:pLimits[it];
+            py=this.getGraphValue(pData,it,currentLimit);
+            if(it!=0)
             {
-                this.removeGraph(param1);
+               previousLimit=pLimits==null?MAX_THEO_VALUE:pLimits[it-1];
+               this.linkGraphValues(px,py,this.getGraphValue(pData,it-1,previousLimit),pColor);
             }
-            else
-            {
-                param1.selected = true;
-                this._otherData[param1.name] = param1;
-                this.drawLine(param1.data, param1.limits, FpsManagerUtils.addAlphaToColor(param1.color, 4294967295));
-            }
-            return;
-        }// end function
+            this._memGraph.bitmapData.setPixel32(px,py,pColor);
+            it++;
+         }
+      }
 
-        public function removeGraph(param1:MonitoredObject) : void
-        {
-            param1.selected = false;
-            this._otherData[param1.name] = null;
-            this.drawLine(param1.data, param1.limits);
-            return;
-        }// end function
+      public function updateGc(max_memory:Number=0) : void {
+         if(max_memory>0)
+         {
+            MAX_THEO_VALUE=Math.ceil(max_memory);
+         }
+         this._infosTf.text="GC "+FpsManagerUtils.getTimeFromNow(this.lastGc);
+      }
 
-        private function drawLine(param1:Vector.<Number>, param2:Vector.<Number>, param3:uint = 16711680) : void
-        {
-            var _loc_8:* = NaN;
-            var _loc_9:* = NaN;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = param1.length;
-            var _loc_7:* = 0;
-            _loc_7 = 0;
-            while (_loc_7 < _loc_6)
+      private function getGraphValue(pData:Vector.<Number>, ind:int, pLimit:int=-1) : int {
+         if(pLimit==-1)
+         {
+            pLimit=pLimit=FpsManagerUtils.getVectorMaxValue(pData);
+         }
+         var value:int = Math.floor(pData[ind]/pLimit*FpsManagerConst.BOX_HEIGHT*-1+FpsManagerConst.BOX_HEIGHT);
+         var bottom:int = FpsManagerConst.BOX_HEIGHT-1;
+         if(value<1)
+         {
+            value=1;
+         }
+         else
+         {
+            if(value>bottom)
             {
-                
-                _loc_4 = _loc_6 < FpsManagerConst.BOX_WIDTH ? (FpsManagerConst.BOX_WIDTH - _loc_6 + _loc_7) : (_loc_7);
-                _loc_8 = param2 == null ? (MAX_THEO_VALUE) : (param2[_loc_7]);
-                _loc_5 = this.getGraphValue(param1, _loc_7, _loc_8);
-                if (_loc_7 != 0)
-                {
-                    _loc_9 = param2 == null ? (MAX_THEO_VALUE) : (param2[(_loc_7 - 1)]);
-                    this.linkGraphValues(_loc_4, _loc_5, this.getGraphValue(param1, (_loc_7 - 1), _loc_9), param3);
-                }
-                this._memGraph.bitmapData.setPixel32(_loc_4, _loc_5, param3);
-                _loc_7++;
+               value=bottom;
             }
-            return;
-        }// end function
+         }
+         return value;
+      }
 
-        public function updateGc(param1:Number = 0) : void
-        {
-            if (param1 > 0)
-            {
-                MAX_THEO_VALUE = Math.ceil(param1);
-            }
-            this._infosTf.text = "GC " + FpsManagerUtils.getTimeFromNow(this.lastGc);
-            return;
-        }// end function
+      private function linkGraphValues(px:int, py1:int, py2:int, pColor:uint) : void {
+         if(Math.abs(py1-py2)>1)
+         {
+            this._memGraph.bitmapData.fillRect(new Rectangle(px-1,(py1<py2?py2:py1)+1,1,Math.abs(py1-py2)-1),pColor);
+         }
+      }
+   }
 
-        private function getGraphValue(param1:Vector.<Number>, param2:int, param3:int = -1) : int
-        {
-            if (param3 == -1)
-            {
-                var _loc_6:* = FpsManagerUtils.getVectorMaxValue(param1);
-                param3 = FpsManagerUtils.getVectorMaxValue(param1);
-                param3 = _loc_6;
-            }
-            var _loc_4:* = Math.floor(param1[param2] / param3 * FpsManagerConst.BOX_HEIGHT * -1 + FpsManagerConst.BOX_HEIGHT);
-            var _loc_5:* = FpsManagerConst.BOX_HEIGHT - 1;
-            if (_loc_4 < 1)
-            {
-                _loc_4 = 1;
-            }
-            else if (_loc_4 > _loc_5)
-            {
-                _loc_4 = _loc_5;
-            }
-            return _loc_4;
-        }// end function
-
-        private function linkGraphValues(param1:int, param2:int, param3:int, param4:uint) : void
-        {
-            if (Math.abs(param2 - param3) > 1)
-            {
-                this._memGraph.bitmapData.fillRect(new Rectangle((param1 - 1), (param2 > param3 ? (param3) : (param2)) + 1, 1, (Math.abs(param2 - param3) - 1)), param4);
-            }
-            return;
-        }// end function
-
-    }
 }

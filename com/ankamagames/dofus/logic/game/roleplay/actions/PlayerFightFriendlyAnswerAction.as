@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions
+package com.ankamagames.dofus.logic.game.roleplay.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PlayerFightFriendlyAnswerAction extends Object implements Action
-    {
-        public var accept:Boolean;
 
-        public function PlayerFightFriendlyAnswerAction()
-        {
-            return;
-        }// end function
+   public class PlayerFightFriendlyAnswerAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean = true) : PlayerFightFriendlyAnswerAction
-        {
-            var _loc_2:* = new PlayerFightFriendlyAnswerAction;
-            _loc_2.accept = param1;
-            return _loc_2;
-        }// end function
+      public function PlayerFightFriendlyAnswerAction() {
+         super();
+      }
 
-    }
+      public static function create(accept:Boolean=true) : PlayerFightFriendlyAnswerAction {
+         var o:PlayerFightFriendlyAnswerAction = new PlayerFightFriendlyAnswerAction();
+         o.accept=accept;
+         return o;
+      }
+
+      public var accept:Boolean;
+   }
+
 }

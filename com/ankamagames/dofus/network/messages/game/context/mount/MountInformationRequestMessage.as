@@ -1,85 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.mount
+package com.ankamagames.dofus.network.messages.game.context.mount
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class MountInformationRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var id:Number = 0;
-        public var time:Number = 0;
-        public static const protocolId:uint = 5972;
 
-        public function MountInformationRequestMessage()
-        {
-            return;
-        }// end function
+   public class MountInformationRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function MountInformationRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5972;
-        }// end function
+      public static const protocolId:uint = 5972;
 
-        public function initMountInformationRequestMessage(param1:Number = 0, param2:Number = 0) : MountInformationRequestMessage
-        {
-            this.id = param1;
-            this.time = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.id = 0;
-            this.time = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var id:Number = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var time:Number = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_MountInformationRequestMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5972;
+      }
 
-        public function serializeAs_MountInformationRequestMessage(param1:IDataOutput) : void
-        {
-            param1.writeDouble(this.id);
-            param1.writeDouble(this.time);
-            return;
-        }// end function
+      public function initMountInformationRequestMessage(id:Number=0, time:Number=0) : MountInformationRequestMessage {
+         this.id=id;
+         this.time=time;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_MountInformationRequestMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.id=0;
+         this.time=0;
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_MountInformationRequestMessage(param1:IDataInput) : void
-        {
-            this.id = param1.readDouble();
-            this.time = param1.readDouble();
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountInformationRequestMessage(output);
+      }
+
+      public function serializeAs_MountInformationRequestMessage(output:IDataOutput) : void {
+         output.writeDouble(this.id);
+         output.writeDouble(this.time);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountInformationRequestMessage(input);
+      }
+
+      public function deserializeAs_MountInformationRequestMessage(input:IDataInput) : void {
+         this.id=input.readDouble();
+         this.time=input.readDouble();
+      }
+   }
+
 }

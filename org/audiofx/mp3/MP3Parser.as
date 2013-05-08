@@ -1,262 +1,230 @@
-﻿package org.audiofx.mp3
+package org.audiofx.mp3
 {
-    import flash.events.*;
-    import flash.net.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import flash.utils.ByteArray;
+   import flash.net.URLLoader;
+   import flash.net.URLRequest;
+   import flash.net.FileReference;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import flash.net.URLLoaderDataFormat;
 
-    class MP3Parser extends EventDispatcher
-    {
-        private var mp3Data:ByteArray;
-        private var loader:URLLoader;
-        private var currentPosition:uint;
-        private var sampleRate:uint;
-        private var channels:uint;
-        private var version:uint;
-        private var m_parent:MP3FileReferenceLoader;
-        private static var bitRates:Array = [-1, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, -1, -1, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, -1];
-        private static var versions:Array = [2.5, -1, 2, 1];
-        private static var samplingRates:Array = [44100, 48000, 32000];
 
-        function MP3Parser(param1:MP3FileReferenceLoader)
-        {
-            this.loader = new URLLoader();
-            this.loader.dataFormat = URLLoaderDataFormat.BINARY;
-            this.loader.addEventListener(Event.COMPLETE, this.loaderCompleteHandler);
-            this.m_parent = param1;
-            return;
-        }// end function
+   class MP3Parser extends EventDispatcher
+   {
+         
 
-        public function loadMP3ByteArray(param1:ByteArray) : void
-        {
-            this.mp3Data = param1;
-            this.currentPosition = this.getFirstHeaderPosition();
-            this.m_parent.parsingDone(this);
-            return;
-        }// end function
+      function MP3Parser(parent:MP3FileReferenceLoader) {
+         super();
+         this.loader=new URLLoader();
+         this.loader.dataFormat=URLLoaderDataFormat.BINARY;
+         this.loader.addEventListener(Event.COMPLETE,this.loaderCompleteHandler);
+         this.m_parent=parent;
+      }
 
-        function load(param1:String) : void
-        {
-            var _loc_2:* = new URLRequest(param1);
-            this.loader.load(_loc_2);
-            return;
-        }// end function
+      private static var bitRates:Array = [-1,32,40,48,56,64,80,96,112,128,160,192,224,256,320,-1,-1,8,16,24,32,40,48,56,64,80,96,112,128,144,160,-1];
 
-        function loadFileRef(param1:FileReference) : void
-        {
-            param1.addEventListener(Event.COMPLETE, this.loaderCompleteHandler);
-            param1.addEventListener(IOErrorEvent.IO_ERROR, this.errorHandler);
-            param1.load();
-            return;
-        }// end function
+      private static var versions:Array = [2.5,-1,2,1];
 
-        private function errorHandler(event:IOErrorEvent) : void
-        {
-            trace("error\n" + event.text);
-            return;
-        }// end function
+      private static var samplingRates:Array = [44100,48000,32000];
 
-        private function loaderCompleteHandler(event:Event) : void
-        {
-            this.mp3Data = event.currentTarget.data as ByteArray;
-            this.currentPosition = this.getFirstHeaderPosition();
-            dispatchEvent(event);
-            return;
-        }// end function
+      private var mp3Data:ByteArray;
 
-        private function getFirstHeaderPosition() : uint
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            this.mp3Data.position = 0;
-            while (this.mp3Data.position < this.mp3Data.length)
+      private var loader:URLLoader;
+
+      private var currentPosition:uint;
+
+      private var sampleRate:uint;
+
+      private var channels:uint;
+
+      private var version:uint;
+
+      private var m_parent:MP3FileReferenceLoader;
+
+      public function loadMP3ByteArray(bytes:ByteArray) : void {
+         this.mp3Data=bytes;
+         this.currentPosition=this.getFirstHeaderPosition();
+         this.m_parent.parsingDone(this);
+      }
+
+      function load(url:String) : void {
+         var req:URLRequest = new URLRequest(url);
+         this.loader.load(req);
+      }
+
+      function loadFileRef(fileRef:FileReference) : void {
+         fileRef.addEventListener(Event.COMPLETE,this.loaderCompleteHandler);
+         fileRef.addEventListener(IOErrorEvent.IO_ERROR,this.errorHandler);
+         fileRef.load();
+      }
+
+      private function errorHandler(ev:IOErrorEvent) : void {
+         trace("error\n"+ev.text);
+      }
+
+      private function loaderCompleteHandler(ev:Event) : void {
+         this.mp3Data=ev.currentTarget.data as ByteArray;
+         this.currentPosition=this.getFirstHeaderPosition();
+         dispatchEvent(ev);
+      }
+
+      private function getFirstHeaderPosition() : uint {
+         var readPosition:uint = 0;
+         var str:String = null;
+         var val:uint = 0;
+         var b3:* = 0;
+         var b2:* = 0;
+         var b1:* = 0;
+         var b0:* = 0;
+         var headerLength:* = 0;
+         var newPosition:* = 0;
+         this.mp3Data.position=0;
+         while(this.mp3Data.position<this.mp3Data.length)
+         {
+            readPosition=this.mp3Data.position;
+            str=this.mp3Data.readUTFBytes(3);
+            if(str=="ID3")
             {
-                
-                _loc_1 = this.mp3Data.position;
-                _loc_2 = this.mp3Data.readUTFBytes(3);
-                if (_loc_2 == "ID3")
-                {
-                    this.mp3Data.position = this.mp3Data.position + 3;
-                    _loc_4 = (this.mp3Data.readByte() & 127) << 21;
-                    _loc_5 = (this.mp3Data.readByte() & 127) << 14;
-                    _loc_6 = (this.mp3Data.readByte() & 127) << 7;
-                    _loc_7 = this.mp3Data.readByte() & 127;
-                    _loc_8 = _loc_7 + _loc_6 + _loc_5 + _loc_4;
-                    _loc_9 = this.mp3Data.position + _loc_8;
-                    this.mp3Data.position = _loc_9;
-                    _loc_1 = _loc_9;
-                }
-                else
-                {
-                    this.mp3Data.position = _loc_1;
-                }
-                _loc_3 = this.mp3Data.readInt();
-                if (this.isValidHeader(_loc_3))
-                {
-                    this.parseHeader(_loc_3);
-                    this.mp3Data.position = _loc_1 + this.getFrameSize(_loc_3);
-                    if (this.isValidHeader(this.mp3Data.readInt()))
-                    {
-                        return _loc_1;
-                    }
-                }
+               this.mp3Data.position=this.mp3Data.position+3;
+               b3=(this.mp3Data.readByte()&127)<<21;
+               b2=(this.mp3Data.readByte()&127)<<14;
+               b1=(this.mp3Data.readByte()&127)<<7;
+               b0=this.mp3Data.readByte()&127;
+               headerLength=b0+b1+b2+b3;
+               newPosition=this.mp3Data.position+headerLength;
+               this.mp3Data.position=newPosition;
+               readPosition=newPosition;
             }
-            throw new Error("Could not locate first header. This isn\'t an MP3 file");
-        }// end function
-
-        function getNextFrame() : ByteArraySegment
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = 0;
-            this.mp3Data.position = this.currentPosition;
-            while (true)
+            else
             {
-                
-                if (this.currentPosition > this.mp3Data.length - 4)
-                {
-                    trace("passed eof");
-                    return null;
-                }
-                _loc_1 = this.mp3Data.readInt();
-                if (this.isValidHeader(_loc_1))
-                {
-                    _loc_2 = this.getFrameSize(_loc_1);
-                    if (_loc_2 != 4294967295)
-                    {
-                        break;
-                    }
-                }
-                this.currentPosition = this.mp3Data.position;
+               this.mp3Data.position=readPosition;
             }
-            this.mp3Data.position = this.currentPosition;
-            if (this.currentPosition + _loc_2 > this.mp3Data.length)
+            val=this.mp3Data.readInt();
+            if(this.isValidHeader(val))
             {
-                return null;
+               this.parseHeader(val);
+               this.mp3Data.position=readPosition+this.getFrameSize(val);
+               if(this.isValidHeader(this.mp3Data.readInt()))
+               {
+                  return readPosition;
+               }
             }
-            this.currentPosition = this.currentPosition + _loc_2;
-            return new ByteArraySegment(this.mp3Data, this.mp3Data.position, _loc_2);
-        }// end function
+         }
+         throw new Error("Could not locate first header. This isn\'t an MP3 file");
+      }
 
-        function writeSwfFormatByte(param1:ByteArray) : void
-        {
-            var _loc_2:* = 4 - 44100 / this.sampleRate;
-            param1.writeByte((2 << 4) + (_loc_2 << 2) + (1 << 1) + (this.channels - 1));
-            return;
-        }// end function
-
-        private function parseHeader(param1:uint) : void
-        {
-            var _loc_2:* = this.getModeIndex(param1);
-            this.version = this.getVersionIndex(param1);
-            var _loc_3:* = this.getFrequencyIndex(param1);
-            this.channels = _loc_2 > 2 ? (1) : (2);
-            var _loc_4:* = versions[this.version];
-            var _loc_5:* = [44100, 48000, 32000];
-            this.sampleRate = _loc_5[_loc_3];
-            switch(_loc_4)
+      function getNextFrame() : ByteArraySegment {
+         var headerByte:uint = 0;
+         var frameSize:uint = 0;
+         this.mp3Data.position=this.currentPosition;
+         while(this.currentPosition<=this.mp3Data.length-4)
+         {
+            headerByte=this.mp3Data.readInt();
+            if(this.isValidHeader(headerByte))
             {
-                case 2:
-                {
-                    this.sampleRate = this.sampleRate / 2;
-                    break;
-                }
-                case 2.5:
-                {
-                    this.sampleRate = this.sampleRate / 4;
-                }
-                default:
-                {
-                    break;
-                }
+               frameSize=this.getFrameSize(headerByte);
+               if(frameSize!=4.294967295E9)
+               {
+                  this.mp3Data.position=this.currentPosition;
+                  if(this.currentPosition+frameSize>this.mp3Data.length)
+                  {
+                     return null;
+                  }
+                  this.currentPosition=this.currentPosition+frameSize;
+                  return new ByteArraySegment(this.mp3Data,this.mp3Data.position,frameSize);
+               }
             }
-            return;
-        }// end function
+            this.currentPosition=this.mp3Data.position;
+         }
+         trace("passed eof");
+         return null;
+      }
 
-        private function getFrameSize(param1:uint) : uint
-        {
-            var _loc_2:* = this.getVersionIndex(param1);
-            var _loc_3:* = this.getBitrateIndex(param1);
-            var _loc_4:* = this.getFrequencyIndex(param1);
-            var _loc_5:* = this.getPaddingBit(param1);
-            var _loc_6:* = this.getModeIndex(param1);
-            var _loc_7:* = versions[_loc_2];
-            var _loc_8:* = samplingRates[_loc_4];
-            if (this.version != _loc_2)
-            {
-                return 4294967295;
-            }
-            switch(_loc_7)
-            {
-                case 2:
-                {
-                    _loc_8 = _loc_8 / 2;
-                    break;
-                }
-                case 2.5:
-                {
-                    _loc_8 = _loc_8 / 4;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            var _loc_9:* = (_loc_7 == 1 ? (0) : (1)) * bitRates.length / 2;
-            var _loc_10:* = bitRates[_loc_9 + _loc_3] * 1000;
-            var _loc_11:* = (_loc_7 == 1 ? (144) : (72)) * _loc_10 / _loc_8 + _loc_5;
-            return (_loc_7 == 1 ? (144) : (72)) * _loc_10 / _loc_8 + _loc_5;
-        }// end function
+      function writeSwfFormatByte(byteArray:ByteArray) : void {
+         var sampleRateIndex:uint = 4-44100/this.sampleRate;
+         byteArray.writeByte((2<<4)+(sampleRateIndex<<2)+(1<<1)+(this.channels-1));
+      }
 
-        private function isValidHeader(param1:uint) : Boolean
-        {
-            return (this.getFrameSync(param1) & 2047) == 2047 && (this.getVersionIndex(param1) & 3) != 1 && (this.getLayerIndex(param1) & 3) != 0 && (this.getBitrateIndex(param1) & 15) != 0 && (this.getBitrateIndex(param1) & 15) != 15 && (this.getFrequencyIndex(param1) & 3) != 3 && (this.getEmphasisIndex(param1) & 3) != 2;
-        }// end function
+      private function parseHeader(headerBytes:uint) : void {
+         var channelMode:uint = this.getModeIndex(headerBytes);
+         this.version=this.getVersionIndex(headerBytes);
+         var samplingRate:uint = this.getFrequencyIndex(headerBytes);
+         this.channels=channelMode>2?1:2;
+         var actualVersion:Number = versions[this.version];
+         var samplingRates:Array = [44100,48000,32000];
+         this.sampleRate=samplingRates[samplingRate];
+         switch(actualVersion)
+         {
+            case 2:
+               this.sampleRate=this.sampleRate/2;
+               break;
+            case 2.5:
+               this.sampleRate=this.sampleRate/4;
+         }
+      }
 
-        private function getFrameSync(param1:uint) : uint
-        {
-            return uint(param1 >> 21 & 2047);
-        }// end function
+      private function getFrameSize(headerBytes:uint) : uint {
+         var version:uint = this.getVersionIndex(headerBytes);
+         var bitRate:uint = this.getBitrateIndex(headerBytes);
+         var samplingRate:uint = this.getFrequencyIndex(headerBytes);
+         var padding:uint = this.getPaddingBit(headerBytes);
+         var channelMode:uint = this.getModeIndex(headerBytes);
+         var actualVersion:Number = versions[version];
+         var sampleRate:uint = samplingRates[samplingRate];
+         if(this.version!=version)
+         {
+            return 4.294967295E9;
+         }
+         switch(actualVersion)
+         {
+            case 2:
+               sampleRate=sampleRate/2;
+               break;
+            case 2.5:
+               sampleRate=sampleRate/4;
+         }
+         var bitRatesYIndex:uint = (actualVersion==1?0:1)*bitRates.length/2;
+         var actualBitRate:uint = bitRates[bitRatesYIndex+bitRate]*1000;
+         var frameLength:uint = (actualVersion==1?144:72)*actualBitRate/sampleRate+padding;
+         return frameLength;
+      }
 
-        private function getVersionIndex(param1:uint) : uint
-        {
-            return uint(param1 >> 19 & 3);
-        }// end function
+      private function isValidHeader(headerBits:uint) : Boolean {
+         return ((this.getFrameSync(headerBits)&2047)==2047)&&(!((this.getVersionIndex(headerBits)&3)==1))&&(!((this.getLayerIndex(headerBits)&3)==0))&&(!((this.getBitrateIndex(headerBits)&15)==0))&&(!((this.getBitrateIndex(headerBits)&15)==15))&&(!((this.getFrequencyIndex(headerBits)&3)==3))&&(!((this.getEmphasisIndex(headerBits)&3)==2));
+      }
 
-        private function getLayerIndex(param1:uint) : uint
-        {
-            return uint(param1 >> 17 & 3);
-        }// end function
+      private function getFrameSync(headerBits:uint) : uint {
+         return uint(headerBits>>21&2047);
+      }
 
-        private function getBitrateIndex(param1:uint) : uint
-        {
-            return uint(param1 >> 12 & 15);
-        }// end function
+      private function getVersionIndex(headerBits:uint) : uint {
+         return uint(headerBits>>19&3);
+      }
 
-        private function getFrequencyIndex(param1:uint) : uint
-        {
-            return uint(param1 >> 10 & 3);
-        }// end function
+      private function getLayerIndex(headerBits:uint) : uint {
+         return uint(headerBits>>17&3);
+      }
 
-        private function getPaddingBit(param1:uint) : uint
-        {
-            return uint(param1 >> 9 & 1);
-        }// end function
+      private function getBitrateIndex(headerBits:uint) : uint {
+         return uint(headerBits>>12&15);
+      }
 
-        private function getModeIndex(param1:uint) : uint
-        {
-            return uint(param1 >> 6 & 3);
-        }// end function
+      private function getFrequencyIndex(headerBits:uint) : uint {
+         return uint(headerBits>>10&3);
+      }
 
-        private function getEmphasisIndex(param1:uint) : uint
-        {
-            return uint(param1 & 3);
-        }// end function
+      private function getPaddingBit(headerBits:uint) : uint {
+         return uint(headerBits>>9&1);
+      }
 
-    }
+      private function getModeIndex(headerBits:uint) : uint {
+         return uint(headerBits>>6&3);
+      }
+
+      private function getEmphasisIndex(headerBits:uint) : uint {
+         return uint(headerBits&3);
+      }
+   }
+
 }

@@ -1,132 +1,130 @@
-﻿package com.ankamagames.dofus.logic.game.fight.steps
+package com.ankamagames.dofus.logic.game.fight.steps
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.frames.*;
-    import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.dofus.logic.game.fight.steps.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.types.enums.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.events.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.sequence.*;
-    import flash.display.*;
-    import flash.events.*;
+   import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.jerakine.sequencer.ISequencer;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.dofus.logic.game.fight.managers.BuffManager;
+   import com.ankamagames.jerakine.sequencer.SerialSequencer;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
+   import com.ankamagames.tiphon.sequence.PlayAnimationStep;
+   import com.ankamagames.dofus.types.enums.AnimationEnum;
+   import com.ankamagames.jerakine.sequencer.CallbackStep;
+   import com.ankamagames.jerakine.types.Callback;
+   import com.ankamagames.jerakine.types.events.SequencerEvent;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import flash.display.DisplayObjectContainer;
+   import flash.events.Event;
 
-    public class FightVanishStep extends AbstractSequencable implements IFightStep
-    {
-        private var _entityId:int;
-        private var _sourceId:int;
-        private var _vanishSubSequence:ISequencer;
 
-        public function FightVanishStep(param1:int, param2:int)
-        {
-            this._entityId = param1;
-            this._sourceId = param2;
+   public class FightVanishStep extends AbstractSequencable implements IFightStep
+   {
+         
+
+      public function FightVanishStep(entityId:int, sourceId:int) {
+         super();
+         this._entityId=entityId;
+         this._sourceId=sourceId;
+      }
+
+
+
+      private var _entityId:int;
+
+      private var _sourceId:int;
+
+      private var _vanishSubSequence:ISequencer;
+
+      public function get stepType() : String {
+         return "vanish";
+      }
+
+      public function get entityId() : int {
+         return this._entityId;
+      }
+
+      override public function start() : void {
+         var impactedTarget:Array = null;
+         var myPos:* = 0;
+         var vanishingTiphonEntity:TiphonSprite = null;
+         var rider:TiphonSprite = null;
+         var vanishingEntity:IEntity = DofusEntities.getEntity(this._entityId);
+         if(!vanishingEntity)
+         {
+            _log.warn("Unable to play vanish of an unexisting fighter "+this._entityId+".");
+            this.vanishFinished();
             return;
-        }// end function
-
-        public function get stepType() : String
-        {
-            return "vanish";
-        }// end function
-
-        public function get entityId() : int
-        {
-            return this._entityId;
-        }// end function
-
-        override public function start() : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_1:* = DofusEntities.getEntity(this._entityId);
-            if (!_loc_1)
+         }
+         BuffManager.getInstance().dispell(vanishingEntity.id,false,false,true);
+         impactedTarget=BuffManager.getInstance().removeLinkedBuff(vanishingEntity.id,false,true);
+         BuffManager.getInstance().reaffectBuffs(vanishingEntity.id);
+         this._vanishSubSequence=new SerialSequencer(FightBattleFrame.FIGHT_SEQUENCER_NAME);
+         myPos=FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._sourceId).disposition.cellId;
+         if((vanishingEntity is TiphonSprite)&&(!(vanishingEntity.position.cellId==myPos)))
+         {
+            vanishingTiphonEntity=vanishingEntity as TiphonSprite;
+            rider=vanishingTiphonEntity.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0) as TiphonSprite;
+            if(rider)
             {
-                _log.warn("Unable to play vanish of an unexisting fighter " + this._entityId + ".");
-                this.vanishFinished();
-                return;
+               vanishingTiphonEntity=rider;
             }
-            BuffManager.getInstance().dispell(_loc_1.id, false, false, true);
-            _loc_2 = BuffManager.getInstance().removeLinkedBuff(_loc_1.id, false, true);
-            BuffManager.getInstance().reaffectBuffs(_loc_1.id);
-            this._vanishSubSequence = new SerialSequencer(FightBattleFrame.FIGHT_SEQUENCER_NAME);
-            _loc_3 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._sourceId).disposition.cellId;
-            if (_loc_1 is TiphonSprite && _loc_1.position.cellId != _loc_3)
-            {
-                _loc_4 = _loc_1 as TiphonSprite;
-                _loc_5 = _loc_4.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0) as TiphonSprite;
-                if (_loc_5)
-                {
-                    _loc_4 = _loc_5;
-                }
-                this._vanishSubSequence.addStep(new PlayAnimationStep(_loc_4, AnimationEnum.ANIM_VANISH));
-                this._vanishSubSequence.addStep(new CallbackStep(new Callback(this.onAnimEnd, _loc_1)));
-            }
-            this._vanishSubSequence.addStep(new CallbackStep(new Callback(this.manualRollOut, this._entityId)));
-            this._vanishSubSequence.addStep(new FightDestroyEntityStep(_loc_1));
-            this._vanishSubSequence.addEventListener(SequencerEvent.SEQUENCE_END, this.vanishFinished);
-            this._vanishSubSequence.start();
-            return;
-        }// end function
+            this._vanishSubSequence.addStep(new PlayAnimationStep(vanishingTiphonEntity,AnimationEnum.ANIM_VANISH));
+            this._vanishSubSequence.addStep(new CallbackStep(new Callback(this.onAnimEnd,vanishingEntity)));
+         }
+         this._vanishSubSequence.addStep(new CallbackStep(new Callback(this.manualRollOut,this._entityId)));
+         this._vanishSubSequence.addStep(new FightDestroyEntityStep(vanishingEntity));
+         this._vanishSubSequence.addEventListener(SequencerEvent.SEQUENCE_END,this.vanishFinished);
+         this._vanishSubSequence.start();
+      }
 
-        override public function clear() : void
-        {
-            if (this._vanishSubSequence)
-            {
-                this._vanishSubSequence.clear();
-            }
-            super.clear();
-            return;
-        }// end function
+      override public function clear() : void {
+         if(this._vanishSubSequence)
+         {
+            this._vanishSubSequence.clear();
+         }
+         super.clear();
+      }
 
-        private function manualRollOut(param1:int) : void
-        {
-            var _loc_2:* = null;
-            if (FightContextFrame.fighterEntityTooltipId == param1)
+      private function manualRollOut(fighterId:int) : void {
+         var fightContextFrame:FightContextFrame = null;
+         if(FightContextFrame.fighterEntityTooltipId==fighterId)
+         {
+            TooltipManager.hide();
+            TooltipManager.hide("fighter");
+            fightContextFrame=Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
+            if(fightContextFrame)
             {
-                TooltipManager.hide();
-                TooltipManager.hide("fighter");
-                _loc_2 = Kernel.getWorker().getFrame(FightContextFrame) as FightContextFrame;
-                if (_loc_2)
-                {
-                    _loc_2.outEntity(param1);
-                }
+               fightContextFrame.outEntity(fighterId);
             }
-            return;
-        }// end function
+         }
+      }
 
-        private function onAnimEnd(param1:TiphonSprite) : void
-        {
-            var _loc_2:* = param1.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0) as TiphonSprite;
-            if (_loc_2)
-            {
-                param1 = _loc_2;
-            }
-            var _loc_3:* = param1.getSubEntitySlot(FightCarryCharacterStep.CARRIED_SUBENTITY_CATEGORY, FightCarryCharacterStep.CARRIED_SUBENTITY_INDEX);
-            if (_loc_3)
-            {
-                param1.removeSubEntity(_loc_3);
-            }
-            return;
-        }// end function
+      private function onAnimEnd(vanishingEntity:TiphonSprite) : void {
+         var rider:TiphonSprite = vanishingEntity.getSubEntitySlot(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0) as TiphonSprite;
+         if(rider)
+         {
+            vanishingEntity=rider;
+         }
+         var carriedEntity:DisplayObjectContainer = vanishingEntity.getSubEntitySlot(FightCarryCharacterStep.CARRIED_SUBENTITY_CATEGORY,FightCarryCharacterStep.CARRIED_SUBENTITY_INDEX);
+         if(carriedEntity)
+         {
+            vanishingEntity.removeSubEntity(carriedEntity);
+         }
+      }
 
-        private function vanishFinished(event:Event = null) : void
-        {
-            if (this._vanishSubSequence)
-            {
-                this._vanishSubSequence.removeEventListener(SequencerEvent.SEQUENCE_END, this.vanishFinished);
-                this._vanishSubSequence = null;
-            }
-            executeCallbacks();
-            return;
-        }// end function
+      private function vanishFinished(e:Event=null) : void {
+         if(this._vanishSubSequence)
+         {
+            this._vanishSubSequence.removeEventListener(SequencerEvent.SEQUENCE_END,this.vanishFinished);
+            this._vanishSubSequence=null;
+         }
+         executeCallbacks();
+      }
+   }
 
-    }
 }

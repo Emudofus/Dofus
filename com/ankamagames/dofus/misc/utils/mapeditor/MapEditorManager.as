@@ -1,237 +1,225 @@
-ï»¿package com.ankamagames.dofus.misc.utils.mapeditor
+package com.ankamagames.dofus.misc.utils.mapeditor
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.data.map.*;
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.atouin.resources.adapters.*;
-    import com.ankamagames.atouin.types.events.*;
-    import com.ankamagames.dofus.*;
-    import com.ankamagames.dofus.datacenter.npcs.*;
-    import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.misc.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.dofus.network.types.game.house.*;
-    import com.ankamagames.dofus.network.types.game.interactive.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.text.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.display.Sprite;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataMessage;
+   import flash.events.Event;
+   import flash.events.ProgressEvent;
+   import flash.events.MouseEvent;
+   import flash.text.TextField;
+   import flash.text.TextFormat;
+   import flash.text.TextFieldAutoSize;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import flash.utils.setTimeout;
+   import com.ankamagames.atouin.resources.adapters.MapsAdapter;
+   import com.ankamagames.atouin.resources.adapters.ElementsAdapter;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayActorInformations;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
+   import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.ResourceObserverWrapper;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.dofus.datacenter.npcs.Npc;
+   import com.ankamagames.dofus.network.types.game.house.HouseInformations;
+   import com.ankamagames.dofus.network.types.game.interactive.InteractiveElement;
+   import com.ankamagames.dofus.network.types.game.interactive.StatedElement;
+   import com.ankamagames.dofus.network.types.game.interactive.MapObstacle;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightCommonInformations;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.atouin.types.events.RenderMapEvent;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.atouin.data.map.Map;
+   import com.ankamagames.dofus.BuildInfos;
+   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
 
-    public class MapEditorManager extends Object
-    {
-        private var _mapEditorConnector:MapEditorConnector;
-        private var _currentPopup:Sprite;
-        private var _currentNpcInfos:MapComplementaryInformationsDataMessage;
-        private var _currentRenderId:uint;
-        private var _lastRenderedId:uint;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(MapEditorManager));
-        private static const COLOR_CONNECTED:uint = 12579390;
-        private static const COLOR_CLOSE:uint = 15892246;
 
-        public function MapEditorManager()
-        {
-            if (BuildInfos.BUILD_TYPE < BuildTypeEnum.INTERNAL)
-            {
-                return;
-            }
-            this.init();
+   public class MapEditorManager extends Object
+   {
+         
+
+      public function MapEditorManager() {
+         super();
+         if(BuildInfos.BUILD_TYPE<BuildTypeEnum.INTERNAL)
+         {
             return;
-        }// end function
+         }
+         this.init();
+      }
 
-        private function init() : void
-        {
-            this._mapEditorConnector = new MapEditorConnector();
-            this._mapEditorConnector.addEventListener(MapEditorDataEvent.NEW_DATA, this.onNewData);
-            this._mapEditorConnector.addEventListener(Event.CONNECT, this.onConnect);
-            this._mapEditorConnector.addEventListener(Event.CLOSE, this.onClose);
-            this._mapEditorConnector.addEventListener(ProgressEvent.SOCKET_DATA, this.onDataProgress);
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MapEditorManager));
+
+      private static const COLOR_CONNECTED:uint = 12579390;
+
+      private static const COLOR_CLOSE:uint = 15892246;
+
+      private var _mapEditorConnector:MapEditorConnector;
+
+      private var _currentPopup:Sprite;
+
+      private var _currentNpcInfos:MapComplementaryInformationsDataMessage;
+
+      private function init() : void {
+         this._mapEditorConnector=new MapEditorConnector();
+         this._mapEditorConnector.addEventListener(MapEditorDataEvent.NEW_DATA,this.onNewData);
+         this._mapEditorConnector.addEventListener(Event.CONNECT,this.onConnect);
+         this._mapEditorConnector.addEventListener(Event.CLOSE,this.onClose);
+         this._mapEditorConnector.addEventListener(ProgressEvent.SOCKET_DATA,this.onDataProgress);
+      }
+
+      private function displayPopup(txt:String, color:uint, autoClose:Boolean=false) : void {
+         if(this._currentPopup)
+         {
+            this.closePopup();
+         }
+         this._currentPopup=new Sprite();
+         this._currentPopup.mouseChildren=false;
+         this._currentPopup.addEventListener(MouseEvent.CLICK,this.closePopup);
+         var tf:TextField = new TextField();
+         tf.defaultTextFormat=new TextFormat("Verdana",12,0,true);
+         tf.autoSize=TextFieldAutoSize.LEFT;
+         tf.height=30;
+         tf.text=txt;
+         this._currentPopup.addChild(tf);
+         this._currentPopup.graphics.beginFill(color);
+         this._currentPopup.graphics.lineStyle(1,6710886);
+         this._currentPopup.graphics.drawRect(-5,-5,20+tf.textWidth,tf.height+10);
+         this._currentPopup.graphics.endFill();
+         StageShareManager.stage.addChild(this._currentPopup);
+         this._currentPopup.x=(StageShareManager.startWidth-tf.textWidth)/2;
+         this._currentPopup.y=10;
+         if(autoClose)
+         {
+            setTimeout(this.closePopup,5000,null,this._currentPopup);
+         }
+      }
+
+      private function closePopup(e:Event=null, currentPopup:Sprite=null) : void {
+         if(!currentPopup)
+         {
+            currentPopup=this._currentPopup;
+         }
+         if(!currentPopup)
+         {
             return;
-        }// end function
+         }
+         currentPopup.removeEventListener(MouseEvent.CLICK,this.closePopup);
+         if(currentPopup.parent)
+         {
+            currentPopup.parent.removeChild(currentPopup);
+         }
+         if(currentPopup==this._currentPopup)
+         {
+            this._currentPopup=null;
+         }
+      }
 
-        private function displayPopup(param1:String, param2:uint, param3:Boolean = false) : void
-        {
-            if (this._currentPopup)
-            {
-                this.closePopup();
-            }
-            this._currentPopup = new Sprite();
-            this._currentPopup.mouseChildren = false;
-            this._currentPopup.addEventListener(MouseEvent.CLICK, this.closePopup);
-            var _loc_4:* = new TextField();
-            new TextField().defaultTextFormat = new TextFormat("Verdana", 12, 0, true);
-            _loc_4.autoSize = TextFieldAutoSize.LEFT;
-            _loc_4.height = 30;
-            _loc_4.text = param1;
-            this._currentPopup.addChild(_loc_4);
-            this._currentPopup.graphics.beginFill(param2);
-            this._currentPopup.graphics.lineStyle(1, 6710886);
-            this._currentPopup.graphics.drawRect(-5, -5, 20 + _loc_4.textWidth, _loc_4.height + 10);
-            this._currentPopup.graphics.endFill();
-            StageShareManager.stage.addChild(this._currentPopup);
-            this._currentPopup.x = (StageShareManager.startWidth - _loc_4.textWidth) / 2;
-            this._currentPopup.y = 10;
-            if (param3)
-            {
-                setTimeout(this.closePopup, 5000, null, this._currentPopup);
-            }
-            return;
-        }// end function
+      private function onNewData(e:MapEditorDataEvent) : void {
+         var ma:MapsAdapter = null;
+         var ea:ElementsAdapter = null;
+         var mapId:uint = 0;
+         var npcCount:uint = 0;
+         var npcInfos:Vector.<GameRolePlayActorInformations> = null;
+         var mciMsg:MapComplementaryInformationsDataMessage = null;
+         var subArea:SubArea = null;
+         var npcInd:uint = 0;
+         var npcInfo:GameRolePlayNpcInformations = null;
+         var cellId:* = 0;
+         var npcId:* = 0;
+         var direction:* = 0;
+         var entityDisposition:EntityDispositionInformations = null;
+         this.displayPopup("Données provenant de l\'éditeur "+e.data.type,COLOR_CONNECTED);
+         switch(e.data.type)
+         {
+            case MapEditorMessage.MESSAGE_TYPE_DLM:
+               this.displayPopup("Rendu d\'une map provenant de l\'éditeur",COLOR_CONNECTED);
+               _log.info("Rendu d\'une map provenant de l\'éditeur");
+               ma=new MapsAdapter();
+               ma.loadFromData(new Uri(),e.data.data,new ResourceObserverWrapper(this.onDmlLoaded),false);
+               break;
+            case MapEditorMessage.MESSAGE_TYPE_ELE:
+               this.displayPopup("Donnée sur les éléments",COLOR_CONNECTED);
+               _log.info("Parsing du fichier .ele provenant de l\'éditeur");
+               ea=new ElementsAdapter();
+               ea.loadFromData(new Uri(),e.data.data,new ResourceObserverWrapper(),false);
+               break;
+            case MapEditorMessage.MESSAGE_TYPE_NPC:
+               mapId=e.data.data.readInt();
+               npcCount=e.data.data.readInt();
+               npcInfos=new Vector.<GameRolePlayActorInformations>();
+               npcInd=0;
+               while(npcInd<npcCount)
+               {
+                  npcInfo=new GameRolePlayNpcInformations();
+                  cellId=e.data.data.readShort();
+                  npcId=e.data.data.readInt();
+                  direction=e.data.data.readByte();
+                  entityDisposition=new EntityDispositionInformations();
+                  entityDisposition.initEntityDispositionInformations(cellId,direction);
+                  npcInfo.initGameRolePlayNpcInformations(npcId,EntityLookAdapter.toNetwork(TiphonEntityLook.fromString(Npc.getNpcById(npcId).look)),entityDisposition,npcId);
+                  npcInfos.push(npcInfo);
+                  npcInd++;
+               }
+               mciMsg=new MapComplementaryInformationsDataMessage();
+               subArea=SubArea.getSubAreaByMapId(mapId);
+               mciMsg.initMapComplementaryInformationsDataMessage(subArea?subArea.id:0,mapId,0,new Vector.<HouseInformations>(),npcInfos,new Vector.<InteractiveElement>(),new Vector.<StatedElement>(),new Vector.<MapObstacle>(),new Vector.<FightCommonInformations>());
+               if(this._lastRenderedId==MapDisplayManager.getInstance().currentRenderId)
+               {
+                  Kernel.getWorker().process(mciMsg);
+                  this._currentNpcInfos=null;
+               }
+               else
+               {
+                  this._currentNpcInfos=mciMsg;
+               }
+               break;
+            case MapEditorMessage.MESSAGE_TYPE_HELLO:
+               this.displayPopup("Hello Alea",COLOR_CONNECTED);
+               break;
+         }
+      }
 
-        private function closePopup(event:Event = null, param2:Sprite = null) : void
-        {
-            if (!param2)
-            {
-                param2 = this._currentPopup;
-            }
-            if (!param2)
-            {
-                return;
-            }
-            param2.removeEventListener(MouseEvent.CLICK, this.closePopup);
-            if (param2.parent)
-            {
-                param2.parent.removeChild(param2);
-            }
-            if (param2 == this._currentPopup)
-            {
-                this._currentPopup = null;
-            }
-            return;
-        }// end function
+      private var _currentRenderId:uint;
 
-        private function onNewData(event:MapEditorDataEvent) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            var _loc_11:* = 0;
-            var _loc_12:* = 0;
-            var _loc_13:* = 0;
-            var _loc_14:* = null;
-            this.displayPopup("DonnÃ©es provenant de l\'Ã©diteur " + event.data.type, COLOR_CONNECTED);
-            switch(event.data.type)
-            {
-                case MapEditorMessage.MESSAGE_TYPE_DLM:
-                {
-                    this.displayPopup("Rendu d\'une map provenant de l\'Ã©diteur", COLOR_CONNECTED);
-                    _log.info("Rendu d\'une map provenant de l\'Ã©diteur");
-                    _loc_2 = new MapsAdapter();
-                    _loc_2.loadFromData(new Uri(), event.data.data, new ResourceObserverWrapper(this.onDmlLoaded), false);
-                    break;
-                }
-                case MapEditorMessage.MESSAGE_TYPE_ELE:
-                {
-                    this.displayPopup("DonnÃ©e sur les Ã©lÃ©ments", COLOR_CONNECTED);
-                    _log.info("Parsing du fichier .ele provenant de l\'Ã©diteur");
-                    _loc_3 = new ElementsAdapter();
-                    _loc_3.loadFromData(new Uri(), event.data.data, new ResourceObserverWrapper(), false);
-                    break;
-                }
-                case MapEditorMessage.MESSAGE_TYPE_NPC:
-                {
-                    _loc_4 = event.data.data.readInt();
-                    _loc_5 = event.data.data.readInt();
-                    _loc_6 = new Vector.<GameRolePlayActorInformations>;
-                    _loc_9 = 0;
-                    while (_loc_9 < _loc_5)
-                    {
-                        
-                        _loc_10 = new GameRolePlayNpcInformations();
-                        _loc_11 = event.data.data.readShort();
-                        _loc_12 = event.data.data.readInt();
-                        _loc_13 = event.data.data.readByte();
-                        _loc_14 = new EntityDispositionInformations();
-                        _loc_14.initEntityDispositionInformations(_loc_11, _loc_13);
-                        _loc_10.initGameRolePlayNpcInformations(_loc_12, EntityLookAdapter.toNetwork(TiphonEntityLook.fromString(Npc.getNpcById(_loc_12).look)), _loc_14, _loc_12);
-                        _loc_6.push(_loc_10);
-                        _loc_9 = _loc_9 + 1;
-                    }
-                    _loc_7 = new MapComplementaryInformationsDataMessage();
-                    _loc_8 = SubArea.getSubAreaByMapId(_loc_4);
-                    _loc_7.initMapComplementaryInformationsDataMessage(_loc_8 ? (_loc_8.id) : (0), _loc_4, 0, new Vector.<HouseInformations>, _loc_6, new Vector.<InteractiveElement>, new Vector.<StatedElement>, new Vector.<MapObstacle>, new Vector.<FightCommonInformations>);
-                    if (this._lastRenderedId == MapDisplayManager.getInstance().currentRenderId)
-                    {
-                        Kernel.getWorker().process(_loc_7);
-                        this._currentNpcInfos = null;
-                    }
-                    else
-                    {
-                        this._currentNpcInfos = _loc_7;
-                    }
-                    break;
-                }
-                case MapEditorMessage.MESSAGE_TYPE_HELLO:
-                {
-                    this.displayPopup("Hello Alea", COLOR_CONNECTED);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      private var _lastRenderedId:uint;
 
-        private function onMapRenderEnd(event:RenderMapEvent) : void
-        {
-            this._lastRenderedId = event.renderId;
-            if (this._currentNpcInfos && event.renderId == this._currentRenderId)
-            {
-                Kernel.getWorker().process(this._currentNpcInfos);
-                this._currentNpcInfos = null;
-            }
-            this.displayPopup("Taille des picto : " + StringUtils.formateIntToString(uint(MapDisplayManager.getInstance().renderer.gfxMemorySize / 1024)) + " Ko", COLOR_CONNECTED);
-            return;
-        }// end function
+      private function onMapRenderEnd(e:RenderMapEvent) : void {
+         this._lastRenderedId=e.renderId;
+         if((this._currentNpcInfos)&&(e.renderId==this._currentRenderId))
+         {
+            Kernel.getWorker().process(this._currentNpcInfos);
+            this._currentNpcInfos=null;
+         }
+         this.displayPopup("Taille des picto : "+StringUtils.formateIntToString(uint(MapDisplayManager.getInstance().renderer.gfxMemorySize/1024))+" Ko",COLOR_CONNECTED);
+      }
 
-        private function onDmlLoaded(param1:Uri, param2:uint, param3) : void
-        {
-            MapDisplayManager.getInstance().renderer.useDefautState = true;
-            var _loc_4:* = new Map();
-            new Map().fromRaw(param3);
-            this._currentRenderId = MapDisplayManager.getInstance().fromMap(_loc_4);
-            return;
-        }// end function
+      private function onDmlLoaded(uri:Uri, resourceType:uint, resource:*) : void {
+         MapDisplayManager.getInstance().renderer.useDefautState=true;
+         var map:Map = new Map();
+         map.fromRaw(resource);
+         this._currentRenderId=MapDisplayManager.getInstance().fromMap(map);
+      }
 
-        private function onConnect(event:Event) : void
-        {
-            this.displayPopup("ConnectÃ© Ã  l\'Ã©diteur", COLOR_CONNECTED);
-            _log.info("ConnectÃ© Ã  l\'Ã©diteur de map");
-            MapDisplayManager.getInstance().renderer.addEventListener(RenderMapEvent.MAP_RENDER_END, this.onMapRenderEnd);
-            return;
-        }// end function
+      private function onConnect(e:Event) : void {
+         this.displayPopup("Connecté à l\'éditeur",COLOR_CONNECTED);
+         _log.info("Connecté à l\'éditeur de map");
+         MapDisplayManager.getInstance().renderer.addEventListener(RenderMapEvent.MAP_RENDER_END,this.onMapRenderEnd);
+      }
 
-        private function onDataProgress(event:Event) : void
-        {
-            this.displayPopup("RÃ©ception de donnÃ©es", COLOR_CONNECTED);
-            _log.info("RÃ©ception de donnÃ©es");
-            return;
-        }// end function
+      private function onDataProgress(e:Event) : void {
+         this.displayPopup("Réception de données",COLOR_CONNECTED);
+         _log.info("Réception de données");
+      }
 
-        private function onClose(event:Event) : void
-        {
-            this.displayPopup("Connexion Ã  l\'Ã©diteur de map perdue", COLOR_CLOSE);
-            _log.info("Connexion Ã  l\'Ã©diteur de map perdue");
-            return;
-        }// end function
+      private function onClose(e:Event) : void {
+         this.displayPopup("Connexion à l\'éditeur de map perdue",COLOR_CLOSE);
+         _log.info("Connexion à l\'éditeur de map perdue");
+      }
+   }
 
-    }
 }

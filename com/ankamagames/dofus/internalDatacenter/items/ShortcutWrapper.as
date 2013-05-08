@@ -1,593 +1,578 @@
-﻿package com.ankamagames.dofus.internalDatacenter.items
+package com.ankamagames.dofus.internalDatacenter.items
 {
-    import com.ankamagames.dofus.internalDatacenter.communication.*;
-    import com.ankamagames.dofus.internalDatacenter.spells.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import flash.utils.Proxy;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.system.LoaderContext;
+   import com.ankamagames.dofus.internalDatacenter.communication.EmoteWrapper;
+   import com.ankamagames.dofus.logic.game.common.frames.EmoticonFrame;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+   import com.ankamagames.dofus.internalDatacenter.communication.SmileyWrapper;
+   import flash.utils.flash_proxy;
+   import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
+   import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
 
-    public class ShortcutWrapper extends Proxy implements ISlotData, IDataCenter
-    {
-        private var _uri:Uri;
-        private var _uriFullsize:Uri;
-        private var _backGroundIconUri:Uri;
-        private var _active:Boolean = true;
-        private var _setCount:int = 0;
-        public var slot:uint = 0;
-        public var id:int = 0;
-        public var gid:int = 0;
-        public var type:int = 0;
-        public var quantity:int = 0;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(ShortcutWrapper));
-        private static const TYPE_ITEM_WRAPPER:int = 0;
-        private static const TYPE_PRESET_WRAPPER:int = 1;
-        private static const TYPE_SPELL_WRAPPER:int = 2;
-        private static const TYPE_SMILEY_WRAPPER:int = 3;
-        private static const TYPE_EMOTE_WRAPPER:int = 4;
-        private static var _errorIconUri:Uri;
-        private static var _uriLoaderContext:LoaderContext;
-        private static var _properties:Array;
+   use namespace flash_proxy;
 
-        public function ShortcutWrapper()
-        {
-            return;
-        }// end function
+   public class ShortcutWrapper extends Proxy implements ISlotData, IDataCenter
+   {
+         
 
-        public function get iconUri() : Uri
-        {
-            return this.getIconUri(true);
-        }// end function
+      public function ShortcutWrapper() {
+         super();
+      }
 
-        public function get fullSizeIconUri() : Uri
-        {
-            return this.getIconUri(false);
-        }// end function
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ShortcutWrapper));
 
-        public function get backGroundIconUri() : Uri
-        {
-            if (!this._backGroundIconUri)
+      private static const TYPE_ITEM_WRAPPER:int = 0;
+
+      private static const TYPE_PRESET_WRAPPER:int = 1;
+
+      private static const TYPE_SPELL_WRAPPER:int = 2;
+
+      private static const TYPE_SMILEY_WRAPPER:int = 3;
+
+      private static const TYPE_EMOTE_WRAPPER:int = 4;
+
+      private static var _errorIconUri:Uri;
+
+      private static var _uriLoaderContext:LoaderContext;
+
+      private static var _properties:Array;
+
+      public static function create(slot:uint, id:uint, type:uint=0, gid:uint=0) : ShortcutWrapper {
+         var itemWrapper:ItemWrapper = null;
+         var emoteWrapper:EmoteWrapper = null;
+         var rpEmoteFrame:EmoticonFrame = null;
+         var item:ShortcutWrapper = new ShortcutWrapper();
+         item.slot=slot;
+         item.id=id;
+         item.type=type;
+         item.gid=gid;
+         if(type==TYPE_ITEM_WRAPPER)
+         {
+            if(id!=0)
             {
-                this._backGroundIconUri = new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
-            }
-            return this._backGroundIconUri;
-        }// end function
-
-        public function set backGroundIconUri(param1:Uri) : void
-        {
-            this._backGroundIconUri = param1;
-            return;
-        }// end function
-
-        public function get errorIconUri() : Uri
-        {
-            if (!_errorIconUri)
-            {
-                _errorIconUri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat("error.png"));
-            }
-            return _errorIconUri;
-        }// end function
-
-        public function get info1() : String
-        {
-            var _loc_1:* = null;
-            if (this.type == TYPE_ITEM_WRAPPER)
-            {
-                return this.quantity.toString();
-            }
-            if (this.type == TYPE_SPELL_WRAPPER)
-            {
-                _loc_1 = SpellWrapper.getFirstSpellWrapperById(this.id, this.getCharaId());
-                return _loc_1 ? (_loc_1.info1) : ("");
-            }
-            return "";
-        }// end function
-
-        public function get timer() : int
-        {
-            var _loc_1:* = null;
-            if (this.type == TYPE_EMOTE_WRAPPER)
-            {
-                _loc_1 = EmoteWrapper.getEmoteWrapperById(this.id);
-                return _loc_1 ? (_loc_1.timer) : (0);
-            }
-            return 0;
-        }// end function
-
-        public function get active() : Boolean
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            if (this.type == TYPE_SPELL_WRAPPER)
-            {
-                _loc_1 = SpellWrapper.getFirstSpellWrapperById(this.id, this.getCharaId());
-                return _loc_1 ? (_loc_1.active) : (false);
-            }
-            else if (this.type == TYPE_EMOTE_WRAPPER)
-            {
-                _loc_2 = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
-                return _loc_2.isKnownEmote(this.id);
-            }
-            return this._active;
-        }// end function
-
-        public function set active(param1:Boolean) : void
-        {
-            this._active = param1;
-            return;
-        }// end function
-
-        public function get realItem() : ISlotData
-        {
-            var _loc_1:* = null;
-            if (this.type == TYPE_ITEM_WRAPPER)
-            {
-                if (this.id != 0)
-                {
-                    _loc_1 = InventoryManager.getInstance().inventory.getItem(this.id);
-                }
-                else
-                {
-                    _loc_1 = ItemWrapper.create(0, 0, this.gid, 0, null, false);
-                }
-                return _loc_1;
+               itemWrapper=InventoryManager.getInstance().inventory.getItem(id);
             }
             else
             {
-                if (this.type == TYPE_PRESET_WRAPPER)
-                {
-                    return InventoryManager.getInstance().presets[this.id];
-                }
-                if (this.type == TYPE_SPELL_WRAPPER)
-                {
-                    return SpellWrapper.getFirstSpellWrapperById(this.id, this.getCharaId());
-                }
-                if (this.type == TYPE_EMOTE_WRAPPER)
-                {
-                    return EmoteWrapper.getEmoteWrapperById(this.id);
-                }
-                if (this.type == TYPE_SMILEY_WRAPPER)
-                {
-                    return SmileyWrapper.getSmileyWrapperById(this.id);
-                }
+               itemWrapper=ItemWrapper.create(0,0,gid,0,null,false);
             }
-            return null;
-        }// end function
+            if(itemWrapper)
+            {
+               item.quantity=itemWrapper.quantity;
+            }
+            if(item.quantity==0)
+            {
+               item.active=false;
+            }
+            else
+            {
+               item.active=true;
+            }
+         }
+         if(type==TYPE_EMOTE_WRAPPER)
+         {
+            emoteWrapper=EmoteWrapper.create(item.id,item.slot);
+            rpEmoteFrame=Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
+            if(rpEmoteFrame.isKnownEmote(item.id))
+            {
+               item.active=true;
+            }
+            else
+            {
+               item.active=false;
+            }
+         }
+         return item;
+      }
 
-        override function getProperty(param1)
-        {
-            var itemWrapper:ItemWrapper;
-            var presetWrapper:PresetWrapper;
-            var emoteWrapper:EmoteWrapper;
-            var spellWrapper:SpellWrapper;
-            var name:* = param1;
-            if (isAttribute(name))
+      private var _uri:Uri;
+
+      private var _uriFullsize:Uri;
+
+      private var _backGroundIconUri:Uri;
+
+      private var _active:Boolean = true;
+
+      private var _setCount:int = 0;
+
+      public var slot:uint = 0;
+
+      public var id:int = 0;
+
+      public var gid:int = 0;
+
+      public var type:int = 0;
+
+      public var quantity:int = 0;
+
+      public function get iconUri() : Uri {
+         return this.getIconUri(true);
+      }
+
+      public function get fullSizeIconUri() : Uri {
+         return this.getIconUri(false);
+      }
+
+      public function get backGroundIconUri() : Uri {
+         if(!this._backGroundIconUri)
+         {
+            this._backGroundIconUri=new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
+         }
+         return this._backGroundIconUri;
+      }
+
+      public function set backGroundIconUri(bgUri:Uri) : void {
+         this._backGroundIconUri=bgUri;
+      }
+
+      public function get errorIconUri() : Uri {
+         if(!_errorIconUri)
+         {
+            _errorIconUri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.item.bitmap").concat("error.png"));
+         }
+         return _errorIconUri;
+      }
+
+      public function get info1() : String {
+         var spellWrapper:SpellWrapper = null;
+         if(this.type==TYPE_ITEM_WRAPPER)
+         {
+            return this.quantity.toString();
+         }
+         if(this.type==TYPE_SPELL_WRAPPER)
+         {
+            spellWrapper=SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
+            return spellWrapper?spellWrapper.info1:"";
+         }
+         return "";
+      }
+
+      public function get timer() : int {
+         var emoteWrapper:EmoteWrapper = null;
+         if(this.type==TYPE_EMOTE_WRAPPER)
+         {
+            emoteWrapper=EmoteWrapper.getEmoteWrapperById(this.id);
+            return emoteWrapper?emoteWrapper.timer:0;
+         }
+         return 0;
+      }
+
+      public function get active() : Boolean {
+         var spellWrapper:SpellWrapper = null;
+         var rpEmoticonFrame:EmoticonFrame = null;
+         if(this.type==TYPE_SPELL_WRAPPER)
+         {
+            spellWrapper=SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
+            return spellWrapper?spellWrapper.active:false;
+         }
+         if(this.type==TYPE_EMOTE_WRAPPER)
+         {
+            rpEmoticonFrame=Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
+            return rpEmoticonFrame.isKnownEmote(this.id);
+         }
+         return this._active;
+      }
+
+      public function set active(b:Boolean) : void {
+         this._active=b;
+      }
+
+      public function get realItem() : ISlotData {
+         var itemWrapper:ItemWrapper = null;
+         if(this.type==TYPE_ITEM_WRAPPER)
+         {
+            if(this.id!=0)
             {
-                return this[name];
+               itemWrapper=InventoryManager.getInstance().inventory.getItem(this.id);
             }
-            if (this.type == TYPE_ITEM_WRAPPER)
+            else
             {
-                if (this.id != 0)
-                {
-                    itemWrapper = InventoryManager.getInstance().inventory.getItem(this.id);
-                }
-                else
-                {
-                    itemWrapper = ItemWrapper.create(0, 0, this.gid, 0, null, false);
-                }
-                if (!itemWrapper)
-                {
-                    _log.debug("Null item " + this.id + " - " + this.gid);
-                }
-                else
-                {
-                    try
-                    {
-                        return itemWrapper[name];
-                    }
-                    catch (e:Error)
-                    {
-                        if (e.getStackTrace())
-                        {
-                            _log.error("Item " + id + " " + gid + " " + name + " : " + e.getStackTrace());
-                        }
-                        return "Error_on_item_" + name;
-                    }
-                }
+               itemWrapper=ItemWrapper.create(0,0,this.gid,0,null,false);
             }
-            else if (this.type == TYPE_PRESET_WRAPPER)
+            return itemWrapper;
+         }
+         if(this.type==TYPE_PRESET_WRAPPER)
+         {
+            return InventoryManager.getInstance().presets[this.id];
+         }
+         if(this.type==TYPE_SPELL_WRAPPER)
+         {
+            return SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
+         }
+         if(this.type==TYPE_EMOTE_WRAPPER)
+         {
+            return EmoteWrapper.getEmoteWrapperById(this.id);
+         }
+         if(this.type==TYPE_SMILEY_WRAPPER)
+         {
+            return SmileyWrapper.getSmileyWrapperById(this.id);
+         }
+         return null;
+      }
+
+      override flash_proxy function getProperty(name:*) : * {
+         var itemWrapper:ItemWrapper = null;
+         var presetWrapper:PresetWrapper = null;
+         var emoteWrapper:EmoteWrapper = null;
+         var spellWrapper:SpellWrapper = null;
+         if(isAttribute(name))
+         {
+            return this[name];
+         }
+         if(this.type==TYPE_ITEM_WRAPPER)
+         {
+            if(this.id!=0)
             {
-                presetWrapper = InventoryManager.getInstance().presets[this.id];
-                if (!presetWrapper)
-                {
-                    _log.debug("Null preset " + this.id + " - " + this.gid);
-                }
-                else
-                {
-                    try
-                    {
+               itemWrapper=InventoryManager.getInstance().inventory.getItem(this.id);
+            }
+            else
+            {
+               itemWrapper=ItemWrapper.create(0,0,this.gid,0,null,false);
+            }
+            if(!itemWrapper)
+            {
+               _log.debug("Null item "+this.id+" - "+this.gid);
+            }
+            try
+            {
+               return itemWrapper[name];
+            }
+            catch(e:Error)
+            {
+               if(e.getStackTrace())
+               {
+                  _log.error("Item "+id+" "+gid+" "+name+" : "+e.getStackTrace());
+               }
+               return "Error_on_item_"+name;
+            }
+         }
+         else
+         {
+            if(this.type==TYPE_PRESET_WRAPPER)
+            {
+               presetWrapper=InventoryManager.getInstance().presets[this.id];
+               if(!presetWrapper)
+               {
+                  _log.debug("Null preset "+this.id+" - "+this.gid);
+               }
+               try
+               {
+                  return presetWrapper[name];
+               }
+               catch(e:Error)
+               {
+                  if(e.getStackTrace())
+                  {
+                     _log.error("Preset "+id+" "+name+" : "+e.getStackTrace());
+                  }
+                  return "Error_on_preset_"+name;
+               }
+            }
+            else
+            {
+               if(this.type==TYPE_EMOTE_WRAPPER)
+               {
+                  emoteWrapper=EmoteWrapper.getEmoteWrapperById(this.id);
+                  if(!emoteWrapper)
+                  {
+                     _log.debug("Null emote "+this.id);
+                  }
+                  try
+                  {
+                     return emoteWrapper[name];
+                  }
+                  catch(e:Error)
+                  {
+                     if(e.getStackTrace())
+                     {
+                        _log.error("Emote "+id+" "+name+" : "+e.getStackTrace());
+                     }
+                     return "Error_on_emote_"+name;
+                  }
+               }
+               else
+               {
+                  if(this.type==TYPE_SPELL_WRAPPER)
+                  {
+                     spellWrapper=SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
+                     if(!spellWrapper)
+                     {
+                        _log.debug("Null preset "+this.id+" - "+this.gid);
+                     }
+                     try
+                     {
                         return presetWrapper[name];
-                    }
-                    catch (e:Error)
-                    {
-                        if (e.getStackTrace())
+                     }
+                     catch(e:Error)
+                     {
+                        if(e.getStackTrace())
                         {
-                            _log.error("Preset " + id + " " + name + " : " + e.getStackTrace());
+                           _log.error("Preset "+id+" "+name+" : "+e.getStackTrace());
                         }
-                        return "Error_on_preset_" + name;
-                    }
-                }
+                        return "Error_on_preset_"+name;
+                     }
+                  }
+               }
             }
-            else if (this.type == TYPE_EMOTE_WRAPPER)
+         }
+         return "Error on getProperty "+name;
+      }
+
+      override flash_proxy function callProperty(name:*, ... rest) : * {
+         var res:* = undefined;
+         switch(QName(name).localName)
+         {
+            case "toString":
+               res="[ShortcutWrapper : type "+this.type+", id "+this.id+", slot "+this.slot+", gid "+this.gid+", quantity "+this.quantity+"]";
+               break;
+            case "hasOwnProperty":
+               res=this.hasProperty(name);
+               break;
+         }
+         return res;
+      }
+
+      override flash_proxy function nextNameIndex(index:int) : int {
+         return 0;
+      }
+
+      override flash_proxy function nextName(index:int) : String {
+         return "nextName";
+      }
+
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return false;
+      }
+
+      public function update(slot:uint, id:uint, type:uint=0, gid:uint=0) : void {
+         var itemWrapper:ItemWrapper = null;
+         var rpEmoteFrame:EmoticonFrame = null;
+         if((!(this.id==id))||(!(this.type==type)))
+         {
+            this._uri=this._uriFullsize=null;
+         }
+         this.slot=slot;
+         this.id=id;
+         this.type=type;
+         this.gid=gid;
+         this.active=true;
+         if(this.type==TYPE_ITEM_WRAPPER)
+         {
+            if(this.id!=0)
             {
-                emoteWrapper = EmoteWrapper.getEmoteWrapperById(this.id);
-                if (!emoteWrapper)
-                {
-                    _log.debug("Null emote " + this.id);
-                }
-                else
-                {
-                    try
-                    {
-                        return emoteWrapper[name];
-                    }
-                    catch (e:Error)
-                    {
-                        if (e.getStackTrace())
+               itemWrapper=InventoryManager.getInstance().inventory.getItem(this.id);
+            }
+            else
+            {
+               itemWrapper=ItemWrapper.create(0,0,this.gid,0,null,false);
+            }
+            if(itemWrapper)
+            {
+               this.quantity=itemWrapper.quantity;
+            }
+            if(this.quantity==0)
+            {
+               this.active=false;
+            }
+         }
+         if(this.type==TYPE_PRESET_WRAPPER)
+         {
+            this._uri=this._uriFullsize=null;
+         }
+         if(type==TYPE_EMOTE_WRAPPER)
+         {
+            rpEmoteFrame=Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
+            if(!rpEmoteFrame.isKnownEmote(id))
+            {
+               this.active=false;
+            }
+         }
+      }
+
+      public function getIconUri(pngMode:Boolean=true) : Uri {
+         var itemWrapper:ItemWrapper = null;
+         var fakeItemWrapper:ItemWrapper = null;
+         var presetWrapper:PresetWrapper = null;
+         var spellWrapper:SpellWrapper = null;
+         var smileyWrapper:SmileyWrapper = null;
+         var emoteWrapper:EmoteWrapper = null;
+         if((!(this.type==TYPE_SPELL_WRAPPER))||(!(this.id==0)))
+         {
+            if((pngMode)&&(this._uri))
+            {
+               return this._uri;
+            }
+            if((!pngMode)&&(this._uriFullsize))
+            {
+               return this._uriFullsize;
+            }
+         }
+         if(this.type==TYPE_ITEM_WRAPPER)
+         {
+            if(this.id!=0)
+            {
+               itemWrapper=InventoryManager.getInstance().inventory.getItem(this.id);
+               if(itemWrapper)
+               {
+                  this._uri=itemWrapper.iconUri;
+                  this._uriFullsize=itemWrapper.fullSizeIconUri;
+               }
+               else
+               {
+                  this._uri=this._uriFullsize=null;
+               }
+            }
+            else
+            {
+               fakeItemWrapper=ItemWrapper.create(0,0,this.gid,0,null,false);
+               if(fakeItemWrapper)
+               {
+                  this._uri=fakeItemWrapper.iconUri;
+                  this._uriFullsize=fakeItemWrapper.fullSizeIconUri;
+               }
+               else
+               {
+                  this._uri=this._uriFullsize=null;
+               }
+            }
+         }
+         else
+         {
+            if(this.type==TYPE_PRESET_WRAPPER)
+            {
+               presetWrapper=InventoryManager.getInstance().presets[this.id];
+               if(presetWrapper)
+               {
+                  this._uri=presetWrapper.iconUri;
+                  this._uriFullsize=presetWrapper.fullSizeIconUri;
+               }
+               else
+               {
+                  this._uri=this._uriFullsize=null;
+               }
+            }
+            else
+            {
+               if(this.type==TYPE_SPELL_WRAPPER)
+               {
+                  spellWrapper=SpellWrapper.getFirstSpellWrapperById(this.id,this.getCharaId());
+                  if(spellWrapper)
+                  {
+                     this._uri=spellWrapper.iconUri;
+                     this._uriFullsize=spellWrapper.fullSizeIconUri;
+                  }
+                  else
+                  {
+                     this._uri=this._uriFullsize=null;
+                  }
+               }
+               else
+               {
+                  if(this.type==TYPE_SMILEY_WRAPPER)
+                  {
+                     smileyWrapper=SmileyWrapper.getSmileyWrapperById(this.id);
+                     if(smileyWrapper)
+                     {
+                        this._uri=smileyWrapper.iconUri;
+                        this._uriFullsize=smileyWrapper.fullSizeIconUri;
+                     }
+                     else
+                     {
+                        this._uri=this._uriFullsize=null;
+                     }
+                  }
+                  else
+                  {
+                     if(this.type==TYPE_EMOTE_WRAPPER)
+                     {
+                        emoteWrapper=EmoteWrapper.getEmoteWrapperById(this.id);
+                        if(emoteWrapper)
                         {
-                            _log.error("Emote " + id + " " + name + " : " + e.getStackTrace());
+                           this._uri=emoteWrapper.iconUri;
+                           this._uriFullsize=emoteWrapper.fullSizeIconUri;
                         }
-                        return "Error_on_emote_" + name;
-                    }
-                }
-            }
-            else if (this.type == TYPE_SPELL_WRAPPER)
-            {
-                spellWrapper = SpellWrapper.getFirstSpellWrapperById(this.id, this.getCharaId());
-                if (!spellWrapper)
-                {
-                    _log.debug("Null preset " + this.id + " - " + this.gid);
-                }
-                else
-                {
-                    try
-                    {
-                        return presetWrapper[name];
-                    }
-                    catch (e:Error)
-                    {
-                        if (e.getStackTrace())
+                        else
                         {
-                            _log.error("Preset " + id + " " + name + " : " + e.getStackTrace());
+                           this._uri=this._uriFullsize=null;
                         }
-                        return "Error_on_preset_" + name;
-                    }
-                }
+                     }
+                  }
+               }
             }
-            return "Error on getProperty " + name;
-        }// end function
+         }
+         if((pngMode)&&(this._uri))
+         {
+            return this._uri;
+         }
+         if((!pngMode)&&(this._uriFullsize))
+         {
+            return this._uriFullsize;
+         }
+         return null;
+      }
 
-        override function callProperty(param1, ... args)
-        {
-            args = undefined;
-            switch(QName(param1).localName)
-            {
-                case "toString":
-                {
-                    args = "[ShortcutWrapper : type " + this.type + ", id " + this.id + ", slot " + this.slot + ", gid " + this.gid + ", quantity " + this.quantity + "]";
-                    break;
-                }
-                case "hasOwnProperty":
-                {
-                    args = this.hasProperty(param1);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return args;
-        }// end function
+      public function clone() : ShortcutWrapper {
+         var shortcut:ShortcutWrapper = new ShortcutWrapper();
+         shortcut.slot=this.slot;
+         shortcut.id=this.id;
+         shortcut.type=this.type;
+         shortcut.gid=this.gid;
+         shortcut.quantity=this.quantity;
+         return shortcut;
+      }
 
-        override function nextNameIndex(param1:int) : int
-        {
-            return 0;
-        }// end function
+      public function addHolder(h:ISlotDataHolder) : void {
+         var spellWrappers:Array = null;
+         var spellWrapper:SpellWrapper = null;
+         var emoteWrapper:EmoteWrapper = null;
+         if(this.type==TYPE_SPELL_WRAPPER)
+         {
+            spellWrappers=SpellWrapper.getSpellWrappersById(this.id,this.getCharaId());
+            for each (spellWrapper in spellWrappers)
+            {
+               if(spellWrapper)
+               {
+                  spellWrapper.addHolder(h);
+                  spellWrapper.setLinkedSlotData(this);
+               }
+            }
+         }
+         else
+         {
+            if(this.type==TYPE_EMOTE_WRAPPER)
+            {
+               emoteWrapper=EmoteWrapper.getEmoteWrapperById(this.id);
+               if(emoteWrapper)
+               {
+                  emoteWrapper.addHolder(h);
+                  emoteWrapper.setLinkedSlotData(this);
+               }
+            }
+         }
+      }
 
-        override function nextName(param1:int) : String
-        {
-            return "nextName";
-        }// end function
+      public function removeHolder(h:ISlotDataHolder) : void {
+         
+      }
 
-        override function hasProperty(param1) : Boolean
-        {
-            return false;
-        }// end function
+      private function getCharaId() : int {
+         if(CurrentPlayedFighterManager.getInstance().currentFighterId)
+         {
+            return CurrentPlayedFighterManager.getInstance().currentFighterId;
+         }
+         return PlayedCharacterManager.getInstance().id;
+      }
+   }
 
-        public function update(param1:uint, param2:uint, param3:uint = 0, param4:uint = 0) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            if (this.id != param2 || this.type != param3)
-            {
-                var _loc_7:* = null;
-                this._uriFullsize = null;
-                this._uri = _loc_7;
-            }
-            this.slot = param1;
-            this.id = param2;
-            this.type = param3;
-            this.gid = param4;
-            this.active = true;
-            if (this.type == TYPE_ITEM_WRAPPER)
-            {
-                if (this.id != 0)
-                {
-                    _loc_5 = InventoryManager.getInstance().inventory.getItem(this.id);
-                }
-                else
-                {
-                    _loc_5 = ItemWrapper.create(0, 0, this.gid, 0, null, false);
-                }
-                if (_loc_5)
-                {
-                    this.quantity = _loc_5.quantity;
-                }
-                if (this.quantity == 0)
-                {
-                    this.active = false;
-                }
-            }
-            if (this.type == TYPE_PRESET_WRAPPER)
-            {
-                var _loc_7:* = null;
-                this._uriFullsize = null;
-                this._uri = _loc_7;
-            }
-            if (param3 == TYPE_EMOTE_WRAPPER)
-            {
-                _loc_6 = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
-                if (!_loc_6.isKnownEmote(param2))
-                {
-                    this.active = false;
-                }
-            }
-            return;
-        }// end function
-
-        public function getIconUri(param1:Boolean = true) : Uri
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            if (this.type != TYPE_SPELL_WRAPPER || this.id != 0)
-            {
-                if (param1 && this._uri)
-                {
-                    return this._uri;
-                }
-                if (!param1 && this._uriFullsize)
-                {
-                    return this._uriFullsize;
-                }
-            }
-            if (this.type == TYPE_ITEM_WRAPPER)
-            {
-                if (this.id != 0)
-                {
-                    _loc_2 = InventoryManager.getInstance().inventory.getItem(this.id);
-                    if (_loc_2)
-                    {
-                        this._uri = _loc_2.iconUri;
-                        this._uriFullsize = _loc_2.fullSizeIconUri;
-                    }
-                    else
-                    {
-                        var _loc_8:* = null;
-                        this._uriFullsize = null;
-                        this._uri = _loc_8;
-                    }
-                }
-                else
-                {
-                    _loc_3 = ItemWrapper.create(0, 0, this.gid, 0, null, false);
-                    if (_loc_3)
-                    {
-                        this._uri = _loc_3.iconUri;
-                        this._uriFullsize = _loc_3.fullSizeIconUri;
-                    }
-                    else
-                    {
-                        var _loc_8:* = null;
-                        this._uriFullsize = null;
-                        this._uri = _loc_8;
-                    }
-                }
-            }
-            else if (this.type == TYPE_PRESET_WRAPPER)
-            {
-                _loc_4 = InventoryManager.getInstance().presets[this.id];
-                if (_loc_4)
-                {
-                    this._uri = _loc_4.iconUri;
-                    this._uriFullsize = _loc_4.fullSizeIconUri;
-                }
-                else
-                {
-                    var _loc_8:* = null;
-                    this._uriFullsize = null;
-                    this._uri = _loc_8;
-                }
-            }
-            else if (this.type == TYPE_SPELL_WRAPPER)
-            {
-                _loc_5 = SpellWrapper.getFirstSpellWrapperById(this.id, this.getCharaId());
-                if (_loc_5)
-                {
-                    this._uri = _loc_5.iconUri;
-                    this._uriFullsize = _loc_5.fullSizeIconUri;
-                }
-                else
-                {
-                    var _loc_8:* = null;
-                    this._uriFullsize = null;
-                    this._uri = _loc_8;
-                }
-            }
-            else if (this.type == TYPE_SMILEY_WRAPPER)
-            {
-                _loc_6 = SmileyWrapper.getSmileyWrapperById(this.id);
-                if (_loc_6)
-                {
-                    this._uri = _loc_6.iconUri;
-                    this._uriFullsize = _loc_6.fullSizeIconUri;
-                }
-                else
-                {
-                    var _loc_8:* = null;
-                    this._uriFullsize = null;
-                    this._uri = _loc_8;
-                }
-            }
-            else if (this.type == TYPE_EMOTE_WRAPPER)
-            {
-                _loc_7 = EmoteWrapper.getEmoteWrapperById(this.id);
-                if (_loc_7)
-                {
-                    this._uri = _loc_7.iconUri;
-                    this._uriFullsize = _loc_7.fullSizeIconUri;
-                }
-                else
-                {
-                    var _loc_8:* = null;
-                    this._uriFullsize = null;
-                    this._uri = _loc_8;
-                }
-            }
-            if (param1 && this._uri)
-            {
-                return this._uri;
-            }
-            if (!param1 && this._uriFullsize)
-            {
-                return this._uriFullsize;
-            }
-            return null;
-        }// end function
-
-        public function clone() : ShortcutWrapper
-        {
-            var _loc_1:* = new ShortcutWrapper();
-            _loc_1.slot = this.slot;
-            _loc_1.id = this.id;
-            _loc_1.type = this.type;
-            _loc_1.gid = this.gid;
-            _loc_1.quantity = this.quantity;
-            return _loc_1;
-        }// end function
-
-        public function addHolder(param1:ISlotDataHolder) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (this.type == TYPE_SPELL_WRAPPER)
-            {
-                _loc_2 = SpellWrapper.getSpellWrappersById(this.id, this.getCharaId());
-                for each (_loc_3 in _loc_2)
-                {
-                    
-                    if (_loc_3)
-                    {
-                        _loc_3.addHolder(param1);
-                        _loc_3.setLinkedSlotData(this);
-                    }
-                }
-            }
-            else if (this.type == TYPE_EMOTE_WRAPPER)
-            {
-                _loc_4 = EmoteWrapper.getEmoteWrapperById(this.id);
-                if (_loc_4)
-                {
-                    _loc_4.addHolder(param1);
-                    _loc_4.setLinkedSlotData(this);
-                }
-            }
-            return;
-        }// end function
-
-        public function removeHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
-
-        private function getCharaId() : int
-        {
-            if (CurrentPlayedFighterManager.getInstance().currentFighterId)
-            {
-                return CurrentPlayedFighterManager.getInstance().currentFighterId;
-            }
-            return PlayedCharacterManager.getInstance().id;
-        }// end function
-
-        public static function create(param1:uint, param2:uint, param3:uint = 0, param4:uint = 0) : ShortcutWrapper
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_5:* = new ShortcutWrapper;
-            new ShortcutWrapper.slot = param1;
-            _loc_5.id = param2;
-            _loc_5.type = param3;
-            _loc_5.gid = param4;
-            if (param3 == TYPE_ITEM_WRAPPER)
-            {
-                if (param2 != 0)
-                {
-                    _loc_6 = InventoryManager.getInstance().inventory.getItem(param2);
-                }
-                else
-                {
-                    _loc_6 = ItemWrapper.create(0, 0, param4, 0, null, false);
-                }
-                if (_loc_6)
-                {
-                    _loc_5.quantity = _loc_6.quantity;
-                }
-                if (_loc_5.quantity == 0)
-                {
-                    _loc_5.active = false;
-                }
-                else
-                {
-                    _loc_5.active = true;
-                }
-            }
-            if (param3 == TYPE_EMOTE_WRAPPER)
-            {
-                _loc_7 = EmoteWrapper.create(_loc_5.id, _loc_5.slot);
-                _loc_8 = Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
-                if (_loc_8.isKnownEmote(_loc_5.id))
-                {
-                    _loc_5.active = true;
-                }
-                else
-                {
-                    _loc_5.active = false;
-                }
-            }
-            return _loc_5;
-        }// end function
-
-    }
 }

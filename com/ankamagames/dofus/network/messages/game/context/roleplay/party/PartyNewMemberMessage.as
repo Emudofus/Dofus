@@ -1,80 +1,68 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
-    import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PartyNewMemberMessage extends PartyUpdateMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 6306;
 
-        public function PartyNewMemberMessage()
-        {
-            return;
-        }// end function
+   public class PartyNewMemberMessage extends PartyUpdateMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function PartyNewMemberMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6306;
-        }// end function
+      public static const protocolId:uint = 6306;
 
-        public function initPartyNewMemberMessage(param1:uint = 0, param2:PartyMemberInformations = null) : PartyNewMemberMessage
-        {
-            super.initPartyUpdateMessage(param1, param2);
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6306;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public function initPartyNewMemberMessage(partyId:uint=0, memberInformations:PartyMemberInformations=null) : PartyNewMemberMessage {
+         super.initPartyUpdateMessage(partyId,memberInformations);
+         this._isInitialized=true;
+         return this;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PartyNewMemberMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this._isInitialized=false;
+      }
 
-        public function serializeAs_PartyNewMemberMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_PartyUpdateMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PartyNewMemberMessage(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserializeAs_PartyNewMemberMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyNewMemberMessage(output);
+      }
 
-    }
+      public function serializeAs_PartyNewMemberMessage(output:IDataOutput) : void {
+         super.serializeAs_PartyUpdateMessage(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyNewMemberMessage(input);
+      }
+
+      public function deserializeAs_PartyNewMemberMessage(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

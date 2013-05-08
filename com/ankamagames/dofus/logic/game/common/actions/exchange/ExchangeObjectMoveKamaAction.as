@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.exchange
+package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeObjectMoveKamaAction extends Object implements Action
-    {
-        public var kamas:uint;
 
-        public function ExchangeObjectMoveKamaAction()
-        {
-            return;
-        }// end function
+   public class ExchangeObjectMoveKamaAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : ExchangeObjectMoveKamaAction
-        {
-            var _loc_2:* = new ExchangeObjectMoveKamaAction;
-            _loc_2.kamas = param1;
-            return _loc_2;
-        }// end function
+      public function ExchangeObjectMoveKamaAction() {
+         super();
+      }
 
-    }
+      public static function create(pKamas:uint) : ExchangeObjectMoveKamaAction {
+         var a:ExchangeObjectMoveKamaAction = new ExchangeObjectMoveKamaAction();
+         a.kamas=pKamas;
+         return a;
+      }
+
+      public var kamas:uint;
+   }
+
 }

@@ -1,221 +1,229 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.utils.errors.*;
-    import com.ankamagames.dofus.modules.utils.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.files.*;
-    import flash.filesystem.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.utils.files.FileUtils;
+   import com.ankamagames.berilia.utils.errors.ApiError;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.dofus.modules.utils.ModuleFilestream;
+   import flash.filesystem.File;
+   import com.ankamagames.dofus.modules.utils.ModuleFileManager;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
 
-    public class FileApi extends Object implements IApi
-    {
-        private var _loader:IResourceLoader;
-        private var _module:UiModule;
-        private var _openedFiles:Dictionary;
 
-        public function FileApi()
-        {
-            this._openedFiles = new Dictionary();
-            this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
-            this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onError);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onLoaded);
-            return;
-        }// end function
+   public class FileApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function FileApi() {
+         this._openedFiles=new Dictionary();
+         super();
+         this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
+         this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onError);
+         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoaded);
+      }
 
-        public function destroy() : void
-        {
-            var _loc_1:* = undefined;
-            this._module = null;
-            var _loc_2:* = 0;
-            var _loc_3:* = this._openedFiles;
-            do
+
+
+      private var _loader:IResourceLoader;
+
+      private var _module:UiModule;
+
+      private var _openedFiles:Dictionary;
+
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
+
+      public function destroy() : void {
+         var mfs:* = undefined;
+         this._module=null;
+         for (mfs in this._openedFiles)
+         {
+            if(mfs)
             {
-                
-                _loc_1 = _loc_3[_loc_2];
-                if (_loc_1)
-                {
-                    try
-                    {
-                        _loc_1.close();
-                    }
-                    catch (e:Error)
-                    {
-                    }
-                }
-            }while (_loc_3 in _loc_2)
-            this._openedFiles = null;
-            return;
-        }// end function
-
-        public function loadXmlFile(param1:String, param2:Function, param3:Function = null) : void
-        {
-            if (FileUtils.getExtension(param1).toUpperCase() != "XML")
-            {
-                throw new ApiError("loadXmlFile can only load file with XML extension");
+               try
+               {
+                  mfs.close();
+               }
+               catch(e:Error)
+               {
+               }
             }
-            if (!param1)
+         }
+         this._openedFiles=null;
+      }
+
+      public function loadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function=null) : void {
+         if(FileUtils.getExtension(url).toUpperCase()!="XML")
+         {
+            throw new ApiError("loadXmlFile can only load file with XML extension");
+         }
+         else
+         {
+            if(!url)
             {
-                throw new ApiError("loadXmlFile need a non-null url");
+               throw new ApiError("loadXmlFile need a non-null url");
             }
-            if (param2 == null)
+            else
             {
-                throw new ApiError("loadXmlFile need a non-null success callback function");
+               if(loadSuccessCallBack==null)
+               {
+                  throw new ApiError("loadXmlFile need a non-null success callback function");
+               }
+               else
+               {
+                  url=this._module.rootPath+url.replace("..","");
+                  uri=new Uri(url);
+                  uri.tag=
+                     {
+                        loadSuccessCallBack:loadSuccessCallBack,
+                        loadErrorCallBack:loadErrorCallBack
+                     }
+                  ;
+                  this._loader.load(uri);
+                  return;
+               }
             }
-            param1 = this._module.rootPath + param1.replace("..", "");
-            var _loc_4:* = new Uri(param1);
-            new Uri(param1).tag = {loadSuccessCallBack:param2, loadErrorCallBack:param3};
-            this._loader.load(_loc_4);
-            return;
-        }// end function
+         }
+      }
 
-        public function trustedLoadXmlFile(param1:String, param2:Function, param3:Function = null) : void
-        {
-            if (FileUtils.getExtension(param1).toUpperCase() != "XML")
+      public function trustedLoadXmlFile(url:String, loadSuccessCallBack:Function, loadErrorCallBack:Function=null) : void {
+         if(FileUtils.getExtension(url).toUpperCase()!="XML")
+         {
+            throw new ApiError("loadXmlFile can only load file with XML extension");
+         }
+         else
+         {
+            if(!url)
             {
-                throw new ApiError("loadXmlFile can only load file with XML extension");
+               throw new ApiError("loadXmlFile need a non-null url");
             }
-            if (!param1)
+            else
             {
-                throw new ApiError("loadXmlFile need a non-null url");
+               if(loadSuccessCallBack==null)
+               {
+                  throw new ApiError("loadXmlFile need a non-null success callback function");
+               }
+               else
+               {
+                  uri=new Uri(url);
+                  uri.tag=
+                     {
+                        loadSuccessCallBack:loadSuccessCallBack,
+                        loadErrorCallBack:loadErrorCallBack
+                     }
+                  ;
+                  this._loader.load(uri);
+                  return;
+               }
             }
-            if (param2 == null)
+         }
+      }
+
+      public function openFile(url:String, openMode:String="update") : ModuleFilestream {
+         var mf:ModuleFilestream = new ModuleFilestream(url,openMode,this._module);
+         this._openedFiles[mf]=url;
+         return mf;
+      }
+
+      public function deleteFile(url:String) : void {
+         var url:String = ModuleFilestream.cleanUrl(url);
+         var file:File = new File(this._module.storagePath+url+".dmf");
+         if((file.exists)&&(!file.isDirectory))
+         {
+            file.deleteFile();
+         }
+      }
+
+      public function deleteDir(url:String, recursive:Boolean=true) : void {
+         var url:String = ModuleFilestream.cleanUrl(url);
+         var file:File = new File(this._module.storagePath+url+".dmf");
+         if((file.exists)&&(file.isDirectory))
+         {
+            file.deleteDirectory(recursive);
+         }
+      }
+
+      public function getDirectoryContent(url:String=null, hideFiles:Boolean=false, hideDirectories:Boolean=false) : Array {
+         var files:Array = null;
+         var file:File = null;
+         var url:String = url?ModuleFilestream.cleanUrl(url):"";
+         var result:Array = [];
+         var dir:File = new File(this._module.storagePath+url);
+         if((dir.exists)&&(dir.isDirectory))
+         {
+            files=dir.getDirectoryListing();
+            for each (file in files)
             {
-                throw new ApiError("loadXmlFile need a non-null success callback function");
+               if((!file.isDirectory)&&(!hideFiles))
+               {
+                  result.push(file.name.substr(file.name.lastIndexOf(".dm")));
+               }
+               if((file.isDirectory)&&(!hideDirectories))
+               {
+                  result.push(file.name);
+               }
             }
-            var _loc_4:* = new Uri(param1);
-            new Uri(param1).tag = {loadSuccessCallBack:param2, loadErrorCallBack:param3};
-            this._loader.load(_loc_4);
-            return;
-        }// end function
+         }
+         return result;
+      }
 
-        public function openFile(param1:String, param2:String = "update") : ModuleFilestream
-        {
-            var _loc_3:* = new ModuleFilestream(param1, param2, this._module);
-            this._openedFiles[_loc_3] = param1;
-            return _loc_3;
-        }// end function
+      public function isDirectory(url:String) : Boolean {
+         var url:String = url?ModuleFilestream.cleanUrl(url):"";
+         var dir:File = new File(this._module.storagePath+url);
+         return (dir.exists)&&(dir.isDirectory);
+      }
 
-        public function deleteFile(param1:String) : void
-        {
-            param1 = ModuleFilestream.cleanUrl(param1);
-            var _loc_2:* = new File(this._module.storagePath + param1 + ".dmf");
-            if (_loc_2.exists && !_loc_2.isDirectory)
+      public function createDirectory(url:String) : void {
+         var url:String = url?ModuleFilestream.cleanUrl(url):"";
+         var dir:File = new File(this._module.storagePath+url);
+         ModuleFilestream.checkCreation(url,this._module);
+         dir.createDirectory();
+      }
+
+      public function getAvaibleSpace() : uint {
+         return ModuleFileManager.getInstance().getAvaibleSpace(this._module.id);
+      }
+
+      public function getUsedSpace() : uint {
+         return ModuleFileManager.getInstance().getUsedSpace(this._module.id);
+      }
+
+      public function getMaxSpace() : uint {
+         return ModuleFileManager.getInstance().getMaxSpace(this._module.id);
+      }
+
+      public function getUsedFileCount() : uint {
+         return ModuleFileManager.getInstance().getUsedFileCount(this._module.id);
+      }
+
+      public function getMaxFileCount() : uint {
+         return ModuleFileManager.getInstance().getMaxFileCount(this._module.id);
+      }
+
+      private function onLoaded(e:ResourceLoadedEvent) : void {
+         e.uri.tag.loadSuccessCallBack(e.resource);
+      }
+
+      private function onError(e:ResourceErrorEvent) : void {
+         if(e.uri.tag.loadErrorCallBack)
+         {
+            try
             {
-                _loc_2.deleteFile();
+               e.uri.tag.loadErrorCallBack(e.errorCode,e.errorMsg);
             }
-            return;
-        }// end function
-
-        public function deleteDir(param1:String, param2:Boolean = true) : void
-        {
-            param1 = ModuleFilestream.cleanUrl(param1);
-            var _loc_3:* = new File(this._module.storagePath + param1 + ".dmf");
-            if (_loc_3.exists && _loc_3.isDirectory)
+            catch(e:ArgumentError)
             {
-                _loc_3.deleteDirectory(param2);
+               throw new ApiError("loadErrorCallBack on loadXmlFile function need two args : onError(errorCode : uint, errorMsg : String)");
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-        public function getDirectoryContent(param1:String = null, param2:Boolean = false, param3:Boolean = false) : Array
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            param1 = param1 ? (ModuleFilestream.cleanUrl(param1)) : ("");
-            var _loc_4:* = [];
-            var _loc_5:* = new File(this._module.storagePath + param1);
-            if (new File(this._module.storagePath + param1).exists && _loc_5.isDirectory)
-            {
-                _loc_6 = _loc_5.getDirectoryListing();
-                for each (_loc_7 in _loc_6)
-                {
-                    
-                    if (!_loc_7.isDirectory && !param2)
-                    {
-                        _loc_4.push(_loc_7.name.substr(_loc_7.name.lastIndexOf(".dm")));
-                    }
-                    if (_loc_7.isDirectory && !param3)
-                    {
-                        _loc_4.push(_loc_7.name);
-                    }
-                }
-            }
-            return _loc_4;
-        }// end function
-
-        public function isDirectory(param1:String) : Boolean
-        {
-            param1 = param1 ? (ModuleFilestream.cleanUrl(param1)) : ("");
-            var _loc_2:* = new File(this._module.storagePath + param1);
-            return _loc_2.exists && _loc_2.isDirectory;
-        }// end function
-
-        public function createDirectory(param1:String) : void
-        {
-            param1 = param1 ? (ModuleFilestream.cleanUrl(param1)) : ("");
-            var _loc_2:* = new File(this._module.storagePath + param1);
-            ModuleFilestream.checkCreation(param1, this._module);
-            _loc_2.createDirectory();
-            return;
-        }// end function
-
-        public function getAvaibleSpace() : uint
-        {
-            return ModuleFileManager.getInstance().getAvaibleSpace(this._module.id);
-        }// end function
-
-        public function getUsedSpace() : uint
-        {
-            return ModuleFileManager.getInstance().getUsedSpace(this._module.id);
-        }// end function
-
-        public function getMaxSpace() : uint
-        {
-            return ModuleFileManager.getInstance().getMaxSpace(this._module.id);
-        }// end function
-
-        public function getUsedFileCount() : uint
-        {
-            return ModuleFileManager.getInstance().getUsedFileCount(this._module.id);
-        }// end function
-
-        public function getMaxFileCount() : uint
-        {
-            return ModuleFileManager.getInstance().getMaxFileCount(this._module.id);
-        }// end function
-
-        private function onLoaded(event:ResourceLoadedEvent) : void
-        {
-            event.uri.tag.loadSuccessCallBack(event.resource);
-            return;
-        }// end function
-
-        private function onError(event:ResourceErrorEvent) : void
-        {
-            var e:* = event;
-            if (e.uri.tag.loadErrorCallBack)
-            {
-                try
-                {
-                    e.uri.tag.loadErrorCallBack(e.errorCode, e.errorMsg);
-                }
-                catch (e:ArgumentError)
-                {
-                    throw new ApiError("loadErrorCallBack on loadXmlFile function need two args : onError(errorCode : uint, errorMsg : String)");
-                }
-            }
-            return;
-        }// end function
-
-    }
 }

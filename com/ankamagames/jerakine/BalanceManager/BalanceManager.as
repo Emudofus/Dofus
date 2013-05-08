@@ -1,221 +1,193 @@
-﻿package com.ankamagames.jerakine.BalanceManager
+package com.ankamagames.jerakine.BalanceManager
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.BalanceManager.events.*;
-    import com.ankamagames.jerakine.BalanceManager.type.*;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.BalanceManager.type.BalancedObject;
+   import com.ankamagames.jerakine.BalanceManager.events.BalanceEvent;
 
-    public class BalanceManager extends Object
-    {
-        private var _balancedObjects:Vector.<BalancedObject>;
-        private var _nbCall:uint = 0;
 
-        public function BalanceManager(param1:Array = null)
-        {
-            var _loc_2:* = null;
-            this.init();
-            if (param1 != null)
+   public class BalanceManager extends Object
+   {
+         
+
+      public function BalanceManager(pItems:Array=null) {
+         var item:Object = null;
+         super();
+         this.init();
+         if(pItems!=null)
+         {
+            for each (item in pItems)
             {
-                for each (_loc_2 in param1)
-                {
-                    
-                    this.addItem(_loc_2);
-                }
+               this.addItem(item);
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function get nbCall() : uint
-        {
-            return this._nbCall;
-        }// end function
 
-        public function getItemNbCall(param1:Object) : int
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this._balancedObjects)
+
+      private var _balancedObjects:Vector.<BalancedObject>;
+
+      private var _nbCall:uint = 0;
+
+      public function get nbCall() : uint {
+         return this._nbCall;
+      }
+
+      public function getItemNbCall(pItem:Object) : int {
+         var obt:BalancedObject = null;
+         for each (obt in this._balancedObjects)
+         {
+            if(pItem==obt.item)
             {
-                
-                if (param1 == _loc_2.item)
-                {
-                    return _loc_2.nbCall;
-                }
+               return obt.nbCall;
             }
-            return -1;
-        }// end function
+         }
+         return -1;
+      }
 
-        public function setItemBalance(param1:Object, param2:uint) : void
-        {
-            var _loc_3:* = null;
-            for each (_loc_3 in this._balancedObjects)
+      public function setItemBalance(pItem:Object, pNewBalance:uint) : void {
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
+         {
+            if(pItem==bo.item)
             {
-                
-                if (param1 == _loc_3.item)
-                {
-                    _loc_3.nbCall = param2;
-                    return;
-                }
+               bo.nbCall=pNewBalance;
+               return;
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function addItem(param1:Object, param2:Boolean = false) : void
-        {
-            this._balancedObjects.push(new BalancedObject(param1));
-            if (param2)
-            {
-                this._nbCall = 0;
-                this.resetBalance();
-            }
-            this.balanceItems();
-            return;
-        }// end function
+      public function addItem(pItem:Object, pReset:Boolean=false) : void {
+         this._balancedObjects.push(new BalancedObject(pItem));
+         if(pReset)
+         {
+            this._nbCall=0;
+            this.resetBalance();
+         }
+         this.balanceItems();
+      }
 
-        public function addItemWithBalance(param1:Object, param2:uint) : void
-        {
-            var _loc_3:* = new BalancedObject(param1);
-            _loc_3.nbCall = param2;
-            this._balancedObjects.push(_loc_3);
-            this._nbCall = this._nbCall + param2;
-            this.balanceItems();
-            return;
-        }// end function
+      public function addItemWithBalance(pItem:Object, pBalance:uint) : void {
+         var newBO:BalancedObject = new BalancedObject(pItem);
+         newBO.nbCall=pBalance;
+         this._balancedObjects.push(newBO);
+         this._nbCall=this._nbCall+pBalance;
+         this.balanceItems();
+      }
 
-        public function callItem() : Object
-        {
-            var _loc_4:* = null;
-            var _loc_1:* = Math.random() * 10000;
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            if (this._balancedObjects.length == 0)
+      public function callItem() : Object {
+         var objetEnCours:BalancedObject = null;
+         var random:uint = Math.random()*10000;
+         var itemIndex:uint = 0;
+         var objectToReturn:Object = null;
+         if(this._balancedObjects.length==0)
+         {
+            return objectToReturn;
+         }
+         objetEnCours=this._balancedObjects[0] as BalancedObject;
+         if(random<objetEnCours.chanceToBeCall*100)
+         {
+            objetEnCours.increment();
+            objectToReturn=objetEnCours.item;
+         }
+         itemIndex++;
+         var total:Number = objetEnCours.chanceToBeCall*100;
+         while(itemIndex<this._balancedObjects.length)
+         {
+            objetEnCours=this._balancedObjects[itemIndex] as BalancedObject;
+            if(objectToReturn!=null)
             {
-                return _loc_3;
-            }
-            _loc_4 = this._balancedObjects[0] as BalancedObject;
-            if (_loc_1 < _loc_4.chanceToBeCall * 100)
-            {
-                _loc_4.increment();
-                _loc_3 = _loc_4.item;
-            }
-            _loc_2 = _loc_2 + 1;
-            var _loc_5:* = _loc_4.chanceToBeCall * 100;
-            while (_loc_2 < this._balancedObjects.length)
-            {
-                
-                _loc_4 = this._balancedObjects[_loc_2] as BalancedObject;
-                if (_loc_3 != null)
-                {
-                }
-                else
-                {
-                    if (this._balancedObjects.length == (_loc_2 + 1))
-                    {
-                        _loc_4.increment();
-                        _loc_3 = _loc_4.item;
-                        ;
-                    }
-                    else if (_loc_1 > _loc_5 && _loc_1 < _loc_5 + _loc_4.chanceToBeCall * 100)
-                    {
-                        _loc_4.increment();
-                        _loc_3 = _loc_4.item;
-                    }
-                    _loc_5 = _loc_5 + _loc_4.chanceToBeCall * 100;
-                }
-                _loc_2 = _loc_2 + 1;
-            }
-            var _loc_6:* = this;
-            var _loc_7:* = this._nbCall + 1;
-            _loc_6._nbCall = _loc_7;
-            this.balanceItems();
-            return _loc_3;
-        }// end function
-
-        public function removeItem(param1:Object) : void
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this._balancedObjects)
-            {
-                
-                if (_loc_2.item == param1)
-                {
-                    this._balancedObjects.splice(this._balancedObjects.indexOf(_loc_2), 1);
-                    continue;
-                }
-            }
-            this.balanceItems();
-            return;
-        }// end function
-
-        public function reset() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._balancedObjects)
-            {
-                
-                this.setItemBalance(_loc_1.item, 0);
-            }
-            this.balanceItems();
-            return;
-        }// end function
-
-        private function balanceItems() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = NaN;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            if (this._nbCall == 0)
-            {
-                for each (_loc_1 in this._balancedObjects)
-                {
-                    
-                    _loc_1.chanceToBeCall = 1 / this._balancedObjects.length * 100;
-                }
             }
             else
             {
-                for each (_loc_2 in this._balancedObjects)
-                {
-                    
-                    _loc_2.chanceToBeNonCall = (_loc_2.nbCall + 1) / (this._nbCall + this._balancedObjects.length) * 100;
-                }
-                _loc_3 = 0;
-                for each (_loc_4 in this._balancedObjects)
-                {
-                    
-                    _loc_3 = _loc_3 + 1 / _loc_4.chanceToBeNonCall;
-                }
-                for each (_loc_5 in this._balancedObjects)
-                {
-                    
-                    _loc_5.chanceToBeCall = 1 / _loc_5.chanceToBeNonCall / _loc_3 * 100;
-                }
+               if(this._balancedObjects.length==itemIndex+1)
+               {
+                  objetEnCours.increment();
+                  objectToReturn=objetEnCours.item;
+               }
+               else
+               {
+                  if((random<total)&&(random>total+objetEnCours.chanceToBeCall*100))
+                  {
+                     objetEnCours.increment();
+                     objectToReturn=objetEnCours.item;
+                  }
+                  total=total+objetEnCours.chanceToBeCall*100;
+               }
             }
-            return;
-        }// end function
+            itemIndex++;
+         }
+         this._nbCall++;
+         this.balanceItems();
+         return objectToReturn;
+      }
 
-        private function init() : void
-        {
-            this._balancedObjects = new Vector.<BalancedObject>;
-            return;
-        }// end function
-
-        private function resetBalance() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._balancedObjects)
+      public function removeItem(pItem:Object) : void {
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
+         {
+            if(bo.item==pItem)
             {
-                
-                _loc_1.nbCall = 0;
+               this._balancedObjects.splice(this._balancedObjects.indexOf(bo),1);
             }
-            return;
-        }// end function
+         }
+         this.balanceItems();
+      }
 
-        private function onBalanceUpdate(event:BalanceEvent) : void
-        {
-            this._nbCall = this._nbCall + (event.newBalance - event.previousBalance);
-            return;
-        }// end function
+      public function reset() : void {
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
+         {
+            this.setItemBalance(bo.item,0);
+         }
+         this.balanceItems();
+      }
 
-    }
+      private function balanceItems() : void {
+         var objectToCall:BalancedObject = null;
+         var objectToCall2:BalancedObject = null;
+         var temp:* = NaN;
+         var objectToCall3:BalancedObject = null;
+         var objectToCall4:BalancedObject = null;
+         if(this._nbCall==0)
+         {
+            for each (objectToCall in this._balancedObjects)
+            {
+               objectToCall.chanceToBeCall=1/this._balancedObjects.length*100;
+            }
+         }
+         else
+         {
+            for each (objectToCall2 in this._balancedObjects)
+            {
+               objectToCall2.chanceToBeNonCall=(objectToCall2.nbCall+1)/(this._nbCall+this._balancedObjects.length)*100;
+            }
+            temp=0;
+            for each (objectToCall3 in this._balancedObjects)
+            {
+               temp=temp+1/objectToCall3.chanceToBeNonCall;
+            }
+            for each (objectToCall4 in this._balancedObjects)
+            {
+               objectToCall4.chanceToBeCall=1/objectToCall4.chanceToBeNonCall/temp*100;
+            }
+         }
+      }
+
+      private function init() : void {
+         this._balancedObjects=new Vector.<BalancedObject>();
+      }
+
+      private function resetBalance() : void {
+         var bo:BalancedObject = null;
+         for each (bo in this._balancedObjects)
+         {
+            bo.nbCall=0;
+         }
+      }
+
+      private function onBalanceUpdate(pEvent:BalanceEvent) : void {
+         this._nbCall=this._nbCall+(pEvent.newBalance-pEvent.previousBalance);
+      }
+   }
+
 }

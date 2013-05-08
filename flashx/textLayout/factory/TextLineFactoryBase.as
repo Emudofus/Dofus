@@ -1,227 +1,206 @@
-﻿package flashx.textLayout.factory
+package flashx.textLayout.factory
 {
-    import flash.display.*;
-    import flash.geom.*;
-    import flash.text.engine.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.elements.*;
+   import flash.display.Sprite;
+   import flashx.textLayout.compose.SimpleCompose;
+   import flashx.textLayout.tlf_internal;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.compose.ISWFContext;
+   import flash.text.engine.TextLine;
+   import flash.text.engine.TextBlock;
+   import flash.text.engine.TextLineValidity;
+   import flashx.textLayout.compose.IFlowComposer;
+   import flashx.textLayout.elements.TextFlow;
+   import flash.display.Shape;
+   import flashx.textLayout.container.ScrollPolicy;
 
-    public class TextLineFactoryBase extends Object
-    {
-        private var _compositionBounds:Rectangle;
-        private var _contentBounds:Rectangle;
-        protected var _isTruncated:Boolean = false;
-        private var _horizontalScrollPolicy:String;
-        private var _verticalScrollPolicy:String;
-        private var _truncationOptions:TruncationOptions;
-        private var _containerController:ContainerController;
-        private var _swfContext:ISWFContext;
-        private static var _tc:Sprite = new Sprite();
-        private static var _savedFactoryComposer:SimpleCompose;
-        static var _factoryComposer:SimpleCompose;
-        static var _truncationLineIndex:int;
-        static var _pass0Lines:Array;
+   use namespace tlf_internal;
 
-        public function TextLineFactoryBase()
-        {
-            this._containerController = new ContainerController(_tc);
-            var _loc_1:* = String(ScrollPolicy.scrollPolicyPropertyDefinition.defaultValue);
-            this._verticalScrollPolicy = String(ScrollPolicy.scrollPolicyPropertyDefinition.defaultValue);
-            this._horizontalScrollPolicy = _loc_1;
-            return;
-        }// end function
+   public class TextLineFactoryBase extends Object
+   {
+         
 
-        public function get compositionBounds() : Rectangle
-        {
-            return this._compositionBounds;
-        }// end function
+      public function TextLineFactoryBase() {
+         super();
+         this._containerController=new ContainerController(_tc);
+         this._horizontalScrollPolicy=this._verticalScrollPolicy=String(ScrollPolicy.scrollPolicyPropertyDefinition.defaultValue);
+      }
 
-        public function set compositionBounds(param1:Rectangle) : void
-        {
-            this._compositionBounds = param1;
-            return;
-        }// end function
+      private static var _tc:Sprite = new Sprite();
 
-        public function getContentBounds() : Rectangle
-        {
-            return this._contentBounds;
-        }// end function
+      private static var _savedFactoryComposer:SimpleCompose;
 
-        protected function setContentBounds(param1:Rectangle) : void
-        {
-            this._contentBounds = param1;
-            this._contentBounds.offset(this.compositionBounds.left, this.compositionBounds.top);
-            return;
-        }// end function
+      tlf_internal  static var _factoryComposer:SimpleCompose;
 
-        public function get swfContext() : ISWFContext
-        {
-            return this._swfContext;
-        }// end function
+      protected static var _truncationLineIndex:int;
 
-        public function set swfContext(param1:ISWFContext) : void
-        {
-            this._swfContext = param1;
-            return;
-        }// end function
+      protected static var _pass0Lines:Array;
 
-        public function get truncationOptions() : TruncationOptions
-        {
-            return this._truncationOptions;
-        }// end function
+      tlf_internal  static function peekFactoryCompose() : SimpleCompose {
+         if(_savedFactoryComposer==null)
+         {
+            _savedFactoryComposer=new SimpleCompose();
+         }
+         return _savedFactoryComposer;
+      }
 
-        public function set truncationOptions(param1:TruncationOptions) : void
-        {
-            this._truncationOptions = param1;
-            return;
-        }// end function
+      tlf_internal  static function beginFactoryCompose() : SimpleCompose {
+         var rslt:SimpleCompose = _factoryComposer;
+         _factoryComposer=peekFactoryCompose();
+         _savedFactoryComposer=null;
+         return rslt;
+      }
 
-        public function get isTruncated() : Boolean
-        {
-            return this._isTruncated;
-        }// end function
+      tlf_internal  static function endFactoryCompose(prevComposer:SimpleCompose) : void {
+         _savedFactoryComposer=_factoryComposer;
+         _factoryComposer=prevComposer;
+      }
 
-        public function get horizontalScrollPolicy() : String
-        {
-            return this._horizontalScrollPolicy;
-        }// end function
+      tlf_internal  static function getDefaultFlowComposerClass() : Class {
+         return FactoryDisplayComposer;
+      }
 
-        public function set horizontalScrollPolicy(param1:String) : void
-        {
-            this._horizontalScrollPolicy = param1;
-            return;
-        }// end function
+      private var _compositionBounds:Rectangle;
 
-        public function get verticalScrollPolicy() : String
-        {
-            return this._verticalScrollPolicy;
-        }// end function
+      private var _contentBounds:Rectangle;
 
-        public function set verticalScrollPolicy(param1:String) : void
-        {
-            this._verticalScrollPolicy = param1;
-            return;
-        }// end function
+      protected var _isTruncated:Boolean = false;
 
-        protected function get containerController() : ContainerController
-        {
-            return this._containerController;
-        }// end function
+      private var _horizontalScrollPolicy:String;
 
-        protected function callbackWithTextLines(param1:Function, param2:Number, param3:Number) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            for each (_loc_4 in _factoryComposer._lines)
+      private var _verticalScrollPolicy:String;
+
+      private var _truncationOptions:TruncationOptions;
+
+      private var _containerController:ContainerController;
+
+      private var _swfContext:ISWFContext;
+
+      public function get compositionBounds() : Rectangle {
+         return this._compositionBounds;
+      }
+
+      public function set compositionBounds(value:Rectangle) : void {
+         this._compositionBounds=value;
+      }
+
+      public function getContentBounds() : Rectangle {
+         return this._contentBounds;
+      }
+
+      protected function setContentBounds(controllerBounds:Rectangle) : void {
+         this._contentBounds=controllerBounds;
+         this._contentBounds.offset(this.compositionBounds.left,this.compositionBounds.top);
+      }
+
+      public function get swfContext() : ISWFContext {
+         return this._swfContext;
+      }
+
+      public function set swfContext(value:ISWFContext) : void {
+         this._swfContext=value;
+      }
+
+      public function get truncationOptions() : TruncationOptions {
+         return this._truncationOptions;
+      }
+
+      public function set truncationOptions(value:TruncationOptions) : void {
+         this._truncationOptions=value;
+      }
+
+      public function get isTruncated() : Boolean {
+         return this._isTruncated;
+      }
+
+      public function get horizontalScrollPolicy() : String {
+         return this._horizontalScrollPolicy;
+      }
+
+      public function set horizontalScrollPolicy(scrollPolicy:String) : void {
+         this._horizontalScrollPolicy=scrollPolicy;
+      }
+
+      public function get verticalScrollPolicy() : String {
+         return this._verticalScrollPolicy;
+      }
+
+      public function set verticalScrollPolicy(scrollPolicy:String) : void {
+         this._verticalScrollPolicy=scrollPolicy;
+      }
+
+      protected function get containerController() : ContainerController {
+         return this._containerController;
+      }
+
+      protected function callbackWithTextLines(callback:Function, delx:Number, dely:Number) : void {
+         var textLine:TextLine = null;
+         var textBlock:TextBlock = null;
+         for each (textLine in _factoryComposer._lines)
+         {
+            textBlock=textLine.textBlock;
+            if(textBlock)
             {
-                
-                _loc_5 = _loc_4.textBlock;
-                if (_loc_5)
-                {
-                    _loc_5.releaseLines(_loc_5.firstLine, _loc_5.lastLine);
-                }
-                _loc_4.userData = null;
-                _loc_4.x = _loc_4.x + param2;
-                _loc_4.y = _loc_4.y + param3;
-                _loc_4.validity = TextLineValidity.STATIC;
-                this.param1(_loc_4);
+               textBlock.releaseLines(textBlock.firstLine,textBlock.lastLine);
             }
-            return;
-        }// end function
+            textLine.userData=null;
+            textLine.x=textLine.x+delx;
+            textLine.y=textLine.y+dely;
+            textLine.validity=TextLineValidity.STATIC;
+            callback(textLine);
+         }
+      }
 
-        protected function doesComposedTextFit(param1:int, param2:uint, param3:String) : Boolean
-        {
-            if (param1 != TruncationOptions.NO_LINE_COUNT_LIMIT && _factoryComposer._lines.length > param1)
+      protected function doesComposedTextFit(lineCountLimit:int, textLength:uint, blockProgression:String) : Boolean {
+         if((!(lineCountLimit==TruncationOptions.NO_LINE_COUNT_LIMIT))&&(_factoryComposer._lines.length<lineCountLimit))
+         {
+            return false;
+         }
+         var lines:Array = _factoryComposer._lines;
+         if(!lines.length)
+         {
+            return textLength?false:true;
+         }
+         var lastLine:TextLine = lines[lines.length-1] as TextLine;
+         return lastLine.userData+lastLine.rawTextLength==textLength;
+      }
+
+      protected function getNextTruncationPosition(truncateAtCharPosition:int, multiPara:Boolean=false) : int {
+         truncateAtCharPosition--;
+         var line:TextLine = _pass0Lines[_truncationLineIndex] as TextLine;
+         while(!((truncateAtCharPosition>=line.userData)&&(truncateAtCharPosition>line.userData+line.rawTextLength)))
+         {
+            if(truncateAtCharPosition<line.userData)
             {
-                return false;
+               line=_pass0Lines[--_truncationLineIndex] as TextLine;
             }
-            var _loc_4:* = _factoryComposer._lines;
-            if (!_factoryComposer._lines.length)
-            {
-                return param2 ? (false) : (true);
-            }
-            var _loc_5:* = _loc_4[(_loc_4.length - 1)] as TextLine;
-            return (_loc_4[(_loc_4.length - 1)] as TextLine).userData + _loc_5.rawTextLength == param2;
-        }// end function
+         }
+         var paraStart:int = multiPara?line.userData-line.textBlockBeginIndex:0;
+         var atomIndex:int = line.getAtomIndexAtCharIndex(truncateAtCharPosition-paraStart);
+         var nextTruncationPosition:int = line.getAtomTextBlockBeginIndex(atomIndex)+paraStart;
+         return nextTruncationPosition;
+      }
 
-        protected function getNextTruncationPosition(param1:int, param2:Boolean = false) : int
-        {
-            param1 = param1 - 1;
-            var _loc_3:* = _pass0Lines[_truncationLineIndex] as TextLine;
-            do
-            {
-                
-                if (param1 >= _loc_3.userData && param1 < _loc_3.userData + _loc_3.rawTextLength)
-                {
-                    break;
-                }
-                if (param1 < _loc_3.userData)
-                {
-                    _loc_3 = _pass0Lines[--_truncationLineIndex] as TextLine;
-                    continue;
-                }
-            }while (true)
-            var _loc_4:* = param2 ? (_loc_3.userData - _loc_3.textBlockBeginIndex) : (0);
-            var _loc_5:* = _loc_3.getAtomIndexAtCharIndex(param1 - _loc_4);
-            var _loc_6:* = _loc_3.getAtomTextBlockBeginIndex(_loc_5) + _loc_4;
-            return _loc_3.getAtomTextBlockBeginIndex(_loc_5) + _loc_4;
-        }// end function
+      tlf_internal function createFlowComposer() : IFlowComposer {
+         return new FactoryDisplayComposer();
+      }
 
-        function createFlowComposer() : IFlowComposer
-        {
-            return new FactoryDisplayComposer();
-        }// end function
+      tlf_internal function computeLastAllowedLineIndex(lineCountLimit:int) : void {
+         _truncationLineIndex=_factoryComposer._lines.length-1;
+         if((!(lineCountLimit==TruncationOptions.NO_LINE_COUNT_LIMIT))&&(lineCountLimit<=_truncationLineIndex))
+         {
+            _truncationLineIndex=lineCountLimit-1;
+         }
+      }
 
-        function computeLastAllowedLineIndex(param1:int) : void
-        {
-            _truncationLineIndex = _factoryComposer._lines.length - 1;
-            if (param1 != TruncationOptions.NO_LINE_COUNT_LIMIT && param1 <= _truncationLineIndex)
-            {
-                _truncationLineIndex = param1 - 1;
-            }
-            return;
-        }// end function
+      tlf_internal function processBackgroundColors(textFlow:TextFlow, callback:Function, x:Number, y:Number, constrainWidth:Number, constrainHeight:Number) : * {
+         var bgShape:Shape = new Shape();
+         textFlow.backgroundManager.drawAllRects(textFlow,bgShape,constrainWidth,constrainHeight);
+         bgShape.x=x;
+         bgShape.y=y;
+         callback(bgShape);
+         textFlow.clearBackgroundManager();
+      }
+   }
 
-        function processBackgroundColors(param1:TextFlow, param2:Function, param3:Number, param4:Number, param5:Number, param6:Number)
-        {
-            var _loc_7:* = new Shape();
-            param1.backgroundManager.drawAllRects(param1, _loc_7, param5, param6);
-            _loc_7.x = param3;
-            _loc_7.y = param4;
-            this.param2(_loc_7);
-            param1.clearBackgroundManager();
-            return;
-        }// end function
-
-        static function peekFactoryCompose() : SimpleCompose
-        {
-            if (_savedFactoryComposer == null)
-            {
-                _savedFactoryComposer = new SimpleCompose();
-            }
-            return _savedFactoryComposer;
-        }// end function
-
-        static function beginFactoryCompose() : SimpleCompose
-        {
-            var _loc_1:* = _factoryComposer;
-            _factoryComposer = peekFactoryCompose();
-            _savedFactoryComposer = null;
-            return _loc_1;
-        }// end function
-
-        static function endFactoryCompose(param1:SimpleCompose) : void
-        {
-            _savedFactoryComposer = _factoryComposer;
-            _factoryComposer = param1;
-            return;
-        }// end function
-
-        static function getDefaultFlowComposerClass() : Class
-        {
-            return FactoryDisplayComposer;
-        }// end function
-
-    }
 }

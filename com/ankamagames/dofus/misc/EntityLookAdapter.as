@@ -1,140 +1,137 @@
-﻿package com.ankamagames.dofus.misc
+package com.ankamagames.dofus.misc
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.types.game.look.*;
-    import com.ankamagames.tiphon.types.look.*;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import com.ankamagames.dofus.network.types.game.look.SubEntity;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
 
-    public class EntityLookAdapter extends Object
-    {
 
-        public function EntityLookAdapter()
-        {
-            return;
-        }// end function
+   public class EntityLookAdapter extends Object
+   {
+         
 
-        public static function fromNetwork(param1:EntityLook) : TiphonEntityLook
-        {
-            var _loc_3:* = 0;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = new TiphonEntityLook();
-            _loc_2.lock();
-            _loc_2.setBone(param1.bonesId);
-            for each (_loc_3 in param1.skins)
-            {
-                
-                _loc_2.addSkin(_loc_3);
-            }
-            if (param1.bonesId == 1 || param1.bonesId == 2)
-            {
-                _loc_2.defaultSkin = 1965;
-            }
-            var _loc_4:* = 0;
-            while (_loc_4 < param1.indexedColors.length)
-            {
-                
-                _loc_6 = param1.indexedColors[_loc_4] >> 24 & 255;
-                _loc_7 = param1.indexedColors[_loc_4] & 16777215;
-                _loc_2.setColor(_loc_6, _loc_7);
-                _loc_4 = _loc_4 + 1;
-            }
-            if (param1.scales.length == 1)
-            {
-                _loc_2.setScales(param1.scales[0] / 100, param1.scales[0] / 100);
-            }
-            else if (param1.scales.length == 2)
-            {
-                _loc_2.setScales(param1.scales[0] / 100, param1.scales[1] / 100);
-            }
-            for each (_loc_5 in param1.subentities)
-            {
-                
-                _loc_2.addSubEntity(_loc_5.bindingPointCategory, _loc_5.bindingPointIndex, EntityLookAdapter.fromNetwork(_loc_5.subEntityLook));
-            }
-            _loc_2.unlock(true);
-            return _loc_2;
-        }// end function
+      public function EntityLookAdapter() {
+         super();
+      }
 
-        public static function toNetwork(param1:TiphonEntityLook) : EntityLook
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            var _loc_10:* = 0;
-            var _loc_11:* = null;
-            var _loc_12:* = 0;
-            var _loc_13:* = null;
-            var _loc_2:* = new EntityLook();
-            _loc_2.bonesId = param1.getBone();
-            _loc_2.skins = param1.getSkins(false, false);
-            var _loc_3:* = param1.getColors(true);
-            for (_loc_4 in _loc_3)
+      public static function fromNetwork(n:EntityLook) : TiphonEntityLook {
+         var skin:uint = 0;
+         var se:SubEntity = null;
+         var index:uint = 0;
+         var color:uint = 0;
+         var o:TiphonEntityLook = new TiphonEntityLook();
+         o.lock();
+         o.setBone(n.bonesId);
+         for each (skin in n.skins)
+         {
+            o.addSkin(skin);
+         }
+         if((n.bonesId==1)||(n.bonesId==2))
+         {
+            o.defaultSkin=1965;
+         }
+         var i:uint = 0;
+         while(i<n.indexedColors.length)
+         {
+            index=n.indexedColors[i]>>24&255;
+            color=n.indexedColors[i]&16777215;
+            o.setColor(index,color);
+            i++;
+         }
+         if(n.scales.length==1)
+         {
+            o.setScales(n.scales[0]/100,n.scales[0]/100);
+         }
+         else
+         {
+            if(n.scales.length==2)
             {
-                
-                _loc_7 = parseInt(_loc_4);
-                _loc_8 = _loc_3[_loc_4];
-                _loc_9 = (_loc_7 & 255) << 24 | _loc_8 & 16777215;
-                _loc_2.indexedColors.push(_loc_9);
+               o.setScales(n.scales[0]/100,n.scales[1]/100);
             }
-            _loc_2.scales.push(uint(param1.getScaleX() * 100));
-            _loc_2.scales.push(uint(param1.getScaleY() * 100));
-            _loc_5 = param1.getSubEntities(true);
-            for (_loc_6 in _loc_5)
-            {
-                
-                _loc_10 = parseInt(_loc_6);
-                for (_loc_11 in _loc_5[_loc_6])
-                {
-                    
-                    _loc_12 = parseInt(_loc_11);
-                    _loc_13 = new SubEntity();
-                    _loc_13.initSubEntity(_loc_10, _loc_12, EntityLookAdapter.toNetwork(_loc_5[_loc_6][_loc_11]));
-                    _loc_2.subentities.push(_loc_13);
-                }
-            }
-            return _loc_2;
-        }// end function
+         }
+         for each (se in n.subentities)
+         {
+            o.addSubEntity(se.bindingPointCategory,se.bindingPointIndex,EntityLookAdapter.fromNetwork(se.subEntityLook));
+         }
+         o.unlock(true);
+         return o;
+      }
 
-        public static function tiphonizeLook(param1) : TiphonEntityLook
-        {
-            var _loc_2:* = null;
-            param1 = SecureCenter.unsecure(param1);
-            if (param1 is TiphonEntityLook)
+      public static function toNetwork(o:TiphonEntityLook) : EntityLook {
+         var colorIndexStr:String = null;
+         var subEntities:Array = null;
+         var catStr:String = null;
+         var colorIndex:uint = 0;
+         var color:uint = 0;
+         var indexedColor:uint = 0;
+         var cat:uint = 0;
+         var indStr:String = null;
+         var ind:uint = 0;
+         var se:SubEntity = null;
+         var n:EntityLook = new EntityLook();
+         n.bonesId=o.getBone();
+         n.skins=o.getSkins(false,false);
+         var colors:Array = o.getColors(true);
+         for (colorIndexStr in colors)
+         {
+            colorIndex=parseInt(colorIndexStr);
+            color=colors[colorIndexStr];
+            indexedColor=(colorIndex&255)<<24|color&16777215;
+            n.indexedColors.push(indexedColor);
+         }
+         n.scales.push(uint(o.getScaleX()*100));
+         n.scales.push(uint(o.getScaleY()*100));
+         subEntities=o.getSubEntities(true);
+         for (catStr in subEntities)
+         {
+            cat=parseInt(catStr);
+            for (indStr in subEntities[catStr])
             {
-                _loc_2 = param1 as TiphonEntityLook;
+               ind=parseInt(indStr);
+               se=new SubEntity();
+               se.initSubEntity(cat,ind,EntityLookAdapter.toNetwork(subEntities[catStr][indStr]));
+               n.subentities.push(se);
             }
-            if (param1 is EntityLook)
-            {
-                _loc_2 = fromNetwork(param1);
-            }
-            if (param1 is String)
-            {
-                _loc_2 = TiphonEntityLook.fromString(param1);
-            }
-            return _loc_2;
-        }// end function
+         }
+         return n;
+      }
 
-        public static function getRiderLook(param1) : TiphonEntityLook
-        {
-            param1 = SecureCenter.unsecure(param1);
-            var _loc_2:* = tiphonizeLook(param1);
-            var _loc_3:* = _loc_2.clone();
-            var _loc_4:* = _loc_3.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);
-            if (_loc_3.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0))
-            {
-                if (_loc_4.getBone() == 2)
-                {
-                    _loc_4.setBone(1);
-                }
-                _loc_3 = _loc_4;
-            }
-            return _loc_3;
-        }// end function
+      public static function tiphonizeLook(rawLook:*) : TiphonEntityLook {
+         var entityLook:TiphonEntityLook = null;
+         var rawLook:* = SecureCenter.unsecure(rawLook);
+         if(rawLook is TiphonEntityLook)
+         {
+            entityLook=rawLook as TiphonEntityLook;
+         }
+         if(rawLook is EntityLook)
+         {
+            entityLook=fromNetwork(rawLook);
+         }
+         if(rawLook is String)
+         {
+            entityLook=TiphonEntityLook.fromString(rawLook);
+         }
+         return entityLook;
+      }
 
-    }
+      public static function getRiderLook(rawLook:*) : TiphonEntityLook {
+         var rawLook:* = SecureCenter.unsecure(rawLook);
+         var oldEntityLook:TiphonEntityLook = tiphonizeLook(rawLook);
+         var entityLook:TiphonEntityLook = oldEntityLook.clone();
+         var ridderLook:TiphonEntityLook = entityLook.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
+         if(ridderLook)
+         {
+            if(ridderLook.getBone()==2)
+            {
+               ridderLook.setBone(1);
+            }
+            entityLook=ridderLook;
+         }
+         return entityLook;
+      }
+
+
+   }
+
 }

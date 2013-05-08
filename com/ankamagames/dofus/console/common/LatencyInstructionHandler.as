@@ -1,80 +1,67 @@
-﻿package com.ankamagames.dofus.console.common
+package com.ankamagames.dofus.console.common
 {
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.common.frames.*;
-    import com.ankamagames.dofus.network.messages.common.basic.*;
-    import com.ankamagames.jerakine.console.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
+   import com.ankamagames.jerakine.console.ConsoleHandler;
+   import com.ankamagames.dofus.logic.common.frames.LatencyFrame;
+   import com.ankamagames.dofus.network.messages.common.basic.BasicPingMessage;
+   import com.ankamagames.jerakine.network.IServerConnection;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import flash.utils.getTimer;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class LatencyInstructionHandler extends Object implements ConsoleInstructionHandler
-    {
 
-        public function LatencyInstructionHandler()
-        {
-            return;
-        }// end function
+   public class LatencyInstructionHandler extends Object implements ConsoleInstructionHandler
+   {
+         
 
-        public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            switch(param2)
-            {
-                case "ping":
-                {
-                    _loc_4 = Kernel.getWorker().getFrame(LatencyFrame) as LatencyFrame;
-                    if (_loc_4.pingRequested != 0)
-                    {
-                        break;
-                    }
-                    _loc_5 = new BasicPingMessage().initBasicPingMessage();
-                    ConnectionsHandler.getConnection().send(_loc_5);
-                    _loc_4.pingRequested = getTimer();
-                    param1.output("Ping...");
-                    break;
-                }
-                case "aping":
-                {
-                    _loc_6 = ConnectionsHandler.getConnection();
-                    param1.output("Avg ping : " + _loc_6.latencyAvg + "ms for the last " + _loc_6.latencySamplesCount + " packets (max : " + _loc_6.latencySamplesMax + ")");
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public function LatencyInstructionHandler() {
+         super();
+      }
 
-        public function getHelp(param1:String) : String
-        {
-            switch(param1)
-            {
-                case "ping":
-                {
-                    return I18n.getUiText("ui.chat.console.help.ping");
-                }
-                case "aping":
-                {
-                    return I18n.getUiText("ui.chat.console.help.aping");
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return I18n.getUiText("ui.chat.console.noHelp", [param1]);
-        }// end function
 
-        public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
-        {
-            return [];
-        }// end function
 
-    }
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var latencyFrame:LatencyFrame = null;
+         var ping:BasicPingMessage = null;
+         var connection:IServerConnection = null;
+         switch(cmd)
+         {
+            case "ping":
+               latencyFrame=Kernel.getWorker().getFrame(LatencyFrame) as LatencyFrame;
+               if(latencyFrame.pingRequested!=0)
+               {
+               }
+               else
+               {
+                  ping=new BasicPingMessage().initBasicPingMessage();
+                  ConnectionsHandler.getConnection().send(ping);
+                  latencyFrame.pingRequested=getTimer();
+                  console.output("Ping...");
+               }
+               break;
+            case "aping":
+               connection=ConnectionsHandler.getConnection();
+               console.output("Avg ping : "+connection.latencyAvg+"ms for the last "+connection.latencySamplesCount+" packets (max : "+connection.latencySamplesMax+")");
+               break;
+         }
+      }
+
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
+         {
+            case "ping":
+               return I18n.getUiText("ui.chat.console.help.ping");
+            case "aping":
+               return I18n.getUiText("ui.chat.console.help.aping");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
+         }
+      }
+
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         return [];
+      }
+   }
+
 }

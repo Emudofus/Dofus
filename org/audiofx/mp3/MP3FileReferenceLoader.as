@@ -1,130 +1,122 @@
-﻿package org.audiofx.mp3
+package org.audiofx.mp3
 {
-    import com.ankamagames.jerakine.utils.system.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.media.*;
-    import flash.net.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import flash.utils.ByteArray;
+   import flash.net.FileReference;
+   import flash.events.Event;
+   import flash.utils.Endian;
+   import flash.display.Loader;
+   import flash.system.LoaderContext;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import flash.display.LoaderInfo;
+   import flash.media.Sound;
 
-    public class MP3FileReferenceLoader extends EventDispatcher
-    {
-        private var mp3Parser:MP3Parser;
 
-        public function MP3FileReferenceLoader()
-        {
-            this.mp3Parser = new MP3Parser(this);
-            this.mp3Parser.addEventListener(Event.COMPLETE, this.parserCompleteHandler);
-            return;
-        }// end function
+   public class MP3FileReferenceLoader extends EventDispatcher
+   {
+         
 
-        public function loadMP3ByteArray(param1:ByteArray) : void
-        {
-            this.mp3Parser.loadMP3ByteArray(param1);
-            return;
-        }// end function
+      public function MP3FileReferenceLoader() {
+         super();
+         this.mp3Parser=new MP3Parser(this);
+         this.mp3Parser.addEventListener(Event.COMPLETE,this.parserCompleteHandler);
+      }
 
-        public function parsingDone(param1:MP3Parser) : void
-        {
-            this.generateSound(param1);
-            return;
-        }// end function
 
-        public function getSound(param1:FileReference) : void
-        {
-            this.mp3Parser.loadFileRef(param1);
-            return;
-        }// end function
 
-        private function parserCompleteHandler(event:Event) : void
-        {
-            var _loc_2:* = event.currentTarget as MP3Parser;
-            this.generateSound(_loc_2);
-            return;
-        }// end function
+      private var mp3Parser:MP3Parser;
 
-        private function generateSound(param1:MP3Parser) : Boolean
-        {
-            var _loc_12:* = null;
-            var _loc_2:* = new ByteArray();
-            _loc_2.endian = Endian.LITTLE_ENDIAN;
-            var _loc_3:* = 0;
-            while (_loc_3 < SoundClassSwfByteCode.soundClassSwfBytes1.length)
+      public function loadMP3ByteArray(ba:ByteArray) : void {
+         this.mp3Parser.loadMP3ByteArray(ba);
+      }
+
+      public function parsingDone(parser:MP3Parser) : void {
+         this.generateSound(parser);
+      }
+
+      public function getSound(fr:FileReference) : void {
+         this.mp3Parser.loadFileRef(fr);
+      }
+
+      private function parserCompleteHandler(ev:Event) : void {
+         var parser:MP3Parser = ev.currentTarget as MP3Parser;
+         this.generateSound(parser);
+      }
+
+      private function generateSound(mp3Source:MP3Parser) : Boolean {
+         var seg:ByteArraySegment = null;
+         var swfBytes:ByteArray = new ByteArray();
+         swfBytes.endian=Endian.LITTLE_ENDIAN;
+         var i:uint = 0;
+         while(i<SoundClassSwfByteCode.soundClassSwfBytes1.length)
+         {
+            swfBytes.writeByte(SoundClassSwfByteCode.soundClassSwfBytes1[i]);
+            i++;
+         }
+         var swfSizePosition:uint = swfBytes.position;
+         swfBytes.writeInt(0);
+         i=0;
+         while(i<SoundClassSwfByteCode.soundClassSwfBytes2.length)
+         {
+            swfBytes.writeByte(SoundClassSwfByteCode.soundClassSwfBytes2[i]);
+            i++;
+         }
+         var audioSizePosition:uint = swfBytes.position;
+         swfBytes.writeInt(0);
+         swfBytes.writeByte(1);
+         swfBytes.writeByte(0);
+         mp3Source.writeSwfFormatByte(swfBytes);
+         var sampleSizePosition:uint = swfBytes.position;
+         swfBytes.writeInt(0);
+         swfBytes.writeByte(0);
+         swfBytes.writeByte(0);
+         var frameCount:uint = 0;
+         var byteCount:uint = 0;
+         do
+         {
+            seg=mp3Source.getNextFrame();
+            if(seg==null)
             {
-                
-                _loc_2.writeByte(SoundClassSwfByteCode.soundClassSwfBytes1[_loc_3]);
-                _loc_3 = _loc_3 + 1;
+               if(byteCount==0)
+               {
+                  return false;
+               }
+               byteCount=byteCount+2;
+               currentPos=swfBytes.position;
+               swfBytes.position=audioSizePosition;
+               swfBytes.writeInt(byteCount+7);
+               swfBytes.position=sampleSizePosition;
+               swfBytes.writeInt(frameCount*1152);
+               swfBytes.position=currentPos;
+               i=0;
+               while(i<SoundClassSwfByteCode.soundClassSwfBytes3.length)
+               {
+                  swfBytes.writeByte(SoundClassSwfByteCode.soundClassSwfBytes3[i]);
+                  i++;
+               }
+               swfBytes.position=swfSizePosition;
+               swfBytes.writeInt(swfBytes.length);
+               swfBytes.position=0;
+               swfBytesLoader=new Loader();
+               swfBytesLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.swfCreated);
+               lc=new LoaderContext();
+               AirScanner.allowByteCodeExecution(lc,true);
+               swfBytesLoader.loadBytes(swfBytes,lc);
+               return true;
             }
-            var _loc_4:* = _loc_2.position;
-            _loc_2.writeInt(0);
-            _loc_3 = 0;
-            while (_loc_3 < SoundClassSwfByteCode.soundClassSwfBytes2.length)
-            {
-                
-                _loc_2.writeByte(SoundClassSwfByteCode.soundClassSwfBytes2[_loc_3]);
-                _loc_3 = _loc_3 + 1;
-            }
-            var _loc_5:* = _loc_2.position;
-            _loc_2.writeInt(0);
-            _loc_2.writeByte(1);
-            _loc_2.writeByte(0);
-            param1.writeSwfFormatByte(_loc_2);
-            var _loc_6:* = _loc_2.position;
-            _loc_2.writeInt(0);
-            _loc_2.writeByte(0);
-            _loc_2.writeByte(0);
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            while (true)
-            {
-                
-                _loc_12 = param1.getNextFrame();
-                if (_loc_12 == null)
-                {
-                    break;
-                }
-                _loc_2.writeBytes(_loc_12.byteArray, _loc_12.start, _loc_12.length);
-                _loc_8 = _loc_8 + _loc_12.length;
-                _loc_7 = _loc_7 + 1;
-            }
-            if (_loc_8 == 0)
-            {
-                return false;
-            }
-            _loc_8 = _loc_8 + 2;
-            var _loc_9:* = _loc_2.position;
-            _loc_2.position = _loc_5;
-            _loc_2.writeInt(_loc_8 + 7);
-            _loc_2.position = _loc_6;
-            _loc_2.writeInt(_loc_7 * 1152);
-            _loc_2.position = _loc_9;
-            _loc_3 = 0;
-            while (_loc_3 < SoundClassSwfByteCode.soundClassSwfBytes3.length)
-            {
-                
-                _loc_2.writeByte(SoundClassSwfByteCode.soundClassSwfBytes3[_loc_3]);
-                _loc_3 = _loc_3 + 1;
-            }
-            _loc_2.position = _loc_4;
-            _loc_2.writeInt(_loc_2.length);
-            _loc_2.position = 0;
-            var _loc_10:* = new Loader();
-            new Loader().contentLoaderInfo.addEventListener(Event.COMPLETE, this.swfCreated);
-            var _loc_11:* = new LoaderContext();
-            AirScanner.allowByteCodeExecution(_loc_11, true);
-            _loc_10.loadBytes(_loc_2, _loc_11);
-            return true;
-        }// end function
+            swfBytes.writeBytes(seg.byteArray,seg.start,seg.length);
+            byteCount=byteCount+seg.length;
+            frameCount++;
+         }
+         while(true);
+      }
 
-        private function swfCreated(event:Event) : void
-        {
-            var _loc_2:* = event.currentTarget as LoaderInfo;
-            var _loc_3:* = _loc_2.applicationDomain.getDefinition("SoundClass") as Class;
-            var _loc_4:* = new _loc_3;
-            dispatchEvent(new MP3SoundEvent(MP3SoundEvent.COMPLETE, _loc_4));
-            return;
-        }// end function
+      private function swfCreated(ev:Event) : void {
+         var loaderInfo:LoaderInfo = ev.currentTarget as LoaderInfo;
+         var soundClass:Class = loaderInfo.applicationDomain.getDefinition("SoundClass") as Class;
+         var sound:Sound = new soundClass();
+         dispatchEvent(new MP3SoundEvent(MP3SoundEvent.COMPLETE,sound));
+      }
+   }
 
-    }
 }

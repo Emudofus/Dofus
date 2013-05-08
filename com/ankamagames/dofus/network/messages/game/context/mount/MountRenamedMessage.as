@@ -1,85 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.mount
+package com.ankamagames.dofus.network.messages.game.context.mount
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class MountRenamedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var mountId:Number = 0;
-        public var name:String = "";
-        public static const protocolId:uint = 5983;
 
-        public function MountRenamedMessage()
-        {
-            return;
-        }// end function
+   public class MountRenamedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function MountRenamedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5983;
-        }// end function
+      public static const protocolId:uint = 5983;
 
-        public function initMountRenamedMessage(param1:Number = 0, param2:String = "") : MountRenamedMessage
-        {
-            this.mountId = param1;
-            this.name = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.mountId = 0;
-            this.name = "";
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var mountId:Number = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var name:String = "";
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_MountRenamedMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5983;
+      }
 
-        public function serializeAs_MountRenamedMessage(param1:IDataOutput) : void
-        {
-            param1.writeDouble(this.mountId);
-            param1.writeUTF(this.name);
-            return;
-        }// end function
+      public function initMountRenamedMessage(mountId:Number=0, name:String="") : MountRenamedMessage {
+         this.mountId=mountId;
+         this.name=name;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_MountRenamedMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.mountId=0;
+         this.name="";
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_MountRenamedMessage(param1:IDataInput) : void
-        {
-            this.mountId = param1.readDouble();
-            this.name = param1.readUTF();
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountRenamedMessage(output);
+      }
+
+      public function serializeAs_MountRenamedMessage(output:IDataOutput) : void {
+         output.writeDouble(this.mountId);
+         output.writeUTF(this.name);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountRenamedMessage(input);
+      }
+
+      public function deserializeAs_MountRenamedMessage(input:IDataInput) : void {
+         this.mountId=input.readDouble();
+         this.name=input.readUTF();
+      }
+   }
+
 }

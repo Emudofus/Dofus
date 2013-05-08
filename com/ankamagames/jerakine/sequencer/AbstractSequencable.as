@@ -1,111 +1,104 @@
-﻿package com.ankamagames.jerakine.sequencer
+package com.ankamagames.jerakine.sequencer
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Timer;
+   import flash.events.TimerEvent;
+   import com.ankamagames.jerakine.utils.misc.FightProfiler;
 
-    public class AbstractSequencable extends EventDispatcher implements ISequencable
-    {
-        private var _aListener:Array;
-        private var _timeOut:Timer;
-        private var _castingSpellId:int = -1;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractSequencable));
 
-        public function AbstractSequencable()
-        {
-            this._aListener = new Array();
-            return;
-        }// end function
+   public class AbstractSequencable extends EventDispatcher implements ISequencable
+   {
+         
 
-        public function start() : void
-        {
-            return;
-        }// end function
+      public function AbstractSequencable() {
+         this._aListener=new Array();
+         super();
+      }
 
-        public function addListener(param1:ISequencableListener) : void
-        {
-            if (!this._timeOut)
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractSequencable));
+
+      private var _aListener:Array;
+
+      private var _timeOut:Timer;
+
+      private var _castingSpellId:int = -1;
+
+      public function start() : void {
+         
+      }
+
+      public function addListener(listener:ISequencableListener) : void {
+         if(!this._timeOut)
+         {
+            this._timeOut=new Timer(5000,1);
+            this._timeOut.addEventListener(TimerEvent.TIMER,this.onTimeOut);
+            this._timeOut.start();
+         }
+         this._aListener.push(listener);
+      }
+
+      protected function executeCallbacks() : void {
+         var listener:ISequencableListener = null;
+         FightProfiler.getInstance().stop();
+         if(this._timeOut)
+         {
+            this._timeOut.removeEventListener(TimerEvent.TIMER,this.onTimeOut);
+            this._timeOut.reset();
+            this._timeOut=null;
+         }
+         for each (listener in this._aListener)
+         {
+            if(listener)
             {
-                this._timeOut = new Timer(5000, 1);
-                this._timeOut.addEventListener(TimerEvent.TIMER, this.onTimeOut);
-                this._timeOut.start();
+               listener.stepFinished();
             }
-            this._aListener.push(param1);
-            return;
-        }// end function
+         }
+      }
 
-        protected function executeCallbacks() : void
-        {
-            var _loc_1:* = null;
-            FightProfiler.getInstance().stop();
-            if (this._timeOut)
+      public function removeListener(listener:ISequencableListener) : void {
+         var i:uint = 0;
+         while(i<this._aListener.length)
+         {
+            if(this._aListener[i]==listener)
             {
-                this._timeOut.removeEventListener(TimerEvent.TIMER, this.onTimeOut);
-                this._timeOut.reset();
-                this._timeOut = null;
+               this._aListener=this._aListener.slice(0,i).concat(this._aListener.slice(i+1,this._aListener.length));
             }
-            for each (_loc_1 in this._aListener)
+            else
             {
-                
-                if (_loc_1)
-                {
-                    _loc_1.stepFinished();
-                }
+               i++;
+               continue;
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function removeListener(param1:ISequencableListener) : void
-        {
-            var _loc_2:* = 0;
-            while (_loc_2 < this._aListener.length)
-            {
-                
-                if (this._aListener[_loc_2] == param1)
-                {
-                    this._aListener = this._aListener.slice(0, _loc_2).concat(this._aListener.slice((_loc_2 + 1), this._aListener.length));
-                    break;
-                }
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function toString() : String {
+         return getQualifiedClassName(this);
+      }
 
-        override public function toString() : String
-        {
-            return getQualifiedClassName(this);
-        }// end function
+      public function clear() : void {
+         if(this._timeOut)
+         {
+            this._timeOut.stop();
+         }
+         this._timeOut=null;
+         this._aListener=null;
+      }
 
-        public function clear() : void
-        {
-            if (this._timeOut)
-            {
-                this._timeOut.stop();
-            }
-            this._timeOut = null;
-            this._aListener = null;
-            return;
-        }// end function
+      public function get castingSpellId() : int {
+         return this._castingSpellId;
+      }
 
-        public function get castingSpellId() : int
-        {
-            return this._castingSpellId;
-        }// end function
+      public function set castingSpellId(val:int) : void {
+         this._castingSpellId=val;
+      }
 
-        public function set castingSpellId(param1:int) : void
-        {
-            this._castingSpellId = param1;
-            return;
-        }// end function
+      protected function onTimeOut(e:TimerEvent) : void {
+         this.executeCallbacks();
+         _log.error("Time out sur la step "+this);
+      }
+   }
 
-        protected function onTimeOut(event:TimerEvent) : void
-        {
-            this.executeCallbacks();
-            _log.error("Time out sur la step " + this);
-            return;
-        }// end function
-
-    }
 }

@@ -1,116 +1,114 @@
-﻿package com.ankamagames.dofus.network.messages.server.basic
+package com.ankamagames.dofus.network.messages.server.basic
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class SystemMessageDisplayMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var hangUp:Boolean = false;
-        public var msgId:uint = 0;
-        public var parameters:Vector.<String>;
-        public static const protocolId:uint = 189;
 
-        public function SystemMessageDisplayMessage()
-        {
-            this.parameters = new Vector.<String>;
-            return;
-        }// end function
+   public class SystemMessageDisplayMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function SystemMessageDisplayMessage() {
+         this.parameters=new Vector.<String>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 189;
-        }// end function
+      public static const protocolId:uint = 189;
 
-        public function initSystemMessageDisplayMessage(param1:Boolean = false, param2:uint = 0, param3:Vector.<String> = null) : SystemMessageDisplayMessage
-        {
-            this.hangUp = param1;
-            this.msgId = param2;
-            this.parameters = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.hangUp = false;
-            this.msgId = 0;
-            this.parameters = new Vector.<String>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var hangUp:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var msgId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_SystemMessageDisplayMessage(param1);
-            return;
-        }// end function
+      public var parameters:Vector.<String>;
 
-        public function serializeAs_SystemMessageDisplayMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.hangUp);
-            if (this.msgId < 0)
+      override public function getMessageId() : uint {
+         return 189;
+      }
+
+      public function initSystemMessageDisplayMessage(hangUp:Boolean=false, msgId:uint=0, parameters:Vector.<String>=null) : SystemMessageDisplayMessage {
+         this.hangUp=hangUp;
+         this.msgId=msgId;
+         this.parameters=parameters;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.hangUp=false;
+         this.msgId=0;
+         this.parameters=new Vector.<String>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SystemMessageDisplayMessage(output);
+      }
+
+      public function serializeAs_SystemMessageDisplayMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.hangUp);
+         if(this.msgId<0)
+         {
+            throw new Error("Forbidden value ("+this.msgId+") on element msgId.");
+         }
+         else
+         {
+            output.writeShort(this.msgId);
+            output.writeShort(this.parameters.length);
+            _i3=0;
+            while(_i3<this.parameters.length)
             {
-                throw new Error("Forbidden value (" + this.msgId + ") on element msgId.");
-            }
-            param1.writeShort(this.msgId);
-            param1.writeShort(this.parameters.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.parameters.length)
-            {
-                
-                param1.writeUTF(this.parameters[_loc_2]);
-                _loc_2 = _loc_2 + 1;
+               output.writeUTF(this.parameters[_i3]);
+               _i3++;
             }
             return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_SystemMessageDisplayMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SystemMessageDisplayMessage(input);
+      }
 
-        public function deserializeAs_SystemMessageDisplayMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.hangUp = param1.readBoolean();
-            this.msgId = param1.readShort();
-            if (this.msgId < 0)
+      public function deserializeAs_SystemMessageDisplayMessage(input:IDataInput) : void {
+         var _val3:String = null;
+         this.hangUp=input.readBoolean();
+         this.msgId=input.readShort();
+         if(this.msgId<0)
+         {
+            throw new Error("Forbidden value ("+this.msgId+") on element of SystemMessageDisplayMessage.msgId.");
+         }
+         else
+         {
+            _parametersLen=input.readUnsignedShort();
+            _i3=0;
+            while(_i3<_parametersLen)
             {
-                throw new Error("Forbidden value (" + this.msgId + ") on element of SystemMessageDisplayMessage.msgId.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUTF();
-                this.parameters.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
+               _val3=input.readUTF();
+               this.parameters.push(_val3);
+               _i3++;
             }
             return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

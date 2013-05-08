@@ -1,68 +1,64 @@
-﻿package nochump.util.zip
+package nochump.util.zip
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public class CRC32 extends Object
-    {
-        private var crc:uint;
-        private static var crcTable:Array = makeCrcTable();
 
-        public function CRC32()
-        {
-            return;
-        }// end function
+   public class CRC32 extends Object
+   {
+         
 
-        public function getValue() : uint
-        {
-            return this.crc & 4294967295;
-        }// end function
+      public function CRC32() {
+         super();
+      }
 
-        public function reset() : void
-        {
-            this.crc = 0;
-            return;
-        }// end function
+      private static var crcTable:Array = makeCrcTable();
 
-        public function update(param1:ByteArray) : void
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = param1.length;
-            var _loc_4:* = ~this.crc;
-            while (--_loc_3 >= 0)
+      private static function makeCrcTable() : Array {
+         var c:uint = 0;
+         var k:* = 0;
+         var crcTable:Array = new Array(256);
+         var n:int = 0;
+         while(n<256)
+         {
+            c=n;
+            k=8;
+            while(--k>=0)
             {
-                
-                _loc_4 = crcTable[(_loc_4 ^ param1[_loc_2++]) & 255] ^ _loc_4 >>> 8;
+               if((c&1)!=0)
+               {
+                  c=3.988292384E9^c>>>1;
+               }
+               else
+               {
+                  c=c>>>1;
+               }
             }
-            this.crc = ~_loc_4;
-            return;
-        }// end function
+            crcTable[n]=c;
+            n++;
+         }
+         return crcTable;
+      }
 
-        private static function makeCrcTable() : Array
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_1:* = new Array(256);
-            var _loc_2:* = 0;
-            while (_loc_2 < 256)
-            {
-                
-                _loc_3 = _loc_2;
-                _loc_4 = 8;
-                while (--_loc_4 >= 0)
-                {
-                    
-                    if ((_loc_3 & 1) != 0)
-                    {
-                        _loc_3 = 3988292384 ^ _loc_3 >>> 1;
-                        continue;
-                    }
-                    _loc_3 = _loc_3 >>> 1;
-                }
-                _loc_1[_loc_2] = _loc_3;
-                _loc_2++;
-            }
-            return _loc_1;
-        }// end function
+      private var crc:uint;
 
-    }
+      public function getValue() : uint {
+         return this.crc&4.294967295E9;
+      }
+
+      public function reset() : void {
+         this.crc=0;
+      }
+
+      public function update(buf:ByteArray) : void {
+         var off:uint = 0;
+         var len:uint = buf.length;
+         var c:uint = ~this.crc;
+         while(--len>=0)
+         {
+            c=crcTable[(c^buf[off++])&255]^c>>>8;
+         }
+         this.crc=~c;
+      }
+   }
+
 }

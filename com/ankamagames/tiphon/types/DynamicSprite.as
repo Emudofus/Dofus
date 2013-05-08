@@ -1,61 +1,57 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.tiphon.display.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.display.MovieClip;
+   import flash.utils.Dictionary;
+   import flash.events.Event;
+   import flash.display.DisplayObject;
+   import com.ankamagames.tiphon.display.TiphonSprite;
 
-    public class DynamicSprite extends MovieClip
-    {
-        public static var MEMORY_LOG:Dictionary = new Dictionary(true);
 
-        public function DynamicSprite()
-        {
-            MEMORY_LOG[this] = 1;
-            addEventListener(Event.ADDED_TO_STAGE, this.onAdded);
-            return;
-        }// end function
+   public class DynamicSprite extends MovieClip
+   {
+         
 
-        protected function getRoot() : ScriptedAnimation
-        {
-            return this._getRoot();
-        }// end function
+      public function DynamicSprite() {
+         super();
+         MEMORY_LOG[this]=1;
+         addEventListener(Event.ADDED_TO_STAGE,this.onAdded);
+      }
 
-        public function init(param1:IAnimationSpriteHandler) : void
-        {
-            return;
-        }// end function
+      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
 
-        private function onAdded(event:Event) : void
-        {
-            removeEventListener(Event.ADDED_TO_STAGE, this.onAdded);
-            var _loc_2:* = event.target as DisplayObject;
-            while (!(_loc_2 is TiphonSprite) && _loc_2.parent)
+      protected function getRoot() : ScriptedAnimation {
+         return this._getRoot();
+      }
+
+      public function init(handler:IAnimationSpriteHandler) : void {
+         
+      }
+
+      private function onAdded(e:Event) : void {
+         removeEventListener(Event.ADDED_TO_STAGE,this.onAdded);
+         var currentDo:DisplayObject = e.target as DisplayObject;
+         while((!(currentDo is TiphonSprite))&&(currentDo.parent))
+         {
+            currentDo=currentDo.parent;
+         }
+         if(currentDo is TiphonSprite)
+         {
+            this.init(currentDo as TiphonSprite);
+         }
+      }
+
+      private function _getRoot() : ScriptedAnimation {
+         var current:DisplayObject = this;
+         while(current)
+         {
+            if(current is ScriptedAnimation)
             {
-                
-                _loc_2 = _loc_2.parent;
+               return current as ScriptedAnimation;
             }
-            if (_loc_2 is TiphonSprite)
-            {
-                this.init(_loc_2 as TiphonSprite);
-            }
-            return;
-        }// end function
+            current=current.parent;
+         }
+         return null;
+      }
+   }
 
-        private function _getRoot() : ScriptedAnimation
-        {
-            var _loc_1:* = this;
-            while (_loc_1)
-            {
-                
-                if (_loc_1 is ScriptedAnimation)
-                {
-                    return _loc_1 as ScriptedAnimation;
-                }
-                _loc_1 = _loc_1.parent;
-            }
-            return null;
-        }// end function
-
-    }
 }

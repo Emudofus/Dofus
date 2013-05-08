@@ -1,388 +1,369 @@
-﻿package com.ankamagames.dofus.misc.utils.errormanager
+package com.ankamagames.dofus.misc.utils.errormanager
 {
-    import __AS3__.vec.*;
-    import by.blooddy.crypto.*;
-    import com.ankamagames.dofus.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.misc.utils.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.logger.targets.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.targets.LimitedBufferTarget;
+   import com.ankamagames.jerakine.logger.Logger;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.misc.utils.RpcServiceManager;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.messages.Frame;
+   import flash.display.BitmapData;
+   import flash.geom.Matrix;
+   import by.blooddy.crypto.MD5;
+   import com.ankamagames.dofus.misc.utils.DateFormat;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import com.ankamagames.jerakine.logger.TextLogEvent;
+   import by.blooddy.crypto.Base64;
+   import by.blooddy.crypto.image.JPEGEncoder;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import flash.utils.getQualifiedClassName;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import flash.utils.Timer;
+   import flash.events.TimerEvent;
+   import flash.utils.setInterval;
+   import com.ankamagames.jerakine.logger.Log;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   import com.ankamagames.dofus.BuildInfos;
+   import com.ankamagames.dofus.network.enums.BuildTypeEnum;
 
-    public class WebServiceDataHandler extends EventDispatcher
-    {
-        private var _log:Logger;
-        private var _exceptionsList:Vector.<DataExceptionModel>;
-        private var _webService:RpcServiceManager;
-        private var _exceptionsInProgress:Dictionary;
-        private var _timersList:Dictionary;
-        private var _previousErrorType:String = "";
-        public static var buffer:LimitedBufferTarget;
-        private static var _self:WebServiceDataHandler;
-        private static var LIMIT_REBOOT:int = 20;
-        public static const ALL_DATA_SENT:String = "everythings has been sent";
-        private static const MIN_DELAY:int = 30;
-        private static const MAX_DELAY:int = 270;
-        private static var BASE_URL:String = "http://api.ankama.";
 
-        public function WebServiceDataHandler(param1:PrivateClass)
-        {
-            this._log = Log.getLogger(getQualifiedClassName(WebServiceDataHandler));
-            this._exceptionsList = new Vector.<DataExceptionModel>;
-            this._exceptionsInProgress = new Dictionary(true);
-            this._timersList = new Dictionary(true);
-            if (param1 == null)
+   public class WebServiceDataHandler extends EventDispatcher
+   {
+         
+
+      public function WebServiceDataHandler(pPrivate:PrivateClass) {
+         this._log=Log.getLogger(getQualifiedClassName(WebServiceDataHandler));
+         this._exceptionsList=new Vector.<DataExceptionModel>();
+         this._exceptionsInProgress=new Dictionary(true);
+         this._timersList=new Dictionary(true);
+         super();
+         if(pPrivate==null)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            if((BuildInfos.BUILD_TYPE==BuildTypeEnum.RELEASE)||(BuildInfos.BUILD_TYPE==BuildTypeEnum.BETA)||(BuildInfos.BUILD_TYPE==BuildTypeEnum.ALPHA))
             {
-                throw new SingletonError();
-            }
-            if (BuildInfos.BUILD_TYPE == BuildTypeEnum.RELEASE || BuildInfos.BUILD_TYPE == BuildTypeEnum.BETA || BuildInfos.BUILD_TYPE == BuildTypeEnum.ALPHA)
-            {
-                BASE_URL = BASE_URL + "com";
+               BASE_URL=BASE_URL+"com";
             }
             else
             {
-                BASE_URL = BASE_URL + "lan";
+               BASE_URL=BASE_URL+"lan";
             }
             return;
-        }// end function
+         }
+      }
 
-        public function createNewException(param1:Object, param2:String) : DataExceptionModel
-        {
-            var _loc_5:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            if (this._previousErrorType == "ONE" && this._exceptionsList.length >= 1)
-            {
-                return null;
-            }
-            this._previousErrorType = this.getSendingType(param2);
-            var _loc_3:* = new DataExceptionModel();
-            if (param1.stacktrace == null)
-            {
-                return null;
-            }
-            _loc_3.hash = MD5.hash(this.cleanStacktrace(param1.stacktrace));
-            _loc_3.stacktrace = param1.stacktrace;
-            if (param1.errorMsg != null && param1.errorMsg != "")
-            {
-                _loc_3.stacktrace = param1.errorMsg + "\n" + _loc_3.stacktrace;
-            }
-            _loc_3.buildType = param1.buildType;
-            _loc_3.buildVersion = param1.buildVersion;
-            if (_loc_3.buildType == "INTERNAL" || _loc_3.buildType == "DEBUG")
-            {
-                _loc_8 = new Date();
-                _loc_9 = _loc_3.buildVersion.split(".");
-                _loc_3.buildVersion.split(".")[_loc_9.length - 2] = DateFormat.dayOfYear(_loc_8.fullYear, _loc_8.month, _loc_8.date);
-                _loc_9.pop();
-                _loc_3.buildVersion = _loc_9.join(".");
-            }
-            var _loc_4:* = param1.os.split(" ");
-            _loc_3.osType = _loc_4[0];
-            _loc_3.osVersion = _loc_4[1] ? (_loc_4[1]) : ("");
-            _loc_3.logsSos = buffer.getFormatedBuffer();
-            _loc_3.serverId = param1.serverId;
-            _loc_3.mapId = param1.idMap;
-            _loc_3.characterId = param1.characterId;
-            _loc_3.isInFight = param1.wasFighting;
-            _loc_3.isMultiAccount = param1.multicompte;
-            _loc_3.date = TimeManager.getInstance().getTimestamp() / 1000;
-            var _loc_6:* = "";
-            for each (_loc_5 in Kernel.getWorker().framesList)
-            {
-                
-                _loc_7 = getQualifiedClassName(_loc_5).split("::");
-                _loc_6 = _loc_6 + (String(_loc_7[1] ? (_loc_7[1]) : (_loc_7[0])).replace("Frame", "") + ",");
-            }
-            _loc_3.framesList = _loc_6;
-            this._exceptionsList.push(_loc_3);
-            return _loc_3;
-        }// end function
+      private static const ENABLE_SCREENSHOT:Boolean = true;
 
-        public function cleanStacktrace(param1:String) : String
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_2:* = "";
-            var _loc_3:* = param1.split("\n");
-            for each (_loc_4 in _loc_3)
-            {
-                
-                _loc_5 = _loc_3.indexOf(_loc_4);
-                if (_loc_5 > 0)
-                {
-                    _loc_4 = _loc_4.replace(/\\\"""\\/g, "/");
-                }
-                _loc_6 = /^(.*?\[)(.*?)((\/modules\/Ankama_|\/com\/ankama).*?)(:?[0-9]*?)(\].*?)""^(.*?\[)(.*?)((\/modules\/Ankama_|\/com\/ankama).*?)(:?[0-9]*?)(\].*?)/g;
-                _loc_2 = _loc_2 + _loc_4.replace(_loc_6, "$1$3$6");
-                if (_loc_5 < (_loc_3.length - 1))
-                {
-                    _loc_2 = _loc_2 + "\n";
-                }
-            }
-            return _loc_2;
-        }// end function
+      public static var buffer:LimitedBufferTarget;
 
-        private function sendDataToWebservice(param1:DataExceptionModel) : void
-        {
-            if (param1 == null)
+      private static var _self:WebServiceDataHandler;
+
+      private static var LIMIT_REBOOT:int = 20;
+
+      public static const ALL_DATA_SENT:String = "everythings has been sent";
+
+      private static const MIN_DELAY:int = 30;
+
+      private static const MAX_DELAY:int = 5*60-MIN_DELAY;
+
+      private static var BASE_URL:String = "http://api.ankama.";
+
+      public static function getInstance() : WebServiceDataHandler {
+         if(_self==null)
+         {
+            _self=new WebServiceDataHandler(new PrivateClass());
+         }
+         return _self;
+      }
+
+      private var _log:Logger;
+
+      private var _exceptionsList:Vector.<DataExceptionModel>;
+
+      private var _webService:RpcServiceManager;
+
+      private var _exceptionsInProgress:Dictionary;
+
+      private var _timersList:Dictionary;
+
+      private var _previousErrorType:String = "";
+
+      public function createNewException(reportInfo:Object, errorType:String) : DataExceptionModel {
+         var fr:Frame = null;
+         var f:Array = null;
+         var date:Date = null;
+         var tmp:Array = null;
+         var screenScale:* = NaN;
+         var bd:BitmapData = null;
+         var m:Matrix = null;
+         if((this._previousErrorType=="ONE")&&(this._exceptionsList.length>=1))
+         {
+            return null;
+         }
+         this._previousErrorType=this.getSendingType(errorType);
+         var exception:DataExceptionModel = new DataExceptionModel();
+         if(reportInfo.stacktrace==null)
+         {
+            return null;
+         }
+         exception.hash=MD5.hash(this.cleanStacktrace(reportInfo.stacktrace));
+         exception.stacktrace=reportInfo.stacktrace;
+         if((!(reportInfo.errorMsg==null))&&(!(reportInfo.errorMsg=="")))
+         {
+            exception.stacktrace=reportInfo.errorMsg+"\n"+exception.stacktrace;
+         }
+         exception.buildType=reportInfo.buildType;
+         exception.buildVersion=reportInfo.buildVersion;
+         if((exception.buildType=="INTERNAL")||(exception.buildType=="DEBUG"))
+         {
+            date=new Date();
+            tmp=exception.buildVersion.split(".");
+            tmp[tmp.length-2]=DateFormat.dayOfYear(date.fullYear,date.month,date.date);
+            tmp.pop();
+            exception.buildVersion=tmp.join(".");
+         }
+         var os:Array = reportInfo.os.split(" ");
+         exception.osType=os[0];
+         exception.osVersion=os[1]?os[1]:"";
+         if(ENABLE_SCREENSHOT)
+         {
+            screenScale=1/3;
+            bd=new BitmapData(StageShareManager.startWidth*screenScale,StageShareManager.startHeight*screenScale);
+            m=new Matrix();
+            m.scale(screenScale,screenScale);
+            bd.draw(StageShareManager.stage,m);
+            buffer.logEvent(new TextLogEvent("[BUG_REPORT]","[SCREEN]"+Base64.encode(JPEGEncoder.encode(bd,60))));
+         }
+         exception.logsSos=buffer.getFormatedBuffer();
+         exception.serverId=reportInfo.serverId;
+         exception.mapId=reportInfo.idMap;
+         exception.characterId=reportInfo.characterId;
+         exception.isInFight=reportInfo.wasFighting;
+         exception.isMultiAccount=reportInfo.multicompte;
+         exception.date=TimeManager.getInstance().getTimestamp()/1000;
+         var frString:String = "";
+         for each (fr in Kernel.getWorker().framesList)
+         {
+            f=getQualifiedClassName(fr).split("::");
+            frString=frString+(String(f[1]?f[1]:f[0]).replace("Frame","")+",");
+         }
+         exception.framesList=frString;
+         this._exceptionsList.push(exception);
+         return exception;
+      }
+
+      public function cleanStacktrace(inStack:String) : String {
+         var line:String = null;
+         var lineIndex:* = 0;
+         var reg:RegExp = null;
+         var outStack:String = "";
+         var tmp:Array = inStack.split("\n");
+         for each (line in tmp)
+         {
+            lineIndex=tmp.indexOf(line);
+            if(lineIndex>0)
             {
-                return;
+               line=line.replace(new RegExp("\\\\","g"),"/");
             }
-            if (this._webService == null)
+            reg=new RegExp("^(.*?\\[)(.*?)((\\/modules\\/Ankama_|\\/com\\/ankama).*?)(:?[0-9]*?)(\\].*?)","g");
+            outStack=outStack+line.replace(reg,"$1$3$6");
+            if(lineIndex<tmp.length-1)
             {
-                this.initWebService();
+               outStack=outStack+"\n";
             }
-            this._webService.callMethod("Exception", {sHash:param1.hash, sStacktrace:param1.stacktrace, iVersion:param1.buildType, iBuildVersion:param1.buildVersion, iDate:param1.date, sOs:param1.osType, sOsVersion:param1.osVersion, iServerId:param1.serverId, iCharacterId:param1.characterId, iMapId:param1.mapId, bMultipleAccout:param1.isMultiAccount, bIsFighting:param1.isInFight, sFrameList:param1.framesList, sCustom:param1.logsSos, sErrorType:param1.errorType});
+         }
+         return outStack;
+      }
+
+      private function sendDataToWebservice(exception:DataExceptionModel) : void {
+         if(exception==null)
+         {
             return;
-        }// end function
+         }
+         if(this._webService==null)
+         {
+            this.initWebService();
+         }
+         this._webService.callMethod("Exception",
+            {
+               sHash:exception.hash,
+               sStacktrace:exception.stacktrace,
+               iVersion:exception.buildType,
+               iBuildVersion:exception.buildVersion,
+               iDate:exception.date,
+               sOs:exception.osType,
+               sOsVersion:exception.osVersion,
+               iServerId:exception.serverId,
+               iCharacterId:exception.characterId,
+               iMapId:exception.mapId,
+               bMultipleAccout:exception.isMultiAccount,
+               bIsFighting:exception.isInFight,
+               sFrameList:exception.framesList,
+               sCustom:exception.logsSos,
+               sErrorType:exception.errorType
+            }
+         );
+      }
 
-        private function onDataSavedComplete(event:Event) : void
-        {
-            var _loc_2:* = event.currentTarget as RpcServiceManager;
-            var _loc_3:* = _loc_2.requestData.params.sHash;
-            if (this._exceptionsInProgress[_loc_3])
-            {
-                (this._exceptionsInProgress[_loc_3] as DataExceptionModel).sent = true;
-                delete this._exceptionsInProgress[_loc_3];
-            }
-            if (this.getWaitingExceptionsNumber() == 0)
-            {
-                dispatchEvent(new Event(ALL_DATA_SENT));
-            }
-            return;
-        }// end function
+      private function onDataSavedComplete(pEvt:Event) : void {
+         var rpcService:RpcServiceManager = pEvt.currentTarget as RpcServiceManager;
+         var hash:String = rpcService.requestData.params.sHash;
+         if(this._exceptionsInProgress[hash])
+         {
+            (this._exceptionsInProgress[hash] as DataExceptionModel).sent=true;
+            delete this._exceptionsInProgress[[hash]];
+         }
+         if(this.getWaitingExceptionsNumber()==0)
+         {
+            dispatchEvent(new Event(ALL_DATA_SENT));
+         }
+      }
 
-        private function getWaitingExceptionsNumber() : int
-        {
-            var _loc_2:* = undefined;
-            var _loc_1:* = 0;
-            for (_loc_2 in this._exceptionsInProgress)
-            {
-                
-                _loc_1++;
-            }
-            return _loc_1;
-        }// end function
+      private function getWaitingExceptionsNumber() : int {
+         var val:* = undefined;
+         var cpt:int = 0;
+         for (val in this._exceptionsInProgress)
+         {
+            cpt++;
+         }
+         return cpt;
+      }
 
-        private function onDataSavedError(event:Event) : void
-        {
-            this._log.trace(event.toString());
-            var _loc_2:* = event.currentTarget as RpcServiceManager;
-            return;
-        }// end function
+      private function onDataSavedError(pEvt:Event) : void {
+         this._log.trace(pEvt.toString());
+         var rpcService:RpcServiceManager = pEvt.currentTarget as RpcServiceManager;
+      }
 
-        private function initWebService() : void
-        {
-            var _loc_1:* = BASE_URL + "/dofus/logger.json";
-            this._webService = new RpcServiceManager(_loc_1, "json");
-            this._webService.addEventListener(Event.COMPLETE, this.onDataSavedComplete);
-            this._webService.addEventListener(IOErrorEvent.IO_ERROR, this.onDataSavedError);
-            this._webService.addEventListener(RpcServiceManager.SERVER_ERROR, this.onDataSavedError);
-            return;
-        }// end function
+      private function initWebService() : void {
+         var url:String = BASE_URL+"/dofus/logger.json";
+         this._webService=new RpcServiceManager(url,"json");
+         this._webService.addEventListener(Event.COMPLETE,this.onDataSavedComplete);
+         this._webService.addEventListener(IOErrorEvent.IO_ERROR,this.onDataSavedError);
+         this._webService.addEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
+      }
 
-        public function clearService(param1:RpcServiceManager = null) : void
-        {
-            if (param1 == null)
-            {
-                param1 = this._webService;
-            }
-            param1.removeEventListener(Event.COMPLETE, this.onDataSavedComplete);
-            param1.removeEventListener(IOErrorEvent.IO_ERROR, this.onDataSavedError);
-            param1.removeEventListener(RpcServiceManager.SERVER_ERROR, this.onDataSavedError);
-            param1.destroy();
-            param1 = null;
-            return;
-        }// end function
+      public function clearService(rpcService:RpcServiceManager=null) : void {
+         if(rpcService==null)
+         {
+            rpcService=this._webService;
+         }
+         rpcService.removeEventListener(Event.COMPLETE,this.onDataSavedComplete);
+         rpcService.removeEventListener(IOErrorEvent.IO_ERROR,this.onDataSavedError);
+         rpcService.removeEventListener(RpcServiceManager.SERVER_ERROR,this.onDataSavedError);
+         rpcService.destroy();
+         var rpcService:RpcServiceManager = null;
+      }
 
-        public function saveException(param1:DataExceptionModel, param2:Boolean = false) : void
-        {
-            var v:int;
-            var t:Timer;
-            var exception:* = param1;
-            var forceSend:* = param2;
-            if (forceSend)
+      public function saveException(exception:DataExceptionModel, forceSend:Boolean=false) : void {
+         var v:int = 0;
+         var t:Timer = null;
+         if(forceSend)
+         {
+            this.sendDataToWebservice(exception);
+            this._exceptionsInProgress[exception.hash]=exception;
+         }
+         else
+         {
+            v=Math.round(Math.random()*MAX_DELAY*1000+MIN_DELAY*1000);
+            t=new Timer(v,1);
+            this._exceptionsInProgress[exception.hash]=exception;
+            this._timersList[t]=null;
+            t.addEventListener(TimerEvent.TIMER_COMPLETE,new function e(pEvt:TimerEvent):void
             {
-                this.sendDataToWebservice(exception);
-                this._exceptionsInProgress[exception.hash] = exception;
+               sendDataToWebservice(exception);
+               (pEvt.currentTarget as Timer).stop();
+               });
+               t.start();
             }
-            else
-            {
-                v = Math.round(Math.random() * MAX_DELAY * 1000 + MIN_DELAY * 1000);
-                t = new Timer(v, 1);
-                this._exceptionsInProgress[exception.hash] = exception;
-                this._timersList[t] = null;
-                with ({})
-                {
-                    {}.e = function (event:TimerEvent) : void
-            {
-                sendDataToWebservice(exception);
-                (event.currentTarget as Timer).stop();
-                return;
-            }// end function
-            ;
-                }
-                t.addEventListener(TimerEvent.TIMER_COMPLETE, function (event:TimerEvent) : void
-            {
-                sendDataToWebservice(exception);
-                (event.currentTarget as Timer).stop();
-                return;
-            }// end function
-            );
-                t.start();
-            }
-            return;
-        }// end function
+      }
 
-        public function sendWaitingException() : void
-        {
-            var _loc_1:* = undefined;
-            var _loc_2:* = null;
-            for (_loc_1 in this._timersList)
+      public function sendWaitingException() : void {
+         var t:* = undefined;
+         var exception:DataExceptionModel = null;
+         for (t in this._timersList)
+         {
+            (t as Timer).stop();
+            t=null;
+         }
+         for each (exception in this._exceptionsList)
+         {
+            if(!exception.sent)
             {
-                
-                (_loc_1 as Timer).stop();
-                _loc_1 = null;
+               this.saveException(exception,true);
             }
-            for each (_loc_2 in this._exceptionsList)
-            {
-                
-                if (!_loc_2.sent)
-                {
-                    this.saveException(_loc_2, true);
-                }
-            }
-            return;
-        }// end function
+         }
+      }
 
-        public function quit() : Boolean
-        {
-            if (this._exceptionsList.length == 0)
+      public function quit() : Boolean {
+         if(this._exceptionsList.length==0)
+         {
+            return false;
+         }
+         var exception:DataExceptionModel = this._exceptionsList[this._exceptionsList.length-1];
+         var d:Date = new Date();
+         if(Math.round(d.time/1000)-exception.date<=LIMIT_REBOOT)
+         {
+            exception.isBlockerAndReboot=true;
+         }
+         if(this._exceptionsList.length>0)
+         {
+            setInterval(new function e():void
             {
-                return false;
-            }
-            var exception:* = this._exceptionsList[(this._exceptionsList.length - 1)];
-            var d:* = new Date();
-            if (Math.round(d.time / 1000) - exception.date <= LIMIT_REBOOT)
-            {
-                exception.isBlockerAndReboot = true;
-            }
-            if (this._exceptionsList.length > 0)
-            {
-                with ({})
-                {
-                    {}.e = function () : void
-            {
-                dispatchEvent(new Event(ALL_DATA_SENT));
-                return;
-            }// end function
-            ;
-                }
-                setInterval(function () : void
-            {
-                dispatchEvent(new Event(ALL_DATA_SENT));
-                return;
-            }// end function
-            , 3000);
-                return true;
+               dispatchEvent(new Event(ALL_DATA_SENT));
+               },3000);
+               return true;
             }
             return false;
-        }// end function
+      }
 
-        public function changeCharacter() : void
-        {
-            var _loc_2:* = null;
-            if (this._exceptionsList == null || this._exceptionsList.length == 0)
-            {
-                return;
-            }
-            var _loc_1:* = new Date();
-            for each (_loc_2 in this._exceptionsList)
-            {
-                
-                if (_loc_2 != null && Math.round(_loc_1.time / 1000) - _loc_2.date <= LIMIT_REBOOT)
-                {
-                    _loc_2.isBlockerAndChangeCharacter = true;
-                }
-            }
+      public function changeCharacter() : void {
+         var exception:DataExceptionModel = null;
+         if((this._exceptionsList==null)||(this._exceptionsList.length==0))
+         {
             return;
-        }// end function
-
-        public function getSendingType(param1:String) : String
-        {
-            switch(param1.toLowerCase())
+         }
+         var d:Date = new Date();
+         for each (exception in this._exceptionsList)
+         {
+            if((!(exception==null))&&(Math.round(d.time/1000)-exception.date<=LIMIT_REBOOT))
             {
-                case "error":
-                {
-                }
-                default:
-                {
-                    return "ONE";
-                    break;
-                }
+               exception.isBlockerAndChangeCharacter=true;
             }
-        }// end function
+         }
+      }
 
-        public function reset() : void
-        {
-            this._previousErrorType = "";
-            this._exceptionsList = new Vector.<DataExceptionModel>;
-            return;
-        }// end function
+      public function getSendingType(pType:String) : String {
+         switch(pType.toLowerCase())
+         {
+            case "error":
+         }
+         return "ONE";
+      }
 
-        public static function getInstance() : WebServiceDataHandler
-        {
-            if (_self == null)
-            {
-                _self = new WebServiceDataHandler(new PrivateClass());
-            }
-            return _self;
-        }// end function
-
-    }
-}
-
-import __AS3__.vec.*;
-
-import by.blooddy.crypto.*;
-
-import com.ankamagames.dofus.*;
-
-import com.ankamagames.dofus.kernel.*;
-
-import com.ankamagames.dofus.logic.game.common.managers.*;
-
-import com.ankamagames.dofus.misc.utils.*;
-
-import com.ankamagames.dofus.network.enums.*;
-
-import com.ankamagames.jerakine.logger.*;
-
-import com.ankamagames.jerakine.logger.targets.*;
-
-import com.ankamagames.jerakine.messages.*;
-
-import com.ankamagames.jerakine.utils.errors.*;
-
-import flash.events.*;
-
-import flash.utils.*;
-
-class PrivateClass extends Object
-{
-
-    function PrivateClass()
-    {
-        return;
-    }// end function
+      public function reset() : void {
+         this._previousErrorType="";
+         this._exceptionsList=new Vector.<DataExceptionModel>();
+      }
+   }
 
 }
 
+
+
+   class PrivateClass extends Object
+   {
+         
+
+      function PrivateClass() {
+         super();
+      }
+
+
+
+
+   }

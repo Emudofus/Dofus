@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
+package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class QuestStepInfoRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var questId:uint = 0;
-        public static const protocolId:uint = 5622;
 
-        public function QuestStepInfoRequestMessage()
-        {
+   public class QuestStepInfoRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function QuestStepInfoRequestMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5622;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var questId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5622;
+      }
+
+      public function initQuestStepInfoRequestMessage(questId:uint=0) : QuestStepInfoRequestMessage {
+         this.questId=questId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.questId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_QuestStepInfoRequestMessage(output);
+      }
+
+      public function serializeAs_QuestStepInfoRequestMessage(output:IDataOutput) : void {
+         if((this.questId>0)||(this.questId<65535))
+         {
+            throw new Error("Forbidden value ("+this.questId+") on element questId.");
+         }
+         else
+         {
+            output.writeShort(this.questId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_QuestStepInfoRequestMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5622;
-        }// end function
-
-        public function initQuestStepInfoRequestMessage(param1:uint = 0) : QuestStepInfoRequestMessage
-        {
-            this.questId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.questId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_QuestStepInfoRequestMessage(input:IDataInput) : void {
+         this.questId=input.readUnsignedShort();
+         if((this.questId>0)||(this.questId<65535))
+         {
+            throw new Error("Forbidden value ("+this.questId+") on element of QuestStepInfoRequestMessage.questId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_QuestStepInfoRequestMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_QuestStepInfoRequestMessage(param1:IDataOutput) : void
-        {
-            if (this.questId < 0 || this.questId > 65535)
-            {
-                throw new Error("Forbidden value (" + this.questId + ") on element questId.");
-            }
-            param1.writeShort(this.questId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_QuestStepInfoRequestMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_QuestStepInfoRequestMessage(param1:IDataInput) : void
-        {
-            this.questId = param1.readUnsignedShort();
-            if (this.questId < 0 || this.questId > 65535)
-            {
-                throw new Error("Forbidden value (" + this.questId + ") on element of QuestStepInfoRequestMessage.questId.");
-            }
-            return;
-        }// end function
-
-    }
 }

@@ -1,28 +1,30 @@
-﻿package com.ankamagames.dofus.datacenter.sounds
+package com.ankamagames.dofus.datacenter.sounds
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
 
-    public class SoundUiHook extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var name:String;
-        public static var MODULE:String = "SoundUiHook";
 
-        public function SoundUiHook()
-        {
-            return;
-        }// end function
+   public class SoundUiHook extends Object implements IDataCenter
+   {
+         
 
-        public static function getSoundUiHookById(param1:uint) : SoundUiHook
-        {
-            return GameData.getObject(MODULE, param1) as SoundUiHook;
-        }// end function
+      public function SoundUiHook() {
+         super();
+      }
 
-        public static function getSoundUiHooks() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static var MODULE:String = "SoundUiHook";
 
-    }
+      public static function getSoundUiHookById(id:uint) : SoundUiHook {
+         return GameData.getObject(MODULE,id) as SoundUiHook;
+      }
+
+      public static function getSoundUiHooks() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var name:String;
+   }
+
 }

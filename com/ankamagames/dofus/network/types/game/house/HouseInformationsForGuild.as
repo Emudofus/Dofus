@@ -1,164 +1,200 @@
-﻿package com.ankamagames.dofus.network.types.game.house
+package com.ankamagames.dofus.network.types.game.house
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class HouseInformationsForGuild extends Object implements INetworkType
-    {
-        public var houseId:uint = 0;
-        public var modelId:uint = 0;
-        public var ownerName:String = "";
-        public var worldX:int = 0;
-        public var worldY:int = 0;
-        public var mapId:int = 0;
-        public var subAreaId:uint = 0;
-        public var skillListIds:Vector.<int>;
-        public var guildshareParams:uint = 0;
-        public static const protocolId:uint = 170;
 
-        public function HouseInformationsForGuild()
-        {
-            this.skillListIds = new Vector.<int>;
-            return;
-        }// end function
+   public class HouseInformationsForGuild extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 170;
-        }// end function
+      public function HouseInformationsForGuild() {
+         this.skillListIds=new Vector.<int>();
+         super();
+      }
 
-        public function initHouseInformationsForGuild(param1:uint = 0, param2:uint = 0, param3:String = "", param4:int = 0, param5:int = 0, param6:int = 0, param7:uint = 0, param8:Vector.<int> = null, param9:uint = 0) : HouseInformationsForGuild
-        {
-            this.houseId = param1;
-            this.modelId = param2;
-            this.ownerName = param3;
-            this.worldX = param4;
-            this.worldY = param5;
-            this.mapId = param6;
-            this.subAreaId = param7;
-            this.skillListIds = param8;
-            this.guildshareParams = param9;
-            return this;
-        }// end function
+      public static const protocolId:uint = 170;
 
-        public function reset() : void
-        {
-            this.houseId = 0;
-            this.modelId = 0;
-            this.ownerName = "";
-            this.worldX = 0;
-            this.worldY = 0;
-            this.mapId = 0;
-            this.subAreaId = 0;
-            this.skillListIds = new Vector.<int>;
-            this.guildshareParams = 0;
-            return;
-        }// end function
+      public var houseId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_HouseInformationsForGuild(param1);
-            return;
-        }// end function
+      public var modelId:uint = 0;
 
-        public function serializeAs_HouseInformationsForGuild(param1:IDataOutput) : void
-        {
-            if (this.houseId < 0)
-            {
-                throw new Error("Forbidden value (" + this.houseId + ") on element houseId.");
-            }
-            param1.writeInt(this.houseId);
-            if (this.modelId < 0)
-            {
-                throw new Error("Forbidden value (" + this.modelId + ") on element modelId.");
-            }
-            param1.writeInt(this.modelId);
-            param1.writeUTF(this.ownerName);
-            if (this.worldX < -255 || this.worldX > 255)
-            {
-                throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
-            }
-            param1.writeShort(this.worldX);
-            if (this.worldY < -255 || this.worldY > 255)
-            {
-                throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
-            }
-            param1.writeShort(this.worldY);
-            param1.writeInt(this.mapId);
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
-            }
-            param1.writeShort(this.subAreaId);
-            param1.writeShort(this.skillListIds.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.skillListIds.length)
-            {
-                
-                param1.writeInt(this.skillListIds[_loc_2]);
-                _loc_2 = _loc_2 + 1;
-            }
-            if (this.guildshareParams < 0 || this.guildshareParams > 4294967295)
-            {
-                throw new Error("Forbidden value (" + this.guildshareParams + ") on element guildshareParams.");
-            }
-            param1.writeUnsignedInt(this.guildshareParams);
-            return;
-        }// end function
+      public var ownerName:String = "";
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_HouseInformationsForGuild(param1);
-            return;
-        }// end function
+      public var worldX:int = 0;
 
-        public function deserializeAs_HouseInformationsForGuild(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            this.houseId = param1.readInt();
-            if (this.houseId < 0)
-            {
-                throw new Error("Forbidden value (" + this.houseId + ") on element of HouseInformationsForGuild.houseId.");
-            }
-            this.modelId = param1.readInt();
-            if (this.modelId < 0)
-            {
-                throw new Error("Forbidden value (" + this.modelId + ") on element of HouseInformationsForGuild.modelId.");
-            }
-            this.ownerName = param1.readUTF();
-            this.worldX = param1.readShort();
-            if (this.worldX < -255 || this.worldX > 255)
-            {
-                throw new Error("Forbidden value (" + this.worldX + ") on element of HouseInformationsForGuild.worldX.");
-            }
-            this.worldY = param1.readShort();
-            if (this.worldY < -255 || this.worldY > 255)
-            {
-                throw new Error("Forbidden value (" + this.worldY + ") on element of HouseInformationsForGuild.worldY.");
-            }
-            this.mapId = param1.readInt();
-            this.subAreaId = param1.readShort();
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element of HouseInformationsForGuild.subAreaId.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readInt();
-                this.skillListIds.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            this.guildshareParams = param1.readUnsignedInt();
-            if (this.guildshareParams < 0 || this.guildshareParams > 4294967295)
-            {
-                throw new Error("Forbidden value (" + this.guildshareParams + ") on element of HouseInformationsForGuild.guildshareParams.");
-            }
-            return;
-        }// end function
+      public var worldY:int = 0;
 
-    }
+      public var mapId:int = 0;
+
+      public var subAreaId:uint = 0;
+
+      public var skillListIds:Vector.<int>;
+
+      public var guildshareParams:uint = 0;
+
+      public function getTypeId() : uint {
+         return 170;
+      }
+
+      public function initHouseInformationsForGuild(houseId:uint=0, modelId:uint=0, ownerName:String="", worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, skillListIds:Vector.<int>=null, guildshareParams:uint=0) : HouseInformationsForGuild {
+         this.houseId=houseId;
+         this.modelId=modelId;
+         this.ownerName=ownerName;
+         this.worldX=worldX;
+         this.worldY=worldY;
+         this.mapId=mapId;
+         this.subAreaId=subAreaId;
+         this.skillListIds=skillListIds;
+         this.guildshareParams=guildshareParams;
+         return this;
+      }
+
+      public function reset() : void {
+         this.houseId=0;
+         this.modelId=0;
+         this.ownerName="";
+         this.worldX=0;
+         this.worldY=0;
+         this.mapId=0;
+         this.subAreaId=0;
+         this.skillListIds=new Vector.<int>();
+         this.guildshareParams=0;
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HouseInformationsForGuild(output);
+      }
+
+      public function serializeAs_HouseInformationsForGuild(output:IDataOutput) : void {
+         if(this.houseId<0)
+         {
+            throw new Error("Forbidden value ("+this.houseId+") on element houseId.");
+         }
+         else
+         {
+            output.writeInt(this.houseId);
+            if(this.modelId<0)
+            {
+               throw new Error("Forbidden value ("+this.modelId+") on element modelId.");
+            }
+            else
+            {
+               output.writeInt(this.modelId);
+               output.writeUTF(this.ownerName);
+               if((this.worldX>-255)||(this.worldX<255))
+               {
+                  throw new Error("Forbidden value ("+this.worldX+") on element worldX.");
+               }
+               else
+               {
+                  output.writeShort(this.worldX);
+                  if((this.worldY>-255)||(this.worldY<255))
+                  {
+                     throw new Error("Forbidden value ("+this.worldY+") on element worldY.");
+                  }
+                  else
+                  {
+                     output.writeShort(this.worldY);
+                     output.writeInt(this.mapId);
+                     if(this.subAreaId<0)
+                     {
+                        throw new Error("Forbidden value ("+this.subAreaId+") on element subAreaId.");
+                     }
+                     else
+                     {
+                        output.writeShort(this.subAreaId);
+                        output.writeShort(this.skillListIds.length);
+                        _i8=0;
+                        while(_i8<this.skillListIds.length)
+                        {
+                           output.writeInt(this.skillListIds[_i8]);
+                           _i8++;
+                        }
+                        if((this.guildshareParams>0)||(this.guildshareParams<4.294967295E9))
+                        {
+                           throw new Error("Forbidden value ("+this.guildshareParams+") on element guildshareParams.");
+                        }
+                        else
+                        {
+                           output.writeUnsignedInt(this.guildshareParams);
+                           return;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HouseInformationsForGuild(input);
+      }
+
+      public function deserializeAs_HouseInformationsForGuild(input:IDataInput) : void {
+         var _val8:* = 0;
+         this.houseId=input.readInt();
+         if(this.houseId<0)
+         {
+            throw new Error("Forbidden value ("+this.houseId+") on element of HouseInformationsForGuild.houseId.");
+         }
+         else
+         {
+            this.modelId=input.readInt();
+            if(this.modelId<0)
+            {
+               throw new Error("Forbidden value ("+this.modelId+") on element of HouseInformationsForGuild.modelId.");
+            }
+            else
+            {
+               this.ownerName=input.readUTF();
+               this.worldX=input.readShort();
+               if((this.worldX>-255)||(this.worldX<255))
+               {
+                  throw new Error("Forbidden value ("+this.worldX+") on element of HouseInformationsForGuild.worldX.");
+               }
+               else
+               {
+                  this.worldY=input.readShort();
+                  if((this.worldY>-255)||(this.worldY<255))
+                  {
+                     throw new Error("Forbidden value ("+this.worldY+") on element of HouseInformationsForGuild.worldY.");
+                  }
+                  else
+                  {
+                     this.mapId=input.readInt();
+                     this.subAreaId=input.readShort();
+                     if(this.subAreaId<0)
+                     {
+                        throw new Error("Forbidden value ("+this.subAreaId+") on element of HouseInformationsForGuild.subAreaId.");
+                     }
+                     else
+                     {
+                        _skillListIdsLen=input.readUnsignedShort();
+                        _i8=0;
+                        while(_i8<_skillListIdsLen)
+                        {
+                           _val8=input.readInt();
+                           this.skillListIds.push(_val8);
+                           _i8++;
+                        }
+                        this.guildshareParams=input.readUnsignedInt();
+                        if((this.guildshareParams>0)||(this.guildshareParams<4.294967295E9))
+                        {
+                           throw new Error("Forbidden value ("+this.guildshareParams+") on element of HouseInformationsForGuild.guildshareParams.");
+                        }
+                        else
+                        {
+                           return;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
 }

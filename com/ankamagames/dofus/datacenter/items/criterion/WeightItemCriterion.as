@@ -1,35 +1,34 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
 
-    public class WeightItemCriterion extends ItemCriterion implements IDataCenter
-    {
 
-        public function WeightItemCriterion(param1:String)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class WeightItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            var _loc_1:* = _criterionValue.toString();
-            var _loc_2:* = I18n.getUiText("ui.common.weight");
-            return _loc_2 + " " + _operator.text + " " + _loc_1;
-        }// end function
+      public function WeightItemCriterion(pCriterion:String) {
+         super(pCriterion);
+      }
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new WeightItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
 
-        override protected function getCriterion() : int
-        {
-            return PlayedCharacterManager.getInstance().inventoryWeight;
-        }// end function
 
-    }
+      override public function get text() : String {
+         var readableCriterionValue:String = _criterionValue.toString();
+         var readableCriterionRef:String = I18n.getUiText("ui.common.weight");
+         return readableCriterionRef+" "+_operator.text+" "+readableCriterionValue;
+      }
+
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:WeightItemCriterion = new WeightItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
+
+      override protected function getCriterion() : int {
+         return PlayedCharacterManager.getInstance().inventoryWeight;
+      }
+   }
+
 }

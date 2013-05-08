@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.prism
+package com.ankamagames.dofus.logic.game.common.actions.prism
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PrismWorldInformationRequestAction extends Object implements Action
-    {
-        public var join:Boolean;
 
-        public function PrismWorldInformationRequestAction()
-        {
-            return;
-        }// end function
+   public class PrismWorldInformationRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : PrismWorldInformationRequestAction
-        {
-            var _loc_2:* = new PrismWorldInformationRequestAction;
-            _loc_2.join = param1;
-            return _loc_2;
-        }// end function
+      public function PrismWorldInformationRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(join:Boolean) : PrismWorldInformationRequestAction {
+         var action:PrismWorldInformationRequestAction = new PrismWorldInformationRequestAction();
+         action.join=join;
+         return action;
+      }
+
+      public var join:Boolean;
+   }
+
 }

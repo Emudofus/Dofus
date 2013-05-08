@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.quest
+package com.ankamagames.dofus.logic.game.common.actions.quest
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class AchievementDetailedListRequestAction extends Object implements Action
-    {
-        public var categoryId:int;
 
-        public function AchievementDetailedListRequestAction()
-        {
-            return;
-        }// end function
+   public class AchievementDetailedListRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : AchievementDetailedListRequestAction
-        {
-            var _loc_2:* = new AchievementDetailedListRequestAction;
-            _loc_2.categoryId = param1;
-            return _loc_2;
-        }// end function
+      public function AchievementDetailedListRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(categoryId:int) : AchievementDetailedListRequestAction {
+         var action:AchievementDetailedListRequestAction = new AchievementDetailedListRequestAction();
+         action.categoryId=categoryId;
+         return action;
+      }
+
+      public var categoryId:int;
+   }
+
 }

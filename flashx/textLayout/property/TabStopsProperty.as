@@ -1,180 +1,168 @@
-﻿package flashx.textLayout.property
+package flashx.textLayout.property
 {
-    import __AS3__.vec.*;
-    import flash.text.engine.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.formats.TabStopFormat;
+   import flashx.textLayout.formats.FormatValue;
+   import flash.text.engine.TabAlignment;
+   import __AS3__.vec.Vector;
 
-    public class TabStopsProperty extends ArrayProperty
-    {
-        private static const _tabStopRegex:RegExp = /([sScCeEdD]?)([^| ]+)(|[^ ]*)?( |$)""([sScCeEdD]?)([^| ]+)(|[^ ]*)?( |$)/g;
-        private static const _escapeBackslashRegex:RegExp = /\\\\\\\"""\\\\/g;
-        private static const _escapeSpaceRegex:RegExp = /\\\ ""\\ /g;
-        private static const _backslashRegex:RegExp = /\\\"""\\/g;
-        private static const _spaceRegex:RegExp = / "" /g;
-        private static const _backslashPlaceholderRegex:RegExp = /""/g;
-        private static const _spacePlaceholderRegex:RegExp = /""/g;
-        private static const _backslashPlaceHolder:String = String.fromCharCode(57344);
-        private static const _spacePlaceHolder:String = String.fromCharCode(57345);
 
-        public function TabStopsProperty(param1:String, param2:Array, param3:Boolean, param4:Vector.<String>)
-        {
-            super(param1, param2, param3, param4, TabStopFormat);
-            return;
-        }// end function
+   public class TabStopsProperty extends ArrayProperty
+   {
+         
 
-        override public function setHelper(param1, param2)
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = NaN;
-            if (param2 == null || param2 == FormatValue.INHERIT)
+      public function TabStopsProperty(nameValue:String, defaultValue:Array, inherited:Boolean, categories:Vector.<String>) {
+         super(nameValue,defaultValue,inherited,categories,TabStopFormat);
+      }
+
+      private static function compareTabStopFormats(a:TabStopFormat, b:TabStopFormat) : Number {
+         return a.position==b.position?0:a.position>b.position?-1:1;
+      }
+
+      private static const _tabStopRegex:RegExp = new RegExp("([sScCeEdD]?)([^| ]+)(|[^ ]*)?( |$)","g");
+
+      private static const _escapeBackslashRegex:RegExp = new RegExp("\\\\\\\\","g");
+
+      private static const _escapeSpaceRegex:RegExp = new RegExp("\\\\ ","g");
+
+      private static const _backslashRegex:RegExp = new RegExp("\\\\","g");
+
+      private static const _spaceRegex:RegExp = new RegExp(" ","g");
+
+      private static const _backslashPlaceholderRegex:RegExp = new RegExp("?","g");
+
+      private static const _spacePlaceholderRegex:RegExp = new RegExp("?","g");
+
+      private static const _backslashPlaceHolder:String = String.fromCharCode(57344);
+
+      private static const _spacePlaceHolder:String = String.fromCharCode(57345);
+
+      override public function setHelper(currVal:*, newVal:*) : * {
+         var valString:String = null;
+         var result:Object = null;
+         var tabStop:TabStopFormat = null;
+         var position:* = NaN;
+         if((newVal==null)||(newVal==FormatValue.INHERIT))
+         {
+            return newVal;
+         }
+         var tabStops:Array = newVal as Array;
+         if(tabStops)
+         {
+            if(!checkArrayTypes(tabStops))
             {
-                return param2;
+               Property.errorHandler(this,newVal);
+               return currVal;
             }
-            var _loc_3:* = param2 as Array;
-            if (_loc_3)
+         }
+         else
+         {
+            valString=newVal as String;
+            if(!valString)
             {
-                if (!checkArrayTypes(_loc_3))
-                {
-                    Property.errorHandler(this, param2);
-                    return param1;
-                }
+               Property.errorHandler(this,newVal);
+               return currVal;
             }
-            else
+            tabStops=new Array();
+            valString=valString.replace(_escapeBackslashRegex,_backslashPlaceHolder);
+            valString=valString.replace(_escapeSpaceRegex,_spacePlaceHolder);
+            _tabStopRegex.lastIndex=0;
+            do
             {
-                _loc_4 = param2 as String;
-                if (!_loc_4)
-                {
-                    Property.errorHandler(this, param2);
-                    return param1;
-                }
-                _loc_3 = new Array();
-                _loc_4 = _loc_4.replace(_escapeBackslashRegex, _backslashPlaceHolder);
-                _loc_4 = _loc_4.replace(_escapeSpaceRegex, _spacePlaceHolder);
-                _tabStopRegex.lastIndex = 0;
-                do
-                {
-                    
-                    _loc_5 = _tabStopRegex.exec(_loc_4);
-                    if (!_loc_5)
-                    {
+               result=_tabStopRegex.exec(valString);
+               if(!result)
+               {
+               }
+               else
+               {
+                  tabStop=new TabStopFormat();
+                  switch(result[1].toLowerCase())
+                  {
+                     case "s":
+                     case "":
+                        tabStop.alignment=TabAlignment.START;
                         break;
-                    }
-                    _loc_6 = new TabStopFormat();
-                    switch(_loc_5[1].toLowerCase())
-                    {
-                        case "s":
-                        case "":
-                        {
-                            _loc_6.alignment = TabAlignment.START;
-                            break;
-                        }
-                        case "c":
-                        {
-                            _loc_6.alignment = TabAlignment.CENTER;
-                            break;
-                        }
-                        case "e":
-                        {
-                            _loc_6.alignment = TabAlignment.END;
-                            break;
-                        }
-                        case "d":
-                        {
-                            _loc_6.alignment = TabAlignment.DECIMAL;
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                    _loc_7 = Number(_loc_5[2]);
-                    if (isNaN(_loc_7))
-                    {
-                        Property.errorHandler(this, param2);
-                        return param1;
-                    }
-                    _loc_6.position = _loc_7;
-                    if (_loc_6.alignment == TabAlignment.DECIMAL)
-                    {
-                        if (_loc_5[3] == "")
-                        {
-                            _loc_6.decimalAlignmentToken = ".";
-                        }
-                        else
-                        {
-                            _loc_6.decimalAlignmentToken = _loc_5[3].slice(1).replace(_backslashPlaceholderRegex, "\\");
-                            _loc_6.decimalAlignmentToken = _loc_6.decimalAlignmentToken.replace(_spacePlaceholderRegex, " ");
-                        }
-                    }
-                    else if (_loc_5[3] != "")
-                    {
-                        Property.errorHandler(this, param2);
-                        return param1;
-                    }
-                    _loc_3.push(_loc_6);
-                }while (true)
+                     case "c":
+                        tabStop.alignment=TabAlignment.CENTER;
+                        break;
+                     case "e":
+                        tabStop.alignment=TabAlignment.END;
+                        break;
+                     case "d":
+                        tabStop.alignment=TabAlignment.DECIMAL;
+                        break;
+                  }
+                  position=Number(result[2]);
+                  if(isNaN(position))
+                  {
+                     Property.errorHandler(this,newVal);
+                     return currVal;
+                  }
+                  tabStop.position=position;
+                  if(tabStop.alignment==TabAlignment.DECIMAL)
+                  {
+                     if(result[3]=="")
+                     {
+                        tabStop.decimalAlignmentToken=".";
+                     }
+                     else
+                     {
+                        tabStop.decimalAlignmentToken=result[3].slice(1).replace(_backslashPlaceholderRegex,"\\");
+                        tabStop.decimalAlignmentToken=tabStop.decimalAlignmentToken.replace(_spacePlaceholderRegex," ");
+                     }
+                  }
+                  else
+                  {
+                     if(result[3]!="")
+                     {
+                        Property.errorHandler(this,newVal);
+                        return currVal;
+                     }
+                  }
+                  tabStops.push(tabStop);
+                  continue;
+               }
             }
-            return _loc_3.sort(compareTabStopFormats);
-        }// end function
+            while(true);
+         }
+         return tabStops.sort(compareTabStopFormats);
+      }
 
-        override public function toXMLString(param1:Object) : String
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_2:* = "";
-            var _loc_3:* = param1 as Array;
-            for each (_loc_4 in _loc_3)
+      override public function toXMLString(val:Object) : String {
+         var tabStop:TabStopFormat = null;
+         var escapedAlignmentToken:String = null;
+         var str:String = "";
+         var tabStops:Array = val as Array;
+         for each (tabStop in tabStops)
+         {
+            if(str.length)
             {
-                
-                if (_loc_2.length)
-                {
-                    _loc_2 = _loc_2 + " ";
-                }
-                switch(_loc_4.alignment)
-                {
-                    case TabAlignment.START:
-                    {
-                        _loc_2 = _loc_2 + "s";
-                        break;
-                    }
-                    case TabAlignment.CENTER:
-                    {
-                        _loc_2 = _loc_2 + "c";
-                        break;
-                    }
-                    case TabAlignment.END:
-                    {
-                        _loc_2 = _loc_2 + "e";
-                        break;
-                    }
-                    case TabAlignment.DECIMAL:
-                    {
-                        _loc_2 = _loc_2 + "d";
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-                _loc_2 = _loc_2 + _loc_4.position.toString();
-                if (_loc_4.alignment == TabAlignment.DECIMAL)
-                {
-                    _loc_5 = _loc_4.decimalAlignmentToken.replace(_backslashRegex, "\\\\");
-                    _loc_5 = _loc_5.replace(_spaceRegex, "\\ ");
-                    _loc_2 = _loc_2 + ("|" + _loc_5);
-                }
+               str=str+" ";
             }
-            return _loc_2;
-        }// end function
+            switch(tabStop.alignment)
+            {
+               case TabAlignment.START:
+                  str=str+"s";
+                  break;
+               case TabAlignment.CENTER:
+                  str=str+"c";
+                  break;
+               case TabAlignment.END:
+                  str=str+"e";
+                  break;
+               case TabAlignment.DECIMAL:
+                  str=str+"d";
+                  break;
+            }
+            str=str+tabStop.position.toString();
+            if(tabStop.alignment==TabAlignment.DECIMAL)
+            {
+               escapedAlignmentToken=tabStop.decimalAlignmentToken.replace(_backslashRegex,"\\\\");
+               escapedAlignmentToken=escapedAlignmentToken.replace(_spaceRegex,"\\ ");
+               str=str+("|"+escapedAlignmentToken);
+            }
+         }
+         return str;
+      }
+   }
 
-        private static function compareTabStopFormats(param1:TabStopFormat, param2:TabStopFormat) : Number
-        {
-            return param1.position == param2.position ? (0) : (param1.position < param2.position ? (-1) : (1));
-        }// end function
-
-    }
 }

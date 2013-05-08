@@ -1,18 +1,20 @@
-﻿package com.ankamagames.dofus.misc.utils.mapeditor
+package com.ankamagames.dofus.misc.utils.mapeditor
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class MapEditorDataEvent extends Event
-    {
-        public var data:MapEditorMessage;
-        public static const NEW_DATA:String = "MapEditorDataEvent_NEW_DATA";
 
-        public function MapEditorDataEvent(param1:String, param2:MapEditorMessage)
-        {
-            super(param1, false, false);
-            this.data = param2;
-            return;
-        }// end function
+   public class MapEditorDataEvent extends Event
+   {
+         
 
-    }
+      public function MapEditorDataEvent(type:String, data:MapEditorMessage) {
+         super(type,false,false);
+         this.data=data;
+      }
+
+      public static const NEW_DATA:String = "MapEditorDataEvent_NEW_DATA";
+
+      public var data:MapEditorMessage;
+   }
+
 }

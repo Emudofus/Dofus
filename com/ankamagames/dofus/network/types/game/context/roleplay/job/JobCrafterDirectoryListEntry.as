@@ -1,66 +1,59 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay.job
+package com.ankamagames.dofus.network.types.game.context.roleplay.job
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class JobCrafterDirectoryListEntry extends Object implements INetworkType
-    {
-        public var playerInfo:JobCrafterDirectoryEntryPlayerInfo;
-        public var jobInfo:JobCrafterDirectoryEntryJobInfo;
-        public static const protocolId:uint = 196;
 
-        public function JobCrafterDirectoryListEntry()
-        {
-            this.playerInfo = new JobCrafterDirectoryEntryPlayerInfo();
-            this.jobInfo = new JobCrafterDirectoryEntryJobInfo();
-            return;
-        }// end function
+   public class JobCrafterDirectoryListEntry extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 196;
-        }// end function
+      public function JobCrafterDirectoryListEntry() {
+         this.playerInfo=new JobCrafterDirectoryEntryPlayerInfo();
+         this.jobInfo=new JobCrafterDirectoryEntryJobInfo();
+         super();
+      }
 
-        public function initJobCrafterDirectoryListEntry(param1:JobCrafterDirectoryEntryPlayerInfo = null, param2:JobCrafterDirectoryEntryJobInfo = null) : JobCrafterDirectoryListEntry
-        {
-            this.playerInfo = param1;
-            this.jobInfo = param2;
-            return this;
-        }// end function
+      public static const protocolId:uint = 196;
 
-        public function reset() : void
-        {
-            this.playerInfo = new JobCrafterDirectoryEntryPlayerInfo();
-            return;
-        }// end function
+      public var playerInfo:JobCrafterDirectoryEntryPlayerInfo;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_JobCrafterDirectoryListEntry(param1);
-            return;
-        }// end function
+      public var jobInfo:JobCrafterDirectoryEntryJobInfo;
 
-        public function serializeAs_JobCrafterDirectoryListEntry(param1:IDataOutput) : void
-        {
-            this.playerInfo.serializeAs_JobCrafterDirectoryEntryPlayerInfo(param1);
-            this.jobInfo.serializeAs_JobCrafterDirectoryEntryJobInfo(param1);
-            return;
-        }// end function
+      public function getTypeId() : uint {
+         return 196;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_JobCrafterDirectoryListEntry(param1);
-            return;
-        }// end function
+      public function initJobCrafterDirectoryListEntry(playerInfo:JobCrafterDirectoryEntryPlayerInfo=null, jobInfo:JobCrafterDirectoryEntryJobInfo=null) : JobCrafterDirectoryListEntry {
+         this.playerInfo=playerInfo;
+         this.jobInfo=jobInfo;
+         return this;
+      }
 
-        public function deserializeAs_JobCrafterDirectoryListEntry(param1:IDataInput) : void
-        {
-            this.playerInfo = new JobCrafterDirectoryEntryPlayerInfo();
-            this.playerInfo.deserialize(param1);
-            this.jobInfo = new JobCrafterDirectoryEntryJobInfo();
-            this.jobInfo.deserialize(param1);
-            return;
-        }// end function
+      public function reset() : void {
+         this.playerInfo=new JobCrafterDirectoryEntryPlayerInfo();
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_JobCrafterDirectoryListEntry(output);
+      }
+
+      public function serializeAs_JobCrafterDirectoryListEntry(output:IDataOutput) : void {
+         this.playerInfo.serializeAs_JobCrafterDirectoryEntryPlayerInfo(output);
+         this.jobInfo.serializeAs_JobCrafterDirectoryEntryJobInfo(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_JobCrafterDirectoryListEntry(input);
+      }
+
+      public function deserializeAs_JobCrafterDirectoryListEntry(input:IDataInput) : void {
+         this.playerInfo=new JobCrafterDirectoryEntryPlayerInfo();
+         this.playerInfo.deserialize(input);
+         this.jobInfo=new JobCrafterDirectoryEntryJobInfo();
+         this.jobInfo.deserialize(input);
+      }
+   }
+
 }

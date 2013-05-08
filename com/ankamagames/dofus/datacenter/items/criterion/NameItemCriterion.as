@@ -1,139 +1,98 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
 
-    public class NameItemCriterion extends ItemCriterion implements IDataCenter
-    {
 
-        public function NameItemCriterion(param1:String)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class NameItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            var _loc_1:* = I18n.getUiText("ui.common.name");
-            return _loc_1 + " " + this.getReadableOperator();
-        }// end function
+      public function NameItemCriterion(pCriterion:String) {
+         super(pCriterion);
+      }
 
-        override public function get isRespected() : Boolean
-        {
-            var _loc_1:* = PlayedCharacterManager.getInstance().infos.name;
-            var _loc_2:* = false;
-            var _loc_3:* = _criterionValue.toString();
-            switch(_operator.text)
-            {
-                case "=":
-                {
-                    _loc_2 = _loc_1 == _loc_3;
-                    break;
-                }
-                case "!":
-                {
-                    _loc_2 = _loc_1 != _loc_3;
-                    break;
-                }
-                case "~":
-                {
-                    _loc_2 = _loc_1.toLowerCase() == _loc_3.toLowerCase();
-                    break;
-                }
-                case "S":
-                {
-                    _loc_2 = _loc_1.toLowerCase().indexOf(_loc_3.toLowerCase()) == 0;
-                    break;
-                }
-                case "s":
-                {
-                    _loc_2 = _loc_1.indexOf(_loc_3) == 0;
-                    break;
-                }
-                case "E":
-                {
-                    _loc_2 = _loc_1.toLowerCase().indexOf(_loc_3.toLowerCase()) == _loc_1.length - _loc_3.length;
-                    break;
-                }
-                case "e":
-                {
-                    _loc_2 = _loc_1.indexOf(_loc_3) == _loc_1.length - _loc_3.length;
-                    break;
-                }
-                case "v":
-                {
-                    break;
-                }
-                case "i":
-                {
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return _loc_2;
-        }// end function
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new NameItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
 
-        override protected function getCriterion() : int
-        {
-            return 0;
-        }// end function
+      override public function get text() : String {
+         var readableCriterionRef:String = I18n.getUiText("ui.common.name");
+         return readableCriterionRef+" "+this.getReadableOperator();
+      }
 
-        private function getReadableOperator() : String
-        {
-            var _loc_1:* = "";
-            _log.debug("operator : " + _operator);
-            switch(_operator.text)
-            {
-                case "!":
-                case "=":
-                {
-                    _loc_1 = _operator.text + " " + _criterionValueText;
-                    break;
-                }
-                case "~":
-                {
-                    _loc_1 = "= " + _criterionValueText;
-                    break;
-                }
-                case "S":
-                case "s":
-                {
-                    _loc_1 = I18n.getUiText("ui.criterion.startWith", [_criterionValueText]);
-                    break;
-                }
-                case "E":
-                case "e":
-                {
-                    _loc_1 = I18n.getUiText("ui.criterion.endWith", [_criterionValueText]);
-                    break;
-                }
-                case "v":
-                {
-                    _loc_1 = I18n.getUiText("ui.criterion.valid");
-                    break;
-                }
-                case "i":
-                {
-                    _loc_1 = I18n.getUiText("ui.criterion.invalid");
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return _loc_1;
-        }// end function
+      override public function get isRespected() : Boolean {
+         var name:String = PlayedCharacterManager.getInstance().infos.name;
+         var respected:Boolean = false;
+         var criterionValue:String = _criterionValue.toString();
+         switch(_operator.text)
+         {
+            case "=":
+               respected=name==criterionValue;
+               break;
+            case "!":
+               respected=!(name==criterionValue);
+               break;
+            case "~":
+               respected=name.toLowerCase()==criterionValue.toLowerCase();
+               break;
+            case "S":
+               respected=name.toLowerCase().indexOf(criterionValue.toLowerCase())==0;
+               break;
+            case "s":
+               respected=name.indexOf(criterionValue)==0;
+               break;
+            case "E":
+               respected=name.toLowerCase().indexOf(criterionValue.toLowerCase())==name.length-criterionValue.length;
+               break;
+            case "e":
+               respected=name.indexOf(criterionValue)==name.length-criterionValue.length;
+               break;
+            case "v":
+               break;
+            case "i":
+               break;
+         }
+         return respected;
+      }
 
-    }
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:NameItemCriterion = new NameItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
+
+      override protected function getCriterion() : int {
+         return 0;
+      }
+
+      private function getReadableOperator() : String {
+         var text:String = "";
+         _log.debug("operator : "+_operator);
+         switch(_operator.text)
+         {
+            case "!":
+            case "=":
+               text=_operator.text+" "+_criterionValueText;
+               break;
+            case "~":
+               text="= "+_criterionValueText;
+               break;
+            case "S":
+            case "s":
+               text=I18n.getUiText("ui.criterion.startWith",[_criterionValueText]);
+               break;
+            case "E":
+            case "e":
+               text=I18n.getUiText("ui.criterion.endWith",[_criterionValueText]);
+               break;
+            case "v":
+               text=I18n.getUiText("ui.criterion.valid");
+               break;
+            case "i":
+               text=I18n.getUiText("ui.criterion.invalid");
+               break;
+         }
+         return text;
+      }
+   }
+
 }

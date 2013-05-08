@@ -1,46 +1,41 @@
-﻿package flashx.textLayout.property
+package flashx.textLayout.property
 {
 
-    public class PropertyHandler extends Object
-    {
 
-        public function PropertyHandler()
-        {
-            return;
-        }// end function
+   public class PropertyHandler extends Object
+   {
+         
 
-        public function get customXMLStringHandler() : Boolean
-        {
-            return false;
-        }// end function
+      public function PropertyHandler() {
+         super();
+      }
 
-        public function toXMLString(param1:Object) : String
-        {
-            return null;
-        }// end function
+      public static function createRange(rest:Array) : Object {
+         var range:Object = new Object();
+         var i:int = 0;
+         while(i<rest.length)
+         {
+            range[rest[i]]=null;
+            i++;
+         }
+         return range;
+      }
 
-        public function owningHandlerCheck(param1)
-        {
-            return undefined;
-        }// end function
+      public function get customXMLStringHandler() : Boolean {
+         return false;
+      }
 
-        public function setHelper(param1)
-        {
-            return param1;
-        }// end function
+      public function toXMLString(val:Object) : String {
+         return null;
+      }
 
-        public static function createRange(param1:Array) : Object
-        {
-            var _loc_2:* = new Object();
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.length)
-            {
-                
-                _loc_2[param1[_loc_3]] = null;
-                _loc_3++;
-            }
-            return _loc_2;
-        }// end function
+      public function owningHandlerCheck(newVal:*) : * {
+         return undefined;
+      }
 
-    }
+      public function setHelper(newVal:*) : * {
+         return newVal;
+      }
+   }
+
 }

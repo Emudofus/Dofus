@@ -1,28 +1,27 @@
-﻿package com.ankamagames.jerakine.pools
+package com.ankamagames.jerakine.pools
 {
-    import com.ankamagames.jerakine.pools.*;
-    import flash.geom.*;
+   import flash.geom.Point;
 
-    public class PoolablePoint extends Point implements Poolable
-    {
 
-        public function PoolablePoint(param1:Number = 0, param2:Number = 0)
-        {
-            super(param1, param2);
-            return;
-        }// end function
+   public class PoolablePoint extends Point implements Poolable
+   {
+         
 
-        public function renew(param1:Number = 0, param2:Number = 0) : Point
-        {
-            this.x = param1;
-            this.y = param2;
-            return this;
-        }// end function
+      public function PoolablePoint(x:Number=0, y:Number=0) {
+         super(x,y);
+      }
 
-        public function free() : void
-        {
-            return;
-        }// end function
 
-    }
+
+      public function renew(x:Number=0, y:Number=0) : Point {
+         this.x=x;
+         this.y=y;
+         return this;
+      }
+
+      public function free() : void {
+         
+      }
+   }
+
 }

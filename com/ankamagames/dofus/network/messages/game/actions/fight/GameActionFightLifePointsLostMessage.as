@@ -1,111 +1,116 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions.fight
+package com.ankamagames.dofus.network.messages.game.actions.fight
 {
-    import com.ankamagames.dofus.network.messages.game.actions.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameActionFightLifePointsLostMessage extends AbstractGameActionMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var targetId:int = 0;
-        public var loss:uint = 0;
-        public var permanentDamages:uint = 0;
-        public static const protocolId:uint = 6312;
 
-        public function GameActionFightLifePointsLostMessage()
-        {
-            return;
-        }// end function
+   public class GameActionFightLifePointsLostMessage extends AbstractGameActionMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function GameActionFightLifePointsLostMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6312;
-        }// end function
+      public static const protocolId:uint = 6312;
 
-        public function initGameActionFightLifePointsLostMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 0, param5:uint = 0) : GameActionFightLifePointsLostMessage
-        {
-            super.initAbstractGameActionMessage(param1, param2);
-            this.targetId = param3;
-            this.loss = param4;
-            this.permanentDamages = param5;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.targetId = 0;
-            this.loss = 0;
-            this.permanentDamages = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var targetId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var loss:uint = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameActionFightLifePointsLostMessage(param1);
-            return;
-        }// end function
+      public var permanentDamages:uint = 0;
 
-        public function serializeAs_GameActionFightLifePointsLostMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractGameActionMessage(param1);
-            param1.writeInt(this.targetId);
-            if (this.loss < 0)
+      override public function getMessageId() : uint {
+         return 6312;
+      }
+
+      public function initGameActionFightLifePointsLostMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, loss:uint=0, permanentDamages:uint=0) : GameActionFightLifePointsLostMessage {
+         super.initAbstractGameActionMessage(actionId,sourceId);
+         this.targetId=targetId;
+         this.loss=loss;
+         this.permanentDamages=permanentDamages;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.targetId=0;
+         this.loss=0;
+         this.permanentDamages=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightLifePointsLostMessage(output);
+      }
+
+      public function serializeAs_GameActionFightLifePointsLostMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(output);
+         output.writeInt(this.targetId);
+         if(this.loss<0)
+         {
+            throw new Error("Forbidden value ("+this.loss+") on element loss.");
+         }
+         else
+         {
+            output.writeShort(this.loss);
+            if(this.permanentDamages<0)
             {
-                throw new Error("Forbidden value (" + this.loss + ") on element loss.");
+               throw new Error("Forbidden value ("+this.permanentDamages+") on element permanentDamages.");
             }
-            param1.writeShort(this.loss);
-            if (this.permanentDamages < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.permanentDamages + ") on element permanentDamages.");
+               output.writeShort(this.permanentDamages);
+               return;
             }
-            param1.writeShort(this.permanentDamages);
-            return;
-        }// end function
+         }
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameActionFightLifePointsLostMessage(param1);
-            return;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightLifePointsLostMessage(input);
+      }
 
-        public function deserializeAs_GameActionFightLifePointsLostMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.targetId = param1.readInt();
-            this.loss = param1.readShort();
-            if (this.loss < 0)
+      public function deserializeAs_GameActionFightLifePointsLostMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.targetId=input.readInt();
+         this.loss=input.readShort();
+         if(this.loss<0)
+         {
+            throw new Error("Forbidden value ("+this.loss+") on element of GameActionFightLifePointsLostMessage.loss.");
+         }
+         else
+         {
+            this.permanentDamages=input.readShort();
+            if(this.permanentDamages<0)
             {
-                throw new Error("Forbidden value (" + this.loss + ") on element of GameActionFightLifePointsLostMessage.loss.");
+               throw new Error("Forbidden value ("+this.permanentDamages+") on element of GameActionFightLifePointsLostMessage.permanentDamages.");
             }
-            this.permanentDamages = param1.readShort();
-            if (this.permanentDamages < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.permanentDamages + ") on element of GameActionFightLifePointsLostMessage.permanentDamages.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

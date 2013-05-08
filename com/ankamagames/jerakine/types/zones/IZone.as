@@ -1,27 +1,29 @@
-﻿package com.ankamagames.jerakine.types.zones
+package com.ankamagames.jerakine.types.zones
 {
-    import __AS3__.vec.*;
+   import __AS3__.vec.Vector;
 
-    public interface IZone
-    {
 
-        public function IZone();
+   public interface IZone
+   {
+         
 
-        function get surface() : uint;
 
-        function set minRadius(param1:uint) : void;
 
-        function get minRadius() : uint;
+      function get surface() : uint;
 
-        function set direction(param1:uint) : void;
+      function set minRadius(param1:uint) : void;
 
-        function get direction() : uint;
+      function get minRadius() : uint;
 
-        function get radius() : uint;
+      function set direction(param1:uint) : void;
 
-        function set radius(param1:uint) : void;
+      function get direction() : uint;
 
-        function getCells(param1:uint = 0) : Vector.<uint>;
+      function get radius() : uint;
 
-    }
+      function set radius(param1:uint) : void;
+
+      function getCells(param1:uint=0) : Vector.<uint>;
+   }
+
 }

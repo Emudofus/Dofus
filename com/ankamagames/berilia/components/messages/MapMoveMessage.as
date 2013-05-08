@@ -1,16 +1,19 @@
-﻿package com.ankamagames.berilia.components.messages
+package com.ankamagames.berilia.components.messages
 {
-    import com.ankamagames.berilia.components.*;
+   import com.ankamagames.berilia.components.MapViewer;
 
-    public class MapMoveMessage extends ComponentMessage
-    {
-        private var _map:MapViewer;
 
-        public function MapMoveMessage(param1:MapViewer)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class MapMoveMessage extends ComponentMessage
+   {
+         
 
-    }
+      public function MapMoveMessage(map:MapViewer) {
+         super(map);
+      }
+
+
+
+      private var _map:MapViewer;
+   }
+
 }

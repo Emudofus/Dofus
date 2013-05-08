@@ -1,212 +1,198 @@
-﻿package com.ankamagames.dofus.logic.game.fight.managers
+package com.ankamagames.dofus.logic.game.fight.managers
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.enums.*;
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.atouin.renderers.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.dofus.datacenter.spells.*;
-    import com.ankamagames.dofus.logic.game.fight.types.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.types.game.actions.fight.*;
-    import com.ankamagames.dofus.types.entities.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.types.zones.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDestroyable;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.dofus.datacenter.spells.Spell;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.actions.fight.GameActionMarkedCell;
+   import com.ankamagames.dofus.logic.game.fight.types.MarkInstance;
+   import com.ankamagames.atouin.types.Selection;
+   import com.ankamagames.jerakine.types.Color;
+   import com.ankamagames.atouin.renderers.TrapZoneRenderer;
+   import com.ankamagames.atouin.enums.PlacementStrataEnums;
+   import com.ankamagames.dofus.network.enums.GameActionMarkCellsTypeEnum;
+   import com.ankamagames.jerakine.types.zones.Cross;
+   import com.ankamagames.atouin.utils.DataMapProvider;
+   import com.ankamagames.jerakine.types.zones.Lozenge;
+   import com.ankamagames.atouin.managers.SelectionManager;
+   import com.ankamagames.dofus.types.entities.Glyph;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.atouin.AtouinConstants;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class MarkedCellsManager extends Object implements IDestroyable
-    {
-        private var _marks:Dictionary;
-        private var _glyphs:Dictionary;
-        private var _markUid:uint;
-        private static const MARK_SELECTIONS_PREFIX:String = "FightMark";
-        private static var _log:Logger = Log.getLogger(getQualifiedClassName(MarkedCellsManager));
-        private static var _self:MarkedCellsManager;
 
-        public function MarkedCellsManager()
-        {
-            if (_self != null)
-            {
-                throw new SingletonError("MarkedCellsManager is a singleton and should not be instanciated directly.");
-            }
-            this._marks = new Dictionary(true);
-            this._glyphs = new Dictionary(true);
-            this._markUid = 0;
+   public class MarkedCellsManager extends Object implements IDestroyable
+   {
+         
+
+      public function MarkedCellsManager() {
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("MarkedCellsManager is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
+            this._marks=new Dictionary(true);
+            this._glyphs=new Dictionary(true);
+            this._markUid=0;
             return;
-        }// end function
+         }
+      }
 
-        public function addMark(param1:int, param2:int, param3:Spell, param4:Vector.<GameActionMarkedCell>) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            if (!this._marks[param1] || this._marks[param1].cells.length == 0)
+      private static const MARK_SELECTIONS_PREFIX:String = "FightMark";
+
+      private static var _log:Logger = Log.getLogger(getQualifiedClassName(MarkedCellsManager));
+
+      private static var _self:MarkedCellsManager;
+
+      public static function getInstance() : MarkedCellsManager {
+         if(_self==null)
+         {
+            _self=new MarkedCellsManager();
+         }
+         return _self;
+      }
+
+      private var _marks:Dictionary;
+
+      private var _glyphs:Dictionary;
+
+      private var _markUid:uint;
+
+      public function addMark(markId:int, markType:int, associatedSpell:Spell, cells:Vector.<GameActionMarkedCell>) : void {
+         var mi:MarkInstance = null;
+         var markedCell:GameActionMarkedCell = null;
+         var s:Selection = null;
+         var cell:uint = 0;
+         if((!this._marks[markId])||(this._marks[markId].cells.length==0))
+         {
+            mi=new MarkInstance();
+            mi.markId=markId;
+            mi.markType=markType;
+            mi.associatedSpell=associatedSpell;
+            mi.selections=new Vector.<Selection>(0,false);
+            mi.cells=new Vector.<uint>(0,false);
+            for each (markedCell in cells)
             {
-                _loc_5 = new MarkInstance();
-                _loc_5.markId = param1;
-                _loc_5.markType = param2;
-                _loc_5.associatedSpell = param3;
-                _loc_5.selections = new Vector.<Selection>(0, false);
-                _loc_5.cells = new Vector.<uint>(0, false);
-                for each (_loc_6 in param4)
-                {
-                    
-                    _loc_7 = new Selection();
-                    _loc_7.color = new Color(_loc_6.cellColor);
-                    _loc_7.renderer = new TrapZoneRenderer(PlacementStrataEnums.STRATA_GLYPH);
-                    if (_loc_6.cellsType == GameActionMarkCellsTypeEnum.CELLS_CROSS)
-                    {
-                        _loc_7.zone = new Cross(0, _loc_6.zoneSize, DataMapProvider.getInstance());
-                    }
-                    else
-                    {
-                        _loc_7.zone = new Lozenge(0, _loc_6.zoneSize, DataMapProvider.getInstance());
-                    }
-                    SelectionManager.getInstance().addSelection(_loc_7, this.getSelectionUid(), _loc_6.cellId);
-                    for each (_loc_8 in _loc_7.cells)
-                    {
-                        
-                        _loc_5.cells.push(_loc_8);
-                    }
-                    _loc_5.selections.push(_loc_7);
-                }
-                this._marks[param1] = _loc_5;
-                this.updateDataMapProvider();
+               s=new Selection();
+               s.color=new Color(markedCell.cellColor);
+               s.renderer=new TrapZoneRenderer(PlacementStrataEnums.STRATA_GLYPH);
+               if(markedCell.cellsType==GameActionMarkCellsTypeEnum.CELLS_CROSS)
+               {
+                  s.zone=new Cross(0,markedCell.zoneSize,DataMapProvider.getInstance());
+               }
+               else
+               {
+                  s.zone=new Lozenge(0,markedCell.zoneSize,DataMapProvider.getInstance());
+               }
+               SelectionManager.getInstance().addSelection(s,this.getSelectionUid(),markedCell.cellId);
+               for each (cell in s.cells)
+               {
+                  mi.cells.push(cell);
+               }
+               mi.selections.push(s);
             }
-            return;
-        }// end function
-
-        public function getMarkDatas(param1:int) : MarkInstance
-        {
-            return this._marks[param1];
-        }// end function
-
-        public function removeMark(param1:int) : void
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = (this._marks[param1] as MarkInstance).selections;
-            for each (_loc_3 in _loc_2)
-            {
-                
-                _loc_3.remove();
-            }
-            delete this._marks[param1];
+            this._marks[markId]=mi;
             this.updateDataMapProvider();
-            return;
-        }// end function
+         }
+      }
 
-        public function addGlyph(param1:Glyph, param2:int) : void
-        {
-            this._glyphs[param2] = param1;
-            return;
-        }// end function
+      public function getMarkDatas(markId:int) : MarkInstance {
+         return this._marks[markId];
+      }
 
-        public function getGlyph(param1:int) : Glyph
-        {
-            return this._glyphs[param1] as Glyph;
-        }// end function
+      public function removeMark(markId:int) : void {
+         var s:Selection = null;
+         var selections:Vector.<Selection> = (this._marks[markId] as MarkInstance).selections;
+         for each (s in selections)
+         {
+            s.remove();
+         }
+         delete this._marks[[markId]];
+         this.updateDataMapProvider();
+      }
 
-        public function removeGlyph(param1:int) : void
-        {
-            if (this._glyphs[param1])
-            {
-                Glyph(this._glyphs[param1]).remove();
-                delete this._glyphs[param1];
-            }
-            return;
-        }// end function
+      public function addGlyph(glyph:Glyph, markId:int) : void {
+         this._glyphs[markId]=glyph;
+      }
 
-        public function destroy() : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_1:* = new Array();
-            for (_loc_2 in this._marks)
-            {
-                
-                _loc_1.push(int(_loc_2));
-            }
-            _loc_3 = -1;
-            _loc_4 = _loc_1.length;
-            while (++_loc_3 < _loc_4)
-            {
-                
-                this.removeMark(_loc_1[_loc_3]);
-            }
-            _loc_1.length = 0;
-            for (_loc_5 in this._glyphs)
-            {
-                
-                _loc_1.push(int(_loc_5));
-            }
-            ++_loc_3 = -1;
-            _loc_4 = _loc_1.length;
-            while (++_loc_3 < _loc_4)
-            {
-                
-                this.removeGlyph(_loc_1[++_loc_3]);
-            }
-            _self = null;
-            return;
-        }// end function
+      public function getGlyph(markId:int) : Glyph {
+         return this._glyphs[markId] as Glyph;
+      }
 
-        private function getSelectionUid() : String
-        {
-            var _loc_1:* = this;
-            _loc_1._markUid = this._markUid + 1;
-            return MARK_SELECTIONS_PREFIX + this._markUid++;
-        }// end function
+      public function removeGlyph(markId:int) : void {
+         if(this._glyphs[markId])
+         {
+            Glyph(this._glyphs[markId]).remove();
+            delete this._glyphs[[markId]];
+         }
+      }
 
-        private function updateDataMapProvider() : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_1:* = [];
-            for each (_loc_2 in this._marks)
-            {
-                
-                for each (_loc_6 in _loc_2.cells)
-                {
-                    
-                    _loc_1[_loc_6] = _loc_1[_loc_6] | _loc_2.markType;
-                }
-            }
-            _loc_3 = DataMapProvider.getInstance();
-            _loc_5 = 0;
-            while (_loc_5 < AtouinConstants.MAP_CELLS_COUNT)
-            {
-                
-                _loc_4 = MapPoint.fromCellId(_loc_5);
-                _loc_3.setSpecialEffects(_loc_5, (_loc_3.pointSpecialEffects(_loc_4.x, _loc_4.y) | 3) ^ 3);
-                if (_loc_1[_loc_5])
-                {
-                    _loc_3.setSpecialEffects(_loc_5, _loc_3.pointSpecialEffects(_loc_4.x, _loc_4.y) | _loc_1[_loc_5]);
-                }
-                _loc_5 = _loc_5 + 1;
-            }
-            return;
-        }// end function
+      public function destroy() : void {
+         var mark:String = null;
+         var i:* = 0;
+         var num:* = 0;
+         var glyph:String = null;
+         var bufferId:Array = new Array();
+         for (mark in this._marks)
+         {
+            bufferId.push(int(mark));
+         }
+         i=-1;
+         num=bufferId.length;
+         while(++i<num)
+         {
+            this.removeMark(bufferId[i]);
+         }
+         bufferId.length=0;
+         for (glyph in this._glyphs)
+         {
+            bufferId.push(int(glyph));
+         }
+         i=-1;
+         num=bufferId.length;
+         while(++i<num)
+         {
+            this.removeGlyph(bufferId[i]);
+         }
+         _self=null;
+      }
 
-        public static function getInstance() : MarkedCellsManager
-        {
-            if (_self == null)
-            {
-                _self = new MarkedCellsManager;
-            }
-            return _self;
-        }// end function
+      private function getSelectionUid() : String {
+         return MARK_SELECTIONS_PREFIX+this._markUid++;
+      }
 
-    }
+      private function updateDataMapProvider() : void {
+         var mi:MarkInstance = null;
+         var dmp:DataMapProvider = null;
+         var mp:MapPoint = null;
+         var i:uint = 0;
+         var cell:uint = 0;
+         var markedCells:Array = [];
+         for each (mi in this._marks)
+         {
+            for each (cell in mi.cells)
+            {
+               markedCells[cell]=markedCells[cell]|mi.markType;
+            }
+         }
+         dmp=DataMapProvider.getInstance();
+         i=0;
+         while(i<AtouinConstants.MAP_CELLS_COUNT)
+         {
+            mp=MapPoint.fromCellId(i);
+            dmp.setSpecialEffects(i,(dmp.pointSpecialEffects(mp.x,mp.y)|3)^3);
+            if(markedCells[i])
+            {
+               dmp.setSpecialEffects(i,dmp.pointSpecialEffects(mp.x,mp.y)|markedCells[i]);
+            }
+            i++;
+         }
+      }
+   }
+
 }

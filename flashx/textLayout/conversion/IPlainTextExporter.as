@@ -1,19 +1,20 @@
-﻿package flashx.textLayout.conversion
+package flashx.textLayout.conversion
 {
-    import flashx.textLayout.conversion.*;
 
-    public interface IPlainTextExporter extends ITextExporter
-    {
 
-        public function IPlainTextExporter();
+   public interface IPlainTextExporter extends ITextExporter
+   {
+         
 
-        function get paragraphSeparator() : String;
 
-        function set paragraphSeparator(param1:String) : void;
 
-        function get stripDiscretionaryHyphens() : Boolean;
+      function get paragraphSeparator() : String;
 
-        function set stripDiscretionaryHyphens(param1:Boolean) : void;
+      function set paragraphSeparator(param1:String) : void;
 
-    }
+      function get stripDiscretionaryHyphens() : Boolean;
+
+      function set stripDiscretionaryHyphens(param1:Boolean) : void;
+   }
+
 }

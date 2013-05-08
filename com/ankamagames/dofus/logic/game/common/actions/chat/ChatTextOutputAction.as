@@ -1,28 +1,32 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ChatTextOutputAction extends Object implements Action
-    {
-        public var content:String;
-        public var channel:uint;
-        public var receiverName:String;
-        public var objects:Array;
 
-        public function ChatTextOutputAction()
-        {
-            return;
-        }// end function
+   public class ChatTextOutputAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String, param2:uint = 0, param3:String = "", param4:Array = null) : ChatTextOutputAction
-        {
-            var _loc_5:* = new ChatTextOutputAction;
-            new ChatTextOutputAction.content = param1;
-            _loc_5.channel = param2;
-            _loc_5.receiverName = param3;
-            _loc_5.objects = param4;
-            return _loc_5;
-        }// end function
+      public function ChatTextOutputAction() {
+         super();
+      }
 
-    }
+      public static function create(msg:String, channel:uint=0, receiverName:String="", objects:Array=null) : ChatTextOutputAction {
+         var a:ChatTextOutputAction = new ChatTextOutputAction();
+         a.content=msg;
+         a.channel=channel;
+         a.receiverName=receiverName;
+         a.objects=objects;
+         return a;
+      }
+
+      public var content:String;
+
+      public var channel:uint;
+
+      public var receiverName:String;
+
+      public var objects:Array;
+   }
+
 }

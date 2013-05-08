@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions.preset
+package com.ankamagames.dofus.logic.game.roleplay.actions.preset
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class InventoryPresetItemUpdateRequestAction extends Object implements Action
-    {
-        public var presetId:uint;
-        public var position:uint;
-        public var objUid:uint;
 
-        public function InventoryPresetItemUpdateRequestAction()
-        {
-            return;
-        }// end function
+   public class InventoryPresetItemUpdateRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint, param3:uint) : InventoryPresetItemUpdateRequestAction
-        {
-            var _loc_4:* = new InventoryPresetItemUpdateRequestAction;
-            new InventoryPresetItemUpdateRequestAction.presetId = param1;
-            _loc_4.position = param2;
-            _loc_4.objUid = param3;
-            return _loc_4;
-        }// end function
+      public function InventoryPresetItemUpdateRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(presetId:uint, position:uint, objUid:uint) : InventoryPresetItemUpdateRequestAction {
+         var a:InventoryPresetItemUpdateRequestAction = new InventoryPresetItemUpdateRequestAction();
+         a.presetId=presetId;
+         a.position=position;
+         a.objUid=objUid;
+         return a;
+      }
+
+      public var presetId:uint;
+
+      public var position:uint;
+
+      public var objUid:uint;
+   }
+
 }

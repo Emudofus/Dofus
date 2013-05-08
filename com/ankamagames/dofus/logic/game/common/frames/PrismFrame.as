@@ -1,509 +1,490 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.internalDatacenter.conquest.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.game.common.actions.prism.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.prism.*;
-    import com.ankamagames.dofus.network.messages.game.pvp.*;
-    import com.ankamagames.dofus.network.types.game.character.*;
-    import com.ankamagames.dofus.network.types.game.prism.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.prism.PrismSubAreaInformation;
+   import com.ankamagames.dofus.network.types.game.prism.VillageConquestPrismInformation;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.dofus.internalDatacenter.conquest.PrismFightersWrapper;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismFightJoinLeaveRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightJoinLeaveRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismFightSwapRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightSwapRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismInfoJoinLeaveRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismInfoJoinLeaveRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismWorldInformationRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismWorldInformationRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismBalanceRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismBalanceRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismCurrentBonusRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismCurrentBonusRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismAttackRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismAttackRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.prism.PrismUseRequestAction;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismUseRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismBalanceResultMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismAlignmentBonusResultMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefendersStateMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefenderAddMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefenderLeaveMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightDefendersSwapMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackedMessage;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackerAddMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightAttackerRemoveMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismWorldInformationMessage;
+   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentSubAreaUpdateExtendedMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismInfoCloseMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismInfoValidMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismInfoInValidMessage;
+   import com.ankamagames.dofus.network.messages.game.prism.PrismFightStateUpdateMessage;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookAndGradeInformations;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.PrismHookList;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.misc.lists.ChatHookList;
+   import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofus.network.enums.SubareaUpdateEventEnum;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
+   import com.ankamagames.dofus.internalDatacenter.conquest.PrismSubAreaWrapper;
+   import com.ankamagames.dofus.internalDatacenter.conquest.PrismConquestWrapper;
 
-    public class PrismFrame extends Object implements Frame
-    {
-        private var _subAreaBalanceValue:uint;
-        private var _totalBalanceValue:uint;
-        private var _nbSubOwned:uint;
-        private var _subTotal:uint;
-        private var _maxSub:uint;
-        private var _subAreasInformation:Vector.<PrismSubAreaInformation>;
-        private var _nbConqsOwned:uint;
-        private var _conqsTotal:uint;
-        private var _conquetesInformation:Vector.<VillageConquestPrismInformation>;
-        private var _mapId:int = 0;
-        private var _subareaId:int = 0;
-        private var _worldX:int = 0;
-        private var _worldY:int = 0;
-        private var _fightId:uint = 0;
-        private var _prismState:int = 0;
-        private var _attackers:Array;
-        private var _defenders:Array;
-        private var _reserves:Array;
-        private var _infoJoinLeave:Boolean;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(PrismFrame));
 
-        public function PrismFrame()
-        {
-            return;
-        }// end function
+   public class PrismFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function PrismFrame() {
+         super();
+      }
 
-        public function get nbSubOwned() : uint
-        {
-            return this._nbSubOwned;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PrismFrame));
 
-        public function get subTotal() : uint
-        {
-            return this._subTotal;
-        }// end function
+      private var _subAreaBalanceValue:uint;
 
-        public function get maxSub() : uint
-        {
-            return this._maxSub;
-        }// end function
+      private var _totalBalanceValue:uint;
 
-        public function get nbConqsOwned() : uint
-        {
-            return this._nbConqsOwned;
-        }// end function
+      private var _nbSubOwned:uint;
 
-        public function get conqsTotal() : uint
-        {
-            return this._conqsTotal;
-        }// end function
+      private var _subTotal:uint;
 
-        public function get totalBalanceValue() : uint
-        {
-            return this._totalBalanceValue;
-        }// end function
+      private var _maxSub:uint;
 
-        public function get subAreaBalanceValue() : uint
-        {
-            return this._subAreaBalanceValue;
-        }// end function
+      private var _subAreasInformation:Vector.<PrismSubAreaInformation>;
 
-        public function get attackers() : Array
-        {
-            return this._attackers;
-        }// end function
+      private var _nbConqsOwned:uint;
 
-        public function get defenders() : Array
-        {
-            return this._defenders;
-        }// end function
+      private var _conqsTotal:uint;
 
-        public function get reserves() : Array
-        {
-            return this._reserves;
-        }// end function
+      private var _conquetesInformation:Vector.<VillageConquestPrismInformation>;
 
-        public function get mapId() : int
-        {
-            return this._mapId;
-        }// end function
+      private var _mapId:int = 0;
 
-        public function get subareaId() : int
-        {
-            return this._subareaId;
-        }// end function
+      private var _subareaId:int = 0;
 
-        public function get worldX() : int
-        {
-            return this._worldX;
-        }// end function
+      private var _worldX:int = 0;
 
-        public function get worldY() : int
-        {
-            return this._worldY;
-        }// end function
+      private var _worldY:int = 0;
 
-        public function _pickup_fighter(param1:Array, param2:uint) : PrismFightersWrapper
-        {
-            var _loc_5:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = false;
-            for each (_loc_5 in param1)
+      private var _fightId:uint = 0;
+
+      private var _prismState:int = 0;
+
+      private var _attackers:Array;
+
+      private var _defenders:Array;
+
+      private var _reserves:Array;
+
+      private var _infoJoinLeave:Boolean;
+
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
+
+      public function get nbSubOwned() : uint {
+         return this._nbSubOwned;
+      }
+
+      public function get subTotal() : uint {
+         return this._subTotal;
+      }
+
+      public function get maxSub() : uint {
+         return this._maxSub;
+      }
+
+      public function get nbConqsOwned() : uint {
+         return this._nbConqsOwned;
+      }
+
+      public function get conqsTotal() : uint {
+         return this._conqsTotal;
+      }
+
+      public function get totalBalanceValue() : uint {
+         return this._totalBalanceValue;
+      }
+
+      public function get subAreaBalanceValue() : uint {
+         return this._subAreaBalanceValue;
+      }
+
+      public function get attackers() : Array {
+         return this._attackers;
+      }
+
+      public function get defenders() : Array {
+         return this._defenders;
+      }
+
+      public function get reserves() : Array {
+         return this._reserves;
+      }
+
+      public function get mapId() : int {
+         return this._mapId;
+      }
+
+      public function get subareaId() : int {
+         return this._subareaId;
+      }
+
+      public function get worldX() : int {
+         return this._worldX;
+      }
+
+      public function get worldY() : int {
+         return this._worldY;
+      }
+
+      public function _pickup_fighter(vec:Array, defenderId:uint) : PrismFightersWrapper {
+         var defender:PrismFightersWrapper = null;
+         var idx:uint = 0;
+         var found:Boolean = false;
+         for each (defender in vec)
+         {
+            if(defender.playerCharactersInformations.id==defenderId)
             {
-                
-                if (_loc_5.playerCharactersInformations.id == param2)
-                {
-                    _loc_4 = true;
-                    break;
-                }
-                _loc_3 = _loc_3 + 1;
+               found=true;
+               break;
             }
-            return param1.splice(_loc_3, 1)[0];
-        }// end function
+            idx++;
+         }
+         return vec.splice(idx,1)[0];
+      }
 
-        public function pushed() : Boolean
-        {
-            this._infoJoinLeave = false;
-            return true;
-        }// end function
+      public function pushed() : Boolean {
+         this._infoJoinLeave=false;
+         return true;
+      }
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            var _loc_18:* = null;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            var _loc_21:* = null;
-            var _loc_22:* = null;
-            var _loc_23:* = null;
-            var _loc_24:* = false;
-            var _loc_25:* = false;
-            var _loc_26:* = null;
-            var _loc_27:* = null;
-            var _loc_28:* = null;
-            var _loc_29:* = null;
-            var _loc_30:* = null;
-            var _loc_31:* = null;
-            var _loc_32:* = null;
-            var _loc_33:* = null;
-            var _loc_34:* = null;
-            var _loc_35:* = null;
-            var _loc_36:* = null;
-            var _loc_37:* = null;
-            var _loc_38:* = null;
-            var _loc_39:* = null;
-            var _loc_40:* = null;
-            var _loc_41:* = null;
-            var _loc_42:* = null;
-            var _loc_43:* = null;
-            var _loc_44:* = null;
-            var _loc_45:* = null;
-            switch(true)
-            {
-                case param1 is PrismFightJoinLeaveRequestAction:
-                {
-                    _loc_2 = param1 as PrismFightJoinLeaveRequestAction;
-                    _loc_3 = new PrismFightJoinLeaveRequestMessage();
-                    _loc_3.initPrismFightJoinLeaveRequestMessage(_loc_2.join);
-                    ConnectionsHandler.getConnection().send(_loc_3);
-                    return true;
-                }
-                case param1 is PrismFightSwapRequestAction:
-                {
-                    _loc_4 = param1 as PrismFightSwapRequestAction;
-                    _loc_5 = PlayedCharacterManager.getInstance().characteristics.alignmentInfos.alignmentGrade;
-                    _loc_6 = 0;
-                    for each (_loc_41 in this._defenders)
-                    {
-                        
-                        if (_loc_41.playerCharactersInformations.id == _loc_4.targetId)
-                        {
-                            _loc_6 = _loc_41.playerCharactersInformations.grade;
-                            break;
-                        }
-                    }
-                    if (_loc_5 <= _loc_6)
-                    {
-                        return true;
-                    }
-                    _loc_7 = new PrismFightSwapRequestMessage();
-                    _loc_7.initPrismFightSwapRequestMessage(_loc_4.targetId);
-                    ConnectionsHandler.getConnection().send(_loc_7);
-                    return true;
-                }
-                case param1 is PrismInfoJoinLeaveRequestAction:
-                {
-                    _loc_8 = param1 as PrismInfoJoinLeaveRequestAction;
-                    _loc_9 = new PrismInfoJoinLeaveRequestMessage();
-                    _loc_9.initPrismInfoJoinLeaveRequestMessage(_loc_8.join);
-                    this._infoJoinLeave = _loc_8.join;
-                    if (_loc_8.join)
-                    {
-                        this._attackers = new Array();
-                        this._reserves = new Array();
-                        this._defenders = new Array();
-                    }
-                    ConnectionsHandler.getConnection().send(_loc_9);
-                    return true;
-                }
-                case param1 is PrismWorldInformationRequestAction:
-                {
-                    _loc_10 = param1 as PrismWorldInformationRequestAction;
-                    _loc_11 = new PrismWorldInformationRequestMessage();
-                    _loc_11.initPrismWorldInformationRequestMessage(_loc_10.join);
-                    ConnectionsHandler.getConnection().send(_loc_11);
-                    return true;
-                }
-                case param1 is PrismBalanceRequestAction:
-                {
-                    _loc_12 = param1 as PrismBalanceRequestAction;
-                    _loc_13 = new PrismBalanceRequestMessage();
-                    _loc_13.initPrismBalanceRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_13);
-                    return true;
-                }
-                case param1 is PrismCurrentBonusRequestAction:
-                {
-                    _loc_14 = param1 as PrismCurrentBonusRequestAction;
-                    _loc_15 = new PrismCurrentBonusRequestMessage();
-                    _loc_15.initPrismCurrentBonusRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_15);
-                    return true;
-                }
-                case param1 is PrismAttackRequestAction:
-                {
-                    _loc_16 = param1 as PrismAttackRequestAction;
-                    _loc_17 = new PrismAttackRequestMessage();
-                    _loc_17.initPrismAttackRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_17);
-                    return true;
-                }
-                case param1 is PrismUseRequestAction:
-                {
-                    _loc_18 = param1 as PrismUseRequestAction;
-                    _loc_19 = new PrismUseRequestMessage();
-                    _loc_19.initPrismUseRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_19);
-                    return true;
-                }
-                case param1 is PrismBalanceResultMessage:
-                {
-                    _loc_20 = param1 as PrismBalanceResultMessage;
-                    this._totalBalanceValue = _loc_20.totalBalanceValue;
-                    this._subAreaBalanceValue = _loc_20.subAreaBalanceValue;
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismBalance, _loc_20.subAreaBalanceValue);
-                    return true;
-                }
-                case param1 is PrismAlignmentBonusResultMessage:
-                {
-                    _loc_21 = param1 as PrismAlignmentBonusResultMessage;
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismAlignmentBonus, _loc_21.alignmentBonus.grademult, _loc_21.alignmentBonus.pctbonus);
-                    return true;
-                }
-                case param1 is PrismFightDefendersStateMessage:
-                {
-                    _loc_22 = param1 as PrismFightDefendersStateMessage;
-                    if (_loc_22.fightId != this._fightId)
-                    {
-                        this._fightId = _loc_22.fightId;
-                    }
-                    this._defenders = new Array();
-                    for each (_loc_42 in _loc_22.mainFighters)
-                    {
-                        
-                        this._defenders.push(PrismFightersWrapper.create(_loc_42));
-                    }
-                    this._reserves = new Array();
-                    for each (_loc_43 in _loc_22.reserveFighters)
-                    {
-                        
-                        this._reserves.push(PrismFightersWrapper.create(_loc_43));
-                    }
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate, this._fightId, true, true, true);
-                    return true;
-                }
-                case param1 is PrismFightDefenderAddMessage:
-                {
-                    _loc_23 = param1 as PrismFightDefenderAddMessage;
-                    _loc_24 = false;
-                    _loc_25 = false;
-                    if (_loc_23.fightId != this._fightId)
-                    {
-                    }
-                    if (_loc_23.inMain)
-                    {
-                        this._defenders.push(PrismFightersWrapper.create(_loc_23.fighterMovementInformations));
-                        _loc_24 = true;
-                    }
-                    else
-                    {
-                        this._reserves.push(PrismFightersWrapper.create(_loc_23.fighterMovementInformations));
-                        _loc_25 = true;
-                    }
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate, this._fightId, false, _loc_24, _loc_25);
-                    return true;
-                }
-                case param1 is PrismFightDefenderLeaveMessage:
-                {
-                    _loc_26 = param1 as PrismFightDefenderLeaveMessage;
-                    if (_loc_26.fightId != this._fightId)
-                    {
-                    }
-                    this._pickup_fighter(this._defenders, _loc_26.fighterToRemoveId);
-                    if (_loc_26.successor != 0)
-                    {
-                        this._defenders.push(this._pickup_fighter(this._reserves, _loc_26.successor));
-                    }
-                    if (!this._infoJoinLeave && _loc_26.fighterToRemoveId == PlayedCharacterManager.getInstance().infos.id)
-                    {
-                        _loc_44 = I18n.getUiText("ui.prism.AutoDisjoin");
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_44, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                    }
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate, this._fightId, false, true, _loc_26.successor != 0);
-                    return true;
-                }
-                case param1 is PrismFightDefendersSwapMessage:
-                {
-                    _loc_27 = param1 as PrismFightDefendersSwapMessage;
-                    if (_loc_27.fightId != this._fightId)
-                    {
-                    }
-                    _loc_28 = this._pickup_fighter(this._reserves, _loc_27.fighterId1);
-                    _loc_29 = this._pickup_fighter(this._defenders, _loc_27.fighterId2);
-                    this._reserves.push(_loc_29);
-                    this._defenders.push(_loc_28);
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate, this._fightId, false, true, true);
-                    return true;
-                }
-                case param1 is PrismFightAttackedMessage:
-                {
-                    _loc_30 = param1 as PrismFightAttackedMessage;
-                    this._mapId = _loc_30.mapId;
-                    this._subareaId = _loc_30.subAreaId;
-                    this._worldX = _loc_30.worldX;
-                    this._worldY = _loc_30.worldY;
-                    _loc_31 = SubArea.getSubAreaById(this._subareaId);
-                    _loc_32 = I18n.getUiText("ui.prism.attacked", [_loc_31.name, "{map," + this.worldX + "," + this.worldY + "}"]);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_32, ChatActivableChannelsEnum.CHANNEL_ALIGN, TimeManager.getInstance().getTimestamp());
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismAttacked);
-                    return true;
-                }
-                case param1 is PrismFightAttackerAddMessage:
-                {
-                    _loc_33 = param1 as PrismFightAttackerAddMessage;
-                    if (_loc_33.fightId != this._fightId)
-                    {
-                    }
-                    for each (_loc_45 in _loc_33.charactersDescription)
-                    {
-                        
-                        this._attackers.push(PrismFightersWrapper.create(_loc_45));
-                    }
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate, this._fightId, true, false, false);
-                    return true;
-                }
-                case param1 is PrismFightAttackerRemoveMessage:
-                {
-                    _loc_34 = param1 as PrismFightAttackerRemoveMessage;
-                    if (_loc_34.fightId != this._fightId)
-                    {
-                    }
-                    this._pickup_fighter(this._attackers, _loc_34.fighterToRemoveId);
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate, this._fightId, true, false, false);
-                    return true;
-                }
-                case param1 is PrismWorldInformationMessage:
-                {
-                    _loc_35 = param1 as PrismWorldInformationMessage;
-                    this._nbSubOwned = _loc_35.nbSubOwned;
-                    this._subTotal = _loc_35.subTotal;
-                    this._maxSub = _loc_35.maxSub;
-                    this._subAreasInformation = _loc_35.subAreasInformation;
-                    this._nbConqsOwned = _loc_35.nbConqsOwned;
-                    this._conqsTotal = _loc_35.conqsTotal;
-                    this._conquetesInformation = _loc_35.conquetesInformation;
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismWorldInformation, _loc_35.nbSubOwned, _loc_35.subTotal, _loc_35.maxSub, _loc_35.subAreasInformation, _loc_35.nbConqsOwned, _loc_35.conqsTotal, _loc_35.conquetesInformation);
-                    return true;
-                }
-                case param1 is AlignmentSubAreaUpdateExtendedMessage:
-                {
-                    _loc_36 = param1 as AlignmentSubAreaUpdateExtendedMessage;
-                    if (_loc_36.eventType == SubareaUpdateEventEnum.SUBAREA_EVENT_PRISM_ADDED)
-                    {
-                        KernelEventsManager.getInstance().processCallback(PrismHookList.PrismAdd, _loc_36.mapId, _loc_36.side, _loc_36.worldX, _loc_36.worldY, _loc_36.subAreaId);
-                    }
-                    else if (_loc_36.eventType == SubareaUpdateEventEnum.SUBAREA_EVENT_PRISM_REMOVED)
-                    {
-                        KernelEventsManager.getInstance().processCallback(PrismHookList.PrismRemoved, _loc_36.mapId);
-                    }
-                    return true;
-                }
-                case param1 is PrismInfoCloseMessage:
-                {
-                    _loc_37 = param1 as PrismInfoCloseMessage;
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInfoClose);
-                    return true;
-                }
-                case param1 is PrismInfoValidMessage:
-                {
-                    _loc_38 = param1 as PrismInfoValidMessage;
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInfoValid, _loc_38.waitingForHelpInfo.timeLeftBeforeFight, _loc_38.waitingForHelpInfo.waitTimeForPlacement, _loc_38.waitingForHelpInfo.nbPositionForDefensors);
-                    return true;
-                }
-                case param1 is PrismInfoInValidMessage:
-                {
-                    _loc_39 = param1 as PrismInfoInValidMessage;
-                    KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInfoInvalid, _loc_39.reason);
-                    return true;
-                }
-                case param1 is PrismFightStateUpdateMessage:
-                {
-                    _loc_40 = param1 as PrismFightStateUpdateMessage;
-                    this._prismState = _loc_40.state;
-                    this._defenders = new Array();
-                    this._attackers = new Array();
-                    this._reserves = new Array();
-                    if (Kernel.getWorker().contains(RoleplayContextFrame))
-                    {
-                        KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightStateUpdate, _loc_40.state);
-                    }
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function process(msg:Message) : Boolean {
+         var pfjlract:PrismFightJoinLeaveRequestAction = null;
+         var pfjlrmsg:PrismFightJoinLeaveRequestMessage = null;
+         var pfsract:PrismFightSwapRequestAction = null;
+         var playerGrade:* = 0;
+         var otherGrade:* = 0;
+         var pfsrmsg:PrismFightSwapRequestMessage = null;
+         var pijlract:PrismInfoJoinLeaveRequestAction = null;
+         var pijlrmsg:PrismInfoJoinLeaveRequestMessage = null;
+         var pwiract:PrismWorldInformationRequestAction = null;
+         var pwirmsg:PrismWorldInformationRequestMessage = null;
+         var pbract:PrismBalanceRequestAction = null;
+         var pbramsg:PrismBalanceRequestMessage = null;
+         var pcbract:PrismCurrentBonusRequestAction = null;
+         var pcbrmsg:PrismCurrentBonusRequestMessage = null;
+         var pbra:PrismAttackRequestAction = null;
+         var pbrqmsg:PrismAttackRequestMessage = null;
+         var pura:PrismUseRequestAction = null;
+         var purmsg:PrismUseRequestMessage = null;
+         var pbrmsg:PrismBalanceResultMessage = null;
+         var pabrmsg:PrismAlignmentBonusResultMessage = null;
+         var pfdsmsg:PrismFightDefendersStateMessage = null;
+         var pfdamsg:PrismFightDefenderAddMessage = null;
+         var defendersUpdated:* = false;
+         var reservesUpdated:* = false;
+         var pfdlmsg:PrismFightDefenderLeaveMessage = null;
+         var pfdswmsg:PrismFightDefendersSwapMessage = null;
+         var reserve:PrismFightersWrapper = null;
+         var defender:PrismFightersWrapper = null;
+         var pfamsg:PrismFightAttackedMessage = null;
+         var subArea:SubArea = null;
+         var info:String = null;
+         var pfaamsg:PrismFightAttackerAddMessage = null;
+         var pfarmsg:PrismFightAttackerRemoveMessage = null;
+         var pwimsg:PrismWorldInformationMessage = null;
+         var asuemsg:AlignmentSubAreaUpdateExtendedMessage = null;
+         var picmsg:PrismInfoCloseMessage = null;
+         var pivmsg:PrismInfoValidMessage = null;
+         var piivmsg:PrismInfoInValidMessage = null;
+         var pfsumsg:PrismFightStateUpdateMessage = null;
+         var cmplagi:PrismFightersWrapper = null;
+         var def:CharacterMinimalPlusLookAndGradeInformations = null;
+         var res:CharacterMinimalPlusLookAndGradeInformations = null;
+         var text:String = null;
+         var attacker:CharacterMinimalPlusLookAndGradeInformations = null;
+         switch(true)
+         {
+            case msg is PrismFightJoinLeaveRequestAction:
+               pfjlract=msg as PrismFightJoinLeaveRequestAction;
+               pfjlrmsg=new PrismFightJoinLeaveRequestMessage();
+               pfjlrmsg.initPrismFightJoinLeaveRequestMessage(pfjlract.join);
+               ConnectionsHandler.getConnection().send(pfjlrmsg);
+               return true;
+            case msg is PrismFightSwapRequestAction:
+               pfsract=msg as PrismFightSwapRequestAction;
+               playerGrade=PlayedCharacterManager.getInstance().characteristics.alignmentInfos.alignmentGrade;
+               otherGrade=0;
+               for each (cmplagi in this._defenders)
+               {
+                  if(cmplagi.playerCharactersInformations.id==pfsract.targetId)
+                  {
+                     otherGrade=cmplagi.playerCharactersInformations.grade;
+                     break;
+                  }
+               }
+               if(playerGrade<=otherGrade)
+               {
+                  return true;
+               }
+               pfsrmsg=new PrismFightSwapRequestMessage();
+               pfsrmsg.initPrismFightSwapRequestMessage(pfsract.targetId);
+               ConnectionsHandler.getConnection().send(pfsrmsg);
+               return true;
+            case msg is PrismInfoJoinLeaveRequestAction:
+               pijlract=msg as PrismInfoJoinLeaveRequestAction;
+               pijlrmsg=new PrismInfoJoinLeaveRequestMessage();
+               pijlrmsg.initPrismInfoJoinLeaveRequestMessage(pijlract.join);
+               this._infoJoinLeave=pijlract.join;
+               if(pijlract.join)
+               {
+                  this._attackers=new Array();
+                  this._reserves=new Array();
+                  this._defenders=new Array();
+               }
+               ConnectionsHandler.getConnection().send(pijlrmsg);
+               return true;
+            case msg is PrismWorldInformationRequestAction:
+               pwiract=msg as PrismWorldInformationRequestAction;
+               pwirmsg=new PrismWorldInformationRequestMessage();
+               pwirmsg.initPrismWorldInformationRequestMessage(pwiract.join);
+               ConnectionsHandler.getConnection().send(pwirmsg);
+               return true;
+            case msg is PrismBalanceRequestAction:
+               pbract=msg as PrismBalanceRequestAction;
+               pbramsg=new PrismBalanceRequestMessage();
+               pbramsg.initPrismBalanceRequestMessage();
+               ConnectionsHandler.getConnection().send(pbramsg);
+               return true;
+            case msg is PrismCurrentBonusRequestAction:
+               pcbract=msg as PrismCurrentBonusRequestAction;
+               pcbrmsg=new PrismCurrentBonusRequestMessage();
+               pcbrmsg.initPrismCurrentBonusRequestMessage();
+               ConnectionsHandler.getConnection().send(pcbrmsg);
+               return true;
+            case msg is PrismAttackRequestAction:
+               pbra=msg as PrismAttackRequestAction;
+               pbrqmsg=new PrismAttackRequestMessage();
+               pbrqmsg.initPrismAttackRequestMessage();
+               ConnectionsHandler.getConnection().send(pbrqmsg);
+               return true;
+            case msg is PrismUseRequestAction:
+               pura=msg as PrismUseRequestAction;
+               purmsg=new PrismUseRequestMessage();
+               purmsg.initPrismUseRequestMessage();
+               ConnectionsHandler.getConnection().send(purmsg);
+               return true;
+            case msg is PrismBalanceResultMessage:
+               pbrmsg=msg as PrismBalanceResultMessage;
+               this._totalBalanceValue=pbrmsg.totalBalanceValue;
+               this._subAreaBalanceValue=pbrmsg.subAreaBalanceValue;
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismBalance,pbrmsg.subAreaBalanceValue);
+               return true;
+            case msg is PrismAlignmentBonusResultMessage:
+               pabrmsg=msg as PrismAlignmentBonusResultMessage;
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismAlignmentBonus,pabrmsg.alignmentBonus.grademult,pabrmsg.alignmentBonus.pctbonus);
+               return true;
+            case msg is PrismFightDefendersStateMessage:
+               pfdsmsg=msg as PrismFightDefendersStateMessage;
+               if(pfdsmsg.fightId!=this._fightId)
+               {
+                  this._fightId=pfdsmsg.fightId;
+               }
+               this._defenders=new Array();
+               for each (def in pfdsmsg.mainFighters)
+               {
+                  this._defenders.push(PrismFightersWrapper.create(def));
+               }
+               this._reserves=new Array();
+               for each (res in pfdsmsg.reserveFighters)
+               {
+                  this._reserves.push(PrismFightersWrapper.create(res));
+               }
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate,this._fightId,true,true,true);
+               return true;
+            case msg is PrismFightDefenderAddMessage:
+               pfdamsg=msg as PrismFightDefenderAddMessage;
+               defendersUpdated=false;
+               reservesUpdated=false;
+               if(pfdamsg.fightId!=this._fightId)
+               {
+               }
+               if(pfdamsg.inMain)
+               {
+                  this._defenders.push(PrismFightersWrapper.create(pfdamsg.fighterMovementInformations));
+                  defendersUpdated=true;
+               }
+               else
+               {
+                  this._reserves.push(PrismFightersWrapper.create(pfdamsg.fighterMovementInformations));
+                  reservesUpdated=true;
+               }
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate,this._fightId,false,defendersUpdated,reservesUpdated);
+               return true;
+            case msg is PrismFightDefenderLeaveMessage:
+               pfdlmsg=msg as PrismFightDefenderLeaveMessage;
+               if(pfdlmsg.fightId!=this._fightId)
+               {
+               }
+               this._pickup_fighter(this._defenders,pfdlmsg.fighterToRemoveId);
+               if(pfdlmsg.successor!=0)
+               {
+                  this._defenders.push(this._pickup_fighter(this._reserves,pfdlmsg.successor));
+               }
+               if((!this._infoJoinLeave)&&(pfdlmsg.fighterToRemoveId==PlayedCharacterManager.getInstance().infos.id))
+               {
+                  text=I18n.getUiText("ui.prism.AutoDisjoin");
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate,this._fightId,false,true,!(pfdlmsg.successor==0));
+               return true;
+            case msg is PrismFightDefendersSwapMessage:
+               pfdswmsg=msg as PrismFightDefendersSwapMessage;
+               if(pfdswmsg.fightId!=this._fightId)
+               {
+               }
+               reserve=this._pickup_fighter(this._reserves,pfdswmsg.fighterId1);
+               defender=this._pickup_fighter(this._defenders,pfdswmsg.fighterId2);
+               this._reserves.push(defender);
+               this._defenders.push(reserve);
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate,this._fightId,false,true,true);
+               return true;
+            case msg is PrismFightAttackedMessage:
+               pfamsg=msg as PrismFightAttackedMessage;
+               this._mapId=pfamsg.mapId;
+               this._subareaId=pfamsg.subAreaId;
+               this._worldX=pfamsg.worldX;
+               this._worldY=pfamsg.worldY;
+               subArea=SubArea.getSubAreaById(this._subareaId);
+               info=I18n.getUiText("ui.prism.attacked",[subArea.name,"{map,"+this.worldX+","+this.worldY+"}"]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,info,ChatActivableChannelsEnum.CHANNEL_ALIGN,TimeManager.getInstance().getTimestamp());
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismAttacked);
+               return true;
+            case msg is PrismFightAttackerAddMessage:
+               pfaamsg=msg as PrismFightAttackerAddMessage;
+               if(pfaamsg.fightId!=this._fightId)
+               {
+               }
+               for each (attacker in pfaamsg.charactersDescription)
+               {
+                  this._attackers.push(PrismFightersWrapper.create(attacker));
+               }
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate,this._fightId,true,false,false);
+               return true;
+            case msg is PrismFightAttackerRemoveMessage:
+               pfarmsg=msg as PrismFightAttackerRemoveMessage;
+               if(pfarmsg.fightId!=this._fightId)
+               {
+               }
+               this._pickup_fighter(this._attackers,pfarmsg.fighterToRemoveId);
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightUpdate,this._fightId,true,false,false);
+               return true;
+            case msg is PrismWorldInformationMessage:
+               pwimsg=msg as PrismWorldInformationMessage;
+               this._nbSubOwned=pwimsg.nbSubOwned;
+               this._subTotal=pwimsg.subTotal;
+               this._maxSub=pwimsg.maxSub;
+               this._subAreasInformation=pwimsg.subAreasInformation;
+               this._nbConqsOwned=pwimsg.nbConqsOwned;
+               this._conqsTotal=pwimsg.conqsTotal;
+               this._conquetesInformation=pwimsg.conquetesInformation;
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismWorldInformation,pwimsg.nbSubOwned,pwimsg.subTotal,pwimsg.maxSub,pwimsg.subAreasInformation,pwimsg.nbConqsOwned,pwimsg.conqsTotal,pwimsg.conquetesInformation);
+               return true;
+            case msg is AlignmentSubAreaUpdateExtendedMessage:
+               asuemsg=msg as AlignmentSubAreaUpdateExtendedMessage;
+               if(asuemsg.eventType==SubareaUpdateEventEnum.SUBAREA_EVENT_PRISM_ADDED)
+               {
+                  KernelEventsManager.getInstance().processCallback(PrismHookList.PrismAdd,asuemsg.mapId,asuemsg.side,asuemsg.worldX,asuemsg.worldY,asuemsg.subAreaId);
+               }
+               else
+               {
+                  if(asuemsg.eventType==SubareaUpdateEventEnum.SUBAREA_EVENT_PRISM_REMOVED)
+                  {
+                     KernelEventsManager.getInstance().processCallback(PrismHookList.PrismRemoved,asuemsg.mapId);
+                  }
+               }
+               return true;
+            case msg is PrismInfoCloseMessage:
+               picmsg=msg as PrismInfoCloseMessage;
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInfoClose);
+               return true;
+            case msg is PrismInfoValidMessage:
+               pivmsg=msg as PrismInfoValidMessage;
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInfoValid,pivmsg.waitingForHelpInfo.timeLeftBeforeFight,pivmsg.waitingForHelpInfo.waitTimeForPlacement,pivmsg.waitingForHelpInfo.nbPositionForDefensors);
+               return true;
+            case msg is PrismInfoInValidMessage:
+               piivmsg=msg as PrismInfoInValidMessage;
+               KernelEventsManager.getInstance().processCallback(PrismHookList.PrismInfoInvalid,piivmsg.reason);
+               return true;
+            case msg is PrismFightStateUpdateMessage:
+               pfsumsg=msg as PrismFightStateUpdateMessage;
+               this._prismState=pfsumsg.state;
+               this._defenders=new Array();
+               this._attackers=new Array();
+               this._reserves=new Array();
+               if(Kernel.getWorker().contains(RoleplayContextFrame))
+               {
+                  KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightStateUpdate,pfsumsg.state);
+               }
+               return true;
+            default:
+               return false;
+         }
+      }
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function pulled() : Boolean {
+         return true;
+      }
 
-        public function pushRoleplay() : void
-        {
-            KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightStateUpdate, this._prismState);
-            return;
-        }// end function
+      public function pushRoleplay() : void {
+         KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightStateUpdate,this._prismState);
+      }
 
-        public function pullRoleplay() : void
-        {
-            if (this._prismState != 0)
-            {
-                KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightStateUpdate, 0);
-            }
-            return;
-        }// end function
+      public function pullRoleplay() : void {
+         if(this._prismState!=0)
+         {
+            KernelEventsManager.getInstance().processCallback(PrismHookList.PrismFightStateUpdate,0);
+         }
+      }
 
-        public function getSubAreasInformation(param1:uint) : PrismSubAreaWrapper
-        {
-            var _loc_2:* = this._subAreasInformation[param1];
-            return PrismSubAreaWrapper.create(_loc_2.subAreaId, _loc_2.alignment, _loc_2.mapId, _loc_2.isInFight, _loc_2.isFightable, true, _loc_2.worldX, _loc_2.worldY);
-        }// end function
+      public function getSubAreasInformation(index:uint) : PrismSubAreaWrapper {
+         var prismInfo:PrismSubAreaInformation = this._subAreasInformation[index];
+         return PrismSubAreaWrapper.create(prismInfo.subAreaId,prismInfo.alignment,prismInfo.mapId,prismInfo.isInFight,prismInfo.isFightable,true,prismInfo.worldX,prismInfo.worldY);
+      }
 
-        public function getConquetesInformation(param1:uint) : PrismConquestWrapper
-        {
-            var _loc_2:* = this._conquetesInformation[param1];
-            return PrismConquestWrapper.create(_loc_2.areaId, _loc_2.areaAlignment, _loc_2.isEntered, _loc_2.isInRoom);
-        }// end function
+      public function getConquetesInformation(index:uint) : PrismConquestWrapper {
+         var prismInfo:VillageConquestPrismInformation = this._conquetesInformation[index];
+         return PrismConquestWrapper.create(prismInfo.areaId,prismInfo.areaAlignment,prismInfo.isEntered,prismInfo.isInRoom);
+      }
+   }
 
-    }
 }

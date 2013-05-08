@@ -1,554 +1,505 @@
-﻿package flashx.textLayout.conversion
+package flashx.textLayout.conversion
 {
-    import flash.system.*;
-    import flashx.textLayout.*;
-    import flashx.textLayout.conversion.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.property.*;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.elements.FlowGroupElement;
+   import flashx.textLayout.elements.ParagraphElement;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.SpanElement;
+   import flashx.textLayout.elements.FlowLeafElement;
+   import flashx.textLayout.elements.BreakElement;
+   import flashx.textLayout.elements.TabElement;
+   import flashx.textLayout.elements.GlobalSettings;
+   import flashx.textLayout.elements.ListElement;
+   import flashx.textLayout.elements.ListItemElement;
+   import flashx.textLayout.elements.IConfiguration;
+   import flashx.textLayout.property.Property;
+   import flashx.textLayout.elements.Configuration;
+   import flash.system.System;
+   import flashx.textLayout.TextLayoutVersion;
+   import flashx.textLayout.elements.ContainerFormattedElement;
+   import flashx.textLayout.elements.FlowElement;
+   import flashx.textLayout.elements.ParagraphFormattedElement;
 
-    class BaseTextLayoutImporter extends ConverterBase implements ITextImporter
-    {
-        private var _ns:Namespace;
-        private var _textFlowNamespace:Namespace;
-        protected var _config:ImportExportConfiguration;
-        protected var _textFlowConfiguration:IConfiguration = null;
-        protected var _importVersion:uint;
-        private var _impliedPara:ParagraphElement = null;
-        private static const anyPrintChar:RegExp = /[^	t
-nr ]""[^	
- ]/g;
-        private static const dblSpacePattern:RegExp = /[ ]{2,}""[ ]{2,}/g;
-        private static const tabNewLinePattern:RegExp = /[	t
-nr]""[	
-]/g;
+   use namespace tlf_internal;
 
-        function BaseTextLayoutImporter(param1:Namespace, param2:ImportExportConfiguration)
-        {
-            this._ns = param1;
-            this._config = param2;
+   class BaseTextLayoutImporter extends ConverterBase implements ITextImporter
+   {
+         
+
+      function BaseTextLayoutImporter(nsValue:Namespace, config:ImportExportConfiguration) {
+         super();
+         this._ns=nsValue;
+         this._config=config;
+      }
+
+      private static const anyPrintChar:RegExp = new RegExp("[^\t\n\r ]","g");
+
+      private static const dblSpacePattern:RegExp = new RegExp("[ ]{2,}","g");
+
+      private static const tabNewLinePattern:RegExp = new RegExp("[\t\n\r]","g");
+
+      protected static function stripWhitespace(insertString:String) : String {
+         return insertString.replace(tabNewLinePattern," ");
+      }
+
+      public static function parseTextFlow(importer:BaseTextLayoutImporter, xmlToParse:XML, parent:Object=null) : TextFlow {
+         return importer.createTextFlowFromXML(xmlToParse,null);
+      }
+
+      public static function parsePara(importer:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
+         var paraElem:ParagraphElement = importer.createParagraphFromXML(xmlToParse);
+         if(importer.addChild(parent,paraElem))
+         {
+            importer.parseFlowGroupElementChildren(xmlToParse,paraElem);
+            if(paraElem.numChildren==0)
+            {
+               paraElem.addChild(new SpanElement());
+            }
+         }
+      }
+
+      protected static function copyAllStyleProps(dst:FlowLeafElement, src:FlowLeafElement) : void {
+         dst.format=src.format;
+         dst.typeName=src.typeName;
+         dst.id=src.id;
+      }
+
+      public static function parseSpan(importer:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
+         var child:XML = null;
+         var elemName:String = null;
+         var s:SpanElement = null;
+         var brElem:BreakElement = null;
+         var tabElem:TabElement = null;
+         var firstSpan:SpanElement = importer.createSpanFromXML(xmlToParse);
+         var elemList:XMLList = xmlToParse[0].children();
+         if(elemList.length()==0)
+         {
+            importer.addChild(parent,firstSpan);
             return;
-        }// end function
-
-        override function clear() : void
-        {
-            super.clear();
-            this._textFlowNamespace = null;
-            this._impliedPara = null;
-            return;
-        }// end function
-
-        public function importToFlow(param1:Object) : TextFlow
-        {
-            var source:* = param1;
-            this.clear();
-            if (throwOnError)
+         }
+         for each (child in elemList)
+         {
+            elemName=child.name()?child.name().localName:null;
+            if(elemName==null)
             {
-                return this.importToFlowCanThrow(source);
-            }
-            var rslt:TextFlow;
-            var savedErrorHandler:* = Property.errorHandler;
-            try
-            {
-                Property.errorHandler = this.importPropertyErrorHandler;
-                rslt = this.importToFlowCanThrow(source);
-            }
-            catch (e:Error)
-            {
-                reportError(e.toString());
-            }
-            Property.errorHandler = savedErrorHandler;
-            return rslt;
-        }// end function
-
-        public function get configuration() : IConfiguration
-        {
-            return this._textFlowConfiguration;
-        }// end function
-
-        public function set configuration(param1:IConfiguration) : void
-        {
-            this._textFlowConfiguration = param1;
-            return;
-        }// end function
-
-        protected function importPropertyErrorHandler(param1:Property, param2:Object) : void
-        {
-            reportError(Property.createErrorString(param1, param2));
-            return;
-        }// end function
-
-        private function importToFlowCanThrow(param1:Object) : TextFlow
-        {
-            if (param1 is String)
-            {
-                return this.importFromString(String(param1));
-            }
-            if (param1 is XML)
-            {
-                return this.importFromXML(XML(param1));
-            }
-            return null;
-        }// end function
-
-        protected function importFromString(param1:String) : TextFlow
-        {
-            var xmlTree:XML;
-            var source:* = param1;
-            var originalSettings:* = XML.settings();
-            XML.ignoreProcessingInstructions = false;
-            XML.ignoreWhitespace = false;
-            xmlTree = new XML(source);
-            finally
-            {
-                var _loc_3:* = new catch0;
-                throw null;
-            }
-            finally
-            {
-                XML.setSettings(originalSettings);
-            }
-            var textFlow:* = this.importFromXML(xmlTree);
-            if (Configuration.playerEnablesArgoFeatures)
-            {
-                var _loc_3:* = System;
-                _loc_3.System["disposeXML"](xmlTree);
-            }
-            return textFlow;
-        }// end function
-
-        protected function importFromXML(param1:XML) : TextFlow
-        {
-            return this.parseContent(param1[0]);
-        }// end function
-
-        protected function parseContent(param1:XML) : TextFlow
-        {
-            var _loc_2:* = param1..TextFlow[0];
-            if (_loc_2)
-            {
-                return parseTextFlow(this, param1);
-            }
-            return null;
-        }// end function
-
-        public function get ns() : Namespace
-        {
-            return this._ns;
-        }// end function
-
-        protected function checkNamespace(param1:XML) : Boolean
-        {
-            var _loc_2:* = param1.namespace();
-            if (!this._textFlowNamespace)
-            {
-                if (_loc_2 != this.ns)
-                {
-                    reportError(GlobalSettings.resourceStringFunction("unexpectedNamespace", [_loc_2.toString()]));
-                    return false;
-                }
-                this._textFlowNamespace = _loc_2;
-            }
-            else if (_loc_2 != this._textFlowNamespace)
-            {
-                reportError(GlobalSettings.resourceStringFunction("unexpectedNamespace", [_loc_2.toString()]));
-                return false;
-            }
-            return true;
-        }// end function
-
-        public function parseAttributes(param1:XML, param2:Array) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = false;
-            for each (_loc_3 in param2)
-            {
-                
-                _loc_3.reset();
-            }
-            if (!param1)
-            {
-                return;
-            }
-            for each (_loc_4 in param1.attributes())
-            {
-                
-                _loc_5 = _loc_4.name().localName;
-                _loc_6 = _loc_4.toString();
-                _loc_7 = false;
-                if (param1.localName() == "TextFlow")
-                {
-                    if (_loc_5 == "version")
-                    {
-                        continue;
-                    }
-                }
-                else if (this._importVersion < TextLayoutVersion.VERSION_2_0 && (_loc_5 == "paddingLeft" || _loc_5 == "paddingTop" || _loc_5 == "paddingRight" || _loc_5 == "paddingBottom"))
-                {
-                    continue;
-                }
-                for each (_loc_3 in param2)
-                {
-                    
-                    if (_loc_3.importOneFormat(_loc_5, _loc_6))
-                    {
-                        _loc_7 = true;
-                        break;
-                    }
-                }
-                if (!_loc_7)
-                {
-                    this.handleUnknownAttribute(param1.name().localName, _loc_5);
-                }
-            }
-            return;
-        }// end function
-
-        public function createTextFlowFromXML(param1:XML, param2:TextFlow = null) : TextFlow
-        {
-            return null;
-        }// end function
-
-        public function createParagraphFromXML(param1:XML) : ParagraphElement
-        {
-            return null;
-        }// end function
-
-        public function createSpanFromXML(param1:XML) : SpanElement
-        {
-            return null;
-        }// end function
-
-        public function createBreakFromXML(param1:XML) : BreakElement
-        {
-            this.parseAttributes(param1, null);
-            return new BreakElement();
-        }// end function
-
-        public function createListFromXML(param1:XML) : ListElement
-        {
-            return null;
-        }// end function
-
-        public function createListItemFromXML(param1:XML) : ListItemElement
-        {
-            return null;
-        }// end function
-
-        public function createTabFromXML(param1:XML) : TabElement
-        {
-            this.parseAttributes(param1, null);
-            return new TabElement();
-        }// end function
-
-        public function parseFlowChildren(param1:XML, param2:FlowGroupElement) : void
-        {
-            this.parseFlowGroupElementChildren(param1, param2);
-            return;
-        }// end function
-
-        public function parseFlowGroupElementChildren(param1:XML, param2:FlowGroupElement, param3:Object = null, param4:Boolean = false) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = false;
-            for each (_loc_5 in param1.children())
-            {
-                
-                if (_loc_5.nodeKind() == "element")
-                {
-                    this.parseObject(_loc_5.name().localName, _loc_5, param2, param3);
-                    continue;
-                }
-                if (_loc_5.nodeKind() == "text")
-                {
-                    _loc_6 = _loc_5.toString();
-                    _loc_7 = false;
-                    if (param2 is ContainerFormattedElement)
-                    {
-                        _loc_7 = _loc_6.search(anyPrintChar) == -1;
-                    }
-                    if (!_loc_7)
-                    {
-                        this.addChild(param2, this.createImpliedSpan(_loc_6));
-                    }
-                }
-            }
-            if (!param4 && param2 is ContainerFormattedElement)
-            {
-                this.resetImpliedPara();
-            }
-            return;
-        }// end function
-
-        public function createImpliedSpan(param1:String) : SpanElement
-        {
-            var _loc_2:* = new SpanElement();
-            _loc_2.text = param1;
-            return _loc_2;
-        }// end function
-
-        public function createParagraphFlowFromXML(param1:XML, param2:TextFlow = null) : TextFlow
-        {
-            return null;
-        }// end function
-
-        function parseObject(param1:String, param2:XML, param3:FlowGroupElement, param4:Object = null) : void
-        {
-            if (!this.checkNamespace(param2))
-            {
-                return;
-            }
-            var _loc_5:* = this._config.lookup(param1);
-            if (!this._config.lookup(param1))
-            {
-                if (param4 == null || param4[param1] === undefined)
-                {
-                    this.handleUnknownElement(param1, param2, param3);
-                }
+               if(firstSpan.parent==null)
+               {
+                  firstSpan.text=child.toString();
+                  importer.addChild(parent,firstSpan);
+               }
+               else
+               {
+                  s=new SpanElement();
+                  copyAllStyleProps(s,firstSpan);
+                  s.text=child.toString();
+                  importer.addChild(parent,s);
+               }
             }
             else
             {
-                _loc_5.parser(this, param2, param3);
+               if(elemName=="br")
+               {
+                  brElem=importer.createBreakFromXML(child);
+                  if(brElem)
+                  {
+                     copyAllStyleProps(brElem,firstSpan);
+                     importer.addChild(parent,brElem);
+                  }
+                  else
+                  {
+                     importer.reportError(GlobalSettings.resourceStringFunction("unexpectedXMLElementInSpan",[elemName]));
+                  }
+               }
+               else
+               {
+                  if(elemName=="tab")
+                  {
+                     tabElem=importer.createTabFromXML(child);
+                     if(tabElem)
+                     {
+                        copyAllStyleProps(tabElem,firstSpan);
+                        importer.addChild(parent,tabElem);
+                     }
+                     else
+                     {
+                        importer.reportError(GlobalSettings.resourceStringFunction("unexpectedXMLElementInSpan",[elemName]));
+                     }
+                  }
+                  else
+                  {
+                     importer.reportError(GlobalSettings.resourceStringFunction("unexpectedXMLElementInSpan",[elemName]));
+                  }
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        protected function handleUnknownElement(param1:String, param2:XML, param3:FlowGroupElement) : void
-        {
-            reportError(GlobalSettings.resourceStringFunction("unknownElement", [param1]));
-            return;
-        }// end function
+      public static function parseBreak(importer:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
+         var breakElem:BreakElement = importer.createBreakFromXML(xmlToParse);
+         importer.addChild(parent,breakElem);
+      }
 
-        protected function handleUnknownAttribute(param1:String, param2:String) : void
-        {
-            reportError(GlobalSettings.resourceStringFunction("unknownAttribute", [param2, param1]));
-            return;
-        }// end function
+      public static function parseTab(importer:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
+         var tabElem:TabElement = importer.createTabFromXML(xmlToParse);
+         if(tabElem)
+         {
+            importer.addChild(parent,tabElem);
+         }
+      }
 
-        protected function getElementInfo(param1:XML) : FlowElementInfo
-        {
-            return this._config.lookup(param1.name().localName);
-        }// end function
+      public static function parseList(importer:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
+         var listElem:ListElement = importer.createListFromXML(xmlToParse);
+         if(importer.addChild(parent,listElem))
+         {
+            importer.parseFlowGroupElementChildren(xmlToParse,listElem);
+         }
+      }
 
-        protected function GetClass(param1:XML) : Class
-        {
-            var _loc_2:* = this._config.lookup(param1.name().localName);
-            return _loc_2 ? (_loc_2.flowClass) : (null);
-        }// end function
-
-        function createImpliedParagraph() : ParagraphElement
-        {
-            return this.createParagraphFromXML(<p/>")("<p/>);
-        }// end function
-
-        function addChild(param1:FlowGroupElement, param2:FlowElement) : Boolean
-        {
-            var parent:* = param1;
-            var child:* = param2;
-            if (child is ParagraphFormattedElement)
+      public static function parseListItem(importer:BaseTextLayoutImporter, xmlToParse:XML, parent:FlowGroupElement) : void {
+         var listItem:ListItemElement = importer.createListItemFromXML(xmlToParse);
+         if(importer.addChild(parent,listItem))
+         {
+            importer.parseFlowGroupElementChildren(xmlToParse,listItem);
+            if(listItem.numChildren==0)
             {
-                this.resetImpliedPara();
+               listItem.addChild(new ParagraphElement());
             }
-            else if (parent is ContainerFormattedElement)
+         }
+      }
+
+      protected static function extractAttributesHelper(curAttrs:Object, importer:TLFormatImporter) : Object {
+         if(curAttrs==null)
+         {
+            return importer.result;
+         }
+         if(importer.result==null)
+         {
+            return curAttrs;
+         }
+         var workAttrs:Object = new importer.classType(curAttrs);
+         workAttrs.apply(importer.result);
+         return workAttrs;
+      }
+
+      private var _ns:Namespace;
+
+      private var _textFlowNamespace:Namespace;
+
+      protected var _config:ImportExportConfiguration;
+
+      protected var _textFlowConfiguration:IConfiguration = null;
+
+      protected var _importVersion:uint;
+
+      override tlf_internal function clear() : void {
+         super.clear();
+         this._textFlowNamespace=null;
+         this._impliedPara=null;
+      }
+
+      public function importToFlow(source:Object) : TextFlow {
+         this.clear();
+         if(throwOnError)
+         {
+            return this.importToFlowCanThrow(source);
+         }
+         var rslt:TextFlow = null;
+         var savedErrorHandler:Function = Property.errorHandler;
+         try
+         {
+            Property.errorHandler=this.importPropertyErrorHandler;
+            rslt=this.importToFlowCanThrow(source);
+         }
+         catch(e:Error)
+         {
+            reportError(e.toString());
+         }
+         Property.errorHandler=savedErrorHandler;
+         return rslt;
+      }
+
+      public function get configuration() : IConfiguration {
+         return this._textFlowConfiguration;
+      }
+
+      public function set configuration(value:IConfiguration) : void {
+         this._textFlowConfiguration=value;
+      }
+
+      protected function importPropertyErrorHandler(p:Property, value:Object) : void {
+         reportError(Property.createErrorString(p,value));
+      }
+
+      private function importToFlowCanThrow(source:Object) : TextFlow {
+         if(source is String)
+         {
+            return this.importFromString(String(source));
+         }
+         if(source is XML)
+         {
+            return this.importFromXML(XML(source));
+         }
+         return null;
+      }
+
+      protected function importFromString(source:String) : TextFlow {
+         var xmlTree:XML = null;
+         var originalSettings:Object = XML.settings();
+         XML.ignoreProcessingInstructions=false;
+         XML.ignoreWhitespace=false;
+         xmlTree=new XML(source);
+         XML.setSettings(originalSettings);
+      }
+
+      protected function importFromXML(xmlSource:XML) : TextFlow {
+         return this.parseContent(xmlSource[0]);
+      }
+
+      protected function parseContent(rootStory:XML) : TextFlow {
+         var child:XML = rootStory..TextFlow[0];
+         if(child)
+         {
+            return parseTextFlow(this,rootStory);
+         }
+         return null;
+      }
+
+      public function get ns() : Namespace {
+         return this._ns;
+      }
+
+      protected function checkNamespace(xmlToParse:XML) : Boolean {
+         var elementNS:Namespace = xmlToParse.namespace();
+         if(!this._textFlowNamespace)
+         {
+            if(elementNS!=this.ns)
             {
-                if (!this._impliedPara)
-                {
-                    this._impliedPara = this.createImpliedParagraph();
-                    parent.addChild(this._impliedPara);
-                }
-                parent = this._impliedPara;
+               reportError(GlobalSettings.resourceStringFunction("unexpectedNamespace",[elementNS.toString()]));
+               return false;
             }
-            if (throwOnError)
+            this._textFlowNamespace=elementNS;
+         }
+         else
+         {
+            if(elementNS!=this._textFlowNamespace)
             {
-                parent.addChild(child);
+               reportError(GlobalSettings.resourceStringFunction("unexpectedNamespace",[elementNS.toString()]));
+               return false;
+            }
+         }
+         return true;
+      }
+
+      public function parseAttributes(xmlToParse:XML, formatImporters:Array) : void {
+         var importer:IFormatImporter = null;
+         var item:XML = null;
+         var propertyName:String = null;
+         var propertyValue:String = null;
+         var imported:* = false;
+         for each (importer in formatImporters)
+         {
+            importer.reset();
+         }
+         if(!xmlToParse)
+         {
+            return;
+         }
+         for each (item in xmlToParse.attributes())
+         {
+            propertyName=item.name().localName;
+            propertyValue=item.toString();
+            imported=false;
+            if(xmlToParse.localName()=="TextFlow")
+            {
+               if(propertyName=="version")
+               {
+                  continue;
+               }
             }
             else
             {
-                try
-                {
-                    parent.addChild(child);
-                }
-                catch (e)
-                {
-                    reportError(e);
-                    return false;
-                }
+               if((this._importVersion>TextLayoutVersion.VERSION_2_0)&&((propertyName=="paddingLeft")||(propertyName=="paddingTop")||(propertyName=="paddingRight")||(propertyName=="paddingBottom")))
+               {
+                  continue;
+               }
             }
-            return true;
-        }// end function
-
-        function resetImpliedPara() : void
-        {
-            if (this._impliedPara)
+            for each (importer in formatImporters)
             {
-                this.onResetImpliedPara(this._impliedPara);
-                this._impliedPara = null;
+               if(importer.importOneFormat(propertyName,propertyValue))
+               {
+                  imported=true;
+                  break;
+               }
             }
-            return;
-        }// end function
-
-        protected function onResetImpliedPara(param1:ParagraphElement) : void
-        {
-            return;
-        }// end function
-
-        static function stripWhitespace(param1:String) : String
-        {
-            return param1.replace(tabNewLinePattern, " ");
-        }// end function
-
-        public static function parseTextFlow(param1:BaseTextLayoutImporter, param2:XML, param3:Object = null) : TextFlow
-        {
-            return param1.createTextFlowFromXML(param2, null);
-        }// end function
-
-        public static function parsePara(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void
-        {
-            var _loc_4:* = param1.createParagraphFromXML(param2);
-            if (param1.addChild(param3, _loc_4))
+            if(!imported)
             {
-                param1.parseFlowGroupElementChildren(param2, _loc_4);
-                if (_loc_4.numChildren == 0)
-                {
-                    _loc_4.addChild(new SpanElement());
-                }
+               this.handleUnknownAttribute(xmlToParse.name().localName,propertyName);
             }
-            return;
-        }// end function
+         }
+      }
 
-        static function copyAllStyleProps(param1:FlowLeafElement, param2:FlowLeafElement) : void
-        {
-            param1.format = param2.format;
-            param1.typeName = param2.typeName;
-            param1.id = param2.id;
-            return;
-        }// end function
+      public function createTextFlowFromXML(xmlToParse:XML, newFlow:TextFlow=null) : TextFlow {
+         return null;
+      }
 
-        public static function parseSpan(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_4:* = param1.createSpanFromXML(param2);
-            var _loc_5:* = param2[0].children();
-            if (param2[0].children().length() == 0)
+      public function createParagraphFromXML(xmlToParse:XML) : ParagraphElement {
+         return null;
+      }
+
+      public function createSpanFromXML(xmlToParse:XML) : SpanElement {
+         return null;
+      }
+
+      public function createBreakFromXML(xmlToParse:XML) : BreakElement {
+         this.parseAttributes(xmlToParse,null);
+         return new BreakElement();
+      }
+
+      public function createListFromXML(xmlToParse:XML) : ListElement {
+         return null;
+      }
+
+      public function createListItemFromXML(xmlToParse:XML) : ListItemElement {
+         return null;
+      }
+
+      public function createTabFromXML(xmlToParse:XML) : TabElement {
+         this.parseAttributes(xmlToParse,null);
+         return new TabElement();
+      }
+
+      public function parseFlowChildren(xmlToParse:XML, parent:FlowGroupElement) : void {
+         this.parseFlowGroupElementChildren(xmlToParse,parent);
+      }
+
+      public function parseFlowGroupElementChildren(xmlToParse:XML, parent:FlowGroupElement, exceptionElements:Object=null, chainedParent:Boolean=false) : void {
+         var child:XML = null;
+         var txt:String = null;
+         var strip:* = false;
+         for each (child in xmlToParse.children())
+         {
+            if(child.nodeKind()=="element")
             {
-                param1.addChild(param3, _loc_4);
-                return;
+               this.parseObject(child.name().localName,child,parent,exceptionElements);
             }
-            for each (_loc_6 in _loc_5)
+            else
             {
-                
-                _loc_7 = _loc_6.name() ? (_loc_6.name().localName) : (null);
-                if (_loc_7 == null)
-                {
-                    if (_loc_4.parent == null)
-                    {
-                        _loc_4.text = _loc_6.toString();
-                        param1.addChild(param3, _loc_4);
-                    }
-                    else
-                    {
-                        _loc_8 = new SpanElement();
-                        copyAllStyleProps(_loc_8, _loc_4);
-                        _loc_8.text = _loc_6.toString();
-                        param1.addChild(param3, _loc_8);
-                    }
-                    continue;
-                }
-                if (_loc_7 == "br")
-                {
-                    _loc_9 = param1.createBreakFromXML(_loc_6);
-                    if (_loc_9)
-                    {
-                        copyAllStyleProps(_loc_9, _loc_4);
-                        param1.addChild(param3, _loc_9);
-                    }
-                    else
-                    {
-                        param1.reportError(GlobalSettings.resourceStringFunction("unexpectedXMLElementInSpan", [_loc_7]));
-                    }
-                    continue;
-                }
-                if (_loc_7 == "tab")
-                {
-                    _loc_10 = param1.createTabFromXML(_loc_6);
-                    if (_loc_10)
-                    {
-                        copyAllStyleProps(_loc_10, _loc_4);
-                        param1.addChild(param3, _loc_10);
-                    }
-                    else
-                    {
-                        param1.reportError(GlobalSettings.resourceStringFunction("unexpectedXMLElementInSpan", [_loc_7]));
-                    }
-                    continue;
-                }
-                param1.reportError(GlobalSettings.resourceStringFunction("unexpectedXMLElementInSpan", [_loc_7]));
+               if(child.nodeKind()=="text")
+               {
+                  txt=child.toString();
+                  strip=false;
+                  if(parent is ContainerFormattedElement)
+                  {
+                     strip=txt.search(anyPrintChar)==-1;
+                  }
+                  if(!strip)
+                  {
+                     this.addChild(parent,this.createImpliedSpan(txt));
+                  }
+               }
             }
+         }
+         if((!chainedParent)&&(parent is ContainerFormattedElement))
+         {
+            this.resetImpliedPara();
+         }
+      }
+
+      public function createImpliedSpan(text:String) : SpanElement {
+         var span:SpanElement = new SpanElement();
+         span.text=text;
+         return span;
+      }
+
+      public function createParagraphFlowFromXML(xmlToParse:XML, newFlow:TextFlow=null) : TextFlow {
+         return null;
+      }
+
+      tlf_internal function parseObject(name:String, xmlToParse:XML, parent:FlowGroupElement, exceptionElements:Object=null) : void {
+         if(!this.checkNamespace(xmlToParse))
+         {
             return;
-        }// end function
-
-        public static function parseBreak(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void
-        {
-            var _loc_4:* = param1.createBreakFromXML(param2);
-            param1.addChild(param3, _loc_4);
-            return;
-        }// end function
-
-        public static function parseTab(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void
-        {
-            var _loc_4:* = param1.createTabFromXML(param2);
-            if (param1.createTabFromXML(param2))
+         }
+         var info:FlowElementInfo = this._config.lookup(name);
+         if(!info)
+         {
+            if((exceptionElements==null)||(exceptionElements[name]===undefined))
             {
-                param1.addChild(param3, _loc_4);
+               this.handleUnknownElement(name,xmlToParse,parent);
             }
-            return;
-        }// end function
+         }
+         else
+         {
+            info.parser(this,xmlToParse,parent);
+         }
+      }
 
-        public static function parseList(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void
-        {
-            var _loc_4:* = param1.createListFromXML(param2);
-            if (param1.addChild(param3, _loc_4))
-            {
-                param1.parseFlowGroupElementChildren(param2, _loc_4);
-            }
-            return;
-        }// end function
+      protected function handleUnknownElement(name:String, xmlToParse:XML, parent:FlowGroupElement) : void {
+         reportError(GlobalSettings.resourceStringFunction("unknownElement",[name]));
+      }
 
-        public static function parseListItem(param1:BaseTextLayoutImporter, param2:XML, param3:FlowGroupElement) : void
-        {
-            var _loc_4:* = param1.createListItemFromXML(param2);
-            if (param1.addChild(param3, _loc_4))
-            {
-                param1.parseFlowGroupElementChildren(param2, _loc_4);
-                if (_loc_4.numChildren == 0)
-                {
-                    _loc_4.addChild(new ParagraphElement());
-                }
-            }
-            return;
-        }// end function
+      protected function handleUnknownAttribute(elementName:String, propertyName:String) : void {
+         reportError(GlobalSettings.resourceStringFunction("unknownAttribute",[propertyName,elementName]));
+      }
 
-        static function extractAttributesHelper(param1:Object, param2:TLFormatImporter) : Object
-        {
-            if (param1 == null)
-            {
-                return param2.result;
-            }
-            if (param2.result == null)
-            {
-                return param1;
-            }
-            var _loc_3:* = new param2.classType(param1);
-            _loc_3.apply(param2.result);
-            return _loc_3;
-        }// end function
+      protected function getElementInfo(xmlToParse:XML) : FlowElementInfo {
+         return this._config.lookup(xmlToParse.name().localName);
+      }
 
-    }
+      protected function GetClass(xmlToParse:XML) : Class {
+         var info:FlowElementInfo = this._config.lookup(xmlToParse.name().localName);
+         return info?info.flowClass:null;
+      }
+
+      private var _impliedPara:ParagraphElement = null;
+
+      tlf_internal function createImpliedParagraph() : ParagraphElement {
+         return this.createParagraphFromXML(<p/>);
+      }
+
+      tlf_internal function addChild(parent:FlowGroupElement, child:FlowElement) : Boolean {
+         if(child is ParagraphFormattedElement)
+         {
+            this.resetImpliedPara();
+         }
+         else
+         {
+            if(parent is ContainerFormattedElement)
+            {
+               if(!this._impliedPara)
+               {
+                  this._impliedPara=this.createImpliedParagraph();
+                  parent.addChild(this._impliedPara);
+               }
+            }
+         }
+         if(throwOnError)
+         {
+            parent.addChild(child);
+         }
+         try
+         {
+            parent.addChild(child);
+         }
+         catch(e:*)
+         {
+            reportError(e);
+            return false;
+         }
+         return true;
+      }
+
+      tlf_internal function resetImpliedPara() : void {
+         if(this._impliedPara)
+         {
+            this.onResetImpliedPara(this._impliedPara);
+            this._impliedPara=null;
+         }
+      }
+
+      protected function onResetImpliedPara(para:ParagraphElement) : void {
+         
+      }
+   }
+
 }

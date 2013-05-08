@@ -1,58 +1,56 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flashx.textLayout.compose.*;
+   import flashx.textLayout.compose.IFlowComposer;
+   import flashx.textLayout.tlf_internal;
 
-    public class ContainerFormattedElement extends ParagraphFormattedElement
-    {
+   use namespace tlf_internal;
 
-        public function ContainerFormattedElement()
-        {
-            return;
-        }// end function
+   public class ContainerFormattedElement extends ParagraphFormattedElement
+   {
+         
 
-        public function get flowComposer() : IFlowComposer
-        {
-            return null;
-        }// end function
+      public function ContainerFormattedElement() {
+         super();
+      }
 
-        override function formatChanged(param1:Boolean = true) : void
-        {
-            var _loc_2:* = 0;
-            super.formatChanged(param1);
-            if (this.flowComposer)
+
+
+      public function get flowComposer() : IFlowComposer {
+         return null;
+      }
+
+      override tlf_internal function formatChanged(notifyModelChanged:Boolean=true) : void {
+         var idx:* = 0;
+         super.formatChanged(notifyModelChanged);
+         if(this.flowComposer)
+         {
+            idx=0;
+            while(idx<this.flowComposer.numControllers)
             {
-                _loc_2 = 0;
-                while (_loc_2 < this.flowComposer.numControllers)
-                {
-                    
-                    this.flowComposer.getControllerAt(_loc_2).formatChanged();
-                    _loc_2++;
-                }
+               this.flowComposer.getControllerAt(idx).formatChanged();
+               idx++;
             }
-            return;
-        }// end function
+         }
+      }
 
-        function preCompose() : void
-        {
-            return;
-        }// end function
+      tlf_internal function preCompose() : void {
+         
+      }
 
-        override function normalizeRange(param1:uint, param2:uint) : void
-        {
-            var _loc_3:* = null;
-            super.normalizeRange(param1, param2);
-            if (this.numChildren == 0)
+      override tlf_internal function normalizeRange(normalizeStart:uint, normalizeEnd:uint) : void {
+         var p:ParagraphElement = null;
+         super.normalizeRange(normalizeStart,normalizeEnd);
+         if(this.numChildren==0)
+         {
+            p=new ParagraphElement();
+            if(this.canOwnFlowElement(p))
             {
-                _loc_3 = new ParagraphElement();
-                if (this.canOwnFlowElement(_loc_3))
-                {
-                    _loc_3.replaceChildren(0, 0, new SpanElement());
-                    replaceChildren(0, 0, _loc_3);
-                    _loc_3.normalizeRange(0, _loc_3.textLength);
-                }
+               p.replaceChildren(0,0,new SpanElement());
+               replaceChildren(0,0,p);
+               p.normalizeRange(0,p.textLength);
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

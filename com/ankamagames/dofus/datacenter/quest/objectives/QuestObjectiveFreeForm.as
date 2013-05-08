@@ -1,40 +1,41 @@
-﻿package com.ankamagames.dofus.datacenter.quest.objectives
+package com.ankamagames.dofus.datacenter.quest.objectives
 {
-    import com.ankamagames.dofus.datacenter.quest.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.dofus.datacenter.quest.QuestObjective;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class QuestObjectiveFreeForm extends QuestObjective implements IDataCenter
-    {
-        private var _freeFormText:String;
 
-        public function QuestObjectiveFreeForm()
-        {
-            return;
-        }// end function
+   public class QuestObjectiveFreeForm extends QuestObjective implements IDataCenter
+   {
+         
 
-        public function get freeFormTextId() : uint
-        {
-            if (!this.parameters)
-            {
-                return 0;
-            }
-            return this.parameters[0];
-        }// end function
+      public function QuestObjectiveFreeForm() {
+         super();
+      }
 
-        public function get freeFormText() : String
-        {
-            if (!this._freeFormText)
-            {
-                this._freeFormText = I18n.getText(this.freeFormTextId);
-            }
-            return this._freeFormText;
-        }// end function
 
-        override public function get text() : String
-        {
-            return this.freeFormText;
-        }// end function
 
-    }
+      private var _freeFormText:String;
+
+      public function get freeFormTextId() : uint {
+         if(!this.parameters)
+         {
+            return 0;
+         }
+         return this.parameters[0];
+      }
+
+      public function get freeFormText() : String {
+         if(!this._freeFormText)
+         {
+            this._freeFormText=I18n.getText(this.freeFormTextId);
+         }
+         return this._freeFormText;
+      }
+
+      override public function get text() : String {
+         return this.freeFormText;
+      }
+   }
+
 }

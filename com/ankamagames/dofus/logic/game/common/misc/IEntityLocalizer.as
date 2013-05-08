@@ -1,15 +1,17 @@
-﻿package com.ankamagames.dofus.logic.game.common.misc
+package com.ankamagames.dofus.logic.game.common.misc
 {
-    import com.ankamagames.jerakine.entities.interfaces.*;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
 
-    public interface IEntityLocalizer
-    {
 
-        public function IEntityLocalizer();
+   public interface IEntityLocalizer
+   {
+         
 
-        function getEntity(param1:int) : IEntity;
 
-        function unregistered() : void;
 
-    }
+      function getEntity(param1:int) : IEntity;
+
+      function unregistered() : void;
+   }
+
 }

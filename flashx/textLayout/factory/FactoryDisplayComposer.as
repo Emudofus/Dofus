@@ -1,68 +1,68 @@
-﻿package flashx.textLayout.factory
+package flashx.textLayout.factory
 {
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.elements.*;
+   import flashx.textLayout.compose.StandardFlowComposer;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.compose.SimpleCompose;
+   import flashx.textLayout.elements.BackgroundManager;
 
-    public class FactoryDisplayComposer extends StandardFlowComposer
-    {
+   use namespace tlf_internal;
 
-        public function FactoryDisplayComposer()
-        {
-            return;
-        }// end function
+   public class FactoryDisplayComposer extends StandardFlowComposer
+   {
+         
 
-        override function callTheComposer(param1:int, param2:int) : ContainerController
-        {
-            clearCompositionResults();
-            var _loc_3:* = TextLineFactoryBase._factoryComposer;
-            _loc_3.composeTextFlow(textFlow, -1, -1);
-            _loc_3.releaseAnyReferences();
-            return getControllerAt(0);
-        }// end function
+      public function FactoryDisplayComposer() {
+         super();
+      }
 
-        override protected function preCompose() : Boolean
-        {
-            return true;
-        }// end function
 
-        override function createBackgroundManager() : BackgroundManager
-        {
-            return new FactoryBackgroundManager();
-        }// end function
 
-    }
+      override tlf_internal function callTheComposer(absoluteEndPosition:int, controllerEndIndex:int) : ContainerController {
+         clearCompositionResults();
+         var state:SimpleCompose = TextLineFactoryBase._factoryComposer;
+         state.composeTextFlow(textFlow,-1,-1);
+         state.releaseAnyReferences();
+         return getControllerAt(0);
+      }
+
+      override protected function preCompose() : Boolean {
+         return true;
+      }
+
+      override tlf_internal function createBackgroundManager() : BackgroundManager {
+         return new FactoryBackgroundManager();
+      }
+   }
+
 }
 
-import flashx.textLayout.compose.*;
+   import flashx.textLayout.elements.BackgroundManager;
+   import flashx.textLayout.compose.TextFlowLine;
+   import flash.text.engine.TextLine;
 
-import flashx.textLayout.container.*;
 
-import flashx.textLayout.elements.*;
+   class FactoryBackgroundManager extends BackgroundManager
+   {
+         
 
-class FactoryBackgroundManager extends BackgroundManager
-{
+      function FactoryBackgroundManager() {
+         super();
+      }
 
-    function FactoryBackgroundManager()
-    {
-        return;
-    }// end function
 
-    override public function finalizeLine(param1:TextFlowLine) : void
-    {
-        var _loc_4:* = null;
-        var _loc_2:* = param1.getTextLine();
-        var _loc_3:* = _lineDict[_loc_2];
-        if (_loc_3)
-        {
-            _loc_4 = _loc_3[0];
-            if (_loc_4)
+
+      override public function finalizeLine(line:TextFlowLine) : void {
+         var obj:Object = null;
+         var textLine:TextLine = line.getTextLine();
+         var array:Array = _lineDict[textLine];
+         if(array)
+         {
+            obj=array[0];
+            if(obj)
             {
-                _loc_4.columnRect = param1.controller.columnState.getColumnAt(param1.columnIndex);
+               obj.columnRect=line.controller.columnState.getColumnAt(line.columnIndex);
             }
-        }
-        return;
-    }// end function
-
-}
-
+         }
+      }
+   }

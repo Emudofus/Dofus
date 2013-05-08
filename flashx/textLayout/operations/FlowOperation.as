@@ -1,94 +1,88 @@
-﻿package flashx.textLayout.operations
+package flashx.textLayout.operations
 {
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
-    import flashx.undo.*;
+   import flashx.undo.IOperation;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.edit.SelectionState;
+   import flashx.textLayout.edit.IEditManager;
+   import flashx.textLayout.tlf_internal;
 
-    public class FlowOperation extends Object implements IOperation
-    {
-        public var userData:Object;
-        private var _beginGeneration:uint;
-        private var _endGeneration:uint;
-        private var _textFlow:TextFlow;
+   use namespace tlf_internal;
 
-        public function FlowOperation(param1:TextFlow)
-        {
-            this._textFlow = param1;
-            return;
-        }// end function
+   public class FlowOperation extends Object implements IOperation
+   {
+         
 
-        public function get textFlow() : TextFlow
-        {
-            return this._textFlow;
-        }// end function
+      public function FlowOperation(textFlow:TextFlow) {
+         super();
+         this._textFlow=textFlow;
+      }
 
-        public function set textFlow(param1:TextFlow) : void
-        {
-            this._textFlow = param1;
-            return;
-        }// end function
 
-        public function doOperation() : Boolean
-        {
-            return false;
-        }// end function
 
-        public function undo() : SelectionState
-        {
-            return null;
-        }// end function
+      public var userData;
 
-        public function canUndo() : Boolean
-        {
-            return true;
-        }// end function
+      private var _beginGeneration:uint;
 
-        public function redo() : SelectionState
-        {
-            return null;
-        }// end function
+      private var _endGeneration:uint;
 
-        public function get beginGeneration() : uint
-        {
-            return this._beginGeneration;
-        }// end function
+      private var _textFlow:TextFlow;
 
-        public function get endGeneration() : uint
-        {
-            return this._endGeneration;
-        }// end function
+      public function get textFlow() : TextFlow {
+         return this._textFlow;
+      }
 
-        public function performUndo() : void
-        {
-            var _loc_1:* = this.textFlow ? (this.textFlow.interactionManager as IEditManager) : (null);
-            if (_loc_1 != null)
-            {
-                _loc_1.performUndo(this);
-            }
-            return;
-        }// end function
+      public function set textFlow(value:TextFlow) : void {
+         this._textFlow=value;
+      }
 
-        public function performRedo() : void
-        {
-            var _loc_1:* = this.textFlow ? (this.textFlow.interactionManager as IEditManager) : (null);
-            if (_loc_1 != null)
-            {
-                _loc_1.performRedo(this);
-            }
-            return;
-        }// end function
+      public function doOperation() : Boolean {
+         return false;
+      }
 
-        function setGenerations(param1:uint, param2:uint) : void
-        {
-            this._beginGeneration = param1;
-            this._endGeneration = param2;
-            return;
-        }// end function
+      public function undo() : SelectionState {
+         return null;
+      }
 
-        function merge(param1:FlowOperation) : FlowOperation
-        {
-            return null;
-        }// end function
+      public function canUndo() : Boolean {
+         return true;
+      }
 
-    }
+      public function redo() : SelectionState {
+         return null;
+      }
+
+      public function get beginGeneration() : uint {
+         return this._beginGeneration;
+      }
+
+      public function get endGeneration() : uint {
+         return this._endGeneration;
+      }
+
+      public function performUndo() : void {
+         var editManager:IEditManager = this.textFlow?this.textFlow.interactionManager as IEditManager:null;
+         if(editManager!=null)
+         {
+            editManager.performUndo(this);
+         }
+      }
+
+      public function performRedo() : void {
+         var editManager:IEditManager = this.textFlow?this.textFlow.interactionManager as IEditManager:null;
+         if(editManager!=null)
+         {
+            editManager.performRedo(this);
+         }
+      }
+
+      tlf_internal function setGenerations(beginGeneration:uint, endGeneration:uint) : void {
+         this._beginGeneration=beginGeneration;
+         this._endGeneration=endGeneration;
+      }
+
+      tlf_internal function merge(operation:FlowOperation) : FlowOperation {
+         return null;
+      }
+   }
+
 }

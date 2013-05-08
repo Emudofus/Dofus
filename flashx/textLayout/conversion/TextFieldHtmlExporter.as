@@ -1,493 +1,470 @@
-﻿package flashx.textLayout.conversion
+package flashx.textLayout.conversion
 {
-    import flash.text.engine.*;
-    import flash.utils.*;
-    import flashx.textLayout.conversion.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.FlowElement;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.elements.FlowGroupElement;
+   import flashx.textLayout.elements.ListElement;
+   import flashx.textLayout.elements.ListItemElement;
+   import flashx.textLayout.elements.DivElement;
+   import flashx.textLayout.elements.ParagraphElement;
+   import flashx.textLayout.elements.LinkElement;
+   import flashx.textLayout.elements.TCYElement;
+   import flashx.textLayout.elements.SubParagraphGroupElement;
+   import flashx.textLayout.elements.SubParagraphGroupElementBase;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.elements.SpanElement;
+   import flashx.textLayout.elements.InlineGraphicElement;
+   import flashx.textLayout.formats.FormatValue;
+   import flashx.textLayout.formats.Float;
+   import flashx.textLayout.elements.BreakElement;
+   import flashx.textLayout.elements.TabElement;
+   import flashx.textLayout.elements.FlowLeafElement;
+   import flashx.textLayout.formats.TabStopFormat;
+   import flashx.textLayout.formats.Direction;
+   import flashx.textLayout.formats.TextAlign;
+   import flashx.textLayout.formats.LeadingModel;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flash.text.engine.TabAlignment;
+   import flashx.textLayout.formats.TextDecoration;
+   import flash.text.engine.FontPosture;
+   import flash.text.engine.FontWeight;
+   import flash.text.engine.Kerning;
+   import flash.utils.getQualifiedClassName;
 
-    public class TextFieldHtmlExporter extends ConverterBase implements ITextExporter
-    {
-        static var _config:ImportExportConfiguration;
-        static const brRegEx:RegExp = / "" /;
+   use namespace tlf_internal;
 
-        public function TextFieldHtmlExporter()
-        {
-            if (!_config)
+   public class TextFieldHtmlExporter extends ConverterBase implements ITextExporter
+   {
+         
+
+      public function TextFieldHtmlExporter() {
+         super();
+         if(!_config)
+         {
+            _config=new ImportExportConfiguration();
+            _config.addIEInfo(null,DivElement,null,this.exportDiv);
+            _config.addIEInfo(null,ParagraphElement,null,this.exportParagraph);
+            _config.addIEInfo(null,LinkElement,null,this.exportLink);
+            _config.addIEInfo(null,TCYElement,null,this.exportTCY);
+            _config.addIEInfo(null,SubParagraphGroupElement,null,this.exportSPGE);
+            _config.addIEInfo(null,SpanElement,null,this.exportSpan);
+            _config.addIEInfo(null,InlineGraphicElement,null,this.exportImage);
+            _config.addIEInfo(null,TabElement,null,this.exportTab);
+            _config.addIEInfo(null,BreakElement,null,this.exportBreak);
+            _config.addIEInfo(null,ListElement,null,this.exportList);
+            _config.addIEInfo(null,ListItemElement,null,this.exportListItem);
+         }
+      }
+
+      tlf_internal  static var _config:ImportExportConfiguration;
+
+      tlf_internal  static function makeTaggedTypeName(elem:FlowElement, defaultTag:String) : XML {
+         if(elem.typeName==elem.defaultTypeName)
+         {
+            return new XML("<"+defaultTag+"/>");
+         }
+         return new XML("<"+elem.typeName.toUpperCase()+"/>");
+      }
+
+      tlf_internal  static function exportStyling(elem:FlowElement, xml:XML) : void {
+         if(elem.id!=null)
+         {
+            xml["id"]=elem.id;
+         }
+         if(elem.styleName!=null)
+         {
+            xml["class"]=elem.styleName;
+         }
+      }
+
+      tlf_internal  static const brRegEx:RegExp = new RegExp("?");
+
+      tlf_internal  static function getSpanTextReplacementXML(ch:String) : XML {
+         return <BR/>;
+      }
+
+      tlf_internal  static function nest(parent:XML, children:Object) : XML {
+         parent.setChildren(children);
+         return parent;
+      }
+
+      public function export(source:TextFlow, conversionType:String) : Object {
+         var result:XML = this.exportToXML(source);
+         return conversionType==ConversionType.STRING_TYPE?BaseTextLayoutExporter.convertXMLToString(result):result;
+      }
+
+      tlf_internal function exportToXML(textFlow:TextFlow) : XML {
+         var body:XML = null;
+         var html:XML = <HTML/>;
+         if(textFlow.numChildren!=0)
+         {
+            if(textFlow.getChildAt(0).typeName!="BODY")
             {
-                _config = new ImportExportConfiguration();
-                _config.addIEInfo(null, DivElement, null, this.exportDiv);
-                _config.addIEInfo(null, ParagraphElement, null, this.exportParagraph);
-                _config.addIEInfo(null, LinkElement, null, this.exportLink);
-                _config.addIEInfo(null, TCYElement, null, this.exportTCY);
-                _config.addIEInfo(null, SubParagraphGroupElement, null, this.exportSPGE);
-                _config.addIEInfo(null, SpanElement, null, this.exportSpan);
-                _config.addIEInfo(null, InlineGraphicElement, null, this.exportImage);
-                _config.addIEInfo(null, TabElement, null, this.exportTab);
-                _config.addIEInfo(null, BreakElement, null, this.exportBreak);
-                _config.addIEInfo(null, ListElement, null, this.exportList);
-                _config.addIEInfo(null, ListItemElement, null, this.exportListItem);
-            }
-            return;
-        }// end function
-
-        public function export(param1:TextFlow, param2:String) : Object
-        {
-            var _loc_3:* = this.exportToXML(param1);
-            return param2 == ConversionType.STRING_TYPE ? (BaseTextLayoutExporter.convertXMLToString(_loc_3)) : (_loc_3);
-        }// end function
-
-        function exportToXML(param1:TextFlow) : XML
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = <HTML/>")("<HTML/>;
-            if (param1.numChildren != 0)
-            {
-                if (param1.getChildAt(0).typeName != "BODY")
-                {
-                    _loc_3 = <BODY/>")("<BODY/>;
-                    _loc_2.appendChild(_loc_3);
-                    this.exportChildren(param1, _loc_3);
-                }
-                else
-                {
-                    this.exportChildren(param1, _loc_2);
-                }
-            }
-            return _loc_2;
-        }// end function
-
-        function exportChildren(param1:FlowGroupElement, param2:XML) : void
-        {
-            var _loc_4:* = null;
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.numChildren)
-            {
-                
-                _loc_4 = param1.getChildAt(_loc_3);
-                this.exportElement(_loc_4, param2);
-                _loc_3++;
-            }
-            return;
-        }// end function
-
-        function exportList(param1:ListElement, param2:XML) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (param1.isNumberedList())
-            {
-                _loc_3 = <OL/>")("<OL/>;
+               body=<BODY/>;
+               html.appendChild(body);
+               this.exportChildren(textFlow,body);
             }
             else
             {
-                _loc_3 = <UL/>")("<UL/>;
+               this.exportChildren(textFlow,html);
             }
-            exportStyling(param1, _loc_3);
-            this.exportChildren(param1, _loc_3);
-            if (param1.typeName != param1.defaultTypeName)
-            {
-                _loc_4 = new XML("<" + param1.typeName + "/>");
-                _loc_4.appendChild(_loc_3);
-                param2.appendChild(_loc_4);
-            }
-            else
-            {
-                param2.appendChild(_loc_3);
-            }
-            return;
-        }// end function
+         }
+         return html;
+      }
 
-        function exportListItem(param1:ListItemElement, param2:XML) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_3:* = <LI/>")("<LI/>;
-            exportStyling(param1, _loc_3);
-            this.exportChildren(param1, _loc_3);
-            var _loc_4:* = _loc_3.children();
-            if (_loc_3.children().length() == 1)
-            {
-                _loc_5 = _loc_4[0];
-                if (_loc_5.name().localName == "P")
-                {
-                    _loc_6 = _loc_5.children();
-                    if (_loc_6.length() == 1)
-                    {
-                        _loc_3 = <LI/>")("<LI/>;
-                        _loc_3.appendChild(_loc_6[0]);
-                    }
-                }
-            }
-            param2.appendChild(_loc_3);
-            return;
-        }// end function
+      tlf_internal function exportChildren(elem:FlowGroupElement, parentXML:XML) : void {
+         var child:FlowElement = null;
+         var idx:int = 0;
+         while(idx<elem.numChildren)
+         {
+            child=elem.getChildAt(idx);
+            this.exportElement(child,parentXML);
+            idx++;
+         }
+      }
 
-        function exportDiv(param1:DivElement, param2:XML) : void
-        {
-            var _loc_3:* = makeTaggedTypeName(param1, "DIV");
-            exportStyling(param1, _loc_3);
-            this.exportChildren(param1, _loc_3);
-            param2.appendChild(_loc_3);
-            return;
-        }// end function
+      tlf_internal function exportList(list:ListElement, parentXML:XML) : void {
+         var xml:XML = null;
+         var typeNameXML:XML = null;
+         if(list.isNumberedList())
+         {
+            xml=<OL/>;
+         }
+         else
+         {
+            xml=<UL/>;
+         }
+         exportStyling(list,xml);
+         this.exportChildren(list,xml);
+         if(list.typeName!=list.defaultTypeName)
+         {
+            typeNameXML=new XML("<"+list.typeName+"/>");
+            typeNameXML.appendChild(xml);
+            parentXML.appendChild(typeNameXML);
+         }
+         else
+         {
+            parentXML.appendChild(xml);
+         }
+      }
 
-        function exportParagraph(param1:ParagraphElement, param2:XML) : void
-        {
-            var _loc_3:* = makeTaggedTypeName(param1, "P");
-            exportStyling(param1, _loc_3);
-            var _loc_4:* = this.exportFont(param1.computedFormat);
-            this.exportSubParagraphChildren(param1, _loc_4);
-            nest(_loc_3, _loc_4);
-            param2.appendChild(this.exportParagraphFormat(_loc_3, param1));
-            return;
-        }// end function
+      tlf_internal function exportListItem(li:ListItemElement, parentXML:XML) : void {
+         var child:XML = null;
+         var paraChildren:XMLList = null;
+         var xml:XML = <LI/>;
+         exportStyling(li,xml);
+         this.exportChildren(li,xml);
+         var children:XMLList = xml.children();
+         if(children.length()==1)
+         {
+            child=children[0];
+            if(child.name().localName=="P")
+            {
+               paraChildren=child.children();
+               if(paraChildren.length()==1)
+               {
+                  xml=<LI/>;
+                  xml.appendChild(paraChildren[0]);
+               }
+            }
+         }
+         parentXML.appendChild(xml);
+      }
 
-        function exportLink(param1:LinkElement, param2:XML) : void
-        {
-            var _loc_3:* = <A/>")("<A/>;
-            if (param1.href)
-            {
-                _loc_3.@HREF = param1.href;
-            }
-            if (param1.target)
-            {
-                _loc_3.@TARGET = param1.target;
-            }
-            else
-            {
-                _loc_3.@TARGET = "_blank";
-            }
-            this.exportSubParagraphElement(param1, _loc_3, param2);
-            return;
-        }// end function
+      tlf_internal function exportDiv(div:DivElement, parentXML:XML) : void {
+         var xml:XML = makeTaggedTypeName(div,"DIV");
+         exportStyling(div,xml);
+         this.exportChildren(div,xml);
+         parentXML.appendChild(xml);
+      }
 
-        function exportTCY(param1:TCYElement, param2:XML) : void
-        {
-            var _loc_3:* = <TCY/>")("<TCY/>;
-            this.exportSubParagraphElement(param1, _loc_3, param2);
-            return;
-        }// end function
+      tlf_internal function exportParagraph(para:ParagraphElement, parentXML:XML) : void {
+         var xml:XML = makeTaggedTypeName(para,"P");
+         exportStyling(para,xml);
+         var fontXML:XML = this.exportFont(para.computedFormat);
+         this.exportSubParagraphChildren(para,fontXML);
+         nest(xml,fontXML);
+         parentXML.appendChild(this.exportParagraphFormat(xml,para));
+      }
 
-        function exportSPGE(param1:SubParagraphGroupElement, param2:XML) : void
-        {
-            var _loc_3:* = param1.typeName != param1.defaultTypeName ? (new XML("<" + param1.typeName + "/>")) : (<SPAN/>")("<SPAN/>);
-            this.exportSubParagraphElement(param1, _loc_3, param2, false);
-            return;
-        }// end function
+      tlf_internal function exportLink(link:LinkElement, parentXML:XML) : void {
+         var xml:XML = <A/>;
+         if(link.href)
+         {
+            xml.@HREF=link.href;
+         }
+         if(link.target)
+         {
+            xml.@TARGET=link.target;
+         }
+         else
+         {
+            xml.@TARGET="_blank";
+         }
+         this.exportSubParagraphElement(link,xml,parentXML);
+      }
 
-        function exportSubParagraphElement(param1:SubParagraphGroupElementBase, param2:XML, param3:XML, param4:Boolean = true) : void
-        {
-            var _loc_9:* = null;
-            exportStyling(param1, param2);
-            this.exportSubParagraphChildren(param1, param2);
-            var _loc_5:* = param1.computedFormat;
-            var _loc_6:* = param1.parent.computedFormat;
-            var _loc_7:* = this.exportFont(_loc_5, _loc_6);
-            var _loc_8:* = this.exportFont(_loc_5, _loc_6) ? (nest(_loc_7, param2)) : (param2);
-            if (param4 && param1.typeName != param1.defaultTypeName)
-            {
-                _loc_9 = new XML("<" + param1.typeName + "/>");
-                _loc_9.appendChild(_loc_8);
-                param3.appendChild(_loc_9);
-            }
-            else
-            {
-                param3.appendChild(_loc_8);
-            }
-            return;
-        }// end function
+      tlf_internal function exportTCY(tcy:TCYElement, parentXML:XML) : void {
+         var xml:XML = <TCY/>;
+         this.exportSubParagraphElement(tcy,xml,parentXML);
+      }
 
-        function exportSpan(param1:SpanElement, param2:XML) : void
-        {
-            var _loc_4:* = null;
-            var _loc_3:* = makeTaggedTypeName(param1, "SPAN");
-            exportStyling(param1, _loc_3);
-            BaseTextLayoutExporter.exportSpanText(_loc_3, param1, brRegEx, getSpanTextReplacementXML);
-            if (param1.id == null && param1.styleName == null && param1.typeName == param1.defaultTypeName)
-            {
-                _loc_4 = _loc_3.children();
-                if (_loc_4.length() == 1 && _loc_4[0].nodeKind() == "text")
-                {
-                    _loc_4 = _loc_3.text()[0];
-                }
-                param2.appendChild(this.exportSpanFormat(_loc_4, param1));
-            }
-            else
-            {
-                param2.appendChild(this.exportSpanFormat(_loc_3, param1));
-            }
-            return;
-        }// end function
+      tlf_internal function exportSPGE(spge:SubParagraphGroupElement, parentXML:XML) : void {
+         var xml:XML = !(spge.typeName==spge.defaultTypeName)?new XML("<"+spge.typeName+"/>"):<SPAN/>;
+         this.exportSubParagraphElement(spge,xml,parentXML,false);
+      }
 
-        function exportImage(param1:InlineGraphicElement, param2:XML) : void
-        {
-            var _loc_4:* = null;
-            var _loc_3:* = <IMG/>")("<IMG/>;
-            exportStyling(param1, _loc_3);
-            if (param1.source)
-            {
-                _loc_3.@SRC = param1.source;
-            }
-            if (param1.width !== undefined && param1.width != FormatValue.AUTO)
-            {
-                _loc_3.@WIDTH = param1.width;
-            }
-            if (param1.height !== undefined && param1.height != FormatValue.AUTO)
-            {
-                _loc_3.@HEIGHT = param1.height;
-            }
-            if (param1.computedFloat != Float.NONE)
-            {
-                _loc_3.@ALIGN = param1.float;
-            }
-            if (param1.typeName != param1.defaultTypeName)
-            {
-                _loc_4 = new XML("<" + param1.typeName + "/>");
-                _loc_4.appendChild(_loc_3);
-                param2.appendChild(_loc_4);
-            }
-            else
-            {
-                param2.appendChild(_loc_3);
-            }
-            return;
-        }// end function
+      tlf_internal function exportSubParagraphElement(elem:SubParagraphGroupElementBase, xml:XML, parentXML:XML, checkTypeName:Boolean=true) : void {
+         var typeNameXML:XML = null;
+         exportStyling(elem,xml);
+         this.exportSubParagraphChildren(elem,xml);
+         var format:ITextLayoutFormat = elem.computedFormat;
+         var ifDifferentFromFormat:ITextLayoutFormat = elem.parent.computedFormat;
+         var font:XML = this.exportFont(format,ifDifferentFromFormat);
+         var childXML:XML = font?nest(font,xml):xml;
+         if((checkTypeName)&&(!(elem.typeName==elem.defaultTypeName)))
+         {
+            typeNameXML=new XML("<"+elem.typeName+"/>");
+            typeNameXML.appendChild(childXML);
+            parentXML.appendChild(typeNameXML);
+         }
+         else
+         {
+            parentXML.appendChild(childXML);
+         }
+      }
 
-        function exportBreak(param1:BreakElement, param2:XML) : void
-        {
-            param2.appendChild(<BR/>")("<BR/>);
-            return;
-        }// end function
+      tlf_internal function exportSpan(span:SpanElement, parentXML:XML) : void {
+         var children:Object = null;
+         var xml:XML = makeTaggedTypeName(span,"SPAN");
+         exportStyling(span,xml);
+         BaseTextLayoutExporter.exportSpanText(xml,span,brRegEx,getSpanTextReplacementXML);
+         if((span.id==null)&&(span.styleName==null)&&(span.typeName==span.defaultTypeName))
+         {
+            children=xml.children();
+            if((children.length()==1)&&(children[0].nodeKind()=="text"))
+            {
+               children=xml.text()[0];
+            }
+            parentXML.appendChild(this.exportSpanFormat(children,span));
+         }
+         else
+         {
+            parentXML.appendChild(this.exportSpanFormat(xml,span));
+         }
+      }
 
-        function exportTab(param1:TabElement, param2:XML) : void
-        {
-            this.exportSpan(param1, param2);
-            return;
-        }// end function
+      tlf_internal function exportImage(image:InlineGraphicElement, parentXML:XML) : void {
+         var typeNameXML:XML = null;
+         var xml:XML = <IMG/>;
+         exportStyling(image,xml);
+         if(image.source)
+         {
+            xml.@SRC=image.source;
+         }
+         if((!(image.width===undefined))&&(!(image.width==FormatValue.AUTO)))
+         {
+            xml.@WIDTH=image.width;
+         }
+         if((!(image.height===undefined))&&(!(image.height==FormatValue.AUTO)))
+         {
+            xml.@HEIGHT=image.height;
+         }
+         if(image.computedFloat!=Float.NONE)
+         {
+            xml.@ALIGN=image.float;
+         }
+         if(image.typeName!=image.defaultTypeName)
+         {
+            typeNameXML=new XML("<"+image.typeName+"/>");
+            typeNameXML.appendChild(xml);
+            parentXML.appendChild(typeNameXML);
+         }
+         else
+         {
+            parentXML.appendChild(xml);
+         }
+      }
 
-        function exportTextFormatAttribute(param1:XML, param2:String, param3) : XML
-        {
-            if (!param1)
-            {
-                param1 = <TEXTFORMAT/>")("<TEXTFORMAT/>;
-            }
-            param1[param2] = param3;
-            return param1;
-        }// end function
+      tlf_internal function exportBreak(breakElement:BreakElement, parentXML:XML) : void {
+         parentXML.appendChild(<BR/>);
+      }
 
-        function exportParagraphFormat(param1:XML, param2:ParagraphElement) : XML
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = NaN;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_3:* = param2.computedFormat;
-            switch(_loc_3.textAlign)
-            {
-                case TextAlign.START:
-                {
-                    _loc_4 = _loc_3.direction == Direction.LTR ? (TextAlign.LEFT) : (TextAlign.RIGHT);
-                    break;
-                }
-                case TextAlign.END:
-                {
-                    _loc_4 = _loc_3.direction == Direction.LTR ? (TextAlign.RIGHT) : (TextAlign.LEFT);
-                    break;
-                }
-                default:
-                {
-                    _loc_4 = _loc_3.textAlign;
-                    break;
-                }
-            }
-            param1.@ALIGN = _loc_4;
-            if (_loc_3.paragraphStartIndent != 0)
-            {
-                _loc_5 = this.exportTextFormatAttribute(_loc_5, _loc_3.direction == Direction.LTR ? ("LEFTMARGIN") : ("RIGHTMARGIN"), _loc_3.paragraphStartIndent);
-            }
-            if (_loc_3.paragraphEndIndent != 0)
-            {
-                _loc_5 = this.exportTextFormatAttribute(_loc_5, _loc_3.direction == Direction.LTR ? ("RIGHTMARGIN") : ("LEFTMARGIN"), _loc_3.paragraphEndIndent);
-            }
-            if (_loc_3.textIndent != 0)
-            {
-                _loc_5 = this.exportTextFormatAttribute(_loc_5, "INDENT", _loc_3.textIndent);
-            }
-            if (_loc_3.leadingModel == LeadingModel.APPROXIMATE_TEXT_FIELD)
-            {
-                _loc_7 = param2.getFirstLeaf();
-                if (_loc_7)
-                {
-                    _loc_8 = TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(_loc_7.computedFormat.lineHeight, _loc_7.getEffectiveFontSize());
-                    if (_loc_8 != 0)
-                    {
-                        _loc_5 = this.exportTextFormatAttribute(_loc_5, "LEADING", _loc_8);
-                    }
-                }
-            }
-            var _loc_6:* = _loc_3.tabStops;
-            if (_loc_3.tabStops)
-            {
-                _loc_9 = "";
-                for each (_loc_10 in _loc_6)
-                {
-                    
-                    if (_loc_10.alignment != TabAlignment.START)
-                    {
-                        break;
-                    }
-                    if (_loc_9.length)
-                    {
-                        _loc_9 = _loc_9 + ", ";
-                    }
-                    _loc_9 = _loc_9 + _loc_10.position;
-                }
-                if (_loc_9.length)
-                {
-                    _loc_5 = this.exportTextFormatAttribute(_loc_5, "TABSTOPS", _loc_9);
-                }
-            }
-            return _loc_5 ? (nest(_loc_5, param1)) : (param1);
-        }// end function
+      tlf_internal function exportTab(tabElement:TabElement, parentXML:XML) : void {
+         this.exportSpan(tabElement,parentXML);
+      }
 
-        function exportSpanFormat(param1:Object, param2:SpanElement) : Object
-        {
-            var _loc_3:* = param2.computedFormat;
-            var _loc_4:* = param1;
-            if (_loc_3.textDecoration.toString() == TextDecoration.UNDERLINE)
-            {
-                _loc_4 = nest(<U/>")("<U/>, _loc_4);
-            }
-            if (_loc_3.fontStyle.toString() == FontPosture.ITALIC)
-            {
-                _loc_4 = nest(<I/>")("<I/>, _loc_4);
-            }
-            if (_loc_3.fontWeight.toString() == FontWeight.BOLD)
-            {
-                _loc_4 = nest(<B/>")("<B/>, _loc_4);
-            }
-            var _loc_5:* = param2.getParentByType(LinkElement);
-            if (!param2.getParentByType(LinkElement))
-            {
-                _loc_5 = param2.getParagraph();
-            }
-            var _loc_6:* = this.exportFont(_loc_3, _loc_5.computedFormat);
-            if (this.exportFont(_loc_3, _loc_5.computedFormat))
-            {
-                _loc_4 = nest(_loc_6, _loc_4);
-            }
-            return _loc_4;
-        }// end function
+      tlf_internal function exportTextFormatAttribute(textFormatXML:XML, attrName:String, attrVal:*) : XML {
+         if(!textFormatXML)
+         {
+            textFormatXML=<TEXTFORMAT/>;
+         }
+         textFormatXML[attrName]=attrVal;
+         return textFormatXML;
+      }
 
-        function exportFontAttribute(param1:XML, param2:String, param3) : XML
-        {
-            if (!param1)
+      tlf_internal function exportParagraphFormat(xml:XML, para:ParagraphElement) : XML {
+         var textAlignment:String = null;
+         var textFormat:XML = null;
+         var firstLeaf:FlowLeafElement = null;
+         var lineHeight:* = NaN;
+         var tabStopsString:String = null;
+         var tabStop:TabStopFormat = null;
+         var paraFormat:ITextLayoutFormat = para.computedFormat;
+         switch(paraFormat.textAlign)
+         {
+            case TextAlign.START:
+               textAlignment=paraFormat.direction==Direction.LTR?TextAlign.LEFT:TextAlign.RIGHT;
+               break;
+            case TextAlign.END:
+               textAlignment=paraFormat.direction==Direction.LTR?TextAlign.RIGHT:TextAlign.LEFT;
+               break;
+            default:
+               textAlignment=paraFormat.textAlign;
+         }
+         xml.@ALIGN=textAlignment;
+         if(paraFormat.paragraphStartIndent!=0)
+         {
+            textFormat=this.exportTextFormatAttribute(textFormat,paraFormat.direction==Direction.LTR?"LEFTMARGIN":"RIGHTMARGIN",paraFormat.paragraphStartIndent);
+         }
+         if(paraFormat.paragraphEndIndent!=0)
+         {
+            textFormat=this.exportTextFormatAttribute(textFormat,paraFormat.direction==Direction.LTR?"RIGHTMARGIN":"LEFTMARGIN",paraFormat.paragraphEndIndent);
+         }
+         if(paraFormat.textIndent!=0)
+         {
+            textFormat=this.exportTextFormatAttribute(textFormat,"INDENT",paraFormat.textIndent);
+         }
+         if(paraFormat.leadingModel==LeadingModel.APPROXIMATE_TEXT_FIELD)
+         {
+            firstLeaf=para.getFirstLeaf();
+            if(firstLeaf)
             {
-                param1 = <FONT/>")("<FONT/>;
+               lineHeight=TextLayoutFormat.lineHeightProperty.computeActualPropertyValue(firstLeaf.computedFormat.lineHeight,firstLeaf.getEffectiveFontSize());
+               if(lineHeight!=0)
+               {
+                  textFormat=this.exportTextFormatAttribute(textFormat,"LEADING",lineHeight);
+               }
             }
-            param1[param2] = param3;
-            return param1;
-        }// end function
+         }
+         var tabStops:Array = paraFormat.tabStops;
+         if(tabStops)
+         {
+            tabStopsString="";
+            for each (tabStop in tabStops)
+            {
+               if(tabStop.alignment!=TabAlignment.START)
+               {
+                  break;
+               }
+               if(tabStopsString.length)
+               {
+                  tabStopsString=tabStopsString+", ";
+               }
+               tabStopsString=tabStopsString+tabStop.position;
+            }
+            if(tabStopsString.length)
+            {
+               textFormat=this.exportTextFormatAttribute(textFormat,"TABSTOPS",tabStopsString);
+            }
+         }
+         return textFormat?nest(textFormat,xml):xml;
+      }
 
-        function exportFont(param1:ITextLayoutFormat, param2:ITextLayoutFormat = null) : XML
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (!param2 || param2.fontFamily != param1.fontFamily)
-            {
-                _loc_3 = this.exportFontAttribute(_loc_3, "FACE", param1.fontFamily);
-            }
-            if (!param2 || param2.fontSize != param1.fontSize)
-            {
-                _loc_3 = this.exportFontAttribute(_loc_3, "SIZE", param1.fontSize);
-            }
-            if (!param2 || param2.color != param1.color)
-            {
-                _loc_4 = param1.color.toString(16);
-                while (_loc_4.length < 6)
-                {
-                    
-                    _loc_4 = "0" + _loc_4;
-                }
-                _loc_4 = "#" + _loc_4;
-                _loc_3 = this.exportFontAttribute(_loc_3, "COLOR", _loc_4);
-            }
-            if (!param2 || param2.trackingRight != param1.trackingRight)
-            {
-                _loc_3 = this.exportFontAttribute(_loc_3, "LETTERSPACING", param1.trackingRight);
-            }
-            if (!param2 || param2.kerning != param1.kerning)
-            {
-                _loc_3 = this.exportFontAttribute(_loc_3, "KERNING", param1.kerning == Kerning.OFF ? ("0") : ("1"));
-            }
-            return _loc_3;
-        }// end function
+      tlf_internal function exportSpanFormat(xml:Object, span:SpanElement) : Object {
+         var format:ITextLayoutFormat = span.computedFormat;
+         var outerElement:Object = xml;
+         if(format.textDecoration.toString()==TextDecoration.UNDERLINE)
+         {
+            outerElement=nest(<U/>,outerElement);
+         }
+         if(format.fontStyle.toString()==FontPosture.ITALIC)
+         {
+            outerElement=nest(<I/>,outerElement);
+         }
+         if(format.fontWeight.toString()==FontWeight.BOLD)
+         {
+            outerElement=nest(<B/>,outerElement);
+         }
+         var exportedParent:FlowElement = span.getParentByType(LinkElement);
+         if(!exportedParent)
+         {
+            exportedParent=span.getParagraph();
+         }
+         var font:XML = this.exportFont(format,exportedParent.computedFormat);
+         if(font)
+         {
+            outerElement=nest(font,outerElement);
+         }
+         return outerElement;
+      }
 
-        function exportElement(param1:FlowElement, param2:XML) : void
-        {
-            var _loc_5:* = null;
-            var _loc_3:* = getQualifiedClassName(param1);
-            var _loc_4:* = _config.lookupByClass(_loc_3);
-            if (_config.lookupByClass(_loc_3))
-            {
-                _loc_4.exporter(param1, param2);
-            }
-            else
-            {
-                _loc_5 = new XML("<" + param1.typeName.toUpperCase() + "/>");
-                this.exportChildren(param1 as FlowGroupElement, _loc_5);
-                param2.appendChild(_loc_5);
-            }
-            return;
-        }// end function
+      tlf_internal function exportFontAttribute(fontXML:XML, attrName:String, attrVal:*) : XML {
+         if(!fontXML)
+         {
+            fontXML=<FONT/>;
+         }
+         fontXML[attrName]=attrVal;
+         return fontXML;
+      }
 
-        function exportSubParagraphChildren(param1:FlowGroupElement, param2:XML) : void
-        {
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.numChildren)
+      tlf_internal function exportFont(format:ITextLayoutFormat, ifDifferentFromFormat:ITextLayoutFormat=null) : XML {
+         var font:XML = null;
+         var rgb:String = null;
+         if((!ifDifferentFromFormat)||(!(ifDifferentFromFormat.fontFamily==format.fontFamily)))
+         {
+            font=this.exportFontAttribute(font,"FACE",format.fontFamily);
+         }
+         if((!ifDifferentFromFormat)||(!(ifDifferentFromFormat.fontSize==format.fontSize)))
+         {
+            font=this.exportFontAttribute(font,"SIZE",format.fontSize);
+         }
+         if((!ifDifferentFromFormat)||(!(ifDifferentFromFormat.color==format.color)))
+         {
+            rgb=format.color.toString(16);
+            while(rgb.length<6)
             {
-                
-                this.exportElement(param1.getChildAt(_loc_3), param2);
-                _loc_3++;
+               rgb="0"+rgb;
             }
-            return;
-        }// end function
+            rgb="#"+rgb;
+            font=this.exportFontAttribute(font,"COLOR",rgb);
+         }
+         if((!ifDifferentFromFormat)||(!(ifDifferentFromFormat.trackingRight==format.trackingRight)))
+         {
+            font=this.exportFontAttribute(font,"LETTERSPACING",format.trackingRight);
+         }
+         if((!ifDifferentFromFormat)||(!(ifDifferentFromFormat.kerning==format.kerning)))
+         {
+            font=this.exportFontAttribute(font,"KERNING",format.kerning==Kerning.OFF?"0":"1");
+         }
+         return font;
+      }
 
-        static function makeTaggedTypeName(param1:FlowElement, param2:String) : XML
-        {
-            if (param1.typeName == param1.defaultTypeName)
-            {
-                return new XML("<" + param2 + "/>");
-            }
-            return new XML("<" + param1.typeName.toUpperCase() + "/>");
-        }// end function
+      tlf_internal function exportElement(flowElement:FlowElement, parentXML:XML) : void {
+         var xml:XML = null;
+         var className:String = getQualifiedClassName(flowElement);
+         var info:FlowElementInfo = _config.lookupByClass(className);
+         if(info)
+         {
+            info.exporter(flowElement,parentXML);
+         }
+         else
+         {
+            xml=new XML("<"+flowElement.typeName.toUpperCase()+"/>");
+            this.exportChildren(flowElement as FlowGroupElement,xml);
+            parentXML.appendChild(xml);
+         }
+      }
 
-        static function exportStyling(param1:FlowElement, param2:XML) : void
-        {
-            if (param1.id != null)
-            {
-                param2["id"] = param1.id;
-            }
-            if (param1.styleName != null)
-            {
-                param2["class"] = param1.styleName;
-            }
-            return;
-        }// end function
+      tlf_internal function exportSubParagraphChildren(flowGroupElement:FlowGroupElement, parentXML:XML) : void {
+         var i:int = 0;
+         while(i<flowGroupElement.numChildren)
+         {
+            this.exportElement(flowGroupElement.getChildAt(i),parentXML);
+            i++;
+         }
+      }
+   }
 
-        static function getSpanTextReplacementXML(param1:String) : XML
-        {
-            return <BR/>")("<BR/>;
-        }// end function
-
-        static function nest(param1:XML, param2:Object) : XML
-        {
-            param1.setChildren(param2);
-            return param1;
-        }// end function
-
-    }
 }

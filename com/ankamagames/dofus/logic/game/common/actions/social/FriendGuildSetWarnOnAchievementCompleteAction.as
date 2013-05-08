@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.social
+package com.ankamagames.dofus.logic.game.common.actions.social
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class FriendGuildSetWarnOnAchievementCompleteAction extends Object implements Action
-    {
-        public var enable:Boolean;
 
-        public function FriendGuildSetWarnOnAchievementCompleteAction()
-        {
-            return;
-        }// end function
+   public class FriendGuildSetWarnOnAchievementCompleteAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : FriendGuildSetWarnOnAchievementCompleteAction
-        {
-            var _loc_2:* = new FriendGuildSetWarnOnAchievementCompleteAction;
-            _loc_2.enable = param1;
-            return _loc_2;
-        }// end function
+      public function FriendGuildSetWarnOnAchievementCompleteAction() {
+         super();
+      }
 
-    }
+      public static function create(enable:Boolean) : FriendGuildSetWarnOnAchievementCompleteAction {
+         var a:FriendGuildSetWarnOnAchievementCompleteAction = new FriendGuildSetWarnOnAchievementCompleteAction();
+         a.enable=enable;
+         return a;
+      }
+
+      public var enable:Boolean;
+   }
+
 }

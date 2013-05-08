@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.livingObject
+package com.ankamagames.dofus.logic.game.common.actions.livingObject
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class LivingObjectDissociateAction extends Object implements Action
-    {
-        public var livingUID:uint;
-        public var livingPosition:uint;
 
-        public function LivingObjectDissociateAction()
-        {
-            return;
-        }// end function
+   public class LivingObjectDissociateAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint) : LivingObjectDissociateAction
-        {
-            var _loc_3:* = new LivingObjectDissociateAction;
-            _loc_3.livingUID = param1;
-            _loc_3.livingPosition = param2;
-            return _loc_3;
-        }// end function
+      public function LivingObjectDissociateAction() {
+         super();
+      }
 
-    }
+      public static function create(livingUID:uint, livingPosition:uint) : LivingObjectDissociateAction {
+         var action:LivingObjectDissociateAction = new LivingObjectDissociateAction();
+         action.livingUID=livingUID;
+         action.livingPosition=livingPosition;
+         return action;
+      }
+
+      public var livingUID:uint;
+
+      public var livingPosition:uint;
+   }
+
 }

@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions
+package com.ankamagames.dofus.logic.game.roleplay.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class DisplayContextualMenuAction extends Object implements Action
-    {
-        public var playerId:uint;
 
-        public function DisplayContextualMenuAction()
-        {
-            return;
-        }// end function
+   public class DisplayContextualMenuAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : DisplayContextualMenuAction
-        {
-            var _loc_2:* = new DisplayContextualMenuAction;
-            _loc_2.playerId = param1;
-            return _loc_2;
-        }// end function
+      public function DisplayContextualMenuAction() {
+         super();
+      }
 
-    }
+      public static function create(playerId:uint) : DisplayContextualMenuAction {
+         var o:DisplayContextualMenuAction = new DisplayContextualMenuAction();
+         o.playerId=playerId;
+         return o;
+      }
+
+      public var playerId:uint;
+   }
+
 }

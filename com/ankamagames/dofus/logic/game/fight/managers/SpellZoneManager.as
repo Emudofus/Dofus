@@ -1,213 +1,196 @@
-﻿package com.ankamagames.dofus.logic.game.fight.managers
+package com.ankamagames.dofus.logic.game.fight.managers
 {
-    import com.ankamagames.atouin.enums.*;
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.atouin.renderers.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.dofus.internalDatacenter.spells.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.types.zones.*;
-    import com.ankamagames.jerakine.utils.display.spellZone.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDestroyable;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.types.Color;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.atouin.types.Selection;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+   import com.ankamagames.atouin.renderers.ZoneDARenderer;
+   import com.ankamagames.atouin.enums.PlacementStrataEnums;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.atouin.managers.SelectionManager;
+   import com.ankamagames.jerakine.types.zones.IZone;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.jerakine.types.zones.Cross;
+   import com.ankamagames.jerakine.types.zones.Square;
+   import com.ankamagames.atouin.utils.DataMapProvider;
+   import com.ankamagames.jerakine.types.zones.Line;
+   import com.ankamagames.jerakine.types.zones.Lozenge;
+   import com.ankamagames.jerakine.types.zones.Cone;
+   import com.ankamagames.jerakine.types.zones.HalfLozenge;
+   import com.ankamagames.jerakine.utils.display.spellZone.SpellShapeEnum;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class SpellZoneManager extends Object implements IDestroyable
-    {
-        private var _targetSelection:Selection;
-        private var _spellWrapper:Object;
-        private static var _log:Logger = Log.getLogger(getQualifiedClassName(SpellZoneManager));
-        private static var _self:SpellZoneManager;
-        private static const ZONE_COLOR:Color = new Color(10929860);
-        private static const SELECTION_ZONE:String = "SpellCastZone";
 
-        public function SpellZoneManager()
-        {
-            if (_self != null)
-            {
-                throw new SingletonError("SpellZoneManager is a singleton and should not be instanciated directly.");
-            }
+   public class SpellZoneManager extends Object implements IDestroyable
+   {
+         
+
+      public function SpellZoneManager() {
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("SpellZoneManager is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function destroy() : void
-        {
-            _self = null;
-            return;
-        }// end function
+      private static var _log:Logger = Log.getLogger(getQualifiedClassName(SpellZoneManager));
 
-        public function displaySpellZone(param1:int, param2:int, param3:int, param4:uint, param5:uint) : void
-        {
-            this._spellWrapper = SpellWrapper.create(0, param4, param5, false, param1);
-            if (this._spellWrapper && param2 != -1 && param3 != -1)
-            {
-                this._targetSelection = new Selection();
-                this._targetSelection.renderer = new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
-                this._targetSelection.color = ZONE_COLOR;
-                this._targetSelection.zone = this.getSpellZone();
-                this._targetSelection.zone.direction = MapPoint.fromCellId(param3).advancedOrientationTo(MapPoint.fromCellId(param2), false);
-                SelectionManager.getInstance().addSelection(this._targetSelection, SELECTION_ZONE);
-                SelectionManager.getInstance().update(SELECTION_ZONE, param2);
-            }
-            else
-            {
-                this.removeTarget();
-            }
-            return;
-        }// end function
+      private static var _self:SpellZoneManager;
 
-        public function removeSpellZone() : void
-        {
+      private static const ZONE_COLOR:Color = new Color(10929860);
+
+      private static const SELECTION_ZONE:String = "SpellCastZone";
+
+      public static function getInstance() : SpellZoneManager {
+         if(_self==null)
+         {
+            _self=new SpellZoneManager();
+         }
+         return _self;
+      }
+
+      private var _targetSelection:Selection;
+
+      private var _spellWrapper:Object;
+
+      public function destroy() : void {
+         _self=null;
+      }
+
+      public function displaySpellZone(casterId:int, targetCellId:int, sourceCellId:int, spellId:uint, spellLevelId:uint) : void {
+         this._spellWrapper=SpellWrapper.create(0,spellId,spellLevelId,false,casterId);
+         if((this._spellWrapper)&&(!(targetCellId==-1))&&(!(sourceCellId==-1)))
+         {
+            this._targetSelection=new Selection();
+            this._targetSelection.renderer=new ZoneDARenderer(PlacementStrataEnums.STRATA_NO_Z_ORDER);
+            this._targetSelection.color=ZONE_COLOR;
+            this._targetSelection.zone=this.getSpellZone();
+            this._targetSelection.zone.direction=MapPoint.fromCellId(sourceCellId).advancedOrientationTo(MapPoint.fromCellId(targetCellId),false);
+            SelectionManager.getInstance().addSelection(this._targetSelection,SELECTION_ZONE);
+            SelectionManager.getInstance().update(SELECTION_ZONE,targetCellId);
+         }
+         else
+         {
             this.removeTarget();
-            return;
-        }// end function
+         }
+      }
 
-        private function removeTarget() : void
-        {
-            var _loc_1:* = SelectionManager.getInstance().getSelection(SELECTION_ZONE);
-            if (_loc_1)
-            {
-                _loc_1.remove();
-            }
-            return;
-        }// end function
+      public function removeSpellZone() : void {
+         this.removeTarget();
+      }
 
-        private function getSpellZone() : IZone
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_1:* = 88;
-            _loc_2 = 666;
-            for each (_loc_3 in this._spellWrapper["effects"])
-            {
-                
-                if (_loc_3.zoneShape != 0 && _loc_3.zoneSize > 0)
-                {
-                    _loc_2 = Math.min(_loc_2, _loc_3.zoneSize);
-                    _loc_1 = _loc_3.zoneShape;
-                }
-            }
-            if (_loc_2 == 666)
-            {
-                _loc_2 = 0;
-            }
-            switch(_loc_1)
-            {
-                case SpellShapeEnum.X:
-                {
-                    return new Cross(0, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.L:
-                {
-                    return new Line(_loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.T:
-                {
-                    _loc_4 = new Cross(0, _loc_2, DataMapProvider.getInstance());
-                    _loc_4.onlyPerpendicular = true;
-                    return _loc_4;
-                }
-                case SpellShapeEnum.D:
-                {
-                    return new Cross(0, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.C:
-                {
-                    return new Lozenge(0, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.I:
-                {
-                    return new Lozenge(_loc_2, 63, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.O:
-                {
-                    return new Lozenge(_loc_2, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.Q:
-                {
-                    return new Cross(1, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.G:
-                {
-                    return new Square(0, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.V:
-                {
-                    return new Cone(0, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.W:
-                {
-                    _loc_5 = new Square(0, _loc_2, DataMapProvider.getInstance());
-                    _loc_5.diagonalFree = true;
-                    return _loc_5;
-                }
-                case SpellShapeEnum.plus:
-                {
-                    _loc_6 = new Cross(0, _loc_2, DataMapProvider.getInstance());
-                    _loc_6.diagonal = true;
-                    return _loc_6;
-                }
-                case SpellShapeEnum.sharp:
-                {
-                    _loc_7 = new Cross(1, _loc_2, DataMapProvider.getInstance());
-                    _loc_7.diagonal = true;
-                    return _loc_7;
-                }
-                case SpellShapeEnum.star:
-                {
-                    _loc_8 = new Cross(0, _loc_2, DataMapProvider.getInstance());
-                    _loc_8.allDirections = true;
-                    return _loc_8;
-                }
-                case SpellShapeEnum.slash:
-                {
-                    return new Line(_loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.minus:
-                {
-                    _loc_9 = new Cross(0, _loc_2, DataMapProvider.getInstance());
-                    _loc_9.onlyPerpendicular = true;
-                    _loc_9.diagonal = true;
-                    return _loc_9;
-                }
-                case SpellShapeEnum.U:
-                {
-                    return new HalfLozenge(0, _loc_2, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.A:
-                {
-                    return new Lozenge(0, 63, DataMapProvider.getInstance());
-                }
-                case SpellShapeEnum.P:
-                {
-                }
-                default:
-                {
-                    _log.debug("spell shape : " + _loc_1);
-                    return new Cross(0, 0, DataMapProvider.getInstance());
-                    break;
-                }
-            }
-        }// end function
+      private function removeTarget() : void {
+         var s:Selection = SelectionManager.getInstance().getSelection(SELECTION_ZONE);
+         if(s)
+         {
+            s.remove();
+         }
+      }
 
-        public static function getInstance() : SpellZoneManager
-        {
-            if (_self == null)
+      private function getSpellZone() : IZone {
+         var ray:uint = 0;
+         var i:EffectInstance = null;
+         var shapeT:Cross = null;
+         var shapeW:Square = null;
+         var shapePlus:Cross = null;
+         var shapeSharp:Cross = null;
+         var shapeStar:Cross = null;
+         var shapeMinus:Cross = null;
+         var shape:uint = 88;
+         ray=666;
+         for each (i in this._spellWrapper["effects"])
+         {
+            if((!(i.zoneShape==0))&&(i.zoneSize<0))
             {
-                _self = new SpellZoneManager;
+               ray=Math.min(ray,i.zoneSize);
+               shape=i.zoneShape;
             }
-            return _self;
-        }// end function
+         }
+         if(ray==666)
+         {
+            ray=0;
+         }
+         switch(shape)
+         {
+            case SpellShapeEnum.X:
+               return new Cross(0,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.L:
+               return new Line(ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.T:
+               shapeT=new Cross(0,ray,DataMapProvider.getInstance());
+               shapeT.onlyPerpendicular=true;
+               return shapeT;
+               break;
+            case SpellShapeEnum.D:
+               return new Cross(0,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.C:
+               return new Lozenge(0,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.I:
+               return new Lozenge(ray,63,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.O:
+               return new Lozenge(ray,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.Q:
+               return new Cross(1,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.G:
+               return new Square(0,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.V:
+               return new Cone(0,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.W:
+               shapeW=new Square(0,ray,DataMapProvider.getInstance());
+               shapeW.diagonalFree=true;
+               return shapeW;
+               break;
+            case SpellShapeEnum.plus:
+               shapePlus=new Cross(0,ray,DataMapProvider.getInstance());
+               shapePlus.diagonal=true;
+               return shapePlus;
+               break;
+            case SpellShapeEnum.sharp:
+               shapeSharp=new Cross(1,ray,DataMapProvider.getInstance());
+               shapeSharp.diagonal=true;
+               return shapeSharp;
+               break;
+            case SpellShapeEnum.star:
+               shapeStar=new Cross(0,ray,DataMapProvider.getInstance());
+               shapeStar.allDirections=true;
+               return shapeStar;
+               break;
+            case SpellShapeEnum.slash:
+               return new Line(ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.minus:
+               shapeMinus=new Cross(0,ray,DataMapProvider.getInstance());
+               shapeMinus.onlyPerpendicular=true;
+               shapeMinus.diagonal=true;
+               return shapeMinus;
+               break;
+            case SpellShapeEnum.U:
+               return new HalfLozenge(0,ray,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.A:
+               return new Lozenge(0,63,DataMapProvider.getInstance());
+               break;
+            case SpellShapeEnum.P:
+         }
+         _log.debug("spell shape : "+shape);
+         return new Cross(0,0,DataMapProvider.getInstance());
+      }
+   }
 
-    }
 }

@@ -1,190 +1,175 @@
-﻿package com.ankamagames.dofus.internalDatacenter.guild
+package com.ankamagames.dofus.internalDatacenter.guild
 {
-    import com.ankamagames.dofus.datacenter.guild.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import flash.utils.Proxy;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.datacenter.guild.EmblemSymbol;
+   import com.ankamagames.dofus.datacenter.guild.EmblemBackground;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
 
-    public class EmblemWrapper extends Proxy implements IDataCenter, ISlotData
-    {
-        private var _uri:Uri;
-        private var _fullSizeUri:Uri;
-        private var _color:uint;
-        private var _type:uint;
-        public var idEmblem:uint;
-        public var order:int;
-        public var category:int;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemWrapper));
-        private static var _cache:Array = new Array();
-        public static const UP:uint = 1;
-        public static const BACK:uint = 2;
 
-        public function EmblemWrapper()
-        {
-            return;
-        }// end function
+   public class EmblemWrapper extends Proxy implements IDataCenter, ISlotData
+   {
+         
 
-        public function get iconUri() : Uri
-        {
-            return this._uri;
-        }// end function
+      public function EmblemWrapper() {
+         super();
+      }
 
-        public function get fullSizeIconUri() : Uri
-        {
-            return this._fullSizeUri;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EmblemWrapper));
 
-        public function get backGroundIconUri() : Uri
-        {
-            return new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
-        }// end function
+      private static var _cache:Array = new Array();
 
-        public function set backGroundIconUri(param1:Uri) : void
-        {
-            return;
-        }// end function
+      public static const UP:uint = 1;
 
-        public function get info1() : String
-        {
-            return null;
-        }// end function
+      public static const BACK:uint = 2;
 
-        public function get timer() : int
-        {
-            return 0;
-        }// end function
-
-        public function get active() : Boolean
-        {
-            return true;
-        }// end function
-
-        public function get type() : uint
-        {
-            return this._type;
-        }// end function
-
-        public function get color() : uint
-        {
-            return this._color;
-        }// end function
-
-        public function get errorIconUri() : Uri
-        {
-            return null;
-        }// end function
-
-        public function update(param1:uint, param2:uint, param3:uint = 0) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            this.idEmblem = param1;
-            this._type = param2;
-            switch(param2)
+      public static function create(pIdEmblem:uint, pType:uint, pColor:uint=0, useCache:Boolean=false) : EmblemWrapper {
+         var emblem:EmblemWrapper = null;
+         var path:String = null;
+         var pathFullSize:String = null;
+         var iconId:* = 0;
+         var symbol:EmblemSymbol = null;
+         var back:EmblemBackground = null;
+         if((!_cache[pIdEmblem])||(!useCache))
+         {
+            emblem=new EmblemWrapper();
+            emblem.idEmblem=pIdEmblem;
+            if(useCache)
             {
-                case UP:
-                {
-                    _loc_7 = EmblemSymbol.getEmblemSymbolById(param1);
-                    _loc_6 = _loc_7.iconId;
-                    this.order = _loc_7.order;
-                    this.category = _loc_7.categoryId;
-                    _loc_4 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "up/";
-                    _loc_5 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "up/";
-                    break;
-                }
-                case BACK:
-                {
-                    _loc_8 = EmblemBackground.getEmblemBackgroundById(param1);
-                    this.order = _loc_8.order;
-                    _loc_6 = param1;
-                    _loc_4 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "back/";
-                    _loc_5 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "back/";
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
+               _cache[pIdEmblem]=emblem;
             }
-            this._uri = new Uri(_loc_4 + _loc_6 + ".png");
-            this._fullSizeUri = new Uri(_loc_5 + _loc_6 + ".swf");
-            this._color = param3;
-            return;
-        }// end function
+         }
+         else
+         {
+            emblem=_cache[pIdEmblem];
+         }
+         emblem._type=pType;
+         switch(pType)
+         {
+            case UP:
+               symbol=EmblemSymbol.getEmblemSymbolById(pIdEmblem);
+               iconId=symbol.iconId;
+               emblem.order=symbol.order;
+               emblem.category=symbol.categoryId;
+               path=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small")+"up/";
+               pathFullSize=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large")+"up/";
+               break;
+            case BACK:
+               back=EmblemBackground.getEmblemBackgroundById(pIdEmblem);
+               emblem.order=back.order;
+               iconId=pIdEmblem;
+               path=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small")+"back/";
+               pathFullSize=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large")+"back/";
+               break;
+         }
+         emblem._uri=new Uri(path+iconId+".png");
+         emblem._fullSizeUri=new Uri(pathFullSize+iconId+".swf");
+         emblem._color=pColor;
+         return emblem;
+      }
 
-        public function addHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      public static function getEmblemFromId(emblemId:uint) : EmblemWrapper {
+         return _cache[emblemId];
+      }
 
-        public function removeHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      private var _uri:Uri;
 
-        public static function create(param1:uint, param2:uint, param3:uint = 0, param4:Boolean = false) : EmblemWrapper
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            if (!_cache[param1] || !param4)
-            {
-                _loc_5 = new EmblemWrapper;
-                _loc_5.idEmblem = param1;
-                if (param4)
-                {
-                    _cache[param1] = _loc_5;
-                }
-            }
-            else
-            {
-                _loc_5 = _cache[param1];
-            }
-            _loc_5._type = param2;
-            switch(param2)
-            {
-                case UP:
-                {
-                    _loc_9 = EmblemSymbol.getEmblemSymbolById(param1);
-                    _loc_8 = _loc_9.iconId;
-                    _loc_5.order = _loc_9.order;
-                    _loc_5.category = _loc_9.categoryId;
-                    _loc_6 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "up/";
-                    _loc_7 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "up/";
-                    break;
-                }
-                case BACK:
-                {
-                    _loc_10 = EmblemBackground.getEmblemBackgroundById(param1);
-                    _loc_5.order = _loc_10.order;
-                    _loc_8 = param1;
-                    _loc_6 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small") + "back/";
-                    _loc_7 = XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large") + "back/";
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            _loc_5._uri = new Uri(_loc_6 + _loc_8 + ".png");
-            _loc_5._fullSizeUri = new Uri(_loc_7 + _loc_8 + ".swf");
-            _loc_5._color = param3;
-            return _loc_5;
-        }// end function
+      private var _fullSizeUri:Uri;
 
-        public static function getEmblemFromId(param1:uint) : EmblemWrapper
-        {
-            return _cache[param1];
-        }// end function
+      private var _color:uint;
 
-    }
+      private var _type:uint;
+
+      public var idEmblem:uint;
+
+      public var order:int;
+
+      public var category:int;
+
+      public function get iconUri() : Uri {
+         return this._uri;
+      }
+
+      public function get fullSizeIconUri() : Uri {
+         return this._fullSizeUri;
+      }
+
+      public function get backGroundIconUri() : Uri {
+         return new Uri(XmlConfig.getInstance().getEntry("config.ui.skin").concat("bitmap/emptySlot.png"));
+      }
+
+      public function set backGroundIconUri(bgUri:Uri) : void {
+         
+      }
+
+      public function get info1() : String {
+         return null;
+      }
+
+      public function get timer() : int {
+         return 0;
+      }
+
+      public function get active() : Boolean {
+         return true;
+      }
+
+      public function get type() : uint {
+         return this._type;
+      }
+
+      public function get color() : uint {
+         return this._color;
+      }
+
+      public function get errorIconUri() : Uri {
+         return null;
+      }
+
+      public function update(pIdEmblem:uint, pType:uint, pColor:uint=0) : void {
+         var path:String = null;
+         var pathFullSize:String = null;
+         var iconId:* = 0;
+         var symbol:EmblemSymbol = null;
+         var back:EmblemBackground = null;
+         this.idEmblem=pIdEmblem;
+         this._type=pType;
+         switch(pType)
+         {
+            case UP:
+               symbol=EmblemSymbol.getEmblemSymbolById(pIdEmblem);
+               iconId=symbol.iconId;
+               this.order=symbol.order;
+               this.category=symbol.categoryId;
+               path=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small")+"up/";
+               pathFullSize=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large")+"up/";
+               break;
+            case BACK:
+               back=EmblemBackground.getEmblemBackgroundById(pIdEmblem);
+               this.order=back.order;
+               iconId=pIdEmblem;
+               path=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.small")+"back/";
+               pathFullSize=XmlConfig.getInstance().getEntry("config.gfx.path.emblem_icons.large")+"back/";
+               break;
+         }
+         this._uri=new Uri(path+iconId+".png");
+         this._fullSizeUri=new Uri(pathFullSize+iconId+".swf");
+         this._color=pColor;
+      }
+
+      public function addHolder(h:ISlotDataHolder) : void {
+         
+      }
+
+      public function removeHolder(h:ISlotDataHolder) : void {
+         
+      }
+   }
+
 }

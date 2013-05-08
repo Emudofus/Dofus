@@ -1,162 +1,156 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import com.ankamagames.dofus.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.managers.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.DataStoreType;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import com.ankamagames.jerakine.managers.StoreDataManager;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.dofus.Constants;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.ResourceType;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.types.enums.DataStoreEnum;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
 
-    public class CustomLoadingScreenManager extends Object
-    {
-        private var _dataStore:DataStoreType;
-        private var _loader:IResourceLoader;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomLoadingScreenManager));
-        private static var _singleton:CustomLoadingScreenManager;
 
-        public function CustomLoadingScreenManager()
-        {
-            this._dataStore = new DataStoreType("LoadingScreen", true, DataStoreEnum.LOCATION_LOCAL, DataStoreEnum.BIND_COMPUTER);
-            this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
-            this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onLoadError);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onLoad);
-            return;
-        }// end function
+   public class CustomLoadingScreenManager extends Object
+   {
+         
 
-        public function get currentLoadingScreen() : CustomLoadingScreen
-        {
-            var _loc_1:* = StoreDataManager.getInstance().getData(this._dataStore, "currentLoadingScreen") as String;
-            var _loc_2:* = CustomLoadingScreen.recover(this._dataStore, _loc_1);
-            var _loc_3:* = XmlConfig.getInstance().getEntry("config.lang.current");
-            if (!_loc_3)
+      public function CustomLoadingScreenManager() {
+         this._dataStore=new DataStoreType("LoadingScreen",true,DataStoreEnum.LOCATION_LOCAL,DataStoreEnum.BIND_COMPUTER);
+         this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
+         super();
+         this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onLoadError);
+         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onLoad);
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomLoadingScreenManager));
+
+      private static var _singleton:CustomLoadingScreenManager;
+
+      public static function getInstance() : CustomLoadingScreenManager {
+         if(!_singleton)
+         {
+            _singleton=new CustomLoadingScreenManager();
+         }
+         return _singleton;
+      }
+
+      private var _dataStore:DataStoreType;
+
+      private var _loader:IResourceLoader;
+
+      public function get currentLoadingScreen() : CustomLoadingScreen {
+         var currentName:String = StoreDataManager.getInstance().getData(this._dataStore,"currentLoadingScreen") as String;
+         var current:CustomLoadingScreen = CustomLoadingScreen.recover(this._dataStore,currentName);
+         var lang:String = XmlConfig.getInstance().getEntry("config.lang.current");
+         if(!lang)
+         {
+            lang=StoreDataManager.getInstance().getData(Constants.DATASTORE_LANG_VERSION,"lastLang");
+         }
+         if((current)&&(!current.canBeRead()))
+         {
+            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
+            current=null;
+         }
+         if((current)&&(!(current.lang==lang)))
+         {
+            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
+            current=null;
+         }
+         return current;
+      }
+
+      public function get dataStore() : DataStoreType {
+         return this._dataStore;
+      }
+
+      public function set currentLoadingScreen(loadingScreen:CustomLoadingScreen) : void {
+         if(loadingScreen)
+         {
+            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",loadingScreen.name);
+         }
+         else
+         {
+            StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
+         }
+      }
+
+      public function loadCustomScreenList() : void {
+         var uri:Uri = null;
+         var lang:String = XmlConfig.getInstance().getEntry("config.lang.current");
+         uri=new Uri(XmlConfig.getInstance().getEntry("config.customLoadingScreen")+"loadingScreen_"+lang+".xml");
+         this._loader.load(uri);
+      }
+
+      private function onLoad(e:ResourceLoadedEvent) : void {
+         var selected:CustomLoadingScreen = null;
+         var xml:XML = null;
+         var screens:Array = null;
+         var loadingScreenXml:XML = null;
+         var oldLoadingScreen:CustomLoadingScreen = null;
+         var loadingScreen:CustomLoadingScreen = null;
+         if(e.resourceType==ResourceType.RESOURCE_XML)
+         {
+            selected=null;
+            try
             {
-                _loc_3 = StoreDataManager.getInstance().getData(Constants.DATASTORE_LANG_VERSION, "lastLang");
+               xml=e.resource;
+               if(!xml)
+               {
+                  return;
+               }
+               screens=new Array();
+               for each (loadingScreenXml in xml..loadingScreen)
+               {
+                  oldLoadingScreen=CustomLoadingScreen.recover(this._dataStore,loadingScreenXml.@name);
+                  loadingScreen=CustomLoadingScreen.loadFromXml(loadingScreenXml);
+                  loadingScreen.dataStore=this._dataStore;
+                  if(oldLoadingScreen)
+                  {
+                     loadingScreen.count=oldLoadingScreen.count;
+                  }
+                  if((!oldLoadingScreen)||(!(loadingScreen.backgroundUrl==oldLoadingScreen.backgroundUrl))||(!oldLoadingScreen.backgroundImg)||(!(loadingScreen.foregroundUrl==oldLoadingScreen.foregroundUrl))||(oldLoadingScreen.foregroundUrl)&&(!oldLoadingScreen.foregroundImg))
+                  {
+                     loadingScreen.loadData();
+                  }
+                  else
+                  {
+                     loadingScreen.backgroundImg=oldLoadingScreen.backgroundImg;
+                     loadingScreen.foregroundImg=oldLoadingScreen.foregroundImg;
+                     loadingScreen.store();
+                  }
+                  if((!selected)&&(loadingScreen.canBeRead()))
+                  {
+                     selected=loadingScreen;
+                  }
+               }
             }
-            if (_loc_2 && !_loc_2.canBeRead())
+            catch(e:Error)
             {
-                StoreDataManager.getInstance().setData(this._dataStore, "currentLoadingScreen", null);
-                _loc_2 = null;
+               _log.error("Can\'t load loading screen XML : "+e);
+               return;
             }
-            if (_loc_2 && _loc_2.lang != _loc_3)
+            if(selected)
             {
-                StoreDataManager.getInstance().setData(this._dataStore, "currentLoadingScreen", null);
-                _loc_2 = null;
+               this.currentLoadingScreen=selected;
             }
-            return _loc_2;
-        }// end function
+         }
+         else
+         {
+            _log.error("Invalid XML");
+         }
+      }
 
-        public function get dataStore() : DataStoreType
-        {
-            return this._dataStore;
-        }// end function
+      private function onLoadError(e:ResourceErrorEvent) : void {
+         _log.error("Can\'t load XML file : "+e);
+         StoreDataManager.getInstance().setData(this._dataStore,"currentLoadingScreen",null);
+      }
+   }
 
-        public function set currentLoadingScreen(param1:CustomLoadingScreen) : void
-        {
-            if (param1)
-            {
-                StoreDataManager.getInstance().setData(this._dataStore, "currentLoadingScreen", param1.name);
-            }
-            else
-            {
-                StoreDataManager.getInstance().setData(this._dataStore, "currentLoadingScreen", null);
-            }
-            return;
-        }// end function
-
-        public function loadCustomScreenList() : void
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = XmlConfig.getInstance().getEntry("config.lang.current");
-            _loc_2 = new Uri(XmlConfig.getInstance().getEntry("config.customLoadingScreen") + "loadingScreen_" + _loc_1 + ".xml");
-            this._loader.load(_loc_2);
-            return;
-        }// end function
-
-        private function onLoad(event:ResourceLoadedEvent) : void
-        {
-            var selected:CustomLoadingScreen;
-            var xml:XML;
-            var screens:Array;
-            var loadingScreenXml:XML;
-            var oldLoadingScreen:CustomLoadingScreen;
-            var loadingScreen:CustomLoadingScreen;
-            var e:* = event;
-            if (e.resourceType == ResourceType.RESOURCE_XML)
-            {
-                selected;
-                try
-                {
-                    xml = e.resource;
-                    if (!xml)
-                    {
-                        return;
-                    }
-                    screens = new Array();
-                    var _loc_3:* = 0;
-                    var _loc_4:* = xml..loadingScreen;
-                    while (_loc_4 in _loc_3)
-                    {
-                        
-                        loadingScreenXml = _loc_4[_loc_3];
-                        oldLoadingScreen = CustomLoadingScreen.recover(this._dataStore, loadingScreenXml.@name);
-                        loadingScreen = CustomLoadingScreen.loadFromXml(loadingScreenXml);
-                        loadingScreen.dataStore = this._dataStore;
-                        if (oldLoadingScreen)
-                        {
-                            loadingScreen.count = oldLoadingScreen.count;
-                        }
-                        if (!oldLoadingScreen || loadingScreen.backgroundUrl != oldLoadingScreen.backgroundUrl || !oldLoadingScreen.backgroundImg || loadingScreen.foregroundUrl != oldLoadingScreen.foregroundUrl || oldLoadingScreen.foregroundUrl && !oldLoadingScreen.foregroundImg)
-                        {
-                            loadingScreen.loadData();
-                        }
-                        else
-                        {
-                            loadingScreen.backgroundImg = oldLoadingScreen.backgroundImg;
-                            loadingScreen.foregroundImg = oldLoadingScreen.foregroundImg;
-                            loadingScreen.store();
-                        }
-                        if (!selected && loadingScreen.canBeRead())
-                        {
-                            selected = loadingScreen;
-                        }
-                    }
-                }
-                catch (e:Error)
-                {
-                    _log.error("Can\'t load loading screen XML : " + e);
-                    return;
-                }
-                if (selected)
-                {
-                    this.currentLoadingScreen = selected;
-                }
-            }
-            else
-            {
-                _log.error("Invalid XML");
-            }
-            return;
-        }// end function
-
-        private function onLoadError(event:ResourceErrorEvent) : void
-        {
-            _log.error("Can\'t load XML file : " + event);
-            StoreDataManager.getInstance().setData(this._dataStore, "currentLoadingScreen", null);
-            return;
-        }// end function
-
-        public static function getInstance() : CustomLoadingScreenManager
-        {
-            if (!_singleton)
-            {
-                _singleton = new CustomLoadingScreenManager;
-            }
-            return _singleton;
-        }// end function
-
-    }
 }

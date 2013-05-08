@@ -1,84 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
+package com.ankamagames.dofus.network.messages.game.context.roleplay.lockable
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class LockableStateUpdateHouseDoorMessage extends LockableStateUpdateAbstractMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var houseId:int = 0;
-        public static const protocolId:uint = 5668;
 
-        public function LockableStateUpdateHouseDoorMessage()
-        {
-            return;
-        }// end function
+   public class LockableStateUpdateHouseDoorMessage extends LockableStateUpdateAbstractMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function LockableStateUpdateHouseDoorMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5668;
-        }// end function
+      public static const protocolId:uint = 5668;
 
-        public function initLockableStateUpdateHouseDoorMessage(param1:Boolean = false, param2:int = 0) : LockableStateUpdateHouseDoorMessage
-        {
-            super.initLockableStateUpdateAbstractMessage(param1);
-            this.houseId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.houseId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var houseId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5668;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_LockableStateUpdateHouseDoorMessage(param1);
-            return;
-        }// end function
+      public function initLockableStateUpdateHouseDoorMessage(locked:Boolean=false, houseId:int=0) : LockableStateUpdateHouseDoorMessage {
+         super.initLockableStateUpdateAbstractMessage(locked);
+         this.houseId=houseId;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_LockableStateUpdateHouseDoorMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_LockableStateUpdateAbstractMessage(param1);
-            param1.writeInt(this.houseId);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.houseId=0;
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_LockableStateUpdateHouseDoorMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_LockableStateUpdateHouseDoorMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.houseId = param1.readInt();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LockableStateUpdateHouseDoorMessage(output);
+      }
+
+      public function serializeAs_LockableStateUpdateHouseDoorMessage(output:IDataOutput) : void {
+         super.serializeAs_LockableStateUpdateAbstractMessage(output);
+         output.writeInt(this.houseId);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LockableStateUpdateHouseDoorMessage(input);
+      }
+
+      public function deserializeAs_LockableStateUpdateHouseDoorMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.houseId=input.readInt();
+      }
+   }
+
 }

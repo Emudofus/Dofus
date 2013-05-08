@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions
+package com.ankamagames.dofus.logic.game.roleplay.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class EmotePlayRequestAction extends Object implements Action
-    {
-        public var emoteId:uint;
 
-        public function EmotePlayRequestAction()
-        {
-            return;
-        }// end function
+   public class EmotePlayRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : EmotePlayRequestAction
-        {
-            var _loc_2:* = new EmotePlayRequestAction;
-            _loc_2.emoteId = param1;
-            return _loc_2;
-        }// end function
+      public function EmotePlayRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(emoteId:uint) : EmotePlayRequestAction {
+         var a:EmotePlayRequestAction = new EmotePlayRequestAction();
+         a.emoteId=emoteId;
+         return a;
+      }
+
+      public var emoteId:uint;
+   }
+
 }

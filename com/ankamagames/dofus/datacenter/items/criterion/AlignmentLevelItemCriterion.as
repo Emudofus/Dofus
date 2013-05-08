@@ -1,35 +1,34 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
 
-    public class AlignmentLevelItemCriterion extends ItemCriterion implements IDataCenter
-    {
 
-        public function AlignmentLevelItemCriterion(param1:String)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class AlignmentLevelItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            var _loc_1:* = I18n.getUiText("ui.tooltip.AlignmentLevel");
-            return _loc_1 + " " + _operator.text + " " + _criterionValue;
-        }// end function
+      public function AlignmentLevelItemCriterion(pCriterion:String) {
+         super(pCriterion);
+      }
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new AlignmentLevelItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
 
-        override protected function getCriterion() : int
-        {
-            var _loc_1:* = PlayedCharacterManager.getInstance().characteristics.alignmentInfos.characterPower - PlayedCharacterManager.getInstance().infos.id;
-            return _loc_1;
-        }// end function
 
-    }
+      override public function get text() : String {
+         var readableCriterionRef:String = I18n.getUiText("ui.tooltip.AlignmentLevel");
+         return readableCriterionRef+" "+_operator.text+" "+_criterionValue;
+      }
+
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:AlignmentLevelItemCriterion = new AlignmentLevelItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
+
+      override protected function getCriterion() : int {
+         var alignmentLevel:uint = PlayedCharacterManager.getInstance().characteristics.alignmentInfos.characterPower-PlayedCharacterManager.getInstance().infos.id;
+         return alignmentLevel;
+      }
+   }
+
 }

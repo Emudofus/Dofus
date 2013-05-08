@@ -1,12 +1,14 @@
-﻿package com.ankamagames.berilia.interfaces
+package com.ankamagames.berilia.interfaces
 {
 
-    public interface ITooltipMaker
-    {
 
-        public function ITooltipMaker();
+   public interface ITooltipMaker
+   {
+         
 
-        function createTooltip(param1, param2:Object) : Object;
 
-    }
+
+      function createTooltip(param1:*, param2:Object) : Object;
+   }
+
 }

@@ -1,204 +1,200 @@
-﻿package com.ankamagames.dofus.misc.interClient
+package com.ankamagames.dofus.misc.interClient
 {
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.CustomSharedObject;
+   import com.ankamagames.dofus.logic.common.managers.DofusFpsManager;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class InterClientManager extends Object
-    {
-        private var _client:InterClientSlave;
-        private var _master:InterClientMaster;
-        private var hex_chars:Array;
-        private var _identity:String;
-        public var clientListInfo:Array;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(InterClientManager));
-        private static var _self:InterClientManager;
 
-        public function InterClientManager()
-        {
-            this.hex_chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
-            this.clientListInfo = new Array("_dofus", 0);
-            if (_self)
-            {
-                throw new SingletonError();
-            }
+   public class InterClientManager extends Object
+   {
+         
+
+      public function InterClientManager() {
+         this.hex_chars=["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+         this.clientListInfo=new Array("_dofus",0);
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function get flashKey() : String
-        {
-            if (!this._identity)
-            {
-                return this.getRandomFlashKey();
-            }
-            return this._identity;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(InterClientManager));
 
-        public function set flashKey(param1:String) : void
-        {
-            this._identity = param1;
-            return;
-        }// end function
+      private static var _self:InterClientManager;
 
-        public function get isAlone() : Boolean
-        {
-            return isMaster() && this._master.isAlone;
-        }// end function
+      public static function getInstance() : InterClientManager {
+         if(!_self)
+         {
+            _self=new InterClientManager();
+         }
+         return _self;
+      }
 
-        public function identifyFromFlashKey() : void
-        {
-            var _loc_1:* = CustomSharedObject.getLocal("uid");
-            if (!_loc_1.data["identity"])
+      public static function destroy() : void {
+         if(_self)
+         {
+            try
             {
-                this._identity = this.getRandomFlashKey();
-                _loc_1.data["identity"] = this._identity;
-                _loc_1.flush();
+               if(_self._client)
+               {
+                  _self._client.destroy();
+               }
+               if(_self._master)
+               {
+                  _self._master.destroy();
+               }
             }
-            else
+            catch(ae:ArgumentError)
             {
-                this._identity = _loc_1.data["identity"];
+               _log.warn("Closing a disconnected LocalConnection in destroy(). Exception catched.");
             }
-            _loc_1.close();
-            return;
-        }// end function
+         }
+      }
 
-        public function update() : void
-        {
-            this._master = InterClientMaster.etreLeCalif();
-            if (!this._master && !this._client)
-            {
-                this._client = new InterClientSlave();
-                this._client.retreiveUid();
-            }
-            if (this._master && this._client)
-            {
-                try
-                {
-                    this._client.destroy();
-                    this._client = null;
-                }
-                catch (ae:ArgumentError)
-                {
-                    _log.warn("Closing a disconnected LocalConnection in update(). Exception catched.");
-                }
-                this.gainFocus();
-            }
-            return;
-        }// end function
+      public static function isMaster() : Boolean {
+         return !(getInstance()._master==null);
+      }
 
-        public function gainFocus() : void
-        {
-            var _loc_1:* = new Date().time;
-            if (this._client)
-            {
-                this._client.gainFocus(_loc_1);
-            }
-            else if (this._master)
-            {
-                this._master.clientGainFocus("_dofus," + new Date().time);
-            }
-            return;
-        }// end function
+      private var _client:InterClientSlave;
 
-        public function resetFocus() : void
-        {
-            if (this._client)
-            {
-                this._client.gainFocus(0);
-            }
-            else if (this._master)
-            {
-                this._master.clientGainFocus("_dofus,0");
-            }
-            return;
-        }// end function
+      private var _master:InterClientMaster;
 
-        public function updateFocusList() : void
-        {
-            var _loc_1:* = this._master ? ("_dofus") : (this._client.connId);
-            DofusFpsManager.updateFocusList(this.clientListInfo, _loc_1);
-            return;
-        }// end function
+      private var hex_chars:Array;
 
-        private function getRandomFlashKey() : String
-        {
-            var _loc_1:* = "";
-            var _loc_2:* = 20;
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
+      private var _identity:String;
+
+      public var clientListInfo:Array;
+
+      public function get flashKey() : String {
+         if(!this._identity)
+         {
+            return this.getRandomFlashKey();
+         }
+         return this._identity;
+      }
+
+      public function set flashKey(key:String) : void {
+         this._identity=key;
+      }
+
+      public function get isAlone() : Boolean {
+         return (isMaster())&&(this._master.isAlone);
+      }
+
+      public function identifyFromFlashKey() : void {
+         var so:CustomSharedObject = CustomSharedObject.getLocal("uid");
+         if(!so.data["identity"])
+         {
+            this._identity=this.getRandomFlashKey();
+            so.data["identity"]=this._identity;
+            so.flush();
+         }
+         else
+         {
+            this._identity=so.data["identity"];
+         }
+         so.close();
+      }
+
+      public function update() : void {
+         this._master=InterClientMaster.etreLeCalif();
+         if((!this._master)&&(!this._client))
+         {
+            this._client=new InterClientSlave();
+            this._client.retreiveUid();
+         }
+         if((this._master)&&(this._client))
+         {
+            try
             {
-                
-                _loc_1 = _loc_1 + this.getRandomChar();
-                _loc_3 = _loc_3 + 1;
+               this._client.destroy();
+               this._client=null;
             }
-            return _loc_1 + this.checksum(_loc_1);
-        }// end function
-
-        private function checksum(param1:String) : String
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.length)
+            catch(ae:ArgumentError)
             {
-                
-                _loc_2 = _loc_2 + param1.charCodeAt(_loc_3) % 16;
-                _loc_3 = _loc_3 + 1;
+               _log.warn("Closing a disconnected LocalConnection in update(). Exception catched.");
             }
-            return this.hex_chars[_loc_2 % 16];
-        }// end function
+            this.gainFocus();
+         }
+      }
 
-        private function getRandomChar() : String
-        {
-            var _loc_1:* = Math.ceil(Math.random() * 100);
-            if (_loc_1 <= 40)
+      public function gainFocus() : void {
+         var date:Number = new Date().time;
+         if(this._client)
+         {
+            this._client.gainFocus(date);
+         }
+         else
+         {
+            if(this._master)
             {
-                return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+               this._master.clientGainFocus("_dofus,"+new Date().time);
             }
-            if (_loc_1 <= 80)
+         }
+      }
+
+      public function resetFocus() : void {
+         if(this._client)
+         {
+            this._client.gainFocus(0);
+         }
+         else
+         {
+            if(this._master)
             {
-                return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+               this._master.clientGainFocus("_dofus,0");
             }
-            return String.fromCharCode(Math.floor(Math.random() * 10) + 48);
-        }// end function
+         }
+      }
 
-        public static function getInstance() : InterClientManager
-        {
-            if (!_self)
-            {
-                _self = new InterClientManager;
-            }
-            return _self;
-        }// end function
+      public function updateFocusList() : void {
+         var clientId:String = this._master?"_dofus":this._client.connId;
+         DofusFpsManager.updateFocusList(this.clientListInfo,clientId);
+      }
 
-        public static function destroy() : void
-        {
-            if (_self)
-            {
-                try
-                {
-                    if (_self._client)
-                    {
-                        _self._client.destroy();
-                    }
-                    if (_self._master)
-                    {
-                        _self._master.destroy();
-                    }
-                }
-                catch (ae:ArgumentError)
-                {
-                    _log.warn("Closing a disconnected LocalConnection in destroy(). Exception catched.");
-                }
-            }
-            return;
-        }// end function
+      private function getRandomFlashKey() : String {
+         var sSentance:String = "";
+         var nLen:Number = 20;
+         var i:Number = 0;
+         while(i<nLen)
+         {
+            sSentance=sSentance+this.getRandomChar();
+            i++;
+         }
+         return sSentance+this.checksum(sSentance);
+      }
 
-        public static function isMaster() : Boolean
-        {
-            return getInstance()._master != null;
-        }// end function
+      private function checksum(s:String) : String {
+         var r:Number = 0;
+         var i:Number = 0;
+         while(i<s.length)
+         {
+            r=r+s.charCodeAt(i)%16;
+            i++;
+         }
+         return this.hex_chars[r%16];
+      }
 
-    }
+      private function getRandomChar() : String {
+         var n:Number = Math.ceil(Math.random()*100);
+         if(n<=40)
+         {
+            return String.fromCharCode(Math.floor(Math.random()*26)+65);
+         }
+         if(n<=80)
+         {
+            return String.fromCharCode(Math.floor(Math.random()*26)+97);
+         }
+         return String.fromCharCode(Math.floor(Math.random()*10)+48);
+      }
+   }
+
 }

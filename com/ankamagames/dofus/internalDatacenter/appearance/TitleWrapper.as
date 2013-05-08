@@ -1,169 +1,162 @@
-﻿package com.ankamagames.dofus.internalDatacenter.appearance
+package com.ankamagames.dofus.internalDatacenter.appearance
 {
-    import com.ankamagames.dofus.datacenter.appearance.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import flash.utils.Proxy;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.dofus.datacenter.appearance.Title;
+   import flash.utils.flash_proxy;
+   import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
 
-    public class TitleWrapper extends Proxy implements IDataCenter, ISlotData
-    {
-        private var _uri:Uri;
-        public var id:uint = 0;
-        public var text:String;
-        public var isOkForMultiUse:Boolean = false;
-        public var quantity:uint = 1;
-        private static var _cache:Array = new Array();
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(TitleWrapper));
+   use namespace flash_proxy;
 
-        public function TitleWrapper()
-        {
-            return;
-        }// end function
+   public class TitleWrapper extends Proxy implements IDataCenter, ISlotData
+   {
+         
 
-        public function get iconUri() : Uri
-        {
-            if (!this._uri)
+      public function TitleWrapper() {
+         super();
+      }
+
+      private static var _cache:Array = new Array();
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TitleWrapper));
+
+      public static function create(titleId:uint, position:int=-1, useCache:Boolean=true) : TitleWrapper {
+         var title:TitleWrapper = new TitleWrapper();
+         if((!_cache[titleId])||(!useCache))
+         {
+            title=new TitleWrapper();
+            title.id=titleId;
+            if(useCache)
             {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/illusUi/genericTitleIcon.png"));
+               _cache[titleId]=title;
             }
-            return this._uri;
-        }// end function
+         }
+         else
+         {
+            title=_cache[titleId];
+         }
+         title.id=titleId;
+         title.text=title.text;
+         return title;
+      }
 
-        public function get fullSizeIconUri() : Uri
-        {
-            if (!this._uri)
-            {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/illusUi/genericTitleIcon.png"));
-            }
-            return this._uri;
-        }// end function
+      public static function getTitleWrapperById(id:uint) : TitleWrapper {
+         return _cache[id];
+      }
 
-        public function get backGroundIconUri() : Uri
-        {
-            return null;
-        }// end function
+      private var _uri:Uri;
 
-        public function get errorIconUri() : Uri
-        {
-            return null;
-        }// end function
+      public var id:uint = 0;
 
-        public function get info1() : String
-        {
-            return null;
-        }// end function
+      public var text:String;
 
-        public function get timer() : int
-        {
-            return 0;
-        }// end function
+      public var isOkForMultiUse:Boolean = false;
 
-        public function set timerToStart(param1:int) : void
-        {
-            return;
-        }// end function
+      public var quantity:uint = 1;
 
-        public function get active() : Boolean
-        {
-            return true;
-        }// end function
+      public function get iconUri() : Uri {
+         if(!this._uri)
+         {
+            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/illusUi/genericTitleIcon.png"));
+         }
+         return this._uri;
+      }
 
-        public function get title() : Title
-        {
-            return Title.getTitleById(this.id);
-        }// end function
+      public function get fullSizeIconUri() : Uri {
+         if(!this._uri)
+         {
+            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/illusUi/genericTitleIcon.png"));
+         }
+         return this._uri;
+      }
 
-        public function get titleId() : uint
-        {
-            return this.id;
-        }// end function
+      public function get backGroundIconUri() : Uri {
+         return null;
+      }
 
-        public function get isUsable() : Boolean
-        {
-            return false;
-        }// end function
+      public function get errorIconUri() : Uri {
+         return null;
+      }
 
-        override function getProperty(param1)
-        {
-            var t:*;
-            var r:*;
-            var name:* = param1;
-            if (isAttribute(name))
-            {
-                return this[name];
-            }
-            t = this.title;
-            if (!t)
-            {
-                r;
-            }
-            try
-            {
-                return t[name];
-            }
-            catch (e:Error)
-            {
-                return "Error_on_item_" + name;
-            }
-            return;
-        }// end function
+      public function get info1() : String {
+         return null;
+      }
 
-        override function hasProperty(param1) : Boolean
-        {
-            return isAttribute(param1);
-        }// end function
+      public function get timer() : int {
+         return 0;
+      }
 
-        public function toString() : String
-        {
-            return "[TitleWrapper#" + this.id + "]";
-        }// end function
+      public function set timerToStart(t:int) : void {
+         
+      }
 
-        public function addHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      public function get active() : Boolean {
+         return true;
+      }
 
-        public function removeHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      public function get title() : Title {
+         return Title.getTitleById(this.id);
+      }
 
-        public function getIconUri(param1:Boolean = true) : Uri
-        {
-            if (!this._uri)
-            {
-                this._uri = new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/illusUi/genericTitleIcon.png"));
-            }
-            return this._uri;
-        }// end function
+      public function get titleId() : uint {
+         return this.id;
+      }
 
-        public static function create(param1:uint, param2:int = -1, param3:Boolean = true) : TitleWrapper
-        {
-            var _loc_4:* = new TitleWrapper;
-            if (!_cache[param1] || !param3)
-            {
-                _loc_4 = new TitleWrapper;
-                _loc_4.id = param1;
-                if (param3)
-                {
-                    _cache[param1] = _loc_4;
-                }
-            }
-            else
-            {
-                _loc_4 = _cache[param1];
-            }
-            _loc_4.id = param1;
-            _loc_4.text = _loc_4.text;
-            return _loc_4;
-        }// end function
+      public function get isUsable() : Boolean {
+         return false;
+      }
 
-        public static function getTitleWrapperById(param1:uint) : TitleWrapper
-        {
-            return _cache[param1];
-        }// end function
+      override flash_proxy function getProperty(name:*) : * {
+         var t:* = undefined;
+         var r:* = undefined;
+         if(isAttribute(name))
+         {
+            return this[name];
+         }
+         t=this.title;
+         if(!t)
+         {
+            r="";
+         }
+         try
+         {
+            return t[name];
+         }
+         catch(e:Error)
+         {
+            return "Error_on_item_"+name;
+         }
+      }
 
-    }
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
+      }
+
+      public function toString() : String {
+         return "[TitleWrapper#"+this.id+"]";
+      }
+
+      public function addHolder(h:ISlotDataHolder) : void {
+         
+      }
+
+      public function removeHolder(h:ISlotDataHolder) : void {
+         
+      }
+
+      public function getIconUri(pngMode:Boolean=true) : Uri {
+         if(!this._uri)
+         {
+            this._uri=new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/illusUi/genericTitleIcon.png"));
+         }
+         return this._uri;
+      }
+   }
+
 }

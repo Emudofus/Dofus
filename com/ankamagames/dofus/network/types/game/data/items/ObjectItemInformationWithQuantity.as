@@ -1,71 +1,72 @@
-﻿package com.ankamagames.dofus.network.types.game.data.items
+package com.ankamagames.dofus.network.types.game.data.items
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class ObjectItemInformationWithQuantity extends ObjectItemMinimalInformation implements INetworkType
-    {
-        public var quantity:uint = 0;
-        public static const protocolId:uint = 387;
 
-        public function ObjectItemInformationWithQuantity()
-        {
+   public class ObjectItemInformationWithQuantity extends ObjectItemMinimalInformation implements INetworkType
+   {
+         
+
+      public function ObjectItemInformationWithQuantity() {
+         super();
+      }
+
+      public static const protocolId:uint = 387;
+
+      public var quantity:uint = 0;
+
+      override public function getTypeId() : uint {
+         return 387;
+      }
+
+      public function initObjectItemInformationWithQuantity(objectGID:uint=0, powerRate:int=0, overMax:Boolean=false, effects:Vector.<ObjectEffect>=null, quantity:uint=0) : ObjectItemInformationWithQuantity {
+         super.initObjectItemMinimalInformation(objectGID,powerRate,overMax,effects);
+         this.quantity=quantity;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.quantity=0;
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectItemInformationWithQuantity(output);
+      }
+
+      public function serializeAs_ObjectItemInformationWithQuantity(output:IDataOutput) : void {
+         super.serializeAs_ObjectItemMinimalInformation(output);
+         if(this.quantity<0)
+         {
+            throw new Error("Forbidden value ("+this.quantity+") on element quantity.");
+         }
+         else
+         {
+            output.writeInt(this.quantity);
             return;
-        }// end function
+         }
+      }
 
-        override public function getTypeId() : uint
-        {
-            return 387;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectItemInformationWithQuantity(input);
+      }
 
-        public function initObjectItemInformationWithQuantity(param1:uint = 0, param2:int = 0, param3:Boolean = false, param4:Vector.<ObjectEffect> = null, param5:uint = 0) : ObjectItemInformationWithQuantity
-        {
-            super.initObjectItemMinimalInformation(param1, param2, param3, param4);
-            this.quantity = param5;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.quantity = 0;
+      public function deserializeAs_ObjectItemInformationWithQuantity(input:IDataInput) : void {
+         super.deserialize(input);
+         this.quantity=input.readInt();
+         if(this.quantity<0)
+         {
+            throw new Error("Forbidden value ("+this.quantity+") on element of ObjectItemInformationWithQuantity.quantity.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ObjectItemInformationWithQuantity(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ObjectItemInformationWithQuantity(param1:IDataOutput) : void
-        {
-            super.serializeAs_ObjectItemMinimalInformation(param1);
-            if (this.quantity < 0)
-            {
-                throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
-            }
-            param1.writeInt(this.quantity);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ObjectItemInformationWithQuantity(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ObjectItemInformationWithQuantity(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.quantity = param1.readInt();
-            if (this.quantity < 0)
-            {
-                throw new Error("Forbidden value (" + this.quantity + ") on element of ObjectItemInformationWithQuantity.quantity.");
-            }
-            return;
-        }// end function
-
-    }
 }

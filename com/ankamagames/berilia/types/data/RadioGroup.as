@@ -1,92 +1,84 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.berilia.interfaces.IRadioItem;
 
-    public class RadioGroup extends Object
-    {
-        private var _items:Array;
-        private var _selected:IRadioItem;
-        public var name:String;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(RadioGroup));
 
-        public function RadioGroup(param1:String)
-        {
-            this.name = param1;
-            this._items = new Array();
-            return;
-        }// end function
+   public class RadioGroup extends Object
+   {
+         
 
-        public function addItem(param1:IRadioItem) : void
-        {
-            this._items[param1.id] = param1;
-            if (param1.selected)
+      public function RadioGroup(name:String) {
+         super();
+         this.name=name;
+         this._items=new Array();
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RadioGroup));
+
+      private var _items:Array;
+
+      private var _selected:IRadioItem;
+
+      public var name:String;
+
+      public function addItem(item:IRadioItem) : void {
+         this._items[item.id]=item;
+         if(item.selected)
+         {
+            this._selected=item;
+         }
+      }
+
+      public function removeItem(item:IRadioItem) : void {
+         delete this._items[[item.id]];
+      }
+
+      public function destroy() : void {
+         this._items=null;
+         this._selected=null;
+      }
+
+      public function get value() : * {
+         if(this._selected)
+         {
+            return this._selected.value;
+         }
+         return null;
+      }
+
+      public function set value(v:*) : void {
+         var item:IRadioItem = null;
+         for each (item in this._items)
+         {
+            if(item.value==v)
             {
-                this._selected = param1;
+               this.selectedItem=item;
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function removeItem(param1:IRadioItem) : void
-        {
-            delete this._items[param1.id];
+      public function set selectedItem(item:IRadioItem) : void {
+         var currentItem:IRadioItem = null;
+         if(this._selected==item)
+         {
             return;
-        }// end function
-
-        public function destroy() : void
-        {
-            this._items = null;
-            this._selected = null;
-            return;
-        }// end function
-
-        public function get value()
-        {
-            if (this._selected)
+         }
+         for each (currentItem in this._items)
+         {
+            if(currentItem.selected!=item==currentItem)
             {
-                return this._selected.value;
+               currentItem.selected=item==currentItem;
             }
-            return null;
-        }// end function
+         }
+         this._selected=item;
+      }
 
-        public function set value(param1) : void
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this._items)
-            {
-                
-                if (_loc_2.value == param1)
-                {
-                    this.selectedItem = _loc_2;
-                }
-            }
-            return;
-        }// end function
+      public function get selectedItem() : IRadioItem {
+         return this._selected;
+      }
+   }
 
-        public function set selectedItem(param1:IRadioItem) : void
-        {
-            var _loc_2:* = null;
-            if (this._selected == param1)
-            {
-                return;
-            }
-            for each (_loc_2 in this._items)
-            {
-                
-                if (_loc_2.selected != (param1 == _loc_2))
-                {
-                    _loc_2.selected = param1 == _loc_2;
-                }
-            }
-            this._selected = param1;
-            return;
-        }// end function
-
-        public function get selectedItem() : IRadioItem
-        {
-            return this._selected;
-        }// end function
-
-    }
 }

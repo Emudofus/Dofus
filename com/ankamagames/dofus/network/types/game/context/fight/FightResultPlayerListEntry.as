@@ -1,98 +1,97 @@
-﻿package com.ankamagames.dofus.network.types.game.context.fight
+package com.ankamagames.dofus.network.types.game.context.fight
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class FightResultPlayerListEntry extends FightResultFighterListEntry implements INetworkType
-    {
-        public var level:uint = 0;
-        public var additional:Vector.<FightResultAdditionalData>;
-        public static const protocolId:uint = 24;
 
-        public function FightResultPlayerListEntry()
-        {
-            this.additional = new Vector.<FightResultAdditionalData>;
-            return;
-        }// end function
+   public class FightResultPlayerListEntry extends FightResultFighterListEntry implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 24;
-        }// end function
+      public function FightResultPlayerListEntry() {
+         this.additional=new Vector.<FightResultAdditionalData>();
+         super();
+      }
 
-        public function initFightResultPlayerListEntry(param1:uint = 0, param2:FightLoot = null, param3:int = 0, param4:Boolean = false, param5:uint = 0, param6:Vector.<FightResultAdditionalData> = null) : FightResultPlayerListEntry
-        {
-            super.initFightResultFighterListEntry(param1, param2, param3, param4);
-            this.level = param5;
-            this.additional = param6;
-            return this;
-        }// end function
+      public static const protocolId:uint = 24;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.level = 0;
-            this.additional = new Vector.<FightResultAdditionalData>;
-            return;
-        }// end function
+      public var level:uint = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_FightResultPlayerListEntry(param1);
-            return;
-        }// end function
+      public var additional:Vector.<FightResultAdditionalData>;
 
-        public function serializeAs_FightResultPlayerListEntry(param1:IDataOutput) : void
-        {
-            super.serializeAs_FightResultFighterListEntry(param1);
-            if (this.level < 1 || this.level > 200)
+      override public function getTypeId() : uint {
+         return 24;
+      }
+
+      public function initFightResultPlayerListEntry(outcome:uint=0, rewards:FightLoot=null, id:int=0, alive:Boolean=false, level:uint=0, additional:Vector.<FightResultAdditionalData>=null) : FightResultPlayerListEntry {
+         super.initFightResultFighterListEntry(outcome,rewards,id,alive);
+         this.level=level;
+         this.additional=additional;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.level=0;
+         this.additional=new Vector.<FightResultAdditionalData>();
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightResultPlayerListEntry(output);
+      }
+
+      public function serializeAs_FightResultPlayerListEntry(output:IDataOutput) : void {
+         super.serializeAs_FightResultFighterListEntry(output);
+         if((this.level>1)||(this.level<200))
+         {
+            throw new Error("Forbidden value ("+this.level+") on element level.");
+         }
+         else
+         {
+            output.writeByte(this.level);
+            output.writeShort(this.additional.length);
+            _i2=0;
+            while(_i2<this.additional.length)
             {
-                throw new Error("Forbidden value (" + this.level + ") on element level.");
-            }
-            param1.writeByte(this.level);
-            param1.writeShort(this.additional.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.additional.length)
-            {
-                
-                param1.writeShort((this.additional[_loc_2] as FightResultAdditionalData).getTypeId());
-                (this.additional[_loc_2] as FightResultAdditionalData).serialize(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_FightResultPlayerListEntry(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_FightResultPlayerListEntry(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            super.deserialize(param1);
-            this.level = param1.readUnsignedByte();
-            if (this.level < 1 || this.level > 200)
-            {
-                throw new Error("Forbidden value (" + this.level + ") on element of FightResultPlayerListEntry.level.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUnsignedShort();
-                _loc_5 = ProtocolTypeManager.getInstance(FightResultAdditionalData, _loc_4);
-                _loc_5.deserialize(param1);
-                this.additional.push(_loc_5);
-                _loc_3 = _loc_3 + 1;
+               output.writeShort((this.additional[_i2] as FightResultAdditionalData).getTypeId());
+               (this.additional[_i2] as FightResultAdditionalData).serialize(output);
+               _i2++;
             }
             return;
-        }// end function
+         }
+      }
 
-    }
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightResultPlayerListEntry(input);
+      }
+
+      public function deserializeAs_FightResultPlayerListEntry(input:IDataInput) : void {
+         var _id2:uint = 0;
+         var _item2:FightResultAdditionalData = null;
+         super.deserialize(input);
+         this.level=input.readUnsignedByte();
+         if((this.level>1)||(this.level<200))
+         {
+            throw new Error("Forbidden value ("+this.level+") on element of FightResultPlayerListEntry.level.");
+         }
+         else
+         {
+            _additionalLen=input.readUnsignedShort();
+            _i2=0;
+            while(_i2<_additionalLen)
+            {
+               _id2=input.readUnsignedShort();
+               _item2=ProtocolTypeManager.getInstance(FightResultAdditionalData,_id2);
+               _item2.deserialize(input);
+               this.additional.push(_item2);
+               _i2++;
+            }
+            return;
+         }
+      }
+   }
+
 }

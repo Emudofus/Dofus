@@ -1,15 +1,17 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.tiphon.display.*;
+   import com.ankamagames.tiphon.display.TiphonSprite;
 
-    public interface ISubEntityBehavior
-    {
 
-        public function ISubEntityBehavior();
+   public interface ISubEntityBehavior
+   {
+         
 
-        function updateFromParentEntity(param1:TiphonSprite, param2:BehaviorData) : void;
 
-        function remove() : void;
 
-    }
+      function updateFromParentEntity(param1:TiphonSprite, param2:BehaviorData) : void;
+
+      function remove() : void;
+   }
+
 }

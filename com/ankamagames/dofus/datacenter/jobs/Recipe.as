@@ -1,95 +1,96 @@
-﻿package com.ankamagames.dofus.datacenter.jobs
+package com.ankamagames.dofus.datacenter.jobs
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.internalDatacenter.jobs.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.jobs.RecipeWithSkill;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
 
-    public class Recipe extends Object implements IDataCenter
-    {
-        public var resultId:int;
-        public var resultLevel:uint;
-        public var ingredientIds:Vector.<int>;
-        public var quantities:Vector.<uint>;
-        private var _result:ItemWrapper;
-        private var _ingredients:Vector.<ItemWrapper>;
-        private static const MODULE:String = "Recipes";
 
-        public function Recipe()
-        {
-            return;
-        }// end function
+   public class Recipe extends Object implements IDataCenter
+   {
+         
 
-        public function get result() : ItemWrapper
-        {
-            if (!this._result)
+      public function Recipe() {
+         super();
+      }
+
+      public static const MODULE:String = "Recipes";
+
+      public static function getRecipeByResultId(resultId:int) : Recipe {
+         return GameData.getObject(MODULE,resultId) as Recipe;
+      }
+
+      public static function getAllRecipesForSkillId(pSkillId:uint, pMaxCase:uint) : Array {
+         var result:* = 0;
+         var recipe:Recipe = null;
+         var recipeSlots:uint = 0;
+         var recipes:Array = new Array();
+         var craftables:Vector.<int> = Skill.getSkillById(pSkillId).craftableItemIds;
+         for each (result in craftables)
+         {
+            recipe=getRecipeByResultId(result);
+            if(recipe)
             {
-                this._result = ItemWrapper.create(0, 0, this.resultId, 0, null, false);
+               recipeSlots=recipe.ingredientIds.length;
+               if(recipeSlots<=pMaxCase)
+               {
+                  recipes.push(new RecipeWithSkill(recipe,Skill.getSkillById(pSkillId)));
+               }
             }
-            return this._result;
-        }// end function
+         }
+         recipes=recipes.sort(skillSortFunction);
+         return recipes;
+      }
 
-        public function get ingredients() : Vector.<ItemWrapper>
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = 0;
-            if (!this._ingredients)
+      private static function skillSortFunction(a:RecipeWithSkill, b:RecipeWithSkill) : Number {
+         if(a.recipe.quantities.length>b.recipe.quantities.length)
+         {
+            return -1;
+         }
+         if(a.recipe.quantities.length==b.recipe.quantities.length)
+         {
+            return 0;
+         }
+         return 1;
+      }
+
+      public var resultId:int;
+
+      public var resultLevel:uint;
+
+      public var ingredientIds:Vector.<int>;
+
+      public var quantities:Vector.<uint>;
+
+      private var _result:ItemWrapper;
+
+      private var _ingredients:Vector.<ItemWrapper>;
+
+      public function get result() : ItemWrapper {
+         if(!this._result)
+         {
+            this._result=ItemWrapper.create(0,0,this.resultId,0,null,false);
+         }
+         return this._result;
+      }
+
+      public function get ingredients() : Vector.<ItemWrapper> {
+         var ingredientsCount:uint = 0;
+         var i:uint = 0;
+         if(!this._ingredients)
+         {
+            ingredientsCount=this.ingredientIds.length;
+            this._ingredients=new Vector.<ItemWrapper>(ingredientsCount,true);
+            i=0;
+            while(i<ingredientsCount)
             {
-                _loc_1 = this.ingredientIds.length;
-                this._ingredients = new Vector.<ItemWrapper>(_loc_1, true);
-                _loc_2 = 0;
-                while (_loc_2 < _loc_1)
-                {
-                    
-                    this._ingredients[_loc_2] = ItemWrapper.create(0, 0, this.ingredientIds[_loc_2], this.quantities[_loc_2], null, false);
-                    _loc_2 = _loc_2 + 1;
-                }
+               this._ingredients[i]=ItemWrapper.create(0,0,this.ingredientIds[i],this.quantities[i],null,false);
+               i++;
             }
-            return this._ingredients;
-        }// end function
+         }
+         return this._ingredients;
+      }
+   }
 
-        public static function getRecipeByResultId(param1:int) : Recipe
-        {
-            return GameData.getObject(MODULE, param1) as Recipe;
-        }// end function
-
-        public static function getAllRecipesForSkillId(param1:uint, param2:uint) : Array
-        {
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_3:* = new Array();
-            var _loc_4:* = Skill.getSkillById(param1).craftableItemIds;
-            for each (_loc_5 in _loc_4)
-            {
-                
-                _loc_6 = getRecipeByResultId(_loc_5);
-                if (_loc_6)
-                {
-                    _loc_7 = _loc_6.ingredientIds.length;
-                    if (_loc_7 <= param2)
-                    {
-                        _loc_3.push(new RecipeWithSkill(_loc_6, Skill.getSkillById(param1)));
-                    }
-                }
-            }
-            _loc_3 = _loc_3.sort(skillSortFunction);
-            return _loc_3;
-        }// end function
-
-        private static function skillSortFunction(param1:RecipeWithSkill, param2:RecipeWithSkill) : Number
-        {
-            if (param1.recipe.quantities.length > param2.recipe.quantities.length)
-            {
-                return -1;
-            }
-            if (param1.recipe.quantities.length == param2.recipe.quantities.length)
-            {
-                return 0;
-            }
-            return 1;
-        }// end function
-
-    }
 }

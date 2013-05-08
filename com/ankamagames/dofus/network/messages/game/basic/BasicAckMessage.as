@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.basic
+package com.ankamagames.dofus.network.messages.game.basic
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class BasicAckMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var seq:uint = 0;
-        public var lastPacketId:uint = 0;
-        public static const protocolId:uint = 6362;
 
-        public function BasicAckMessage()
-        {
-            return;
-        }// end function
+   public class BasicAckMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function BasicAckMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6362;
-        }// end function
+      public static const protocolId:uint = 6362;
 
-        public function initBasicAckMessage(param1:uint = 0, param2:uint = 0) : BasicAckMessage
-        {
-            this.seq = param1;
-            this.lastPacketId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.seq = 0;
-            this.lastPacketId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var seq:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var lastPacketId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_BasicAckMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6362;
+      }
 
-        public function serializeAs_BasicAckMessage(param1:IDataOutput) : void
-        {
-            if (this.seq < 0)
+      public function initBasicAckMessage(seq:uint=0, lastPacketId:uint=0) : BasicAckMessage {
+         this.seq=seq;
+         this.lastPacketId=lastPacketId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.seq=0;
+         this.lastPacketId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicAckMessage(output);
+      }
+
+      public function serializeAs_BasicAckMessage(output:IDataOutput) : void {
+         if(this.seq<0)
+         {
+            throw new Error("Forbidden value ("+this.seq+") on element seq.");
+         }
+         else
+         {
+            output.writeInt(this.seq);
+            if(this.lastPacketId<0)
             {
-                throw new Error("Forbidden value (" + this.seq + ") on element seq.");
+               throw new Error("Forbidden value ("+this.lastPacketId+") on element lastPacketId.");
             }
-            param1.writeInt(this.seq);
-            if (this.lastPacketId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.lastPacketId + ") on element lastPacketId.");
+               output.writeShort(this.lastPacketId);
+               return;
             }
-            param1.writeShort(this.lastPacketId);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_BasicAckMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicAckMessage(input);
+      }
 
-        public function deserializeAs_BasicAckMessage(param1:IDataInput) : void
-        {
-            this.seq = param1.readInt();
-            if (this.seq < 0)
+      public function deserializeAs_BasicAckMessage(input:IDataInput) : void {
+         this.seq=input.readInt();
+         if(this.seq<0)
+         {
+            throw new Error("Forbidden value ("+this.seq+") on element of BasicAckMessage.seq.");
+         }
+         else
+         {
+            this.lastPacketId=input.readShort();
+            if(this.lastPacketId<0)
             {
-                throw new Error("Forbidden value (" + this.seq + ") on element of BasicAckMessage.seq.");
+               throw new Error("Forbidden value ("+this.lastPacketId+") on element of BasicAckMessage.lastPacketId.");
             }
-            this.lastPacketId = param1.readShort();
-            if (this.lastPacketId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.lastPacketId + ") on element of BasicAckMessage.lastPacketId.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

@@ -1,14 +1,18 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    final public class BackgroundColor extends Object
-    {
-        public static const TRANSPARENT:String = "transparent";
 
-        public function BackgroundColor()
-        {
-            return;
-        }// end function
+   public final class BackgroundColor extends Object
+   {
+         
 
-    }
+      public function BackgroundColor() {
+         super();
+      }
+
+      public static const TRANSPARENT:String = "transparent";
+
+
+   }
+
 }

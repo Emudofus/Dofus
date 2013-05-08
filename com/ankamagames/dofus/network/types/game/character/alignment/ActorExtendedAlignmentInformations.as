@@ -1,101 +1,116 @@
-﻿package com.ankamagames.dofus.network.types.game.character.alignment
+package com.ankamagames.dofus.network.types.game.character.alignment
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class ActorExtendedAlignmentInformations extends ActorAlignmentInformations implements INetworkType
-    {
-        public var honor:uint = 0;
-        public var honorGradeFloor:uint = 0;
-        public var honorNextGradeFloor:uint = 0;
-        public var pvpEnabled:Boolean = false;
-        public static const protocolId:uint = 202;
 
-        public function ActorExtendedAlignmentInformations()
-        {
-            return;
-        }// end function
+   public class ActorExtendedAlignmentInformations extends ActorAlignmentInformations implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 202;
-        }// end function
+      public function ActorExtendedAlignmentInformations() {
+         super();
+      }
 
-        public function initActorExtendedAlignmentInformations(param1:int = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0, param6:uint = 0, param7:uint = 0, param8:uint = 0, param9:Boolean = false) : ActorExtendedAlignmentInformations
-        {
-            super.initActorAlignmentInformations(param1, param2, param3, param4, param5);
-            this.honor = param6;
-            this.honorGradeFloor = param7;
-            this.honorNextGradeFloor = param8;
-            this.pvpEnabled = param9;
-            return this;
-        }// end function
+      public static const protocolId:uint = 202;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.honor = 0;
-            this.honorGradeFloor = 0;
-            this.honorNextGradeFloor = 0;
-            this.pvpEnabled = false;
-            return;
-        }// end function
+      public var honor:uint = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ActorExtendedAlignmentInformations(param1);
-            return;
-        }// end function
+      public var honorGradeFloor:uint = 0;
 
-        public function serializeAs_ActorExtendedAlignmentInformations(param1:IDataOutput) : void
-        {
-            super.serializeAs_ActorAlignmentInformations(param1);
-            if (this.honor < 0 || this.honor > 20000)
+      public var honorNextGradeFloor:uint = 0;
+
+      public var pvpEnabled:Boolean = false;
+
+      override public function getTypeId() : uint {
+         return 202;
+      }
+
+      public function initActorExtendedAlignmentInformations(alignmentSide:int=0, alignmentValue:uint=0, alignmentGrade:uint=0, dishonor:uint=0, characterPower:uint=0, honor:uint=0, honorGradeFloor:uint=0, honorNextGradeFloor:uint=0, pvpEnabled:Boolean=false) : ActorExtendedAlignmentInformations {
+         super.initActorAlignmentInformations(alignmentSide,alignmentValue,alignmentGrade,dishonor,characterPower);
+         this.honor=honor;
+         this.honorGradeFloor=honorGradeFloor;
+         this.honorNextGradeFloor=honorNextGradeFloor;
+         this.pvpEnabled=pvpEnabled;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.honor=0;
+         this.honorGradeFloor=0;
+         this.honorNextGradeFloor=0;
+         this.pvpEnabled=false;
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ActorExtendedAlignmentInformations(output);
+      }
+
+      public function serializeAs_ActorExtendedAlignmentInformations(output:IDataOutput) : void {
+         super.serializeAs_ActorAlignmentInformations(output);
+         if((this.honor>0)||(this.honor<20000))
+         {
+            throw new Error("Forbidden value ("+this.honor+") on element honor.");
+         }
+         else
+         {
+            output.writeShort(this.honor);
+            if((this.honorGradeFloor>0)||(this.honorGradeFloor<20000))
             {
-                throw new Error("Forbidden value (" + this.honor + ") on element honor.");
+               throw new Error("Forbidden value ("+this.honorGradeFloor+") on element honorGradeFloor.");
             }
-            param1.writeShort(this.honor);
-            if (this.honorGradeFloor < 0 || this.honorGradeFloor > 20000)
+            else
             {
-                throw new Error("Forbidden value (" + this.honorGradeFloor + ") on element honorGradeFloor.");
+               output.writeShort(this.honorGradeFloor);
+               if((this.honorNextGradeFloor>0)||(this.honorNextGradeFloor<20000))
+               {
+                  throw new Error("Forbidden value ("+this.honorNextGradeFloor+") on element honorNextGradeFloor.");
+               }
+               else
+               {
+                  output.writeShort(this.honorNextGradeFloor);
+                  output.writeBoolean(this.pvpEnabled);
+                  return;
+               }
             }
-            param1.writeShort(this.honorGradeFloor);
-            if (this.honorNextGradeFloor < 0 || this.honorNextGradeFloor > 20000)
-            {
-                throw new Error("Forbidden value (" + this.honorNextGradeFloor + ") on element honorNextGradeFloor.");
-            }
-            param1.writeShort(this.honorNextGradeFloor);
-            param1.writeBoolean(this.pvpEnabled);
-            return;
-        }// end function
+         }
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ActorExtendedAlignmentInformations(param1);
-            return;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ActorExtendedAlignmentInformations(input);
+      }
 
-        public function deserializeAs_ActorExtendedAlignmentInformations(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.honor = param1.readUnsignedShort();
-            if (this.honor < 0 || this.honor > 20000)
+      public function deserializeAs_ActorExtendedAlignmentInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.honor=input.readUnsignedShort();
+         if((this.honor>0)||(this.honor<20000))
+         {
+            throw new Error("Forbidden value ("+this.honor+") on element of ActorExtendedAlignmentInformations.honor.");
+         }
+         else
+         {
+            this.honorGradeFloor=input.readUnsignedShort();
+            if((this.honorGradeFloor>0)||(this.honorGradeFloor<20000))
             {
-                throw new Error("Forbidden value (" + this.honor + ") on element of ActorExtendedAlignmentInformations.honor.");
+               throw new Error("Forbidden value ("+this.honorGradeFloor+") on element of ActorExtendedAlignmentInformations.honorGradeFloor.");
             }
-            this.honorGradeFloor = param1.readUnsignedShort();
-            if (this.honorGradeFloor < 0 || this.honorGradeFloor > 20000)
+            else
             {
-                throw new Error("Forbidden value (" + this.honorGradeFloor + ") on element of ActorExtendedAlignmentInformations.honorGradeFloor.");
+               this.honorNextGradeFloor=input.readUnsignedShort();
+               if((this.honorNextGradeFloor>0)||(this.honorNextGradeFloor<20000))
+               {
+                  throw new Error("Forbidden value ("+this.honorNextGradeFloor+") on element of ActorExtendedAlignmentInformations.honorNextGradeFloor.");
+               }
+               else
+               {
+                  this.pvpEnabled=input.readBoolean();
+                  return;
+               }
             }
-            this.honorNextGradeFloor = param1.readUnsignedShort();
-            if (this.honorNextGradeFloor < 0 || this.honorNextGradeFloor > 20000)
-            {
-                throw new Error("Forbidden value (" + this.honorNextGradeFloor + ") on element of ActorExtendedAlignmentInformations.honorNextGradeFloor.");
-            }
-            this.pvpEnabled = param1.readBoolean();
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

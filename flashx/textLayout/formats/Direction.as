@@ -1,15 +1,20 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    final public class Direction extends Object
-    {
-        public static const LTR:String = "ltr";
-        public static const RTL:String = "rtl";
 
-        public function Direction()
-        {
-            return;
-        }// end function
+   public final class Direction extends Object
+   {
+         
 
-    }
+      public function Direction() {
+         super();
+      }
+
+      public static const LTR:String = "ltr";
+
+      public static const RTL:String = "rtl";
+
+
+   }
+
 }

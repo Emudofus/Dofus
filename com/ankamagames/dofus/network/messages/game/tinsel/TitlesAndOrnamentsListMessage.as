@@ -1,162 +1,181 @@
-﻿package com.ankamagames.dofus.network.messages.game.tinsel
+package com.ankamagames.dofus.network.messages.game.tinsel
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class TitlesAndOrnamentsListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var titles:Vector.<uint>;
-        public var ornaments:Vector.<uint>;
-        public var activeTitle:uint = 0;
-        public var activeOrnament:uint = 0;
-        public static const protocolId:uint = 6367;
 
-        public function TitlesAndOrnamentsListMessage()
-        {
-            this.titles = new Vector.<uint>;
-            this.ornaments = new Vector.<uint>;
-            return;
-        }// end function
+   public class TitlesAndOrnamentsListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function TitlesAndOrnamentsListMessage() {
+         this.titles=new Vector.<uint>();
+         this.ornaments=new Vector.<uint>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6367;
-        }// end function
+      public static const protocolId:uint = 6367;
 
-        public function initTitlesAndOrnamentsListMessage(param1:Vector.<uint> = null, param2:Vector.<uint> = null, param3:uint = 0, param4:uint = 0) : TitlesAndOrnamentsListMessage
-        {
-            this.titles = param1;
-            this.ornaments = param2;
-            this.activeTitle = param3;
-            this.activeOrnament = param4;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.titles = new Vector.<uint>;
-            this.ornaments = new Vector.<uint>;
-            this.activeTitle = 0;
-            this.activeOrnament = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var titles:Vector.<uint>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var ornaments:Vector.<uint>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_TitlesAndOrnamentsListMessage(param1);
-            return;
-        }// end function
+      public var activeTitle:uint = 0;
 
-        public function serializeAs_TitlesAndOrnamentsListMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.titles.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.titles.length)
+      public var activeOrnament:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6367;
+      }
+
+      public function initTitlesAndOrnamentsListMessage(titles:Vector.<uint>=null, ornaments:Vector.<uint>=null, activeTitle:uint=0, activeOrnament:uint=0) : TitlesAndOrnamentsListMessage {
+         this.titles=titles;
+         this.ornaments=ornaments;
+         this.activeTitle=activeTitle;
+         this.activeOrnament=activeOrnament;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.titles=new Vector.<uint>();
+         this.ornaments=new Vector.<uint>();
+         this.activeTitle=0;
+         this.activeOrnament=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TitlesAndOrnamentsListMessage(output);
+      }
+
+      public function serializeAs_TitlesAndOrnamentsListMessage(output:IDataOutput) : void {
+         output.writeShort(this.titles.length);
+         var _i1:uint = 0;
+         while(_i1<this.titles.length)
+         {
+            if(this.titles[_i1]<0)
             {
-                
-                if (this.titles[_loc_2] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.titles[_loc_2] + ") on element 1 (starting at 1) of titles.");
-                }
-                param1.writeShort(this.titles[_loc_2]);
-                _loc_2 = _loc_2 + 1;
+               throw new Error("Forbidden value ("+this.titles[_i1]+") on element 1 (starting at 1) of titles.");
             }
-            param1.writeShort(this.ornaments.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.ornaments.length)
+            else
             {
-                
-                if (this.ornaments[_loc_3] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.ornaments[_loc_3] + ") on element 2 (starting at 1) of ornaments.");
-                }
-                param1.writeShort(this.ornaments[_loc_3]);
-                _loc_3 = _loc_3 + 1;
+               output.writeShort(this.titles[_i1]);
+               _i1++;
+               continue;
             }
-            if (this.activeTitle < 0)
+         }
+         output.writeShort(this.ornaments.length);
+         var _i2:uint = 0;
+         while(_i2<this.ornaments.length)
+         {
+            if(this.ornaments[_i2]<0)
             {
-                throw new Error("Forbidden value (" + this.activeTitle + ") on element activeTitle.");
+               throw new Error("Forbidden value ("+this.ornaments[_i2]+") on element 2 (starting at 1) of ornaments.");
             }
-            param1.writeShort(this.activeTitle);
-            if (this.activeOrnament < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.activeOrnament + ") on element activeOrnament.");
+               output.writeShort(this.ornaments[_i2]);
+               _i2++;
+               continue;
             }
-            param1.writeShort(this.activeOrnament);
-            return;
-        }// end function
+         }
+         if(this.activeTitle<0)
+         {
+            throw new Error("Forbidden value ("+this.activeTitle+") on element activeTitle.");
+         }
+         else
+         {
+            output.writeShort(this.activeTitle);
+            if(this.activeOrnament<0)
+            {
+               throw new Error("Forbidden value ("+this.activeOrnament+") on element activeOrnament.");
+            }
+            else
+            {
+               output.writeShort(this.activeOrnament);
+               return;
+            }
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_TitlesAndOrnamentsListMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TitlesAndOrnamentsListMessage(input);
+      }
 
-        public function deserializeAs_TitlesAndOrnamentsListMessage(param1:IDataInput) : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
+      public function deserializeAs_TitlesAndOrnamentsListMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _val2:uint = 0;
+         var _titlesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_titlesLen)
+         {
+            _val1=input.readShort();
+            if(_val1<0)
             {
-                
-                _loc_6 = param1.readShort();
-                if (_loc_6 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_6 + ") on elements of titles.");
-                }
-                this.titles.push(_loc_6);
-                _loc_3 = _loc_3 + 1;
+               throw new Error("Forbidden value ("+_val1+") on elements of titles.");
             }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
+            else
             {
-                
-                _loc_7 = param1.readShort();
-                if (_loc_7 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_7 + ") on elements of ornaments.");
-                }
-                this.ornaments.push(_loc_7);
-                _loc_5 = _loc_5 + 1;
+               this.titles.push(_val1);
+               _i1++;
+               continue;
             }
-            this.activeTitle = param1.readShort();
-            if (this.activeTitle < 0)
+         }
+         var _ornamentsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_ornamentsLen)
+         {
+            _val2=input.readShort();
+            if(_val2<0)
             {
-                throw new Error("Forbidden value (" + this.activeTitle + ") on element of TitlesAndOrnamentsListMessage.activeTitle.");
+               throw new Error("Forbidden value ("+_val2+") on elements of ornaments.");
             }
-            this.activeOrnament = param1.readShort();
-            if (this.activeOrnament < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.activeOrnament + ") on element of TitlesAndOrnamentsListMessage.activeOrnament.");
+               this.ornaments.push(_val2);
+               _i2++;
+               continue;
             }
-            return;
-        }// end function
+         }
+         this.activeTitle=input.readShort();
+         if(this.activeTitle<0)
+         {
+            throw new Error("Forbidden value ("+this.activeTitle+") on element of TitlesAndOrnamentsListMessage.activeTitle.");
+         }
+         else
+         {
+            this.activeOrnament=input.readShort();
+            if(this.activeOrnament<0)
+            {
+               throw new Error("Forbidden value ("+this.activeOrnament+") on element of TitlesAndOrnamentsListMessage.activeOrnament.");
+            }
+            else
+            {
+               return;
+            }
+         }
+      }
+   }
 
-    }
 }

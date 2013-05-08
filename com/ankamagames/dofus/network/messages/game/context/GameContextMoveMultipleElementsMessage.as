@@ -1,100 +1,88 @@
-﻿package com.ankamagames.dofus.network.messages.game.context
+package com.ankamagames.dofus.network.messages.game.context
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.context.EntityMovementInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameContextMoveMultipleElementsMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var movements:Vector.<EntityMovementInformations>;
-        public static const protocolId:uint = 254;
 
-        public function GameContextMoveMultipleElementsMessage()
-        {
-            this.movements = new Vector.<EntityMovementInformations>;
-            return;
-        }// end function
+   public class GameContextMoveMultipleElementsMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameContextMoveMultipleElementsMessage() {
+         this.movements=new Vector.<EntityMovementInformations>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 254;
-        }// end function
+      public static const protocolId:uint = 254;
 
-        public function initGameContextMoveMultipleElementsMessage(param1:Vector.<EntityMovementInformations> = null) : GameContextMoveMultipleElementsMessage
-        {
-            this.movements = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.movements = new Vector.<EntityMovementInformations>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var movements:Vector.<EntityMovementInformations>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 254;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameContextMoveMultipleElementsMessage(param1);
-            return;
-        }// end function
+      public function initGameContextMoveMultipleElementsMessage(movements:Vector.<EntityMovementInformations>=null) : GameContextMoveMultipleElementsMessage {
+         this.movements=movements;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_GameContextMoveMultipleElementsMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.movements.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.movements.length)
-            {
-                
-                (this.movements[_loc_2] as EntityMovementInformations).serializeAs_EntityMovementInformations(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.movements=new Vector.<EntityMovementInformations>();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameContextMoveMultipleElementsMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_GameContextMoveMultipleElementsMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new EntityMovementInformations();
-                _loc_4.deserialize(param1);
-                this.movements.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameContextMoveMultipleElementsMessage(output);
+      }
+
+      public function serializeAs_GameContextMoveMultipleElementsMessage(output:IDataOutput) : void {
+         output.writeShort(this.movements.length);
+         var _i1:uint = 0;
+         while(_i1<this.movements.length)
+         {
+            (this.movements[_i1] as EntityMovementInformations).serializeAs_EntityMovementInformations(output);
+            _i1++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameContextMoveMultipleElementsMessage(input);
+      }
+
+      public function deserializeAs_GameContextMoveMultipleElementsMessage(input:IDataInput) : void {
+         var _item1:EntityMovementInformations = null;
+         var _movementsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_movementsLen)
+         {
+            _item1=new EntityMovementInformations();
+            _item1.deserialize(input);
+            this.movements.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

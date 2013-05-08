@@ -1,46 +1,47 @@
-﻿package com.ankamagames.dofus.logic.common.managers
+package com.ankamagames.dofus.logic.common.managers
 {
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import flash.display.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import flash.display.MovieClip;
+   import flash.utils.Dictionary;
+   import com.ankamagames.atouin.types.GraphicCell;
+   import flash.geom.Rectangle;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
+   import com.ankamagames.atouin.managers.InteractiveCellManager;
+   import com.ankamagames.berilia.Berilia;
 
-    public class HyperlinkShowNpcManager extends Object
-    {
 
-        public function HyperlinkShowNpcManager()
-        {
-            return;
-        }// end function
+   public class HyperlinkShowNpcManager extends Object
+   {
+         
 
-        public static function showNpc(param1:int, param2:int = 0) : MovieClip
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_3:* = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-            if (_loc_3)
+      public function HyperlinkShowNpcManager() {
+         super();
+      }
+
+      public static function showNpc(npcId:int, loop:int=0) : MovieClip {
+         var list:Dictionary = null;
+         var npc:Object = null;
+         var graphicCell:GraphicCell = null;
+         var rect:Rectangle = null;
+         var abstractEntitiesFrame:RoleplayEntitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+         if(abstractEntitiesFrame)
+         {
+            list=abstractEntitiesFrame.getEntitiesDictionnary();
+            for each (npc in list)
             {
-                _loc_4 = _loc_3.getEntitiesDictionnary();
-                for each (_loc_5 in _loc_4)
-                {
-                    
-                    if (_loc_5 is GameRolePlayNpcInformations && (_loc_5.npcId == param1 || param1 == -1))
-                    {
-                        _loc_6 = InteractiveCellManager.getInstance().getCell(_loc_5.disposition.cellId);
-                        _loc_7 = _loc_6.getRect(Berilia.getInstance().docMain);
-                        return HyperlinkDisplayArrowManager.showAbsoluteArrow(_loc_7.x, _loc_7.y - 80, 0, 0, 1, param2);
-                    }
-                }
+               if((npc is GameRolePlayNpcInformations)&&((npc.npcId==npcId)||(npcId==-1)))
+               {
+                  graphicCell=InteractiveCellManager.getInstance().getCell(npc.disposition.cellId);
+                  rect=graphicCell.getRect(Berilia.getInstance().docMain);
+                  return HyperlinkDisplayArrowManager.showAbsoluteArrow(rect.x,rect.y-80,0,0,1,loop);
+               }
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
 
-    }
+
+   }
+
 }

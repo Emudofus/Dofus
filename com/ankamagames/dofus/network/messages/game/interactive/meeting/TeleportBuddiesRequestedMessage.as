@@ -1,132 +1,144 @@
-﻿package com.ankamagames.dofus.network.messages.game.interactive.meeting
+package com.ankamagames.dofus.network.messages.game.interactive.meeting
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class TeleportBuddiesRequestedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var dungeonId:uint = 0;
-        public var inviterId:uint = 0;
-        public var invalidBuddiesIds:Vector.<uint>;
-        public static const protocolId:uint = 6302;
 
-        public function TeleportBuddiesRequestedMessage()
-        {
-            this.invalidBuddiesIds = new Vector.<uint>;
-            return;
-        }// end function
+   public class TeleportBuddiesRequestedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function TeleportBuddiesRequestedMessage() {
+         this.invalidBuddiesIds=new Vector.<uint>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6302;
-        }// end function
+      public static const protocolId:uint = 6302;
 
-        public function initTeleportBuddiesRequestedMessage(param1:uint = 0, param2:uint = 0, param3:Vector.<uint> = null) : TeleportBuddiesRequestedMessage
-        {
-            this.dungeonId = param1;
-            this.inviterId = param2;
-            this.invalidBuddiesIds = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.dungeonId = 0;
-            this.inviterId = 0;
-            this.invalidBuddiesIds = new Vector.<uint>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var dungeonId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var inviterId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_TeleportBuddiesRequestedMessage(param1);
-            return;
-        }// end function
+      public var invalidBuddiesIds:Vector.<uint>;
 
-        public function serializeAs_TeleportBuddiesRequestedMessage(param1:IDataOutput) : void
-        {
-            if (this.dungeonId < 0)
+      override public function getMessageId() : uint {
+         return 6302;
+      }
+
+      public function initTeleportBuddiesRequestedMessage(dungeonId:uint=0, inviterId:uint=0, invalidBuddiesIds:Vector.<uint>=null) : TeleportBuddiesRequestedMessage {
+         this.dungeonId=dungeonId;
+         this.inviterId=inviterId;
+         this.invalidBuddiesIds=invalidBuddiesIds;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.dungeonId=0;
+         this.inviterId=0;
+         this.invalidBuddiesIds=new Vector.<uint>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TeleportBuddiesRequestedMessage(output);
+      }
+
+      public function serializeAs_TeleportBuddiesRequestedMessage(output:IDataOutput) : void {
+         if(this.dungeonId<0)
+         {
+            throw new Error("Forbidden value ("+this.dungeonId+") on element dungeonId.");
+         }
+         else
+         {
+            output.writeShort(this.dungeonId);
+            if(this.inviterId<0)
             {
-                throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
+               throw new Error("Forbidden value ("+this.inviterId+") on element inviterId.");
             }
-            param1.writeShort(this.dungeonId);
-            if (this.inviterId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.inviterId + ") on element inviterId.");
+               output.writeInt(this.inviterId);
+               output.writeShort(this.invalidBuddiesIds.length);
+               _i3=0;
+               while(_i3<this.invalidBuddiesIds.length)
+               {
+                  if(this.invalidBuddiesIds[_i3]<0)
+                  {
+                     throw new Error("Forbidden value ("+this.invalidBuddiesIds[_i3]+") on element 3 (starting at 1) of invalidBuddiesIds.");
+                  }
+                  else
+                  {
+                     output.writeInt(this.invalidBuddiesIds[_i3]);
+                     _i3++;
+                     continue;
+                  }
+               }
+               return;
             }
-            param1.writeInt(this.inviterId);
-            param1.writeShort(this.invalidBuddiesIds.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.invalidBuddiesIds.length)
-            {
-                
-                if (this.invalidBuddiesIds[_loc_2] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.invalidBuddiesIds[_loc_2] + ") on element 3 (starting at 1) of invalidBuddiesIds.");
-                }
-                param1.writeInt(this.invalidBuddiesIds[_loc_2]);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_TeleportBuddiesRequestedMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TeleportBuddiesRequestedMessage(input);
+      }
 
-        public function deserializeAs_TeleportBuddiesRequestedMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            this.dungeonId = param1.readShort();
-            if (this.dungeonId < 0)
+      public function deserializeAs_TeleportBuddiesRequestedMessage(input:IDataInput) : void {
+         var _val3:uint = 0;
+         this.dungeonId=input.readShort();
+         if(this.dungeonId<0)
+         {
+            throw new Error("Forbidden value ("+this.dungeonId+") on element of TeleportBuddiesRequestedMessage.dungeonId.");
+         }
+         else
+         {
+            this.inviterId=input.readInt();
+            if(this.inviterId<0)
             {
-                throw new Error("Forbidden value (" + this.dungeonId + ") on element of TeleportBuddiesRequestedMessage.dungeonId.");
+               throw new Error("Forbidden value ("+this.inviterId+") on element of TeleportBuddiesRequestedMessage.inviterId.");
             }
-            this.inviterId = param1.readInt();
-            if (this.inviterId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.inviterId + ") on element of TeleportBuddiesRequestedMessage.inviterId.");
+               _invalidBuddiesIdsLen=input.readUnsignedShort();
+               _i3=0;
+               while(_i3<_invalidBuddiesIdsLen)
+               {
+                  _val3=input.readInt();
+                  if(_val3<0)
+                  {
+                     throw new Error("Forbidden value ("+_val3+") on elements of invalidBuddiesIds.");
+                  }
+                  else
+                  {
+                     this.invalidBuddiesIds.push(_val3);
+                     _i3++;
+                     continue;
+                  }
+               }
+               return;
             }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readInt();
-                if (_loc_4 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_4 + ") on elements of invalidBuddiesIds.");
-                }
-                this.invalidBuddiesIds.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

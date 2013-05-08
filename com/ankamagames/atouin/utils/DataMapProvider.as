@@ -1,271 +1,261 @@
-﻿package com.ankamagames.atouin.utils
+package com.ankamagames.atouin.utils
 {
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.data.map.*;
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.map.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.map.IDataMapProvider;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.interfaces.IObstacle;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.atouin.data.map.CellData;
+   import com.ankamagames.atouin.managers.MapDisplayManager;
+   import com.ankamagames.atouin.managers.EntitiesManager;
+   import com.ankamagames.atouin.data.map.Cell;
+   import com.ankamagames.atouin.AtouinConstants;
 
-    public class DataMapProvider extends Object implements IDataMapProvider
-    {
-        public var isInFight:Boolean;
-        private var _updatedCell:Dictionary;
-        private var _specialEffects:Dictionary;
-        private static const TOLERANCE_ELEVATION:int = 11;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(DataMapProvider));
-        private static var _self:DataMapProvider;
-        private static var _playerClass:Class;
 
-        public function DataMapProvider()
-        {
-            this._updatedCell = new Dictionary();
-            this._specialEffects = new Dictionary();
-            return;
-        }// end function
+   public class DataMapProvider extends Object implements IDataMapProvider
+   {
+         
 
-        public function pointLos(param1:int, param2:int, param3:Boolean = true) : Boolean
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_4:* = MapPoint.fromCoords(param1, param2).cellId;
-            var _loc_5:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_4]).los;
-            if (this._updatedCell[_loc_4] != null)
-            {
-                _loc_5 = this._updatedCell[_loc_4];
-            }
-            if (!param3)
-            {
-                _loc_6 = EntitiesManager.getInstance().getEntitiesOnCell(_loc_4, IObstacle);
-                if (_loc_6.length)
-                {
-                    for each (_loc_7 in _loc_6)
-                    {
-                        
-                        if (!IObstacle(_loc_7).canSeeThrough())
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return _loc_5;
-        }// end function
+      public function DataMapProvider() {
+         this._updatedCell=new Dictionary();
+         this._specialEffects=new Dictionary();
+         super();
+      }
 
-        public function farmCell(param1:int, param2:int) : Boolean
-        {
-            var _loc_3:* = MapPoint.fromCoords(param1, param2).cellId;
-            return CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_3]).farmCell;
-        }// end function
+      private static const TOLERANCE_ELEVATION:int = 11;
 
-        public function isChangeZone(param1:uint, param2:uint) : Boolean
-        {
-            var _loc_3:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param1]);
-            var _loc_4:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param2]);
-            var _loc_5:* = Math.abs(Math.abs(_loc_3.floor) - Math.abs(_loc_4.floor));
-            if (_loc_3.moveZone != _loc_4.moveZone && _loc_5 == 0)
-            {
-                return true;
-            }
-            return false;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(DataMapProvider));
 
-        public function pointMov(param1:int, param2:int, param3:Boolean = true, param4:int = -1) : Boolean
-        {
-            var _loc_5:* = false;
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            var _loc_8:* = false;
-            var _loc_9:* = null;
-            var _loc_10:* = 0;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            if (MapPoint.isInMap(param1, param2))
-            {
-                _loc_5 = MapDisplayManager.getInstance().getDataMapContainer().dataMap.isUsingNewMovementSystem;
-                _loc_6 = MapPoint.fromCoords(param1, param2).cellId;
-                _loc_7 = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_6]);
-                _loc_8 = _loc_7.mov && (!this.isInFight || !_loc_7.nonWalkableDuringFight);
-                if (this._updatedCell[_loc_6] != null)
-                {
-                    _loc_8 = this._updatedCell[_loc_6];
-                }
-                if (_loc_8 && _loc_5 && param4 != -1 && param4 != _loc_6)
-                {
-                    _loc_9 = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param4]);
-                    _loc_10 = Math.abs(Math.abs(_loc_7.floor) - Math.abs(_loc_9.floor));
-                    if (_loc_9.moveZone != _loc_7.moveZone && _loc_10 > 0 || _loc_9.moveZone == _loc_7.moveZone && _loc_7.moveZone == 0 && _loc_10 > TOLERANCE_ELEVATION)
-                    {
-                        _loc_8 = false;
-                    }
-                }
-                if (!param3)
-                {
-                    _loc_11 = EntitiesManager.getInstance().getEntitiesOnCell(_loc_6, IObstacle);
-                    if (_loc_11.length)
-                    {
-                        for each (_loc_12 in _loc_11)
-                        {
-                            
-                            if (!IObstacle(_loc_12).canSeeThrough())
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                _loc_8 = false;
-            }
-            return _loc_8;
-        }// end function
+      private static var _self:DataMapProvider;
 
-        public function pointCanStop(param1:int, param2:int, param3:Boolean = true) : Boolean
-        {
-            var _loc_4:* = MapPoint.fromCoords(param1, param2).cellId;
-            var _loc_5:* = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[_loc_4]);
-            return this.pointMov(param1, param2, param3) && (this.isInFight || !_loc_5.nonWalkableDuringRP);
-        }// end function
+      private static var _playerClass:Class;
 
-        public function pointWeight(param1:int, param2:int, param3:Boolean = true) : Number
-        {
-            var _loc_4:* = 1;
-            var _loc_5:* = this.getCellSpeed(MapPoint.fromCoords(param1, param2).cellId);
-            if (param3)
-            {
-                if (_loc_5 >= 0)
-                {
-                    _loc_4 = _loc_4 + (5 - _loc_5);
-                }
-                else
-                {
-                    _loc_4 = _loc_4 + (11 + Math.abs(_loc_5));
-                }
-                if (EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1, param2), _playerClass) != null)
-                {
-                    _loc_4 = 20;
-                }
-            }
-            else
-            {
-                if (EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1, param2), _playerClass) != null)
-                {
-                    _loc_4 = _loc_4 + 0.3;
-                }
-                if (EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY((param1 + 1), param2), _playerClass) != null)
-                {
-                    _loc_4 = _loc_4 + 0.3;
-                }
-                if (EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1, (param2 + 1)), _playerClass) != null)
-                {
-                    _loc_4 = _loc_4 + 0.3;
-                }
-                if (EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY((param1 - 1), param2), _playerClass) != null)
-                {
-                    _loc_4 = _loc_4 + 0.3;
-                }
-                if (EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(param1, (param2 - 1)), _playerClass) != null)
-                {
-                    _loc_4 = _loc_4 + 0.3;
-                }
-                if ((this.pointSpecialEffects(param1, param2) & 2) == 2)
-                {
-                    _loc_4 = _loc_4 + 0.2;
-                }
-            }
-            return _loc_4;
-        }// end function
-
-        public function getCellSpeed(param1:uint) : int
-        {
-            return (MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[param1] as CellData).speed;
-        }// end function
-
-        public function pointSpecialEffects(param1:int, param2:int) : uint
-        {
-            var _loc_3:* = MapPoint.fromCoords(param1, param2).cellId;
-            if (this._specialEffects[_loc_3])
-            {
-                return this._specialEffects[_loc_3];
-            }
-            return 0;
-        }// end function
-
-        public function get width() : int
-        {
-            return AtouinConstants.MAP_HEIGHT + AtouinConstants.MAP_WIDTH - 2;
-        }// end function
-
-        public function get height() : int
-        {
-            return AtouinConstants.MAP_HEIGHT + AtouinConstants.MAP_WIDTH - 1;
-        }// end function
-
-        public function hasEntity(param1:int, param2:int) : Boolean
-        {
-            var _loc_4:* = null;
-            var _loc_3:* = EntitiesManager.getInstance().getEntitiesOnCell(MapPoint.fromCoords(param1, param2).cellId, IObstacle);
-            if (_loc_3.length)
-            {
-                for each (_loc_4 in _loc_3)
-                {
-                    
-                    if (!IObstacle(_loc_4).canSeeThrough())
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }// end function
-
-        public function updateCellMovLov(param1:uint, param2:Boolean) : void
-        {
-            this._updatedCell[param1] = param2;
-            return;
-        }// end function
-
-        public function resetUpdatedCell() : void
-        {
-            this._updatedCell = new Dictionary();
-            return;
-        }// end function
-
-        public function setSpecialEffects(param1:uint, param2:uint) : void
-        {
-            this._specialEffects[param1] = param2;
-            return;
-        }// end function
-
-        public function resetSpecialEffects() : void
-        {
-            this._specialEffects = new Dictionary();
-            return;
-        }// end function
-
-        public static function getInstance() : DataMapProvider
-        {
-            if (!_self)
-            {
-                throw new SingletonError("Init function wasn\'t call");
-            }
+      public static function getInstance() : DataMapProvider {
+         if(!_self)
+         {
+            throw new SingletonError("Init function wasn\'t call");
+         }
+         else
+         {
             return _self;
-        }// end function
+         }
+      }
 
-        public static function init(param1:Class) : void
-        {
-            _playerClass = param1;
-            if (!_self)
+      public static function init(playerClass:Class) : void {
+         _playerClass=playerClass;
+         if(!_self)
+         {
+            _self=new DataMapProvider();
+         }
+      }
+
+      public var isInFight:Boolean;
+
+      private var _updatedCell:Dictionary;
+
+      private var _specialEffects:Dictionary;
+
+      public function pointLos(x:int, y:int, bAllowTroughEntity:Boolean=true) : Boolean {
+         var cellEntities:Array = null;
+         var o:IObstacle = null;
+         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
+         var los:Boolean = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]).los;
+         if(this._updatedCell[cellId]!=null)
+         {
+            los=this._updatedCell[cellId];
+         }
+         if(!bAllowTroughEntity)
+         {
+            cellEntities=EntitiesManager.getInstance().getEntitiesOnCell(cellId,IObstacle);
+            if(cellEntities.length)
             {
-                _self = new DataMapProvider;
+               for each (o in cellEntities)
+               {
+                  if(!IObstacle(o).canSeeThrough())
+                  {
+                     return false;
+                  }
+               }
             }
-            return;
-        }// end function
+         }
+         return los;
+      }
 
-    }
+      public function farmCell(x:int, y:int) : Boolean {
+         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
+         return CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]).farmCell;
+      }
+
+      public function isChangeZone(cell1:uint, cell2:uint) : Boolean {
+         var cellData1:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cell1]);
+         var cellData2:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cell2]);
+         var dif:int = Math.abs(Math.abs(cellData1.floor)-Math.abs(cellData2.floor));
+         if((!(cellData1.moveZone==cellData2.moveZone))&&(dif==0))
+         {
+            return true;
+         }
+         return false;
+      }
+
+      public function pointMov(x:int, y:int, bAllowTroughEntity:Boolean=true, previousCellId:int=-1) : Boolean {
+         var useNewSystem:* = false;
+         var cellId:uint = 0;
+         var cellData:CellData = null;
+         var mov:* = false;
+         var previousCellData:CellData = null;
+         var dif:* = 0;
+         var cellEntities:Array = null;
+         var o:IObstacle = null;
+         if(MapPoint.isInMap(x,y))
+         {
+            useNewSystem=MapDisplayManager.getInstance().getDataMapContainer().dataMap.isUsingNewMovementSystem;
+            cellId=MapPoint.fromCoords(x,y).cellId;
+            cellData=CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]);
+            mov=(cellData.mov)&&((!this.isInFight)||(!cellData.nonWalkableDuringFight));
+            if(this._updatedCell[cellId]!=null)
+            {
+               mov=this._updatedCell[cellId];
+            }
+            if((mov)&&(useNewSystem)&&(!(previousCellId==-1))&&(!(previousCellId==cellId)))
+            {
+               previousCellData=CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[previousCellId]);
+               dif=Math.abs(Math.abs(cellData.floor)-Math.abs(previousCellData.floor));
+               if((!(previousCellData.moveZone==cellData.moveZone))&&(dif<0)||(previousCellData.moveZone==cellData.moveZone)&&(cellData.moveZone==0)&&(dif<TOLERANCE_ELEVATION))
+               {
+                  mov=false;
+               }
+            }
+            if(!bAllowTroughEntity)
+            {
+               cellEntities=EntitiesManager.getInstance().getEntitiesOnCell(cellId,IObstacle);
+               if(cellEntities.length)
+               {
+                  for each (o in cellEntities)
+                  {
+                     if(!IObstacle(o).canSeeThrough())
+                     {
+                        return false;
+                     }
+                  }
+               }
+            }
+         }
+         else
+         {
+            mov=false;
+         }
+         return mov;
+      }
+
+      public function pointCanStop(x:int, y:int, bAllowTroughEntity:Boolean=true) : Boolean {
+         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
+         var cellData:CellData = CellData(MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId]);
+         return (this.pointMov(x,y,bAllowTroughEntity))&&((this.isInFight)||(!cellData.nonWalkableDuringRP));
+      }
+
+      public function pointWeight(x:int, y:int, bAllowTroughEntity:Boolean=true) : Number {
+         var weight:Number = 1;
+         var speed:int = this.getCellSpeed(MapPoint.fromCoords(x,y).cellId);
+         if(bAllowTroughEntity)
+         {
+            if(speed>=0)
+            {
+               weight=weight+(5-speed);
+            }
+            else
+            {
+               weight=weight+(11+Math.abs(speed));
+            }
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y),_playerClass)!=null)
+            {
+               weight=20;
+            }
+         }
+         else
+         {
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y),_playerClass)!=null)
+            {
+               weight=weight+0.3;
+            }
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x+1,y),_playerClass)!=null)
+            {
+               weight=weight+0.3;
+            }
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y+1),_playerClass)!=null)
+            {
+               weight=weight+0.3;
+            }
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x-1,y),_playerClass)!=null)
+            {
+               weight=weight+0.3;
+            }
+            if(EntitiesManager.getInstance().getEntityOnCell(Cell.cellIdByXY(x,y-1),_playerClass)!=null)
+            {
+               weight=weight+0.3;
+            }
+            if((this.pointSpecialEffects(x,y)&2)==2)
+            {
+               weight=weight+0.2;
+            }
+         }
+         return weight;
+      }
+
+      public function getCellSpeed(cellId:uint) : int {
+         return (MapDisplayManager.getInstance().getDataMapContainer().dataMap.cells[cellId] as CellData).speed;
+      }
+
+      public function pointSpecialEffects(x:int, y:int) : uint {
+         var cellId:uint = MapPoint.fromCoords(x,y).cellId;
+         if(this._specialEffects[cellId])
+         {
+            return this._specialEffects[cellId];
+         }
+         return 0;
+      }
+
+      public function get width() : int {
+         return AtouinConstants.MAP_HEIGHT+AtouinConstants.MAP_WIDTH-2;
+      }
+
+      public function get height() : int {
+         return AtouinConstants.MAP_HEIGHT+AtouinConstants.MAP_WIDTH-1;
+      }
+
+      public function hasEntity(x:int, y:int) : Boolean {
+         var o:IObstacle = null;
+         var cellEntities:Array = EntitiesManager.getInstance().getEntitiesOnCell(MapPoint.fromCoords(x,y).cellId,IObstacle);
+         if(cellEntities.length)
+         {
+            for each (o in cellEntities)
+            {
+               if(!IObstacle(o).canSeeThrough())
+               {
+                  return true;
+               }
+            }
+         }
+         return false;
+      }
+
+      public function updateCellMovLov(cellId:uint, canMove:Boolean) : void {
+         this._updatedCell[cellId]=canMove;
+      }
+
+      public function resetUpdatedCell() : void {
+         this._updatedCell=new Dictionary();
+      }
+
+      public function setSpecialEffects(cellId:uint, value:uint) : void {
+         this._specialEffects[cellId]=value;
+      }
+
+      public function resetSpecialEffects() : void {
+         this._specialEffects=new Dictionary();
+      }
+   }
+
 }

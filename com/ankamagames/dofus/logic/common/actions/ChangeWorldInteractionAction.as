@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.common.actions
+package com.ankamagames.dofus.logic.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ChangeWorldInteractionAction extends Object implements Action
-    {
-        public var enabled:Boolean;
-        public var total:Boolean;
 
-        public function ChangeWorldInteractionAction()
-        {
-            return;
-        }// end function
+   public class ChangeWorldInteractionAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean, param2:Boolean = true) : ChangeWorldInteractionAction
-        {
-            var _loc_3:* = new ChangeWorldInteractionAction;
-            _loc_3.enabled = param1;
-            _loc_3.total = param2;
-            return _loc_3;
-        }// end function
+      public function ChangeWorldInteractionAction() {
+         super();
+      }
 
-    }
+      public static function create(enabled:Boolean, total:Boolean=true) : ChangeWorldInteractionAction {
+         var a:ChangeWorldInteractionAction = new ChangeWorldInteractionAction();
+         a.enabled=enabled;
+         a.total=total;
+         return a;
+      }
+
+      public var enabled:Boolean;
+
+      public var total:Boolean;
+   }
+
 }

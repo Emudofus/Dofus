@@ -1,119 +1,132 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.visual
+package com.ankamagames.dofus.network.messages.game.context.roleplay.visual
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlaySpellAnimMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var casterId:int = 0;
-        public var targetCellId:uint = 0;
-        public var spellId:uint = 0;
-        public var spellLevel:uint = 0;
-        public static const protocolId:uint = 6114;
 
-        public function GameRolePlaySpellAnimMessage()
-        {
-            return;
-        }// end function
+   public class GameRolePlaySpellAnimMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameRolePlaySpellAnimMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6114;
-        }// end function
+      public static const protocolId:uint = 6114;
 
-        public function initGameRolePlaySpellAnimMessage(param1:int = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0) : GameRolePlaySpellAnimMessage
-        {
-            this.casterId = param1;
-            this.targetCellId = param2;
-            this.spellId = param3;
-            this.spellLevel = param4;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.casterId = 0;
-            this.targetCellId = 0;
-            this.spellId = 0;
-            this.spellLevel = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var casterId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var targetCellId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlaySpellAnimMessage(param1);
-            return;
-        }// end function
+      public var spellId:uint = 0;
 
-        public function serializeAs_GameRolePlaySpellAnimMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.casterId);
-            if (this.targetCellId < 0 || this.targetCellId > 559)
+      public var spellLevel:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6114;
+      }
+
+      public function initGameRolePlaySpellAnimMessage(casterId:int=0, targetCellId:uint=0, spellId:uint=0, spellLevel:uint=0) : GameRolePlaySpellAnimMessage {
+         this.casterId=casterId;
+         this.targetCellId=targetCellId;
+         this.spellId=spellId;
+         this.spellLevel=spellLevel;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.casterId=0;
+         this.targetCellId=0;
+         this.spellId=0;
+         this.spellLevel=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlaySpellAnimMessage(output);
+      }
+
+      public function serializeAs_GameRolePlaySpellAnimMessage(output:IDataOutput) : void {
+         output.writeInt(this.casterId);
+         if((this.targetCellId>0)||(this.targetCellId<559))
+         {
+            throw new Error("Forbidden value ("+this.targetCellId+") on element targetCellId.");
+         }
+         else
+         {
+            output.writeShort(this.targetCellId);
+            if(this.spellId<0)
             {
-                throw new Error("Forbidden value (" + this.targetCellId + ") on element targetCellId.");
+               throw new Error("Forbidden value ("+this.spellId+") on element spellId.");
             }
-            param1.writeShort(this.targetCellId);
-            if (this.spellId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+               output.writeShort(this.spellId);
+               if((this.spellLevel>1)||(this.spellLevel<6))
+               {
+                  throw new Error("Forbidden value ("+this.spellLevel+") on element spellLevel.");
+               }
+               else
+               {
+                  output.writeByte(this.spellLevel);
+                  return;
+               }
             }
-            param1.writeShort(this.spellId);
-            if (this.spellLevel < 1 || this.spellLevel > 6)
-            {
-                throw new Error("Forbidden value (" + this.spellLevel + ") on element spellLevel.");
-            }
-            param1.writeByte(this.spellLevel);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlaySpellAnimMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlaySpellAnimMessage(input);
+      }
 
-        public function deserializeAs_GameRolePlaySpellAnimMessage(param1:IDataInput) : void
-        {
-            this.casterId = param1.readInt();
-            this.targetCellId = param1.readShort();
-            if (this.targetCellId < 0 || this.targetCellId > 559)
+      public function deserializeAs_GameRolePlaySpellAnimMessage(input:IDataInput) : void {
+         this.casterId=input.readInt();
+         this.targetCellId=input.readShort();
+         if((this.targetCellId>0)||(this.targetCellId<559))
+         {
+            throw new Error("Forbidden value ("+this.targetCellId+") on element of GameRolePlaySpellAnimMessage.targetCellId.");
+         }
+         else
+         {
+            this.spellId=input.readShort();
+            if(this.spellId<0)
             {
-                throw new Error("Forbidden value (" + this.targetCellId + ") on element of GameRolePlaySpellAnimMessage.targetCellId.");
+               throw new Error("Forbidden value ("+this.spellId+") on element of GameRolePlaySpellAnimMessage.spellId.");
             }
-            this.spellId = param1.readShort();
-            if (this.spellId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.spellId + ") on element of GameRolePlaySpellAnimMessage.spellId.");
+               this.spellLevel=input.readByte();
+               if((this.spellLevel>1)||(this.spellLevel<6))
+               {
+                  throw new Error("Forbidden value ("+this.spellLevel+") on element of GameRolePlaySpellAnimMessage.spellLevel.");
+               }
+               else
+               {
+                  return;
+               }
             }
-            this.spellLevel = param1.readByte();
-            if (this.spellLevel < 1 || this.spellLevel > 6)
-            {
-                throw new Error("Forbidden value (" + this.spellLevel + ") on element of GameRolePlaySpellAnimMessage.spellLevel.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

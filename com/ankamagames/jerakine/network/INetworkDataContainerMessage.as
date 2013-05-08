@@ -1,15 +1,17 @@
-﻿package com.ankamagames.jerakine.network
+package com.ankamagames.jerakine.network
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public interface INetworkDataContainerMessage
-    {
 
-        public function INetworkDataContainerMessage();
+   public interface INetworkDataContainerMessage
+   {
+         
 
-        function get content() : ByteArray;
 
-        function set content(param1:ByteArray) : void;
 
-    }
+      function get content() : ByteArray;
+
+      function set content(param1:ByteArray) : void;
+   }
+
 }

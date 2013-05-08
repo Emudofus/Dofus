@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.social
+package com.ankamagames.dofus.logic.game.common.actions.social
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class SpouseRequestAction extends Object implements Action
-    {
 
-        public function SpouseRequestAction()
-        {
-            return;
-        }// end function
+   public class SpouseRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : SpouseRequestAction
-        {
-            var _loc_1:* = new SpouseRequestAction;
-            return _loc_1;
-        }// end function
+      public function SpouseRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : SpouseRequestAction {
+         var a:SpouseRequestAction = new SpouseRequestAction();
+         return a;
+      }
+
+
+   }
+
 }

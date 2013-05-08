@@ -1,114 +1,121 @@
-﻿package com.ankamagames.dofus.network.messages.game.social
+package com.ankamagames.dofus.network.messages.game.social
 {
-    import com.ankamagames.dofus.network.types.game.look.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ContactLookMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var requestId:uint = 0;
-        public var playerName:String = "";
-        public var playerId:uint = 0;
-        public var look:EntityLook;
-        public static const protocolId:uint = 5934;
 
-        public function ContactLookMessage()
-        {
-            this.look = new EntityLook();
-            return;
-        }// end function
+   public class ContactLookMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ContactLookMessage() {
+         this.look=new EntityLook();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5934;
-        }// end function
+      public static const protocolId:uint = 5934;
 
-        public function initContactLookMessage(param1:uint = 0, param2:String = "", param3:uint = 0, param4:EntityLook = null) : ContactLookMessage
-        {
-            this.requestId = param1;
-            this.playerName = param2;
-            this.playerId = param3;
-            this.look = param4;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.requestId = 0;
-            this.playerName = "";
-            this.playerId = 0;
-            this.look = new EntityLook();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var requestId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var playerName:String = "";
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ContactLookMessage(param1);
-            return;
-        }// end function
+      public var playerId:uint = 0;
 
-        public function serializeAs_ContactLookMessage(param1:IDataOutput) : void
-        {
-            if (this.requestId < 0)
+      public var look:EntityLook;
+
+      override public function getMessageId() : uint {
+         return 5934;
+      }
+
+      public function initContactLookMessage(requestId:uint=0, playerName:String="", playerId:uint=0, look:EntityLook=null) : ContactLookMessage {
+         this.requestId=requestId;
+         this.playerName=playerName;
+         this.playerId=playerId;
+         this.look=look;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.requestId=0;
+         this.playerName="";
+         this.playerId=0;
+         this.look=new EntityLook();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ContactLookMessage(output);
+      }
+
+      public function serializeAs_ContactLookMessage(output:IDataOutput) : void {
+         if(this.requestId<0)
+         {
+            throw new Error("Forbidden value ("+this.requestId+") on element requestId.");
+         }
+         else
+         {
+            output.writeInt(this.requestId);
+            output.writeUTF(this.playerName);
+            if(this.playerId<0)
             {
-                throw new Error("Forbidden value (" + this.requestId + ") on element requestId.");
+               throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
             }
-            param1.writeInt(this.requestId);
-            param1.writeUTF(this.playerName);
-            if (this.playerId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+               output.writeInt(this.playerId);
+               this.look.serializeAs_EntityLook(output);
+               return;
             }
-            param1.writeInt(this.playerId);
-            this.look.serializeAs_EntityLook(param1);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ContactLookMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ContactLookMessage(input);
+      }
 
-        public function deserializeAs_ContactLookMessage(param1:IDataInput) : void
-        {
-            this.requestId = param1.readInt();
-            if (this.requestId < 0)
+      public function deserializeAs_ContactLookMessage(input:IDataInput) : void {
+         this.requestId=input.readInt();
+         if(this.requestId<0)
+         {
+            throw new Error("Forbidden value ("+this.requestId+") on element of ContactLookMessage.requestId.");
+         }
+         else
+         {
+            this.playerName=input.readUTF();
+            this.playerId=input.readInt();
+            if(this.playerId<0)
             {
-                throw new Error("Forbidden value (" + this.requestId + ") on element of ContactLookMessage.requestId.");
+               throw new Error("Forbidden value ("+this.playerId+") on element of ContactLookMessage.playerId.");
             }
-            this.playerName = param1.readUTF();
-            this.playerId = param1.readInt();
-            if (this.playerId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.playerId + ") on element of ContactLookMessage.playerId.");
+               this.look=new EntityLook();
+               this.look.deserialize(input);
+               return;
             }
-            this.look = new EntityLook();
-            this.look.deserialize(param1);
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

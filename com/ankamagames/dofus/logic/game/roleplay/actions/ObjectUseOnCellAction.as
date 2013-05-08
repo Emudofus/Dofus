@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions
+package com.ankamagames.dofus.logic.game.roleplay.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ObjectUseOnCellAction extends Object implements Action
-    {
-        public var targetedCell:uint;
-        public var objectUID:uint;
 
-        public function ObjectUseOnCellAction()
-        {
-            return;
-        }// end function
+   public class ObjectUseOnCellAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint) : ObjectUseOnCellAction
-        {
-            var _loc_3:* = new ObjectUseOnCellAction;
-            _loc_3.targetedCell = param2;
-            _loc_3.objectUID = param1;
-            return _loc_3;
-        }// end function
+      public function ObjectUseOnCellAction() {
+         super();
+      }
 
-    }
+      public static function create(objectUID:uint, targetedCell:uint) : ObjectUseOnCellAction {
+         var o:ObjectUseOnCellAction = new ObjectUseOnCellAction();
+         o.targetedCell=targetedCell;
+         o.objectUID=objectUID;
+         return o;
+      }
+
+      public var targetedCell:uint;
+
+      public var objectUID:uint;
+   }
+
 }

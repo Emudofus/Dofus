@@ -1,195 +1,201 @@
-﻿package com.ankamagames.dofus.logic.connection.managers
+package com.ankamagames.dofus.logic.connection.managers
 {
-    import __AS3__.vec.*;
-    import by.blooddy.crypto.*;
-    import com.ankamagames.dofus.*;
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.dofus.logic.connection.actions.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.connection.*;
-    import com.ankamagames.dofus.network.types.secure.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.crypto.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.jerakine.utils.system.*;
-    import com.hurlant.crypto.rsa.*;
-    import com.hurlant.util.der.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDestroyable;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.logic.connection.actions.LoginValidationAction;
+   import com.ankamagames.dofus.network.types.secure.TrustCertificate;
+   import __AS3__.vec.Vector;
+   import flash.utils.ByteArray;
+   import com.hurlant.util.der.PEM;
+   import com.hurlant.crypto.rsa.RSAKey;
+   import com.ankamagames.jerakine.utils.crypto.Base64;
+   import com.ankamagames.dofus.logic.shield.SecureModeManager;
+   import com.ankamagames.dofus.logic.game.common.frames.ProtectPishingFrame;
+   import by.blooddy.crypto.MD5;
+   import com.ankamagames.dofus.network.messages.connection.IdentificationMessage;
+   import com.ankamagames.dofus.network.messages.connection.IdentificationAccountForceMessage;
+   import com.ankamagames.dofus.logic.connection.actions.LoginValidationWithTicketAction;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.dofus.BuildInfos;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import com.ankamagames.dofus.network.enums.ClientInstallTypeEnum;
+   import com.ankamagames.dofus.network.enums.ClientTechnologyEnum;
+   import com.ankamagames.jerakine.utils.crypto.RSA;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class AuthentificationManager extends Object implements IDestroyable
-    {
-        private var _publicKey:String;
-        private var _salt:String;
-        private var _lva:LoginValidationAction;
-        private var _certificate:TrustCertificate;
-        private var _verifyKey:Class;
-        public var gameServerTicket:String;
-        public var ankamaPortalKey:String;
-        public var username:String;
-        public var nextToken:String;
-        public var tokenMode:Boolean = false;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(AuthentificationManager));
-        private static var _self:AuthentificationManager;
 
-        public function AuthentificationManager()
-        {
-            this._verifyKey = AuthentificationManager__verifyKey;
-            if (_self != null)
+   public class AuthentificationManager extends Object implements IDestroyable
+   {
+         
+
+      public function AuthentificationManager() {
+         this._verifyKey=AuthentificationManager__verifyKey;
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("AuthentificationManager is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
+            return;
+         }
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AuthentificationManager));
+
+      private static var _self:AuthentificationManager;
+
+      public static function getInstance() : AuthentificationManager {
+         if(_self==null)
+         {
+            _self=new AuthentificationManager();
+         }
+         return _self;
+      }
+
+      private var _publicKey:String;
+
+      private var _salt:String;
+
+      private var _lva:LoginValidationAction;
+
+      private var _certificate:TrustCertificate;
+
+      private var _verifyKey:Class;
+
+      public var gameServerTicket:String;
+
+      public var ankamaPortalKey:String;
+
+      public var username:String;
+
+      public var nextToken:String;
+
+      public var tokenMode:Boolean = false;
+
+      public function get salt() : String {
+         return this._salt;
+      }
+
+      public function setSalt(salt:String) : void {
+         this._salt=salt;
+         if(this._salt.length<32)
+         {
+            _log.warn("Authentification salt size is lower than 32 ");
+            while(this._salt.length<32)
             {
-                throw new SingletonError("AuthentificationManager is a singleton and should not be instanciated directly.");
+               this._salt=this._salt+" ";
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function get salt() : String
-        {
-            return this._salt;
-        }// end function
+      public function setPublicKey(publicKey:Vector.<int>) : void {
+         var baSignedKey:ByteArray = new ByteArray();
+         var i:int = 0;
+         while(i<publicKey.length)
+         {
+            baSignedKey.writeByte(publicKey[i]);
+            i++;
+         }
+         baSignedKey.position=0;
+         var key:ByteArray = new ByteArray();
+         var readKey:RSAKey = PEM.readRSAPublicKey((new this._verifyKey() as ByteArray).readUTFBytes((new this._verifyKey() as ByteArray).length));
+         readKey.verify(baSignedKey,key,baSignedKey.length);
+         this._publicKey="-----BEGIN PUBLIC KEY-----\n"+Base64.encodeByteArray(key)+"-----END PUBLIC KEY-----";
+      }
 
-        public function setSalt(param1:String) : void
-        {
-            this._salt = param1;
-            if (this._salt.length < 32)
+      public function setValidationAction(lva:LoginValidationAction) : void {
+         this.username=lva["username"];
+         this._lva=lva;
+         this._certificate=SecureModeManager.getInstance().retreiveCertificate();
+         ProtectPishingFrame.setPasswordHash(MD5.hash(lva.password.toUpperCase()),lva.password.length);
+      }
+
+      public function get loginValidationAction() : LoginValidationAction {
+         return this._lva;
+      }
+
+      public function get canAutoConnectWithToken() : Boolean {
+         return !(this.nextToken==null);
+      }
+
+      public function getIdentificationMessage() : IdentificationMessage {
+         var imsg:IdentificationMessage = null;
+         var token:String = null;
+         var login:Array = null;
+         var iafmsg:IdentificationAccountForceMessage = null;
+         if(this._lva.username.indexOf("|")==-1)
+         {
+            imsg=new IdentificationMessage();
+            if((this._lva is LoginValidationWithTicketAction)||(this.nextToken))
             {
-                _log.warn("Authentification salt size is lower than 32");
-                while (this._salt.length < 32)
-                {
-                    
-                    this._salt = this._salt + " ";
-                }
-            }
-            return;
-        }// end function
-
-        public function setPublicKey(param1:Vector.<int>) : void
-        {
-            var _loc_2:* = new ByteArray();
-            var _loc_3:* = 0;
-            while (_loc_3 < param1.length)
-            {
-                
-                _loc_2.writeByte(param1[_loc_3]);
-                _loc_3++;
-            }
-            _loc_2.position = 0;
-            var _loc_4:* = new ByteArray();
-            var _loc_5:* = PEM.readRSAPublicKey((new this._verifyKey() as ByteArray).readUTFBytes((new this._verifyKey() as ByteArray).length));
-            PEM.readRSAPublicKey((new this._verifyKey() as ByteArray).readUTFBytes((new this._verifyKey() as ByteArray).length)).verify(_loc_2, _loc_4, _loc_2.length);
-            this._publicKey = "-----BEGIN PUBLIC KEY-----\n" + Base64.encodeByteArray(_loc_4) + "-----END PUBLIC KEY-----";
-            return;
-        }// end function
-
-        public function setValidationAction(param1:LoginValidationAction) : void
-        {
-            this.username = param1.username;
-            this._lva = param1;
-            this._certificate = SecureModeManager.getInstance().retreiveCertificate();
-            ProtectPishingFrame.setPasswordHash(MD5.hash(param1.password.toUpperCase()), param1.password.length);
-            return;
-        }// end function
-
-        public function get loginValidationAction() : LoginValidationAction
-        {
-            return this._lva;
-        }// end function
-
-        public function get canAutoConnectWithToken() : Boolean
-        {
-            return this.nextToken != null;
-        }// end function
-
-        public function getIdentificationMessage() : IdentificationMessage
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (this._lva.username.indexOf("|") == -1)
-            {
-                _loc_1 = new IdentificationMessage();
-                if (this._lva is LoginValidationWithTicketAction || this.nextToken)
-                {
-                    _loc_2 = this.nextToken ? (this.nextToken) : (LoginValidationWithTicketAction(this._lva).ticket);
-                    this.nextToken = null;
-                    this.ankamaPortalKey = this.cipherMd5String(_loc_2);
-                    _loc_1.initIdentificationMessage(_loc_1.version, XmlConfig.getInstance().getEntry("config.lang.current"), this.cipherRsa("   ", _loc_2, this._certificate), this._lva.serverId, this._lva.autoSelectServer, this._certificate != null, true);
-                }
-                else
-                {
-                    this.ankamaPortalKey = this.cipherMd5String(this._lva.password);
-                    _loc_1.initIdentificationMessage(_loc_1.version, XmlConfig.getInstance().getEntry("config.lang.current"), this.cipherRsa(this._lva.username, this._lva.password, this._certificate), this._lva.serverId, this._lva.autoSelectServer, this._certificate != null, false);
-                }
-                _loc_1.version.initVersionExtended(BuildInfos.BUILD_VERSION.major, BuildInfos.BUILD_VERSION.minor, BuildInfos.BUILD_VERSION.release, AirScanner.isStreamingVersion() ? (70000) : (BuildInfos.BUILD_REVISION), BuildInfos.BUILD_PATCH, BuildInfos.BUILD_VERSION.buildType, AirScanner.isStreamingVersion() ? (ClientInstallTypeEnum.CLIENT_STREAMING) : (ClientInstallTypeEnum.CLIENT_BUNDLE), AirScanner.hasAir() ? (ClientTechnologyEnum.CLIENT_AIR) : (ClientTechnologyEnum.CLIENT_FLASH));
-                return _loc_1;
+               token=this.nextToken?this.nextToken:LoginValidationWithTicketAction(this._lva).ticket;
+               this.nextToken=null;
+               this.ankamaPortalKey=this.cipherMd5String(token);
+               imsg.initIdentificationMessage(imsg.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa("   ",token,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate==null),true);
             }
             else
             {
-                this.ankamaPortalKey = this.cipherMd5String(this._lva.password);
-                _loc_3 = this._lva.username.split("|");
-                _loc_4 = new IdentificationAccountForceMessage();
-                new IdentificationAccountForceMessage().initIdentificationAccountForceMessage(_loc_4.version, XmlConfig.getInstance().getEntry("config.lang.current"), this.cipherRsa(_loc_3[0], this._lva.password, this._certificate), this._lva.serverId, this._lva.autoSelectServer, this._certificate != null, false, _loc_3[1]);
+               this.ankamaPortalKey=this.cipherMd5String(this._lva.password);
+               imsg.initIdentificationMessage(imsg.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(this._lva.username,this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate==null),false);
             }
-            _loc_4.version.initVersionExtended(BuildInfos.BUILD_VERSION.major, BuildInfos.BUILD_VERSION.minor, BuildInfos.BUILD_VERSION.release, BuildInfos.BUILD_REVISION, BuildInfos.BUILD_PATCH, BuildInfos.BUILD_VERSION.buildType, AirScanner.isStreamingVersion() ? (ClientInstallTypeEnum.CLIENT_STREAMING) : (ClientInstallTypeEnum.CLIENT_BUNDLE), AirScanner.hasAir() ? (ClientTechnologyEnum.CLIENT_AIR) : (ClientTechnologyEnum.CLIENT_FLASH));
-            return _loc_4;
-        }// end function
+            imsg.version.initVersionExtended(BuildInfos.BUILD_VERSION.major,BuildInfos.BUILD_VERSION.minor,BuildInfos.BUILD_VERSION.release,AirScanner.isStreamingVersion()?70000:BuildInfos.BUILD_REVISION,BuildInfos.BUILD_PATCH,BuildInfos.BUILD_VERSION.buildType,AirScanner.isStreamingVersion()?ClientInstallTypeEnum.CLIENT_STREAMING:ClientInstallTypeEnum.CLIENT_BUNDLE,AirScanner.hasAir()?ClientTechnologyEnum.CLIENT_AIR:ClientTechnologyEnum.CLIENT_FLASH);
+            return imsg;
+         }
+         this.ankamaPortalKey=this.cipherMd5String(this._lva.password);
+         login=this._lva.username.split("|");
+         iafmsg=new IdentificationAccountForceMessage();
+         iafmsg.initIdentificationAccountForceMessage(iafmsg.version,XmlConfig.getInstance().getEntry("config.lang.current"),this.cipherRsa(login[0],this._lva.password,this._certificate),this._lva.serverId,this._lva.autoSelectServer,!(this._certificate==null),false,login[1]);
+         iafmsg.version.initVersionExtended(BuildInfos.BUILD_VERSION.major,BuildInfos.BUILD_VERSION.minor,BuildInfos.BUILD_VERSION.release,BuildInfos.BUILD_REVISION,BuildInfos.BUILD_PATCH,BuildInfos.BUILD_VERSION.buildType,AirScanner.isStreamingVersion()?ClientInstallTypeEnum.CLIENT_STREAMING:ClientInstallTypeEnum.CLIENT_BUNDLE,AirScanner.hasAir()?ClientTechnologyEnum.CLIENT_AIR:ClientTechnologyEnum.CLIENT_FLASH);
+         return iafmsg;
+      }
 
-        public function destroy() : void
-        {
-            _self = null;
-            return;
-        }// end function
+      public function destroy() : void {
+         _self=null;
+      }
 
-        private function cipherMd5String(param1:String) : String
-        {
-            return MD5.hash(param1 + this._salt);
-        }// end function
+      private function cipherMd5String(pwd:String) : String {
+         var _loc2_:* = true;
+         var _loc3_:* = false;
+         return MD5.hash(pwd+this._salt);
+      }
 
-        private function cipherRsa(param1:String, param2:String, param3:TrustCertificate) : Vector.<int>
-        {
-            var _loc_5:* = null;
-            var _loc_8:* = 0;
-            var _loc_4:* = new ByteArray();
-            if (param3)
-            {
-                _loc_4.writeUTFBytes(this._salt);
-                _loc_4.writeUnsignedInt(param3.id);
-                _loc_4.writeUTFBytes(param3.hash);
-                _loc_4.writeByte(param1.length);
-                _loc_4.writeUTFBytes(param1);
-                _loc_4.writeUTFBytes(param2);
-            }
-            else
-            {
-                _loc_4.writeUTFBytes(this._salt);
-                _loc_4.writeByte(param1.length);
-                _loc_4.writeUTFBytes(param1);
-                _loc_4.writeUTFBytes(param2);
-            }
-            _loc_5 = RSA.publicEncrypt(this._publicKey, _loc_4);
-            var _loc_6:* = new Vector.<int>;
-            _loc_5.position = 0;
-            var _loc_7:* = 0;
-            while (_loc_5.bytesAvailable != 0)
-            {
-                
-                _loc_8 = _loc_5.readByte();
-                _loc_6[_loc_7] = _loc_8;
-                _loc_7++;
-            }
-            return _loc_6;
-        }// end function
+      private function cipherRsa(login:String, pwd:String, certificate:TrustCertificate) : Vector.<int> {
+         var _loc9_:* = false;
+         var _loc10_:* = true;
+         var baOut:ByteArray = null;
+         var n:* = 0;
+         var baIn:ByteArray = new ByteArray();
+         if(certificate)
+         {
+            baIn.writeUTFBytes(this._salt);
+            baIn.writeUnsignedInt(certificate.id);
+            baIn.writeUTFBytes(certificate.hash);
+            baIn.writeByte(login.length);
+            baIn.writeUTFBytes(login);
+            baIn.writeUTFBytes(pwd);
+         }
+         else
+         {
+            baIn.writeUTFBytes(this._salt);
+            baIn.writeByte(login.length);
+            baIn.writeUTFBytes(login);
+            baIn.writeUTFBytes(pwd);
+         }
+         baOut=RSA.publicEncrypt(this._publicKey,baIn);
+         var ret:Vector.<int> = new Vector.<int>();
+         baOut.position=0;
+         var i:int = 0;
+         while(baOut.bytesAvailable!=0)
+         {
+            n=baOut.readByte();
+            ret[i]=n;
+            i++;
+         }
+         return ret;
+      }
+   }
 
-        public static function getInstance() : AuthentificationManager
-        {
-            if (_self == null)
-            {
-                _self = new AuthentificationManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

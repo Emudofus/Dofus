@@ -1,71 +1,67 @@
-﻿package com.ankamagames.dofus.internalDatacenter.items
+package com.ankamagames.dofus.internalDatacenter.items
 {
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
 
-    public class SimpleTextureWrapper extends Object implements ISlotData, IDataCenter
-    {
-        private var _uri:Uri;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(SimpleTextureWrapper));
 
-        public function SimpleTextureWrapper()
-        {
-            return;
-        }// end function
+   public class SimpleTextureWrapper extends Object implements ISlotData, IDataCenter
+   {
+         
 
-        public function get iconUri() : Uri
-        {
-            return this._uri;
-        }// end function
+      public function SimpleTextureWrapper() {
+         super();
+      }
 
-        public function get fullSizeIconUri() : Uri
-        {
-            return this._uri;
-        }// end function
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(SimpleTextureWrapper));
 
-        public function get errorIconUri() : Uri
-        {
-            return null;
-        }// end function
+      public static function create(uri:Uri) : SimpleTextureWrapper {
+         var simpleTextureWrapper:SimpleTextureWrapper = new SimpleTextureWrapper();
+         simpleTextureWrapper._uri=uri;
+         return simpleTextureWrapper;
+      }
 
-        public function get uri() : Uri
-        {
-            return this._uri;
-        }// end function
+      private var _uri:Uri;
 
-        public function get info1() : String
-        {
-            return null;
-        }// end function
+      public function get iconUri() : Uri {
+         return this._uri;
+      }
 
-        public function get timer() : int
-        {
-            return 0;
-        }// end function
+      public function get fullSizeIconUri() : Uri {
+         return this._uri;
+      }
 
-        public function get active() : Boolean
-        {
-            return true;
-        }// end function
+      public function get errorIconUri() : Uri {
+         return null;
+      }
 
-        public function addHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      public function get uri() : Uri {
+         return this._uri;
+      }
 
-        public function removeHolder(param1:ISlotDataHolder) : void
-        {
-            return;
-        }// end function
+      public function get info1() : String {
+         return null;
+      }
 
-        public static function create(param1:Uri) : SimpleTextureWrapper
-        {
-            var _loc_2:* = new SimpleTextureWrapper;
-            _loc_2._uri = param1;
-            return _loc_2;
-        }// end function
+      public function get timer() : int {
+         return 0;
+      }
 
-    }
+      public function get active() : Boolean {
+         return true;
+      }
+
+      public function addHolder(h:ISlotDataHolder) : void {
+         
+      }
+
+      public function removeHolder(h:ISlotDataHolder) : void {
+         
+      }
+   }
+
 }

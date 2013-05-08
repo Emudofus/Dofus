@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.quest
+package com.ankamagames.dofus.logic.game.common.actions.quest
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuidedModeQuitRequestAction extends Object implements Action
-    {
 
-        public function GuidedModeQuitRequestAction()
-        {
-            return;
-        }// end function
+   public class GuidedModeQuitRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : GuidedModeQuitRequestAction
-        {
-            return new GuidedModeQuitRequestAction;
-        }// end function
+      public function GuidedModeQuitRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : GuidedModeQuitRequestAction {
+         return new GuidedModeQuitRequestAction();
+      }
+
+
+   }
+
 }

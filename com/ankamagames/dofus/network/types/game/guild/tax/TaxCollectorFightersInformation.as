@@ -1,106 +1,96 @@
-﻿package com.ankamagames.dofus.network.types.game.guild.tax
+package com.ankamagames.dofus.network.types.game.guild.tax
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.character.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class TaxCollectorFightersInformation extends Object implements INetworkType
-    {
-        public var collectorId:int = 0;
-        public var allyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>;
-        public var enemyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>;
-        public static const protocolId:uint = 169;
 
-        public function TaxCollectorFightersInformation()
-        {
-            this.allyCharactersInformations = new Vector.<CharacterMinimalPlusLookInformations>;
-            this.enemyCharactersInformations = new Vector.<CharacterMinimalPlusLookInformations>;
-            return;
-        }// end function
+   public class TaxCollectorFightersInformation extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 169;
-        }// end function
+      public function TaxCollectorFightersInformation() {
+         this.allyCharactersInformations=new Vector.<CharacterMinimalPlusLookInformations>();
+         this.enemyCharactersInformations=new Vector.<CharacterMinimalPlusLookInformations>();
+         super();
+      }
 
-        public function initTaxCollectorFightersInformation(param1:int = 0, param2:Vector.<CharacterMinimalPlusLookInformations> = null, param3:Vector.<CharacterMinimalPlusLookInformations> = null) : TaxCollectorFightersInformation
-        {
-            this.collectorId = param1;
-            this.allyCharactersInformations = param2;
-            this.enemyCharactersInformations = param3;
-            return this;
-        }// end function
+      public static const protocolId:uint = 169;
 
-        public function reset() : void
-        {
-            this.collectorId = 0;
-            this.allyCharactersInformations = new Vector.<CharacterMinimalPlusLookInformations>;
-            this.enemyCharactersInformations = new Vector.<CharacterMinimalPlusLookInformations>;
-            return;
-        }// end function
+      public var collectorId:int = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_TaxCollectorFightersInformation(param1);
-            return;
-        }// end function
+      public var allyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>;
 
-        public function serializeAs_TaxCollectorFightersInformation(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.collectorId);
-            param1.writeShort(this.allyCharactersInformations.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.allyCharactersInformations.length)
-            {
-                
-                (this.allyCharactersInformations[_loc_2] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            param1.writeShort(this.enemyCharactersInformations.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.enemyCharactersInformations.length)
-            {
-                
-                (this.enemyCharactersInformations[_loc_3] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(param1);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      public var enemyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>;
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_TaxCollectorFightersInformation(param1);
-            return;
-        }// end function
+      public function getTypeId() : uint {
+         return 169;
+      }
 
-        public function deserializeAs_TaxCollectorFightersInformation(param1:IDataInput) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            this.collectorId = param1.readInt();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_6 = new CharacterMinimalPlusLookInformations();
-                _loc_6.deserialize(param1);
-                this.allyCharactersInformations.push(_loc_6);
-                _loc_3 = _loc_3 + 1;
-            }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_7 = new CharacterMinimalPlusLookInformations();
-                _loc_7.deserialize(param1);
-                this.enemyCharactersInformations.push(_loc_7);
-                _loc_5 = _loc_5 + 1;
-            }
-            return;
-        }// end function
+      public function initTaxCollectorFightersInformation(collectorId:int=0, allyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>=null, enemyCharactersInformations:Vector.<CharacterMinimalPlusLookInformations>=null) : TaxCollectorFightersInformation {
+         this.collectorId=collectorId;
+         this.allyCharactersInformations=allyCharactersInformations;
+         this.enemyCharactersInformations=enemyCharactersInformations;
+         return this;
+      }
 
-    }
+      public function reset() : void {
+         this.collectorId=0;
+         this.allyCharactersInformations=new Vector.<CharacterMinimalPlusLookInformations>();
+         this.enemyCharactersInformations=new Vector.<CharacterMinimalPlusLookInformations>();
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorFightersInformation(output);
+      }
+
+      public function serializeAs_TaxCollectorFightersInformation(output:IDataOutput) : void {
+         output.writeInt(this.collectorId);
+         output.writeShort(this.allyCharactersInformations.length);
+         var _i2:uint = 0;
+         while(_i2<this.allyCharactersInformations.length)
+         {
+            (this.allyCharactersInformations[_i2] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(output);
+            _i2++;
+         }
+         output.writeShort(this.enemyCharactersInformations.length);
+         var _i3:uint = 0;
+         while(_i3<this.enemyCharactersInformations.length)
+         {
+            (this.enemyCharactersInformations[_i3] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(output);
+            _i3++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorFightersInformation(input);
+      }
+
+      public function deserializeAs_TaxCollectorFightersInformation(input:IDataInput) : void {
+         var _item2:CharacterMinimalPlusLookInformations = null;
+         var _item3:CharacterMinimalPlusLookInformations = null;
+         this.collectorId=input.readInt();
+         var _allyCharactersInformationsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_allyCharactersInformationsLen)
+         {
+            _item2=new CharacterMinimalPlusLookInformations();
+            _item2.deserialize(input);
+            this.allyCharactersInformations.push(_item2);
+            _i2++;
+         }
+         var _enemyCharactersInformationsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3<_enemyCharactersInformationsLen)
+         {
+            _item3=new CharacterMinimalPlusLookInformations();
+            _item3.deserialize(input);
+            this.enemyCharactersInformations.push(_item3);
+            _i3++;
+         }
+      }
+   }
+
 }

@@ -1,254 +1,263 @@
-﻿package com.ankamagames.berilia.factories
+package com.ankamagames.berilia.factories
 {
-    import com.ankamagames.berilia.events.*;
-    import com.ankamagames.berilia.frames.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.utils.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import flash.events.*;
-    import flash.text.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import flash.text.StyleSheet;
+   import flash.events.EventDispatcher;
+   import flash.text.TextField;
+   import flash.events.TextEvent;
+   import com.ankamagames.berilia.events.LinkInteractionEvent;
+   import com.ankamagames.berilia.managers.HtmlManager;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.jerakine.utils.display.FrameIdManager;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import com.ankamagames.berilia.frames.ShortcutsFrame;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.berilia.utils.BeriliaHookList;
+   import flash.utils.Timer;
+   import flash.events.TimerEvent;
 
-    public class HyperlinkFactory extends Object
-    {
-        private static var LEFT:String = "{";
-        private static var RIGHT:String = "}";
-        private static var SEPARATOR:String = "::";
-        private static var PROTOCOL:Dictionary = new Dictionary();
-        private static var PROTOCOL_TEXT:Dictionary = new Dictionary();
-        private static var PROTOCOL_SHIFT:Dictionary = new Dictionary();
-        private static var PROTOCOL_BOLD:Dictionary = new Dictionary();
-        private static var PROTOCOL_ROLL_OVER:Dictionary = new Dictionary();
-        private static var staticStyleSheet:StyleSheet;
-        public static var lastClickEventFrame:uint;
-        private static var _rollOverTimer:Timer;
-        private static var _rollOverData:String;
 
-        public function HyperlinkFactory()
-        {
-            return;
-        }// end function
+   public class HyperlinkFactory extends Object
+   {
+         
 
-        public static function protocolIsRegister(param1:String) : Boolean
-        {
-            return PROTOCOL[param1] ? (true) : (false);
-        }// end function
+      public function HyperlinkFactory() {
+         super();
+      }
 
-        public static function textProtocolIsRegister(param1:String) : Boolean
-        {
-            return PROTOCOL_TEXT[param1] ? (true) : (false);
-        }// end function
+      private static var LEFT:String = "{";
 
-        public static function shiftProtocolIsRegister(param1:String) : Boolean
-        {
-            return PROTOCOL_SHIFT[param1] ? (true) : (false);
-        }// end function
+      private static var RIGHT:String = "}";
 
-        public static function boldProtocolIsRegister(param1:String) : Boolean
-        {
-            return PROTOCOL_BOLD[param1] ? (true) : (false);
-        }// end function
+      private static var SEPARATOR:String = "::";
 
-        public static function createTextClickHandler(param1:EventDispatcher, param2:Boolean = false) : void
-        {
-            var _loc_3:* = null;
-            if (param1 is TextField)
+      private static var PROTOCOL:Dictionary = new Dictionary();
+
+      private static var PROTOCOL_TEXT:Dictionary = new Dictionary();
+
+      private static var PROTOCOL_SHIFT:Dictionary = new Dictionary();
+
+      private static var PROTOCOL_BOLD:Dictionary = new Dictionary();
+
+      private static var PROTOCOL_ROLL_OVER:Dictionary = new Dictionary();
+
+      private static var staticStyleSheet:StyleSheet;
+
+      public static var lastClickEventFrame:uint;
+
+      public static function protocolIsRegister(protocolName:String) : Boolean {
+         return PROTOCOL[protocolName]?true:false;
+      }
+
+      public static function textProtocolIsRegister(protocolName:String) : Boolean {
+         return PROTOCOL_TEXT[protocolName]?true:false;
+      }
+
+      public static function shiftProtocolIsRegister(protocolName:String) : Boolean {
+         return PROTOCOL_SHIFT[protocolName]?true:false;
+      }
+
+      public static function boldProtocolIsRegister(protocolName:String) : Boolean {
+         return PROTOCOL_BOLD[protocolName]?true:false;
+      }
+
+      public static function createTextClickHandler(component:EventDispatcher, styleSheet:Boolean=false) : void {
+         var t:TextField = null;
+         if(component is TextField)
+         {
+            t=component as TextField;
+            t.htmlText=decode(t.htmlText,true,styleSheet?t:null);
+            t.mouseEnabled=true;
+         }
+         component.addEventListener(TextEvent.LINK,processClick);
+      }
+
+      public static function createRollOverHandler(component:EventDispatcher) : void {
+         component.addEventListener(LinkInteractionEvent.ROLL_OVER,processRollOver);
+         component.addEventListener(LinkInteractionEvent.ROLL_OUT,processRollOut);
+      }
+
+      public static function activeSmallHyperlink(textField:TextField) : void {
+         textField.addEventListener(TextEvent.LINK,processClick);
+      }
+
+      public static function decode(string:String, htmlMode:Boolean=true, textField:TextField=null) : String {
+         var leftIndex:* = 0;
+         var rightIndex:* = 0;
+         var leftBlock:String = null;
+         var rightBlock:String = null;
+         var middleBlock:String = null;
+         var linkInfo:Array = null;
+         var param:String = null;
+         var paramList:Array = null;
+         var protocolName:String = null;
+         var getTextFunction:Function = null;
+         var text:String = null;
+         var linkColor:String = null;
+         var hoverColor:String = null;
+         var currentText:String = string;
+         do
+         {
+            leftIndex=currentText.indexOf(LEFT);
+            if(leftIndex==-1)
             {
-                _loc_3 = param1 as TextField;
-                _loc_3.htmlText = decode(_loc_3.htmlText, true, param2 ? (_loc_3) : (null));
-                _loc_3.mouseEnabled = true;
             }
-            param1.addEventListener(TextEvent.LINK, processClick);
-            return;
-        }// end function
-
-        public static function createRollOverHandler(param1:EventDispatcher) : void
-        {
-            param1.addEventListener(LinkInteractionEvent.ROLL_OVER, processRollOver);
-            param1.addEventListener(LinkInteractionEvent.ROLL_OUT, processRollOut);
-            return;
-        }// end function
-
-        public static function activeSmallHyperlink(param1:TextField) : void
-        {
-            param1.addEventListener(TextEvent.LINK, processClick);
-            return;
-        }// end function
-
-        public static function decode(param1:String, param2:Boolean = true, param3:TextField = null) : String
-        {
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            var _loc_4:* = param1;
-            while (true)
+            else
             {
-                
-                _loc_5 = _loc_4.indexOf(LEFT);
-                if (_loc_5 == -1)
-                {
-                    break;
-                }
-                _loc_6 = _loc_4.indexOf(RIGHT);
-                if (_loc_6 == -1)
-                {
-                    break;
-                }
-                if (_loc_5 > _loc_6)
-                {
-                    break;
-                }
-                _loc_7 = _loc_4.substring(0, _loc_5);
-                _loc_8 = _loc_4.substring((_loc_6 + 1));
-                _loc_9 = _loc_4.substring(_loc_5, _loc_6);
-                _loc_10 = _loc_9.split("::");
-                _loc_11 = _loc_10[0].substr(1);
-                _loc_12 = _loc_11.split(",");
-                _loc_13 = _loc_12.shift();
-                if (_loc_10.length == 1)
-                {
-                    _loc_14 = PROTOCOL_TEXT[_loc_13];
-                    if (_loc_14 != null)
-                    {
-                        _loc_10.push(_loc_14.apply(_loc_14, _loc_12));
-                    }
-                }
-                if (param2)
-                {
-                    _loc_15 = _loc_10[1];
-                    if (PROTOCOL_BOLD[_loc_13])
-                    {
-                        _loc_15 = HtmlManager.addTag(_loc_15, HtmlManager.BOLD);
-                    }
-                    _loc_4 = _loc_7;
-                    _loc_4 = _loc_4 + HtmlManager.addLink(_loc_15, "event:" + _loc_11, null, true);
-                    _loc_4 = _loc_4 + _loc_8;
-                    if (param3)
-                    {
-                        if (!staticStyleSheet)
+               rightIndex=currentText.indexOf(RIGHT);
+               if(rightIndex==-1)
+               {
+               }
+               else
+               {
+                  if(leftIndex>rightIndex)
+                  {
+                  }
+                  else
+                  {
+                     leftBlock=currentText.substring(0,leftIndex);
+                     rightBlock=currentText.substring(rightIndex+1);
+                     middleBlock=currentText.substring(leftIndex,rightIndex);
+                     linkInfo=middleBlock.split("::");
+                     param=linkInfo[0].substr(1);
+                     paramList=param.split(",");
+                     protocolName=paramList.shift();
+                     if(linkInfo.length==1)
+                     {
+                        getTextFunction=PROTOCOL_TEXT[protocolName];
+                        if(getTextFunction!=null)
                         {
-                            _loc_16 = XmlConfig.getInstance().getEntry("colors.hyperlink.link");
-                            _loc_16 = _loc_16.replace("0x", "#");
-                            _loc_17 = XmlConfig.getInstance().getEntry("colors.hyperlink.hover");
-                            _loc_17 = _loc_17.replace("0x", "#");
-                            staticStyleSheet = new StyleSheet();
-                            staticStyleSheet.setStyle("a:link", {color:_loc_16});
-                            staticStyleSheet.setStyle("a:hover", {color:_loc_17});
+                           linkInfo.push(getTextFunction.apply(getTextFunction,paramList));
                         }
-                        param3.styleSheet = staticStyleSheet;
-                    }
-                    continue;
-                }
-                _loc_4 = _loc_7 + _loc_10[1] + _loc_8;
+                     }
+                     if(htmlMode)
+                     {
+                        text=linkInfo[1];
+                        if(PROTOCOL_BOLD[protocolName])
+                        {
+                           text=HtmlManager.addTag(text,HtmlManager.BOLD);
+                        }
+                        currentText=leftBlock;
+                        currentText=currentText+HtmlManager.addLink(text,"event:"+param,null,true);
+                        currentText=currentText+rightBlock;
+                        if(textField)
+                        {
+                           if(!staticStyleSheet)
+                           {
+                              linkColor=XmlConfig.getInstance().getEntry("colors.hyperlink.link");
+                              linkColor=linkColor.replace("0x","#");
+                              hoverColor=XmlConfig.getInstance().getEntry("colors.hyperlink.hover");
+                              hoverColor=hoverColor.replace("0x","#");
+                              staticStyleSheet=new StyleSheet();
+                              staticStyleSheet.setStyle("a:link",{color:linkColor});
+                              staticStyleSheet.setStyle("a:hover",{color:hoverColor});
+                           }
+                           textField.styleSheet=staticStyleSheet;
+                        }
+                     }
+                     else
+                     {
+                        currentText=leftBlock+linkInfo[1]+rightBlock;
+                     }
+                     continue;
+                  }
+               }
             }
-            return _loc_4;
-        }// end function
+            return currentText;
+         }
+         while(true);
+      }
 
-        public static function registerProtocol(param1:String, param2:Function, param3:Function = null, param4:Function = null, param5:Boolean = true, param6:Function = null) : void
-        {
-            PROTOCOL[param1] = param2;
-            if (param3 != null)
-            {
-                PROTOCOL_TEXT[param1] = param3;
-            }
-            if (param4 != null)
-            {
-                PROTOCOL_SHIFT[param1] = param4;
-            }
-            if (param5)
-            {
-                PROTOCOL_BOLD[param1] = true;
-            }
-            if (param6 != null)
-            {
-                PROTOCOL_ROLL_OVER[param1] = param6;
-            }
-            return;
-        }// end function
+      public static function registerProtocol(name:String, callBack:Function, textCallBack:Function=null, shiftCallBack:Function=null, useBoldText:Boolean=true, rollOverCallback:Function=null) : void {
+         PROTOCOL[name]=callBack;
+         if(textCallBack!=null)
+         {
+            PROTOCOL_TEXT[name]=textCallBack;
+         }
+         if(shiftCallBack!=null)
+         {
+            PROTOCOL_SHIFT[name]=shiftCallBack;
+         }
+         if(useBoldText)
+         {
+            PROTOCOL_BOLD[name]=true;
+         }
+         if(rollOverCallback!=null)
+         {
+            PROTOCOL_ROLL_OVER[name]=rollOverCallback;
+         }
+      }
 
-        public static function processClick(event:TextEvent) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            lastClickEventFrame = FrameIdManager.frameId;
-            StageShareManager.stage.focus = StageShareManager.stage;
-            var _loc_2:* = event.text.split(",");
-            if (ShortcutsFrame.shiftKey)
+      public static function processClick(event:TextEvent) : void {
+         var shiftCallBack:Function = null;
+         var callBack:Function = null;
+         lastClickEventFrame=FrameIdManager.frameId;
+         StageShareManager.stage.focus=StageShareManager.stage;
+         var param:Array = event.text.split(",");
+         if(ShortcutsFrame.shiftKey)
+         {
+            shiftCallBack=PROTOCOL_SHIFT[param[0]];
+            if(shiftCallBack==null)
             {
-                _loc_3 = PROTOCOL_SHIFT[_loc_2[0]];
-                if (_loc_3 == null)
-                {
-                    KernelEventsManager.getInstance().processCallback(BeriliaHookList.ChatHyperlink, "{" + _loc_2.join(",") + "}");
-                }
-                else
-                {
-                    _loc_2.shift();
-                    _loc_3.apply(null, _loc_2);
-                }
+               KernelEventsManager.getInstance().processCallback(BeriliaHookList.ChatHyperlink,"{"+param.join(",")+"}");
             }
             else
             {
-                _loc_4 = PROTOCOL[_loc_2.shift()];
-                if (_loc_4 != null)
-                {
-                    _loc_4.apply(null, _loc_2);
-                }
+               param.shift();
+               shiftCallBack.apply(null,param);
             }
-            return;
-        }// end function
+         }
+         else
+         {
+            callBack=PROTOCOL[param.shift()];
+            if(callBack!=null)
+            {
+               callBack.apply(null,param);
+            }
+         }
+      }
 
-        public static function processRollOver(event:LinkInteractionEvent) : void
-        {
-            if (_rollOverTimer == null)
-            {
-                _rollOverTimer = new Timer(800, 1);
-                _rollOverTimer.addEventListener(TimerEvent.TIMER_COMPLETE, onRollOverTimerComplete);
-            }
-            else
-            {
-                _rollOverTimer.reset();
-            }
-            _rollOverData = event.text;
-            _rollOverTimer.start();
-            return;
-        }// end function
+      public static function processRollOver(pEvt:LinkInteractionEvent) : void {
+         if(_rollOverTimer==null)
+         {
+            _rollOverTimer=new Timer(800,1);
+            _rollOverTimer.addEventListener(TimerEvent.TIMER_COMPLETE,onRollOverTimerComplete);
+         }
+         else
+         {
+            _rollOverTimer.reset();
+         }
+         _rollOverData=pEvt.text;
+         _rollOverTimer.start();
+      }
 
-        public static function processRollOut(event:LinkInteractionEvent) : void
-        {
-            if (_rollOverTimer != null)
-            {
-                _rollOverTimer.reset();
-            }
-            _rollOverData = null;
-            return;
-        }// end function
+      public static function processRollOut(pEvt:LinkInteractionEvent) : void {
+         if(_rollOverTimer!=null)
+         {
+            _rollOverTimer.reset();
+         }
+         _rollOverData=null;
+      }
 
-        private static function onRollOverTimerComplete(event:TimerEvent) : void
-        {
-            if (_rollOverData == null)
-            {
-                return;
-            }
-            _rollOverTimer.stop();
-            var _loc_2:* = _rollOverData.split(",");
-            var _loc_3:* = PROTOCOL_ROLL_OVER[_loc_2.shift()];
-            if (_loc_3 != null)
-            {
-                _loc_3.apply(null, _loc_2);
-            }
+      private static function onRollOverTimerComplete(pEvt:TimerEvent) : void {
+         if(_rollOverData==null)
+         {
             return;
-        }// end function
+         }
+         _rollOverTimer.stop();
+         var param:Array = _rollOverData.split(",");
+         var callback:Function = PROTOCOL_ROLL_OVER[param.shift()];
+         if(callback!=null)
+         {
+            callback.apply(null,param);
+         }
+      }
 
-    }
+      private static var _rollOverTimer:Timer;
+
+      private static var _rollOverData:String;
+
+
+   }
+
 }

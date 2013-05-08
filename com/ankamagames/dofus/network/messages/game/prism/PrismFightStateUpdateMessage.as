@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.prism
+package com.ankamagames.dofus.network.messages.game.prism
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PrismFightStateUpdateMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var state:uint = 0;
-        public static const protocolId:uint = 6040;
 
-        public function PrismFightStateUpdateMessage()
-        {
+   public class PrismFightStateUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function PrismFightStateUpdateMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6040;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var state:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6040;
+      }
+
+      public function initPrismFightStateUpdateMessage(state:uint=0) : PrismFightStateUpdateMessage {
+         this.state=state;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.state=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismFightStateUpdateMessage(output);
+      }
+
+      public function serializeAs_PrismFightStateUpdateMessage(output:IDataOutput) : void {
+         if(this.state<0)
+         {
+            throw new Error("Forbidden value ("+this.state+") on element state.");
+         }
+         else
+         {
+            output.writeByte(this.state);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismFightStateUpdateMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6040;
-        }// end function
-
-        public function initPrismFightStateUpdateMessage(param1:uint = 0) : PrismFightStateUpdateMessage
-        {
-            this.state = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.state = 0;
-            this._isInitialized = false;
+      public function deserializeAs_PrismFightStateUpdateMessage(input:IDataInput) : void {
+         this.state=input.readByte();
+         if(this.state<0)
+         {
+            throw new Error("Forbidden value ("+this.state+") on element of PrismFightStateUpdateMessage.state.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PrismFightStateUpdateMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_PrismFightStateUpdateMessage(param1:IDataOutput) : void
-        {
-            if (this.state < 0)
-            {
-                throw new Error("Forbidden value (" + this.state + ") on element state.");
-            }
-            param1.writeByte(this.state);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PrismFightStateUpdateMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_PrismFightStateUpdateMessage(param1:IDataInput) : void
-        {
-            this.state = param1.readByte();
-            if (this.state < 0)
-            {
-                throw new Error("Forbidden value (" + this.state + ") on element of PrismFightStateUpdateMessage.state.");
-            }
-            return;
-        }// end function
-
-    }
 }

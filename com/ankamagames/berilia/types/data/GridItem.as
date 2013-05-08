@@ -1,20 +1,27 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    import flash.display.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import flash.display.DisplayObject;
 
-    public class GridItem extends Object
-    {
-        public var index:uint;
-        public var container:DisplayObject;
-        public var data:Object;
 
-        public function GridItem(param1:uint, param2:DisplayObject, param3)
-        {
-            this.index = param1;
-            this.container = param2;
-            this.data = param3;
-            return;
-        }// end function
+   public class GridItem extends Object implements IDataCenter
+   {
+         
 
-    }
+      public function GridItem(id:uint, c:DisplayObject, d:*) {
+         super();
+         this.index=id;
+         this.container=c;
+         this.data=d;
+      }
+
+
+
+      public var index:uint;
+
+      public var container:DisplayObject;
+
+      public var data;
+   }
+
 }

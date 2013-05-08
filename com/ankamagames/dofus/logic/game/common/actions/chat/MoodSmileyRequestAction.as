@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class MoodSmileyRequestAction extends Object implements Action
-    {
-        public var smileyId:int;
 
-        public function MoodSmileyRequestAction()
-        {
-            return;
-        }// end function
+   public class MoodSmileyRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : MoodSmileyRequestAction
-        {
-            var _loc_2:* = new MoodSmileyRequestAction;
-            _loc_2.smileyId = param1;
-            return _loc_2;
-        }// end function
+      public function MoodSmileyRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(id:int) : MoodSmileyRequestAction {
+         var a:MoodSmileyRequestAction = new MoodSmileyRequestAction();
+         a.smileyId=id;
+         return a;
+      }
+
+      public var smileyId:int;
+   }
+
 }

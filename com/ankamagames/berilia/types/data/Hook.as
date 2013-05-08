@@ -1,59 +1,65 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    import com.ankamagames.berilia.utils.errors.*;
+   import com.ankamagames.berilia.utils.errors.BeriliaError;
 
-    public class Hook extends Object
-    {
-        private var _trusted:Boolean;
-        private var _name:String;
-        private var _nativeHook:Boolean;
-        private static var _hookNameList:Array;
 
-        public function Hook(param1:String, param2:Boolean, param3:Boolean = true)
-        {
-            if (!_hookNameList)
+   public class Hook extends Object
+   {
+         
+
+      public function Hook(name:String, trusted:Boolean, nativeHook:Boolean=true) {
+         super();
+         if(!_hookNameList)
+         {
+            _hookNameList=new Array();
+         }
+         _hookNameList[name]=this;
+         this._name=name;
+         this._trusted=trusted;
+      }
+
+      private static var _hookNameList:Array;
+
+      public static function create(name:String, trusted:Boolean, nativeHook:Boolean=true) : Hook {
+         var h:Hook = _hookNameList[name];
+         if(h)
+         {
+            if(trusted)
             {
-                _hookNameList = new Array();
+               throw new BeriliaError("Hook name ("+name+") aleardy used, please rename it.");
             }
-            _hookNameList[param1] = this;
-            this._name = param1;
-            this._trusted = param2;
-            return;
-        }// end function
-
-        public function get trusted() : Boolean
-        {
-            return this._trusted;
-        }// end function
-
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
-
-        public function get nativeHook() : Boolean
-        {
-            return this._nativeHook;
-        }// end function
-
-        public static function create(param1:String, param2:Boolean, param3:Boolean = true) : Hook
-        {
-            var _loc_4:* = _hookNameList[param1];
-            if (_hookNameList[param1])
+            else
             {
-                if (param2)
-                {
-                    throw new BeriliaError("Hook name (" + param1 + ") aleardy used, please rename it.");
-                }
-                return _loc_4;
+               return h;
             }
-            return new Hook(param1, param2, param3);
-        }// end function
+         }
+         else
+         {
+            return new Hook(name,trusted,nativeHook);
+         }
+      }
 
-        public static function getHookByName(param1:String) : Hook
-        {
-            return _hookNameList[param1];
-        }// end function
+      public static function getHookByName(name:String) : Hook {
+         return _hookNameList[name];
+      }
 
-    }
+      private var _trusted:Boolean;
+
+      private var _name:String;
+
+      private var _nativeHook:Boolean;
+
+      public function get trusted() : Boolean {
+         return this._trusted;
+      }
+
+      public function get name() : String {
+         return this._name;
+      }
+
+      public function get nativeHook() : Boolean {
+         return this._nativeHook;
+      }
+   }
+
 }

@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.social
+package com.ankamagames.dofus.logic.game.common.actions.social
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class RemoveEnemyAction extends Object implements Action
-    {
-        public var name:String;
 
-        public function RemoveEnemyAction()
-        {
-            return;
-        }// end function
+   public class RemoveEnemyAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : RemoveEnemyAction
-        {
-            var _loc_2:* = new RemoveEnemyAction;
-            _loc_2.name = param1;
-            return _loc_2;
-        }// end function
+      public function RemoveEnemyAction() {
+         super();
+      }
 
-    }
+      public static function create(accountId:int) : RemoveEnemyAction {
+         var a:RemoveEnemyAction = new RemoveEnemyAction();
+         a.accountId=accountId;
+         return a;
+      }
+
+      public var accountId:int;
+   }
+
 }

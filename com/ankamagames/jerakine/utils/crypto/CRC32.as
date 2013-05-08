@@ -1,65 +1,59 @@
-﻿package com.ankamagames.jerakine.utils.crypto
+package com.ankamagames.jerakine.utils.crypto
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public class CRC32 extends Object
-    {
-        private var _crc32:uint;
-        private static var CRCTable:Array = initCRCTable();
 
-        public function CRC32()
-        {
-            return;
-        }// end function
+   public class CRC32 extends Object
+   {
+         
 
-        public function update(param1:ByteArray, param2:int = 0, param3:int = 0) : void
-        {
-            param3 = param3 == 0 ? (param1.length) : (param3);
-            var _loc_4:* = ~this._crc32;
-            var _loc_5:* = param2;
-            while (_loc_5 < param3)
+      public function CRC32() {
+         super();
+      }
+
+      private static var CRCTable:Array = initCRCTable();
+
+      private static function initCRCTable() : Array {
+         var crc:uint = 0;
+         var j:* = 0;
+         var crcTable:Array = new Array(256);
+         var i:int = 0;
+         while(i<256)
+         {
+            crc=i;
+            j=0;
+            while(j<8)
             {
-                
-                _loc_4 = CRCTable[(_loc_4 ^ param1[_loc_5]) & 255] ^ _loc_4 >>> 8;
-                _loc_5++;
+               crc=crc&1?crc>>>1^3.988292384E9:crc>>>1;
+               j++;
             }
-            this._crc32 = ~_loc_4;
-            return;
-        }// end function
+            crcTable[i]=crc;
+            i++;
+         }
+         return crcTable;
+      }
 
-        public function getValue() : uint
-        {
-            return this._crc32 & 4294967295;
-        }// end function
+      private var _crc32:uint;
 
-        public function reset() : void
-        {
-            this._crc32 = 0;
-            return;
-        }// end function
+      public function update(buffer:ByteArray, offset:int=0, length:int=0) : void {
+         var length:int = length==0?buffer.length:length;
+         var crc:uint = ~this._crc32;
+         var i:int = offset;
+         while(i<length)
+         {
+            crc=CRCTable[(crc^buffer[i])&255]^crc>>>8;
+            i++;
+         }
+         this._crc32=~crc;
+      }
 
-        private static function initCRCTable() : Array
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            var _loc_1:* = new Array(256);
-            var _loc_2:* = 0;
-            while (_loc_2 < 256)
-            {
-                
-                _loc_3 = _loc_2;
-                _loc_4 = 0;
-                while (_loc_4 < 8)
-                {
-                    
-                    _loc_3 = _loc_3 & 1 ? (_loc_3 >>> 1 ^ 3988292384) : (_loc_3 >>> 1);
-                    _loc_4++;
-                }
-                _loc_1[_loc_2] = _loc_3;
-                _loc_2++;
-            }
-            return _loc_1;
-        }// end function
+      public function getValue() : uint {
+         return this._crc32&4.294967295E9;
+      }
 
-    }
+      public function reset() : void {
+         this._crc32=0;
+      }
+   }
+
 }

@@ -1,16 +1,22 @@
-﻿package flashx.textLayout.edit
+package flashx.textLayout.edit
 {
 
-    final public class SelectionFormatState extends Object
-    {
-        public static const FOCUSED:String = "focused";
-        public static const UNFOCUSED:String = "unfocused";
-        public static const INACTIVE:String = "inactive";
 
-        public function SelectionFormatState()
-        {
-            return;
-        }// end function
+   public final class SelectionFormatState extends Object
+   {
+         
 
-    }
+      public function SelectionFormatState() {
+         super();
+      }
+
+      public static const FOCUSED:String = "focused";
+
+      public static const UNFOCUSED:String = "unfocused";
+
+      public static const INACTIVE:String = "inactive";
+
+
+   }
+
 }

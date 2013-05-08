@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class LockableUseCodeAction extends Object implements Action
-    {
-        public var code:String;
 
-        public function LockableUseCodeAction()
-        {
-            return;
-        }// end function
+   public class LockableUseCodeAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : LockableUseCodeAction
-        {
-            var _loc_2:* = new LockableUseCodeAction;
-            _loc_2.code = param1;
-            return _loc_2;
-        }// end function
+      public function LockableUseCodeAction() {
+         super();
+      }
 
-    }
+      public static function create(code:String) : LockableUseCodeAction {
+         var action:LockableUseCodeAction = new LockableUseCodeAction();
+         action.code=code;
+         return action;
+      }
+
+      public var code:String;
+   }
+
 }

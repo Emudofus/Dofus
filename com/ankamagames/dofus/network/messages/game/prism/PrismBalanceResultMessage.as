@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.prism
+package com.ankamagames.dofus.network.messages.game.prism
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PrismBalanceResultMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var totalBalanceValue:uint = 0;
-        public var subAreaBalanceValue:uint = 0;
-        public static const protocolId:uint = 5841;
 
-        public function PrismBalanceResultMessage()
-        {
-            return;
-        }// end function
+   public class PrismBalanceResultMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PrismBalanceResultMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5841;
-        }// end function
+      public static const protocolId:uint = 5841;
 
-        public function initPrismBalanceResultMessage(param1:uint = 0, param2:uint = 0) : PrismBalanceResultMessage
-        {
-            this.totalBalanceValue = param1;
-            this.subAreaBalanceValue = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.totalBalanceValue = 0;
-            this.subAreaBalanceValue = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var totalBalanceValue:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var subAreaBalanceValue:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PrismBalanceResultMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5841;
+      }
 
-        public function serializeAs_PrismBalanceResultMessage(param1:IDataOutput) : void
-        {
-            if (this.totalBalanceValue < 0)
+      public function initPrismBalanceResultMessage(totalBalanceValue:uint=0, subAreaBalanceValue:uint=0) : PrismBalanceResultMessage {
+         this.totalBalanceValue=totalBalanceValue;
+         this.subAreaBalanceValue=subAreaBalanceValue;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.totalBalanceValue=0;
+         this.subAreaBalanceValue=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismBalanceResultMessage(output);
+      }
+
+      public function serializeAs_PrismBalanceResultMessage(output:IDataOutput) : void {
+         if(this.totalBalanceValue<0)
+         {
+            throw new Error("Forbidden value ("+this.totalBalanceValue+") on element totalBalanceValue.");
+         }
+         else
+         {
+            output.writeByte(this.totalBalanceValue);
+            if(this.subAreaBalanceValue<0)
             {
-                throw new Error("Forbidden value (" + this.totalBalanceValue + ") on element totalBalanceValue.");
+               throw new Error("Forbidden value ("+this.subAreaBalanceValue+") on element subAreaBalanceValue.");
             }
-            param1.writeByte(this.totalBalanceValue);
-            if (this.subAreaBalanceValue < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.subAreaBalanceValue + ") on element subAreaBalanceValue.");
+               output.writeByte(this.subAreaBalanceValue);
+               return;
             }
-            param1.writeByte(this.subAreaBalanceValue);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PrismBalanceResultMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismBalanceResultMessage(input);
+      }
 
-        public function deserializeAs_PrismBalanceResultMessage(param1:IDataInput) : void
-        {
-            this.totalBalanceValue = param1.readByte();
-            if (this.totalBalanceValue < 0)
+      public function deserializeAs_PrismBalanceResultMessage(input:IDataInput) : void {
+         this.totalBalanceValue=input.readByte();
+         if(this.totalBalanceValue<0)
+         {
+            throw new Error("Forbidden value ("+this.totalBalanceValue+") on element of PrismBalanceResultMessage.totalBalanceValue.");
+         }
+         else
+         {
+            this.subAreaBalanceValue=input.readByte();
+            if(this.subAreaBalanceValue<0)
             {
-                throw new Error("Forbidden value (" + this.totalBalanceValue + ") on element of PrismBalanceResultMessage.totalBalanceValue.");
+               throw new Error("Forbidden value ("+this.subAreaBalanceValue+") on element of PrismBalanceResultMessage.subAreaBalanceValue.");
             }
-            this.subAreaBalanceValue = param1.readByte();
-            if (this.subAreaBalanceValue < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.subAreaBalanceValue + ") on element of PrismBalanceResultMessage.subAreaBalanceValue.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

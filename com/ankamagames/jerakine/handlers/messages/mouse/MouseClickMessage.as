@@ -1,24 +1,26 @@
-﻿package com.ankamagames.jerakine.handlers.messages.mouse
+package com.ankamagames.jerakine.handlers.messages.mouse
 {
-    import flash.display.*;
-    import flash.events.*;
+   import flash.display.InteractiveObject;
+   import flash.events.MouseEvent;
 
-    public class MouseClickMessage extends MouseMessage
-    {
 
-        public function MouseClickMessage()
-        {
-            return;
-        }// end function
+   public class MouseClickMessage extends MouseMessage
+   {
+         
 
-        public static function create(param1:InteractiveObject, param2:MouseEvent, param3:MouseMessage = null) : MouseClickMessage
-        {
-            if (!param3)
-            {
-                param3 = new MouseClickMessage;
-            }
-            return MouseMessage.create(param1, param2, param3) as MouseClickMessage;
-        }// end function
+      public function MouseClickMessage() {
+         super();
+      }
 
-    }
+      public static function create(target:InteractiveObject, mouseEvent:MouseEvent, instance:MouseMessage=null) : MouseClickMessage {
+         if(!instance)
+         {
+            instance=new MouseClickMessage();
+         }
+         return MouseMessage.create(target,mouseEvent,instance) as MouseClickMessage;
+      }
+
+
+   }
+
 }

@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.humanVendor
+package com.ankamagames.dofus.logic.game.common.actions.humanVendor
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeStartAsVendorRequestAction extends Object implements Action
-    {
 
-        public function ExchangeStartAsVendorRequestAction()
-        {
-            return;
-        }// end function
+   public class ExchangeStartAsVendorRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : ExchangeStartAsVendorRequestAction
-        {
-            var _loc_1:* = new ExchangeStartAsVendorRequestAction;
-            return _loc_1;
-        }// end function
+      public function ExchangeStartAsVendorRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : ExchangeStartAsVendorRequestAction {
+         var a:ExchangeStartAsVendorRequestAction = new ExchangeStartAsVendorRequestAction();
+         return a;
+      }
+
+
+   }
+
 }

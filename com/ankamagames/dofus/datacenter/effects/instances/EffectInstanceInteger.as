@@ -1,63 +1,63 @@
-﻿package com.ankamagames.dofus.datacenter.effects.instances
+package com.ankamagames.dofus.datacenter.effects.instances
 {
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
 
-    public class EffectInstanceInteger extends EffectInstance implements IDataCenter
-    {
-        public var value:int;
 
-        public function EffectInstanceInteger()
-        {
-            return;
-        }// end function
+   public class EffectInstanceInteger extends EffectInstance implements IDataCenter
+   {
+         
 
-        override public function clone() : EffectInstance
-        {
-            var _loc_1:* = new EffectInstanceInteger();
-            _loc_1.rawZone = rawZone;
-            _loc_1.effectId = effectId;
-            _loc_1.duration = duration;
-            _loc_1.delay = delay;
-            _loc_1.value = this.value;
-            _loc_1.random = random;
-            _loc_1.group = group;
-            _loc_1.hidden = hidden;
-            _loc_1.targetId = targetId;
-            return _loc_1;
-        }// end function
+      public function EffectInstanceInteger() {
+         super();
+      }
 
-        override public function get parameter0() : Object
-        {
-            return this.value;
-        }// end function
 
-        override public function setParameter(param1:uint, param2) : void
-        {
-            if (param1 == 2)
-            {
-                this.value = int(param2);
-            }
-            return;
-        }// end function
 
-        override public function add(param1) : EffectInstance
-        {
-            if (param1 is EffectInstanceDice)
-            {
-                return param1.add(this);
-            }
-            if (param1 is EffectInstanceInteger)
-            {
-                this.value = this.value + param1.value;
-                forceDescriptionRefresh();
-            }
-            else
-            {
-                _log.error(param1 + " cannot be added to EffectInstanceInteger.");
-            }
-            return this;
-        }// end function
+      public var value:int;
 
-    }
+      override public function clone() : EffectInstance {
+         var o:EffectInstanceInteger = new EffectInstanceInteger();
+         o.rawZone=rawZone;
+         o.effectId=effectId;
+         o.duration=duration;
+         o.delay=delay;
+         o.value=this.value;
+         o.random=random;
+         o.group=group;
+         o.hidden=hidden;
+         o.targetId=targetId;
+         o.targetMask=targetMask;
+         return o;
+      }
+
+      override public function get parameter0() : Object {
+         return this.value;
+      }
+
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         if(paramIndex==2)
+         {
+            this.value=int(value);
+         }
+      }
+
+      override public function add(term:*) : EffectInstance {
+         if(term is EffectInstanceDice)
+         {
+            return term.add(this);
+         }
+         if(term is EffectInstanceInteger)
+         {
+            this.value=this.value+term.value;
+            forceDescriptionRefresh();
+         }
+         else
+         {
+            _log.error(term+" cannot be added to EffectInstanceInteger.");
+         }
+         return this;
+      }
+   }
+
 }

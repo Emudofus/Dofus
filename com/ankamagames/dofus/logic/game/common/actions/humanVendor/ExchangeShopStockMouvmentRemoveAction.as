@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.humanVendor
+package com.ankamagames.dofus.logic.game.common.actions.humanVendor
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeShopStockMouvmentRemoveAction extends Object implements Action
-    {
-        public var objectUID:uint;
-        public var quantity:int;
 
-        public function ExchangeShopStockMouvmentRemoveAction()
-        {
-            return;
-        }// end function
+   public class ExchangeShopStockMouvmentRemoveAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:int) : ExchangeShopStockMouvmentRemoveAction
-        {
-            var _loc_3:* = new ExchangeShopStockMouvmentRemoveAction;
-            _loc_3.objectUID = param1;
-            _loc_3.quantity = -Math.abs(param2);
-            return _loc_3;
-        }// end function
+      public function ExchangeShopStockMouvmentRemoveAction() {
+         super();
+      }
 
-    }
+      public static function create(pObjectUID:uint, pQuantity:int) : ExchangeShopStockMouvmentRemoveAction {
+         var a:ExchangeShopStockMouvmentRemoveAction = new ExchangeShopStockMouvmentRemoveAction();
+         a.objectUID=pObjectUID;
+         a.quantity=-Math.abs(pQuantity);
+         return a;
+      }
+
+      public var objectUID:uint;
+
+      public var quantity:int;
+   }
+
 }

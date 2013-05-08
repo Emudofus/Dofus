@@ -1,101 +1,103 @@
-﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.logic.game.common.misc.IInventoryView;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.logic.game.common.misc.HookLock;
+   import com.ankamagames.dofus.misc.lists.InventoryHookList;
+   import com.ankamagames.dofus.network.enums.CharacterInventoryPositionEnum;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.internalDatacenter.items.WeaponWrapper;
 
-    public class EquipmentView extends Object implements IInventoryView
-    {
-        private var _content:Vector.<ItemWrapper>;
-        private var _hookLock:HookLock;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(EquipmentView));
 
-        public function EquipmentView(param1:HookLock)
-        {
-            this._content = new Vector.<ItemWrapper>(16);
-            this._hookLock = param1;
-            return;
-        }// end function
+   public class EquipmentView extends Object implements IInventoryView
+   {
+         
 
-        public function initialize(param1:Vector.<ItemWrapper>) : void
-        {
-            var _loc_2:* = null;
-            this._content = new Vector.<ItemWrapper>(16);
-            for each (_loc_2 in param1)
+      public function EquipmentView(hookLock:HookLock) {
+         this._content=new Vector.<ItemWrapper>(16);
+         super();
+         this._hookLock=hookLock;
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(EquipmentView));
+
+      private var _content:Vector.<ItemWrapper>;
+
+      private var _hookLock:HookLock;
+
+      private var _initializing:Boolean;
+
+      public function initialize(items:Vector.<ItemWrapper>) : void {
+         var item:ItemWrapper = null;
+         this._initializing=true;
+         this._content=new Vector.<ItemWrapper>(16);
+         for each (item in items)
+         {
+            if(this.isListening(item))
             {
-                
-                if (this.isListening(_loc_2))
-                {
-                    this.addItem(_loc_2, 0);
-                }
+               this.addItem(item,0);
             }
-            this._hookLock.addHook(InventoryHookList.EquipmentViewContent, [this.content]);
-            return;
-        }// end function
+         }
+         this._initializing=false;
+         this._hookLock.addHook(InventoryHookList.EquipmentViewContent,[this.content]);
+      }
 
-        public function get name() : String
-        {
-            return "equipment";
-        }// end function
+      public function get name() : String {
+         return "equipment";
+      }
 
-        public function get content() : Vector.<ItemWrapper>
-        {
-            return this._content;
-        }// end function
+      public function get content() : Vector.<ItemWrapper> {
+         return this._content;
+      }
 
-        public function addItem(param1:ItemWrapper, param2:int) : void
-        {
-            this.content[param1.position] = param1;
-            if (param1.position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)
-            {
-                PlayedCharacterManager.getInstance().currentWeapon = param1 as WeaponWrapper;
-                this._hookLock.addHook(InventoryHookList.WeaponUpdate, []);
-            }
-            this._hookLock.addHook(InventoryHookList.EquipmentObjectMove, [param1, -1]);
-            return;
-        }// end function
+      public function addItem(item:ItemWrapper, invisible:int) : void {
+         this.content[item.position]=item;
+         if(item.position==CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)
+         {
+            PlayedCharacterManager.getInstance().currentWeapon=item as WeaponWrapper;
+            this._hookLock.addHook(InventoryHookList.WeaponUpdate,[]);
+         }
+         if(!this._initializing)
+         {
+            this._hookLock.addHook(InventoryHookList.EquipmentObjectMove,[item,-1]);
+         }
+      }
 
-        public function removeItem(param1:ItemWrapper, param2:int) : void
-        {
-            this.content[param1.position] = null;
-            if (param1.position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)
-            {
-                PlayedCharacterManager.getInstance().currentWeapon = null;
-                this._hookLock.addHook(InventoryHookList.WeaponUpdate, []);
-            }
-            this._hookLock.addHook(InventoryHookList.EquipmentObjectMove, [null, param1.position]);
-            return;
-        }// end function
+      public function removeItem(item:ItemWrapper, invisible:int) : void {
+         this.content[item.position]=null;
+         if(item.position==CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)
+         {
+            PlayedCharacterManager.getInstance().currentWeapon=null;
+            this._hookLock.addHook(InventoryHookList.WeaponUpdate,[]);
+         }
+         this._hookLock.addHook(InventoryHookList.EquipmentObjectMove,[null,item.position]);
+      }
 
-        public function modifyItem(param1:ItemWrapper, param2:ItemWrapper, param3:int) : void
-        {
-            if (param1.position == CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)
-            {
-                this._hookLock.addHook(InventoryHookList.WeaponUpdate, []);
-            }
-            this._hookLock.addHook(InventoryHookList.EquipmentObjectMove, [param1, param2.position]);
-            return;
-        }// end function
+      public function modifyItem(item:ItemWrapper, oldItem:ItemWrapper, invisible:int) : void {
+         this.content[oldItem.position]=null;
+         this.content[item.position]=item;
+         if(item.position==CharacterInventoryPositionEnum.ACCESSORY_POSITION_WEAPON)
+         {
+            this._hookLock.addHook(InventoryHookList.WeaponUpdate,[]);
+         }
+         this._hookLock.addHook(InventoryHookList.EquipmentObjectMove,[item,oldItem.position]);
+      }
 
-        public function isListening(param1:ItemWrapper) : Boolean
-        {
-            return param1.position <= 15;
-        }// end function
+      public function isListening(item:ItemWrapper) : Boolean {
+         return item.position<=15;
+      }
 
-        public function updateView() : void
-        {
-            return;
-        }// end function
+      public function updateView() : void {
+         
+      }
 
-        public function empty() : void
-        {
-            return;
-        }// end function
+      public function empty() : void {
+         
+      }
+   }
 
-    }
 }

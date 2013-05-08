@@ -1,13 +1,15 @@
-﻿package com.ankamagames.jerakine.interfaces
+package com.ankamagames.jerakine.interfaces
 {
-    import flash.geom.*;
+   import flash.geom.Point;
 
-    public interface ISoundPositionListener
-    {
 
-        public function ISoundPositionListener();
+   public interface ISoundPositionListener
+   {
+         
 
-        function setSoundSourcePosition(param1:int, param2:Point) : void;
 
-    }
+
+      function setSoundSourcePosition(param1:int, param2:Point) : void;
+   }
+
 }

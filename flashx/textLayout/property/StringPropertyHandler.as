@@ -1,18 +1,20 @@
-﻿package flashx.textLayout.property
+package flashx.textLayout.property
 {
 
-    public class StringPropertyHandler extends PropertyHandler
-    {
 
-        public function StringPropertyHandler()
-        {
-            return;
-        }// end function
+   public class StringPropertyHandler extends PropertyHandler
+   {
+         
 
-        override public function owningHandlerCheck(param1)
-        {
-            return param1 is String ? (param1) : (undefined);
-        }// end function
+      public function StringPropertyHandler() {
+         super();
+      }
 
-    }
+
+
+      override public function owningHandlerCheck(newVal:*) : * {
+         return newVal is String?newVal:undefined;
+      }
+   }
+
 }

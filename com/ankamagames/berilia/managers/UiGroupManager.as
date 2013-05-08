@@ -1,116 +1,113 @@
-﻿package com.ankamagames.berilia.managers
+package com.ankamagames.berilia.managers
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.types.event.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.berilia.types.data.UiGroup;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.berilia.types.event.UiRenderAskEvent;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class UiGroupManager extends Object
-    {
-        private var _registeredGroup:Array;
-        private var _uis:Array;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(UiGroupManager));
-        private static var _self:UiGroupManager;
 
-        public function UiGroupManager()
-        {
-            this._registeredGroup = new Array();
-            this._uis = new Array();
-            if (_self)
-            {
-                throw new SingletonError();
-            }
-            Berilia.getInstance().addEventListener(UiRenderAskEvent.UI_RENDER_ASK, this.onUiRenderAsk);
+   public class UiGroupManager extends Object
+   {
+         
+
+      public function UiGroupManager() {
+         this._registeredGroup=new Array();
+         this._uis=new Array();
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
+            Berilia.getInstance().addEventListener(UiRenderAskEvent.UI_RENDER_ASK,this.onUiRenderAsk);
             return;
-        }// end function
+         }
+      }
 
-        public function registerGroup(param1:UiGroup) : void
-        {
-            this._registeredGroup[param1.name] = param1;
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UiGroupManager));
+
+      private static var _self:UiGroupManager;
+
+      public static function getInstance() : UiGroupManager {
+         if(!_self)
+         {
+            _self=new UiGroupManager();
+         }
+         return _self;
+      }
+
+      private var _registeredGroup:Array;
+
+      private var _uis:Array;
+
+      public function registerGroup(g:UiGroup) : void {
+         this._registeredGroup[g.name]=g;
+      }
+
+      public function removeGroup(name:String) : void {
+         delete this._registeredGroup[[name]];
+      }
+
+      public function getGroup(name:String) : UiGroup {
+         return this._registeredGroup[name];
+      }
+
+      public function destroy() : void {
+         Berilia.getInstance().removeEventListener(UiRenderAskEvent.UI_RENDER_ASK,this.onUiRenderAsk);
+         _self=null;
+      }
+
+      private function onUiRenderAsk(e:UiRenderAskEvent) : void {
+         var group:UiGroup = null;
+         var actualGroupUis:Array = null;
+         var uiName:String = null;
+         var close:* = false;
+         var uiName2:String = null;
+         if((!e.uiData.uiGroupName)||(!this._registeredGroup[e.uiData.uiGroupName]))
+         {
             return;
-        }// end function
-
-        public function removeGroup(param1:String) : void
-        {
-            delete this._registeredGroup[param1];
+         }
+         if(!this._uis[e.uiData.uiGroupName])
+         {
+            this._uis[e.uiData.uiGroupName]=new Array();
+         }
+         var currentGroup:UiGroup = this.getGroup(e.uiData.uiGroupName);
+         if(!currentGroup)
+         {
             return;
-        }// end function
-
-        public function getGroup(param1:String) : UiGroup
-        {
-            return this._registeredGroup[param1];
-        }// end function
-
-        public function destroy() : void
-        {
-            Berilia.getInstance().removeEventListener(UiRenderAskEvent.UI_RENDER_ASK, this.onUiRenderAsk);
-            _self = null;
-            return;
-        }// end function
-
-        private function onUiRenderAsk(event:UiRenderAskEvent) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = false;
-            var _loc_7:* = null;
-            if (!event.uiData.uiGroupName || !this._registeredGroup[event.uiData.uiGroupName])
+         }
+         for each (group in this._registeredGroup)
+         {
+            if((currentGroup.exclusive)&&(!group.permanent)&&(!(group.name==currentGroup.name)))
             {
-                return;
-            }
-            if (!this._uis[event.uiData.uiGroupName])
-            {
-                this._uis[event.uiData.uiGroupName] = new Array();
-            }
-            var _loc_2:* = this.getGroup(event.uiData.uiGroupName);
-            if (!_loc_2)
-            {
-                return;
-            }
-            for each (_loc_3 in this._registeredGroup)
-            {
-                
-                if (_loc_2.exclusive && !_loc_3.permanent && _loc_3.name != _loc_2.name)
-                {
-                    if (this._uis[_loc_3.name] != null)
-                    {
-                        _loc_4 = this._registeredGroup[_loc_3.name].uis;
-                        for each (_loc_5 in _loc_4)
+               if(this._uis[group.name]!=null)
+               {
+                  actualGroupUis=this._registeredGroup[group.name].uis;
+                  for each (uiName in actualGroupUis)
+                  {
+                     close=true;
+                     for each (uiName2 in currentGroup.uis)
+                     {
+                        if(uiName==uiName2)
                         {
-                            
-                            _loc_6 = true;
-                            for each (_loc_7 in _loc_2.uis)
-                            {
-                                
-                                if (_loc_5 == _loc_7)
-                                {
-                                    _loc_6 = false;
-                                }
-                            }
-                            if (_loc_6 && _loc_7 != null)
-                            {
-                                Berilia.getInstance().unloadUi(_loc_5);
-                            }
-                            delete this._uis[_loc_3.name][_loc_5];
+                           close=false;
                         }
-                    }
-                }
+                     }
+                     if((close)&&(!(uiName2==null)))
+                     {
+                        Berilia.getInstance().unloadUi(uiName);
+                     }
+                     delete this._uis[group.name][[uiName]];
+                  }
+               }
             }
-            this._uis[event.uiData.uiGroupName][event.name] = event.uiData;
-            return;
-        }// end function
+         }
+         this._uis[e.uiData.uiGroupName][e.name]=e.uiData;
+      }
+   }
 
-        public static function getInstance() : UiGroupManager
-        {
-            if (!_self)
-            {
-                _self = new UiGroupManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

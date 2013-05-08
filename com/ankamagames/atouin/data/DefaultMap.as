@@ -1,52 +1,57 @@
-﻿package com.ankamagames.atouin.data
+package com.ankamagames.atouin.data
 {
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.data.map.*;
-    import flash.utils.*;
+   import com.ankamagames.atouin.data.map.Map;
+   import flash.utils.IDataInput;
+   import flash.utils.ByteArray;
+   import com.ankamagames.atouin.data.map.Layer;
+   import com.ankamagames.atouin.data.map.Cell;
+   import com.ankamagames.atouin.data.map.CellData;
+   import com.ankamagames.atouin.AtouinConstants;
 
-    public class DefaultMap extends Map
-    {
 
-        public function DefaultMap(param1:uint = 0)
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            this.id = param1;
-            mapVersion = 7;
-            backgroundFixtures = new Array();
-            foregroundFixtures = new Array();
-            layers = new Array();
-            layers.push(this.createLayer(Layer.LAYER_GROUND));
-            layers.push(this.createLayer(Layer.LAYER_DECOR));
-            cells = new Array();
-            cellsCount = AtouinConstants.MAP_CELLS_COUNT;
-            _loc_2 = 0;
-            while (_loc_2 < cellsCount)
-            {
-                
-                _loc_3 = new CellData(this);
-                cells.push(_loc_3);
-                _loc_2++;
-            }
-            return;
-        }// end function
+   public class DefaultMap extends Map
+   {
+         
 
-        override public function fromRaw(param1:IDataInput, param2:ByteArray = null) : void
-        {
-            return;
-        }// end function
+      public function DefaultMap(id:uint=0) {
+         var l:* = 0;
+         var cd:CellData = null;
+         super();
+         this.id=id;
+         mapVersion=7;
+         backgroundFixtures=new Array();
+         foregroundFixtures=new Array();
+         layers=new Array();
+         layers.push(this.createLayer(Layer.LAYER_GROUND));
+         layers.push(this.createLayer(Layer.LAYER_DECOR));
+         cells=new Array();
+         cellsCount=AtouinConstants.MAP_CELLS_COUNT;
+         l=0;
+         while(l<cellsCount)
+         {
+            cd=new CellData(this,l);
+            cells.push(cd);
+            l++;
+         }
+      }
 
-        private function createLayer(param1:uint) : Layer
-        {
-            var _loc_2:* = new Layer(this);
-            _loc_2.cells = new Array();
-            _loc_2.layerId = param1;
-            _loc_2.cellsCount = 1;
-            var _loc_3:* = new Cell(_loc_2);
-            _loc_3.elements = new Array();
-            _loc_2.cells.push(_loc_3);
-            return _loc_2;
-        }// end function
 
-    }
+
+      override public function fromRaw(raw:IDataInput, decryptionKey:ByteArray=null) : void {
+         
+      }
+
+      private function createLayer(id:uint) : Layer {
+         var bgLayer:Layer = null;
+         bgLayer=new Layer(this);
+         bgLayer.cells=new Array();
+         bgLayer.layerId=id;
+         bgLayer.cellsCount=1;
+         var firstCell:Cell = new Cell(bgLayer);
+         firstCell.elements=new Array();
+         bgLayer.cells.push(firstCell);
+         return bgLayer;
+      }
+   }
+
 }

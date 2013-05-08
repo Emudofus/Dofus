@@ -1,74 +1,66 @@
-﻿package org.flintparticles.common.initializers
+package org.flintparticles.common.initializers
 {
-    import org.flintparticles.common.emitters.*;
-    import org.flintparticles.common.particles.*;
+   import org.flintparticles.common.emitters.Emitter;
+   import org.flintparticles.common.particles.Particle;
 
-    public class ScaleImageInit extends InitializerBase
-    {
-        private var _min:Number;
-        private var _max:Number;
 
-        public function ScaleImageInit(param1:Number, param2:Number = NaN)
-        {
-            this._min = param1;
-            if (isNaN(param2))
-            {
-                this._max = this._min;
-            }
-            else
-            {
-                this._max = param2;
-            }
-            return;
-        }// end function
+   public class ScaleImageInit extends InitializerBase
+   {
+         
 
-        public function get minScale() : Number
-        {
-            return this._min;
-        }// end function
+      public function ScaleImageInit(minScale:Number, maxScale:Number=NaN) {
+         super();
+         this._min=minScale;
+         if(isNaN(maxScale))
+         {
+            this._max=this._min;
+         }
+         else
+         {
+            this._max=maxScale;
+         }
+      }
 
-        public function set minScale(param1:Number) : void
-        {
-            this._min = param1;
-            return;
-        }// end function
 
-        public function get maxScale() : Number
-        {
-            return this._max;
-        }// end function
 
-        public function set maxScale(param1:Number) : void
-        {
-            this._max = param1;
-            return;
-        }// end function
+      private var _min:Number;
 
-        public function get scale() : Number
-        {
-            return this._min == this._max ? (this._min) : ((this._max + this._min) / 2);
-        }// end function
+      private var _max:Number;
 
-        public function set scale(param1:Number) : void
-        {
-            var _loc_2:* = param1;
-            this._min = param1;
-            this._max = _loc_2;
-            return;
-        }// end function
+      public function get minScale() : Number {
+         return this._min;
+      }
 
-        override public function initialize(param1:Emitter, param2:Particle) : void
-        {
-            if (this._max == this._min)
-            {
-                param2.scale = this._min;
-            }
-            else
-            {
-                param2.scale = this._min + Math.random() * (this._max - this._min);
-            }
-            return;
-        }// end function
+      public function set minScale(value:Number) : void {
+         this._min=value;
+      }
 
-    }
+      public function get maxScale() : Number {
+         return this._max;
+      }
+
+      public function set maxScale(value:Number) : void {
+         this._max=value;
+      }
+
+      public function get scale() : Number {
+         return this._min==this._max?this._min:(this._max+this._min)/2;
+      }
+
+      public function set scale(value:Number) : void {
+         this._max=this._min=value;
+      }
+
+      override public function initialize(emitter:Emitter, particle:Particle) : void {
+         if(this._max==this._min)
+         {
+            particle.scale=this._min;
+         }
+         else
+         {
+            particle.scale=this._min+Math.random()*(this._max-this._min);
+         }
+      }
+   }
+
 }

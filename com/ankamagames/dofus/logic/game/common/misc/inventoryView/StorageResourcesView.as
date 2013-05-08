@@ -1,38 +1,37 @@
-﻿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.misc.lists.*;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.logic.game.common.managers.StorageOptionManager;
+   import com.ankamagames.dofus.misc.lists.InventoryHookList;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.dofus.logic.game.common.misc.HookLock;
 
-    public class StorageResourcesView extends StorageGenericView
-    {
 
-        public function StorageResourcesView(param1:HookLock)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class StorageResourcesView extends StorageGenericView
+   {
+         
 
-        override public function get name() : String
-        {
-            return "storageResources";
-        }// end function
+      public function StorageResourcesView(hookLock:HookLock) {
+         super(hookLock);
+      }
 
-        override public function isListening(param1:ItemWrapper) : Boolean
-        {
-            return super.isListening(param1) && param1.category == StorageOptionManager.RESOURCES_CATEGORY;
-        }// end function
 
-        override public function updateView() : void
-        {
-            super.updateView();
-            if (StorageOptionManager.getInstance().currentStorageView == this)
-            {
-                _hookLock.addHook(InventoryHookList.StorageViewContent, [content, InventoryManager.getInstance().inventory.localKamas]);
-            }
-            return;
-        }// end function
 
-    }
+      override public function get name() : String {
+         return "storageResources";
+      }
+
+      override public function isListening(item:ItemWrapper) : Boolean {
+         return (super.isListening(item))&&(item.category==StorageOptionManager.RESOURCES_CATEGORY);
+      }
+
+      override public function updateView() : void {
+         super.updateView();
+         if(StorageOptionManager.getInstance().currentStorageView==this)
+         {
+            _hookLock.addHook(InventoryHookList.StorageViewContent,[content,InventoryManager.getInstance().inventory.localKamas]);
+         }
+      }
+   }
+
 }

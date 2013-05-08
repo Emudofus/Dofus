@@ -1,78 +1,71 @@
-﻿package com.ankamagames.dofus.logic.game.fight.miscs
+package com.ankamagames.dofus.logic.game.fight.miscs
 {
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.tiphon.display.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.logic.game.common.misc.IEntityLocalizer;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
+   import com.ankamagames.tiphon.display.TiphonSprite;
 
-    public class FightEntitiesHolder extends Object implements IEntityLocalizer
-    {
-        private var _holdedEntities:Dictionary;
-        private static var _self:FightEntitiesHolder;
 
-        public function FightEntitiesHolder()
-        {
-            this._holdedEntities = new Dictionary();
-            return;
-        }// end function
+   public class FightEntitiesHolder extends Object implements IEntityLocalizer
+   {
+         
 
-        public function getEntity(param1:int) : IEntity
-        {
-            return this._holdedEntities[param1];
-        }// end function
+      public function FightEntitiesHolder() {
+         this._holdedEntities=new Dictionary();
+         super();
+      }
 
-        public function holdEntity(param1:IEntity) : void
-        {
-            this._holdedEntities[param1.id] = param1;
-            return;
-        }// end function
+      private static var _self:FightEntitiesHolder;
 
-        public function unholdEntity(param1:int) : void
-        {
-            delete this._holdedEntities[param1];
-            return;
-        }// end function
+      public static function getInstance() : FightEntitiesHolder {
+         if(!_self)
+         {
+            _self=new FightEntitiesHolder();
+            DofusEntities.registerLocalizer(_self);
+         }
+         return _self;
+      }
 
-        public function reset() : void
-        {
-            this._holdedEntities = new Dictionary();
-            return;
-        }// end function
+      private var _holdedEntities:Dictionary;
 
-        public function getEntities() : Dictionary
-        {
-            return this._holdedEntities;
-        }// end function
+      public function getEntity(entityId:int) : IEntity {
+         return this._holdedEntities[entityId];
+      }
 
-        public function unregistered() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._holdedEntities)
+      public function holdEntity(entity:IEntity) : void {
+         this._holdedEntities[entity.id]=entity;
+      }
+
+      public function unholdEntity(entityId:int) : void {
+         delete this._holdedEntities[[entityId]];
+      }
+
+      public function reset() : void {
+         this._holdedEntities=new Dictionary();
+      }
+
+      public function getEntities() : Dictionary {
+         return this._holdedEntities;
+      }
+
+      public function unregistered() : void {
+         var entity:IEntity = null;
+         for each (entity in this._holdedEntities)
+         {
+            if(entity is IDisplayable)
             {
-                
-                if (_loc_1 is IDisplayable)
-                {
-                    (_loc_1 as IDisplayable).remove();
-                }
-                if (_loc_1 is TiphonSprite)
-                {
-                    (_loc_1 as TiphonSprite).destroy();
-                }
+               (entity as IDisplayable).remove();
             }
-            this._holdedEntities = null;
-            _self = null;
-            return;
-        }// end function
-
-        public static function getInstance() : FightEntitiesHolder
-        {
-            if (!_self)
+            if(entity is TiphonSprite)
             {
-                _self = new FightEntitiesHolder;
-                DofusEntities.registerLocalizer(_self);
+               (entity as TiphonSprite).destroy();
             }
-            return _self;
-        }// end function
+         }
+         this._holdedEntities=null;
+         _self=null;
+      }
+   }
 
-    }
 }

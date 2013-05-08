@@ -1,83 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ObjectModifiedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var object:ObjectItem;
-        public static const protocolId:uint = 3029;
 
-        public function ObjectModifiedMessage()
-        {
-            this.object = new ObjectItem();
-            return;
-        }// end function
+   public class ObjectModifiedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ObjectModifiedMessage() {
+         this.object=new ObjectItem();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 3029;
-        }// end function
+      public static const protocolId:uint = 3029;
 
-        public function initObjectModifiedMessage(param1:ObjectItem = null) : ObjectModifiedMessage
-        {
-            this.object = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.object = new ObjectItem();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var object:ObjectItem;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 3029;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ObjectModifiedMessage(param1);
-            return;
-        }// end function
+      public function initObjectModifiedMessage(object:ObjectItem=null) : ObjectModifiedMessage {
+         this.object=object;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ObjectModifiedMessage(param1:IDataOutput) : void
-        {
-            this.object.serializeAs_ObjectItem(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.object=new ObjectItem();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ObjectModifiedMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ObjectModifiedMessage(param1:IDataInput) : void
-        {
-            this.object = new ObjectItem();
-            this.object.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectModifiedMessage(output);
+      }
+
+      public function serializeAs_ObjectModifiedMessage(output:IDataOutput) : void {
+         this.object.serializeAs_ObjectItem(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectModifiedMessage(input);
+      }
+
+      public function deserializeAs_ObjectModifiedMessage(input:IDataInput) : void {
+         this.object=new ObjectItem();
+         this.object.deserialize(input);
+      }
+   }
+
 }

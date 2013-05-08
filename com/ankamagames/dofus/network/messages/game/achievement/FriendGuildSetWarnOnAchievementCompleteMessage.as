@@ -1,80 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.game.achievement
+package com.ankamagames.dofus.network.messages.game.achievement
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class FriendGuildSetWarnOnAchievementCompleteMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var enable:Boolean = false;
-        public static const protocolId:uint = 6382;
 
-        public function FriendGuildSetWarnOnAchievementCompleteMessage()
-        {
-            return;
-        }// end function
+   public class FriendGuildSetWarnOnAchievementCompleteMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function FriendGuildSetWarnOnAchievementCompleteMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6382;
-        }// end function
+      public static const protocolId:uint = 6382;
 
-        public function initFriendGuildSetWarnOnAchievementCompleteMessage(param1:Boolean = false) : FriendGuildSetWarnOnAchievementCompleteMessage
-        {
-            this.enable = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.enable = false;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var enable:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6382;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(param1);
-            return;
-        }// end function
+      public function initFriendGuildSetWarnOnAchievementCompleteMessage(enable:Boolean=false) : FriendGuildSetWarnOnAchievementCompleteMessage {
+         this.enable=enable;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.enable);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.enable=false;
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(param1:IDataInput) : void
-        {
-            this.enable = param1.readBoolean();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(output);
+      }
+
+      public function serializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.enable);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(input);
+      }
+
+      public function deserializeAs_FriendGuildSetWarnOnAchievementCompleteMessage(input:IDataInput) : void {
+         this.enable=input.readBoolean();
+      }
+   }
+
 }

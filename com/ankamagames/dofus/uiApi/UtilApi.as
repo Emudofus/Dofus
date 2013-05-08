@@ -1,109 +1,98 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.misc.utils.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.geom.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.jerakine.utils.misc.CallWithParameters;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.misc.utils.ParamsDecoder;
+   import flash.geom.ColorTransform;
 
-    public class UtilApi extends Object implements IApi
-    {
-        private var _module:UiModule;
 
-        public function UtilApi()
-        {
-            return;
-        }// end function
+   public class UtilApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function UtilApi() {
+         super();
+      }
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
 
-        public function callWithParameters(param1:Function, param2:Array) : void
-        {
-            CallWithParameters.call(param1, param2);
-            return;
-        }// end function
 
-        public function callConstructorWithParameters(param1:Class, param2:Array)
-        {
-            return CallWithParameters.callConstructor(param1, param2);
-        }// end function
+      private var _module:UiModule;
 
-        public function callRWithParameters(param1:Function, param2:Array)
-        {
-            return CallWithParameters.callR(param1, param2);
-        }// end function
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
 
-        public function kamasToString(param1:Number, param2:String = "-") : String
-        {
-            return StringUtils.kamasToString(param1, param2);
-        }// end function
+      public function destroy() : void {
+         this._module=null;
+      }
 
-        public function formateIntToString(param1:Number) : String
-        {
-            return StringUtils.formateIntToString(param1);
-        }// end function
+      public function callWithParameters(method:Function, parameters:Array) : void {
+         CallWithParameters.call(method,parameters);
+      }
 
-        public function stringToKamas(param1:String, param2:String = "-") : int
-        {
-            return StringUtils.stringToKamas(param1, param2);
-        }// end function
+      public function callConstructorWithParameters(callClass:Class, parameters:Array) : * {
+         return CallWithParameters.callConstructor(callClass,parameters);
+      }
 
-        public function getTextWithParams(param1:int, param2:Array, param3:String = "%") : String
-        {
-            var _loc_4:* = I18n.getText(param1);
-            if (I18n.getText(param1))
+      public function callRWithParameters(method:Function, parameters:Array) : * {
+         return CallWithParameters.callR(method,parameters);
+      }
+
+      public function kamasToString(kamas:Number, unit:String="-") : String {
+         return StringUtils.kamasToString(kamas,unit);
+      }
+
+      public function formateIntToString(val:Number) : String {
+         return StringUtils.formateIntToString(val);
+      }
+
+      public function stringToKamas(string:String, unit:String="-") : int {
+         return StringUtils.stringToKamas(string,unit);
+      }
+
+      public function getTextWithParams(textId:int, params:Array, replace:String="%") : String {
+         var msgContent:String = I18n.getText(textId);
+         if(msgContent)
+         {
+            return ParamsDecoder.applyParams(msgContent,params,replace);
+         }
+         return "";
+      }
+
+      public function applyTextParams(pText:String, pParams:Array, pReplace:String="%") : String {
+         return ParamsDecoder.applyParams(pText,pParams,pReplace);
+      }
+
+      public function noAccent(str:String) : String {
+         return StringUtils.noAccent(str);
+      }
+
+      public function changeColor(obj:Object, color:Number, depth:int, unColor:Boolean=false) : void {
+         var t0:ColorTransform = null;
+         var R:* = 0;
+         var V:* = 0;
+         var B:* = 0;
+         var t:ColorTransform = null;
+         if(obj!=null)
+         {
+            if(unColor)
             {
-                return ParamsDecoder.applyParams(_loc_4, param2, param3);
+               t0=new ColorTransform(1,1,1,1,0,0,0);
+               obj.colorTransform(t0,depth);
             }
-            return "";
-        }// end function
-
-        public function applyTextParams(param1:String, param2:Array, param3:String = "%") : String
-        {
-            return ParamsDecoder.applyParams(param1, param2, param3);
-        }// end function
-
-        public function noAccent(param1:String) : String
-        {
-            return StringUtils.noAccent(param1);
-        }// end function
-
-        public function changeColor(param1:Object, param2:Number, param3:int, param4:Boolean = false) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = null;
-            if (param1 != null)
+            else
             {
-                if (param4)
-                {
-                    _loc_5 = new ColorTransform(1, 1, 1, 1, 0, 0, 0);
-                    param1.colorTransform(_loc_5, param3);
-                }
-                else
-                {
-                    _loc_6 = param2 >> 16 & 255;
-                    _loc_7 = param2 >> 8 & 255;
-                    _loc_8 = param2 >> 0 & 255;
-                    _loc_9 = new ColorTransform(0, 0, 0, 1, _loc_6, _loc_7, _loc_8);
-                    param1.colorTransform(_loc_9, param3);
-                }
+               R=color>>16&255;
+               V=color>>8&255;
+               B=color>>0&255;
+               t=new ColorTransform(0,0,0,1,R,V,B);
+               obj.colorTransform(t,depth);
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

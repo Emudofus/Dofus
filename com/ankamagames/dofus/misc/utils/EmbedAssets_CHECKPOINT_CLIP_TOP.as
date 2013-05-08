@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import mx.core.*;
+   import mx.core.SpriteAsset;
 
-    public class EmbedAssets_CHECKPOINT_CLIP_TOP extends SpriteAsset
-    {
 
-        public function EmbedAssets_CHECKPOINT_CLIP_TOP()
-        {
-            return;
-        }// end function
+   public class EmbedAssets_CHECKPOINT_CLIP_TOP extends SpriteAsset
+   {
+         
 
-    }
+      public function EmbedAssets_CHECKPOINT_CLIP_TOP() {
+         super();
+      }
+
+
+
+
+   }
+
 }

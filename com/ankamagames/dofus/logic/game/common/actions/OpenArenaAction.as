@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenArenaAction extends Object implements Action
-    {
 
-        public function OpenArenaAction()
-        {
-            return;
-        }// end function
+   public class OpenArenaAction extends Object implements Action
+   {
+         
 
-        public static function create() : OpenArenaAction
-        {
-            var _loc_1:* = new OpenArenaAction;
-            return _loc_1;
-        }// end function
+      public function OpenArenaAction() {
+         super();
+      }
 
-    }
+      public static function create() : OpenArenaAction {
+         var a:OpenArenaAction = new OpenArenaAction();
+         return a;
+      }
+
+
+   }
+
 }

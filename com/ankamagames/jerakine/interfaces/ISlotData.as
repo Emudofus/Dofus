@@ -1,27 +1,29 @@
-﻿package com.ankamagames.jerakine.interfaces
+package com.ankamagames.jerakine.interfaces
 {
-    import com.ankamagames.jerakine.types.*;
+   import com.ankamagames.jerakine.types.Uri;
 
-    public interface ISlotData
-    {
 
-        public function ISlotData();
+   public interface ISlotData
+   {
+         
 
-        function get iconUri() : Uri;
 
-        function get fullSizeIconUri() : Uri;
 
-        function get errorIconUri() : Uri;
+      function get iconUri() : Uri;
 
-        function get info1() : String;
+      function get fullSizeIconUri() : Uri;
 
-        function get active() : Boolean;
+      function get errorIconUri() : Uri;
 
-        function get timer() : int;
+      function get info1() : String;
 
-        function addHolder(param1:ISlotDataHolder) : void;
+      function get active() : Boolean;
 
-        function removeHolder(param1:ISlotDataHolder) : void;
+      function get timer() : int;
 
-    }
+      function addHolder(param1:ISlotDataHolder) : void;
+
+      function removeHolder(param1:ISlotDataHolder) : void;
+   }
+
 }

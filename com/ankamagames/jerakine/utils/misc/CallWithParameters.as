@@ -1,257 +1,156 @@
-﻿package com.ankamagames.jerakine.utils.misc
+package com.ankamagames.jerakine.utils.misc
 {
 
-    public class CallWithParameters extends Object
-    {
 
-        public function CallWithParameters()
-        {
+   public class CallWithParameters extends Object
+   {
+         
+
+      public function CallWithParameters() {
+         super();
+      }
+
+      public static function call(method:Function, parameters:Array) : void {
+         if((!parameters)||(!parameters.length))
+         {
+            method();
             return;
-        }// end function
+         }
+         switch(parameters.length)
+         {
+            case 1:
+               method(parameters[0]);
+               break;
+            case 2:
+               method(parameters[0],parameters[1]);
+               break;
+            case 3:
+               method(parameters[0],parameters[1],parameters[2]);
+               break;
+            case 4:
+               method(parameters[0],parameters[1],parameters[2],parameters[3]);
+               break;
+            case 5:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4]);
+               break;
+            case 6:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5]);
+               break;
+            case 7:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6]);
+               break;
+            case 8:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7]);
+               break;
+            case 9:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8]);
+               break;
+            case 10:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9]);
+               break;
+            case 11:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10]);
+               break;
+            case 12:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11]);
+               break;
+            case 13:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12]);
+               break;
+            case 14:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13]);
+               break;
+            case 15:
+               method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13],parameters[14]);
+               break;
+         }
+      }
 
-        public static function call(param1:Function, param2:Array) : void
-        {
-            if (!param2 || !param2.length)
-            {
-                CallWithParameters.param1();
-                return;
-            }
-            switch(param2.length)
-            {
-                case 1:
-                {
-                    CallWithParameters.param1(param2[0]);
-                    break;
-                }
-                case 2:
-                {
-                    CallWithParameters.param1(param2[0], param2[1]);
-                    break;
-                }
-                case 3:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2]);
-                    break;
-                }
-                case 4:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3]);
-                    break;
-                }
-                case 5:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4]);
-                    break;
-                }
-                case 6:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5]);
-                    break;
-                }
-                case 7:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6]);
-                    break;
-                }
-                case 8:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7]);
-                    break;
-                }
-                case 9:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8]);
-                    break;
-                }
-                case 10:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9]);
-                    break;
-                }
-                case 11:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10]);
-                    break;
-                }
-                case 12:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11]);
-                    break;
-                }
-                case 13:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12]);
-                    break;
-                }
-                case 14:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12], param2[13]);
-                    break;
-                }
-                case 15:
-                {
-                    CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12], param2[13], param2[14]);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public static function callR(method:Function, parameters:Array) : * {
+         if((!parameters)||(!parameters.length))
+         {
+            return method();
+         }
+         switch(parameters.length)
+         {
+            case 1:
+               return method(parameters[0]);
+            case 2:
+               return method(parameters[0],parameters[1]);
+            case 3:
+               return method(parameters[0],parameters[1],parameters[2]);
+            case 4:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3]);
+            case 5:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4]);
+            case 6:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5]);
+            case 7:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6]);
+            case 8:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7]);
+            case 9:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8]);
+            case 10:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9]);
+            case 11:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10]);
+            case 12:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11]);
+            case 13:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12]);
+            case 14:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13]);
+            case 15:
+               return method(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13],parameters[14]);
+            default:
+               return;
+         }
+      }
 
-        public static function callR(param1:Function, param2:Array)
-        {
-            if (!param2 || !param2.length)
-            {
-                return CallWithParameters.param1();
-            }
-            switch(param2.length)
-            {
-                case 1:
-                {
-                    return CallWithParameters.param1(param2[0]);
-                }
-                case 2:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1]);
-                }
-                case 3:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2]);
-                }
-                case 4:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3]);
-                }
-                case 5:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4]);
-                }
-                case 6:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5]);
-                }
-                case 7:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6]);
-                }
-                case 8:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7]);
-                }
-                case 9:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8]);
-                }
-                case 10:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9]);
-                }
-                case 11:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10]);
-                }
-                case 12:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11]);
-                }
-                case 13:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12]);
-                }
-                case 14:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12], param2[13]);
-                }
-                case 15:
-                {
-                    return CallWithParameters.param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12], param2[13], param2[14]);
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public static function callConstructor(callClass:Class, parameters:Array) : * {
+         if((!parameters)||(!parameters.length))
+         {
+            return new callClass();
+         }
+         switch(parameters.length)
+         {
+            case 1:
+               return new callClass(parameters[0]);
+            case 2:
+               return new callClass(parameters[0],parameters[1]);
+            case 3:
+               return new callClass(parameters[0],parameters[1],parameters[2]);
+            case 4:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3]);
+            case 5:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4]);
+            case 6:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5]);
+            case 7:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6]);
+            case 8:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7]);
+            case 9:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8]);
+            case 10:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9]);
+            case 11:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10]);
+            case 12:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11]);
+            case 13:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12]);
+            case 14:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13]);
+            case 15:
+               return new callClass(parameters[0],parameters[1],parameters[2],parameters[3],parameters[4],parameters[5],parameters[6],parameters[7],parameters[8],parameters[9],parameters[10],parameters[11],parameters[12],parameters[13],parameters[14]);
+            default:
+               return;
+         }
+      }
 
-        public static function callConstructor(param1:Class, param2:Array)
-        {
-            if (!param2 || !param2.length)
-            {
-                return new param1;
-            }
-            switch(param2.length)
-            {
-                case 1:
-                {
-                    return new param1(param2[0]);
-                }
-                case 2:
-                {
-                    return new param1(param2[0], param2[1]);
-                }
-                case 3:
-                {
-                    return new param1(param2[0], param2[1], param2[2]);
-                }
-                case 4:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3]);
-                }
-                case 5:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4]);
-                }
-                case 6:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5]);
-                }
-                case 7:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6]);
-                }
-                case 8:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7]);
-                }
-                case 9:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8]);
-                }
-                case 10:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9]);
-                }
-                case 11:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10]);
-                }
-                case 12:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11]);
-                }
-                case 13:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12]);
-                }
-                case 14:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12], param2[13]);
-                }
-                case 15:
-                {
-                    return new param1(param2[0], param2[1], param2[2], param2[3], param2[4], param2[5], param2[6], param2[7], param2[8], param2[9], param2[10], param2[11], param2[12], param2[13], param2[14]);
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
 
-    }
+   }
+
 }

@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PivotCharacterAction extends Object implements Action
-    {
 
-        public function PivotCharacterAction()
-        {
-            return;
-        }// end function
+   public class PivotCharacterAction extends Object implements Action
+   {
+         
 
-        public static function create() : PivotCharacterAction
-        {
-            var _loc_1:* = new PivotCharacterAction;
-            return _loc_1;
-        }// end function
+      public function PivotCharacterAction() {
+         super();
+      }
 
-    }
+      public static function create() : PivotCharacterAction {
+         var action:PivotCharacterAction = new PivotCharacterAction();
+         return action;
+      }
+
+
+   }
+
 }

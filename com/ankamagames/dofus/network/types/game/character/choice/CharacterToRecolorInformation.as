@@ -1,81 +1,71 @@
-﻿package com.ankamagames.dofus.network.types.game.character.choice
+package com.ankamagames.dofus.network.types.game.character.choice
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.character.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.types.game.character.AbstractCharacterInformation;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class CharacterToRecolorInformation extends AbstractCharacterInformation implements INetworkType
-    {
-        public var colors:Vector.<int>;
-        public static const protocolId:uint = 212;
 
-        public function CharacterToRecolorInformation()
-        {
-            this.colors = new Vector.<int>;
-            return;
-        }// end function
+   public class CharacterToRecolorInformation extends AbstractCharacterInformation implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 212;
-        }// end function
+      public function CharacterToRecolorInformation() {
+         this.colors=new Vector.<int>();
+         super();
+      }
 
-        public function initCharacterToRecolorInformation(param1:uint = 0, param2:Vector.<int> = null) : CharacterToRecolorInformation
-        {
-            super.initAbstractCharacterInformation(param1);
-            this.colors = param2;
-            return this;
-        }// end function
+      public static const protocolId:uint = 212;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.colors = new Vector.<int>;
-            return;
-        }// end function
+      public var colors:Vector.<int>;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_CharacterToRecolorInformation(param1);
-            return;
-        }// end function
+      override public function getTypeId() : uint {
+         return 212;
+      }
 
-        public function serializeAs_CharacterToRecolorInformation(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractCharacterInformation(param1);
-            param1.writeShort(this.colors.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.colors.length)
-            {
-                
-                param1.writeInt(this.colors[_loc_2]);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      public function initCharacterToRecolorInformation(id:uint=0, colors:Vector.<int>=null) : CharacterToRecolorInformation {
+         super.initAbstractCharacterInformation(id);
+         this.colors=colors;
+         return this;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_CharacterToRecolorInformation(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.colors=new Vector.<int>();
+      }
 
-        public function deserializeAs_CharacterToRecolorInformation(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            super.deserialize(param1);
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readInt();
-                this.colors.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_CharacterToRecolorInformation(output);
+      }
 
-    }
+      public function serializeAs_CharacterToRecolorInformation(output:IDataOutput) : void {
+         super.serializeAs_AbstractCharacterInformation(output);
+         output.writeShort(this.colors.length);
+         var _i1:uint = 0;
+         while(_i1<this.colors.length)
+         {
+            output.writeInt(this.colors[_i1]);
+            _i1++;
+         }
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_CharacterToRecolorInformation(input);
+      }
+
+      public function deserializeAs_CharacterToRecolorInformation(input:IDataInput) : void {
+         var _val1:* = 0;
+         super.deserialize(input);
+         var _colorsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_colorsLen)
+         {
+            _val1=input.readInt();
+            this.colors.push(_val1);
+            _i1++;
+         }
+      }
+   }
+
 }

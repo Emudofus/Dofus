@@ -1,13 +1,15 @@
-﻿package com.ankamagames.berilia
+package com.ankamagames.berilia
 {
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.MessageHandler;
 
-    public interface UIComponent extends MessageHandler
-    {
 
-        public function UIComponent();
+   public interface UIComponent extends MessageHandler
+   {
+         
 
-        function remove() : void;
 
-    }
+
+      function remove() : void;
+   }
+
 }

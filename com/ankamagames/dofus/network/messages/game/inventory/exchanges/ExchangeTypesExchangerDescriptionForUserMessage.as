@@ -1,106 +1,102 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var typeDescription:Vector.<uint>;
-        public static const protocolId:uint = 5765;
 
-        public function ExchangeTypesExchangerDescriptionForUserMessage()
-        {
-            this.typeDescription = new Vector.<uint>;
-            return;
-        }// end function
+   public class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeTypesExchangerDescriptionForUserMessage() {
+         this.typeDescription=new Vector.<uint>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5765;
-        }// end function
+      public static const protocolId:uint = 5765;
 
-        public function initExchangeTypesExchangerDescriptionForUserMessage(param1:Vector.<uint> = null) : ExchangeTypesExchangerDescriptionForUserMessage
-        {
-            this.typeDescription = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.typeDescription = new Vector.<uint>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var typeDescription:Vector.<uint>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5765;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeTypesExchangerDescriptionForUserMessage(param1);
-            return;
-        }// end function
+      public function initExchangeTypesExchangerDescriptionForUserMessage(typeDescription:Vector.<uint>=null) : ExchangeTypesExchangerDescriptionForUserMessage {
+         this.typeDescription=typeDescription;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ExchangeTypesExchangerDescriptionForUserMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.typeDescription.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.typeDescription.length)
+      override public function reset() : void {
+         this.typeDescription=new Vector.<uint>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeTypesExchangerDescriptionForUserMessage(output);
+      }
+
+      public function serializeAs_ExchangeTypesExchangerDescriptionForUserMessage(output:IDataOutput) : void {
+         output.writeShort(this.typeDescription.length);
+         var _i1:uint = 0;
+         while(_i1<this.typeDescription.length)
+         {
+            if(this.typeDescription[_i1]<0)
             {
-                
-                if (this.typeDescription[_loc_2] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.typeDescription[_loc_2] + ") on element 1 (starting at 1) of typeDescription.");
-                }
-                param1.writeInt(this.typeDescription[_loc_2]);
-                _loc_2 = _loc_2 + 1;
+               throw new Error("Forbidden value ("+this.typeDescription[_i1]+") on element 1 (starting at 1) of typeDescription.");
             }
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeTypesExchangerDescriptionForUserMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ExchangeTypesExchangerDescriptionForUserMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
+            else
             {
-                
-                _loc_4 = param1.readInt();
-                if (_loc_4 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_4 + ") on elements of typeDescription.");
-                }
-                this.typeDescription.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
+               output.writeInt(this.typeDescription[_i1]);
+               _i1++;
+               continue;
             }
-            return;
-        }// end function
+         }
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeTypesExchangerDescriptionForUserMessage(input);
+      }
+
+      public function deserializeAs_ExchangeTypesExchangerDescriptionForUserMessage(input:IDataInput) : void {
+         var _val1:uint = 0;
+         var _typeDescriptionLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_typeDescriptionLen)
+         {
+            _val1=input.readInt();
+            if(_val1<0)
+            {
+               throw new Error("Forbidden value ("+_val1+") on elements of typeDescription.");
+            }
+            else
+            {
+               this.typeDescription.push(_val1);
+               _i1++;
+               continue;
+            }
+         }
+      }
+   }
+
 }

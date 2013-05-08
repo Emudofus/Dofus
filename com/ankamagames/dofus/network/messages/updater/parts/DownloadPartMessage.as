@@ -1,80 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.updater.parts
+package com.ankamagames.dofus.network.messages.updater.parts
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class DownloadPartMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var id:String = "";
-        public static const protocolId:uint = 1503;
 
-        public function DownloadPartMessage()
-        {
-            return;
-        }// end function
+   public class DownloadPartMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function DownloadPartMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 1503;
-        }// end function
+      public static const protocolId:uint = 1503;
 
-        public function initDownloadPartMessage(param1:String = "") : DownloadPartMessage
-        {
-            this.id = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.id = "";
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var id:String = "";
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 1503;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_DownloadPartMessage(param1);
-            return;
-        }// end function
+      public function initDownloadPartMessage(id:String="") : DownloadPartMessage {
+         this.id=id;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_DownloadPartMessage(param1:IDataOutput) : void
-        {
-            param1.writeUTF(this.id);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.id="";
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_DownloadPartMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_DownloadPartMessage(param1:IDataInput) : void
-        {
-            this.id = param1.readUTF();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DownloadPartMessage(output);
+      }
+
+      public function serializeAs_DownloadPartMessage(output:IDataOutput) : void {
+         output.writeUTF(this.id);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DownloadPartMessage(input);
+      }
+
+      public function deserializeAs_DownloadPartMessage(input:IDataInput) : void {
+         this.id=input.readUTF();
+      }
+   }
+
 }

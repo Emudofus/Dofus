@@ -1,72 +1,82 @@
-﻿package com.ankamagames.dofus.logic.game.fight.steps
+package com.ankamagames.dofus.logic.game.fight.steps
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.*;
-    import com.ankamagames.dofus.internalDatacenter.communication.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.fightEvents.*;
-    import com.ankamagames.dofus.logic.game.fight.frames.*;
-    import com.ankamagames.dofus.logic.game.fight.steps.*;
-    import com.ankamagames.dofus.logic.game.fight.types.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.dofus.types.sequences.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.sequencer.*;
+   import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import com.ankamagames.jerakine.sequencer.SerialSequencer;
+   import com.ankamagames.dofus.internalDatacenter.communication.ChatBubble;
+   import com.ankamagames.jerakine.entities.interfaces.IDisplayable;
+   import com.ankamagames.dofus.logic.game.fight.fightEvents.FightEventsHelper;
+   import com.ankamagames.dofus.logic.game.fight.types.FightEventEnum;
+   import com.ankamagames.dofus.network.enums.FightSpellCastCriticalEnum;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightEntitiesFrame;
+   import com.ankamagames.dofus.types.sequences.AddGfxEntityStep;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.types.LocationEnum;
 
-    public class FightSpellCastStep extends AbstractSequencable implements IFightStep
-    {
-        private var _fighterId:int;
-        private var _cellId:int;
-        private var _sourceCellId:int;
-        private var _spellId:int;
-        private var _spellRank:uint;
-        private var _critical:uint;
 
-        public function FightSpellCastStep(param1:int, param2:int, param3:int, param4:int, param5:uint, param6:uint)
-        {
-            this._fighterId = param1;
-            this._cellId = param2;
-            this._sourceCellId = param3;
-            this._spellId = param4;
-            this._spellRank = param5;
-            this._critical = param6;
-            return;
-        }// end function
+   public class FightSpellCastStep extends AbstractSequencable implements IFightStep
+   {
+         
 
-        public function get stepType() : String
-        {
-            return "spellCast";
-        }// end function
+      public function FightSpellCastStep(fighterId:int, cellId:int, sourceCellId:int, spellId:int, spellRank:uint, critical:uint) {
+         super();
+         this._fighterId=fighterId;
+         this._cellId=cellId;
+         this._sourceCellId=sourceCellId;
+         this._spellId=spellId;
+         this._spellRank=spellRank;
+         this._critical=critical;
+      }
 
-        override public function start() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_CASTED_SPELL, [this._fighterId, this._cellId, this._sourceCellId, this._spellId, this._spellRank, this._critical], 0, castingSpellId, false);
-            if (this._critical != FightSpellCastCriticalEnum.NORMAL)
+
+
+      private var _fighterId:int;
+
+      private var _cellId:int;
+
+      private var _sourceCellId:int;
+
+      private var _spellId:int;
+
+      private var _spellRank:uint;
+
+      private var _critical:uint;
+
+      public function get stepType() : String {
+         return "spellCast";
+      }
+
+      override public function start() : void {
+         var fighterInfos:GameFightFighterInformations = null;
+         var seq:SerialSequencer = null;
+         var bubble:ChatBubble = null;
+         var fighterEntity:IDisplayable = null;
+         FightEventsHelper.sendFightEvent(FightEventEnum.FIGHTER_CASTED_SPELL,[this._fighterId,this._cellId,this._sourceCellId,this._spellId,this._spellRank,this._critical],0,castingSpellId,false);
+         if(this._critical!=FightSpellCastCriticalEnum.NORMAL)
+         {
+            fighterInfos=FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
+            seq=new SerialSequencer();
+            if(this._critical==FightSpellCastCriticalEnum.CRITICAL_HIT)
             {
-                _loc_1 = FightEntitiesFrame.getCurrentInstance().getEntityInfos(this._fighterId) as GameFightFighterInformations;
-                _loc_2 = new SerialSequencer();
-                if (this._critical == FightSpellCastCriticalEnum.CRITICAL_HIT)
-                {
-                    _loc_2.addStep(new AddGfxEntityStep(1062, _loc_1.disposition.cellId));
-                }
-                else if (this._critical == FightSpellCastCriticalEnum.CRITICAL_FAIL)
-                {
-                    _loc_3 = new ChatBubble(I18n.getUiText("ui.fight.criticalMiss"));
-                    _loc_4 = DofusEntities.getEntity(this._fighterId) as IDisplayable;
-                    TooltipManager.show(_loc_3, _loc_4.absoluteBounds, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), true, "ec" + this._fighterId, LocationEnum.POINT_BOTTOMLEFT, LocationEnum.POINT_TOPRIGHT, 0, true, null, null);
-                    _loc_2.addStep(new AddGfxEntityStep(1070, _loc_1.disposition.cellId));
-                }
-                _loc_2.start();
+               seq.addStep(new AddGfxEntityStep(1062,fighterInfos.disposition.cellId));
             }
-            executeCallbacks();
-            return;
-        }// end function
+            else
+            {
+               if(this._critical==FightSpellCastCriticalEnum.CRITICAL_FAIL)
+               {
+                  bubble=new ChatBubble(I18n.getUiText("ui.fight.criticalMiss"));
+                  fighterEntity=DofusEntities.getEntity(this._fighterId) as IDisplayable;
+                  TooltipManager.show(bubble,fighterEntity.absoluteBounds,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),true,"ec"+this._fighterId,LocationEnum.POINT_BOTTOMLEFT,LocationEnum.POINT_TOPRIGHT,0,true,null,null);
+                  seq.addStep(new AddGfxEntityStep(1070,fighterInfos.disposition.cellId));
+               }
+            }
+            seq.start();
+         }
+         executeCallbacks();
+      }
+   }
 
-    }
 }

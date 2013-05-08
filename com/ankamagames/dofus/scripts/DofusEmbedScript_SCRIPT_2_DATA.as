@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.scripts
+package com.ankamagames.dofus.scripts
 {
-    import mx.core.*;
+   import mx.core.ByteArrayAsset;
 
-    public class DofusEmbedScript_SCRIPT_2_DATA extends ByteArrayAsset
-    {
 
-        public function DofusEmbedScript_SCRIPT_2_DATA()
-        {
-            return;
-        }// end function
+   public class DofusEmbedScript_SCRIPT_2_DATA extends ByteArrayAsset
+   {
+         
 
-    }
+      public function DofusEmbedScript_SCRIPT_2_DATA() {
+         super();
+      }
+
+
+
+
+   }
+
 }

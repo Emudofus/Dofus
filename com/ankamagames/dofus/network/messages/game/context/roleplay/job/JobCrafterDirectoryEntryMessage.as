@@ -1,114 +1,105 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.job
+package com.ankamagames.dofus.network.messages.game.context.roleplay.job
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.job.*;
-    import com.ankamagames.dofus.network.types.game.look.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.job.JobCrafterDirectoryEntryPlayerInfo;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.job.JobCrafterDirectoryEntryJobInfo;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class JobCrafterDirectoryEntryMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var playerInfo:JobCrafterDirectoryEntryPlayerInfo;
-        public var jobInfoList:Vector.<JobCrafterDirectoryEntryJobInfo>;
-        public var playerLook:EntityLook;
-        public static const protocolId:uint = 6044;
 
-        public function JobCrafterDirectoryEntryMessage()
-        {
-            this.playerInfo = new JobCrafterDirectoryEntryPlayerInfo();
-            this.jobInfoList = new Vector.<JobCrafterDirectoryEntryJobInfo>;
-            this.playerLook = new EntityLook();
-            return;
-        }// end function
+   public class JobCrafterDirectoryEntryMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function JobCrafterDirectoryEntryMessage() {
+         this.playerInfo=new JobCrafterDirectoryEntryPlayerInfo();
+         this.jobInfoList=new Vector.<JobCrafterDirectoryEntryJobInfo>();
+         this.playerLook=new EntityLook();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6044;
-        }// end function
+      public static const protocolId:uint = 6044;
 
-        public function initJobCrafterDirectoryEntryMessage(param1:JobCrafterDirectoryEntryPlayerInfo = null, param2:Vector.<JobCrafterDirectoryEntryJobInfo> = null, param3:EntityLook = null) : JobCrafterDirectoryEntryMessage
-        {
-            this.playerInfo = param1;
-            this.jobInfoList = param2;
-            this.playerLook = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.playerInfo = new JobCrafterDirectoryEntryPlayerInfo();
-            this.playerLook = new EntityLook();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var playerInfo:JobCrafterDirectoryEntryPlayerInfo;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var jobInfoList:Vector.<JobCrafterDirectoryEntryJobInfo>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_JobCrafterDirectoryEntryMessage(param1);
-            return;
-        }// end function
+      public var playerLook:EntityLook;
 
-        public function serializeAs_JobCrafterDirectoryEntryMessage(param1:IDataOutput) : void
-        {
-            this.playerInfo.serializeAs_JobCrafterDirectoryEntryPlayerInfo(param1);
-            param1.writeShort(this.jobInfoList.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.jobInfoList.length)
-            {
-                
-                (this.jobInfoList[_loc_2] as JobCrafterDirectoryEntryJobInfo).serializeAs_JobCrafterDirectoryEntryJobInfo(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            this.playerLook.serializeAs_EntityLook(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6044;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_JobCrafterDirectoryEntryMessage(param1);
-            return;
-        }// end function
+      public function initJobCrafterDirectoryEntryMessage(playerInfo:JobCrafterDirectoryEntryPlayerInfo=null, jobInfoList:Vector.<JobCrafterDirectoryEntryJobInfo>=null, playerLook:EntityLook=null) : JobCrafterDirectoryEntryMessage {
+         this.playerInfo=playerInfo;
+         this.jobInfoList=jobInfoList;
+         this.playerLook=playerLook;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserializeAs_JobCrafterDirectoryEntryMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.playerInfo = new JobCrafterDirectoryEntryPlayerInfo();
-            this.playerInfo.deserialize(param1);
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new JobCrafterDirectoryEntryJobInfo();
-                _loc_4.deserialize(param1);
-                this.jobInfoList.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            this.playerLook = new EntityLook();
-            this.playerLook.deserialize(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.playerInfo=new JobCrafterDirectoryEntryPlayerInfo();
+         this.playerLook=new EntityLook();
+         this._isInitialized=false;
+      }
 
-    }
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_JobCrafterDirectoryEntryMessage(output);
+      }
+
+      public function serializeAs_JobCrafterDirectoryEntryMessage(output:IDataOutput) : void {
+         this.playerInfo.serializeAs_JobCrafterDirectoryEntryPlayerInfo(output);
+         output.writeShort(this.jobInfoList.length);
+         var _i2:uint = 0;
+         while(_i2<this.jobInfoList.length)
+         {
+            (this.jobInfoList[_i2] as JobCrafterDirectoryEntryJobInfo).serializeAs_JobCrafterDirectoryEntryJobInfo(output);
+            _i2++;
+         }
+         this.playerLook.serializeAs_EntityLook(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_JobCrafterDirectoryEntryMessage(input);
+      }
+
+      public function deserializeAs_JobCrafterDirectoryEntryMessage(input:IDataInput) : void {
+         var _item2:JobCrafterDirectoryEntryJobInfo = null;
+         this.playerInfo=new JobCrafterDirectoryEntryPlayerInfo();
+         this.playerInfo.deserialize(input);
+         var _jobInfoListLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_jobInfoListLen)
+         {
+            _item2=new JobCrafterDirectoryEntryJobInfo();
+            _item2.deserialize(input);
+            this.jobInfoList.push(_item2);
+            _i2++;
+         }
+         this.playerLook=new EntityLook();
+         this.playerLook.deserialize(input);
+      }
+   }
+
 }

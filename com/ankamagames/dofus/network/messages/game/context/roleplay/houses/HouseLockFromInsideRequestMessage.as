@@ -1,80 +1,68 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
+package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 {
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.lockable.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.lockable.LockableChangeCodeMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 5885;
 
-        public function HouseLockFromInsideRequestMessage()
-        {
-            return;
-        }// end function
+   public class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function HouseLockFromInsideRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5885;
-        }// end function
+      public static const protocolId:uint = 5885;
 
-        public function initHouseLockFromInsideRequestMessage(param1:String = "") : HouseLockFromInsideRequestMessage
-        {
-            super.initLockableChangeCodeMessage(param1);
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5885;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public function initHouseLockFromInsideRequestMessage(code:String="") : HouseLockFromInsideRequestMessage {
+         super.initLockableChangeCodeMessage(code);
+         this._isInitialized=true;
+         return this;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_HouseLockFromInsideRequestMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this._isInitialized=false;
+      }
 
-        public function serializeAs_HouseLockFromInsideRequestMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_LockableChangeCodeMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_HouseLockFromInsideRequestMessage(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserializeAs_HouseLockFromInsideRequestMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HouseLockFromInsideRequestMessage(output);
+      }
 
-    }
+      public function serializeAs_HouseLockFromInsideRequestMessage(output:IDataOutput) : void {
+         super.serializeAs_LockableChangeCodeMessage(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HouseLockFromInsideRequestMessage(input);
+      }
+
+      public function deserializeAs_HouseLockFromInsideRequestMessage(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.document
+package com.ankamagames.dofus.network.messages.game.context.roleplay.document
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class DocumentReadingBeginMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var documentId:uint = 0;
-        public static const protocolId:uint = 5675;
 
-        public function DocumentReadingBeginMessage()
-        {
+   public class DocumentReadingBeginMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function DocumentReadingBeginMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5675;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var documentId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5675;
+      }
+
+      public function initDocumentReadingBeginMessage(documentId:uint=0) : DocumentReadingBeginMessage {
+         this.documentId=documentId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.documentId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DocumentReadingBeginMessage(output);
+      }
+
+      public function serializeAs_DocumentReadingBeginMessage(output:IDataOutput) : void {
+         if(this.documentId<0)
+         {
+            throw new Error("Forbidden value ("+this.documentId+") on element documentId.");
+         }
+         else
+         {
+            output.writeShort(this.documentId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DocumentReadingBeginMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5675;
-        }// end function
-
-        public function initDocumentReadingBeginMessage(param1:uint = 0) : DocumentReadingBeginMessage
-        {
-            this.documentId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.documentId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_DocumentReadingBeginMessage(input:IDataInput) : void {
+         this.documentId=input.readShort();
+         if(this.documentId<0)
+         {
+            throw new Error("Forbidden value ("+this.documentId+") on element of DocumentReadingBeginMessage.documentId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_DocumentReadingBeginMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_DocumentReadingBeginMessage(param1:IDataOutput) : void
-        {
-            if (this.documentId < 0)
-            {
-                throw new Error("Forbidden value (" + this.documentId + ") on element documentId.");
-            }
-            param1.writeShort(this.documentId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_DocumentReadingBeginMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_DocumentReadingBeginMessage(param1:IDataInput) : void
-        {
-            this.documentId = param1.readShort();
-            if (this.documentId < 0)
-            {
-                throw new Error("Forbidden value (" + this.documentId + ") on element of DocumentReadingBeginMessage.documentId.");
-            }
-            return;
-        }// end function
-
-    }
 }

@@ -1,84 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameFightTurnStartSlaveMessage extends GameFightTurnStartMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var idSummoner:int = 0;
-        public static const protocolId:uint = 6213;
 
-        public function GameFightTurnStartSlaveMessage()
-        {
-            return;
-        }// end function
+   public class GameFightTurnStartSlaveMessage extends GameFightTurnStartMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function GameFightTurnStartSlaveMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6213;
-        }// end function
+      public static const protocolId:uint = 6213;
 
-        public function initGameFightTurnStartSlaveMessage(param1:int = 0, param2:uint = 0, param3:int = 0) : GameFightTurnStartSlaveMessage
-        {
-            super.initGameFightTurnStartMessage(param1, param2);
-            this.idSummoner = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.idSummoner = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var idSummoner:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6213;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightTurnStartSlaveMessage(param1);
-            return;
-        }// end function
+      public function initGameFightTurnStartSlaveMessage(id:int=0, waitTime:uint=0, idSummoner:int=0) : GameFightTurnStartSlaveMessage {
+         super.initGameFightTurnStartMessage(id,waitTime);
+         this.idSummoner=idSummoner;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_GameFightTurnStartSlaveMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_GameFightTurnStartMessage(param1);
-            param1.writeInt(this.idSummoner);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.idSummoner=0;
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightTurnStartSlaveMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_GameFightTurnStartSlaveMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.idSummoner = param1.readInt();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightTurnStartSlaveMessage(output);
+      }
+
+      public function serializeAs_GameFightTurnStartSlaveMessage(output:IDataOutput) : void {
+         super.serializeAs_GameFightTurnStartMessage(output);
+         output.writeInt(this.idSummoner);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightTurnStartSlaveMessage(input);
+      }
+
+      public function deserializeAs_GameFightTurnStartSlaveMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.idSummoner=input.readInt();
+      }
+   }
+
 }

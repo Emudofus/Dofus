@@ -1,20 +1,23 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
 
-    public class MapRenderProgressMessage extends MapMessage
-    {
-        private var _percent:Number = 0;
 
-        public function MapRenderProgressMessage(param1:Number)
-        {
-            this._percent = param1;
-            return;
-        }// end function
+   public class MapRenderProgressMessage extends MapMessage
+   {
+         
 
-        public function get percent() : Number
-        {
-            return this._percent;
-        }// end function
+      public function MapRenderProgressMessage(percent:Number) {
+         super();
+         this._percent=percent;
+      }
 
-    }
+
+
+      private var _percent:Number = 0;
+
+      public function get percent() : Number {
+         return this._percent;
+      }
+   }
+
 }

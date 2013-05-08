@@ -1,10 +1,14 @@
-﻿package com.ankamagames.jerakine.network
+package com.ankamagames.jerakine.network
 {
 
-    public interface INetworkType
-    {
 
-        public function INetworkType();
+   public interface INetworkType
+   {
+         
 
-    }
+
+
+
+   }
+
 }

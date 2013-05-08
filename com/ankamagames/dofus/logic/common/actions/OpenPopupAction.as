@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.common.actions
+package com.ankamagames.dofus.logic.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenPopupAction extends Object implements Action
-    {
-        public var messageToShow:String;
 
-        public function OpenPopupAction()
-        {
-            return;
-        }// end function
+   public class OpenPopupAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String = "") : OpenPopupAction
-        {
-            var _loc_2:* = new OpenPopupAction;
-            _loc_2.messageToShow = param1;
-            return _loc_2;
-        }// end function
+      public function OpenPopupAction() {
+         super();
+      }
 
-    }
+      public static function create(pMsg:String="") : OpenPopupAction {
+         var s:OpenPopupAction = new OpenPopupAction();
+         s.messageToShow=pMsg;
+         return s;
+      }
+
+      public var messageToShow:String;
+   }
+
 }

@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions.estate
+package com.ankamagames.dofus.logic.game.roleplay.actions.estate
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PaddockToSellListRequestAction extends Object implements Action
-    {
-        public var pageIndex:uint;
 
-        public function PaddockToSellListRequestAction()
-        {
-            return;
-        }// end function
+   public class PaddockToSellListRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : PaddockToSellListRequestAction
-        {
-            var _loc_2:* = new PaddockToSellListRequestAction;
-            _loc_2.pageIndex = param1;
-            return _loc_2;
-        }// end function
+      public function PaddockToSellListRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pageIndex:uint) : PaddockToSellListRequestAction {
+         var a:PaddockToSellListRequestAction = new PaddockToSellListRequestAction();
+         a.pageIndex=pageIndex;
+         return a;
+      }
+
+      public var pageIndex:uint;
+   }
+
 }

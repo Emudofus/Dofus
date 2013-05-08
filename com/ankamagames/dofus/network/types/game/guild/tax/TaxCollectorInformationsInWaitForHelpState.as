@@ -1,66 +1,58 @@
-﻿package com.ankamagames.dofus.network.types.game.guild.tax
+package com.ankamagames.dofus.network.types.game.guild.tax
 {
-    import com.ankamagames.dofus.network.types.game.fight.*;
-    import com.ankamagames.dofus.network.types.game.look.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.fight.ProtectedEntityWaitingForHelpInfo;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class TaxCollectorInformationsInWaitForHelpState extends TaxCollectorInformations implements INetworkType
-    {
-        public var waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo;
-        public static const protocolId:uint = 166;
 
-        public function TaxCollectorInformationsInWaitForHelpState()
-        {
-            this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
-            return;
-        }// end function
+   public class TaxCollectorInformationsInWaitForHelpState extends TaxCollectorInformations implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 166;
-        }// end function
+      public function TaxCollectorInformationsInWaitForHelpState() {
+         this.waitingForHelpInfo=new ProtectedEntityWaitingForHelpInfo();
+         super();
+      }
 
-        public function initTaxCollectorInformationsInWaitForHelpState(param1:int = 0, param2:uint = 0, param3:uint = 0, param4:AdditionalTaxCollectorInformations = null, param5:int = 0, param6:int = 0, param7:uint = 0, param8:int = 0, param9:EntityLook = null, param10:uint = 0, param11:Number = 0, param12:uint = 0, param13:uint = 0, param14:ProtectedEntityWaitingForHelpInfo = null) : TaxCollectorInformationsInWaitForHelpState
-        {
-            super.initTaxCollectorInformations(param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12, param13);
-            this.waitingForHelpInfo = param14;
-            return this;
-        }// end function
+      public static const protocolId:uint = 166;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
-            return;
-        }// end function
+      public var waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_TaxCollectorInformationsInWaitForHelpState(param1);
-            return;
-        }// end function
+      override public function getTypeId() : uint {
+         return 166;
+      }
 
-        public function serializeAs_TaxCollectorInformationsInWaitForHelpState(param1:IDataOutput) : void
-        {
-            super.serializeAs_TaxCollectorInformations(param1);
-            this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(param1);
-            return;
-        }// end function
+      public function initTaxCollectorInformationsInWaitForHelpState(uniqueId:int=0, firtNameId:uint=0, lastNameId:uint=0, additionalInfos:AdditionalTaxCollectorInformations=null, worldX:int=0, worldY:int=0, subAreaId:uint=0, state:int=0, look:EntityLook=null, kamas:uint=0, experience:Number=0, pods:uint=0, itemsValue:uint=0, waitingForHelpInfo:ProtectedEntityWaitingForHelpInfo=null) : TaxCollectorInformationsInWaitForHelpState {
+         super.initTaxCollectorInformations(uniqueId,firtNameId,lastNameId,additionalInfos,worldX,worldY,subAreaId,state,look,kamas,experience,pods,itemsValue);
+         this.waitingForHelpInfo=waitingForHelpInfo;
+         return this;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_TaxCollectorInformationsInWaitForHelpState(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.waitingForHelpInfo=new ProtectedEntityWaitingForHelpInfo();
+      }
 
-        public function deserializeAs_TaxCollectorInformationsInWaitForHelpState(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
-            this.waitingForHelpInfo.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TaxCollectorInformationsInWaitForHelpState(output);
+      }
 
-    }
+      public function serializeAs_TaxCollectorInformationsInWaitForHelpState(output:IDataOutput) : void {
+         super.serializeAs_TaxCollectorInformations(output);
+         this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TaxCollectorInformationsInWaitForHelpState(input);
+      }
+
+      public function deserializeAs_TaxCollectorInformationsInWaitForHelpState(input:IDataInput) : void {
+         super.deserialize(input);
+         this.waitingForHelpInfo=new ProtectedEntityWaitingForHelpInfo();
+         this.waitingForHelpInfo.deserialize(input);
+      }
+   }
+
 }

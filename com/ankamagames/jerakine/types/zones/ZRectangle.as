@@ -1,124 +1,114 @@
-﻿package com.ankamagames.jerakine.types.zones
+package com.ankamagames.jerakine.types.zones
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.map.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.types.zones.*;
+   import com.ankamagames.jerakine.map.IDataMapProvider;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
 
-    public class ZRectangle extends Object implements IZone
-    {
-        private var _radius:uint = 0;
-        private var _radius2:uint;
-        private var _minRadius:uint = 2;
-        private var _dataMapProvider:IDataMapProvider;
-        private var _diagonalFree:Boolean = false;
 
-        public function ZRectangle(param1:uint, param2:uint, param3:uint, param4:IDataMapProvider)
-        {
-            this.radius = param2;
-            this._radius2 = param3 ? (param3) : (param2);
-            this.minRadius = param1;
-            this._dataMapProvider = param4;
-            return;
-        }// end function
+   public class ZRectangle extends Object implements IZone
+   {
+         
 
-        public function get radius() : uint
-        {
-            return this._radius;
-        }// end function
+      public function ZRectangle(nMinRadius:uint, nWidth:uint, nHeight:uint, dataMapProvider:IDataMapProvider) {
+         super();
+         this.radius=nWidth;
+         this._radius2=nHeight?nHeight:nWidth;
+         this.minRadius=nMinRadius;
+         this._dataMapProvider=dataMapProvider;
+      }
 
-        public function set radius(param1:uint) : void
-        {
-            this._radius = param1;
-            return;
-        }// end function
 
-        public function set minRadius(param1:uint) : void
-        {
-            this._minRadius = param1;
-            return;
-        }// end function
 
-        public function get minRadius() : uint
-        {
-            return this._minRadius;
-        }// end function
+      private var _radius:uint = 0;
 
-        public function set direction(param1:uint) : void
-        {
-            return;
-        }// end function
+      private var _radius2:uint;
 
-        public function get direction() : uint
-        {
-            return null;
-        }// end function
+      private var _minRadius:uint = 2;
 
-        public function set diagonalFree(param1:Boolean) : void
-        {
-            this._diagonalFree = param1;
-            return;
-        }// end function
+      private var _dataMapProvider:IDataMapProvider;
 
-        public function get diagonalFree() : Boolean
-        {
-            return this._diagonalFree;
-        }// end function
+      private var _diagonalFree:Boolean = false;
 
-        public function get surface() : uint
-        {
-            return Math.pow(this._radius + this._radius2 + 1, 2);
-        }// end function
+      public function get radius() : uint {
+         return this._radius;
+      }
 
-        public function getCells(param1:uint = 0) : Vector.<uint>
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = new Vector.<uint>;
-            var _loc_3:* = MapPoint.fromCellId(param1);
-            var _loc_4:* = _loc_3.x;
-            var _loc_5:* = _loc_3.y;
-            if (this._radius == 0 || this._radius2 == 0)
+      public function set radius(n:uint) : void {
+         this._radius=n;
+      }
+
+      public function set minRadius(r:uint) : void {
+         this._minRadius=r;
+      }
+
+      public function get minRadius() : uint {
+         return this._minRadius;
+      }
+
+      public function set direction(d:uint) : void {
+         
+      }
+
+      public function get direction() : uint {
+         return null;
+      }
+
+      public function set diagonalFree(d:Boolean) : void {
+         this._diagonalFree=d;
+      }
+
+      public function get diagonalFree() : Boolean {
+         return this._diagonalFree;
+      }
+
+      public function get surface() : uint {
+         return Math.pow(this._radius+this._radius2+1,2);
+      }
+
+      public function getCells(cellId:uint=0) : Vector.<uint> {
+         var i:* = 0;
+         var j:* = 0;
+         var aCells:Vector.<uint> = new Vector.<uint>();
+         var origin:MapPoint = MapPoint.fromCellId(cellId);
+         var x:int = origin.x;
+         var y:int = origin.y;
+         if((this._radius==0)||(this._radius2==0))
+         {
+            if((this._minRadius==0)&&(!this._diagonalFree))
             {
-                if (this._minRadius == 0 && !this._diagonalFree)
-                {
-                    _loc_2.push(param1);
-                }
-                return _loc_2;
+               aCells.push(cellId);
             }
-            _loc_6 = _loc_4 - this._radius;
-            while (_loc_6 <= _loc_4 + this._radius)
+            return aCells;
+         }
+         i=x-this._radius;
+         while(i<=x+this._radius)
+         {
+            j=y-this._radius2;
+            while(j<=y+this._radius2)
             {
-                
-                _loc_7 = _loc_5 - this._radius2;
-                while (_loc_7 <= _loc_5 + this._radius2)
-                {
-                    
-                    if (!this._minRadius || Math.abs(_loc_4 - _loc_6) + Math.abs(_loc_5 - _loc_7) >= this._minRadius)
-                    {
-                        if (!this._diagonalFree || Math.abs(_loc_4 - _loc_6) != Math.abs(_loc_5 - _loc_7))
-                        {
-                            if (MapPoint.isInMap(_loc_6, _loc_7))
-                            {
-                                this.addCell(_loc_6, _loc_7, _loc_2);
-                            }
-                        }
-                    }
-                    _loc_7++;
-                }
-                _loc_6++;
+               if((!this._minRadius)||(Math.abs(x-i)+Math.abs(y-j)>=this._minRadius))
+               {
+                  if((!this._diagonalFree)||(!(Math.abs(x-i)==Math.abs(y-j))))
+                  {
+                     if(MapPoint.isInMap(i,j))
+                     {
+                        this.addCell(i,j,aCells);
+                     }
+                  }
+               }
+               j++;
             }
-            return _loc_2;
-        }// end function
+            i++;
+         }
+         return aCells;
+      }
 
-        private function addCell(param1:int, param2:int, param3:Vector.<uint>) : void
-        {
-            if (this._dataMapProvider == null || this._dataMapProvider.pointMov(param1, param2))
-            {
-                param3.push(MapPoint.fromCoords(param1, param2).cellId);
-            }
-            return;
-        }// end function
+      private function addCell(x:int, y:int, cellMap:Vector.<uint>) : void {
+         if((this._dataMapProvider==null)||(this._dataMapProvider.pointMov(x,y)))
+         {
+            cellMap.push(MapPoint.fromCoords(x,y).cellId);
+         }
+      }
+   }
 
-    }
 }

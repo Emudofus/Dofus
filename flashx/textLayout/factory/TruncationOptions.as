@@ -1,55 +1,52 @@
-ï»¿package flashx.textLayout.factory
+package flashx.textLayout.factory
 {
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.formats.ITextLayoutFormat;
 
-    final public class TruncationOptions extends Object
-    {
-        private var _truncationIndicator:String;
-        private var _truncationIndicatorFormat:ITextLayoutFormat;
-        private var _lineCountLimit:int;
-        public static const NO_LINE_COUNT_LIMIT:int = -1;
-        public static const HORIZONTAL_ELLIPSIS:String = "â€¦";
 
-        public function TruncationOptions(param1:String = "â€¦", param2:int = -1, param3:ITextLayoutFormat = null)
-        {
-            this.truncationIndicator = param1;
-            this.truncationIndicatorFormat = param3;
-            this.lineCountLimit = param2;
-            return;
-        }// end function
+   public final class TruncationOptions extends Object
+   {
+         
 
-        public function get truncationIndicator() : String
-        {
-            return this._truncationIndicator ? (this._truncationIndicator) : (HORIZONTAL_ELLIPSIS);
-        }// end function
+      public function TruncationOptions(truncationIndicator:String="…", lineCountLimit:int=-1, truncationIndicatorFormat:ITextLayoutFormat=null) {
+         super();
+         this.truncationIndicator=truncationIndicator;
+         this.truncationIndicatorFormat=truncationIndicatorFormat;
+         this.lineCountLimit=lineCountLimit;
+      }
 
-        public function set truncationIndicator(param1:String) : void
-        {
-            this._truncationIndicator = param1;
-            return;
-        }// end function
+      public static const NO_LINE_COUNT_LIMIT:int = -1;
 
-        public function get truncationIndicatorFormat() : ITextLayoutFormat
-        {
-            return this._truncationIndicatorFormat;
-        }// end function
+      public static const HORIZONTAL_ELLIPSIS:String = "…";
 
-        public function set truncationIndicatorFormat(param1:ITextLayoutFormat) : void
-        {
-            this._truncationIndicatorFormat = param1;
-            return;
-        }// end function
+      public function get truncationIndicator() : String {
+         return this._truncationIndicator?this._truncationIndicator:HORIZONTAL_ELLIPSIS;
+      }
 
-        public function get lineCountLimit() : int
-        {
-            return this._lineCountLimit < NO_LINE_COUNT_LIMIT ? (0) : (this._lineCountLimit);
-        }// end function
+      public function set truncationIndicator(val:String) : void {
+         this._truncationIndicator=val;
+      }
 
-        public function set lineCountLimit(param1:int) : void
-        {
-            this._lineCountLimit = param1;
-            return;
-        }// end function
+      public function get truncationIndicatorFormat() : ITextLayoutFormat {
+         return this._truncationIndicatorFormat;
+      }
 
-    }
+      public function set truncationIndicatorFormat(val:ITextLayoutFormat) : void {
+         this._truncationIndicatorFormat=val;
+      }
+
+      public function get lineCountLimit() : int {
+         return this._lineCountLimit>NO_LINE_COUNT_LIMIT?0:this._lineCountLimit;
+      }
+
+      public function set lineCountLimit(val:int) : void {
+         this._lineCountLimit=val;
+      }
+
+      private var _truncationIndicator:String;
+
+      private var _truncationIndicatorFormat:ITextLayoutFormat;
+
+      private var _lineCountLimit:int;
+   }
+
 }

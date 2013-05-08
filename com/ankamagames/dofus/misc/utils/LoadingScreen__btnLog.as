@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import mx.core.*;
+   import mx.core.ButtonAsset;
 
-    public class LoadingScreen__btnLog extends ButtonAsset
-    {
 
-        public function LoadingScreen__btnLog()
-        {
-            return;
-        }// end function
+   public class LoadingScreen__btnLog extends ButtonAsset
+   {
+         
 
-    }
+      public function LoadingScreen__btnLog() {
+         super();
+      }
+
+
+
+
+   }
+
 }

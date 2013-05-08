@@ -1,83 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
+package com.ankamagames.dofus.network.messages.game.context.roleplay.fight
 {
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightCommonInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayShowChallengeMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var commonsInfos:FightCommonInformations;
-        public static const protocolId:uint = 301;
 
-        public function GameRolePlayShowChallengeMessage()
-        {
-            this.commonsInfos = new FightCommonInformations();
-            return;
-        }// end function
+   public class GameRolePlayShowChallengeMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameRolePlayShowChallengeMessage() {
+         this.commonsInfos=new FightCommonInformations();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 301;
-        }// end function
+      public static const protocolId:uint = 301;
 
-        public function initGameRolePlayShowChallengeMessage(param1:FightCommonInformations = null) : GameRolePlayShowChallengeMessage
-        {
-            this.commonsInfos = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.commonsInfos = new FightCommonInformations();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var commonsInfos:FightCommonInformations;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 301;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayShowChallengeMessage(param1);
-            return;
-        }// end function
+      public function initGameRolePlayShowChallengeMessage(commonsInfos:FightCommonInformations=null) : GameRolePlayShowChallengeMessage {
+         this.commonsInfos=commonsInfos;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_GameRolePlayShowChallengeMessage(param1:IDataOutput) : void
-        {
-            this.commonsInfos.serializeAs_FightCommonInformations(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.commonsInfos=new FightCommonInformations();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayShowChallengeMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_GameRolePlayShowChallengeMessage(param1:IDataInput) : void
-        {
-            this.commonsInfos = new FightCommonInformations();
-            this.commonsInfos.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayShowChallengeMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayShowChallengeMessage(output:IDataOutput) : void {
+         this.commonsInfos.serializeAs_FightCommonInformations(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayShowChallengeMessage(input);
+      }
+
+      public function deserializeAs_GameRolePlayShowChallengeMessage(input:IDataInput) : void {
+         this.commonsInfos=new FightCommonInformations();
+         this.commonsInfos.deserialize(input);
+      }
+   }
+
 }

@@ -1,20 +1,22 @@
-﻿package com.ankamagames.jerakine.sequencer
+package com.ankamagames.jerakine.sequencer
 {
 
-    public interface ISequencable
-    {
 
-        public function ISequencable();
+   public interface ISequencable
+   {
+         
 
-        function start() : void;
 
-        function addListener(param1:ISequencableListener) : void;
 
-        function removeListener(param1:ISequencableListener) : void;
+      function start() : void;
 
-        function toString() : String;
+      function addListener(param1:ISequencableListener) : void;
 
-        function clear() : void;
+      function removeListener(param1:ISequencableListener) : void;
 
-    }
+      function toString() : String;
+
+      function clear() : void;
+   }
+
 }

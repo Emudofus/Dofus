@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.guild
+package com.ankamagames.dofus.logic.game.common.actions.guild
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuildFightLeaveRequestAction extends Object implements Action
-    {
-        public var taxCollectorId:uint;
-        public var characterId:uint;
-        public var warning:Boolean;
 
-        public function GuildFightLeaveRequestAction()
-        {
-            return;
-        }// end function
+   public class GuildFightLeaveRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint, param3:Boolean = false) : GuildFightLeaveRequestAction
-        {
-            var _loc_4:* = new GuildFightLeaveRequestAction;
-            new GuildFightLeaveRequestAction.taxCollectorId = param1;
-            _loc_4.characterId = param2;
-            _loc_4.warning = param3;
-            return _loc_4;
-        }// end function
+      public function GuildFightLeaveRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pTaxCollectorId:uint, pCharacterId:uint, pWarning:Boolean=false) : GuildFightLeaveRequestAction {
+         var action:GuildFightLeaveRequestAction = new GuildFightLeaveRequestAction();
+         action.taxCollectorId=pTaxCollectorId;
+         action.characterId=pCharacterId;
+         action.warning=pWarning;
+         return action;
+      }
+
+      public var taxCollectorId:uint;
+
+      public var characterId:uint;
+
+      public var warning:Boolean;
+   }
+
 }

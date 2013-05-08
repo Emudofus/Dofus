@@ -1,140 +1,166 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
+package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayArenaUpdatePlayerInfosMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var rank:uint = 0;
-        public var bestDailyRank:uint = 0;
-        public var bestRank:uint = 0;
-        public var victoryCount:uint = 0;
-        public var arenaFightcount:uint = 0;
-        public static const protocolId:uint = 6301;
 
-        public function GameRolePlayArenaUpdatePlayerInfosMessage()
-        {
-            return;
-        }// end function
+   public class GameRolePlayArenaUpdatePlayerInfosMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameRolePlayArenaUpdatePlayerInfosMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6301;
-        }// end function
+      public static const protocolId:uint = 6301;
 
-        public function initGameRolePlayArenaUpdatePlayerInfosMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0) : GameRolePlayArenaUpdatePlayerInfosMessage
-        {
-            this.rank = param1;
-            this.bestDailyRank = param2;
-            this.bestRank = param3;
-            this.victoryCount = param4;
-            this.arenaFightcount = param5;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.rank = 0;
-            this.bestDailyRank = 0;
-            this.bestRank = 0;
-            this.victoryCount = 0;
-            this.arenaFightcount = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var rank:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var bestDailyRank:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(param1);
-            return;
-        }// end function
+      public var bestRank:uint = 0;
 
-        public function serializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(param1:IDataOutput) : void
-        {
-            if (this.rank < 0 || this.rank > 2300)
+      public var victoryCount:uint = 0;
+
+      public var arenaFightcount:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6301;
+      }
+
+      public function initGameRolePlayArenaUpdatePlayerInfosMessage(rank:uint=0, bestDailyRank:uint=0, bestRank:uint=0, victoryCount:uint=0, arenaFightcount:uint=0) : GameRolePlayArenaUpdatePlayerInfosMessage {
+         this.rank=rank;
+         this.bestDailyRank=bestDailyRank;
+         this.bestRank=bestRank;
+         this.victoryCount=victoryCount;
+         this.arenaFightcount=arenaFightcount;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.rank=0;
+         this.bestDailyRank=0;
+         this.bestRank=0;
+         this.victoryCount=0;
+         this.arenaFightcount=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(output:IDataOutput) : void {
+         if((this.rank>0)||(this.rank<2300))
+         {
+            throw new Error("Forbidden value ("+this.rank+") on element rank.");
+         }
+         else
+         {
+            output.writeShort(this.rank);
+            if((this.bestDailyRank>0)||(this.bestDailyRank<2300))
             {
-                throw new Error("Forbidden value (" + this.rank + ") on element rank.");
+               throw new Error("Forbidden value ("+this.bestDailyRank+") on element bestDailyRank.");
             }
-            param1.writeShort(this.rank);
-            if (this.bestDailyRank < 0 || this.bestDailyRank > 2300)
+            else
             {
-                throw new Error("Forbidden value (" + this.bestDailyRank + ") on element bestDailyRank.");
+               output.writeShort(this.bestDailyRank);
+               if((this.bestRank>0)||(this.bestRank<2300))
+               {
+                  throw new Error("Forbidden value ("+this.bestRank+") on element bestRank.");
+               }
+               else
+               {
+                  output.writeShort(this.bestRank);
+                  if(this.victoryCount<0)
+                  {
+                     throw new Error("Forbidden value ("+this.victoryCount+") on element victoryCount.");
+                  }
+                  else
+                  {
+                     output.writeShort(this.victoryCount);
+                     if(this.arenaFightcount<0)
+                     {
+                        throw new Error("Forbidden value ("+this.arenaFightcount+") on element arenaFightcount.");
+                     }
+                     else
+                     {
+                        output.writeShort(this.arenaFightcount);
+                        return;
+                     }
+                  }
+               }
             }
-            param1.writeShort(this.bestDailyRank);
-            if (this.bestRank < 0 || this.bestRank > 2300)
-            {
-                throw new Error("Forbidden value (" + this.bestRank + ") on element bestRank.");
-            }
-            param1.writeShort(this.bestRank);
-            if (this.victoryCount < 0)
-            {
-                throw new Error("Forbidden value (" + this.victoryCount + ") on element victoryCount.");
-            }
-            param1.writeShort(this.victoryCount);
-            if (this.arenaFightcount < 0)
-            {
-                throw new Error("Forbidden value (" + this.arenaFightcount + ") on element arenaFightcount.");
-            }
-            param1.writeShort(this.arenaFightcount);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(input);
+      }
 
-        public function deserializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(param1:IDataInput) : void
-        {
-            this.rank = param1.readShort();
-            if (this.rank < 0 || this.rank > 2300)
+      public function deserializeAs_GameRolePlayArenaUpdatePlayerInfosMessage(input:IDataInput) : void {
+         this.rank=input.readShort();
+         if((this.rank>0)||(this.rank<2300))
+         {
+            throw new Error("Forbidden value ("+this.rank+") on element of GameRolePlayArenaUpdatePlayerInfosMessage.rank.");
+         }
+         else
+         {
+            this.bestDailyRank=input.readShort();
+            if((this.bestDailyRank>0)||(this.bestDailyRank<2300))
             {
-                throw new Error("Forbidden value (" + this.rank + ") on element of GameRolePlayArenaUpdatePlayerInfosMessage.rank.");
+               throw new Error("Forbidden value ("+this.bestDailyRank+") on element of GameRolePlayArenaUpdatePlayerInfosMessage.bestDailyRank.");
             }
-            this.bestDailyRank = param1.readShort();
-            if (this.bestDailyRank < 0 || this.bestDailyRank > 2300)
+            else
             {
-                throw new Error("Forbidden value (" + this.bestDailyRank + ") on element of GameRolePlayArenaUpdatePlayerInfosMessage.bestDailyRank.");
+               this.bestRank=input.readShort();
+               if((this.bestRank>0)||(this.bestRank<2300))
+               {
+                  throw new Error("Forbidden value ("+this.bestRank+") on element of GameRolePlayArenaUpdatePlayerInfosMessage.bestRank.");
+               }
+               else
+               {
+                  this.victoryCount=input.readShort();
+                  if(this.victoryCount<0)
+                  {
+                     throw new Error("Forbidden value ("+this.victoryCount+") on element of GameRolePlayArenaUpdatePlayerInfosMessage.victoryCount.");
+                  }
+                  else
+                  {
+                     this.arenaFightcount=input.readShort();
+                     if(this.arenaFightcount<0)
+                     {
+                        throw new Error("Forbidden value ("+this.arenaFightcount+") on element of GameRolePlayArenaUpdatePlayerInfosMessage.arenaFightcount.");
+                     }
+                     else
+                     {
+                        return;
+                     }
+                  }
+               }
             }
-            this.bestRank = param1.readShort();
-            if (this.bestRank < 0 || this.bestRank > 2300)
-            {
-                throw new Error("Forbidden value (" + this.bestRank + ") on element of GameRolePlayArenaUpdatePlayerInfosMessage.bestRank.");
-            }
-            this.victoryCount = param1.readShort();
-            if (this.victoryCount < 0)
-            {
-                throw new Error("Forbidden value (" + this.victoryCount + ") on element of GameRolePlayArenaUpdatePlayerInfosMessage.victoryCount.");
-            }
-            this.arenaFightcount = param1.readShort();
-            if (this.arenaFightcount < 0)
-            {
-                throw new Error("Forbidden value (" + this.arenaFightcount + ") on element of GameRolePlayArenaUpdatePlayerInfosMessage.arenaFightcount.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

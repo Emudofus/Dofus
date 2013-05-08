@@ -1,14 +1,19 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.Message;
 
-    public class MapContainerRollOverMessage extends Object implements Message
-    {
 
-        public function MapContainerRollOverMessage()
-        {
-            return;
-        }// end function
+   public class MapContainerRollOverMessage extends Object implements Message
+   {
+         
 
-    }
+      public function MapContainerRollOverMessage() {
+         super();
+      }
+
+
+
+
+   }
+
 }

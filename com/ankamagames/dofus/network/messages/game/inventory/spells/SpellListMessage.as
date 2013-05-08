@@ -1,105 +1,94 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.spells
+package com.ankamagames.dofus.network.messages.game.inventory.spells
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.SpellItem;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class SpellListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var spellPrevisualization:Boolean = false;
-        public var spells:Vector.<SpellItem>;
-        public static const protocolId:uint = 1200;
 
-        public function SpellListMessage()
-        {
-            this.spells = new Vector.<SpellItem>;
-            return;
-        }// end function
+   public class SpellListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function SpellListMessage() {
+         this.spells=new Vector.<SpellItem>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 1200;
-        }// end function
+      public static const protocolId:uint = 1200;
 
-        public function initSpellListMessage(param1:Boolean = false, param2:Vector.<SpellItem> = null) : SpellListMessage
-        {
-            this.spellPrevisualization = param1;
-            this.spells = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.spellPrevisualization = false;
-            this.spells = new Vector.<SpellItem>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var spellPrevisualization:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var spells:Vector.<SpellItem>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_SpellListMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 1200;
+      }
 
-        public function serializeAs_SpellListMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.spellPrevisualization);
-            param1.writeShort(this.spells.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.spells.length)
-            {
-                
-                (this.spells[_loc_2] as SpellItem).serializeAs_SpellItem(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      public function initSpellListMessage(spellPrevisualization:Boolean=false, spells:Vector.<SpellItem>=null) : SpellListMessage {
+         this.spellPrevisualization=spellPrevisualization;
+         this.spells=spells;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_SpellListMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.spellPrevisualization=false;
+         this.spells=new Vector.<SpellItem>();
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_SpellListMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.spellPrevisualization = param1.readBoolean();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new SpellItem();
-                _loc_4.deserialize(param1);
-                this.spells.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SpellListMessage(output);
+      }
+
+      public function serializeAs_SpellListMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.spellPrevisualization);
+         output.writeShort(this.spells.length);
+         var _i2:uint = 0;
+         while(_i2<this.spells.length)
+         {
+            (this.spells[_i2] as SpellItem).serializeAs_SpellItem(output);
+            _i2++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SpellListMessage(input);
+      }
+
+      public function deserializeAs_SpellListMessage(input:IDataInput) : void {
+         var _item2:SpellItem = null;
+         this.spellPrevisualization=input.readBoolean();
+         var _spellsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_spellsLen)
+         {
+            _item2=new SpellItem();
+            _item2.deserialize(input);
+            this.spells.push(_item2);
+            _i2++;
+         }
+      }
+   }
+
 }

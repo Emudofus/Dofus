@@ -1,79 +1,72 @@
-﻿package com.ankamagames.dofus.modules.utils
+package com.ankamagames.dofus.modules.utils
 {
-    import com.ankamagames.berilia.interfaces.*;
+   import com.ankamagames.berilia.interfaces.IModuleUtil;
 
-    public class ItemTooltipSettings extends Object implements IModuleUtil
-    {
-        private var _header:Boolean;
-        private var _effects:Boolean;
-        private var _conditions:Boolean;
-        private var _description:Boolean;
-        private var _averagePrice:Boolean;
 
-        public function ItemTooltipSettings()
-        {
-            this._header = true;
-            this._effects = true;
-            this._conditions = true;
-            this._description = true;
-            this._averagePrice = true;
-            return;
-        }// end function
+   public class ItemTooltipSettings extends Object implements IModuleUtil
+   {
+         
 
-        public function get header() : Boolean
-        {
-            return this._header;
-        }// end function
+      public function ItemTooltipSettings() {
+         super();
+         this._header=true;
+         this._effects=true;
+         this._conditions=true;
+         this._description=true;
+         this._averagePrice=true;
+      }
 
-        public function set header(param1:Boolean) : void
-        {
-            this._header = param1;
-            return;
-        }// end function
 
-        public function get effects() : Boolean
-        {
-            return this._effects;
-        }// end function
 
-        public function set effects(param1:Boolean) : void
-        {
-            this._effects = param1;
-            return;
-        }// end function
+      private var _header:Boolean;
 
-        public function get conditions() : Boolean
-        {
-            return this._conditions;
-        }// end function
+      private var _effects:Boolean;
 
-        public function set conditions(param1:Boolean) : void
-        {
-            this._conditions = param1;
-            return;
-        }// end function
+      private var _conditions:Boolean;
 
-        public function get description() : Boolean
-        {
-            return this._description;
-        }// end function
+      private var _description:Boolean;
 
-        public function set description(param1:Boolean) : void
-        {
-            this._description = param1;
-            return;
-        }// end function
+      private var _averagePrice:Boolean;
 
-        public function get averagePrice() : Boolean
-        {
-            return this._averagePrice;
-        }// end function
+      public function get header() : Boolean {
+         return this._header;
+      }
 
-        public function set averagePrice(param1:Boolean) : void
-        {
-            this._averagePrice = param1;
-            return;
-        }// end function
+      public function set header(value:Boolean) : void {
+         this._header=value;
+      }
 
-    }
+      public function get effects() : Boolean {
+         return this._effects;
+      }
+
+      public function set effects(value:Boolean) : void {
+         this._effects=value;
+      }
+
+      public function get conditions() : Boolean {
+         return this._conditions;
+      }
+
+      public function set conditions(value:Boolean) : void {
+         this._conditions=value;
+      }
+
+      public function get description() : Boolean {
+         return this._description;
+      }
+
+      public function set description(value:Boolean) : void {
+         this._description=value;
+      }
+
+      public function get averagePrice() : Boolean {
+         return this._averagePrice;
+      }
+
+      public function set averagePrice(value:Boolean) : void {
+         this._averagePrice=value;
+      }
+   }
+
 }

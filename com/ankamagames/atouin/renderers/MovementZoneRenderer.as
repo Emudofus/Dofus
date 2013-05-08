@@ -1,28 +1,32 @@
-﻿package com.ankamagames.atouin.renderers
+package com.ankamagames.atouin.renderers
 {
-    import com.ankamagames.atouin.enums.*;
+   import com.ankamagames.atouin.enums.PlacementStrataEnums;
 
-    public class MovementZoneRenderer extends ZoneDARenderer
-    {
-        private var _showText:Boolean;
-        private var _startAt:int;
 
-        public function MovementZoneRenderer(param1:Boolean, param2:int = 1)
-        {
-            this._showText = param1;
-            this._startAt = param2;
-            strata = PlacementStrataEnums.STRATA_AREA;
-            return;
-        }// end function
+   public class MovementZoneRenderer extends ZoneDARenderer
+   {
+         
 
-        override protected function getText(param1:int) : String
-        {
-            if (this._showText)
-            {
-                return String(param1 + this._startAt);
-            }
-            return null;
-        }// end function
+      public function MovementZoneRenderer(showText:Boolean, startAt:int=1) {
+         super();
+         this._showText=showText;
+         this._startAt=startAt;
+         strata=PlacementStrataEnums.STRATA_AREA;
+      }
 
-    }
+
+
+      private var _showText:Boolean;
+
+      private var _startAt:int;
+
+      override protected function getText(count:int) : String {
+         if(this._showText)
+         {
+            return String(count+this._startAt);
+         }
+         return null;
+      }
+   }
+
 }

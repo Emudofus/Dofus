@@ -1,266 +1,259 @@
-﻿package com.ankamagames.dofus.internalDatacenter.fight
+package com.ankamagames.dofus.internalDatacenter.fight
 {
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.frames.*;
-    import com.ankamagames.dofus.misc.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.tiphon.types.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
+   import com.ankamagames.tiphon.types.TiphonUtility;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.dofus.network.enums.TeamEnum;
 
-    public class FighterInformations extends Object implements IDataCenter
-    {
-        private var _fighterId:int;
-        private var _look:TiphonEntityLook;
-        private var _currentCell:int;
-        private var _currentOrientation:int;
-        private var _isAlive:Boolean;
-        private var _team:String;
-        private var _lifePoints:int;
-        private var _maxLifePoints:int;
-        private var _actionPoints:int;
-        private var _movementPoints:int;
-        private var _paDodge:int;
-        private var _pmDodge:int;
-        private var _shieldPoints:int;
-        private var _summoner:int;
-        private var _summoned:Boolean;
-        private var _invisibility:int;
-        private var _permanentDamagePercent:int;
-        private var _tackleBlock:int;
-        private var _airResist:int;
-        private var _earthResist:int;
-        private var _fireResist:int;
-        private var _neutralResist:int;
-        private var _waterResist:int;
-        private var _airFixedResist:int;
-        private var _earthFixedResist:int;
-        private var _fireFixedResist:int;
-        private var _neutralFixedResist:int;
-        private var _waterFixedResist:int;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(FighterInformations));
 
-        public function FighterInformations(param1:int)
-        {
-            var _loc_2:* = Kernel.getWorker().getFrame(FightContextFrame);
-            if (!_loc_2 || !(_loc_2 as FightContextFrame).entitiesFrame)
-            {
-                return;
-            }
-            var _loc_3:* = (_loc_2 as FightContextFrame).entitiesFrame.getEntityInfos(param1) as GameFightFighterInformations;
-            if (!_loc_3)
-            {
-                return;
-            }
-            this._fighterId = param1;
-            this._look = EntityLookAdapter.fromNetwork(_loc_3.look);
-            this._look = TiphonUtility.getLookWithoutMount(this._look);
-            var _loc_4:* = DofusEntities.getEntity(param1);
-            if (DofusEntities.getEntity(param1) && _loc_4.position)
-            {
-                this._currentCell = _loc_4.position.cellId;
-            }
-            else
-            {
-                this._currentCell = _loc_3.disposition.cellId;
-            }
-            this._currentOrientation = _loc_3.disposition.direction;
-            this._isAlive = _loc_3.alive;
-            switch(_loc_3.teamId)
-            {
-                case TeamEnum.TEAM_CHALLENGER:
-                {
-                    this._team = "challenger";
-                    break;
-                }
-                case TeamEnum.TEAM_DEFENDER:
-                {
-                    this._team = "defender";
-                    break;
-                }
-                case TeamEnum.TEAM_SPECTATOR:
-                {
-                    this._team = "spectator";
-                    break;
-                }
-                default:
-                {
-                    _log.warn("Unknown teamId " + _loc_3.teamId + " ?!");
-                    this._team = "unknown";
-                    break;
-                    break;
-                }
-            }
-            this._lifePoints = _loc_3.stats.lifePoints;
-            this._maxLifePoints = _loc_3.stats.maxLifePoints;
-            this._actionPoints = _loc_3.stats.actionPoints;
-            this._movementPoints = _loc_3.stats.movementPoints;
-            this._paDodge = _loc_3.stats.dodgePALostProbability;
-            this._pmDodge = _loc_3.stats.dodgePMLostProbability;
-            this._shieldPoints = _loc_3.stats.shieldPoints;
-            this._summoner = _loc_3.stats.summoner;
-            this._summoned = _loc_3.stats.summoned;
-            this._invisibility = _loc_3.stats.invisibilityState;
-            this._permanentDamagePercent = _loc_3.stats.permanentDamagePercent;
-            this._tackleBlock = _loc_3.stats.tackleBlock;
-            this._airResist = _loc_3.stats.airElementResistPercent;
-            this._earthResist = _loc_3.stats.earthElementResistPercent;
-            this._fireResist = _loc_3.stats.fireElementResistPercent;
-            this._neutralResist = _loc_3.stats.neutralElementResistPercent;
-            this._waterResist = _loc_3.stats.waterElementResistPercent;
-            this._airFixedResist = _loc_3.stats.airElementReduction;
-            this._earthFixedResist = _loc_3.stats.earthElementReduction;
-            this._fireFixedResist = _loc_3.stats.fireElementReduction;
-            this._neutralFixedResist = _loc_3.stats.neutralElementReduction;
-            this._waterFixedResist = _loc_3.stats.waterElementReduction;
+   public class FighterInformations extends Object implements IDataCenter
+   {
+         
+
+      public function FighterInformations(fighterId:int) {
+         super();
+         var fightFrame:Frame = Kernel.getWorker().getFrame(FightContextFrame);
+         if((!fightFrame)||(!(fightFrame as FightContextFrame).entitiesFrame))
+         {
             return;
-        }// end function
+         }
+         var fighterInfos:GameFightFighterInformations = (fightFrame as FightContextFrame).entitiesFrame.getEntityInfos(fighterId) as GameFightFighterInformations;
+         if(!fighterInfos)
+         {
+            return;
+         }
+         this._fighterId=fighterId;
+         this._look=EntityLookAdapter.fromNetwork(fighterInfos.look);
+         this._look=TiphonUtility.getLookWithoutMount(this._look);
+         var entity:IEntity = DofusEntities.getEntity(fighterId);
+         if((entity)&&(entity.position))
+         {
+            this._currentCell=entity.position.cellId;
+         }
+         else
+         {
+            this._currentCell=fighterInfos.disposition.cellId;
+         }
+         this._currentOrientation=fighterInfos.disposition.direction;
+         this._isAlive=fighterInfos.alive;
+         switch(fighterInfos.teamId)
+         {
+            case TeamEnum.TEAM_CHALLENGER:
+               this._team="challenger";
+               break;
+            case TeamEnum.TEAM_DEFENDER:
+               this._team="defender";
+               break;
+            case TeamEnum.TEAM_SPECTATOR:
+               this._team="spectator";
+               break;
+            default:
+               _log.warn("Unknown teamId "+fighterInfos.teamId+" ?!");
+               this._team="unknown";
+         }
+         this._lifePoints=fighterInfos.stats.lifePoints;
+         this._maxLifePoints=fighterInfos.stats.maxLifePoints;
+         this._actionPoints=fighterInfos.stats.actionPoints;
+         this._movementPoints=fighterInfos.stats.movementPoints;
+         this._paDodge=fighterInfos.stats.dodgePALostProbability;
+         this._pmDodge=fighterInfos.stats.dodgePMLostProbability;
+         this._shieldPoints=fighterInfos.stats.shieldPoints;
+         this._summoner=fighterInfos.stats.summoner;
+         this._summoned=fighterInfos.stats.summoned;
+         this._invisibility=fighterInfos.stats.invisibilityState;
+         this._permanentDamagePercent=fighterInfos.stats.permanentDamagePercent;
+         this._tackleBlock=fighterInfos.stats.tackleBlock;
+         this._airResist=fighterInfos.stats.airElementResistPercent;
+         this._earthResist=fighterInfos.stats.earthElementResistPercent;
+         this._fireResist=fighterInfos.stats.fireElementResistPercent;
+         this._neutralResist=fighterInfos.stats.neutralElementResistPercent;
+         this._waterResist=fighterInfos.stats.waterElementResistPercent;
+         this._airFixedResist=fighterInfos.stats.airElementReduction;
+         this._earthFixedResist=fighterInfos.stats.earthElementReduction;
+         this._fireFixedResist=fighterInfos.stats.fireElementReduction;
+         this._neutralFixedResist=fighterInfos.stats.neutralElementReduction;
+         this._waterFixedResist=fighterInfos.stats.waterElementReduction;
+      }
 
-        public function get fighterId() : int
-        {
-            return this._fighterId;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FighterInformations));
 
-        public function get look() : TiphonEntityLook
-        {
-            return this._look;
-        }// end function
+      private var _fighterId:int;
 
-        public function get currentCell() : int
-        {
-            return this._currentCell;
-        }// end function
+      private var _look:TiphonEntityLook;
 
-        public function get currentOrientation() : int
-        {
-            return this._currentOrientation;
-        }// end function
+      private var _currentCell:int;
 
-        public function get isAlive() : Boolean
-        {
-            return this._isAlive;
-        }// end function
+      private var _currentOrientation:int;
 
-        public function get team() : String
-        {
-            return this._team;
-        }// end function
+      private var _isAlive:Boolean;
 
-        public function get lifePoints() : int
-        {
-            return this._lifePoints;
-        }// end function
+      private var _team:String;
 
-        public function get maxLifePoints() : int
-        {
-            return this._maxLifePoints;
-        }// end function
+      private var _lifePoints:int;
 
-        public function get actionPoints() : int
-        {
-            return this._actionPoints;
-        }// end function
+      private var _maxLifePoints:int;
 
-        public function get movementPoints() : int
-        {
-            return this._movementPoints;
-        }// end function
+      private var _actionPoints:int;
 
-        public function get paDodge() : int
-        {
-            return this._paDodge;
-        }// end function
+      private var _movementPoints:int;
 
-        public function get pmDodge() : int
-        {
-            return this._pmDodge;
-        }// end function
+      private var _paDodge:int;
 
-        public function get shieldPoints() : int
-        {
-            return this._shieldPoints;
-        }// end function
+      private var _pmDodge:int;
 
-        public function get summoner() : int
-        {
-            return this._summoner;
-        }// end function
+      private var _shieldPoints:int;
 
-        public function get summoned() : Boolean
-        {
-            return this._summoned;
-        }// end function
+      private var _summoner:int;
 
-        public function get invisibility() : int
-        {
-            return this._invisibility;
-        }// end function
+      private var _summoned:Boolean;
 
-        public function get permanentDamagePercent() : int
-        {
-            return this._permanentDamagePercent;
-        }// end function
+      private var _invisibility:int;
 
-        public function get tackleBlock() : int
-        {
-            return this._tackleBlock;
-        }// end function
+      private var _permanentDamagePercent:int;
 
-        public function get airResist() : int
-        {
-            return this._airResist;
-        }// end function
+      private var _tackleBlock:int;
 
-        public function get earthResist() : int
-        {
-            return this._earthResist;
-        }// end function
+      private var _airResist:int;
 
-        public function get fireResist() : int
-        {
-            return this._fireResist;
-        }// end function
+      private var _earthResist:int;
 
-        public function get neutralResist() : int
-        {
-            return this._neutralResist;
-        }// end function
+      private var _fireResist:int;
 
-        public function get waterResist() : int
-        {
-            return this._waterResist;
-        }// end function
+      private var _neutralResist:int;
 
-        public function get airFixedResist() : int
-        {
-            return this._airFixedResist;
-        }// end function
+      private var _waterResist:int;
 
-        public function get earthFixedResist() : int
-        {
-            return this._earthFixedResist;
-        }// end function
+      private var _airFixedResist:int;
 
-        public function get fireFixedResist() : int
-        {
-            return this._fireFixedResist;
-        }// end function
+      private var _earthFixedResist:int;
 
-        public function get neutralFixedResist() : int
-        {
-            return this._neutralFixedResist;
-        }// end function
+      private var _fireFixedResist:int;
 
-        public function get waterFixedResist() : int
-        {
-            return this._waterFixedResist;
-        }// end function
+      private var _neutralFixedResist:int;
 
-    }
+      private var _waterFixedResist:int;
+
+      public function get fighterId() : int {
+         return this._fighterId;
+      }
+
+      public function get look() : TiphonEntityLook {
+         return this._look;
+      }
+
+      public function get currentCell() : int {
+         return this._currentCell;
+      }
+
+      public function get currentOrientation() : int {
+         return this._currentOrientation;
+      }
+
+      public function get isAlive() : Boolean {
+         return this._isAlive;
+      }
+
+      public function get team() : String {
+         return this._team;
+      }
+
+      public function get lifePoints() : int {
+         return this._lifePoints;
+      }
+
+      public function get maxLifePoints() : int {
+         return this._maxLifePoints;
+      }
+
+      public function get actionPoints() : int {
+         return this._actionPoints;
+      }
+
+      public function get movementPoints() : int {
+         return this._movementPoints;
+      }
+
+      public function get paDodge() : int {
+         return this._paDodge;
+      }
+
+      public function get pmDodge() : int {
+         return this._pmDodge;
+      }
+
+      public function get shieldPoints() : int {
+         return this._shieldPoints;
+      }
+
+      public function get summoner() : int {
+         return this._summoner;
+      }
+
+      public function get summoned() : Boolean {
+         return this._summoned;
+      }
+
+      public function get invisibility() : int {
+         return this._invisibility;
+      }
+
+      public function get permanentDamagePercent() : int {
+         return this._permanentDamagePercent;
+      }
+
+      public function get tackleBlock() : int {
+         return this._tackleBlock;
+      }
+
+      public function get airResist() : int {
+         return this._airResist;
+      }
+
+      public function get earthResist() : int {
+         return this._earthResist;
+      }
+
+      public function get fireResist() : int {
+         return this._fireResist;
+      }
+
+      public function get neutralResist() : int {
+         return this._neutralResist;
+      }
+
+      public function get waterResist() : int {
+         return this._waterResist;
+      }
+
+      public function get airFixedResist() : int {
+         return this._airFixedResist;
+      }
+
+      public function get earthFixedResist() : int {
+         return this._earthFixedResist;
+      }
+
+      public function get fireFixedResist() : int {
+         return this._fireFixedResist;
+      }
+
+      public function get neutralFixedResist() : int {
+         return this._neutralFixedResist;
+      }
+
+      public function get waterFixedResist() : int {
+         return this._waterFixedResist;
+      }
+   }
+
 }

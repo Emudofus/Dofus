@@ -1,133 +1,126 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.alignments.*;
-    import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.game.common.actions.alignment.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.pvp.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.common.actions.alignment.SetEnablePVPRequestAction;
+   import com.ankamagames.dofus.network.messages.game.pvp.SetEnablePVPRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentRankUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentSubAreasListMessage;
+   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentAreaUpdateMessage;
+   import com.ankamagames.dofus.datacenter.world.Area;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentSide;
+   import com.ankamagames.dofus.network.messages.game.pvp.AlignmentSubAreaUpdateMessage;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.AlignmentHookList;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.misc.lists.ChatHookList;
+   import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
 
-    public class AlignmentFrame extends Object implements Frame
-    {
-        private var _alignmentRank:int = -1;
-        private var _angelsSubAreas:Vector.<int>;
-        private var _evilsSubAreas:Vector.<int>;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(PrismFrame));
 
-        public function AlignmentFrame()
-        {
-            return;
-        }// end function
+   public class AlignmentFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function AlignmentFrame() {
+         super();
+      }
 
-        public function get angelsSubAreas() : Vector.<int>
-        {
-            return this._angelsSubAreas.concat();
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PrismFrame));
 
-        public function get evilsSubAreas() : Vector.<int>
-        {
-            return this._evilsSubAreas.concat();
-        }// end function
+      private var _alignmentRank:int = -1;
 
-        public function get playerRank() : int
-        {
-            return this._alignmentRank;
-        }// end function
+      private var _angelsSubAreas:Vector.<int>;
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      private var _evilsSubAreas:Vector.<int>;
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            switch(true)
-            {
-                case param1 is SetEnablePVPRequestAction:
-                {
-                    _loc_2 = param1 as SetEnablePVPRequestAction;
-                    _loc_3 = new SetEnablePVPRequestMessage();
-                    _loc_3.enable = _loc_2.enable;
-                    ConnectionsHandler.getConnection().send(_loc_3);
-                    return true;
-                }
-                case param1 is AlignmentRankUpdateMessage:
-                {
-                    _loc_4 = param1 as AlignmentRankUpdateMessage;
-                    this._alignmentRank = _loc_4.alignmentRank;
-                    if (_loc_4.verbose)
-                    {
-                        KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentRankUpdate, _loc_4.alignmentRank);
-                    }
-                    return true;
-                }
-                case param1 is AlignmentSubAreasListMessage:
-                {
-                    _loc_5 = param1 as AlignmentSubAreasListMessage;
-                    this._angelsSubAreas = _loc_5.angelsSubAreas;
-                    this._evilsSubAreas = _loc_5.evilsSubAreas;
-                    KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentSubAreasList);
-                    return true;
-                }
-                case param1 is AlignmentAreaUpdateMessage:
-                {
-                    _loc_6 = param1 as AlignmentAreaUpdateMessage;
-                    _loc_7 = Area.getAreaById(_loc_6.areaId);
-                    _loc_8 = AlignmentSide.getAlignmentSideById(_loc_6.side);
-                    _loc_9 = I18n.getUiText("ui.alignment.areaIs", [_loc_7.name, _loc_8.name]);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_9, ChatActivableChannelsEnum.CHANNEL_ALIGN, TimeManager.getInstance().getTimestamp());
-                    KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentAreaUpdate, _loc_6.areaId, _loc_6.side);
-                    return true;
-                }
-                case param1 is AlignmentSubAreaUpdateMessage:
-                {
-                    _loc_10 = param1 as AlignmentSubAreaUpdateMessage;
-                    _loc_11 = SubArea.getSubAreaById(_loc_10.subAreaId);
-                    _loc_8 = AlignmentSide.getAlignmentSideById(_loc_10.side);
-                    if (!_loc_10.quiet)
-                    {
-                        _loc_9 = I18n.getUiText("ui.alignment.subareaIs", [_loc_11.name, _loc_8.name]);
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_9, ChatActivableChannelsEnum.CHANNEL_ALIGN, TimeManager.getInstance().getTimestamp());
-                    }
-                    KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentAreaUpdate, _loc_10.subAreaId, _loc_10.side);
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function get angelsSubAreas() : Vector.<int> {
+         return this._angelsSubAreas.concat();
+      }
 
-    }
+      public function get evilsSubAreas() : Vector.<int> {
+         return this._evilsSubAreas.concat();
+      }
+
+      public function get playerRank() : int {
+         return this._alignmentRank;
+      }
+
+      public function pushed() : Boolean {
+         return true;
+      }
+
+      public function process(msg:Message) : Boolean {
+         var sepract:SetEnablePVPRequestAction = null;
+         var seprmsg:SetEnablePVPRequestMessage = null;
+         var arumsg:AlignmentRankUpdateMessage = null;
+         var asalmsg:AlignmentSubAreasListMessage = null;
+         var aaumsg:AlignmentAreaUpdateMessage = null;
+         var area:Area = null;
+         var side:AlignmentSide = null;
+         var text:String = null;
+         var asaumsg:AlignmentSubAreaUpdateMessage = null;
+         var subArea:SubArea = null;
+         switch(true)
+         {
+            case msg is SetEnablePVPRequestAction:
+               sepract=msg as SetEnablePVPRequestAction;
+               seprmsg=new SetEnablePVPRequestMessage();
+               seprmsg.enable=sepract.enable;
+               ConnectionsHandler.getConnection().send(seprmsg);
+               return true;
+            case msg is AlignmentRankUpdateMessage:
+               arumsg=msg as AlignmentRankUpdateMessage;
+               this._alignmentRank=arumsg.alignmentRank;
+               if(arumsg.verbose)
+               {
+                  KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentRankUpdate,arumsg.alignmentRank);
+               }
+               return true;
+            case msg is AlignmentSubAreasListMessage:
+               asalmsg=msg as AlignmentSubAreasListMessage;
+               this._angelsSubAreas=asalmsg.angelsSubAreas;
+               this._evilsSubAreas=asalmsg.evilsSubAreas;
+               KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentSubAreasList);
+               return true;
+            case msg is AlignmentAreaUpdateMessage:
+               aaumsg=msg as AlignmentAreaUpdateMessage;
+               area=Area.getAreaById(aaumsg.areaId);
+               side=AlignmentSide.getAlignmentSideById(aaumsg.side);
+               text=I18n.getUiText("ui.alignment.areaIs",[area.name,side.name]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text,ChatActivableChannelsEnum.CHANNEL_ALIGN,TimeManager.getInstance().getTimestamp());
+               KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentAreaUpdate,aaumsg.areaId,aaumsg.side);
+               return true;
+            case msg is AlignmentSubAreaUpdateMessage:
+               asaumsg=msg as AlignmentSubAreaUpdateMessage;
+               subArea=SubArea.getSubAreaById(asaumsg.subAreaId);
+               side=AlignmentSide.getAlignmentSideById(asaumsg.side);
+               if(!asaumsg.quiet)
+               {
+                  text=I18n.getUiText("ui.alignment.subareaIs",[subArea.name,side.name]);
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,text,ChatActivableChannelsEnum.CHANNEL_ALIGN,TimeManager.getInstance().getTimestamp());
+               }
+               KernelEventsManager.getInstance().processCallback(AlignmentHookList.AlignmentAreaUpdate,asaumsg.subAreaId,asaumsg.side);
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function pulled() : Boolean {
+         return true;
+      }
+   }
+
 }

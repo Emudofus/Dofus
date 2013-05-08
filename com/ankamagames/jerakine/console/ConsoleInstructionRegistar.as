@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.console
+package com.ankamagames.jerakine.console
 {
 
-    public interface ConsoleInstructionRegistar
-    {
 
-        public function ConsoleInstructionRegistar();
+   public interface ConsoleInstructionRegistar
+   {
+         
 
-        function registerInstructions(param1:ConsoleHandler) : void;
 
-    }
+
+      function registerInstructions(param1:ConsoleHandler) : void;
+   }
+
 }

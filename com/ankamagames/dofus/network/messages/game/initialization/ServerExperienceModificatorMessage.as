@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.initialization
+package com.ankamagames.dofus.network.messages.game.initialization
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ServerExperienceModificatorMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var experiencePercent:uint = 0;
-        public static const protocolId:uint = 6237;
 
-        public function ServerExperienceModificatorMessage()
-        {
+   public class ServerExperienceModificatorMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function ServerExperienceModificatorMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6237;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var experiencePercent:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6237;
+      }
+
+      public function initServerExperienceModificatorMessage(experiencePercent:uint=0) : ServerExperienceModificatorMessage {
+         this.experiencePercent=experiencePercent;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.experiencePercent=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ServerExperienceModificatorMessage(output);
+      }
+
+      public function serializeAs_ServerExperienceModificatorMessage(output:IDataOutput) : void {
+         if(this.experiencePercent<0)
+         {
+            throw new Error("Forbidden value ("+this.experiencePercent+") on element experiencePercent.");
+         }
+         else
+         {
+            output.writeShort(this.experiencePercent);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ServerExperienceModificatorMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6237;
-        }// end function
-
-        public function initServerExperienceModificatorMessage(param1:uint = 0) : ServerExperienceModificatorMessage
-        {
-            this.experiencePercent = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.experiencePercent = 0;
-            this._isInitialized = false;
+      public function deserializeAs_ServerExperienceModificatorMessage(input:IDataInput) : void {
+         this.experiencePercent=input.readShort();
+         if(this.experiencePercent<0)
+         {
+            throw new Error("Forbidden value ("+this.experiencePercent+") on element of ServerExperienceModificatorMessage.experiencePercent.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ServerExperienceModificatorMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ServerExperienceModificatorMessage(param1:IDataOutput) : void
-        {
-            if (this.experiencePercent < 0)
-            {
-                throw new Error("Forbidden value (" + this.experiencePercent + ") on element experiencePercent.");
-            }
-            param1.writeShort(this.experiencePercent);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ServerExperienceModificatorMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ServerExperienceModificatorMessage(param1:IDataInput) : void
-        {
-            this.experiencePercent = param1.readShort();
-            if (this.experiencePercent < 0)
-            {
-                throw new Error("Forbidden value (" + this.experiencePercent + ") on element of ServerExperienceModificatorMessage.experiencePercent.");
-            }
-            return;
-        }// end function
-
-    }
 }

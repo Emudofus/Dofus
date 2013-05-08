@@ -1,14 +1,18 @@
-﻿package com.ankamagames.jerakine.messages
+package com.ankamagames.jerakine.messages
 {
-    import com.ankamagames.jerakine.messages.*;
 
-    public class ConnectedMessage extends Object implements Message
-    {
 
-        public function ConnectedMessage()
-        {
-            return;
-        }// end function
+   public class ConnectedMessage extends Object implements Message
+   {
+         
 
-    }
+      public function ConnectedMessage() {
+         super();
+      }
+
+
+
+
+   }
+
 }

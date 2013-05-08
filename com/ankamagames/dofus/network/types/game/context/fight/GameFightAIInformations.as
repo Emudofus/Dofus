@@ -1,59 +1,50 @@
-﻿package com.ankamagames.dofus.network.types.game.context.fight
+package com.ankamagames.dofus.network.types.game.context.fight
 {
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.dofus.network.types.game.look.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class GameFightAIInformations extends GameFightFighterInformations implements INetworkType
-    {
-        public static const protocolId:uint = 151;
 
-        public function GameFightAIInformations()
-        {
-            return;
-        }// end function
+   public class GameFightAIInformations extends GameFightFighterInformations implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 151;
-        }// end function
+      public function GameFightAIInformations() {
+         super();
+      }
 
-        public function initGameFightAIInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:uint = 2, param5:Boolean = false, param6:GameFightMinimalStats = null) : GameFightAIInformations
-        {
-            super.initGameFightFighterInformations(param1, param2, param3, param4, param5, param6);
-            return this;
-        }// end function
+      public static const protocolId:uint = 151;
 
-        override public function reset() : void
-        {
-            super.reset();
-            return;
-        }// end function
+      override public function getTypeId() : uint {
+         return 151;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightAIInformations(param1);
-            return;
-        }// end function
+      public function initGameFightAIInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, teamId:uint=2, alive:Boolean=false, stats:GameFightMinimalStats=null) : GameFightAIInformations {
+         super.initGameFightFighterInformations(contextualId,look,disposition,teamId,alive,stats);
+         return this;
+      }
 
-        public function serializeAs_GameFightAIInformations(param1:IDataOutput) : void
-        {
-            super.serializeAs_GameFightFighterInformations(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightAIInformations(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightAIInformations(output);
+      }
 
-        public function deserializeAs_GameFightAIInformations(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      public function serializeAs_GameFightAIInformations(output:IDataOutput) : void {
+         super.serializeAs_GameFightFighterInformations(output);
+      }
 
-    }
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightAIInformations(input);
+      }
+
+      public function deserializeAs_GameFightAIInformations(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

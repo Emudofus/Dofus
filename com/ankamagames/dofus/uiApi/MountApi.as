@@ -1,77 +1,71 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.dofus.datacenter.mounts.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.misc.*;
-    import com.ankamagames.tiphon.types.look.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.dofus.logic.game.common.frames.MountFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.InventoryManagementFrame;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.dofus.misc.EntityLookAdapter;
+   import com.ankamagames.dofus.datacenter.mounts.Mount;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
 
-    public class MountApi extends Object implements IApi
-    {
 
-        public function MountApi()
-        {
-            return;
-        }// end function
+   public class MountApi extends Object implements IApi
+   {
+         
 
-        private function get mountFrame() : MountFrame
-        {
-            return Kernel.getWorker().getFrame(MountFrame) as MountFrame;
-        }// end function
+      public function MountApi() {
+         super();
+      }
 
-        private function get inventoryFrame() : InventoryManagementFrame
-        {
-            return Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
-        }// end function
 
-        private function get roleplayContextFrame() : RoleplayContextFrame
-        {
-            return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-        }// end function
 
-        public function getRiderEntityLook(param1) : TiphonEntityLook
-        {
-            return EntityLookAdapter.getRiderLook(param1).clone();
-        }// end function
+      private function get mountFrame() : MountFrame {
+         return Kernel.getWorker().getFrame(MountFrame) as MountFrame;
+      }
 
-        public function getMount(param1:uint) : Mount
-        {
-            return Mount.getMountById(param1);
-        }// end function
+      private function get inventoryFrame() : InventoryManagementFrame {
+         return Kernel.getWorker().getFrame(InventoryManagementFrame) as InventoryManagementFrame;
+      }
 
-        public function getStableList() : Array
-        {
-            return this.mountFrame.stableList;
-        }// end function
+      private function get roleplayContextFrame() : RoleplayContextFrame {
+         return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+      }
 
-        public function getPaddockList() : Array
-        {
-            return this.mountFrame.paddockList;
-        }// end function
+      public function getRiderEntityLook(look:*) : TiphonEntityLook {
+         return EntityLookAdapter.getRiderLook(look).clone();
+      }
 
-        public function getInventoryList() : Vector.<ItemWrapper>
-        {
-            return InventoryManager.getInstance().inventory.getView("certificate").content;
-        }// end function
+      public function getMount(modelId:uint) : Mount {
+         return Mount.getMountById(modelId);
+      }
 
-        public function getCurrentPaddock() : Object
-        {
-            return this.roleplayContextFrame.currentPaddock;
-        }// end function
+      public function getStableList() : Array {
+         return this.mountFrame.stableList;
+      }
 
-        public function isCertificateValid(param1:ItemWrapper) : Boolean
-        {
-            if (param1.effects.length > 1)
-            {
-                return true;
-            }
-            return false;
-        }// end function
+      public function getPaddockList() : Array {
+         return this.mountFrame.paddockList;
+      }
 
-    }
+      public function getInventoryList() : Vector.<ItemWrapper> {
+         return InventoryManager.getInstance().inventory.getView("certificate").content;
+      }
+
+      public function getCurrentPaddock() : Object {
+         return this.roleplayContextFrame.currentPaddock;
+      }
+
+      public function isCertificateValid(certificate:ItemWrapper) : Boolean {
+         if(certificate.effects.length>1)
+         {
+            return true;
+         }
+         return false;
+      }
+   }
+
 }

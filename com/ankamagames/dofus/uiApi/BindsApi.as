@@ -1,153 +1,127 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.frames.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.types.shortcut.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.berilia.managers.BindsManager;
+   import com.ankamagames.berilia.types.shortcut.Shortcut;
+   import com.ankamagames.berilia.types.shortcut.Bind;
+   import com.ankamagames.berilia.frames.ShortcutsFrame;
 
-    public class BindsApi extends Object implements IApi
-    {
-        private var _module:UiModule;
 
-        public function BindsApi()
-        {
-            return;
-        }// end function
+   public class BindsApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function BindsApi() {
+         super();
+      }
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
 
-        public function getBindList() : Array
-        {
-            return BindsManager.getInstance().binds;
-        }// end function
 
-        public function getShortcut() : Array
-        {
-            var _loc_3:* = null;
-            var _loc_1:* = new Array();
-            var _loc_2:* = Shortcut.getShortcuts();
-            for each (_loc_3 in _loc_2)
+      private var _module:UiModule;
+
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
+
+      public function destroy() : void {
+         this._module=null;
+      }
+
+      public function getBindList() : Array {
+         return BindsManager.getInstance().binds;
+      }
+
+      public function getShortcut() : Array {
+         var s:Shortcut = null;
+         var copy:Array = new Array();
+         var ss:Array = Shortcut.getShortcuts();
+         for each (s in ss)
+         {
+            if(s.visible)
             {
-                
-                if (_loc_3.visible)
-                {
-                    _loc_1.push(_loc_3);
-                }
+               copy.push(s);
             }
-            return _loc_1;
-        }// end function
+         }
+         return copy;
+      }
 
-        public function getShortcutBind(param1:String, param2:Boolean = false) : Bind
-        {
-            return BindsManager.getInstance().getBindFromShortcut(param1, param2);
-        }// end function
+      public function getShortcutBind(shortcutName:String, returnDisabled:Boolean=false) : Bind {
+         return BindsManager.getInstance().getBindFromShortcut(shortcutName,returnDisabled);
+      }
 
-        public function setShortcutBind(param1:String, param2:String, param3:Boolean, param4:Boolean, param5:Boolean) : void
-        {
-            BindsManager.getInstance().addBind(new Bind(param2, param1, param3, param4, param5));
-            return;
-        }// end function
+      public function setShortcutBind(targetedShorcut:String, key:String, alt:Boolean, ctrl:Boolean, shift:Boolean) : void {
+         BindsManager.getInstance().addBind(new Bind(key,targetedShorcut,alt,ctrl,shift));
+      }
 
-        public function removeShortcutBind(param1:String) : void
-        {
-            BindsManager.getInstance().removeBind(BindsManager.getInstance().getBindFromShortcut(param1));
-            return;
-        }// end function
+      public function removeShortcutBind(targetedBind:String) : void {
+         BindsManager.getInstance().removeBind(BindsManager.getInstance().getBindFromShortcut(targetedBind));
+      }
 
-        public function getShortcutBindStr(param1:String, param2:Boolean = false) : String
-        {
-            var _loc_3:* = this.getShortcutBind(param1, param2);
-            if (_loc_3 != null && _loc_3.key != null)
-            {
-                return _loc_3.toString();
-            }
-            return "";
-        }// end function
+      public function getShortcutBindStr(shortcutName:String, returnDisabled:Boolean=false) : String {
+         var bind:Bind = this.getShortcutBind(shortcutName,returnDisabled);
+         if((!(bind==null))&&(!(bind.key==null)))
+         {
+            return bind.toString();
+         }
+         return "";
+      }
 
-        public function resetAllBinds() : void
-        {
-            BindsManager.getInstance().reset();
-            return;
-        }// end function
+      public function resetAllBinds() : void {
+         BindsManager.getInstance().reset();
+      }
 
-        public function avaibleKeyboard() : Array
-        {
-            return BindsManager.getInstance().avaibleKeyboard.concat();
-        }// end function
+      public function avaibleKeyboard() : Array {
+         return BindsManager.getInstance().avaibleKeyboard.concat();
+      }
 
-        public function changeKeyboard(param1:String) : void
-        {
-            BindsManager.getInstance().changeKeyboard(param1, true);
-            return;
-        }// end function
+      public function changeKeyboard(locale:String) : void {
+         BindsManager.getInstance().changeKeyboard(locale,true);
+      }
 
-        public function getCurrentLocale() : String
-        {
-            return BindsManager.getInstance().currentLocale;
-        }// end function
+      public function getCurrentLocale() : String {
+         return BindsManager.getInstance().currentLocale;
+      }
 
-        public function bindIsRegister(param1:Bind) : Boolean
-        {
-            return BindsManager.getInstance().isRegister(param1);
-        }// end function
+      public function bindIsRegister(bind:Bind) : Boolean {
+         return BindsManager.getInstance().isRegister(bind);
+      }
 
-        public function bindIsPermanent(param1:Bind) : Boolean
-        {
-            return BindsManager.getInstance().isPermanent(param1);
-        }// end function
+      public function bindIsPermanent(bind:Bind) : Boolean {
+         return BindsManager.getInstance().isPermanent(bind);
+      }
 
-        public function bindIsDisabled(param1:Bind) : Boolean
-        {
-            return BindsManager.getInstance().isDisabled(param1);
-        }// end function
+      public function bindIsDisabled(bind:Bind) : Boolean {
+         return BindsManager.getInstance().isDisabled(bind);
+      }
 
-        public function setBindDisabled(param1:Bind, param2:Boolean) : void
-        {
-            BindsManager.getInstance().setDisabled(param1, param2);
-            return;
-        }// end function
+      public function setBindDisabled(bind:Bind, disabled:Boolean) : void {
+         BindsManager.getInstance().setDisabled(bind,disabled);
+      }
 
-        public function getRegisteredBind(param1:Bind) : Bind
-        {
-            return BindsManager.getInstance().getRegisteredBind(param1);
-        }// end function
+      public function getRegisteredBind(bind:Bind) : Bind {
+         return BindsManager.getInstance().getRegisteredBind(bind);
+      }
 
-        public function getShortcutByName(param1:String) : Shortcut
-        {
-            return Shortcut.getShortcutByName(param1);
-        }// end function
+      public function getShortcutByName(name:String) : Shortcut {
+         return Shortcut.getShortcutByName(name);
+      }
 
-        public function setShortcutEnabled(param1:Boolean) : void
-        {
-            ShortcutsFrame.shortcutsEnabled = param1;
-            return;
-        }// end function
+      public function setShortcutEnabled(enabled:Boolean) : void {
+         ShortcutsFrame.shortcutsEnabled=enabled;
+      }
 
-        public function getIsShortcutEnabled() : Boolean
-        {
-            return ShortcutsFrame.shortcutsEnabled;
-        }// end function
+      public function getIsShortcutEnabled() : Boolean {
+         return ShortcutsFrame.shortcutsEnabled;
+      }
 
-        public function disableShortcut(param1:String, param2:Boolean) : void
-        {
-            var _loc_3:* = Shortcut.getShortcutByName(param1);
-            if (_loc_3 != null)
-            {
-                _loc_3.disable = param2;
-            }
-            return;
-        }// end function
+      public function disableShortcut(name:String, val:Boolean) : void {
+         var shortcut:Shortcut = Shortcut.getShortcutByName(name);
+         if(shortcut!=null)
+         {
+            shortcut.disable=val;
+         }
+      }
+   }
 
-    }
 }

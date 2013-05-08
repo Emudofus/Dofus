@@ -1,67 +1,59 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay
+package com.ankamagames.dofus.network.types.game.context.roleplay
 {
-    import com.ankamagames.dofus.network.types.game.character.alignment.*;
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.dofus.network.types.game.look.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.character.alignment.ActorAlignmentInformations;
+   import com.ankamagames.dofus.network.types.game.look.EntityLook;
+   import com.ankamagames.dofus.network.types.game.context.EntityDispositionInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayCharacterInformations extends GameRolePlayHumanoidInformations implements INetworkType
-    {
-        public var alignmentInfos:ActorAlignmentInformations;
-        public static const protocolId:uint = 36;
 
-        public function GameRolePlayCharacterInformations()
-        {
-            this.alignmentInfos = new ActorAlignmentInformations();
-            return;
-        }// end function
+   public class GameRolePlayCharacterInformations extends GameRolePlayHumanoidInformations implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 36;
-        }// end function
+      public function GameRolePlayCharacterInformations() {
+         this.alignmentInfos=new ActorAlignmentInformations();
+         super();
+      }
 
-        public function initGameRolePlayCharacterInformations(param1:int = 0, param2:EntityLook = null, param3:EntityDispositionInformations = null, param4:String = "", param5:HumanInformations = null, param6:uint = 0, param7:ActorAlignmentInformations = null) : GameRolePlayCharacterInformations
-        {
-            super.initGameRolePlayHumanoidInformations(param1, param2, param3, param4, param5, param6);
-            this.alignmentInfos = param7;
-            return this;
-        }// end function
+      public static const protocolId:uint = 36;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.alignmentInfos = new ActorAlignmentInformations();
-            return;
-        }// end function
+      public var alignmentInfos:ActorAlignmentInformations;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayCharacterInformations(param1);
-            return;
-        }// end function
+      override public function getTypeId() : uint {
+         return 36;
+      }
 
-        public function serializeAs_GameRolePlayCharacterInformations(param1:IDataOutput) : void
-        {
-            super.serializeAs_GameRolePlayHumanoidInformations(param1);
-            this.alignmentInfos.serializeAs_ActorAlignmentInformations(param1);
-            return;
-        }// end function
+      public function initGameRolePlayCharacterInformations(contextualId:int=0, look:EntityLook=null, disposition:EntityDispositionInformations=null, name:String="", humanoidInfo:HumanInformations=null, accountId:uint=0, alignmentInfos:ActorAlignmentInformations=null) : GameRolePlayCharacterInformations {
+         super.initGameRolePlayHumanoidInformations(contextualId,look,disposition,name,humanoidInfo,accountId);
+         this.alignmentInfos=alignmentInfos;
+         return this;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayCharacterInformations(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.alignmentInfos=new ActorAlignmentInformations();
+      }
 
-        public function deserializeAs_GameRolePlayCharacterInformations(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.alignmentInfos = new ActorAlignmentInformations();
-            this.alignmentInfos.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayCharacterInformations(output);
+      }
 
-    }
+      public function serializeAs_GameRolePlayCharacterInformations(output:IDataOutput) : void {
+         super.serializeAs_GameRolePlayHumanoidInformations(output);
+         this.alignmentInfos.serializeAs_ActorAlignmentInformations(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayCharacterInformations(input);
+      }
+
+      public function deserializeAs_GameRolePlayCharacterInformations(input:IDataInput) : void {
+         super.deserialize(input);
+         this.alignmentInfos=new ActorAlignmentInformations();
+         this.alignmentInfos.deserialize(input);
+      }
+   }
+
 }

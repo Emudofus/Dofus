@@ -1,91 +1,80 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions.fight
+package com.ankamagames.dofus.network.messages.game.actions.fight
 {
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.messages.game.actions.*;
-    import com.ankamagames.dofus.network.types.game.actions.fight.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.actions.fight.AbstractFightDispellableEffect;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class GameActionFightDispellableEffectMessage extends AbstractGameActionMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var effect:AbstractFightDispellableEffect;
-        public static const protocolId:uint = 6070;
 
-        public function GameActionFightDispellableEffectMessage()
-        {
-            this.effect = new AbstractFightDispellableEffect();
-            return;
-        }// end function
+   public class GameActionFightDispellableEffectMessage extends AbstractGameActionMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function GameActionFightDispellableEffectMessage() {
+         this.effect=new AbstractFightDispellableEffect();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6070;
-        }// end function
+      public static const protocolId:uint = 6070;
 
-        public function initGameActionFightDispellableEffectMessage(param1:uint = 0, param2:int = 0, param3:AbstractFightDispellableEffect = null) : GameActionFightDispellableEffectMessage
-        {
-            super.initAbstractGameActionMessage(param1, param2);
-            this.effect = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.effect = new AbstractFightDispellableEffect();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var effect:AbstractFightDispellableEffect;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6070;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameActionFightDispellableEffectMessage(param1);
-            return;
-        }// end function
+      public function initGameActionFightDispellableEffectMessage(actionId:uint=0, sourceId:int=0, effect:AbstractFightDispellableEffect=null) : GameActionFightDispellableEffectMessage {
+         super.initAbstractGameActionMessage(actionId,sourceId);
+         this.effect=effect;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_GameActionFightDispellableEffectMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractGameActionMessage(param1);
-            param1.writeShort(this.effect.getTypeId());
-            this.effect.serialize(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.effect=new AbstractFightDispellableEffect();
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameActionFightDispellableEffectMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_GameActionFightDispellableEffectMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            var _loc_2:* = param1.readUnsignedShort();
-            this.effect = ProtocolTypeManager.getInstance(AbstractFightDispellableEffect, _loc_2);
-            this.effect.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightDispellableEffectMessage(output);
+      }
+
+      public function serializeAs_GameActionFightDispellableEffectMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(output);
+         output.writeShort(this.effect.getTypeId());
+         this.effect.serialize(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightDispellableEffectMessage(input);
+      }
+
+      public function deserializeAs_GameActionFightDispellableEffectMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         var _id1:uint = input.readUnsignedShort();
+         this.effect=ProtocolTypeManager.getInstance(AbstractFightDispellableEffect,_id1);
+         this.effect.deserialize(input);
+      }
+   }
+
 }

@@ -1,28 +1,31 @@
-﻿package flashx.textLayout.conversion
+package flashx.textLayout.conversion
 {
-    import __AS3__.vec.*;
-    import flashx.textLayout.elements.*;
+   import flashx.textLayout.elements.TextFlow;
+   import __AS3__.vec.Vector;
+   import flashx.textLayout.elements.IConfiguration;
 
-    public interface ITextImporter
-    {
 
-        public function ITextImporter();
+   public interface ITextImporter
+   {
+         
 
-        function importToFlow(param1:Object) : TextFlow;
 
-        function get errors() : Vector.<String>;
 
-        function get throwOnError() : Boolean;
+      function importToFlow(param1:Object) : TextFlow;
 
-        function set throwOnError(param1:Boolean) : void;
+      function get errors() : Vector.<String>;
 
-        function get useClipboardAnnotations() : Boolean;
+      function get throwOnError() : Boolean;
 
-        function set useClipboardAnnotations(param1:Boolean) : void;
+      function set throwOnError(param1:Boolean) : void;
 
-        function get configuration() : IConfiguration;
+      function get useClipboardAnnotations() : Boolean;
 
-        function set configuration(param1:IConfiguration) : void;
+      function set useClipboardAnnotations(param1:Boolean) : void;
 
-    }
+      function get configuration() : IConfiguration;
+
+      function set configuration(param1:IConfiguration) : void;
+   }
+
 }

@@ -1,23 +1,24 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
-    import flashx.textLayout.formats.*;
 
-    public interface IListMarkerFormat extends ITextLayoutFormat
-    {
 
-        public function IListMarkerFormat();
+   public interface IListMarkerFormat extends ITextLayoutFormat
+   {
+         
 
-        function get counterReset();
 
-        function get counterIncrement();
 
-        function get beforeContent();
+      function get counterReset() : *;
 
-        function get content();
+      function get counterIncrement() : *;
 
-        function get afterContent();
+      function get beforeContent() : *;
 
-        function get suffix();
+      function get content() : *;
 
-    }
+      function get afterContent() : *;
+
+      function get suffix() : *;
+   }
+
 }

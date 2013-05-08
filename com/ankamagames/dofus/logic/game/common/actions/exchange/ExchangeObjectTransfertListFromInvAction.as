@@ -1,23 +1,24 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.exchange
+package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
+   import __AS3__.vec.Vector;
 
-    public class ExchangeObjectTransfertListFromInvAction extends Object implements Action
-    {
-        public var ids:Vector.<uint>;
 
-        public function ExchangeObjectTransfertListFromInvAction()
-        {
-            return;
-        }// end function
+   public class ExchangeObjectTransfertListFromInvAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Vector.<uint>) : ExchangeObjectTransfertListFromInvAction
-        {
-            var _loc_2:* = new ExchangeObjectTransfertListFromInvAction;
-            _loc_2.ids = param1;
-            return _loc_2;
-        }// end function
+      public function ExchangeObjectTransfertListFromInvAction() {
+         super();
+      }
 
-    }
+      public static function create(pIds:Vector.<uint>) : ExchangeObjectTransfertListFromInvAction {
+         var a:ExchangeObjectTransfertListFromInvAction = new ExchangeObjectTransfertListFromInvAction();
+         a.ids=pIds;
+         return a;
+      }
+
+      public var ids:Vector.<uint>;
+   }
+
 }

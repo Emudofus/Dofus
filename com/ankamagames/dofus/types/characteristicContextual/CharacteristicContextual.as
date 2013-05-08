@@ -1,36 +1,35 @@
-﻿package com.ankamagames.dofus.types.characteristicContextual
+package com.ankamagames.dofus.types.characteristicContextual
 {
-    import com.ankamagames.berilia.types.event.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import flash.display.*;
+   import flash.display.Sprite;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.berilia.types.event.BeriliaEvent;
 
-    public class CharacteristicContextual extends Sprite
-    {
-        private var _referedEntity:IEntity;
 
-        public function CharacteristicContextual() : void
-        {
-            mouseChildren = false;
-            mouseEnabled = false;
-            return;
-        }// end function
+   public class CharacteristicContextual extends Sprite
+   {
+         
 
-        public function get referedEntity() : IEntity
-        {
-            return this._referedEntity;
-        }// end function
+      public function CharacteristicContextual() {
+         super();
+         mouseChildren=false;
+         mouseEnabled=false;
+      }
 
-        public function set referedEntity(param1:IEntity) : void
-        {
-            this._referedEntity = param1;
-            return;
-        }// end function
 
-        public function remove() : void
-        {
-            dispatchEvent(new BeriliaEvent(BeriliaEvent.REMOVE_COMPONENT));
-            return;
-        }// end function
 
-    }
+      private var _referedEntity:IEntity;
+
+      public function get referedEntity() : IEntity {
+         return this._referedEntity;
+      }
+
+      public function set referedEntity(oEntity:IEntity) : void {
+         this._referedEntity=oEntity;
+      }
+
+      public function remove() : void {
+         dispatchEvent(new BeriliaEvent(BeriliaEvent.REMOVE_COMPONENT));
+      }
+   }
+
 }

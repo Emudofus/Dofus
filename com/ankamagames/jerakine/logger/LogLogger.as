@@ -1,128 +1,105 @@
-﻿package com.ankamagames.jerakine.logger
+package com.ankamagames.jerakine.logger
 {
-    import com.ankamagames.jerakine.logger.*;
 
-    public class LogLogger extends Object implements Logger
-    {
-        private var _category:String;
-        private static var _enabled:Boolean = true;
-        private static var _useModuleLoggerHasOutputLog:Boolean = false;
 
-        public function LogLogger(param1:String)
-        {
-            this._category = param1;
-            return;
-        }// end function
+   public class LogLogger extends Object implements Logger
+   {
+         
 
-        public function get category() : String
-        {
-            return this._category;
-        }// end function
+      public function LogLogger(category:String) {
+         super();
+         this._category=category;
+      }
 
-        public function trace(param1:Object) : void
-        {
-            this.log(LogLevel.TRACE, param1);
-            return;
-        }// end function
+      private static var _enabled:Boolean = true;
 
-        public function debug(param1:Object) : void
-        {
-            this.log(LogLevel.DEBUG, param1);
-            return;
-        }// end function
+      private static var _useModuleLoggerHasOutputLog:Boolean = false;
 
-        public function info(param1:Object) : void
-        {
-            this.log(LogLevel.INFO, param1);
-            return;
-        }// end function
+      public static function useModuleLoggerHasOutputLog(value:Boolean) : void {
+         _useModuleLoggerHasOutputLog=value;
+      }
 
-        public function warn(param1:Object) : void
-        {
-            this.log(LogLevel.WARN, param1);
-            return;
-        }// end function
+      public static function activeLog(active:Boolean) : void {
+         _enabled=active;
+      }
 
-        public function error(param1:Object) : void
-        {
-            this.log(LogLevel.ERROR, param1);
-            return;
-        }// end function
+      public static function logIsActive() : Boolean {
+         return _enabled;
+      }
 
-        public function fatal(param1:Object) : void
-        {
-            this.log(LogLevel.FATAL, param1);
-            return;
-        }// end function
+      private var _category:String;
 
-        public function logDirectly(event:LogEvent) : void
-        {
-            if (_enabled)
+      public function get category() : String {
+         return this._category;
+      }
+
+      public function trace(message:Object) : void {
+         this.log(LogLevel.TRACE,message);
+      }
+
+      public function debug(message:Object) : void {
+         this.log(LogLevel.DEBUG,message);
+      }
+
+      public function info(message:Object) : void {
+         this.log(LogLevel.INFO,message);
+      }
+
+      public function warn(message:Object) : void {
+         this.log(LogLevel.WARN,message);
+      }
+
+      public function error(message:Object) : void {
+         this.log(LogLevel.ERROR,message);
+      }
+
+      public function fatal(message:Object) : void {
+         this.log(LogLevel.FATAL,message);
+      }
+
+      public function logDirectly(logEvent:LogEvent) : void {
+         if(_enabled)
+         {
+            Log.broadcastToTargets(logEvent);
+         }
+      }
+
+      public function log(level:uint, object:Object) : void {
+         var message:String = null;
+         var formatedMessage:String = null;
+         if(_enabled)
+         {
+            message=object.toString();
+            formatedMessage=this.getFormatedMessage(message);
+            Log.broadcastToTargets(new TextLogEvent(this._category,!(level==LogLevel.COMMANDS)?formatedMessage:message,level));
+            if(_useModuleLoggerHasOutputLog)
             {
-                Log.broadcastToTargets(event);
+               ModuleLogger.log(formatedMessage,level);
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function log(param1:uint, param2:Object) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (_enabled)
-            {
-                _loc_3 = param2.toString();
-                _loc_4 = this.getFormatedMessage(_loc_3);
-                Log.broadcastToTargets(new TextLogEvent(this._category, param1 != LogLevel.COMMANDS ? (_loc_4) : (_loc_3), param1));
-                if (_useModuleLoggerHasOutputLog)
-                {
-                    ModuleLogger.log(_loc_4, param1);
-                }
-            }
-            return;
-        }// end function
+      private function getFormatedMessage(message:String) : String {
+         if(!message)
+         {
+            message="";
+         }
+         var catSplit:Array = this._category.split("::");
+         var head:String = "["+catSplit[catSplit.length-1]+"] ";
+         var indent:String = "";
+         var i:uint = 0;
+         while(i<head.length)
+         {
+            indent=indent+" ";
+            i++;
+         }
+         var message:String = message.replace("\n","\n"+indent);
+         return head+message;
+      }
 
-        private function getFormatedMessage(param1:String) : String
-        {
-            if (!param1)
-            {
-                param1 = "";
-            }
-            var _loc_2:* = this._category.split("::");
-            var _loc_3:* = "[" + _loc_2[(_loc_2.length - 1)] + "] ";
-            var _loc_4:* = "";
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_3.length)
-            {
-                
-                _loc_4 = _loc_4 + " ";
-                _loc_5 = _loc_5 + 1;
-            }
-            param1 = param1.replace("\n", "\n" + _loc_4);
-            return _loc_3 + param1;
-        }// end function
+      public function clear() : void {
+         this.log(LogLevel.COMMANDS,"clear");
+      }
+   }
 
-        public function clear() : void
-        {
-            this.log(LogLevel.COMMANDS, "clear");
-            return;
-        }// end function
-
-        public static function useModuleLoggerHasOutputLog(param1:Boolean) : void
-        {
-            _useModuleLoggerHasOutputLog = param1;
-            return;
-        }// end function
-
-        public static function activeLog(param1:Boolean) : void
-        {
-            _enabled = param1;
-            return;
-        }// end function
-
-        public static function logIsActive() : Boolean
-        {
-            return _enabled;
-        }// end function
-
-    }
 }

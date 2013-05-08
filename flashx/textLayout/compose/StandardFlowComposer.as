@@ -1,596 +1,549 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
-    import flash.display.*;
-    import flash.system.*;
-    import flashx.textLayout.accessibility.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.events.*;
-    import flashx.textLayout.formats.*;
+   import flash.display.Sprite;
+   import flashx.textLayout.accessibility.TextAccImpl;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.ContainerFormattedElement;
+   import flashx.textLayout.elements.TextFlow;
+   import flash.system.Capabilities;
+   import flashx.textLayout.edit.ISelectionManager;
+   import flashx.textLayout.container.ScrollPolicy;
+   import flashx.textLayout.events.CompositionCompleteEvent;
+   import flashx.textLayout.elements.BackgroundManager;
 
-    public class StandardFlowComposer extends FlowComposerBase implements IFlowComposer
-    {
-        var _rootElement:ContainerFormattedElement;
-        private var _controllerList:Array;
-        private var _composing:Boolean;
-        private var lastBPDirectionScrollPosition:Number = -1.#INF;
+   use namespace tlf_internal;
 
-        public function StandardFlowComposer()
-        {
-            this._controllerList = new Array();
-            this._composing = false;
-            return;
-        }// end function
+   public class StandardFlowComposer extends FlowComposerBase implements IFlowComposer
+   {
+         
 
-        public function get composing() : Boolean
-        {
-            return this._composing;
-        }// end function
+      public function StandardFlowComposer() {
+         super();
+         this._controllerList=new Array();
+         this._composing=false;
+      }
 
-        public function getAbsoluteStart(param1:ContainerController) : int
-        {
-            var _loc_2:* = this.getControllerIndex(param1);
-            var _loc_3:* = this._rootElement.getAbsoluteStart();
-            var _loc_4:* = 0;
-            while (_loc_4 < _loc_2)
+      private static function clearContainerAccessibilityImplementation(cont:Sprite) : void {
+         if(cont.accessibilityImplementation)
+         {
+            if(cont.accessibilityImplementation is TextAccImpl)
             {
-                
-                _loc_3 = _loc_3 + this._controllerList[_loc_4].textLength;
-                _loc_4++;
+               TextAccImpl(cont.accessibilityImplementation).detachListeners();
             }
-            return _loc_3;
-        }// end function
+            cont.accessibilityImplementation=null;
+         }
+      }
 
-        public function get rootElement() : ContainerFormattedElement
-        {
-            return this._rootElement;
-        }// end function
+      private static function getBPDirectionScrollPosition(bp:String, cont:ContainerController) : Number {
+         return bp==BlockProgression.TB?cont.verticalScrollPosition:cont.horizontalScrollPosition;
+      }
 
-        public function setRootElement(param1:ContainerFormattedElement) : void
-        {
-            if (this._rootElement != param1)
-            {
-                if (param1 is TextFlow && (param1 as TextFlow).flowComposer != this)
-                {
-                    (param1 as TextFlow).flowComposer = this;
-                }
-                else
-                {
-                    this.clearCompositionResults();
-                    this.detachAllContainers();
-                    this._rootElement = param1;
-                    _textFlow = this._rootElement ? (this._rootElement.getTextFlow()) : (null);
-                    this.attachAllContainers();
-                }
-            }
-            return;
-        }// end function
+      tlf_internal var _rootElement:ContainerFormattedElement;
 
-        function detachAllContainers() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (this._controllerList.length > 0 && _textFlow)
-            {
-                _loc_2 = this.getControllerAt(0);
-                _loc_3 = _loc_2.container;
-                if (_loc_3)
-                {
-                    clearContainerAccessibilityImplementation(_loc_3);
-                }
-            }
-            for each (_loc_1 in this._controllerList)
-            {
-                
-                _loc_1.clearSelectionShapes();
-                _loc_1.setRootElement(null);
-            }
-            return;
-        }// end function
+      private var _controllerList:Array;
 
-        function attachAllContainers() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = null;
-            for each (_loc_1 in this._controllerList)
-            {
-                
-                ContainerController(_loc_1).setRootElement(this._rootElement);
-            }
-            if (this._controllerList.length > 0 && _textFlow)
-            {
-                if (textFlow.configuration.enableAccessibility && Capabilities.hasAccessibility)
-                {
-                    _loc_4 = this.getControllerAt(0).container;
-                    if (_loc_4)
-                    {
-                        clearContainerAccessibilityImplementation(_loc_4);
-                        _loc_4.accessibilityImplementation = new TextAccImpl(_loc_4, _textFlow);
-                    }
-                }
-                _loc_3 = 0;
-                while (_loc_3 < this._controllerList.length)
-                {
-                    
-                    _loc_2 = this.getControllerAt(_loc_3).container;
-                    if (_loc_2)
-                    {
-                        _loc_2.focusRect = false;
-                    }
-                    _loc_3++;
-                }
-            }
-            this.clearCompositionResults();
-            return;
-        }// end function
+      private var _composing:Boolean;
 
-        public function get numControllers() : int
-        {
-            return this._controllerList ? (this._controllerList.length) : (0);
-        }// end function
+      public function get composing() : Boolean {
+         return this._composing;
+      }
 
-        public function addController(param1:ContainerController) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            this._controllerList.push(ContainerController(param1));
-            if (this.numControllers == 1)
+      public function getAbsoluteStart(controller:ContainerController) : int {
+         var stopIdx:int = this.getControllerIndex(controller);
+         var rslt:int = this._rootElement.getAbsoluteStart();
+         var idx:int = 0;
+         while(idx<stopIdx)
+         {
+            rslt=rslt+this._controllerList[idx].textLength;
+            idx++;
+         }
+         return rslt;
+      }
+
+      public function get rootElement() : ContainerFormattedElement {
+         return this._rootElement;
+      }
+
+      public function setRootElement(newRootElement:ContainerFormattedElement) : void {
+         if(this._rootElement!=newRootElement)
+         {
+            if((newRootElement is TextFlow)&&(!((newRootElement as TextFlow).flowComposer==this)))
             {
-                this.attachAllContainers();
+               (newRootElement as TextFlow).flowComposer=this;
             }
             else
             {
-                param1.setRootElement(this._rootElement);
-                _loc_2 = param1.container;
-                if (_loc_2)
-                {
-                    _loc_2.focusRect = false;
-                }
-                if (textFlow)
-                {
-                    param1 = this.getControllerAt(this.numControllers - 2);
-                    _loc_3 = param1.absoluteStart;
-                    _loc_4 = param1.textLength;
-                    if (_loc_4 == 0)
-                    {
-                        if (_loc_3 != textFlow.textLength)
-                        {
-                            _loc_4++;
-                        }
-                        else if (_loc_3 != 0)
-                        {
-                            _loc_3 = _loc_3 - 1;
-                            _loc_4++;
-                        }
-                    }
-                    if (_loc_4)
-                    {
-                        textFlow.damage(_loc_3, _loc_4, FlowDamageType.GEOMETRY, false);
-                    }
-                }
+               this.clearCompositionResults();
+               this.detachAllContainers();
+               this._rootElement=newRootElement;
+               _textFlow=this._rootElement?this._rootElement.getTextFlow():null;
+               this.attachAllContainers();
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function addControllerAt(param1:ContainerController, param2:int) : void
-        {
-            this.detachAllContainers();
-            this._controllerList.splice(param2, 0, ContainerController(param1));
+      tlf_internal function detachAllContainers() : void {
+         var cont:ContainerController = null;
+         var firstContainerController:ContainerController = null;
+         var firstContainer:Sprite = null;
+         if((this._controllerList.length<0)&&(_textFlow))
+         {
+            firstContainerController=this.getControllerAt(0);
+            firstContainer=firstContainerController.container;
+            if(firstContainer)
+            {
+               clearContainerAccessibilityImplementation(firstContainer);
+            }
+         }
+         for each (cont in this._controllerList)
+         {
+            cont.clearSelectionShapes();
+            cont.setRootElement(null);
+         }
+      }
+
+      tlf_internal function attachAllContainers() : void {
+         var cont:ContainerController = null;
+         var curContainer:Sprite = null;
+         var i:* = 0;
+         var firstContainer:Sprite = null;
+         for each (cont in this._controllerList)
+         {
+            ContainerController(cont).setRootElement(this._rootElement);
+         }
+         if((this._controllerList.length<0)&&(_textFlow))
+         {
+            if((textFlow.configuration.enableAccessibility)&&(Capabilities.hasAccessibility))
+            {
+               firstContainer=this.getControllerAt(0).container;
+               if(firstContainer)
+               {
+                  clearContainerAccessibilityImplementation(firstContainer);
+                  firstContainer.accessibilityImplementation=new TextAccImpl(firstContainer,_textFlow);
+               }
+            }
+            i=0;
+            while(i<this._controllerList.length)
+            {
+               curContainer=this.getControllerAt(i).container;
+               if(curContainer)
+               {
+                  curContainer.focusRect=false;
+               }
+               i++;
+            }
+         }
+         this.clearCompositionResults();
+      }
+
+      public function get numControllers() : int {
+         return this._controllerList?this._controllerList.length:0;
+      }
+
+      public function addController(controller:ContainerController) : void {
+         var curContainer:Sprite = null;
+         var damageStart:* = 0;
+         var damageLen:* = 0;
+         this._controllerList.push(ContainerController(controller));
+         if(this.numControllers==1)
+         {
             this.attachAllContainers();
-            return;
-        }// end function
+         }
+         else
+         {
+            controller.setRootElement(this._rootElement);
+            curContainer=controller.container;
+            if(curContainer)
+            {
+               curContainer.focusRect=false;
+            }
+            if(textFlow)
+            {
+               controller=this.getControllerAt(this.numControllers-2);
+               damageStart=controller.absoluteStart;
+               damageLen=controller.textLength;
+               if(damageLen==0)
+               {
+                  if(damageStart!=textFlow.textLength)
+                  {
+                     damageLen++;
+                  }
+                  else
+                  {
+                     if(damageStart!=0)
+                     {
+                        damageStart--;
+                        damageLen++;
+                     }
+                  }
+               }
+               if(damageLen)
+               {
+                  textFlow.damage(damageStart,damageLen,FlowDamageType.GEOMETRY,false);
+               }
+            }
+         }
+      }
 
-        private function fastRemoveController(param1:int) : Boolean
-        {
-            var _loc_3:* = null;
-            if (param1 == -1)
-            {
-                return true;
-            }
-            var _loc_2:* = this._controllerList[param1];
-            if (!_loc_2)
-            {
-                return true;
-            }
-            if (!_textFlow || _loc_2.absoluteStart == _textFlow.textLength)
-            {
-                if (param1 == 0)
-                {
-                    _loc_3 = _loc_2.container;
-                    if (_loc_3)
-                    {
-                        clearContainerAccessibilityImplementation(_loc_3);
-                    }
-                }
-                _loc_2.setRootElement(null);
-                this._controllerList.splice(param1, 1);
-                return true;
-            }
-            return false;
-        }// end function
+      public function addControllerAt(controller:ContainerController, index:int) : void {
+         this.detachAllContainers();
+         this._controllerList.splice(index,0,ContainerController(controller));
+         this.attachAllContainers();
+      }
 
-        public function removeController(param1:ContainerController) : void
-        {
-            var _loc_2:* = this.getControllerIndex(param1);
-            if (!this.fastRemoveController(_loc_2))
-            {
-                this.detachAllContainers();
-                this._controllerList.splice(_loc_2, 1);
-                this.attachAllContainers();
-            }
-            return;
-        }// end function
-
-        public function removeControllerAt(param1:int) : void
-        {
-            if (!this.fastRemoveController(param1))
-            {
-                this.detachAllContainers();
-                this._controllerList.splice(param1, 1);
-                this.attachAllContainers();
-            }
-            return;
-        }// end function
-
-        public function removeAllControllers() : void
-        {
-            this.detachAllContainers();
-            this._controllerList.splice(0, this._controllerList.length);
-            return;
-        }// end function
-
-        public function getControllerAt(param1:int) : ContainerController
-        {
-            return this._controllerList[param1];
-        }// end function
-
-        public function getControllerIndex(param1:ContainerController) : int
-        {
-            var _loc_2:* = 0;
-            while (_loc_2 < this._controllerList.length)
-            {
-                
-                if (this._controllerList[_loc_2] == param1)
-                {
-                    return _loc_2;
-                }
-                _loc_2++;
-            }
-            return -1;
-        }// end function
-
-        public function findControllerIndexAtPosition(param1:int, param2:Boolean = false) : int
-        {
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = this._controllerList.length - 1;
-            while (_loc_3 <= _loc_4)
-            {
-                
-                _loc_5 = (_loc_3 + _loc_4) / 2;
-                _loc_6 = this._controllerList[_loc_5];
-                if (_loc_6.absoluteStart <= param1)
-                {
-                    if (param2)
-                    {
-                        if (_loc_6.absoluteStart + _loc_6.textLength >= param1)
-                        {
-                            while (_loc_5 != 0 && _loc_6.absoluteStart == param1)
-                            {
-                                
-                                _loc_5 = _loc_5 - 1;
-                                _loc_6 = this._controllerList[_loc_5];
-                            }
-                            return _loc_5;
-                        }
-                    }
-                    else
-                    {
-                        if (_loc_6.absoluteStart == param1 && _loc_6.textLength != 0)
-                        {
-                            while (_loc_5 != 0)
-                            {
-                                
-                                _loc_6 = this._controllerList[(_loc_5 - 1)];
-                                if (_loc_6.textLength != 0)
-                                {
-                                    break;
-                                }
-                                _loc_5 = _loc_5 - 1;
-                            }
-                            return _loc_5;
-                        }
-                        if (_loc_6.absoluteStart + _loc_6.textLength > param1)
-                        {
-                            return _loc_5;
-                        }
-                    }
-                    _loc_3 = _loc_5 + 1;
-                    continue;
-                }
-                _loc_4 = _loc_5 - 1;
-            }
-            return -1;
-        }// end function
-
-        function clearCompositionResults() : void
-        {
-            var _loc_1:* = null;
-            initializeLines();
-            for each (_loc_1 in this._controllerList)
-            {
-                
-                _loc_1.clearCompositionResults();
-            }
-            return;
-        }// end function
-
-        public function updateAllControllers() : Boolean
-        {
-            return this.updateToController();
-        }// end function
-
-        public function updateToController(param1:int = 2.14748e+009) : Boolean
-        {
-            if (this._composing)
-            {
-                return false;
-            }
-            var _loc_2:* = textFlow.interactionManager;
-            if (_loc_2)
-            {
-                _loc_2.flushPendingOperations();
-            }
-            this.internalCompose(-1, param1);
-            var _loc_3:* = this.areShapesDamaged();
-            if (_loc_3)
-            {
-                this.updateCompositionShapes();
-            }
-            if (_loc_2)
-            {
-                _loc_2.refreshSelection();
-            }
-            return _loc_3;
-        }// end function
-
-        public function setFocus(param1:int, param2:Boolean = false) : void
-        {
-            var _loc_3:* = this.findControllerIndexAtPosition(param1, param2);
-            if (_loc_3 == -1)
-            {
-                _loc_3 = this.numControllers - 1;
-            }
-            if (_loc_3 != -1)
-            {
-                this._controllerList[_loc_3].setFocus();
-            }
-            return;
-        }// end function
-
-        public function interactionManagerChanged(param1:ISelectionManager) : void
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this._controllerList)
-            {
-                
-                _loc_2.interactionManagerChanged(param1);
-            }
-            return;
-        }// end function
-
-        private function updateCompositionShapes() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._controllerList)
-            {
-                
-                _loc_1.updateCompositionShapes();
-            }
-            return;
-        }// end function
-
-        override public function isDamaged(param1:int) : Boolean
-        {
-            var _loc_2:* = null;
-            if (!super.isDamaged(param1))
-            {
-                if (param1 == _textFlow.textLength)
-                {
-                    _loc_2 = this.getControllerAt((this.numControllers - 1));
-                    if (_loc_2 && (_loc_2.verticalScrollPolicy != ScrollPolicy.OFF || _loc_2.horizontalScrollPolicy != ScrollPolicy.OFF))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+      private function fastRemoveController(index:int) : Boolean {
+         var firstContainer:Sprite = null;
+         if(index==-1)
+         {
             return true;
-        }// end function
-
-        protected function preCompose() : Boolean
-        {
-            this.rootElement.preCompose();
-            if (numLines == 0)
+         }
+         var cont:ContainerController = this._controllerList[index];
+         if(!cont)
+         {
+            return true;
+         }
+         if((!_textFlow)||(cont.absoluteStart==_textFlow.textLength))
+         {
+            if(index==0)
             {
-                initializeLines();
+               firstContainer=cont.container;
+               if(firstContainer)
+               {
+                  clearContainerAccessibilityImplementation(firstContainer);
+               }
             }
-            return this.isDamaged(this.rootElement.getAbsoluteStart() + this.rootElement.textLength);
-        }// end function
+            cont.setRootElement(null);
+            this._controllerList.splice(index,1);
+            return true;
+         }
+         return false;
+      }
 
-        function getComposeState() : ComposeState
-        {
-            return ComposeState.getComposeState();
-        }// end function
+      public function removeController(controller:ContainerController) : void {
+         var index:int = this.getControllerIndex(controller);
+         if(!this.fastRemoveController(index))
+         {
+            this.detachAllContainers();
+            this._controllerList.splice(index,1);
+            this.attachAllContainers();
+         }
+      }
 
-        function releaseComposeState(param1:ComposeState) : void
-        {
-            ComposeState.releaseComposeState(param1);
-            return;
-        }// end function
+      public function removeControllerAt(index:int) : void {
+         if(!this.fastRemoveController(index))
+         {
+            this.detachAllContainers();
+            this._controllerList.splice(index,1);
+            this.attachAllContainers();
+         }
+      }
 
-        function callTheComposer(param1:int, param2:int) : ContainerController
-        {
-            if (_damageAbsoluteStart == this.rootElement.getAbsoluteStart() + this.rootElement.textLength)
-            {
-                return this.getControllerAt((this.numControllers - 1));
-            }
-            var _loc_3:* = this.getComposeState();
-            var _loc_4:* = _loc_3.composeTextFlow(textFlow, param1, param2);
-            if (_damageAbsoluteStart < _loc_4)
-            {
-                _damageAbsoluteStart = _loc_4;
-            }
-            finalizeLinesAfterCompose();
-            var _loc_5:* = _loc_3.startController;
-            this.releaseComposeState(_loc_3);
-            if (textFlow.hasEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE))
-            {
-                textFlow.dispatchEvent(new CompositionCompleteEvent(CompositionCompleteEvent.COMPOSITION_COMPLETE, false, false, textFlow, 0, _loc_4));
-            }
-            return _loc_5;
-        }// end function
+      public function removeAllControllers() : void {
+         this.detachAllContainers();
+         this._controllerList.splice(0,this._controllerList.length);
+      }
 
-        private function internalCompose(param1:int = -1, param2:int = -1) : ContainerController
-        {
-            var bp:String;
-            var startController:ContainerController;
-            var damageLimit:int;
-            var controller:ContainerController;
-            var lastVisibleLine:TextFlowLine;
-            var idx:int;
-            var composeToPosition:* = param1;
-            var composeToControllerIndex:* = param2;
-            var sm:* = textFlow.interactionManager;
-            if (sm)
+      public function getControllerAt(index:int) : ContainerController {
+         return this._controllerList[index];
+      }
+
+      public function getControllerIndex(controller:ContainerController) : int {
+         var idx:int = 0;
+         while(idx<this._controllerList.length)
+         {
+            if(this._controllerList[idx]==controller)
             {
-                sm.flushPendingOperations();
+               return idx;
             }
-            this._composing = true;
-            try
+            idx++;
+         }
+         return -1;
+      }
+
+      public function findControllerIndexAtPosition(absolutePosition:int, preferPrevious:Boolean=false) : int {
+         var mid:* = 0;
+         var cont:ContainerController = null;
+         var lo:int = 0;
+         var hi:int = this._controllerList.length-1;
+         while(lo<=hi)
+         {
+            mid=(lo+hi)/2;
+            cont=this._controllerList[mid];
+            if(cont.absoluteStart<=absolutePosition)
             {
-                if (this.preCompose())
-                {
-                    if (textFlow && this.numControllers != 0)
-                    {
-                        damageLimit = _textFlow.textLength;
-                        composeToControllerIndex = Math.min(composeToControllerIndex, (this.numControllers - 1));
-                        if (composeToPosition != -1 || composeToControllerIndex != -1)
+               if(preferPrevious)
+               {
+                  if(cont.absoluteStart+cont.textLength>=absolutePosition)
+                  {
+                     while((!(mid==0))&&(cont.absoluteStart==absolutePosition))
+                     {
+                        mid--;
+                        cont=this._controllerList[mid];
+                     }
+                     return mid;
+                  }
+               }
+               else
+               {
+                  if((cont.absoluteStart==absolutePosition)&&(!(cont.textLength==0)))
+                  {
+                     while(mid!=0)
+                     {
+                        cont=this._controllerList[mid-1];
+                        if(cont.textLength!=0)
                         {
-                            if (composeToControllerIndex < 0)
-                            {
-                                if (composeToPosition >= 0)
-                                {
-                                    damageLimit = composeToPosition;
-                                }
-                            }
-                            else
-                            {
-                                controller = this.getControllerAt(composeToControllerIndex);
-                                if (controller.textLength != 0)
-                                {
-                                    damageLimit = controller.absoluteStart + controller.textLength;
-                                }
-                                if (composeToControllerIndex == (this.numControllers - 1))
-                                {
-                                    bp = this.rootElement.computedFormat.blockProgression;
-                                    lastVisibleLine = controller.getLastVisibleLine();
-                                    if (lastVisibleLine && getBPDirectionScrollPosition(bp, controller) == this.lastBPDirectionScrollPosition)
-                                    {
-                                        damageLimit = lastVisibleLine.absoluteStart + lastVisibleLine.textLength;
-                                    }
-                                }
-                            }
                         }
-                        this.lastBPDirectionScrollPosition = Number.NEGATIVE_INFINITY;
-                        if (_damageAbsoluteStart < damageLimit)
+                        else
                         {
-                            startController = this.callTheComposer(composeToPosition, composeToControllerIndex);
-                            if (startController)
-                            {
-                                idx = this.getControllerIndex(startController);
-                                while (idx < this.numControllers)
-                                {
-                                    
-                                    idx = (idx + 1);
-                                    this.getControllerAt(idx).shapesInvalid = true;
-                                }
-                            }
+                           mid--;
+                           continue;
                         }
-                    }
-                }
+                     }
+                  }
+                  else
+                  {
+                     if(cont.absoluteStart+cont.textLength>absolutePosition)
+                     {
+                        return mid;
+                     }
+                  }
+               }
+               lo=mid+1;
             }
-            catch (e:Error)
+            else
             {
-                _composing = false;
-                throw e;
+               hi=mid-1;
             }
-            this._composing = false;
-            if (composeToControllerIndex == (this.numControllers - 1))
-            {
-                this.lastBPDirectionScrollPosition = getBPDirectionScrollPosition(bp, controller);
-            }
-            return startController;
-        }// end function
+         }
+         return -1;
+      }
 
-        function areShapesDamaged() : Boolean
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._controllerList)
+      tlf_internal function clearCompositionResults() : void {
+         var cont:ContainerController = null;
+         initializeLines();
+         for each (cont in this._controllerList)
+         {
+            cont.clearCompositionResults();
+         }
+      }
+
+      public function updateAllControllers() : Boolean {
+         return this.updateToController();
+      }
+
+      public function updateToController(index:int=2.147483647E9) : Boolean {
+         if(this._composing)
+         {
+            return false;
+         }
+         var sm:ISelectionManager = textFlow.interactionManager;
+         if(sm)
+         {
+            sm.flushPendingOperations();
+         }
+         this.internalCompose(-1,index);
+         var shapesDamaged:Boolean = this.areShapesDamaged();
+         if(shapesDamaged)
+         {
+            this.updateCompositionShapes();
+         }
+         if(sm)
+         {
+            sm.refreshSelection();
+         }
+         return shapesDamaged;
+      }
+
+      public function setFocus(absolutePosition:int, leanLeft:Boolean=false) : void {
+         var idx:int = this.findControllerIndexAtPosition(absolutePosition,leanLeft);
+         if(idx==-1)
+         {
+            idx=this.numControllers-1;
+         }
+         if(idx!=-1)
+         {
+            this._controllerList[idx].setFocus();
+         }
+      }
+
+      public function interactionManagerChanged(newInteractionManager:ISelectionManager) : void {
+         var controller:ContainerController = null;
+         for each (controller in this._controllerList)
+         {
+            controller.interactionManagerChanged(newInteractionManager);
+         }
+      }
+
+      private function updateCompositionShapes() : void {
+         var controller:ContainerController = null;
+         for each (controller in this._controllerList)
+         {
+            controller.updateCompositionShapes();
+         }
+      }
+
+      override public function isDamaged(absolutePosition:int) : Boolean {
+         var container:ContainerController = null;
+         if(!super.isDamaged(absolutePosition))
+         {
+            if(absolutePosition==_textFlow.textLength)
             {
-                
-                if (_loc_1.shapesInvalid)
-                {
-                    return true;
-                }
+               container=this.getControllerAt(this.numControllers-1);
+               if((container)&&((!(container.verticalScrollPolicy==ScrollPolicy.OFF))||(!(container.horizontalScrollPolicy==ScrollPolicy.OFF))))
+               {
+                  return true;
+               }
             }
             return false;
-        }// end function
+         }
+         return true;
+      }
 
-        public function compose() : Boolean
-        {
-            return this._composing ? (false) : (this.internalCompose() != null);
-        }// end function
+      protected function preCompose() : Boolean {
+         this.rootElement.preCompose();
+         if(numLines==0)
+         {
+            initializeLines();
+         }
+         return this.isDamaged(this.rootElement.getAbsoluteStart()+this.rootElement.textLength);
+      }
 
-        public function composeToPosition(param1:int = 2.14748e+009) : Boolean
-        {
-            return this._composing ? (false) : (this.internalCompose(param1, -1) != null);
-        }// end function
+      tlf_internal function getComposeState() : ComposeState {
+         return ComposeState.getComposeState();
+      }
 
-        public function composeToController(param1:int = 2.14748e+009) : Boolean
-        {
-            return this._composing ? (false) : (this.internalCompose(-1, param1) != null);
-        }// end function
+      tlf_internal function releaseComposeState(state:ComposeState) : void {
+         ComposeState.releaseComposeState(state);
+      }
 
-        function createBackgroundManager() : BackgroundManager
-        {
-            return new BackgroundManager();
-        }// end function
+      tlf_internal function callTheComposer(composeToPosition:int, controllerEndIndex:int) : ContainerController {
+         if(_damageAbsoluteStart==this.rootElement.getAbsoluteStart()+this.rootElement.textLength)
+         {
+            return this.getControllerAt(this.numControllers-1);
+         }
+         var state:ComposeState = this.getComposeState();
+         var lastComposedPosition:int = state.composeTextFlow(textFlow,composeToPosition,controllerEndIndex);
+         if(_damageAbsoluteStart<lastComposedPosition)
+         {
+            _damageAbsoluteStart=lastComposedPosition;
+         }
+         finalizeLinesAfterCompose();
+         var startController:ContainerController = state.startController;
+         this.releaseComposeState(state);
+         if(textFlow.hasEventListener(CompositionCompleteEvent.COMPOSITION_COMPLETE))
+         {
+            textFlow.dispatchEvent(new CompositionCompleteEvent(CompositionCompleteEvent.COMPOSITION_COMPLETE,false,false,textFlow,0,lastComposedPosition));
+         }
+         return startController;
+      }
 
-        private static function clearContainerAccessibilityImplementation(param1:Sprite) : void
-        {
-            if (param1.accessibilityImplementation)
+      private var lastBPDirectionScrollPosition:Number = -Infinity;
+
+      private function internalCompose(composeToPosition:int=-1, composeToControllerIndex:int=-1) : ContainerController {
+         var bp:String = null;
+         var startController:ContainerController = null;
+         var damageLimit:int = 0;
+         var controller:ContainerController = null;
+         var lastVisibleLine:TextFlowLine = null;
+         var idx:int = 0;
+         var sm:ISelectionManager = textFlow.interactionManager;
+         if(sm)
+         {
+            sm.flushPendingOperations();
+         }
+         this._composing=true;
+         try
+         {
+            if(this.preCompose())
             {
-                if (param1.accessibilityImplementation is TextAccImpl)
-                {
-                    TextAccImpl(param1.accessibilityImplementation).detachListeners();
-                }
-                param1.accessibilityImplementation = null;
+               if((textFlow)&&(!(this.numControllers==0)))
+               {
+                  damageLimit=_textFlow.textLength;
+                  if((!(composeToPosition==-1))||(!(composeToControllerIndex==-1)))
+                  {
+                     if(composeToControllerIndex<0)
+                     {
+                        if(composeToPosition>=0)
+                        {
+                           damageLimit=composeToPosition;
+                        }
+                     }
+                     else
+                     {
+                        controller=this.getControllerAt(composeToControllerIndex);
+                        if(controller.textLength!=0)
+                        {
+                           damageLimit=controller.absoluteStart+controller.textLength;
+                        }
+                        if(composeToControllerIndex==this.numControllers-1)
+                        {
+                           bp=this.rootElement.computedFormat.blockProgression;
+                           lastVisibleLine=controller.getLastVisibleLine();
+                           if((lastVisibleLine)&&(getBPDirectionScrollPosition(bp,controller)==this.lastBPDirectionScrollPosition))
+                           {
+                              damageLimit=lastVisibleLine.absoluteStart+lastVisibleLine.textLength;
+                           }
+                        }
+                     }
+                  }
+                  this.lastBPDirectionScrollPosition=Number.NEGATIVE_INFINITY;
+                  if(_damageAbsoluteStart<damageLimit)
+                  {
+                     startController=this.callTheComposer(composeToPosition,composeToControllerIndex);
+                     if(startController)
+                     {
+                        idx=this.getControllerIndex(startController);
+                        while(idx<this.numControllers)
+                        {
+                           this.getControllerAt(idx++).shapesInvalid=true;
+                        }
+                     }
+                  }
+               }
             }
-            return;
-        }// end function
+         }
+         catch(e:Error)
+         {
+            _composing=false;
+            throw e;
+         }
+         this._composing=false;
+         if(composeToControllerIndex==this.numControllers-1)
+         {
+            this.lastBPDirectionScrollPosition=getBPDirectionScrollPosition(bp,controller);
+         }
+         return startController;
+      }
 
-        private static function getBPDirectionScrollPosition(param1:String, param2:ContainerController) : Number
-        {
-            return param1 == BlockProgression.TB ? (param2.verticalScrollPosition) : (param2.horizontalScrollPosition);
-        }// end function
+      tlf_internal function areShapesDamaged() : Boolean {
+         var cont:ContainerController = null;
+         for each (cont in this._controllerList)
+         {
+            if(cont.shapesInvalid)
+            {
+               return true;
+            }
+         }
+         return false;
+      }
 
-    }
+      public function compose() : Boolean {
+         return this._composing?false:!(this.internalCompose()==null);
+      }
+
+      public function composeToPosition(absolutePosition:int=2.147483647E9) : Boolean {
+         return this._composing?false:!(this.internalCompose(absolutePosition,-1)==null);
+      }
+
+      public function composeToController(index:int=2.147483647E9) : Boolean {
+         return this._composing?false:!(this.internalCompose(-1,index)==null);
+      }
+
+      tlf_internal function createBackgroundManager() : BackgroundManager {
+         return new BackgroundManager();
+      }
+   }
+
 }

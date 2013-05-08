@@ -1,15 +1,19 @@
-﻿package nochump.util.zip
+package nochump.util.zip
 {
-    import flash.errors.*;
+   import flash.errors.IOError;
 
-    public class ZipError extends IOError
-    {
 
-        public function ZipError(param1:String = "", param2:int = 0)
-        {
-            super(param1, param2);
-            return;
-        }// end function
+   public class ZipError extends IOError
+   {
+         
 
-    }
+      public function ZipError(message:String="", id:int=0) {
+         super(message,id);
+      }
+
+
+
+
+   }
+
 }

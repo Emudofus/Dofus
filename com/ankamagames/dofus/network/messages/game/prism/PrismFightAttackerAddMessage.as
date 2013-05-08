@@ -1,105 +1,94 @@
-﻿package com.ankamagames.dofus.network.messages.game.prism
+package com.ankamagames.dofus.network.messages.game.prism
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.character.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookAndGradeInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PrismFightAttackerAddMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fightId:Number = 0;
-        public var charactersDescription:Vector.<CharacterMinimalPlusLookAndGradeInformations>;
-        public static const protocolId:uint = 5893;
 
-        public function PrismFightAttackerAddMessage()
-        {
-            this.charactersDescription = new Vector.<CharacterMinimalPlusLookAndGradeInformations>;
-            return;
-        }// end function
+   public class PrismFightAttackerAddMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PrismFightAttackerAddMessage() {
+         this.charactersDescription=new Vector.<CharacterMinimalPlusLookAndGradeInformations>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5893;
-        }// end function
+      public static const protocolId:uint = 5893;
 
-        public function initPrismFightAttackerAddMessage(param1:Number = 0, param2:Vector.<CharacterMinimalPlusLookAndGradeInformations> = null) : PrismFightAttackerAddMessage
-        {
-            this.fightId = param1;
-            this.charactersDescription = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fightId = 0;
-            this.charactersDescription = new Vector.<CharacterMinimalPlusLookAndGradeInformations>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fightId:Number = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var charactersDescription:Vector.<CharacterMinimalPlusLookAndGradeInformations>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PrismFightAttackerAddMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5893;
+      }
 
-        public function serializeAs_PrismFightAttackerAddMessage(param1:IDataOutput) : void
-        {
-            param1.writeDouble(this.fightId);
-            param1.writeShort(this.charactersDescription.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.charactersDescription.length)
-            {
-                
-                (this.charactersDescription[_loc_2] as CharacterMinimalPlusLookAndGradeInformations).serializeAs_CharacterMinimalPlusLookAndGradeInformations(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      public function initPrismFightAttackerAddMessage(fightId:Number=0, charactersDescription:Vector.<CharacterMinimalPlusLookAndGradeInformations>=null) : PrismFightAttackerAddMessage {
+         this.fightId=fightId;
+         this.charactersDescription=charactersDescription;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PrismFightAttackerAddMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.fightId=0;
+         this.charactersDescription=new Vector.<CharacterMinimalPlusLookAndGradeInformations>();
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_PrismFightAttackerAddMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.fightId = param1.readDouble();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new CharacterMinimalPlusLookAndGradeInformations();
-                _loc_4.deserialize(param1);
-                this.charactersDescription.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismFightAttackerAddMessage(output);
+      }
+
+      public function serializeAs_PrismFightAttackerAddMessage(output:IDataOutput) : void {
+         output.writeDouble(this.fightId);
+         output.writeShort(this.charactersDescription.length);
+         var _i2:uint = 0;
+         while(_i2<this.charactersDescription.length)
+         {
+            (this.charactersDescription[_i2] as CharacterMinimalPlusLookAndGradeInformations).serializeAs_CharacterMinimalPlusLookAndGradeInformations(output);
+            _i2++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismFightAttackerAddMessage(input);
+      }
+
+      public function deserializeAs_PrismFightAttackerAddMessage(input:IDataInput) : void {
+         var _item2:CharacterMinimalPlusLookAndGradeInformations = null;
+         this.fightId=input.readDouble();
+         var _charactersDescriptionLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_charactersDescriptionLen)
+         {
+            _item2=new CharacterMinimalPlusLookAndGradeInformations();
+            _item2.deserialize(input);
+            this.charactersDescription.push(_item2);
+            _i2++;
+         }
+      }
+   }
+
 }

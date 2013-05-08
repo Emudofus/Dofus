@@ -1,53 +1,52 @@
-﻿package com.adobe.utils
+package com.adobe.utils
 {
 
-    public class IntUtil extends Object
-    {
-        private static var hexChars:String = "0123456789abcdef";
 
-        public function IntUtil()
-        {
-            return;
-        }// end function
+   public class IntUtil extends Object
+   {
+         
 
-        public static function toHex(param1:int, param2:Boolean = false) : String
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_3:* = "";
-            if (param2)
+      public function IntUtil() {
+         super();
+      }
+
+      public static function toHex(n:int, bigEndian:Boolean=false) : String {
+         var i:* = 0;
+         var x:* = 0;
+         var s:String = "";
+         if(bigEndian)
+         {
+            i=0;
+            while(i<4)
             {
-                _loc_4 = 0;
-                while (_loc_4 < 4)
-                {
-                    
-                    _loc_3 = _loc_3 + (hexChars.charAt(param1 >> (3 - _loc_4) * 8 + 4 & 15) + hexChars.charAt(param1 >> (3 - _loc_4) * 8 & 15));
-                    _loc_4++;
-                }
+               s=s+(hexChars.charAt(n>>(3-i)*8+4&15)+hexChars.charAt(n>>(3-i)*8&15));
+               i++;
             }
-            else
+         }
+         else
+         {
+            x=0;
+            while(x<4)
             {
-                _loc_5 = 0;
-                while (_loc_5 < 4)
-                {
-                    
-                    _loc_3 = _loc_3 + (hexChars.charAt(param1 >> _loc_5 * 8 + 4 & 15) + hexChars.charAt(param1 >> _loc_5 * 8 & 15));
-                    _loc_5++;
-                }
+               s=s+(hexChars.charAt(n>>x*8+4&15)+hexChars.charAt(n>>x*8&15));
+               x++;
             }
-            return _loc_3;
-        }// end function
+         }
+         return s;
+      }
 
-        public static function ror(param1:int, param2:int) : uint
-        {
-            var _loc_3:* = 32 - param2;
-            return param1 << _loc_3 | param1 >>> 32 - _loc_3;
-        }// end function
+      private static var hexChars:String = "0123456789abcdef";
 
-        public static function rol(param1:int, param2:int) : int
-        {
-            return param1 << param2 | param1 >>> 32 - param2;
-        }// end function
+      public static function ror(x:int, n:int) : uint {
+         var nn:int = 32-n;
+         return x<<nn|x>>>32-nn;
+      }
 
-    }
+      public static function rol(x:int, n:int) : int {
+         return x<<n|x>>>32-n;
+      }
+
+
+   }
+
 }

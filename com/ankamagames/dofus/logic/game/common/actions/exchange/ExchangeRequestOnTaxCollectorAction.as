@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.exchange
+package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeRequestOnTaxCollectorAction extends Object implements Action
-    {
-        public var taxCollectorId:int;
 
-        public function ExchangeRequestOnTaxCollectorAction()
-        {
-            return;
-        }// end function
+   public class ExchangeRequestOnTaxCollectorAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : ExchangeRequestOnTaxCollectorAction
-        {
-            var _loc_2:* = new ExchangeRequestOnTaxCollectorAction;
-            _loc_2.taxCollectorId = param1;
-            return _loc_2;
-        }// end function
+      public function ExchangeRequestOnTaxCollectorAction() {
+         super();
+      }
 
-    }
+      public static function create(taxCollectorId:int) : ExchangeRequestOnTaxCollectorAction {
+         var a:ExchangeRequestOnTaxCollectorAction = new ExchangeRequestOnTaxCollectorAction();
+         a.taxCollectorId=taxCollectorId;
+         return a;
+      }
+
+      public var taxCollectorId:int;
+   }
+
 }

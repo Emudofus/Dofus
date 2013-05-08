@@ -1,227 +1,245 @@
-﻿package com.ankamagames.jerakine.resources.protocols.impl
+package com.ankamagames.jerakine.resources.protocols.impl
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.newCache.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.protocols.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.errors.*;
-    import flash.events.*;
-    import flash.filesystem.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.resources.protocols.AbstractFileProtocol;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.IResourceObserver;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import flash.filesystem.File;
+   import flash.filesystem.FileStream;
+   import flash.errors.IOError;
+   import flash.events.Event;
+   import flash.filesystem.FileMode;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.resources.ResourceObserverWrapper;
 
-    public class FileFlashProtocol extends AbstractFileProtocol
-    {
-        private var _openDict:Dictionary;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(FileFlashProtocol));
 
-        public function FileFlashProtocol()
-        {
-            this._openDict = new Dictionary();
-            return;
-        }// end function
+   public class FileFlashProtocol extends AbstractFileProtocol
+   {
+         
 
-        override public function load(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:ICache, param5:Class, param6:Boolean) : void
-        {
-            var file:File;
-            var fs:FileStream;
-            var uri:* = param1;
-            var observer:* = param2;
-            var dispatchProgress:* = param3;
-            var cache:* = param4;
-            var forcedAdapter:* = param5;
-            var singleFile:* = param6;
-            if (singleFile)
-            {
-                singleLoadingFile[uri] = observer;
-                file = new File(uri.path);
-                fs = new FileStream();
-                fs.addEventListener(Event.COMPLETE, this.onOpenAsyncComplete);
-                this._openDict[fs] = {uri:uri, observer:observer, adapter:forcedAdapter, dispatchProgress:dispatchProgress};
-                try
-                {
-                    fs.openAsync(file, FileMode.READ);
-                }
-                catch (e:IOError)
-                {
-                    onFailed(uri, e.toString(), e.errorID);
-                }
-            }
-            else if (loadingFile[getUrl(uri)])
-            {
-                loadingFile[getUrl(uri)].push(observer);
-            }
-            else
-            {
-                loadingFile[getUrl(uri)] = [observer];
-                file = new File(uri.path);
-                fs = new FileStream();
-                fs.addEventListener(Event.COMPLETE, this.onOpenAsyncComplete);
-                this._openDict[fs] = {uri:uri, observer:observer, adapter:forcedAdapter, dispatchProgress:dispatchProgress};
-                try
-                {
-                    fs.openAsync(file, FileMode.READ);
-                }
-                catch (e:IOError)
-                {
-                    trace(e.message);
-                    onFailed(uri, e.toString(), e.errorID);
-                }
-            }
-            return;
-        }// end function
+      public function FileFlashProtocol() {
+         this._openDict=new Dictionary();
+         super();
+      }
 
-        private function onOpenAsyncComplete(event:Event) : void
-        {
-            var _loc_2:* = event.target as FileStream;
-            var _loc_3:* = new ByteArray();
-            _loc_2.position = 0;
-            _loc_2.readBytes(_loc_3);
-            _loc_2.close();
-            _loc_2.removeEventListener(Event.COMPLETE, this.onOpenAsyncComplete);
-            var _loc_4:* = this._openDict[_loc_2];
-            getAdapter(_loc_4.uri, _loc_4.adapter);
-            _adapter.loadFromData(_loc_4.uri, _loc_3, new ResourceObserverWrapper(this.onLoaded, this.onFailed, this.onProgress), _loc_4.dispatchProgress);
-            delete this._openDict[_loc_2];
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(FileFlashProtocol));
 
-        override protected function loadDirectly(param1:Uri, param2:IResourceObserver, param3:Boolean, param4:Class) : void
-        {
-            var uri:* = param1;
-            var observer:* = param2;
-            var dispatchProgress:* = param3;
-            var forcedAdapter:* = param4;
-            var file:* = new File(uri.path);
-            var fs:* = new FileStream();
+      private var _openDict:Dictionary;
+
+      override public function load(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, cache:ICache, forcedAdapter:Class, singleFile:Boolean) : void {
+         var file:File = null;
+         var fs:FileStream = null;
+         if(singleFile)
+         {
+            singleLoadingFile[uri]=observer;
+            file=new File(uri.path);
+            fs=new FileStream();
+            fs.addEventListener(Event.COMPLETE,this.onOpenAsyncComplete);
+            this._openDict[fs]=
+               {
+                  uri:uri,
+                  observer:observer,
+                  adapter:forcedAdapter,
+                  dispatchProgress:dispatchProgress
+               }
+            ;
             try
             {
-                fs.open(file, FileMode.READ);
+               fs.openAsync(file,FileMode.READ);
             }
-            catch (e:IOError)
+            catch(e:IOError)
             {
-                onFailed(uri, e.toString(), e.errorID);
-                return;
+               onFailed(uri,e.toString(),e.errorID);
             }
-            var ba:* = new ByteArray();
-            fs.readBytes(ba);
-            fs.close();
-            getAdapter(uri, forcedAdapter);
-            _adapter.loadFromData(uri, ba, observer, dispatchProgress);
-            return;
-        }// end function
-
-        override protected function extractPath(param1:String) : String
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (param1.indexOf("..") != -1)
+         }
+         else
+         {
+            if(loadingFile[getUrl(uri)])
             {
-                if (param1.indexOf("./") == 0)
-                {
-                    _loc_2 = File.applicationDirectory.nativePath + File.separator + param1;
-                }
-                else if (param1.indexOf("/./") != -1)
-                {
-                    _loc_2 = File.applicationDirectory.nativePath + File.separator + param1.substr(param1.indexOf("/./") + 3);
-                }
-                else
-                {
-                    _loc_2 = param1;
-                }
-                _loc_3 = new File(_loc_2);
-                param1 = _loc_3.url.replace("file:///", "");
-            }
-            if (param1.indexOf("\\\\") != -1)
-            {
-                param1 = "file://" + param1.substr(param1.indexOf("\\\\"));
-            }
-            return param1;
-        }// end function
-
-        override public function onLoaded(param1:Uri, param2:uint, param3) : void
-        {
-            var _loc_4:* = null;
-            var _loc_6:* = null;
-            if (param1.fileType == "swf" && param1.tag != null && param1.tag is Uri)
-            {
-                _loc_4 = param1.tag;
-            }
-            else if (param1.fileType == "swl" && param1.tag != null && param1.tag.oldUri != null && param1.tag.oldUri is Uri)
-            {
-                _loc_4 = param1.tag.oldUri;
-            }
-            else if (param1.tag != null && param1.tag is Uri)
-            {
-                _loc_4 = param1.tag;
+               loadingFile[getUrl(uri)].push(observer);
             }
             else
             {
-                _loc_4 = param1;
+               loadingFile[getUrl(uri)]=[observer];
+               file=new File(uri.path);
+               fs=new FileStream();
+               fs.addEventListener(Event.COMPLETE,this.onOpenAsyncComplete);
+               this._openDict[fs]=
+                  {
+                     uri:uri,
+                     observer:observer,
+                     adapter:forcedAdapter,
+                     dispatchProgress:dispatchProgress
+                  }
+               ;
+               try
+               {
+                  fs.openAsync(file,FileMode.READ);
+               }
+               catch(e:IOError)
+               {
+                  trace(e.message);
+                  onFailed(uri,e.toString(),e.errorID);
+               }
             }
-            var _loc_5:* = singleLoadingFile[param1];
-            if (singleLoadingFile[param1])
-            {
-                _loc_5.onLoaded(_loc_4, param2, param3);
-                delete singleLoadingFile[param1];
-            }
-            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
-            {
-                _loc_6 = loadingFile[getUrl(param1)];
-                delete loadingFile[getUrl(param1)];
-                for each (_loc_5 in _loc_6)
-                {
-                    
-                    IResourceObserver(_loc_5).onLoaded(_loc_4, param2, param3);
-                }
-            }
-            return;
-        }// end function
+         }
+      }
 
-        override public function onFailed(param1:Uri, param2:String, param3:uint) : void
-        {
-            var _loc_5:* = null;
-            trace("Fail to load: " + param1);
-            var _loc_4:* = singleLoadingFile[param1];
-            if (singleLoadingFile[param1])
-            {
-                _loc_4.onFailed(param1, param2, param3);
-                delete singleLoadingFile[param1];
-            }
-            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
-            {
-                _loc_5 = loadingFile[getUrl(param1)];
-                delete loadingFile[getUrl(param1)];
-                for each (_loc_4 in _loc_5)
-                {
-                    
-                    IResourceObserver(_loc_4).onFailed(param1, param2, param3);
-                }
-            }
-            return;
-        }// end function
+      private function onOpenAsyncComplete(e:Event) : void {
+         var fs:FileStream = e.target as FileStream;
+         var ba:ByteArray = new ByteArray();
+         fs.position=0;
+         fs.readBytes(ba);
+         fs.close();
+         fs.removeEventListener(Event.COMPLETE,this.onOpenAsyncComplete);
+         var args:Object = this._openDict[fs];
+         getAdapter(args.uri,args.adapter);
+         _adapter.loadFromData(args.uri,ba,new ResourceObserverWrapper(this.onLoaded,this.onFailed,this.onProgress),args.dispatchProgress);
+         delete this._openDict[[fs]];
+      }
 
-        override public function onProgress(param1:Uri, param2:uint, param3:uint) : void
-        {
-            var _loc_5:* = null;
-            var _loc_4:* = singleLoadingFile[param1];
-            if (singleLoadingFile[param1])
-            {
-                _loc_4.onProgress(param1, param2, param3);
-                delete singleLoadingFile[param1];
-            }
-            else if (loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)] && loadingFile[getUrl(param1)].length)
-            {
-                _loc_5 = loadingFile[getUrl(param1)];
-                delete loadingFile[getUrl(param1)];
-                for each (_loc_4 in _loc_5)
-                {
-                    
-                    IResourceObserver(_loc_4).onProgress(param1, param2, param3);
-                }
-            }
+      override protected function loadDirectly(uri:Uri, observer:IResourceObserver, dispatchProgress:Boolean, forcedAdapter:Class) : void {
+         var file:File = new File(uri.path);
+         var fs:FileStream = new FileStream();
+         try
+         {
+            fs.open(file,FileMode.READ);
+         }
+         catch(e:IOError)
+         {
+            onFailed(uri,e.toString(),e.errorID);
             return;
-        }// end function
+         }
+         var ba:ByteArray = new ByteArray();
+         fs.readBytes(ba);
+         fs.close();
+         getAdapter(uri,forcedAdapter);
+         _adapter.loadFromData(uri,ba,observer,dispatchProgress);
+      }
 
-    }
+      override protected function extractPath(path:String) : String {
+         var absolutePath:String = null;
+         var absoluteFile:File = null;
+         if(path.indexOf("..")!=-1)
+         {
+            if(path.indexOf("./")==0)
+            {
+               absolutePath=File.applicationDirectory.nativePath+File.separator+path;
+            }
+            else
+            {
+               if(path.indexOf("/./")!=-1)
+               {
+                  absolutePath=File.applicationDirectory.nativePath+File.separator+path.substr(path.indexOf("/./")+3);
+               }
+               else
+               {
+                  absolutePath=path;
+               }
+            }
+            absoluteFile=new File(absolutePath);
+            path=absoluteFile.url.replace("file:///","");
+         }
+         if(path.indexOf("\\\\")!=-1)
+         {
+            path="file://"+path.substr(path.indexOf("\\\\"));
+         }
+         return path;
+      }
+
+      override public function onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
+         var currentUri:Uri = null;
+         var waiting:Array = null;
+         if((uri.fileType=="swf")&&(!(uri.tag==null))&&(uri.tag is Uri))
+         {
+            currentUri=uri.tag;
+         }
+         else
+         {
+            if((uri.fileType=="swl")&&(!(uri.tag==null))&&(!(uri.tag.oldUri==null))&&(uri.tag.oldUri is Uri))
+            {
+               currentUri=uri.tag.oldUri;
+            }
+            else
+            {
+               if((!(uri.tag==null))&&(uri.tag is Uri))
+               {
+                  currentUri=uri.tag;
+               }
+               else
+               {
+                  currentUri=uri;
+               }
+            }
+         }
+         var observer:IResourceObserver = singleLoadingFile[uri];
+         if(observer)
+         {
+            observer.onLoaded(currentUri,resourceType,resource);
+            delete singleLoadingFile[[uri]];
+         }
+         else
+         {
+            if((loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)].length))
+            {
+               waiting=loadingFile[getUrl(uri)];
+               delete loadingFile[[getUrl(uri)]];
+               for each (observer in waiting)
+               {
+                  IResourceObserver(observer).onLoaded(currentUri,resourceType,resource);
+               }
+            }
+         }
+      }
+
+      override public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         var waiting:Array = null;
+         trace("Fail to load: "+uri);
+         var observer:IResourceObserver = singleLoadingFile[uri];
+         if(observer)
+         {
+            observer.onFailed(uri,errorMsg,errorCode);
+            delete singleLoadingFile[[uri]];
+         }
+         else
+         {
+            if((loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)].length))
+            {
+               waiting=loadingFile[getUrl(uri)];
+               delete loadingFile[[getUrl(uri)]];
+               for each (observer in waiting)
+               {
+                  IResourceObserver(observer).onFailed(uri,errorMsg,errorCode);
+               }
+            }
+         }
+      }
+
+      override public function onProgress(uri:Uri, bytesLoaded:uint, bytesTotal:uint) : void {
+         var waiting:Array = null;
+         var observer:IResourceObserver = singleLoadingFile[uri];
+         if(observer)
+         {
+            observer.onProgress(uri,bytesLoaded,bytesTotal);
+            delete singleLoadingFile[[uri]];
+         }
+         else
+         {
+            if((loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)])&&(loadingFile[getUrl(uri)].length))
+            {
+               waiting=loadingFile[getUrl(uri)];
+               delete loadingFile[[getUrl(uri)]];
+               for each (observer in waiting)
+               {
+                  IResourceObserver(observer).onProgress(uri,bytesLoaded,bytesTotal);
+               }
+            }
+         }
+      }
+   }
+
 }

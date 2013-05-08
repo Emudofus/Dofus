@@ -1,133 +1,121 @@
-﻿package com.ankamagames.dofus.logic.game.approach.frames
+package com.ankamagames.dofus.logic.game.approach.frames
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.misc.*;
-    import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.kernel.updater.*;
-    import com.ankamagames.dofus.logic.game.approach.actions.*;
-    import com.ankamagames.dofus.logic.game.approach.managers.*;
-    import com.ankamagames.dofus.logic.game.approach.utils.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.messages.game.packs.*;
-    import com.ankamagames.dofus.network.messages.updater.parts.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.approach.actions.GetPartsListAction;
+   import com.ankamagames.dofus.network.messages.updater.parts.GetPartsListMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.PartsListMessage;
+   import com.ankamagames.dofus.logic.game.approach.actions.DownloadPartAction;
+   import com.ankamagames.dofus.logic.game.approach.actions.GetPartInfoAction;
+   import com.ankamagames.dofus.network.messages.updater.parts.GetPartInfoMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.PartInfoMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.DownloadCurrentSpeedMessage;
+   import com.ankamagames.dofus.network.messages.game.packs.PackRestrictedSubAreaMessage;
+   import com.ankamagames.dofus.datacenter.world.SubArea;
+   import com.ankamagames.dofus.datacenter.misc.Pack;
+   import com.ankamagames.dofus.network.messages.updater.parts.DownloadErrorMessage;
+   import com.ankamagames.dofus.kernel.updater.UpdaterConnexionHandler;
+   import com.ankamagames.dofus.logic.game.approach.managers.PartManager;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.logic.game.common.managers.InactivityManager;
+   import com.ankamagames.dofus.logic.game.approach.utils.DownloadMonitoring;
 
-    public class UpdaterDialogFrame extends Object implements Frame
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(UpdaterDialogFrame));
 
-        public function UpdaterDialogFrame()
-        {
-            return;
-        }// end function
+   public class UpdaterDialogFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.LOWEST;
-        }// end function
+      public function UpdaterDialogFrame() {
+         super();
+      }
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UpdaterDialogFrame));
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            switch(true)
-            {
-                case param1 is GetPartsListAction:
-                {
-                    _loc_2 = param1 as GetPartsListAction;
-                    _loc_3 = new GetPartsListMessage();
-                    _loc_3.initGetPartsListMessage();
-                    UpdaterConnexionHandler.getConnection().send(_loc_3);
-                    return true;
-                }
-                case param1 is PartsListMessage:
-                {
-                    _loc_4 = param1 as PartsListMessage;
-                    PartManager.getInstance().receiveParts(_loc_4.parts);
-                    KernelEventsManager.getInstance().processCallback(HookList.PartsList, _loc_4.parts);
-                    return true;
-                }
-                case param1 is DownloadPartAction:
-                {
-                    _loc_5 = param1 as DownloadPartAction;
-                    PartManager.getInstance().checkAndDownload(_loc_5.id);
-                    return true;
-                }
-                case param1 is GetPartInfoAction:
-                {
-                    _loc_6 = param1 as GetPartInfoAction;
-                    _loc_7 = new GetPartInfoMessage();
-                    _loc_7.initGetPartInfoMessage(_loc_6.id);
-                    UpdaterConnexionHandler.getConnection().send(_loc_7);
-                    return true;
-                }
-                case param1 is PartInfoMessage:
-                {
-                    _loc_8 = param1 as PartInfoMessage;
-                    InactivityManager.getInstance().activity();
-                    PartManager.getInstance().updatePart(_loc_8.part);
-                    _loc_9 = PartManager.getInstance().getDownloadPercent(_loc_8.installationPercent);
-                    KernelEventsManager.getInstance().processCallback(HookList.PartInfo, _loc_8.part, _loc_9);
-                    return true;
-                }
-                case param1 is DownloadCurrentSpeedMessage:
-                {
-                    _loc_10 = param1 as DownloadCurrentSpeedMessage;
-                    DownloadMonitoring.getInstance().downloadSpeed = _loc_10.downloadSpeed;
-                    KernelEventsManager.getInstance().processCallback(HookList.DownloadSpeed, _loc_10.downloadSpeed);
-                    return true;
-                }
-                case param1 is PackRestrictedSubAreaMessage:
-                {
-                    _loc_11 = param1 as PackRestrictedSubAreaMessage;
-                    _loc_12 = SubArea.getSubAreaById(_loc_11.subAreaId);
-                    _loc_13 = Pack.getPackById(_loc_12.packId);
-                    if (_loc_13.name == "subscribed")
-                    {
-                        PartManager.getInstance().checkAndDownload("all");
-                    }
-                    PartManager.getInstance().checkAndDownload(_loc_13.name);
-                    KernelEventsManager.getInstance().processCallback(HookList.PackRestrictedSubArea, _loc_11.subAreaId);
-                    return true;
-                }
-                case param1 is DownloadErrorMessage:
-                {
-                    _loc_14 = param1 as DownloadErrorMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.DownloadError, _loc_14.errorId, _loc_14.message.length > 0 ? (_loc_14.message) : (null), _loc_14.helpUrl.length > 0 ? (_loc_14.helpUrl) : (null));
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function get priority() : int {
+         return Priority.LOWEST;
+      }
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-    }
+      public function process(msg:Message) : Boolean {
+         var gpla:GetPartsListAction = null;
+         var gplmsg:GetPartsListMessage = null;
+         var plmsg:PartsListMessage = null;
+         var dpa:DownloadPartAction = null;
+         var gpia:GetPartInfoAction = null;
+         var gpimsg:GetPartInfoMessage = null;
+         var pimsg:PartInfoMessage = null;
+         var percent:* = 0;
+         var dcsmsg:DownloadCurrentSpeedMessage = null;
+         var prsamsg:PackRestrictedSubAreaMessage = null;
+         var subArea:SubArea = null;
+         var pack:Pack = null;
+         var demsg:DownloadErrorMessage = null;
+         switch(true)
+         {
+            case msg is GetPartsListAction:
+               gpla=msg as GetPartsListAction;
+               gplmsg=new GetPartsListMessage();
+               gplmsg.initGetPartsListMessage();
+               UpdaterConnexionHandler.getConnection().send(gplmsg);
+               return true;
+            case msg is PartsListMessage:
+               plmsg=msg as PartsListMessage;
+               PartManager.getInstance().receiveParts(plmsg.parts);
+               KernelEventsManager.getInstance().processCallback(HookList.PartsList,plmsg.parts);
+               return true;
+            case msg is DownloadPartAction:
+               dpa=msg as DownloadPartAction;
+               PartManager.getInstance().checkAndDownload(dpa.id);
+               return true;
+            case msg is GetPartInfoAction:
+               gpia=msg as GetPartInfoAction;
+               gpimsg=new GetPartInfoMessage();
+               gpimsg.initGetPartInfoMessage(gpia.id);
+               UpdaterConnexionHandler.getConnection().send(gpimsg);
+               return true;
+            case msg is PartInfoMessage:
+               pimsg=msg as PartInfoMessage;
+               InactivityManager.getInstance().activity();
+               PartManager.getInstance().updatePart(pimsg.part);
+               percent=PartManager.getInstance().getDownloadPercent(pimsg.installationPercent);
+               KernelEventsManager.getInstance().processCallback(HookList.PartInfo,pimsg.part,percent);
+               return true;
+            case msg is DownloadCurrentSpeedMessage:
+               dcsmsg=msg as DownloadCurrentSpeedMessage;
+               DownloadMonitoring.getInstance().downloadSpeed=dcsmsg.downloadSpeed;
+               KernelEventsManager.getInstance().processCallback(HookList.DownloadSpeed,dcsmsg.downloadSpeed);
+               return true;
+            case msg is PackRestrictedSubAreaMessage:
+               prsamsg=msg as PackRestrictedSubAreaMessage;
+               subArea=SubArea.getSubAreaById(prsamsg.subAreaId);
+               pack=Pack.getPackById(subArea.packId);
+               if(pack.name=="subscribed")
+               {
+                  PartManager.getInstance().checkAndDownload("all");
+               }
+               PartManager.getInstance().checkAndDownload(pack.name);
+               KernelEventsManager.getInstance().processCallback(HookList.PackRestrictedSubArea,prsamsg.subAreaId);
+               return true;
+            case msg is DownloadErrorMessage:
+               demsg=msg as DownloadErrorMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.DownloadError,demsg.errorId,demsg.message.length<0?demsg.message:null,demsg.helpUrl.length<0?demsg.helpUrl:null);
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function pulled() : Boolean {
+         return true;
+      }
+   }
+
 }

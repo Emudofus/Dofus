@@ -1,245 +1,216 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import com.ankamagames.dofus.types.events.*;
-    import com.ankamagames.jerakine.json.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.events.*;
-    import flash.net.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.net.URLLoader;
+   import flash.net.URLRequest;
+   import flash.events.Event;
+   import com.ankamagames.dofus.types.events.RpcEvent;
+   import com.ankamagames.jerakine.json.JSON;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
+   import flash.net.URLRequestMethod;
 
-    public class RpcServiceManager extends EventDispatcher
-    {
-        private var _loader:URLLoader;
-        private var _request:URLRequest;
-        private var _service:String;
-        private var _params:Object;
-        private var _method:String;
-        private var _result:Object;
-        private var _type:String;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(RpcServiceManager));
-        public static const SERVER_ERROR:String = "InternalServerError";
 
-        public function RpcServiceManager(param1:String = "", param2:String = "")
-        {
-            if (param1 != "")
-            {
-                this.service = param1;
-            }
-            if (param2 != "")
-            {
-                this.type = param2;
-            }
-            return;
-        }// end function
+   public class RpcServiceManager extends EventDispatcher
+   {
+         
 
-        private function onComplete(event:Event) : void
-        {
-            var _loc_2:* = true;
-            if (this._type == "json")
-            {
-                _loc_2 = this.formateJsonResult(event.currentTarget.data);
-            }
-            else
-            {
-                _loc_2 = false;
-            }
-            if (_loc_2)
-            {
-                dispatchEvent(new RpcEvent(RpcEvent.EVENT_DATA, this._method, this._result));
-                dispatchEvent(event);
-            }
-            else
-            {
-                dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR, this._method, this._result));
-                dispatchEvent(new Event(SERVER_ERROR));
-            }
-            return;
-        }// end function
+      public function RpcServiceManager(pServiceName:String="", pType:String="") {
+         super();
+         if(pServiceName!="")
+         {
+            this.service=pServiceName;
+         }
+         if(pType!="")
+         {
+            this.type=pType;
+         }
+      }
 
-        private function formateJsonResult(param1:String) : Boolean
-        {
-            var de:Object;
-            var data:* = param1;
-            try
-            {
-                de = JSON.decode(data);
-            }
-            catch (e:Error)
-            {
-                _log.error("Can\'t decode string, JSON required !!");
-                return false;
-            }
-            if (de == null)
-            {
-                _log.error("No information received from the server ...");
-                return false;
-            }
-            if (de.error != null)
-            {
-                switch(typeof(de.error))
-                {
-                    case "string":
-                    case "number":
-                    {
-                        _log.error("ERROR RPC SERVICE: " + de.error + (de.type != null ? (", " + de.type) : ("")) + (de.message != null ? (", " + de.message) : ("")));
-                        break;
-                    }
-                    case "object":
-                    {
-                        _log.error((de.error.type != null ? (de.error.type) : (de.error.code)) + " -> " + de.error.message);
-                        break;
-                    }
-                    default:
-                    {
-                        _log.error("ERROR RPC SERVICE: " + de.error);
-                        break;
-                    }
-                }
-                return false;
-            }
-            this._result = de.result;
-            return this._result is Boolean && this._result || !(!(this._result is Boolean) && this._result.success != null && this._result.success == false);
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(RpcServiceManager));
 
-        private function createRpcObject(param1:String) : Object
-        {
-            var _loc_2:* = new Object();
+      public static const SERVER_ERROR:String = "InternalServerError";
+
+      private var _loader:URLLoader;
+
+      private var _request:URLRequest;
+
+      private var _service:String;
+
+      private var _params;
+
+      private var _method:String;
+
+      private var _result:Object;
+
+      private var _type:String;
+
+      private function onComplete(pEvt:Event) : void {
+         var value:Boolean = true;
+         if(this._type=="json")
+         {
+            value=this.formateJsonResult(pEvt.currentTarget.data);
+         }
+         else
+         {
+            value=false;
+         }
+         if(value)
+         {
+            dispatchEvent(new RpcEvent(RpcEvent.EVENT_DATA,this._method,this._result));
+            dispatchEvent(pEvt);
+         }
+         else
+         {
+            dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR,this._method,this._result));
+            dispatchEvent(new Event(SERVER_ERROR));
+         }
+      }
+
+      private function formateJsonResult(data:String) : Boolean {
+         var de:Object = null;
+         try
+         {
+            de=com.ankamagames.jerakine.json.JSON.decode(data);
+         }
+         catch(e:Error)
+         {
+            _log.error("Can\'t decode string, JSON required !!");
+            return false;
+         }
+         if(de==null)
+         {
+            _log.error("No information received from the server ...");
+            return false;
+         }
+         if(de.error!=null)
+         {
+            switch(typeof de.error)
+            {
+               case "string":
+               case "number":
+                  _log.error("ERROR RPC SERVICE: "+de.error+(!(de.type==null)?", "+de.type:"")+(!(de.message==null)?", "+de.message:""));
+                  break;
+               case "object":
+                  _log.error((!(de.error.type==null)?de.error.type:de.error.code)+" -> "+de.error.message);
+                  break;
+               default:
+                  _log.error("ERROR RPC SERVICE: "+de.error);
+            }
+            return false;
+         }
+         this._result=de.result;
+         return (this._result is Boolean)&&(this._result)||(!((!(this._result is Boolean))&&(!(this._result.success==null))&&(this._result.success==false)));
+      }
+
+      private function createRpcObject(method:String) : Object {
+         var rpcObject:Object = new Object();
+         switch(this._type)
+         {
+            case "json":
+               rpcObject.method=method;
+               rpcObject.params=this._params;
+               rpcObject.id=1;
+               break;
+            case "xml":
+               break;
+         }
+         return rpcObject;
+      }
+
+      public function destroy() : void {
+         if(this._loader.hasEventListener(Event.COMPLETE))
+         {
+            this._loader.removeEventListener(Event.COMPLETE,this.onComplete);
+         }
+         if(this._loader.hasEventListener(IOErrorEvent.IO_ERROR))
+         {
+            this._loader.removeEventListener(IOErrorEvent.IO_ERROR,this.onError);
+         }
+         if(this._loader.hasEventListener(SecurityErrorEvent.SECURITY_ERROR))
+         {
+            this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onError);
+         }
+         this._loader=null;
+         this._request=null;
+      }
+
+      public function getAllResultData() : * {
+         return this._result;
+      }
+
+      public function getResultData(name:String) : * {
+         if(this._result==null)
+         {
+            return null;
+         }
+         return this._result[name];
+      }
+
+      public function callMethod(name:String, params:*) : void {
+         var obj:Object = null;
+         this._method=name;
+         this._params=params;
+         if((this._request==null)||(this._loader==null))
+         {
+            throw new Error("there is no data to handle ...");
+         }
+         else
+         {
+            obj=this.createRpcObject(name);
             switch(this._type)
             {
-                case "json":
-                {
-                    _loc_2.method = param1;
-                    _loc_2.params = this._params;
-                    _loc_2.id = 1;
-                    break;
-                }
-                case "xml":
-                {
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
+               case "json":
+                  this._request.data=com.ankamagames.jerakine.json.JSON.encode(obj);
+                  break;
+               case "xml":
+                  throw new Error("Not implemented yet");
+                  break;
             }
-            return _loc_2;
-        }// end function
-
-        public function destroy() : void
-        {
-            if (this._loader.hasEventListener(Event.COMPLETE))
-            {
-                this._loader.removeEventListener(Event.COMPLETE, this.onComplete);
-            }
-            if (this._loader.hasEventListener(IOErrorEvent.IO_ERROR))
-            {
-                this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.onError);
-            }
-            if (this._loader.hasEventListener(SecurityErrorEvent.SECURITY_ERROR))
-            {
-                this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onError);
-            }
-            this._loader = null;
-            this._request = null;
-            return;
-        }// end function
-
-        public function getAllResultData()
-        {
-            return this._result;
-        }// end function
-
-        public function getResultData(param1:String)
-        {
-            if (this._result == null)
-            {
-                return null;
-            }
-            return this._result[param1];
-        }// end function
-
-        public function callMethod(param1:String, param2) : void
-        {
-            var _loc_3:* = null;
-            this._method = param1;
-            this._params = param2;
-            if (this._request == null || this._loader == null)
-            {
-                throw new Error("there is no data to handle ...");
-            }
-            _loc_3 = this.createRpcObject(param1);
-            switch(this._type)
-            {
-                case "json":
-                {
-                    this._request.data = JSON.encode(_loc_3);
-                    break;
-                }
-                case "xml":
-                {
-                    throw new Error("Not implemented yet");
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            this._request.method = URLRequestMethod.POST;
+            this._request.method=URLRequestMethod.POST;
             this._loader.load(this._request);
             return;
-        }// end function
+         }
+      }
 
-        public function set type(param1:String) : void
-        {
-            param1 = param1.toLowerCase();
-            switch(param1)
-            {
-                case "json":
-                case "jsonrpc":
-                {
-                    this._type = "json";
-                    break;
-                }
-                case "xmlrpc":
-                case "xml":
-                {
-                }
-                default:
-                {
-                    this._type = "xml";
-                    break;
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public function set type(val:String) : void {
+         var val:String = val.toLowerCase();
+         switch(val)
+         {
+            case "json":
+            case "jsonrpc":
+               this._type="json";
+               break;
+            case "xmlrpc":
+            case "xml":
+         }
+         this._type="xml";
+      }
 
-        public function set service(param1:String) : void
-        {
-            this._service = param1;
-            this._request = new URLRequest(param1);
-            this._loader = new URLLoader();
-            this._loader.addEventListener(Event.COMPLETE, this.onComplete);
-            this._loader.addEventListener(IOErrorEvent.IO_ERROR, this.onError);
-            this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onError);
-            return;
-        }// end function
+      public function set service(val:String) : void {
+         this._service=val;
+         this._request=new URLRequest(val);
+         this._loader=new URLLoader();
+         this._loader.addEventListener(Event.COMPLETE,this.onComplete);
+         this._loader.addEventListener(IOErrorEvent.IO_ERROR,this.onError);
+         this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onError);
+      }
 
-        private function onError(event:Event) : void
-        {
-            dispatchEvent(event);
-            dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR, this._method, null));
-            return;
-        }// end function
+      private function onError(pEvt:Event) : void {
+         dispatchEvent(pEvt);
+         dispatchEvent(new RpcEvent(RpcEvent.EVENT_ERROR,this._method,null));
+      }
 
-        public function get requestData()
-        {
-            if (this._request == null)
-            {
-                return null;
-            }
-            return JSON.decode(this._request.data as String);
-        }// end function
+      public function get requestData() : * {
+         if(this._request==null)
+         {
+            return null;
+         }
+         return com.ankamagames.jerakine.json.JSON.decode(this._request.data as String);
+      }
+   }
 
-    }
 }

@@ -1,135 +1,143 @@
-﻿package com.ankamagames.dofus.network.types.game.data.items
+package com.ankamagames.dofus.network.types.game.data.items
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.data.items.effects.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class BidExchangerObjectInfo extends Object implements INetworkType
-    {
-        public var objectUID:uint = 0;
-        public var powerRate:int = 0;
-        public var overMax:Boolean = false;
-        public var effects:Vector.<ObjectEffect>;
-        public var prices:Vector.<uint>;
-        public static const protocolId:uint = 122;
 
-        public function BidExchangerObjectInfo()
-        {
-            this.effects = new Vector.<ObjectEffect>;
-            this.prices = new Vector.<uint>;
-            return;
-        }// end function
+   public class BidExchangerObjectInfo extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 122;
-        }// end function
+      public function BidExchangerObjectInfo() {
+         this.effects=new Vector.<ObjectEffect>();
+         this.prices=new Vector.<uint>();
+         super();
+      }
 
-        public function initBidExchangerObjectInfo(param1:uint = 0, param2:int = 0, param3:Boolean = false, param4:Vector.<ObjectEffect> = null, param5:Vector.<uint> = null) : BidExchangerObjectInfo
-        {
-            this.objectUID = param1;
-            this.powerRate = param2;
-            this.overMax = param3;
-            this.effects = param4;
-            this.prices = param5;
-            return this;
-        }// end function
+      public static const protocolId:uint = 122;
 
-        public function reset() : void
-        {
-            this.objectUID = 0;
-            this.powerRate = 0;
-            this.overMax = false;
-            this.effects = new Vector.<ObjectEffect>;
-            this.prices = new Vector.<uint>;
-            return;
-        }// end function
+      public var objectUID:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_BidExchangerObjectInfo(param1);
-            return;
-        }// end function
+      public var powerRate:int = 0;
 
-        public function serializeAs_BidExchangerObjectInfo(param1:IDataOutput) : void
-        {
-            if (this.objectUID < 0)
+      public var overMax:Boolean = false;
+
+      public var effects:Vector.<ObjectEffect>;
+
+      public var prices:Vector.<uint>;
+
+      public function getTypeId() : uint {
+         return 122;
+      }
+
+      public function initBidExchangerObjectInfo(objectUID:uint=0, powerRate:int=0, overMax:Boolean=false, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : BidExchangerObjectInfo {
+         this.objectUID=objectUID;
+         this.powerRate=powerRate;
+         this.overMax=overMax;
+         this.effects=effects;
+         this.prices=prices;
+         return this;
+      }
+
+      public function reset() : void {
+         this.objectUID=0;
+         this.powerRate=0;
+         this.overMax=false;
+         this.effects=new Vector.<ObjectEffect>();
+         this.prices=new Vector.<uint>();
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BidExchangerObjectInfo(output);
+      }
+
+      public function serializeAs_BidExchangerObjectInfo(output:IDataOutput) : void {
+         if(this.objectUID<0)
+         {
+            throw new Error("Forbidden value ("+this.objectUID+") on element objectUID.");
+         }
+         else
+         {
+            output.writeInt(this.objectUID);
+            output.writeShort(this.powerRate);
+            output.writeBoolean(this.overMax);
+            output.writeShort(this.effects.length);
+            _i4=0;
+            while(_i4<this.effects.length)
             {
-                throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+               output.writeShort((this.effects[_i4] as ObjectEffect).getTypeId());
+               (this.effects[_i4] as ObjectEffect).serialize(output);
+               _i4++;
             }
-            param1.writeInt(this.objectUID);
-            param1.writeShort(this.powerRate);
-            param1.writeBoolean(this.overMax);
-            param1.writeShort(this.effects.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.effects.length)
+            output.writeShort(this.prices.length);
+            _i5=0;
+            while(_i5<this.prices.length)
             {
-                
-                param1.writeShort((this.effects[_loc_2] as ObjectEffect).getTypeId());
-                (this.effects[_loc_2] as ObjectEffect).serialize(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            param1.writeShort(this.prices.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.prices.length)
-            {
-                
-                if (this.prices[_loc_3] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.prices[_loc_3] + ") on element 5 (starting at 1) of prices.");
-                }
-                param1.writeInt(this.prices[_loc_3]);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_BidExchangerObjectInfo(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_BidExchangerObjectInfo(param1:IDataInput) : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            this.objectUID = param1.readInt();
-            if (this.objectUID < 0)
-            {
-                throw new Error("Forbidden value (" + this.objectUID + ") on element of BidExchangerObjectInfo.objectUID.");
-            }
-            this.powerRate = param1.readShort();
-            this.overMax = param1.readBoolean();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_6 = param1.readUnsignedShort();
-                _loc_7 = ProtocolTypeManager.getInstance(ObjectEffect, _loc_6);
-                _loc_7.deserialize(param1);
-                this.effects.push(_loc_7);
-                _loc_3 = _loc_3 + 1;
-            }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_8 = param1.readInt();
-                if (_loc_8 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_8 + ") on elements of prices.");
-                }
-                this.prices.push(_loc_8);
-                _loc_5 = _loc_5 + 1;
+               if(this.prices[_i5]<0)
+               {
+                  throw new Error("Forbidden value ("+this.prices[_i5]+") on element 5 (starting at 1) of prices.");
+               }
+               else
+               {
+                  output.writeInt(this.prices[_i5]);
+                  _i5++;
+                  continue;
+               }
             }
             return;
-        }// end function
+         }
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BidExchangerObjectInfo(input);
+      }
+
+      public function deserializeAs_BidExchangerObjectInfo(input:IDataInput) : void {
+         var _id4:uint = 0;
+         var _item4:ObjectEffect = null;
+         var _val5:uint = 0;
+         this.objectUID=input.readInt();
+         if(this.objectUID<0)
+         {
+            throw new Error("Forbidden value ("+this.objectUID+") on element of BidExchangerObjectInfo.objectUID.");
+         }
+         else
+         {
+            this.powerRate=input.readShort();
+            this.overMax=input.readBoolean();
+            _effectsLen=input.readUnsignedShort();
+            _i4=0;
+            while(_i4<_effectsLen)
+            {
+               _id4=input.readUnsignedShort();
+               _item4=ProtocolTypeManager.getInstance(ObjectEffect,_id4);
+               _item4.deserialize(input);
+               this.effects.push(_item4);
+               _i4++;
+            }
+            _pricesLen=input.readUnsignedShort();
+            _i5=0;
+            while(_i5<_pricesLen)
+            {
+               _val5=input.readInt();
+               if(_val5<0)
+               {
+                  throw new Error("Forbidden value ("+_val5+") on elements of prices.");
+               }
+               else
+               {
+                  this.prices.push(_val5);
+                  _i5++;
+                  continue;
+               }
+            }
+            return;
+         }
+      }
+   }
+
 }

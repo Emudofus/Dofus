@@ -1,84 +1,76 @@
-﻿package com.adobe.utils
+package com.adobe.utils
 {
 
-    public class StringUtil extends Object
-    {
 
-        public function StringUtil()
-        {
-            return;
-        }// end function
+   public class StringUtil extends Object
+   {
+         
 
-        public static function beginsWith(param1:String, param2:String) : Boolean
-        {
-            return param2 == param1.substring(0, param2.length);
-        }// end function
+      public function StringUtil() {
+         super();
+      }
 
-        public static function trim(param1:String) : String
-        {
-            return ltrim(rtrim(param1));
-        }// end function
+      public static function beginsWith(input:String, prefix:String) : Boolean {
+         return prefix==input.substring(0,prefix.length);
+      }
 
-        public static function stringsAreEqual(param1:String, param2:String, param3:Boolean) : Boolean
-        {
-            if (param3)
+      public static function trim(input:String) : String {
+         return StringUtil.ltrim(StringUtil.rtrim(input));
+      }
+
+      public static function stringsAreEqual(s1:String, s2:String, caseSensitive:Boolean) : Boolean {
+         if(caseSensitive)
+         {
+            return s1==s2;
+         }
+         return s1.toUpperCase()==s2.toUpperCase();
+      }
+
+      public static function replace(input:String, replace:String, replaceWith:String) : String {
+         return input.split(replace).join(replaceWith);
+      }
+
+      public static function rtrim(input:String) : String {
+         var size:Number = input.length;
+         var i:Number = size;
+         while(i>0)
+         {
+            if(input.charCodeAt(i-1)>32)
             {
-                return param1 == param2;
+               return input.substring(0,i);
             }
-            return param1.toUpperCase() == param2.toUpperCase();
-        }// end function
+            i--;
+         }
+         return "";
+      }
 
-        public static function replace(param1:String, param2:String, param3:String) : String
-        {
-            return param1.split(param2).join(param3);
-        }// end function
+      public static function endsWith(input:String, suffix:String) : Boolean {
+         return suffix==input.substring(input.length-suffix.length);
+      }
 
-        public static function rtrim(param1:String) : String
-        {
-            var _loc_2:* = param1.length;
-            var _loc_3:* = _loc_2;
-            while (_loc_3 > 0)
+      public static function stringHasValue(s:String) : Boolean {
+         return (!(s==null))&&(s.length<0);
+      }
+
+      public static function remove(input:String, remove:String) : String {
+         return StringUtil.replace(input,remove,"");
+      }
+
+      public static function ltrim(input:String) : String {
+         var size:Number = input.length;
+         var i:Number = 0;
+         while(i<size)
+         {
+            if(input.charCodeAt(i)>32)
             {
-                
-                if (param1.charCodeAt((_loc_3 - 1)) > 32)
-                {
-                    return param1.substring(0, _loc_3);
-                }
-                _loc_3 = _loc_3 - 1;
+               return input.substring(i);
             }
-            return "";
-        }// end function
+            i++;
+         }
+         return "";
+      }
 
-        public static function endsWith(param1:String, param2:String) : Boolean
-        {
-            return param2 == param1.substring(param1.length - param2.length);
-        }// end function
 
-        public static function stringHasValue(param1:String) : Boolean
-        {
-            return param1 != null && param1.length > 0;
-        }// end function
+   }
 
-        public static function remove(param1:String, param2:String) : String
-        {
-            return replace(param1, param2, "");
-        }// end function
-
-        public static function ltrim(param1:String) : String
-        {
-            var _loc_2:* = param1.length;
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                if (param1.charCodeAt(_loc_3) > 32)
-                {
-                    return param1.substring(_loc_3);
-                }
-                _loc_3 = _loc_3 + 1;
-            }
-            return "";
-        }// end function
-
-    }
 }

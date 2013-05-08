@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
+package com.ankamagames.dofus.network.messages.game.context.roleplay.objects
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ObjectGroundAddedMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var cellId:uint = 0;
-        public var objectGID:uint = 0;
-        public static const protocolId:uint = 3017;
 
-        public function ObjectGroundAddedMessage()
-        {
-            return;
-        }// end function
+   public class ObjectGroundAddedMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ObjectGroundAddedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 3017;
-        }// end function
+      public static const protocolId:uint = 3017;
 
-        public function initObjectGroundAddedMessage(param1:uint = 0, param2:uint = 0) : ObjectGroundAddedMessage
-        {
-            this.cellId = param1;
-            this.objectGID = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.cellId = 0;
-            this.objectGID = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var cellId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var objectGID:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ObjectGroundAddedMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 3017;
+      }
 
-        public function serializeAs_ObjectGroundAddedMessage(param1:IDataOutput) : void
-        {
-            if (this.cellId < 0 || this.cellId > 559)
+      public function initObjectGroundAddedMessage(cellId:uint=0, objectGID:uint=0) : ObjectGroundAddedMessage {
+         this.cellId=cellId;
+         this.objectGID=objectGID;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.cellId=0;
+         this.objectGID=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ObjectGroundAddedMessage(output);
+      }
+
+      public function serializeAs_ObjectGroundAddedMessage(output:IDataOutput) : void {
+         if((this.cellId>0)||(this.cellId<559))
+         {
+            throw new Error("Forbidden value ("+this.cellId+") on element cellId.");
+         }
+         else
+         {
+            output.writeShort(this.cellId);
+            if(this.objectGID<0)
             {
-                throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
+               throw new Error("Forbidden value ("+this.objectGID+") on element objectGID.");
             }
-            param1.writeShort(this.cellId);
-            if (this.objectGID < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+               output.writeShort(this.objectGID);
+               return;
             }
-            param1.writeShort(this.objectGID);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ObjectGroundAddedMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ObjectGroundAddedMessage(input);
+      }
 
-        public function deserializeAs_ObjectGroundAddedMessage(param1:IDataInput) : void
-        {
-            this.cellId = param1.readShort();
-            if (this.cellId < 0 || this.cellId > 559)
+      public function deserializeAs_ObjectGroundAddedMessage(input:IDataInput) : void {
+         this.cellId=input.readShort();
+         if((this.cellId>0)||(this.cellId<559))
+         {
+            throw new Error("Forbidden value ("+this.cellId+") on element of ObjectGroundAddedMessage.cellId.");
+         }
+         else
+         {
+            this.objectGID=input.readShort();
+            if(this.objectGID<0)
             {
-                throw new Error("Forbidden value (" + this.cellId + ") on element of ObjectGroundAddedMessage.cellId.");
+               throw new Error("Forbidden value ("+this.objectGID+") on element of ObjectGroundAddedMessage.objectGID.");
             }
-            this.objectGID = param1.readShort();
-            if (this.objectGID < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.objectGID + ") on element of ObjectGroundAddedMessage.objectGID.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

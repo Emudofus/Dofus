@@ -1,97 +1,99 @@
-﻿package com.ankamagames.dofus.network.messages.game.interactive.zaap
+package com.ankamagames.dofus.network.messages.game.interactive.zaap
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class TeleportRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var teleporterType:uint = 0;
-        public var mapId:uint = 0;
-        public static const protocolId:uint = 5961;
 
-        public function TeleportRequestMessage()
-        {
+   public class TeleportRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function TeleportRequestMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5961;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var teleporterType:uint = 0;
+
+      public var mapId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5961;
+      }
+
+      public function initTeleportRequestMessage(teleporterType:uint=0, mapId:uint=0) : TeleportRequestMessage {
+         this.teleporterType=teleporterType;
+         this.mapId=mapId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.teleporterType=0;
+         this.mapId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_TeleportRequestMessage(output);
+      }
+
+      public function serializeAs_TeleportRequestMessage(output:IDataOutput) : void {
+         output.writeByte(this.teleporterType);
+         if(this.mapId<0)
+         {
+            throw new Error("Forbidden value ("+this.mapId+") on element mapId.");
+         }
+         else
+         {
+            output.writeInt(this.mapId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_TeleportRequestMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5961;
-        }// end function
-
-        public function initTeleportRequestMessage(param1:uint = 0, param2:uint = 0) : TeleportRequestMessage
-        {
-            this.teleporterType = param1;
-            this.mapId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.teleporterType = 0;
-            this.mapId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_TeleportRequestMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_TeleportRequestMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.teleporterType);
-            if (this.mapId < 0)
+      public function deserializeAs_TeleportRequestMessage(input:IDataInput) : void {
+         this.teleporterType=input.readByte();
+         if(this.teleporterType<0)
+         {
+            throw new Error("Forbidden value ("+this.teleporterType+") on element of TeleportRequestMessage.teleporterType.");
+         }
+         else
+         {
+            this.mapId=input.readInt();
+            if(this.mapId<0)
             {
-                throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+               throw new Error("Forbidden value ("+this.mapId+") on element of TeleportRequestMessage.mapId.");
             }
-            param1.writeInt(this.mapId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_TeleportRequestMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_TeleportRequestMessage(param1:IDataInput) : void
-        {
-            this.teleporterType = param1.readByte();
-            if (this.teleporterType < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.teleporterType + ") on element of TeleportRequestMessage.teleporterType.");
+               return;
             }
-            this.mapId = param1.readInt();
-            if (this.mapId < 0)
-            {
-                throw new Error("Forbidden value (" + this.mapId + ") on element of TeleportRequestMessage.mapId.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

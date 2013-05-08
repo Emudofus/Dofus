@@ -1,26 +1,28 @@
-﻿package com.ankamagames.jerakine.resources.adapters.impl
+package com.ankamagames.jerakine.resources.adapters.impl
 {
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.adapters.*;
-    import flash.display.*;
+   import com.ankamagames.jerakine.resources.adapters.AbstractLoaderAdapter;
+   import com.ankamagames.jerakine.resources.adapters.IAdapter;
+   import flash.display.LoaderInfo;
+   import com.ankamagames.jerakine.resources.ResourceType;
 
-    public class SwfAdapter extends AbstractLoaderAdapter implements IAdapter
-    {
 
-        public function SwfAdapter()
-        {
-            return;
-        }// end function
+   public class SwfAdapter extends AbstractLoaderAdapter implements IAdapter
+   {
+         
 
-        override protected function getResource(param1:LoaderInfo)
-        {
-            return param1.loader.content;
-        }// end function
+      public function SwfAdapter() {
+         super();
+      }
 
-        override public function getResourceType() : uint
-        {
-            return ResourceType.RESOURCE_SWF;
-        }// end function
 
-    }
+
+      override protected function getResource(ldr:LoaderInfo) : * {
+         return ldr.loader.content;
+      }
+
+      override public function getResourceType() : uint {
+         return ResourceType.RESOURCE_SWF;
+      }
+   }
+
 }

@@ -1,15 +1,19 @@
-﻿package com.ankamagames.berilia.components.messages
+package com.ankamagames.berilia.components.messages
 {
-    import flash.display.*;
+   import flash.display.InteractiveObject;
 
-    public class CreateTabMessage extends ComponentMessage
-    {
 
-        public function CreateTabMessage(param1:InteractiveObject)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class CreateTabMessage extends ComponentMessage
+   {
+         
 
-    }
+      public function CreateTabMessage(target:InteractiveObject) {
+         super(target);
+      }
+
+
+
+
+   }
+
 }

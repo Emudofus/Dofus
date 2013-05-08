@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.livingObject
+package com.ankamagames.dofus.logic.game.common.actions.livingObject
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class LivingObjectChangeSkinRequestAction extends Object implements Action
-    {
-        public var livingUID:uint;
-        public var livingPosition:uint;
-        public var skinId:uint;
 
-        public function LivingObjectChangeSkinRequestAction()
-        {
-            return;
-        }// end function
+   public class LivingObjectChangeSkinRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint, param3:uint) : LivingObjectChangeSkinRequestAction
-        {
-            var _loc_4:* = new LivingObjectChangeSkinRequestAction;
-            new LivingObjectChangeSkinRequestAction.livingUID = param1;
-            _loc_4.livingPosition = param2;
-            _loc_4.skinId = param3;
-            return _loc_4;
-        }// end function
+      public function LivingObjectChangeSkinRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(livingUID:uint, livingPosition:uint, skinId:uint) : LivingObjectChangeSkinRequestAction {
+         var action:LivingObjectChangeSkinRequestAction = new LivingObjectChangeSkinRequestAction();
+         action.livingUID=livingUID;
+         action.livingPosition=livingPosition;
+         action.skinId=skinId;
+         return action;
+      }
+
+      public var livingUID:uint;
+
+      public var livingPosition:uint;
+
+      public var skinId:uint;
+   }
+
 }

@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.party
+package com.ankamagames.dofus.logic.game.common.actions.party
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class DungeonPartyFinderAvailableDungeonsAction extends Object implements Action
-    {
 
-        public function DungeonPartyFinderAvailableDungeonsAction()
-        {
-            return;
-        }// end function
+   public class DungeonPartyFinderAvailableDungeonsAction extends Object implements Action
+   {
+         
 
-        public static function create() : DungeonPartyFinderAvailableDungeonsAction
-        {
-            var _loc_1:* = new DungeonPartyFinderAvailableDungeonsAction;
-            return _loc_1;
-        }// end function
+      public function DungeonPartyFinderAvailableDungeonsAction() {
+         super();
+      }
 
-    }
+      public static function create() : DungeonPartyFinderAvailableDungeonsAction {
+         var a:DungeonPartyFinderAvailableDungeonsAction = new DungeonPartyFinderAvailableDungeonsAction();
+         return a;
+      }
+
+
+   }
+
 }

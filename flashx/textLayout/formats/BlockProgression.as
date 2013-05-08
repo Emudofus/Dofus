@@ -1,15 +1,20 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    final public class BlockProgression extends Object
-    {
-        public static const RL:String = "rl";
-        public static const TB:String = "tb";
 
-        public function BlockProgression()
-        {
-            return;
-        }// end function
+   public final class BlockProgression extends Object
+   {
+         
 
-    }
+      public function BlockProgression() {
+         super();
+      }
+
+      public static const RL:String = "rl";
+
+      public static const TB:String = "tb";
+
+
+   }
+
 }

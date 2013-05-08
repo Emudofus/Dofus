@@ -1,147 +1,138 @@
-﻿package com.ankamagames.jerakine.resources.adapters.impl
+package com.ankamagames.jerakine.resources.adapters.impl
 {
-    import com.ankamagames.jerakine.pools.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.adapters.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.system.*;
-    import flash.display.*;
-    import flash.errors.*;
-    import flash.events.*;
-    import flash.net.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.resources.adapters.AbstractUrlLoaderAdapter;
+   import com.ankamagames.jerakine.resources.adapters.IAdapter;
+   import com.ankamagames.jerakine.pools.PoolableLoader;
+   import com.ankamagames.jerakine.types.Swl;
+   import com.ankamagames.jerakine.resources.ResourceType;
+   import flash.system.LoaderContext;
+   import flash.utils.ByteArray;
+   import flash.errors.EOFError;
+   import com.ankamagames.jerakine.resources.ResourceErrorCode;
+   import com.ankamagames.jerakine.pools.PoolsManager;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import flash.net.URLLoaderDataFormat;
+   import flash.system.ApplicationDomain;
+   import flash.display.LoaderInfo;
+   import flash.display.MovieClip;
+   import flash.events.ErrorEvent;
 
-    public class SwlAdapter extends AbstractUrlLoaderAdapter implements IAdapter
-    {
-        private var _ldr:PoolableLoader;
-        private var _onInit:Function;
-        private var _swl:Swl;
 
-        public function SwlAdapter()
-        {
-            return;
-        }// end function
+   public class SwlAdapter extends AbstractUrlLoaderAdapter implements IAdapter
+   {
+         
 
-        override protected function getResource(param1:String, param2)
-        {
-            return this._swl;
-        }// end function
+      public function SwlAdapter() {
+         super();
+      }
 
-        override public function getResourceType() : uint
-        {
-            return ResourceType.RESOURCE_SWL;
-        }// end function
 
-        override protected function process(param1:String, param2) : void
-        {
-            var file:uint;
-            var version:uint;
-            var frameRate:uint;
-            var classesCount:uint;
-            var classesList:Array;
-            var i:uint;
-            var swfData:ByteArray;
-            var dataFormat:* = param1;
-            var data:* = param2;
-            try
+
+      private var _ldr:PoolableLoader;
+
+      private var _onInit:Function;
+
+      private var _swl:Swl;
+
+      override protected function getResource(dataFormat:String, data:*) : * {
+         return this._swl;
+      }
+
+      override public function getResourceType() : uint {
+         return ResourceType.RESOURCE_SWL;
+      }
+
+      override protected function process(dataFormat:String, data:*) : void {
+         var file:uint = 0;
+         var version:uint = 0;
+         var frameRate:uint = 0;
+         var classesCount:uint = 0;
+         var classesList:Array = null;
+         var i:uint = 0;
+         var swfData:ByteArray = null;
+         try
+         {
+            file=(data as ByteArray).readByte();
+            if(file!=76)
             {
-                file = (data as ByteArray).readByte();
-                if (file != 76)
-                {
-                    dispatchFailure("Malformated library file (wrong header).", ResourceErrorCode.SWL_MALFORMED_LIBRARY);
-                    return;
-                }
-                version = (data as ByteArray).readByte();
-                frameRate = (data as ByteArray).readUnsignedInt();
-                classesCount = (data as ByteArray).readInt();
-                classesList = new Array();
-                i;
-                while (i < classesCount)
-                {
-                    
-                    classesList.push((data as ByteArray).readUTF());
-                    i = (i + 1);
-                }
-                swfData = new ByteArray();
-                (data as ByteArray).readBytes(swfData);
+               dispatchFailure("Malformated library file (wrong header).",ResourceErrorCode.SWL_MALFORMED_LIBRARY);
+               return;
             }
-            catch (eof:EOFError)
+            version=(data as ByteArray).readByte();
+            frameRate=(data as ByteArray).readUnsignedInt();
+            classesCount=(data as ByteArray).readInt();
+            classesList=new Array();
+            i=0;
+            while(i<classesCount)
             {
-                dispatchFailure("Malformated library file (end of file).", ResourceErrorCode.SWL_MALFORMED_LIBRARY);
-                return;
+               classesList.push((data as ByteArray).readUTF());
+               i++;
             }
-            this._ldr = PoolsManager.getInstance().getLoadersPool().checkOut() as PoolableLoader;
-            var _loc_4:* = this.onLibraryInit(frameRate, classesList);
-            this._onInit = this.onLibraryInit(frameRate, classesList);
-            this._ldr.contentLoaderInfo.addEventListener(Event.INIT, _loc_4);
-            this._ldr.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.onLibraryError);
-            var loaderContext:* = getUri().loaderContext;
-            if (!loaderContext)
+            swfData=new ByteArray();
+            (data as ByteArray).readBytes(swfData);
+         }
+         catch(eof:EOFError)
+         {
+            dispatchFailure("Malformated library file (end of file).",ResourceErrorCode.SWL_MALFORMED_LIBRARY);
+            return;
+         }
+         this._ldr=PoolsManager.getInstance().getLoadersPool().checkOut() as PoolableLoader;
+         this._ldr.contentLoaderInfo.addEventListener(Event.INIT,this._onInit=this.onLibraryInit(frameRate,classesList));
+         this._ldr.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.onLibraryError);
+         var loaderContext:LoaderContext = getUri().loaderContext;
+         if(!loaderContext)
+         {
+            loaderContext=new LoaderContext();
+         }
+         AirScanner.allowByteCodeExecution(loaderContext,true);
+         this._ldr.loadBytes(swfData,loaderContext);
+      }
+
+      override protected function getDataFormat() : String {
+         return URLLoaderDataFormat.BINARY;
+      }
+
+      private function createResource(frameRate:uint, classesList:Array, appDomain:ApplicationDomain) : void {
+         this._swl=new Swl(frameRate,classesList,appDomain);
+         dispatchSuccess(null,null);
+      }
+
+      private function releaseLoader() : void {
+         this._ldr.contentLoaderInfo.removeEventListener(Event.INIT,this._onInit);
+         this._ldr.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR,this.onLibraryError);
+         PoolsManager.getInstance().getLoadersPool().checkIn(this._ldr);
+         this._ldr=null;
+         this._onInit=null;
+      }
+
+      private function onLibraryInit(frameRate:uint, classesList:Array) : Function {
+         return new function(e:Event):void
+         {
+            var numClip:* = undefined;
+            var i:* = undefined;
+            var loaderInfo:* = e.target as LoaderInfo;
+            var ap:* = loaderInfo.applicationDomain;
+            var clip:* = loaderInfo.content as MovieClip;
+            if(clip)
             {
-                loaderContext = new LoaderContext();
+                  numClip=clip.numChildren;
+                  i=-1;
+                  while(++i<numClip)
+                  {
+                     clip.removeChildAt(0);
+                  }
             }
-            AirScanner.allowByteCodeExecution(loaderContext, true);
-            this._ldr.loadBytes(swfData, loaderContext);
-            return;
-        }// end function
+            createResource(frameRate,classesList,ap);
+            releaseLoader();
+         };
+      }
 
-        override protected function getDataFormat() : String
-        {
-            return URLLoaderDataFormat.BINARY;
-        }// end function
+      private function onLibraryError(ee:ErrorEvent) : void {
+         dispatchFailure("Library loading from binaries failed: "+ee.text,ResourceErrorCode.SWL_MALFORMED_BINARY);
+         this.releaseLoader();
+      }
+   }
 
-        private function createResource(param1:uint, param2:Array, param3:ApplicationDomain) : void
-        {
-            this._swl = new Swl(param1, param2, param3);
-            dispatchSuccess(null, null);
-            return;
-        }// end function
-
-        private function releaseLoader() : void
-        {
-            this._ldr.contentLoaderInfo.removeEventListener(Event.INIT, this._onInit);
-            this._ldr.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, this.onLibraryError);
-            PoolsManager.getInstance().getLoadersPool().checkIn(this._ldr);
-            this._ldr = null;
-            this._onInit = null;
-            return;
-        }// end function
-
-        private function onLibraryInit(param1:uint, param2:Array) : Function
-        {
-            var frameRate:* = param1;
-            var classesList:* = param2;
-            return function (event:Event) : void
-            {
-                var _loc_5:* = undefined;
-                var _loc_6:* = undefined;
-                var _loc_2:* = event.target as LoaderInfo;
-                var _loc_3:* = _loc_2.applicationDomain;
-                var _loc_4:* = _loc_2.content as MovieClip;
-                if (_loc_2.content as MovieClip)
-                {
-                    _loc_5 = _loc_4.numChildren;
-                    _loc_6 = -1;
-                    while (++_loc_6 < _loc_5)
-                    {
-                        
-                        _loc_4.removeChildAt(0);
-                    }
-                }
-                createResource(frameRate, classesList, _loc_3);
-                releaseLoader();
-                return;
-            }// end function
-            ;
-        }// end function
-
-        private function onLibraryError(event:ErrorEvent) : void
-        {
-            dispatchFailure("Library loading from binaries failed: " + event.text, ResourceErrorCode.SWL_MALFORMED_BINARY);
-            this.releaseLoader();
-            return;
-        }// end function
-
-    }
 }

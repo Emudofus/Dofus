@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class LivingObjectDissociateMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var livingUID:uint = 0;
-        public var livingPosition:uint = 0;
-        public static const protocolId:uint = 5723;
 
-        public function LivingObjectDissociateMessage()
-        {
-            return;
-        }// end function
+   public class LivingObjectDissociateMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function LivingObjectDissociateMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5723;
-        }// end function
+      public static const protocolId:uint = 5723;
 
-        public function initLivingObjectDissociateMessage(param1:uint = 0, param2:uint = 0) : LivingObjectDissociateMessage
-        {
-            this.livingUID = param1;
-            this.livingPosition = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.livingUID = 0;
-            this.livingPosition = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var livingUID:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var livingPosition:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_LivingObjectDissociateMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5723;
+      }
 
-        public function serializeAs_LivingObjectDissociateMessage(param1:IDataOutput) : void
-        {
-            if (this.livingUID < 0)
+      public function initLivingObjectDissociateMessage(livingUID:uint=0, livingPosition:uint=0) : LivingObjectDissociateMessage {
+         this.livingUID=livingUID;
+         this.livingPosition=livingPosition;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.livingUID=0;
+         this.livingPosition=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LivingObjectDissociateMessage(output);
+      }
+
+      public function serializeAs_LivingObjectDissociateMessage(output:IDataOutput) : void {
+         if(this.livingUID<0)
+         {
+            throw new Error("Forbidden value ("+this.livingUID+") on element livingUID.");
+         }
+         else
+         {
+            output.writeInt(this.livingUID);
+            if((this.livingPosition>0)||(this.livingPosition<255))
             {
-                throw new Error("Forbidden value (" + this.livingUID + ") on element livingUID.");
+               throw new Error("Forbidden value ("+this.livingPosition+") on element livingPosition.");
             }
-            param1.writeInt(this.livingUID);
-            if (this.livingPosition < 0 || this.livingPosition > 255)
+            else
             {
-                throw new Error("Forbidden value (" + this.livingPosition + ") on element livingPosition.");
+               output.writeByte(this.livingPosition);
+               return;
             }
-            param1.writeByte(this.livingPosition);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_LivingObjectDissociateMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LivingObjectDissociateMessage(input);
+      }
 
-        public function deserializeAs_LivingObjectDissociateMessage(param1:IDataInput) : void
-        {
-            this.livingUID = param1.readInt();
-            if (this.livingUID < 0)
+      public function deserializeAs_LivingObjectDissociateMessage(input:IDataInput) : void {
+         this.livingUID=input.readInt();
+         if(this.livingUID<0)
+         {
+            throw new Error("Forbidden value ("+this.livingUID+") on element of LivingObjectDissociateMessage.livingUID.");
+         }
+         else
+         {
+            this.livingPosition=input.readUnsignedByte();
+            if((this.livingPosition>0)||(this.livingPosition<255))
             {
-                throw new Error("Forbidden value (" + this.livingUID + ") on element of LivingObjectDissociateMessage.livingUID.");
+               throw new Error("Forbidden value ("+this.livingPosition+") on element of LivingObjectDissociateMessage.livingPosition.");
             }
-            this.livingPosition = param1.readUnsignedByte();
-            if (this.livingPosition < 0 || this.livingPosition > 255)
+            else
             {
-                throw new Error("Forbidden value (" + this.livingPosition + ") on element of LivingObjectDissociateMessage.livingPosition.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

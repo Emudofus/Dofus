@@ -1,76 +1,67 @@
-﻿package com.ankamagames.dofus.datacenter.effects.instances
+package com.ankamagames.dofus.datacenter.effects.instances
 {
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
 
-    public class EffectInstanceMount extends EffectInstance implements IDataCenter
-    {
-        public var date:Number;
-        public var modelId:uint;
-        public var mountId:uint;
 
-        public function EffectInstanceMount()
-        {
-            return;
-        }// end function
+   public class EffectInstanceMount extends EffectInstance implements IDataCenter
+   {
+         
 
-        override public function clone() : EffectInstance
-        {
-            var _loc_1:* = new EffectInstanceMount();
-            _loc_1.rawZone = rawZone;
-            _loc_1.effectId = effectId;
-            _loc_1.duration = duration;
-            _loc_1.delay = delay;
-            _loc_1.date = this.date;
-            _loc_1.modelId = this.modelId;
-            _loc_1.mountId = this.mountId;
-            _loc_1.random = random;
-            _loc_1.group = group;
-            _loc_1.targetId = targetId;
-            return _loc_1;
-        }// end function
+      public function EffectInstanceMount() {
+         super();
+      }
 
-        override public function get parameter0() : Object
-        {
-            return this.date;
-        }// end function
 
-        override public function get parameter1() : Object
-        {
-            return this.modelId;
-        }// end function
 
-        override public function get parameter2() : Object
-        {
-            return this.mountId;
-        }// end function
+      public var date:Number;
 
-        override public function setParameter(param1:uint, param2) : void
-        {
-            switch(param1)
-            {
-                case 0:
-                {
-                    this.date = Number(param2);
-                    break;
-                }
-                case 1:
-                {
-                    this.modelId = uint(param2);
-                    break;
-                }
-                case 2:
-                {
-                    this.mountId = uint(param2);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public var modelId:uint;
 
-    }
+      public var mountId:uint;
+
+      override public function clone() : EffectInstance {
+         var o:EffectInstanceMount = new EffectInstanceMount();
+         o.rawZone=rawZone;
+         o.effectId=effectId;
+         o.duration=duration;
+         o.delay=delay;
+         o.date=this.date;
+         o.modelId=this.modelId;
+         o.mountId=this.mountId;
+         o.random=random;
+         o.group=group;
+         o.targetId=targetId;
+         o.targetMask=targetMask;
+         return o;
+      }
+
+      override public function get parameter0() : Object {
+         return this.date;
+      }
+
+      override public function get parameter1() : Object {
+         return this.modelId;
+      }
+
+      override public function get parameter2() : Object {
+         return this.mountId;
+      }
+
+      override public function setParameter(paramIndex:uint, value:*) : void {
+         switch(paramIndex)
+         {
+            case 0:
+               this.date=Number(value);
+               break;
+            case 1:
+               this.modelId=uint(value);
+               break;
+            case 2:
+               this.mountId=uint(value);
+               break;
+         }
+      }
+   }
+
 }

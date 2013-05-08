@@ -1,66 +1,58 @@
-﻿package com.ankamagames.dofus.network.types.game.house
+package com.ankamagames.dofus.network.types.game.house
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GuildInformations;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class HouseInformationsExtended extends HouseInformations implements INetworkType
-    {
-        public var guildInfo:GuildInformations;
-        public static const protocolId:uint = 112;
 
-        public function HouseInformationsExtended()
-        {
-            this.guildInfo = new GuildInformations();
-            return;
-        }// end function
+   public class HouseInformationsExtended extends HouseInformations implements INetworkType
+   {
+         
 
-        override public function getTypeId() : uint
-        {
-            return 112;
-        }// end function
+      public function HouseInformationsExtended() {
+         this.guildInfo=new GuildInformations();
+         super();
+      }
 
-        public function initHouseInformationsExtended(param1:uint = 0, param2:Vector.<uint> = null, param3:String = "", param4:Boolean = false, param5:Boolean = false, param6:uint = 0, param7:GuildInformations = null) : HouseInformationsExtended
-        {
-            super.initHouseInformations(param1, param2, param3, param4, param5, param6);
-            this.guildInfo = param7;
-            return this;
-        }// end function
+      public static const protocolId:uint = 112;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.guildInfo = new GuildInformations();
-            return;
-        }// end function
+      public var guildInfo:GuildInformations;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_HouseInformationsExtended(param1);
-            return;
-        }// end function
+      override public function getTypeId() : uint {
+         return 112;
+      }
 
-        public function serializeAs_HouseInformationsExtended(param1:IDataOutput) : void
-        {
-            super.serializeAs_HouseInformations(param1);
-            this.guildInfo.serializeAs_GuildInformations(param1);
-            return;
-        }// end function
+      public function initHouseInformationsExtended(houseId:uint=0, doorsOnMap:Vector.<uint>=null, ownerName:String="", isOnSale:Boolean=false, isSaleLocked:Boolean=false, modelId:uint=0, guildInfo:GuildInformations=null) : HouseInformationsExtended {
+         super.initHouseInformations(houseId,doorsOnMap,ownerName,isOnSale,isSaleLocked,modelId);
+         this.guildInfo=guildInfo;
+         return this;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_HouseInformationsExtended(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.guildInfo=new GuildInformations();
+      }
 
-        public function deserializeAs_HouseInformationsExtended(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.guildInfo = new GuildInformations();
-            this.guildInfo.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HouseInformationsExtended(output);
+      }
 
-    }
+      public function serializeAs_HouseInformationsExtended(output:IDataOutput) : void {
+         super.serializeAs_HouseInformations(output);
+         this.guildInfo.serializeAs_GuildInformations(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HouseInformationsExtended(input);
+      }
+
+      public function deserializeAs_HouseInformationsExtended(input:IDataInput) : void {
+         super.deserialize(input);
+         this.guildInfo=new GuildInformations();
+         this.guildInfo.deserialize(input);
+      }
+   }
+
 }

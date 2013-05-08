@@ -1,189 +1,216 @@
-﻿package flashx.textLayout.conversion
+package flashx.textLayout.conversion
 {
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
-    import flashx.textLayout.property.*;
+   import flashx.textLayout.elements.InlineGraphicElement;
+   import flashx.textLayout.elements.LinkElement;
+   import flashx.textLayout.elements.DivElement;
+   import flashx.textLayout.elements.SubParagraphGroupElement;
+   import flashx.textLayout.elements.TCYElement;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.property.Property;
+   import flashx.textLayout.elements.ListElement;
+   import flashx.textLayout.formats.ListMarkerFormat;
+   import flashx.textLayout.elements.FlowElement;
+   import flashx.textLayout.formats.FormatValue;
 
-    class TextLayoutExporter extends BaseTextLayoutExporter
-    {
-        private static var _formatDescription:Object = TextLayoutFormat.description;
-        private static const brTabRegEx:RegExp = new RegExp("[" + " " + "\t" + "]");
+   use namespace tlf_internal;
 
-        function TextLayoutExporter()
-        {
-            super(new Namespace("http://ns.adobe.com/textLayout/2008"), null, TextLayoutImporter.defaultConfiguration);
-            return;
-        }// end function
+   class TextLayoutExporter extends BaseTextLayoutExporter
+   {
+         
 
-        override protected function get spanTextReplacementRegex() : RegExp
-        {
-            return brTabRegEx;
-        }// end function
+      function TextLayoutExporter() {
+         super(new Namespace("http://ns.adobe.com/textLayout/2008"),null,TextLayoutImporter.defaultConfiguration);
+      }
 
-        override protected function getSpanTextReplacementXML(param1:String) : XML
-        {
-            var _loc_2:* = null;
-            if (param1 == " ")
+      private static var _formatDescription:Object = TextLayoutFormat.description;
+
+      private static const brTabRegEx:RegExp = new RegExp("["+"?"+"\t"+"]");
+
+      public static function exportImage(exporter:BaseTextLayoutExporter, image:InlineGraphicElement) : XMLList {
+         var output:XMLList = exportFlowElement(exporter,image);
+         if(image.height!==undefined)
+         {
+            output.@height=image.height;
+         }
+         if(image.width!==undefined)
+         {
+            output.@width=image.width;
+         }
+         if(image.source!=null)
+         {
+            output.@source=image.source;
+         }
+         if(image.float!=undefined)
+         {
+            output.@float=image.float;
+         }
+         return output;
+      }
+
+      public static function exportLink(exporter:BaseTextLayoutExporter, link:LinkElement) : XMLList {
+         var output:XMLList = exportFlowGroupElement(exporter,link);
+         if(link.href)
+         {
+            output.@href=link.href;
+         }
+         if(link.target)
+         {
+            output.@target=link.target;
+         }
+         return output;
+      }
+
+      public static function exportDiv(exporter:BaseTextLayoutExporter, div:DivElement) : XMLList {
+         return exportContainerFormattedElement(exporter,div);
+      }
+
+      public static function exportSPGE(exporter:BaseTextLayoutExporter, elem:SubParagraphGroupElement) : XMLList {
+         return exportFlowGroupElement(exporter,elem);
+      }
+
+      public static function exportTCY(exporter:BaseTextLayoutExporter, tcy:TCYElement) : XMLList {
+         return exportFlowGroupElement(exporter,tcy);
+      }
+
+      override protected function get spanTextReplacementRegex() : RegExp {
+         return brTabRegEx;
+      }
+
+      override protected function getSpanTextReplacementXML(ch:String) : XML {
+         var replacementXML:XML = null;
+         if(ch=="?")
+         {
+            replacementXML=<br/>;
+         }
+         else
+         {
+            if(ch=="\t")
             {
-                _loc_2 = <br/>")("<br/>;
-            }
-            else if (param1 == "\t")
-            {
-                _loc_2 = <tab/>")("<tab/>;
+               replacementXML=<tab/>;
             }
             else
             {
-                return null;
+               return null;
             }
-            _loc_2.setNamespace(flowNS);
-            return _loc_2;
-        }// end function
+         }
+         replacementXML.setNamespace(flowNS);
+         return replacementXML;
+      }
 
-        function createStylesFromDescription(param1:Object, param2:Object, param3:Boolean, param4:Array) : Array
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_5:* = [];
-            for (_loc_6 in param1)
+      tlf_internal function createStylesFromDescription(styles:Object, description:Object, includeUserStyles:Boolean, exclusions:Array) : Array {
+         var key:String = null;
+         var val:Object = null;
+         var prop:Property = null;
+         var customDictProp:XMLList = null;
+         var sortableStyles:Array = [];
+         for (key in styles)
+         {
+            val=styles[key];
+            if((exclusions)&&(!(exclusions.indexOf(val)==-1)))
             {
-                
-                _loc_7 = param1[_loc_6];
-                if (param4 && param4.indexOf(_loc_7) != -1)
-                {
-                    continue;
-                }
-                _loc_8 = param2[_loc_6];
-                if (!_loc_8)
-                {
-                    if (param3)
-                    {
-                        if (_loc_7 is String || _loc_7.hasOwnProperty("toString"))
+            }
+            else
+            {
+               prop=description[key];
+               if(!prop)
+               {
+                  if(includeUserStyles)
+                  {
+                     if((val is String)||(val.hasOwnProperty("toString")))
+                     {
+                        sortableStyles.push(
+                           {
+                              xmlName:key,
+                              xmlVal:val
+                           }
+                        );
+                     }
+                  }
+               }
+               else
+               {
+                  if(val is TextLayoutFormat)
+                  {
+                     customDictProp=this.exportObjectAsTextLayoutFormat(key,(val as TextLayoutFormat).getStyles());
+                     if(customDictProp)
+                     {
+                        sortableStyles.push(
+                           {
+                              xmlName:key,
+                              xmlVal:customDictProp
+                           }
+                        );
+                     }
+                  }
+                  else
+                  {
+                     sortableStyles.push(
                         {
-                            _loc_5.push({xmlName:_loc_6, xmlVal:_loc_7});
+                           xmlName:key,
+                           xmlVal:prop.toXMLString(val)
                         }
-                    }
-                    continue;
-                }
-                if (_loc_7 is TextLayoutFormat)
-                {
-                    _loc_9 = this.exportObjectAsTextLayoutFormat(_loc_6, (_loc_7 as TextLayoutFormat).getStyles());
-                    if (_loc_9)
-                    {
-                        _loc_5.push({xmlName:_loc_6, xmlVal:_loc_9});
-                    }
-                    continue;
-                }
-                _loc_5.push({xmlName:_loc_6, xmlVal:_loc_8.toXMLString(_loc_7)});
+                     );
+                  }
+               }
             }
-            return _loc_5;
-        }// end function
+         }
+         return sortableStyles;
+      }
 
-        function exportObjectAsTextLayoutFormat(param1:String, param2:Object) : XMLList
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (param1 == LinkElement.LINK_NORMAL_FORMAT_NAME || param1 == LinkElement.LINK_ACTIVE_FORMAT_NAME || param1 == LinkElement.LINK_HOVER_FORMAT_NAME)
+      tlf_internal function exportObjectAsTextLayoutFormat(key:String, styleDict:Object) : XMLList {
+         var elementName:String = null;
+         var description:Object = null;
+         if((key==LinkElement.LINK_NORMAL_FORMAT_NAME)||(key==LinkElement.LINK_ACTIVE_FORMAT_NAME)||(key==LinkElement.LINK_HOVER_FORMAT_NAME))
+         {
+            elementName="TextLayoutFormat";
+            description=TextLayoutFormat.description;
+         }
+         else
+         {
+            if(key==ListElement.LIST_MARKER_FORMAT_NAME)
             {
-                _loc_3 = "TextLayoutFormat";
-                _loc_4 = TextLayoutFormat.description;
+               elementName="ListMarkerFormat";
+               description=ListMarkerFormat.description;
             }
-            else if (param1 == ListElement.LIST_MARKER_FORMAT_NAME)
-            {
-                _loc_3 = "ListMarkerFormat";
-                _loc_4 = ListMarkerFormat.description;
-            }
-            if (_loc_3 == null)
-            {
-                return null;
-            }
-            var _loc_5:* = new XML("<" + _loc_3 + "/>");
-            new XML("<" + _loc_3 + "/>").setNamespace(flowNS);
-            var _loc_6:* = this.createStylesFromDescription(param2, _loc_4, true, null);
-            exportStyles(XMLList(_loc_5), _loc_6);
-            var _loc_7:* = XMLList(new XML("<" + param1 + "/>"));
-            XMLList(new XML("<" + param1 + "/>")).appendChild(_loc_5);
-            return _loc_7;
-        }// end function
+         }
+         if(elementName==null)
+         {
+            return null;
+         }
+         var formatXML:XML = new XML("<"+elementName+"/>");
+         formatXML.setNamespace(flowNS);
+         var sortableStyles:Array = this.createStylesFromDescription(styleDict,description,true,null);
+         exportStyles(XMLList(formatXML),sortableStyles);
+         var propertyXML:XMLList = XMLList(new XML("<"+key+"/>"));
+         propertyXML.appendChild(formatXML);
+         return propertyXML;
+      }
 
-        override protected function exportFlowElement(param1:FlowElement) : XMLList
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = super.exportFlowElement(param1);
-            var _loc_3:* = param1.styles;
-            if (_loc_3)
-            {
-                delete _loc_3[TextLayoutFormat.whiteSpaceCollapseProperty.name];
-                _loc_4 = this.createStylesFromDescription(_loc_3, this.formatDescription, true, param1.parent ? (null) : ([FormatValue.INHERIT]));
-                exportStyles(_loc_2, _loc_4);
-            }
-            if (param1.id != null)
-            {
-                _loc_2["id"] = param1.id;
-            }
-            if (param1.typeName != param1.defaultTypeName)
-            {
-                _loc_2["typeName"] = param1.typeName;
-            }
-            return _loc_2;
-        }// end function
+      override protected function exportFlowElement(flowElement:FlowElement) : XMLList {
+         var sortableStyles:Array = null;
+         var rslt:XMLList = super.exportFlowElement(flowElement);
+         var allStyles:Object = flowElement.styles;
+         if(allStyles)
+         {
+            delete allStyles[[TextLayoutFormat.whiteSpaceCollapseProperty.name]];
+            sortableStyles=this.createStylesFromDescription(allStyles,this.formatDescription,true,flowElement.parent?null:[FormatValue.INHERIT]);
+            exportStyles(rslt,sortableStyles);
+         }
+         if(flowElement.id!=null)
+         {
+            rslt["id"]=flowElement.id;
+         }
+         if(flowElement.typeName!=flowElement.defaultTypeName)
+         {
+            rslt["typeName"]=flowElement.typeName;
+         }
+         return rslt;
+      }
 
-        override protected function get formatDescription() : Object
-        {
-            return _formatDescription;
-        }// end function
+      override protected function get formatDescription() : Object {
+         return _formatDescription;
+      }
+   }
 
-        public static function exportImage(param1:BaseTextLayoutExporter, param2:InlineGraphicElement) : XMLList
-        {
-            var _loc_3:* = exportFlowElement(param1, param2);
-            if (param2.height !== undefined)
-            {
-                _loc_3.@height = param2.height;
-            }
-            if (param2.width !== undefined)
-            {
-                _loc_3.@width = param2.width;
-            }
-            if (param2.source != null)
-            {
-                _loc_3.@source = param2.source;
-            }
-            if (param2.float != undefined)
-            {
-                _loc_3.@float = param2.float;
-            }
-            return _loc_3;
-        }// end function
-
-        public static function exportLink(param1:BaseTextLayoutExporter, param2:LinkElement) : XMLList
-        {
-            var _loc_3:* = exportFlowGroupElement(param1, param2);
-            if (param2.href)
-            {
-                _loc_3.@href = param2.href;
-            }
-            if (param2.target)
-            {
-                _loc_3.@target = param2.target;
-            }
-            return _loc_3;
-        }// end function
-
-        public static function exportDiv(param1:BaseTextLayoutExporter, param2:DivElement) : XMLList
-        {
-            return exportContainerFormattedElement(param1, param2);
-        }// end function
-
-        public static function exportSPGE(param1:BaseTextLayoutExporter, param2:SubParagraphGroupElement) : XMLList
-        {
-            return exportFlowGroupElement(param1, param2);
-        }// end function
-
-        public static function exportTCY(param1:BaseTextLayoutExporter, param2:TCYElement) : XMLList
-        {
-            return exportFlowGroupElement(param1, param2);
-        }// end function
-
-    }
 }

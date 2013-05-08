@@ -1,284 +1,254 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
-    import __AS3__.vec.*;
-    import flashx.textLayout.formats.*;
-    import flashx.textLayout.property.*;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.property.Property;
+   import __AS3__.vec.Vector;
+   import flashx.textLayout.property.EnumPropertyHandler;
+   import flashx.textLayout.property.CounterPropHandler;
+   import flashx.textLayout.property.CounterContentHandler;
 
-    public class ListMarkerFormat extends TextLayoutFormat implements IListMarkerFormat
-    {
-        static const counterResetProperty:Property = createCounterResetProperty("counterReset", FormatValue.NONE, false, ListMarkerFormat.Vector.<String>([Category.LIST]));
-        static const counterIncrementProperty:Property = createCounterResetProperty("counterIncrement", "ordered 1", false, ListMarkerFormat.Vector.<String>([Category.LIST]));
-        static const beforeContentProperty:Property = Property.NewStringProperty("beforeContent", null, false, ListMarkerFormat.Vector.<String>([Category.LIST]));
-        static const contentProperty:Property = createCounterContentProperty("content", "counter(ordered)", false, ListMarkerFormat.Vector.<String>([Category.LIST]));
-        static const afterContentProperty:Property = Property.NewStringProperty("afterContent", null, false, ListMarkerFormat.Vector.<String>([Category.LIST]));
-        static const suffixProperty:Property = Property.NewEnumStringProperty("suffix", Suffix.AUTO, false, ListMarkerFormat.Vector.<String>([Category.LIST]), Suffix.AUTO, Suffix.NONE);
-        private static var _lmfDescription:Object = {counterReset:counterResetProperty, counterIncrement:counterIncrementProperty, beforeContent:beforeContentProperty, content:contentProperty, afterContent:afterContentProperty, suffix:suffixProperty};
-        private static var _description:Object;
+   use namespace tlf_internal;
 
-        public function ListMarkerFormat(param1:IListMarkerFormat = null)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class ListMarkerFormat extends TextLayoutFormat implements IListMarkerFormat
+   {
+         
 
-        private function setLMFStyle(param1:Property, param2) : void
-        {
-            var _loc_3:* = param1.name;
-            param2 = param1.setHelper(getStyle(_loc_3), param2);
-            super.setStyleByName(_loc_3, param2);
-            return;
-        }// end function
+      public function ListMarkerFormat(initialValues:IListMarkerFormat=null) {
+         super(initialValues);
+      }
 
-        override public function setStyle(param1:String, param2) : void
-        {
-            var _loc_3:* = _lmfDescription[param1];
-            if (_loc_3)
+      tlf_internal  static function createCounterResetProperty(nameValue:String, defaultValue:String, inherited:Boolean, categories:Vector.<String>) : Property {
+         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
+         rslt.addHandlers(Property.sharedUndefinedHandler,new EnumPropertyHandler([FormatValue.NONE]),new CounterPropHandler(0));
+         return rslt;
+      }
+
+      tlf_internal  static function createCounterIncrementProperty(nameValue:String, defaultValue:String, inherited:Boolean, categories:Vector.<String>) : Property {
+         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
+         rslt.addHandlers(Property.sharedUndefinedHandler,new EnumPropertyHandler([FormatValue.NONE]),new CounterPropHandler(1));
+         return rslt;
+      }
+
+      tlf_internal  static function createCounterContentProperty(nameValue:String, defaultValue:String, inherited:Boolean, categories:Vector.<String>) : Property {
+         var rslt:Property = new Property(nameValue,defaultValue,inherited,categories);
+         rslt.addHandlers(Property.sharedUndefinedHandler,new EnumPropertyHandler([FormatValue.NONE]),new CounterContentHandler());
+         return rslt;
+      }
+
+      tlf_internal  static const counterResetProperty:Property = createCounterResetProperty("counterReset",FormatValue.NONE,false,Vector.<String>([Category.LIST]));
+
+      tlf_internal  static const counterIncrementProperty:Property = createCounterResetProperty("counterIncrement","ordered 1",false,Vector.<String>([Category.LIST]));
+
+      tlf_internal  static const beforeContentProperty:Property = Property.NewStringProperty("beforeContent",null,false,Vector.<String>([Category.LIST]));
+
+      tlf_internal  static const contentProperty:Property = createCounterContentProperty("content","counter(ordered)",false,Vector.<String>([Category.LIST]));
+
+      tlf_internal  static const afterContentProperty:Property = Property.NewStringProperty("afterContent",null,false,Vector.<String>([Category.LIST]));
+
+      tlf_internal  static const suffixProperty:Property = Property.NewEnumStringProperty("suffix",Suffix.AUTO,false,Vector.<String>([Category.LIST]),Suffix.AUTO,Suffix.NONE);
+
+      private static var _lmfDescription:Object = {
+                                                        counterReset:counterResetProperty,
+                                                        counterIncrement:counterIncrementProperty,
+                                                        beforeContent:beforeContentProperty,
+                                                        content:contentProperty,
+                                                        afterContent:afterContentProperty,
+                                                        suffix:suffixProperty
+                                                        };
+
+      private static var _description:Object;
+
+      tlf_internal  static function get description() : Object {
+         var key:String = null;
+         if(!_description)
+         {
+            _description=Property.createObjectWithPrototype(TextLayoutFormat.description);
+            for (key in _lmfDescription)
             {
-                this.setLMFStyle(_loc_3, param2);
+               _description[key]=_lmfDescription[key];
             }
-            else
+         }
+         return _description;
+      }
+
+      public static function createListMarkerFormat(initialValues:Object) : ListMarkerFormat {
+         var key:String = null;
+         var lmf:IListMarkerFormat = initialValues as IListMarkerFormat;
+         var rslt:ListMarkerFormat = new ListMarkerFormat(lmf);
+         if((lmf==null)&&(initialValues))
+         {
+            for (key in initialValues)
             {
-                super.setStyle(param1, param2);
+               rslt.setStyle(key,initialValues[key]);
             }
-            return;
-        }// end function
+         }
+         return rslt;
+      }
 
-        public function get counterReset()
-        {
-            return getStyle(counterResetProperty.name);
-        }// end function
+      private function setLMFStyle(styleProp:Property, newValue:*) : void {
+         var name:String = styleProp.name;
+         var newValue:* = styleProp.setHelper(getStyle(name),newValue);
+         super.setStyleByName(name,newValue);
+      }
 
-        public function set counterReset(param1)
-        {
-            this.setLMFStyle(counterResetProperty, param1);
-            return;
-        }// end function
+      override public function setStyle(styleProp:String, newValue:*) : void {
+         var lmfStyle:Property = _lmfDescription[styleProp];
+         if(lmfStyle)
+         {
+            this.setLMFStyle(lmfStyle,newValue);
+         }
+         else
+         {
+            super.setStyle(styleProp,newValue);
+         }
+      }
 
-        public function get counterIncrement()
-        {
-            return getStyle(counterIncrementProperty.name);
-        }// end function
+      public function get counterReset() : * {
+         return getStyle(counterResetProperty.name);
+      }
 
-        public function set counterIncrement(param1)
-        {
-            this.setLMFStyle(counterIncrementProperty, param1);
-            return;
-        }// end function
+      public function set counterReset(value:*) : * {
+         this.setLMFStyle(counterResetProperty,value);
+      }
 
-        public function get content()
-        {
-            return getStyle(contentProperty.name);
-        }// end function
+      public function get counterIncrement() : * {
+         return getStyle(counterIncrementProperty.name);
+      }
 
-        public function set content(param1)
-        {
-            this.setLMFStyle(contentProperty, param1);
-            return;
-        }// end function
+      public function set counterIncrement(value:*) : * {
+         this.setLMFStyle(counterIncrementProperty,value);
+      }
 
-        public function get beforeContent()
-        {
-            return getStyle(beforeContentProperty.name);
-        }// end function
+      public function get content() : * {
+         return getStyle(contentProperty.name);
+      }
 
-        public function set beforeContent(param1) : void
-        {
-            this.setLMFStyle(beforeContentProperty, param1);
-            return;
-        }// end function
+      public function set content(value:*) : * {
+         this.setLMFStyle(contentProperty,value);
+      }
 
-        public function get afterContent()
-        {
-            return getStyle(afterContentProperty.name);
-        }// end function
+      public function get beforeContent() : * {
+         return getStyle(beforeContentProperty.name);
+      }
 
-        public function set afterContent(param1) : void
-        {
-            this.setLMFStyle(afterContentProperty, param1);
-            return;
-        }// end function
+      public function set beforeContent(value:*) : void {
+         this.setLMFStyle(beforeContentProperty,value);
+      }
 
-        public function get suffix()
-        {
-            return getStyle(suffixProperty.name);
-        }// end function
+      public function get afterContent() : * {
+         return getStyle(afterContentProperty.name);
+      }
 
-        public function set suffix(param1) : void
-        {
-            this.setLMFStyle(suffixProperty, param1);
-            return;
-        }// end function
+      public function set afterContent(value:*) : void {
+         this.setLMFStyle(afterContentProperty,value);
+      }
 
-        override public function copy(param1:ITextLayoutFormat) : void
-        {
-            var _loc_3:* = null;
-            super.copy(param1);
-            var _loc_2:* = param1 as IListMarkerFormat;
-            if (_loc_2)
+      public function get suffix() : * {
+         return getStyle(suffixProperty.name);
+      }
+
+      public function set suffix(value:*) : void {
+         this.setLMFStyle(suffixProperty,value);
+      }
+
+      override public function copy(incoming:ITextLayoutFormat) : void {
+         var key:String = null;
+         super.copy(incoming);
+         var lmf:IListMarkerFormat = incoming as IListMarkerFormat;
+         if(lmf)
+         {
+            for (key in _lmfDescription)
             {
-                for (_loc_3 in _lmfDescription)
-                {
-                    
-                    this[_loc_3] = _loc_2[_loc_3];
-                }
+               this[key]=lmf[key];
             }
-            return;
-        }// end function
+         }
+      }
 
-        override public function concat(param1:ITextLayoutFormat) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            super.concat(param1);
-            var _loc_2:* = param1 as IListMarkerFormat;
-            if (_loc_2)
+      override public function concat(incoming:ITextLayoutFormat) : void {
+         var prop:Property = null;
+         var name:String = null;
+         super.concat(incoming);
+         var lmf:IListMarkerFormat = incoming as IListMarkerFormat;
+         if(lmf)
+         {
+            for each (prop in _lmfDescription)
             {
-                for each (_loc_3 in _lmfDescription)
-                {
-                    
-                    _loc_4 = _loc_3.name;
-                    this.setLMFStyle(_loc_3, _loc_3.concatHelper(this[_loc_4], _loc_2[_loc_4]));
-                }
+               name=prop.name;
+               this.setLMFStyle(prop,prop.concatHelper(this[name],lmf[name]));
             }
-            return;
-        }// end function
+         }
+      }
 
-        override public function concatInheritOnly(param1:ITextLayoutFormat) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            super.concatInheritOnly(param1);
-            var _loc_2:* = param1 as IListMarkerFormat;
-            if (_loc_2)
+      override public function concatInheritOnly(incoming:ITextLayoutFormat) : void {
+         var prop:Property = null;
+         var name:String = null;
+         super.concatInheritOnly(incoming);
+         var lmf:IListMarkerFormat = incoming as IListMarkerFormat;
+         if(lmf)
+         {
+            for each (prop in _lmfDescription)
             {
-                for each (_loc_3 in _lmfDescription)
-                {
-                    
-                    _loc_4 = _loc_3.name;
-                    this.setLMFStyle(_loc_3, _loc_3.concatInheritOnlyHelper(this[_loc_4], _loc_2[_loc_4]));
-                }
+               name=prop.name;
+               this.setLMFStyle(prop,prop.concatInheritOnlyHelper(this[name],lmf[name]));
             }
-            return;
-        }// end function
+         }
+      }
 
-        override public function apply(param1:ITextLayoutFormat) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = undefined;
-            super.apply(param1);
-            var _loc_2:* = param1 as IListMarkerFormat;
-            if (_loc_2)
+      override public function apply(incoming:ITextLayoutFormat) : void {
+         var prop:Property = null;
+         var name:String = null;
+         var val:* = undefined;
+         super.apply(incoming);
+         var lmf:IListMarkerFormat = incoming as IListMarkerFormat;
+         if(lmf)
+         {
+            for each (prop in _lmfDescription)
             {
-                for each (_loc_3 in _lmfDescription)
-                {
-                    
-                    _loc_4 = _loc_3.name;
-                    _loc_5 = _loc_2[_loc_4];
-                    if (_loc_5 !== undefined)
-                    {
-                        this[_loc_4] = _loc_5;
-                    }
-                }
+               name=prop.name;
+               val=lmf[name];
+               if(val!==undefined)
+               {
+                  this[name]=val;
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        override public function removeMatching(param1:ITextLayoutFormat) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            super.removeMatching(param1);
-            var _loc_2:* = param1 as IListMarkerFormat;
-            if (_loc_2)
+      override public function removeMatching(incoming:ITextLayoutFormat) : void {
+         var prop:Property = null;
+         var name:String = null;
+         super.removeMatching(incoming);
+         var lmf:IListMarkerFormat = incoming as IListMarkerFormat;
+         if(lmf)
+         {
+            for each (prop in _lmfDescription)
             {
-                for each (_loc_3 in _lmfDescription)
-                {
-                    
-                    _loc_4 = _loc_3.name;
-                    if (_loc_3.equalHelper(this[_loc_4], _loc_2[_loc_4]))
-                    {
-                        this[_loc_4] = undefined;
-                    }
-                }
+               name=prop.name;
+               if(prop.equalHelper(this[name],lmf[name]))
+               {
+                  this[name]=undefined;
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        override public function removeClashing(param1:ITextLayoutFormat) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            super.removeClashing(param1);
-            var _loc_2:* = param1 as IListMarkerFormat;
-            if (_loc_2)
+      override public function removeClashing(incoming:ITextLayoutFormat) : void {
+         var prop:Property = null;
+         var name:String = null;
+         super.removeClashing(incoming);
+         var lmf:IListMarkerFormat = incoming as IListMarkerFormat;
+         if(lmf)
+         {
+            for each (prop in _lmfDescription)
             {
-                for each (_loc_3 in _lmfDescription)
-                {
-                    
-                    _loc_4 = _loc_3.name;
-                    if (!_loc_3.equalHelper(this[_loc_4], _loc_2[_loc_4]))
-                    {
-                        this[_loc_4] = undefined;
-                    }
-                }
+               name=prop.name;
+               if(!prop.equalHelper(this[name],lmf[name]))
+               {
+                  this[name]=undefined;
+               }
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-        static function createCounterResetProperty(param1:String, param2:String, param3:Boolean, param4:Vector.<String>) : Property
-        {
-            var _loc_5:* = new Property(param1, param2, param3, param4);
-            new Property(param1, param2, param3, param4).addHandlers(Property.sharedUndefinedHandler, new EnumPropertyHandler([FormatValue.NONE]), new CounterPropHandler(0));
-            return _loc_5;
-        }// end function
-
-        static function createCounterIncrementProperty(param1:String, param2:String, param3:Boolean, param4:Vector.<String>) : Property
-        {
-            var _loc_5:* = new Property(param1, param2, param3, param4);
-            new Property(param1, param2, param3, param4).addHandlers(Property.sharedUndefinedHandler, new EnumPropertyHandler([FormatValue.NONE]), new CounterPropHandler(1));
-            return _loc_5;
-        }// end function
-
-        static function createCounterContentProperty(param1:String, param2:String, param3:Boolean, param4:Vector.<String>) : Property
-        {
-            var _loc_5:* = new Property(param1, param2, param3, param4);
-            new Property(param1, param2, param3, param4).addHandlers(Property.sharedUndefinedHandler, new EnumPropertyHandler([FormatValue.NONE]), new CounterContentHandler());
-            return _loc_5;
-        }// end function
-
-        static function get description() : Object
-        {
-            var _loc_1:* = null;
-            if (!_description)
-            {
-                _description = Property.createObjectWithPrototype(TextLayoutFormat.description);
-                for (_loc_1 in _lmfDescription)
-                {
-                    
-                    _description[_loc_1] = _lmfDescription[_loc_1];
-                }
-            }
-            return _description;
-        }// end function
-
-        public static function createListMarkerFormat(param1:Object) : ListMarkerFormat
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1 as IListMarkerFormat;
-            var _loc_3:* = new ListMarkerFormat(_loc_2);
-            if (_loc_2 == null && param1)
-            {
-                for (_loc_4 in param1)
-                {
-                    
-                    _loc_3.setStyle(_loc_4, param1[_loc_4]);
-                }
-            }
-            return _loc_3;
-        }// end function
-
-        Property.sharedTextLayoutFormatHandler.converter = TextLayoutFormat.createTextLayoutFormat;
-        Property.sharedListMarkerFormatHandler.converter = ListMarkerFormat.createListMarkerFormat;
-    }
 }

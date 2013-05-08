@@ -1,51 +1,55 @@
-﻿package com.ankamagames.atouin.types
+package com.ankamagames.atouin.types
 {
-    import com.ankamagames.jerakine.logger.*;
-    import flash.display.*;
-    import flash.utils.*;
+   import flash.display.Sprite;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class LayerContainer extends Sprite
-    {
-        private var _nLayerId:int;
-        private var _lastIndexCell:uint;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(LayerContainer));
 
-        public function LayerContainer(param1:int)
-        {
-            this._nLayerId = param1;
-            name = "layer" + param1;
-            return;
-        }// end function
+   public class LayerContainer extends Sprite
+   {
+         
 
-        public function get layerId() : int
-        {
-            return this._nLayerId;
-        }// end function
+      public function LayerContainer(nId:int) {
+         super();
+         this._nLayerId=nId;
+         name="layer"+nId;
+      }
 
-        public function addCell(param1:CellContainer) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = _loc_3;
-            while (_loc_4 < numChildren)
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LayerContainer));
+
+      private var _nLayerId:int;
+
+      private var _lastIndexCell:uint;
+
+      public function get layerId() : int {
+         return this._nLayerId;
+      }
+
+      public function addCell(cellCtr:CellContainer) : void {
+         var currentCell:CellContainer = null;
+         var startIndex:uint = 0;
+         var i:uint = startIndex;
+         while(i<numChildren)
+         {
+            currentCell=getChildAt(i) as CellContainer;
+            if(!currentCell)
             {
-                
-                _loc_2 = getChildAt(_loc_4) as CellContainer;
-                if (!_loc_2)
-                {
-                }
-                else if (param1.depth < _loc_2.depth)
-                {
-                    this._lastIndexCell = _loc_4;
-                    addChildAt(param1, _loc_4);
-                    return;
-                }
-                _loc_4 = _loc_4 + 1;
             }
-            this._lastIndexCell = numChildren;
-            addChild(param1);
-            return;
-        }// end function
+            else
+            {
+               if(cellCtr.depth<currentCell.depth)
+               {
+                  this._lastIndexCell=i;
+                  addChildAt(cellCtr,i);
+                  return;
+               }
+            }
+            i++;
+         }
+         this._lastIndexCell=numChildren;
+         addChild(cellCtr);
+      }
+   }
 
-    }
 }

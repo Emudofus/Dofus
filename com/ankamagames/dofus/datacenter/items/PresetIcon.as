@@ -1,28 +1,30 @@
-﻿package com.ankamagames.dofus.datacenter.items
+package com.ankamagames.dofus.datacenter.items
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
 
-    public class PresetIcon extends Object implements IDataCenter
-    {
-        public var id:int;
-        public var order:int;
-        private static const MODULE:String = "PresetIcons";
 
-        public function PresetIcon()
-        {
-            return;
-        }// end function
+   public class PresetIcon extends Object implements IDataCenter
+   {
+         
 
-        public static function getPresetIconById(param1:int) : PresetIcon
-        {
-            return GameData.getObject(MODULE, param1) as PresetIcon;
-        }// end function
+      public function PresetIcon() {
+         super();
+      }
 
-        public static function getPresetIcons() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static const MODULE:String = "PresetIcons";
 
-    }
+      public static function getPresetIconById(id:int) : PresetIcon {
+         return GameData.getObject(MODULE,id) as PresetIcon;
+      }
+
+      public static function getPresetIcons() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:int;
+
+      public var order:int;
+   }
+
 }

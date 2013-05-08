@@ -1,22 +1,24 @@
-﻿package com.ankamagames.berilia.components.messages
+package com.ankamagames.berilia.components.messages
 {
-    import flash.display.*;
+   import flash.display.InteractiveObject;
 
-    public class TextClickMessage extends ComponentMessage
-    {
-        private var _textEvent:String;
 
-        public function TextClickMessage(param1:InteractiveObject, param2:String)
-        {
-            this._textEvent = param2;
-            super(param1);
-            return;
-        }// end function
+   public class TextClickMessage extends ComponentMessage
+   {
+         
 
-        public function get textEvent() : String
-        {
-            return this._textEvent;
-        }// end function
+      public function TextClickMessage(target:InteractiveObject, textEvent:String) {
+         this._textEvent=textEvent;
+         super(target);
+      }
 
-    }
+
+
+      private var _textEvent:String;
+
+      public function get textEvent() : String {
+         return this._textEvent;
+      }
+   }
+
 }

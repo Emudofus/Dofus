@@ -1,106 +1,112 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
+package com.ankamagames.dofus.network.messages.game.context.roleplay.houses
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class HouseSoldMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var houseId:uint = 0;
-        public var realPrice:uint = 0;
-        public var buyerName:String = "";
-        public static const protocolId:uint = 5737;
 
-        public function HouseSoldMessage()
-        {
-            return;
-        }// end function
+   public class HouseSoldMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function HouseSoldMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5737;
-        }// end function
+      public static const protocolId:uint = 5737;
 
-        public function initHouseSoldMessage(param1:uint = 0, param2:uint = 0, param3:String = "") : HouseSoldMessage
-        {
-            this.houseId = param1;
-            this.realPrice = param2;
-            this.buyerName = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.houseId = 0;
-            this.realPrice = 0;
-            this.buyerName = "";
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var houseId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var realPrice:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_HouseSoldMessage(param1);
-            return;
-        }// end function
+      public var buyerName:String = "";
 
-        public function serializeAs_HouseSoldMessage(param1:IDataOutput) : void
-        {
-            if (this.houseId < 0)
+      override public function getMessageId() : uint {
+         return 5737;
+      }
+
+      public function initHouseSoldMessage(houseId:uint=0, realPrice:uint=0, buyerName:String="") : HouseSoldMessage {
+         this.houseId=houseId;
+         this.realPrice=realPrice;
+         this.buyerName=buyerName;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.houseId=0;
+         this.realPrice=0;
+         this.buyerName="";
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HouseSoldMessage(output);
+      }
+
+      public function serializeAs_HouseSoldMessage(output:IDataOutput) : void {
+         if(this.houseId<0)
+         {
+            throw new Error("Forbidden value ("+this.houseId+") on element houseId.");
+         }
+         else
+         {
+            output.writeInt(this.houseId);
+            if(this.realPrice<0)
             {
-                throw new Error("Forbidden value (" + this.houseId + ") on element houseId.");
+               throw new Error("Forbidden value ("+this.realPrice+") on element realPrice.");
             }
-            param1.writeInt(this.houseId);
-            if (this.realPrice < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.realPrice + ") on element realPrice.");
+               output.writeInt(this.realPrice);
+               output.writeUTF(this.buyerName);
+               return;
             }
-            param1.writeInt(this.realPrice);
-            param1.writeUTF(this.buyerName);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_HouseSoldMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HouseSoldMessage(input);
+      }
 
-        public function deserializeAs_HouseSoldMessage(param1:IDataInput) : void
-        {
-            this.houseId = param1.readInt();
-            if (this.houseId < 0)
+      public function deserializeAs_HouseSoldMessage(input:IDataInput) : void {
+         this.houseId=input.readInt();
+         if(this.houseId<0)
+         {
+            throw new Error("Forbidden value ("+this.houseId+") on element of HouseSoldMessage.houseId.");
+         }
+         else
+         {
+            this.realPrice=input.readInt();
+            if(this.realPrice<0)
             {
-                throw new Error("Forbidden value (" + this.houseId + ") on element of HouseSoldMessage.houseId.");
+               throw new Error("Forbidden value ("+this.realPrice+") on element of HouseSoldMessage.realPrice.");
             }
-            this.realPrice = param1.readInt();
-            if (this.realPrice < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.realPrice + ") on element of HouseSoldMessage.realPrice.");
+               this.buyerName=input.readUTF();
+               return;
             }
-            this.buyerName = param1.readUTF();
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

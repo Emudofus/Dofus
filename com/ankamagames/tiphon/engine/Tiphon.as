@@ -1,130 +1,149 @@
-﻿package com.ankamagames.tiphon.engine
+package com.ankamagames.tiphon.engine
 {
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.tiphon.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.events.*;
-    import com.ankamagames.tiphon.types.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.interfaces.IFLAEventHandler;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.tiphon.types.ColoredSprite;
+   import com.ankamagames.tiphon.types.AdvancedColoredSprite;
+   import com.ankamagames.tiphon.types.CarriedSprite;
+   import com.ankamagames.tiphon.types.EquipmentSprite;
+   import com.ankamagames.tiphon.types.ScriptedAnimation;
+   import com.ankamagames.tiphon.TiphonConstants;
+   import flash.events.Event;
+   import com.ankamagames.tiphon.events.TiphonEvent;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    final public class Tiphon extends EventDispatcher implements IFLAEventHandler
-    {
-        protected var coloredSprite:ColoredSprite;
-        protected var advancedColoredSprite:AdvancedColoredSprite;
-        protected var carriedSprite:CarriedSprite;
-        protected var equipmentSprite:EquipmentSprite;
-        protected var scriptedAnimation:ScriptedAnimation;
-        private var _rasterizedAnimationNameList:Array;
-        private var _toOptions:Object;
-        private var _waitForInit:Boolean;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(Tiphon));
-        private static var _self:Tiphon;
-        public static const skullLibrary:LibrariesManager = TiphonLibraries.skullLibrary;
-        public static const skinLibrary:LibrariesManager = TiphonLibraries.skinLibrary;
 
-        public function Tiphon()
-        {
-            this._rasterizedAnimationNameList = new Array();
-            if (_self != null)
-            {
-                throw new SingletonError("Tiphon is a singleton and should not be instanciated directly.");
-            }
+   public final class Tiphon extends EventDispatcher implements IFLAEventHandler
+   {
+         
+
+      public function Tiphon() {
+         this._rasterizedAnimationNameList=new Array();
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("Tiphon is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function addRasterizeAnimation(param1:String) : void
-        {
-            return;
-        }// end function
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(Tiphon));
 
-        public function isRasterizeAnimation(param1:String) : Boolean
-        {
-            return this._rasterizedAnimationNameList[param1];
-        }// end function
+      private static var _self:Tiphon;
 
-        public function get options()
-        {
-            return this._toOptions;
-        }// end function
+      public static const skullLibrary:LibrariesManager = TiphonLibraries.skullLibrary;
 
-        public function init(param1:String, param2:String, param3:String = null) : void
-        {
-            if (param1.split("://").length == 1)
-            {
-                param1 = "file://" + param1;
-            }
-            if (param2.split("://").length == 1)
-            {
-                param2 = "file://" + param2;
-            }
-            TiphonConstants.SWF_SKULL_PATH = param1;
-            TiphonConstants.SWF_SKIN_PATH = param2;
-            if (param3)
-            {
-                this._waitForInit = true;
-                BoneIndexManager.getInstance().addEventListener(Event.INIT, this.onBoneIndexManagerInit);
-                BoneIndexManager.getInstance().init(param3);
-            }
-            TiphonFpsManager.init();
-            TiphonEventsManager.addListener(this, TiphonEvent.PLAYANIM_EVENT);
-            if (!this._waitForInit)
-            {
-                dispatchEvent(new Event(Event.INIT));
-            }
-            return;
-        }// end function
+      public static const skinLibrary:LibrariesManager = TiphonLibraries.skinLibrary;
 
-        public function setDisplayOptions(param1) : void
-        {
-            this._toOptions = param1;
-            return;
-        }// end function
+      public static function getInstance() : Tiphon {
+         if(_self==null)
+         {
+            _self=new Tiphon();
+         }
+         return _self;
+      }
 
-        public function handleFLAEvent(param1:String, param2:String, param3:String, param4:Object = null) : void
-        {
-            var _loc_5:* = param4 as TiphonSprite;
-            if (param3 == TiphonEvent.EVENT_SHOT)
-            {
-                _loc_5.onAnimationEvent(TiphonEvent.EVENT_SHOT);
-            }
-            else if (param3 == TiphonEvent.EVENT_END)
-            {
-                _loc_5.onAnimationEvent(TiphonEvent.EVENT_END);
-            }
-            else if (param3 == TiphonEvent.PLAYER_STOP)
-            {
-                _loc_5.onAnimationEvent(TiphonEvent.PLAYER_STOP);
-            }
-            else if (param2 == TiphonEvent.PLAYANIM_EVENT)
-            {
-                _loc_5.onAnimationEvent(TiphonEvent.PLAYANIM_EVENT, param3);
-            }
-            return;
-        }// end function
+      protected var coloredSprite:ColoredSprite;
 
-        public function removeEntitySound(param1:IEntity) : void
-        {
-            return;
-        }// end function
+      protected var advancedColoredSprite:AdvancedColoredSprite;
 
-        private function onBoneIndexManagerInit(event:Event) : void
-        {
+      protected var carriedSprite:CarriedSprite;
+
+      protected var equipmentSprite:EquipmentSprite;
+
+      protected var scriptedAnimation:ScriptedAnimation;
+
+      private var _rasterizedAnimationNameList:Array;
+
+      private var _toOptions;
+
+      private var _waitForInit:Boolean;
+
+      public function addRasterizeAnimation(animName:String) : void {
+         
+      }
+
+      public function isRasterizeAnimation(animName:String) : Boolean {
+         return this._rasterizedAnimationNameList[animName];
+      }
+
+      public function get options() : * {
+         return this._toOptions;
+      }
+
+      public function init(sSwfSkullPath:String, sSwfSkinPath:String, animIndexPath:String=null) : void {
+         if(sSwfSkullPath.split("://").length==1)
+         {
+            sSwfSkullPath="file://"+sSwfSkullPath;
+         }
+         if(sSwfSkinPath.split("://").length==1)
+         {
+            sSwfSkinPath="file://"+sSwfSkinPath;
+         }
+         TiphonConstants.SWF_SKULL_PATH=sSwfSkullPath;
+         TiphonConstants.SWF_SKIN_PATH=sSwfSkinPath;
+         if(animIndexPath)
+         {
+            this._waitForInit=true;
+            BoneIndexManager.getInstance().addEventListener(Event.INIT,this.onBoneIndexManagerInit);
+            BoneIndexManager.getInstance().init(animIndexPath);
+         }
+         TiphonFpsManager.init();
+         TiphonEventsManager.addListener(this,TiphonEvent.PLAYANIM_EVENT);
+         if(!this._waitForInit)
+         {
             dispatchEvent(new Event(Event.INIT));
-            return;
-        }// end function
+         }
+      }
 
-        public static function getInstance() : Tiphon
-        {
-            if (_self == null)
+      public function setDisplayOptions(topt:*) : void {
+         this._toOptions=topt;
+      }
+
+      public function handleFLAEvent(pAnimationName:String, pType:String, pParams:String, pSprite:Object=null) : void {
+         var tiphonSprite:TiphonSprite = pSprite as TiphonSprite;
+         if(pParams==TiphonEvent.EVENT_SHOT)
+         {
+            tiphonSprite.onAnimationEvent(TiphonEvent.EVENT_SHOT);
+         }
+         else
+         {
+            if(pParams==TiphonEvent.EVENT_END)
             {
-                _self = new Tiphon;
+               tiphonSprite.onAnimationEvent(TiphonEvent.EVENT_END);
             }
-            return _self;
-        }// end function
+            else
+            {
+               if(pParams==TiphonEvent.PLAYER_STOP)
+               {
+                  tiphonSprite.onAnimationEvent(TiphonEvent.PLAYER_STOP);
+               }
+               else
+               {
+                  if(pType==TiphonEvent.PLAYANIM_EVENT)
+                  {
+                     tiphonSprite.onAnimationEvent(TiphonEvent.PLAYANIM_EVENT,pParams);
+                  }
+               }
+            }
+         }
+      }
 
-    }
+      public function removeEntitySound(pEntityId:IEntity) : void {
+         
+      }
+
+      private function onBoneIndexManagerInit(e:Event) : void {
+         dispatchEvent(new Event(Event.INIT));
+      }
+   }
+
 }

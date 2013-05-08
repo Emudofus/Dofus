@@ -1,737 +1,683 @@
-﻿package com.ankamagames.berilia.components
+package com.ankamagames.berilia.components
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.messages.*;
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.graphic.*;
-    import com.ankamagames.jerakine.handlers.messages.keyboard.*;
-    import com.ankamagames.jerakine.handlers.messages.mouse.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.ui.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.types.graphic.GraphicContainer;
+   import com.ankamagames.berilia.FinalizableUIComponent;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.berilia.types.graphic.UiRootContainer;
+   import com.ankamagames.berilia.types.graphic.ButtonContainer;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.berilia.managers.UIEventManager;
+   import com.ankamagames.berilia.components.messages.SelectItemMessage;
+   import com.ankamagames.berilia.Berilia;
+   import com.ankamagames.berilia.types.graphic.GraphicElement;
+   import com.ankamagames.berilia.enums.StatesEnum;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseClickMessage;
+   import com.ankamagames.jerakine.handlers.messages.mouse.MouseRightClickMessage;
+   import com.ankamagames.jerakine.handlers.messages.keyboard.KeyboardKeyUpMessage;
+   import com.ankamagames.berilia.components.messages.RenameTabMessage;
+   import com.ankamagames.berilia.components.messages.CreateTabMessage;
+   import com.ankamagames.berilia.components.messages.DeleteTabMessage;
+   import flash.ui.Keyboard;
 
-    public class TabSet extends GraphicContainer implements FinalizableUIComponent
-    {
-        private var _nSelected:int = -1;
-        private var _nPreviousSelected:int = -1;
-        private var _nNbTabs:uint = 0;
-        private var _nTotalWidth:uint = 0;
-        private var _nNbTabsRequired:uint;
-        private var _nCurrentMaxIndex:uint = 0;
-        private var _aTabsList:Array;
-        private var _aCtrs:Array;
-        private var _aCloses:Array;
-        private var _aLbls:Array;
-        private var _aInputs:Array;
-        private var _uiClass:UiRootContainer;
-        private var _tabCtr:GraphicContainer;
-        private var _btnPlus:ButtonContainer;
-        private var _sBgTextureUri:Uri;
-        private var _sCloseTextureUri:Uri;
-        private var _sPlusTextureUri:Uri;
-        private var _sTabCss:Uri;
-        private var _nWidthTab:int;
-        private var _nWidthLabel:int;
-        private var _nHeightLabel:int;
-        private var _nWidthPlusTab:int;
-        private var _nXCloseTab:int;
-        private var _nYCloseTab:int;
-        private var _nXPlusTab:int;
-        private var _nYPlusTab:int;
-        private var _nXLabelTab:int;
-        private var _nYLabelTab:int;
-        private var _finalized:Boolean = false;
-        private var _bNameEdition:Boolean = false;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(TabSet));
 
-        public function TabSet()
-        {
-            this._aTabsList = new Array();
-            this._aCtrs = new Array();
-            this._aCloses = new Array();
-            this._aLbls = new Array();
-            this._aInputs = new Array();
-            this._tabCtr = new GraphicContainer();
-            this._tabCtr.width = __width;
-            this._tabCtr.height = __height;
-            addChild(this._tabCtr);
-            return;
-        }// end function
+   public class TabSet extends GraphicContainer implements FinalizableUIComponent
+   {
+         
 
-        public function get widthTab() : int
-        {
-            return this._nWidthTab;
-        }// end function
+      public function TabSet() {
+         super();
+         this._aTabsList=new Array();
+         this._aCtrs=new Array();
+         this._aCloses=new Array();
+         this._aLbls=new Array();
+         this._aInputs=new Array();
+         this._tabCtr=new GraphicContainer();
+         this._tabCtr.width=__width;
+         this._tabCtr.height=__height;
+         addChild(this._tabCtr);
+      }
 
-        public function set widthTab(param1:int) : void
-        {
-            this._nWidthTab = param1;
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TabSet));
 
-        public function get widthLabel() : int
-        {
-            return this._nWidthLabel;
-        }// end function
+      private var _nSelected:int = -1;
 
-        public function set widthLabel(param1:int) : void
-        {
-            this._nWidthLabel = param1;
-            return;
-        }// end function
+      private var _nPreviousSelected:int = -1;
 
-        public function get heightLabel() : int
-        {
-            return this._nHeightLabel;
-        }// end function
+      private var _nNbTabs:uint = 0;
 
-        public function set heightLabel(param1:int) : void
-        {
-            this._nHeightLabel = param1;
-            return;
-        }// end function
+      private var _nTotalWidth:uint = 0;
 
-        public function get widthPlusTab() : int
-        {
-            return this._nWidthPlusTab;
-        }// end function
+      private var _nNbTabsRequired:uint;
 
-        public function set widthPlusTab(param1:int) : void
-        {
-            this._nWidthPlusTab = param1;
-            return;
-        }// end function
+      private var _nCurrentMaxIndex:uint = 0;
 
-        public function get tabUri() : Uri
-        {
-            return this._sBgTextureUri;
-        }// end function
+      private var _aTabsList:Array;
 
-        public function set tabUri(param1:Uri) : void
-        {
-            this._sBgTextureUri = param1;
-            return;
-        }// end function
+      private var _aCtrs:Array;
 
-        public function get closeUri() : Uri
-        {
-            return this._sCloseTextureUri;
-        }// end function
+      private var _aCloses:Array;
 
-        public function set closeUri(param1:Uri) : void
-        {
-            this._sCloseTextureUri = param1;
-            return;
-        }// end function
+      private var _aLbls:Array;
 
-        public function get plusUri() : Uri
-        {
-            return this._sPlusTextureUri;
-        }// end function
+      private var _aInputs:Array;
 
-        public function set plusUri(param1:Uri) : void
-        {
-            this._sPlusTextureUri = param1;
-            return;
-        }// end function
+      private var _uiClass:UiRootContainer;
 
-        public function get cssUri() : Uri
-        {
-            return this._sTabCss;
-        }// end function
+      private var _tabCtr:GraphicContainer;
 
-        public function set cssUri(param1:Uri) : void
-        {
-            this._sTabCss = param1;
-            return;
-        }// end function
+      private var _btnPlus:ButtonContainer;
 
-        public function get xClose() : int
-        {
-            return this._nXCloseTab;
-        }// end function
+      private var _sBgTextureUri:Uri;
 
-        public function set xClose(param1:int) : void
-        {
-            this._nXCloseTab = param1;
-            return;
-        }// end function
+      private var _sCloseTextureUri:Uri;
 
-        public function get yClose() : int
-        {
-            return this._nYCloseTab;
-        }// end function
+      private var _sPlusTextureUri:Uri;
 
-        public function set yClose(param1:int) : void
-        {
-            this._nYCloseTab = param1;
-            return;
-        }// end function
+      private var _sTabCss:Uri;
 
-        public function get xLabel() : int
-        {
-            return this._nXLabelTab;
-        }// end function
+      private var _nWidthTab:int;
 
-        public function set xLabel(param1:int) : void
-        {
-            this._nXLabelTab = param1;
-            return;
-        }// end function
+      private var _nWidthLabel:int;
 
-        public function get yLabel() : int
-        {
-            return this._nYLabelTab;
-        }// end function
+      private var _nHeightLabel:int;
 
-        public function set yLabel(param1:int) : void
-        {
-            this._nYLabelTab = param1;
-            return;
-        }// end function
+      private var _nWidthPlusTab:int;
 
-        public function get xPlus() : int
-        {
-            return this._nXPlusTab;
-        }// end function
+      private var _nXCloseTab:int;
 
-        public function set xPlus(param1:int) : void
-        {
-            this._nXPlusTab = param1;
-            return;
-        }// end function
+      private var _nYCloseTab:int;
 
-        public function get yPlus() : int
-        {
-            return this._nYPlusTab;
-        }// end function
+      private var _nXPlusTab:int;
 
-        public function set yPlus(param1:int) : void
-        {
-            this._nYPlusTab = param1;
-            return;
-        }// end function
+      private var _nYPlusTab:int;
 
-        public function get length() : int
-        {
-            return this._nNbTabs;
-        }// end function
+      private var _nXLabelTab:int;
 
-        public function set length(param1:int) : void
-        {
-            this._nNbTabsRequired = param1;
-            if (this._btnPlus && this._nNbTabsRequired >= 1)
+      private var _nYLabelTab:int;
+
+      private var _finalized:Boolean = false;
+
+      private var _bNameEdition:Boolean = false;
+
+      public function get widthTab() : int {
+         return this._nWidthTab;
+      }
+
+      public function set widthTab(i:int) : void {
+         this._nWidthTab=i;
+      }
+
+      public function get widthLabel() : int {
+         return this._nWidthLabel;
+      }
+
+      public function set widthLabel(i:int) : void {
+         this._nWidthLabel=i;
+      }
+
+      public function get heightLabel() : int {
+         return this._nHeightLabel;
+      }
+
+      public function set heightLabel(i:int) : void {
+         this._nHeightLabel=i;
+      }
+
+      public function get widthPlusTab() : int {
+         return this._nWidthPlusTab;
+      }
+
+      public function set widthPlusTab(i:int) : void {
+         this._nWidthPlusTab=i;
+      }
+
+      public function get tabUri() : Uri {
+         return this._sBgTextureUri;
+      }
+
+      public function set tabUri(s:Uri) : void {
+         this._sBgTextureUri=s;
+      }
+
+      public function get closeUri() : Uri {
+         return this._sCloseTextureUri;
+      }
+
+      public function set closeUri(s:Uri) : void {
+         this._sCloseTextureUri=s;
+      }
+
+      public function get plusUri() : Uri {
+         return this._sPlusTextureUri;
+      }
+
+      public function set plusUri(s:Uri) : void {
+         this._sPlusTextureUri=s;
+      }
+
+      public function get cssUri() : Uri {
+         return this._sTabCss;
+      }
+
+      public function set cssUri(s:Uri) : void {
+         this._sTabCss=s;
+      }
+
+      public function get xClose() : int {
+         return this._nXCloseTab;
+      }
+
+      public function set xClose(i:int) : void {
+         this._nXCloseTab=i;
+      }
+
+      public function get yClose() : int {
+         return this._nYCloseTab;
+      }
+
+      public function set yClose(i:int) : void {
+         this._nYCloseTab=i;
+      }
+
+      public function get xLabel() : int {
+         return this._nXLabelTab;
+      }
+
+      public function set xLabel(i:int) : void {
+         this._nXLabelTab=i;
+      }
+
+      public function get yLabel() : int {
+         return this._nYLabelTab;
+      }
+
+      public function set yLabel(i:int) : void {
+         this._nYLabelTab=i;
+      }
+
+      public function get xPlus() : int {
+         return this._nXPlusTab;
+      }
+
+      public function set xPlus(i:int) : void {
+         this._nXPlusTab=i;
+      }
+
+      public function get yPlus() : int {
+         return this._nYPlusTab;
+      }
+
+      public function set yPlus(i:int) : void {
+         this._nYPlusTab=i;
+      }
+
+      public function get length() : int {
+         return this._nNbTabs;
+      }
+
+      public function set length(i:int) : void {
+         this._nNbTabsRequired=i;
+         if((this._btnPlus)&&(this._nNbTabsRequired>=1))
+         {
+            if(this._nNbTabsRequired>this._nNbTabs)
             {
-                if (this._nNbTabsRequired > this._nNbTabs)
-                {
-                    while (this._nNbTabsRequired > this._nNbTabs)
-                    {
-                        
-                        this.addTab();
-                    }
-                }
-                if (this._nNbTabsRequired < this._nNbTabs)
-                {
-                    while (this._nNbTabsRequired < this._nNbTabs)
-                    {
-                        
-                        this.removeTab();
-                    }
-                }
+               while(this._nNbTabsRequired>this._nNbTabs)
+               {
+                  this.addTab();
+               }
             }
-            return;
-        }// end function
-
-        public function get tabCtr() : GraphicContainer
-        {
-            return this._tabCtr;
-        }// end function
-
-        public function set tabCtr(param1:GraphicContainer) : void
-        {
-            this._tabCtr = param1;
-            return;
-        }// end function
-
-        public function get selectedTab() : int
-        {
-            return this._nSelected;
-        }// end function
-
-        public function set selectedTab(param1:int) : void
-        {
-            if (!this._aCtrs[param1])
+            if(this._nNbTabsRequired<this._nNbTabs)
             {
-                if (param1 < 0)
-                {
-                    this.selectedTab = param1 + 1;
-                }
-                else
-                {
-                    _loc_1 = ++param1 - 1;
-                    this.selectedTab = ++param1 - 1;
-                }
+               while(this._nNbTabsRequired<this._nNbTabs)
+               {
+                  this.removeTab();
+               }
             }
-            this._nPreviousSelected = this._nSelected;
-            this._nSelected = _loc_1;
-            if (this._nPreviousSelected != -1 && this._aCtrs[this._nPreviousSelected])
-            {
-                this._aCtrs[this._nPreviousSelected].selected = false;
-                this._aCloses[this._nPreviousSelected].visible = false;
-                this._aLbls[this._nPreviousSelected].cssClass = "p";
-            }
-            if (this._nSelected != -1)
-            {
-                this._aCtrs[this._nSelected].selected = false;
-                this._aCtrs[this._nSelected].selected = true;
-                this._aCloses[this._nSelected].visible = true;
-            }
-            if (UIEventManager.getInstance().isRegisteredInstance(this, SelectItemMessage))
-            {
-                Berilia.getInstance().handler.process(new SelectItemMessage(this, this._aCtrs[this._nSelected]));
-            }
-            return;
-        }// end function
+         }
+      }
 
-        public function get lastTab() : int
-        {
-            return (this._nNbTabs - 1);
-        }// end function
+      public function get tabCtr() : GraphicContainer {
+         return this._tabCtr;
+      }
 
-        public function set dataProvider(param1) : void
-        {
-            if (!this.isIterable(param1))
+      public function set tabCtr(ctr:GraphicContainer) : void {
+         this._tabCtr=ctr;
+      }
+
+      public function get selectedTab() : int {
+         return this._nSelected;
+      }
+
+      public function set selectedTab(i:int) : void {
+         if(!this._aCtrs[i])
+         {
+            if(i<0)
             {
-                throw new ArgumentError("dataProvider must be either Array or Vector.");
+               this.selectedTab=++i;
             }
-            this._aTabsList = param1;
+            else
+            {
+               this.selectedTab=--i;
+            }
+         }
+         this._nPreviousSelected=this._nSelected;
+         this._nSelected=i;
+         if((!(this._nPreviousSelected==-1))&&(this._aCtrs[this._nPreviousSelected]))
+         {
+            this._aCtrs[this._nPreviousSelected].selected=false;
+            this._aCloses[this._nPreviousSelected].visible=false;
+            this._aLbls[this._nPreviousSelected].cssClass="p";
+         }
+         if(this._nSelected!=-1)
+         {
+            this._aCtrs[this._nSelected].selected=false;
+            this._aCtrs[this._nSelected].selected=true;
+            this._aCloses[this._nSelected].visible=true;
+         }
+         if(UIEventManager.getInstance().isRegisteredInstance(this,SelectItemMessage))
+         {
+            Berilia.getInstance().handler.process(new SelectItemMessage(this,this._aCtrs[this._nSelected]));
+         }
+      }
+
+      public function get lastTab() : int {
+         return this._nNbTabs-1;
+      }
+
+      public function set dataProvider(data:*) : void {
+         if(!this.isIterable(data))
+         {
+            throw new ArgumentError("dataProvider must be either Array or Vector.");
+         }
+         else
+         {
+            this._aTabsList=data;
             this.finalize();
             return;
-        }// end function
+         }
+      }
 
-        public function get dataProvider()
-        {
-            return this._aTabsList;
-        }// end function
+      public function get dataProvider() : * {
+         return this._aTabsList;
+      }
 
-        public function get finalized() : Boolean
-        {
-            return this._finalized;
-        }// end function
+      public function get finalized() : Boolean {
+         return this._finalized;
+      }
 
-        public function set finalized(param1:Boolean) : void
-        {
-            this._finalized = param1;
+      public function set finalized(b:Boolean) : void {
+         this._finalized=b;
+      }
+
+      public function finalize() : void {
+         this._uiClass=getUi();
+         if((this._aTabsList)&&(this._aTabsList.length<0))
+         {
+            this._nNbTabs=this._aTabsList.length;
+            if(this._nNbTabs>0)
+            {
+               this.tabsDisplay();
+            }
+         }
+         else
+         {
+            this.tabsDisplay();
+         }
+         this._finalized=true;
+         if(this._uiClass)
+         {
+            this._uiClass.iAmFinalized(this);
+         }
+      }
+
+      override public function remove() : void {
+         if(!__removed)
+         {
+            this._uiClass=null;
+            this._tabCtr.remove();
+            this._btnPlus.remove();
+            this._tabCtr=null;
+            this._btnPlus=null;
+         }
+         super.remove();
+      }
+
+      public function highlight(tabId:uint, show:Boolean=true) : void {
+         if(show)
+         {
+            this._aLbls[tabId].cssClass="highlighted";
+         }
+         else
+         {
+            this._aLbls[tabId].cssClass="p";
+         }
+      }
+
+      public function renameTab(tabId:uint, name:String=null) : void {
+         this._aInputs[this._nSelected].text="";
+         this._aLbls[tabId].caretIndex=0;
+         if(tabId>=this._nCurrentMaxIndex)
+         {
             return;
-        }// end function
+         }
+         if(this._aCtrs[tabId].selected)
+         {
+            this._aCtrs[tabId].selected=false;
+            this._aLbls[tabId].text=name;
+            this._aCtrs[tabId].reset();
+            this._aCtrs[tabId].selected=true;
+         }
+         else
+         {
+            this._aLbls[tabId].text=name;
+            this._aCtrs[tabId].reset();
+         }
+      }
 
-        public function finalize() : void
-        {
-            this._uiClass = getUi();
-            if (this._aTabsList && this._aTabsList.length > 0)
-            {
-                this._nNbTabs = this._aTabsList.length;
-                if (this._nNbTabs > 0)
-                {
-                    this.tabsDisplay();
-                }
-            }
-            else
-            {
-                this.tabsDisplay();
-            }
-            this._finalized = true;
-            if (this._uiClass)
-            {
-                this._uiClass.iAmFinalized(this);
-            }
-            return;
-        }// end function
+      private function tabsDisplay() : void {
+         this.addPlusTab();
+         this.addTab();
+         this.length=this._nNbTabsRequired;
+         this.selectedTab=0;
+      }
 
-        override public function remove() : void
-        {
-            if (!__removed)
-            {
-                this._uiClass = null;
-                this._tabCtr.remove();
-                this._btnPlus.remove();
-                this._tabCtr = null;
-                this._btnPlus = null;
-            }
-            super.remove();
-            return;
-        }// end function
+      private function addTab() : void {
+         var btn:ButtonContainer = new ButtonContainer();
+         btn.soundId="16009";
+         btn.width=this._nWidthTab;
+         btn.height=__height;
+         btn.name="btn_tab"+this._nCurrentMaxIndex;
+         var texBg:Texture = new Texture();
+         texBg.width=this._nWidthTab;
+         texBg.height=__height;
+         texBg.autoGrid=true;
+         texBg.uri=this._sBgTextureUri;
+         texBg.name="tx_bgTab"+this._nCurrentMaxIndex;
+         texBg.finalize();
+         var lbl:Label = new Label();
+         lbl.width=this._nWidthLabel;
+         lbl.height=this._nHeightLabel;
+         lbl.x=this._nXLabelTab;
+         lbl.y=this._nYLabelTab;
+         lbl.css=this._sTabCss;
+         lbl.cssClass="p";
+         lbl.name="lbl_tab"+this._nCurrentMaxIndex;
+         lbl.text="tab "+(this._nCurrentMaxIndex+1);
+         var inp:Input = new Input();
+         inp.width=this._nWidthLabel;
+         inp.height=this._nHeightLabel;
+         inp.x=this._nXLabelTab;
+         inp.y=this._nYLabelTab;
+         inp.css=this._sTabCss;
+         inp.cssClass="p";
+         inp.name="inp_tab"+this._nCurrentMaxIndex;
+         btn.addChild(texBg);
+         btn.addChild(lbl);
+         btn.addChild(inp);
+         getUi().registerId(btn.name,new GraphicElement(btn,new Array(),btn.name));
+         getUi().registerId(texBg.name,new GraphicElement(texBg,new Array(),texBg.name));
+         getUi().registerId(lbl.name,new GraphicElement(lbl,new Array(),lbl.name));
+         getUi().registerId(inp.name,new GraphicElement(inp,new Array(),inp.name));
+         var stateChangingProperties:Array = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER]=new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBg.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBg.name]["gotoAndStop"]=StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_CLICKED]=new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBg.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBg.name]["gotoAndStop"]=StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_SELECTED]=new Array();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][texBg.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][texBg.name]["gotoAndStop"]=StatesEnum.STATE_SELECTED_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][lbl.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_SELECTED][lbl.name]["cssClass"]="selected";
+         btn.changingStateData=stateChangingProperties;
+         btn.finalize();
+         var btnClose:ButtonContainer = new ButtonContainer();
+         btnClose.x=this._nXCloseTab;
+         btnClose.y=this._nYCloseTab;
+         btnClose.width=this._nWidthPlusTab;
+         btnClose.height=__height;
+         btnClose.name="btn_closeTab"+this._nCurrentMaxIndex;
+         var texClose:Texture = new Texture();
+         texClose.uri=this._sCloseTextureUri;
+         texClose.name="tx_closeTab"+this._nCurrentMaxIndex;
+         texClose.finalize();
+         btnClose.addChild(texClose);
+         getUi().registerId(btnClose.name,new GraphicElement(btnClose,new Array(),btnClose.name));
+         getUi().registerId(texClose.name,new GraphicElement(texClose,new Array(),texClose.name));
+         var stateChangingPropertiesClose:Array = new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_OVER]=new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_OVER][texClose.name]=new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_OVER][texClose.name]["gotoAndStop"]=StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingPropertiesClose[StatesEnum.STATE_CLICKED]=new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_CLICKED][texClose.name]=new Array();
+         stateChangingPropertiesClose[StatesEnum.STATE_CLICKED][texClose.name]["gotoAndStop"]=StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         btnClose.changingStateData=stateChangingPropertiesClose;
+         btnClose.finalize();
+         btnClose.visible=false;
+         this._tabCtr.addChild(btn);
+         this._tabCtr.addChild(btnClose);
+         this._aCtrs[this._nNbTabs]=btn;
+         this._aCloses[this._nNbTabs]=btnClose;
+         this._aLbls[this._nNbTabs]=lbl;
+         this._aInputs[this._nNbTabs]=inp;
+         this._nTotalWidth=this._nTotalWidth+this._nWidthTab;
+         this._nCurrentMaxIndex++;
+         this.replaceTab();
+      }
 
-        public function highlight(param1:uint, param2:Boolean = true) : void
-        {
-            if (param2)
-            {
-                this._aLbls[param1].cssClass = "highlighted";
-            }
-            else
-            {
-                this._aLbls[param1].cssClass = "p";
-            }
-            return;
-        }// end function
+      private function addPlusTab() : void {
+         this._btnPlus=new ButtonContainer();
+         this._btnPlus.soundId="16090";
+         this._btnPlus.width=this._nWidthPlusTab;
+         this._btnPlus.height=__height;
+         this._btnPlus.name="btn_plus";
+         var texBgPlus:Texture = new Texture();
+         texBgPlus.width=this._nWidthPlusTab;
+         texBgPlus.height=__height;
+         texBgPlus.autoGrid=true;
+         texBgPlus.uri=this._sBgTextureUri;
+         texBgPlus.name="tx_bgPlus";
+         texBgPlus.finalize();
+         var texPlus:Texture = new Texture();
+         texPlus.x=this._nXPlusTab;
+         texPlus.y=this._nYPlusTab;
+         texPlus.uri=this._sPlusTextureUri;
+         texPlus.name="tx_plus";
+         texPlus.finalize();
+         this._btnPlus.addChild(texBgPlus);
+         this._btnPlus.addChild(texPlus);
+         getUi().registerId(this._btnPlus.name,new GraphicElement(this._btnPlus,new Array(),this._btnPlus.name));
+         getUi().registerId(texBgPlus.name,new GraphicElement(texBgPlus,new Array(),texBgPlus.name));
+         getUi().registerId(texPlus.name,new GraphicElement(texPlus,new Array(),texPlus.name));
+         addChild(this._btnPlus);
+         var stateChangingProperties:Array = new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER]=new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBgPlus.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texBgPlus.name]["gotoAndStop"]=StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_OVER][texPlus.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_OVER][texPlus.name]["gotoAndStop"]=StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_CLICKED]=new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBgPlus.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texBgPlus.name]["gotoAndStop"]=StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texPlus.name]=new Array();
+         stateChangingProperties[StatesEnum.STATE_CLICKED][texPlus.name]["gotoAndStop"]=StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
+         this._btnPlus.changingStateData=stateChangingProperties;
+         this._btnPlus.finalize();
+         this._nTotalWidth=this._nTotalWidth+this._nWidthPlusTab;
+      }
 
-        public function renameTab(param1:uint, param2:String = null) : void
-        {
-            this._aInputs[this._nSelected].text = "";
-            this._aLbls[param1].caretIndex = 0;
-            if (param1 >= this._nCurrentMaxIndex)
-            {
-                return;
-            }
-            if (this._aCtrs[param1].selected)
-            {
-                this._aCtrs[param1].selected = false;
-                this._aLbls[param1].text = param2;
-                this._aCtrs[param1].reset();
-                this._aCtrs[param1].selected = true;
-            }
-            else
-            {
-                this._aLbls[param1].text = param2;
-                this._aCtrs[param1].reset();
-            }
-            return;
-        }// end function
-
-        private function tabsDisplay() : void
-        {
-            this.addPlusTab();
-            this.addTab();
-            this.length = this._nNbTabsRequired;
-            this.selectedTab = 0;
-            return;
-        }// end function
-
-        private function addTab() : void
-        {
-            var _loc_1:* = new ButtonContainer();
-            _loc_1.soundId = "16009";
-            _loc_1.width = this._nWidthTab;
-            _loc_1.height = __height;
-            _loc_1.name = "btn_tab" + this._nCurrentMaxIndex;
-            var _loc_2:* = new Texture();
-            _loc_2.width = this._nWidthTab;
-            _loc_2.height = __height;
-            _loc_2.autoGrid = true;
-            _loc_2.uri = this._sBgTextureUri;
-            _loc_2.name = "tx_bgTab" + this._nCurrentMaxIndex;
-            _loc_2.finalize();
-            var _loc_3:* = new Label();
-            _loc_3.width = this._nWidthLabel;
-            _loc_3.height = this._nHeightLabel;
-            _loc_3.x = this._nXLabelTab;
-            _loc_3.y = this._nYLabelTab;
-            _loc_3.css = this._sTabCss;
-            _loc_3.cssClass = "p";
-            _loc_3.name = "lbl_tab" + this._nCurrentMaxIndex;
-            _loc_3.text = "tab " + (this._nCurrentMaxIndex + 1);
-            var _loc_4:* = new Input();
-            new Input().width = this._nWidthLabel;
-            _loc_4.height = this._nHeightLabel;
-            _loc_4.x = this._nXLabelTab;
-            _loc_4.y = this._nYLabelTab;
-            _loc_4.css = this._sTabCss;
-            _loc_4.cssClass = "p";
-            _loc_4.name = "inp_tab" + this._nCurrentMaxIndex;
-            _loc_1.addChild(_loc_2);
-            _loc_1.addChild(_loc_3);
-            _loc_1.addChild(_loc_4);
-            getUi().registerId(_loc_1.name, new GraphicElement(_loc_1, new Array(), _loc_1.name));
-            getUi().registerId(_loc_2.name, new GraphicElement(_loc_2, new Array(), _loc_2.name));
-            getUi().registerId(_loc_3.name, new GraphicElement(_loc_3, new Array(), _loc_3.name));
-            getUi().registerId(_loc_4.name, new GraphicElement(_loc_4, new Array(), _loc_4.name));
-            var _loc_5:* = new Array();
-            new Array()[StatesEnum.STATE_OVER] = new Array();
-            _loc_5[StatesEnum.STATE_OVER][_loc_2.name] = new Array();
-            _loc_5[StatesEnum.STATE_OVER][_loc_2.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-            _loc_5[StatesEnum.STATE_CLICKED] = new Array();
-            _loc_5[StatesEnum.STATE_CLICKED][_loc_2.name] = new Array();
-            _loc_5[StatesEnum.STATE_CLICKED][_loc_2.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-            _loc_5[StatesEnum.STATE_SELECTED] = new Array();
-            _loc_5[StatesEnum.STATE_SELECTED][_loc_2.name] = new Array();
-            _loc_5[StatesEnum.STATE_SELECTED][_loc_2.name]["gotoAndStop"] = StatesEnum.STATE_SELECTED_STRING.toLocaleLowerCase();
-            _loc_5[StatesEnum.STATE_SELECTED][_loc_3.name] = new Array();
-            _loc_5[StatesEnum.STATE_SELECTED][_loc_3.name]["cssClass"] = "selected";
-            _loc_1.changingStateData = _loc_5;
-            _loc_1.finalize();
-            var _loc_6:* = new ButtonContainer();
-            new ButtonContainer().x = this._nXCloseTab;
-            _loc_6.y = this._nYCloseTab;
-            _loc_6.width = this._nWidthPlusTab;
-            _loc_6.height = __height;
-            _loc_6.name = "btn_closeTab" + this._nCurrentMaxIndex;
-            var _loc_7:* = new Texture();
-            new Texture().uri = this._sCloseTextureUri;
-            _loc_7.name = "tx_closeTab" + this._nCurrentMaxIndex;
-            _loc_7.finalize();
-            _loc_6.addChild(_loc_7);
-            getUi().registerId(_loc_6.name, new GraphicElement(_loc_6, new Array(), _loc_6.name));
-            getUi().registerId(_loc_7.name, new GraphicElement(_loc_7, new Array(), _loc_7.name));
-            var _loc_8:* = new Array();
-            new Array()[StatesEnum.STATE_OVER] = new Array();
-            _loc_8[StatesEnum.STATE_OVER][_loc_7.name] = new Array();
-            _loc_8[StatesEnum.STATE_OVER][_loc_7.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-            _loc_8[StatesEnum.STATE_CLICKED] = new Array();
-            _loc_8[StatesEnum.STATE_CLICKED][_loc_7.name] = new Array();
-            _loc_8[StatesEnum.STATE_CLICKED][_loc_7.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-            _loc_6.changingStateData = _loc_8;
-            _loc_6.finalize();
-            _loc_6.visible = false;
-            this._tabCtr.addChild(_loc_1);
-            this._tabCtr.addChild(_loc_6);
-            this._aCtrs[this._nNbTabs] = _loc_1;
-            this._aCloses[this._nNbTabs] = _loc_6;
-            this._aLbls[this._nNbTabs] = _loc_3;
-            this._aInputs[this._nNbTabs] = _loc_4;
-            this._nTotalWidth = this._nTotalWidth + this._nWidthTab;
-            var _loc_9:* = this;
-            var _loc_10:* = this._nCurrentMaxIndex + 1;
-            _loc_9._nCurrentMaxIndex = _loc_10;
+      private function removeTab() : void {
+         var indexAlmostRemoved:* = 0;
+         if(this._nNbTabs>1)
+         {
+            indexAlmostRemoved=this._nSelected;
+            this._nPreviousSelected=indexAlmostRemoved-1;
+            this.removeContainerContent(this._aCtrs[indexAlmostRemoved]);
+            this._aCtrs.splice(indexAlmostRemoved,1);
+            this.removeContainerContent(this._aCloses[indexAlmostRemoved]);
+            this._aCloses.splice(indexAlmostRemoved,1);
+            this._aLbls.splice(indexAlmostRemoved,1);
+            this._nTotalWidth=this._nTotalWidth-this._nWidthTab;
             this.replaceTab();
-            return;
-        }// end function
+            this.selectedTab=this._nPreviousSelected;
+         }
+      }
 
-        private function addPlusTab() : void
-        {
-            this._btnPlus = new ButtonContainer();
-            this._btnPlus.soundId = "16090";
-            this._btnPlus.width = this._nWidthPlusTab;
-            this._btnPlus.height = __height;
-            this._btnPlus.name = "btn_plus";
-            var _loc_1:* = new Texture();
-            _loc_1.width = this._nWidthPlusTab;
-            _loc_1.height = __height;
-            _loc_1.autoGrid = true;
-            _loc_1.uri = this._sBgTextureUri;
-            _loc_1.name = "tx_bgPlus";
-            _loc_1.finalize();
-            var _loc_2:* = new Texture();
-            _loc_2.x = this._nXPlusTab;
-            _loc_2.y = this._nYPlusTab;
-            _loc_2.uri = this._sPlusTextureUri;
-            _loc_2.name = "tx_plus";
-            _loc_2.finalize();
-            this._btnPlus.addChild(_loc_1);
-            this._btnPlus.addChild(_loc_2);
-            getUi().registerId(this._btnPlus.name, new GraphicElement(this._btnPlus, new Array(), this._btnPlus.name));
-            getUi().registerId(_loc_1.name, new GraphicElement(_loc_1, new Array(), _loc_1.name));
-            getUi().registerId(_loc_2.name, new GraphicElement(_loc_2, new Array(), _loc_2.name));
-            addChild(this._btnPlus);
-            var _loc_3:* = new Array();
-            _loc_3[StatesEnum.STATE_OVER] = new Array();
-            _loc_3[StatesEnum.STATE_OVER][_loc_1.name] = new Array();
-            _loc_3[StatesEnum.STATE_OVER][_loc_1.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-            _loc_3[StatesEnum.STATE_OVER][_loc_2.name] = new Array();
-            _loc_3[StatesEnum.STATE_OVER][_loc_2.name]["gotoAndStop"] = StatesEnum.STATE_OVER_STRING.toLocaleLowerCase();
-            _loc_3[StatesEnum.STATE_CLICKED] = new Array();
-            _loc_3[StatesEnum.STATE_CLICKED][_loc_1.name] = new Array();
-            _loc_3[StatesEnum.STATE_CLICKED][_loc_1.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-            _loc_3[StatesEnum.STATE_CLICKED][_loc_2.name] = new Array();
-            _loc_3[StatesEnum.STATE_CLICKED][_loc_2.name]["gotoAndStop"] = StatesEnum.STATE_CLICKED_STRING.toLocaleLowerCase();
-            this._btnPlus.changingStateData = _loc_3;
-            this._btnPlus.finalize();
-            this._nTotalWidth = this._nTotalWidth + this._nWidthPlusTab;
-            return;
-        }// end function
+      private function replaceTab() : void {
+         var index:* = undefined;
+         var currentPos:int = 0;
+         for (index in this._aCtrs)
+         {
+            this._aCtrs[index].state=0;
+            this._aCtrs[index].x=currentPos;
+            this._aCloses[index].x=currentPos+this._nXCloseTab;
+            this._aCtrs[index].reset();
+            currentPos=currentPos+this._aCtrs[index].width;
+         }
+         this._btnPlus.x=currentPos;
+         if(this._nSelected==-1)
+         {
+            this.selectedTab=index;
+         }
+         this._nNbTabs=this._aCtrs.length;
+         if(this._nTotalWidth+this._nWidthTab<__width)
+         {
+            this._btnPlus.visible=true;
+         }
+         else
+         {
+            this._btnPlus.visible=false;
+         }
+      }
 
-        private function removeTab() : void
-        {
-            var _loc_1:* = 0;
-            if (this._nNbTabs > 1)
-            {
-                _loc_1 = this._nSelected;
-                this._nPreviousSelected = _loc_1 - 1;
-                this.removeContainerContent(this._aCtrs[_loc_1]);
-                this._aCtrs.splice(_loc_1, 1);
-                this.removeContainerContent(this._aCloses[_loc_1]);
-                this._aCloses.splice(_loc_1, 1);
-                this._aLbls.splice(_loc_1, 1);
-                this._nTotalWidth = this._nTotalWidth - this._nWidthTab;
-                this.replaceTab();
-                this.selectedTab = this._nPreviousSelected;
-            }
-            return;
-        }// end function
+      private function isIterable(obj:*) : Boolean {
+         if(obj is Array)
+         {
+            return true;
+         }
+         if((!(obj["length"]==null))&&(!(obj["length"]==0))&&(!isNaN(obj["length"]))&&(!(obj[0]==null))&&(!(obj is String)))
+         {
+            return true;
+         }
+         return false;
+      }
 
-        private function replaceTab() : void
-        {
-            var _loc_2:* = undefined;
-            var _loc_1:* = 0;
-            for (_loc_2 in this._aCtrs)
-            {
-                
-                this._aCtrs[_loc_2].state = 0;
-                this._aCtrs[_loc_2].x = _loc_1;
-                this._aCloses[_loc_2].x = _loc_1 + this._nXCloseTab;
-                this._aCtrs[_loc_2].reset();
-                _loc_1 = _loc_1 + this._aCtrs[_loc_2].width;
-            }
-            this._btnPlus.x = _loc_1;
-            if (this._nSelected == -1)
-            {
-                this.selectedTab = _loc_2;
-            }
-            this._nNbTabs = this._aCtrs.length;
-            if (this._nTotalWidth + this._nWidthTab < __width)
-            {
-                this._btnPlus.visible = true;
-            }
-            else
-            {
-                this._btnPlus.visible = false;
-            }
-            return;
-        }// end function
+      private function removeContainerContent(target:GraphicContainer) : void {
+         target.remove();
+      }
 
-        private function isIterable(param1) : Boolean
-        {
-            if (param1 is Array)
-            {
-                return true;
-            }
-            if (param1["length"] != null && param1["length"] != 0 && !isNaN(param1["length"]) && param1[0] != null && !(param1 is String))
-            {
-                return true;
-            }
-            return false;
-        }// end function
+      private function switchToEdition(value:Boolean) : void {
+         this._bNameEdition=value;
+         if(value)
+         {
+            this._aInputs[this._nSelected].text=this._aLbls[this._nSelected].text;
+            this._aInputs[this._nSelected].focus();
+            this._aInputs[this._nSelected].setSelection(0,this._aInputs[this._nSelected].text.length);
+         }
+         this._aInputs[this._nSelected].disabled=!value;
+         this._aInputs[this._nSelected].visible=value;
+         this._aLbls[this._nSelected].visible=!value;
+      }
 
-        private function removeContainerContent(param1:GraphicContainer) : void
-        {
-            param1.remove();
-            return;
-        }// end function
-
-        private function switchToEdition(param1:Boolean) : void
-        {
-            this._bNameEdition = param1;
-            if (param1)
-            {
-                this._aInputs[this._nSelected].text = this._aLbls[this._nSelected].text;
-                this._aInputs[this._nSelected].focus();
-                this._aInputs[this._nSelected].setSelection(0, this._aInputs[this._nSelected].text.length);
-            }
-            this._aInputs[this._nSelected].disabled = !param1;
-            this._aInputs[this._nSelected].visible = param1;
-            this._aLbls[this._nSelected].visible = !param1;
-            return;
-        }// end function
-
-        override public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = undefined;
-            var _loc_7:* = null;
-            switch(true)
-            {
-                case param1 is MouseClickMessage:
-                {
-                    _loc_2 = param1 as MouseClickMessage;
-                    if (this._bNameEdition)
-                    {
-                        this._bNameEdition = false;
-                        _loc_5 = this._aInputs[this._nSelected].text;
-                        this.renameTab(this._nSelected, _loc_5);
-                        if (UIEventManager.getInstance().isRegisteredInstance(this, RenameTabMessage))
+      override public function process(msg:Message) : Boolean {
+         var mcm:MouseClickMessage = null;
+         var mrcm:MouseRightClickMessage = null;
+         var kkum:KeyboardKeyUpMessage = null;
+         var name:String = null;
+         var i:* = undefined;
+         var nameEdition:String = null;
+         switch(true)
+         {
+            case msg is MouseClickMessage:
+               mcm=msg as MouseClickMessage;
+               if(this._bNameEdition)
+               {
+                  this._bNameEdition=false;
+                  name=this._aInputs[this._nSelected].text;
+                  this.renameTab(this._nSelected,name);
+                  if(UIEventManager.getInstance().isRegisteredInstance(this,RenameTabMessage))
+                  {
+                     Berilia.getInstance().handler.process(new RenameTabMessage(this,this._nSelected,name));
+                  }
+               }
+               switch(mcm.target.name)
+               {
+                  case this._btnPlus.name:
+                     if(this._nTotalWidth+this._nWidthTab<__width)
+                     {
+                        this.addTab();
+                        this.selectedTab=this._nNbTabs-1;
+                        if(UIEventManager.getInstance().isRegisteredInstance(this,CreateTabMessage))
                         {
-                            Berilia.getInstance().handler.process(new RenameTabMessage(this, this._nSelected, _loc_5));
+                           Berilia.getInstance().handler.process(new CreateTabMessage(this));
                         }
-                    }
-                    switch(_loc_2.target.name)
-                    {
-                        case this._btnPlus.name:
+                     }
+                     break;
+                  default:
+                     for (i in this._aCtrs)
+                     {
+                        if(mcm.target==this._aCtrs[i])
                         {
-                            if (this._nTotalWidth + this._nWidthTab < __width)
-                            {
-                                this.addTab();
-                                this.selectedTab = this._nNbTabs - 1;
-                                if (UIEventManager.getInstance().isRegisteredInstance(this, CreateTabMessage))
-                                {
-                                    Berilia.getInstance().handler.process(new CreateTabMessage(this));
-                                }
-                            }
-                            break;
+                           this.selectedTab=i;
                         }
-                        default:
+                     }
+                     if(mcm.target==this._aCloses[this._nSelected])
+                     {
+                        if(this._nNbTabs>1)
                         {
-                            for (_loc_6 in this._aCtrs)
-                            {
-                                
-                                if (_loc_2.target == this._aCtrs[_loc_6])
-                                {
-                                    this.selectedTab = _loc_6;
-                                }
-                            }
-                            if (_loc_2.target == this._aCloses[this._nSelected])
-                            {
-                                if (this._nNbTabs > 1)
-                                {
-                                    if (UIEventManager.getInstance().isRegisteredInstance(this, DeleteTabMessage))
-                                    {
-                                        Berilia.getInstance().handler.process(new DeleteTabMessage(this, this._nSelected));
-                                    }
-                                    this.removeTab();
-                                }
-                            }
-                            break;
-                            break;
+                           if(UIEventManager.getInstance().isRegisteredInstance(this,DeleteTabMessage))
+                           {
+                              Berilia.getInstance().handler.process(new DeleteTabMessage(this,this._nSelected));
+                           }
+                           this.removeTab();
                         }
-                    }
-                    break;
-                }
-                case param1 is MouseRightClickMessage:
-                {
-                    _loc_3 = param1 as MouseRightClickMessage;
-                    if (_loc_3.target == this._aCtrs[this._nSelected] && !this._bNameEdition)
-                    {
-                        this.switchToEdition(true);
-                    }
-                    else if (this._bNameEdition)
-                    {
+                     }
+               }
+               break;
+            case msg is MouseRightClickMessage:
+               mrcm=msg as MouseRightClickMessage;
+               if((mrcm.target==this._aCtrs[this._nSelected])&&(!this._bNameEdition))
+               {
+                  this.switchToEdition(true);
+               }
+               else
+               {
+                  if(this._bNameEdition)
+                  {
+                     this.switchToEdition(false);
+                  }
+               }
+               break;
+            case msg is KeyboardKeyUpMessage:
+               kkum=msg as KeyboardKeyUpMessage;
+               if(this._bNameEdition)
+               {
+                  if(kkum.keyboardEvent.keyCode==Keyboard.ENTER)
+                  {
+                     this._bNameEdition=false;
+                     nameEdition=this._aInputs[this._nSelected].text;
+                     this.renameTab(this._nSelected,nameEdition);
+                     if(UIEventManager.getInstance().isRegisteredInstance(this,RenameTabMessage))
+                     {
+                        Berilia.getInstance().handler.process(new RenameTabMessage(this,this._nSelected,nameEdition));
+                     }
+                  }
+                  else
+                  {
+                     if(kkum.keyboardEvent.keyCode==Keyboard.ESCAPE)
+                     {
                         this.switchToEdition(false);
-                    }
-                    break;
-                }
-                case param1 is KeyboardKeyUpMessage:
-                {
-                    _loc_4 = param1 as KeyboardKeyUpMessage;
-                    if (this._bNameEdition)
-                    {
-                        if (_loc_4.keyboardEvent.keyCode == Keyboard.ENTER)
-                        {
-                            this._bNameEdition = false;
-                            _loc_7 = this._aInputs[this._nSelected].text;
-                            this.renameTab(this._nSelected, _loc_7);
-                            if (UIEventManager.getInstance().isRegisteredInstance(this, RenameTabMessage))
-                            {
-                                Berilia.getInstance().handler.process(new RenameTabMessage(this, this._nSelected, _loc_7));
-                            }
-                        }
-                        else if (_loc_4.keyboardEvent.keyCode == Keyboard.ESCAPE)
-                        {
-                            this.switchToEdition(false);
-                        }
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+                     }
+                  }
+               }
+               break;
+         }
+         return false;
+      }
+   }
 
-    }
 }

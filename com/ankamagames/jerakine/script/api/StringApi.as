@@ -1,48 +1,44 @@
-﻿package com.ankamagames.jerakine.script.api
+package com.ankamagames.jerakine.script.api
 {
 
-    public class StringApi extends Object
-    {
 
-        public function StringApi()
-        {
-            return;
-        }// end function
+   public class StringApi extends Object
+   {
+         
 
-        public static function Substr(param1:String, param2:int, param3:int) : String
-        {
-            return param1.substr(param2, param3);
-        }// end function
+      public function StringApi() {
+         super();
+      }
 
-        public static function Substring(param1:String, param2:int, param3:int) : String
-        {
-            return param1.substring(param2, param3);
-        }// end function
+      public static function Substr(str:String, startIndex:int, length:int) : String {
+         return str.substr(startIndex,length);
+      }
 
-        public static function ToLowerCase(param1:String) : String
-        {
-            return param1.toLowerCase();
-        }// end function
+      public static function Substring(str:String, startIndex:int, endIndex:int) : String {
+         return str.substring(startIndex,endIndex);
+      }
 
-        public static function ToUpperCase(param1:String) : String
-        {
-            return param1.toUpperCase();
-        }// end function
+      public static function ToLowerCase(str:String) : String {
+         return str.toLowerCase();
+      }
 
-        public static function GetIndexOf(param1:String, param2:String, param3:int = 0) : int
-        {
-            return param1.indexOf(param2, param3);
-        }// end function
+      public static function ToUpperCase(str:String) : String {
+         return str.toUpperCase();
+      }
 
-        public static function GetLastIndexOf(param1:String, param2:String, param3:int = 2147483647) : int
-        {
-            return param1.lastIndexOf(param2, param3);
-        }// end function
+      public static function GetIndexOf(haystack:String, needle:String, startIndex:int=0) : int {
+         return haystack.indexOf(needle,startIndex);
+      }
 
-        public static function GetLength(param1:String) : int
-        {
-            return param1.length;
-        }// end function
+      public static function GetLastIndexOf(haystack:String, needle:String, startIndex:int=2147483647) : int {
+         return haystack.lastIndexOf(needle,startIndex);
+      }
 
-    }
+      public static function GetLength(str:String) : int {
+         return str.length;
+      }
+
+
+   }
+
 }

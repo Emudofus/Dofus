@@ -1,564 +1,519 @@
-﻿package gs
+package gs
 {
-    import flash.filters.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import flash.filters.ColorMatrixFilter;
+   import flash.filters.BlurFilter;
+   import flash.filters.GlowFilter;
+   import flash.filters.DropShadowFilter;
+   import flash.filters.BevelFilter;
+   import flash.filters.BitmapFilter;
 
-    public class TweenFilterLite extends TweenLite
-    {
-        protected var _matrix:Array;
-        protected var _endMatrix:Array;
-        protected var _cmf:ColorMatrixFilter;
-        protected var _clrsa:Array;
-        protected var _hf:Boolean = false;
-        protected var _filters:Array;
-        protected var _timeScale:Number;
-        protected var _roundProps:Boolean;
-        public static var version:Number = 9.29;
-        public static var delayedCall:Function = TweenLite.delayedCall;
-        public static var killTweensOf:Function = TweenLite.killTweensOf;
-        public static var killDelayedCallsTo:Function = TweenLite.killTweensOf;
-        public static var removeTween:Function = TweenLite.removeTween;
-        static var _globalTimeScale:Number = 1;
-        private static var _idMatrix:Array = [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0];
-        private static var _lumR:Number = 0.212671;
-        private static var _lumG:Number = 0.71516;
-        private static var _lumB:Number = 0.072169;
 
-        public function TweenFilterLite(param1:Object, param2:Number, param3:Object)
-        {
-            this._filters = [];
-            super(param1, param2, param3);
-            if (this.combinedTimeScale != 1 && this.target is TweenFilterLite)
+   public class TweenFilterLite extends TweenLite
+   {
+         
+
+      public function TweenFilterLite($target:Object, $duration:Number, $vars:Object) {
+         this._filters=[];
+         super($target,$duration,$vars);
+         if((!(this.combinedTimeScale==1))&&(this.target is TweenFilterLite))
+         {
+            this._timeScale=1;
+            this.combinedTimeScale=_globalTimeScale;
+         }
+         else
+         {
+            this._timeScale=this.combinedTimeScale;
+            this.combinedTimeScale=this.combinedTimeScale*_globalTimeScale;
+         }
+         if((!(this.combinedTimeScale==1))&&(!(this.delay==0)))
+         {
+            this.startTime=this.initTime+this.delay*1000/this.combinedTimeScale;
+         }
+         if(TweenLite.version<9.29)
+         {
+            trace("TweenFilterLite error! Please update your TweenLite class or try deleting your ASO files. TweenFilterLite requires a more recent version. Download updates at http://www.TweenLite.com.");
+         }
+      }
+
+      public static var version:Number = 9.29;
+
+      public static var delayedCall:Function = TweenLite.delayedCall;
+
+      public static var killTweensOf:Function = TweenLite.killTweensOf;
+
+      public static var killDelayedCallsTo:Function = TweenLite.killTweensOf;
+
+      public static var removeTween:Function = TweenLite.removeTween;
+
+      protected static var _globalTimeScale:Number = 1;
+
+      private static var _idMatrix:Array = [1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0];
+
+      private static var _lumR:Number = 0.212671;
+
+      private static var _lumG:Number = 0.71516;
+
+      private static var _lumB:Number = 0.072169;
+
+      public static function to($target:Object, $duration:Number, $vars:Object) : TweenFilterLite {
+         return new TweenFilterLite($target,$duration,$vars);
+      }
+
+      public static function from($target:Object, $duration:Number, $vars:Object) : TweenFilterLite {
+         $vars.runBackwards=true;
+         return new TweenFilterLite($target,$duration,$vars);
+      }
+
+      public static function setGlobalTimeScale($scale:Number) : void {
+         var i:* = 0;
+         var a:Array = null;
+         if($scale<1.0E-5)
+         {
+            $scale=1.0E-5;
+         }
+         var ml:Dictionary = masterList;
+         _globalTimeScale=$scale;
+         for each (a in ml)
+         {
+            i=a.length-1;
+            while(i>-1)
             {
-                this._timeScale = 1;
-                this.combinedTimeScale = _globalTimeScale;
+               if(a[i] is TweenFilterLite)
+               {
+                  a[i].timeScale=a[i].timeScale*1;
+               }
+               i--;
+            }
+         }
+      }
+
+      public static function HEXtoRGB($n:Number) : Object {
+         return 
+            {
+               rb:$n>>16,
+               gb:$n>>8&255,
+               bb:$n&255
+            }
+         ;
+      }
+
+      public static function colorize($m:Array, $color:Number, $amount:Number=1) : Array {
+         if(isNaN($color))
+         {
+            return $m;
+         }
+         if(isNaN($amount))
+         {
+            $amount=1;
+         }
+         var r:Number = ($color>>16&255)/255;
+         var g:Number = ($color>>8&255)/255;
+         var b:Number = ($color&255)/255;
+         var inv:Number = 1-$amount;
+         var temp:Array = [inv+$amount*r*_lumR,$amount*r*_lumG,$amount*r*_lumB,0,0,$amount*g*_lumR,inv+$amount*g*_lumG,$amount*g*_lumB,0,0,$amount*b*_lumR,$amount*b*_lumG,inv+$amount*b*_lumB,0,0,0,0,0,1,0];
+         return applyMatrix(temp,$m);
+      }
+
+      public static function setThreshold($m:Array, $n:Number) : Array {
+         if(isNaN($n))
+         {
+            return $m;
+         }
+         var temp:Array = [_lumR*256,_lumG*256,_lumB*256,0,-256*$n,_lumR*256,_lumG*256,_lumB*256,0,-256*$n,_lumR*256,_lumG*256,_lumB*256,0,-256*$n,0,0,0,1,0];
+         return applyMatrix(temp,$m);
+      }
+
+      public static function setHue($m:Array, $n:Number) : Array {
+         if(isNaN($n))
+         {
+            return $m;
+         }
+         var $n:Number = $n*Math.PI/180;
+         var c:Number = Math.cos($n);
+         var s:Number = Math.sin($n);
+         var temp:Array = [_lumR+c*(1-_lumR)+s*-_lumR,_lumG+c*-_lumG+s*-_lumG,_lumB+c*-_lumB+s*(1-_lumB),0,0,_lumR+c*-_lumR+s*0.143,_lumG+c*(1-_lumG)+s*0.14,_lumB+c*-_lumB+s*-0.283,0,0,_lumR+c*-_lumR+s*-(1-_lumR),_lumG+c*-_lumG+s*_lumG,_lumB+c*(1-_lumB)+s*_lumB,0,0,0,0,0,1,0,0,0,0,0,1];
+         return applyMatrix(temp,$m);
+      }
+
+      public static function setBrightness($m:Array, $n:Number) : Array {
+         if(isNaN($n))
+         {
+            return $m;
+         }
+         var $n:Number = $n*100-100;
+         return applyMatrix([1,0,0,0,$n,0,1,0,0,$n,0,0,1,0,$n,0,0,0,1,0,0,0,0,0,1],$m);
+      }
+
+      public static function setSaturation($m:Array, $n:Number) : Array {
+         if(isNaN($n))
+         {
+            return $m;
+         }
+         var inv:Number = 1-$n;
+         var r:Number = inv*_lumR;
+         var g:Number = inv*_lumG;
+         var b:Number = inv*_lumB;
+         var temp:Array = [r+$n,g,b,0,0,r,g+$n,b,0,0,r,g,b+$n,0,0,0,0,0,1,0];
+         return applyMatrix(temp,$m);
+      }
+
+      public static function setContrast($m:Array, $n:Number) : Array {
+         if(isNaN($n))
+         {
+            return $m;
+         }
+         var $n:Number = $n+0.01;
+         var temp:Array = [$n,0,0,0,128*(1-$n),0,$n,0,0,128*(1-$n),0,0,$n,0,128*(1-$n),0,0,0,1,0];
+         return applyMatrix(temp,$m);
+      }
+
+      public static function applyMatrix($m:Array, $m2:Array) : Array {
+         var y:* = 0;
+         var x:* = 0;
+         if((!($m is Array))||(!($m2 is Array)))
+         {
+            return $m2;
+         }
+         var temp:Array = [];
+         var i:int = 0;
+         var z:int = 0;
+         y=0;
+         while(y<4)
+         {
+            x=0;
+            while(x<5)
+            {
+               if(x==4)
+               {
+                  z=$m[i+4];
+               }
+               else
+               {
+                  z=0;
+               }
+               temp[i+x]=$m[i]*$m2[x]+$m[i+1]*$m2[x+5]+$m[i+2]*$m2[x+10]+$m[i+3]*$m2[x+15]+z;
+               x++;
+            }
+            i=i+5;
+            y++;
+         }
+         return temp;
+      }
+
+      public static function set globalTimeScale($n:Number) : void {
+         setGlobalTimeScale($n);
+      }
+
+      public static function get globalTimeScale() : Number {
+         return _globalTimeScale;
+      }
+
+      protected var _matrix:Array;
+
+      protected var _endMatrix:Array;
+
+      protected var _cmf:ColorMatrixFilter;
+
+      protected var _clrsa:Array;
+
+      protected var _hf:Boolean = false;
+
+      protected var _filters:Array;
+
+      protected var _timeScale:Number;
+
+      protected var _roundProps:Boolean;
+
+      override public function initTweenVals($hrp:Boolean=false, $reservedProps:String="") : void {
+         var i:* = 0;
+         var fv:Object = null;
+         var cmf:Object = null;
+         var tp:Object = null;
+         var j:* = 0;
+         var prop:String = null;
+         if((!$hrp)&&(TweenLite.overwriteManager.enabled))
+         {
+            TweenLite.overwriteManager.manageOverwrites(this,masterList[this.target]);
+         }
+         this._clrsa=[];
+         this._filters=[];
+         this._matrix=_idMatrix.slice();
+         var $reservedProps:String = $reservedProps+" blurFilter glowFilter colorMatrixFilter dropShadowFilter bevelFilter roundProps ";
+         this._roundProps=Boolean(this.vars.roundProps is Array);
+         if(_isDisplayObject)
+         {
+            if(this.vars.blurFilter!=null)
+            {
+               fv=this.vars.blurFilter;
+               this.addFilter("blurFilter",fv,BlurFilter,["blurX","blurY","quality"],new BlurFilter(0,0,(fv.quality)||(2)));
+            }
+            if(this.vars.glowFilter!=null)
+            {
+               fv=this.vars.glowFilter;
+               this.addFilter("glowFilter",fv,GlowFilter,["alpha","blurX","blurY","color","quality","strength","inner","knockout"],new GlowFilter(16777215,0,0,0,(fv.strength)||(1),(fv.quality)||(2),fv.inner,fv.knockout));
+            }
+            if(this.vars.colorMatrixFilter!=null)
+            {
+               fv=this.vars.colorMatrixFilter;
+               cmf=this.addFilter("colorMatrixFilter",fv,ColorMatrixFilter,[],new ColorMatrixFilter(this._matrix));
+               this._cmf=cmf.filter;
+               this._matrix=ColorMatrixFilter(this._cmf).matrix;
+               if((!(fv.matrix==null))&&(fv.matrix is Array))
+               {
+                  this._endMatrix=fv.matrix;
+               }
+               else
+               {
+                  if(fv.relative==true)
+                  {
+                     this._endMatrix=this._matrix.slice();
+                  }
+                  else
+                  {
+                     this._endMatrix=_idMatrix.slice();
+                  }
+                  this._endMatrix=setBrightness(this._endMatrix,fv.brightness);
+                  this._endMatrix=setContrast(this._endMatrix,fv.contrast);
+                  this._endMatrix=setHue(this._endMatrix,fv.hue);
+                  this._endMatrix=setSaturation(this._endMatrix,fv.saturation);
+                  this._endMatrix=setThreshold(this._endMatrix,fv.threshold);
+                  if(!isNaN(fv.colorize))
+                  {
+                     this._endMatrix=colorize(this._endMatrix,fv.colorize,fv.amount);
+                  }
+                  else
+                  {
+                     if(!isNaN(fv.color))
+                     {
+                        this._endMatrix=colorize(this._endMatrix,fv.color,fv.amount);
+                     }
+                  }
+               }
+               i=0;
+               while(i<this._endMatrix.length)
+               {
+                  if((!(this._matrix[i]==this._endMatrix[i]))&&(!(this._matrix[i]==undefined)))
+                  {
+                     this.tweens[this.tweens.length]=[this._matrix,i.toString(),this._matrix[i],this._endMatrix[i]-this._matrix[i],"colorMatrixFilter"];
+                  }
+                  i++;
+               }
+            }
+            if(this.vars.dropShadowFilter!=null)
+            {
+               fv=this.vars.dropShadowFilter;
+               this.addFilter("dropShadowFilter",fv,DropShadowFilter,["alpha","angle","blurX","blurY","color","distance","quality","strength","inner","knockout","hideObject"],new DropShadowFilter(0,45,0,0,0,0,1,(fv.quality)||(2),fv.inner,fv.knockout,fv.hideObject));
+            }
+            if(this.vars.bevelFilter!=null)
+            {
+               fv=this.vars.bevelFilter;
+               this.addFilter("bevelFilter",fv,BevelFilter,["angle","blurX","blurY","distance","highlightAlpha","highlightColor","quality","shadowAlpha","shadowColor","strength"],new BevelFilter(0,0,16777215,0.5,0,0.5,2,2,0,(fv.quality)||(2)));
+            }
+            if(this.vars.runBackwards==true)
+            {
+               i=this._clrsa.length-1;
+               while(i>-1)
+               {
+                  tp=this._clrsa[i];
+                  tp.sr=tp.sr+tp.cr;
+                  tp.cr=tp.cr*-1;
+                  tp.sg=tp.sg+tp.cg;
+                  tp.cg=tp.cg*-1;
+                  tp.sb=tp.sb+tp.cb;
+                  tp.cb=tp.cb*-1;
+                  tp.f[tp.p]=tp.sr<<16|tp.sg<<8|tp.sb;
+                  i--;
+               }
+            }
+            super.initTweenVals(true,$reservedProps);
+         }
+         else
+         {
+            super.initTweenVals($hrp,$reservedProps);
+         }
+         if(this._roundProps)
+         {
+            i=this.vars.roundProps.length-1;
+            loop0:
+            for(;i>-1;i--)
+            {
+               prop=this.vars.roundProps[i];
+               j=this.tweens.length-1;
+               while(j>-1)
+               {
+                  if((this.tweens[j][1]==prop)&&(this.tweens[j][0]==this.target))
+                  {
+                     this.tweens[j][5]=true;
+                     continue loop0;
+                  }
+                  j--;
+               }
+            }
+         }
+      }
+
+      private function addFilter($name:String, $fv:Object, $filterType:Class, $props:Array, $defaultFilter:BitmapFilter) : Object {
+         var i:* = 0;
+         var prop:String = null;
+         var valChange:* = NaN;
+         var begin:Object = null;
+         var end:Object = null;
+         var f:Object = 
+            {
+               type:$filterType,
+               name:$name
+            }
+         ;
+         var fltrs:Array = this.target.filters;
+         i=0;
+         while(i<fltrs.length)
+         {
+            if(fltrs[i] is $filterType)
+            {
+               f.filter=fltrs[i];
             }
             else
             {
-                this._timeScale = this.combinedTimeScale;
-                this.combinedTimeScale = this.combinedTimeScale * _globalTimeScale;
+               i++;
+               continue;
             }
-            if (this.combinedTimeScale != 1 && this.delay != 0)
-            {
-                this.startTime = this.initTime + this.delay * (1000 / this.combinedTimeScale);
-            }
-            if (TweenLite.version < 9.29)
-            {
-                trace("TweenFilterLite error! Please update your TweenLite class or try deleting your ASO files. TweenFilterLite requires a more recent version. Download updates at http://www.TweenLite.com.");
-            }
-            return;
-        }// end function
+         }
+      }
 
-        override public function initTweenVals(param1:Boolean = false, param2:String = "") : void
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            if (!param1 && TweenLite.overwriteManager.enabled)
+      override public function render($t:uint) : void {
+         var factor:* = NaN;
+         var tp:Object = null;
+         var i:* = 0;
+         var val:* = NaN;
+         var neg:* = 0;
+         var f:Array = null;
+         var j:* = 0;
+         var time:Number = ($t-this.startTime)*0.001*this.combinedTimeScale;
+         if(time>=this.duration)
+         {
+            time=this.duration;
+            factor=(this.ease==this.vars.ease)||(this.duration==0.001)?1:0;
+         }
+         else
+         {
+            factor=this.ease(time,0,1,this.duration);
+         }
+         if(!this._roundProps)
+         {
+            i=this.tweens.length-1;
+            while(i>-1)
             {
-                TweenLite.overwriteManager.manageOverwrites(this, masterList[this.target]);
+               tp=this.tweens[i];
+               tp[0][tp[1]]=tp[2]+factor*tp[3];
+               i--;
             }
-            this._clrsa = [];
-            this._filters = [];
-            this._matrix = _idMatrix.slice();
-            param2 = param2 + " blurFilter glowFilter colorMatrixFilter dropShadowFilter bevelFilter roundProps ";
-            this._roundProps = Boolean(this.vars.roundProps is Array);
-            if (_isDisplayObject)
+         }
+         else
+         {
+            i=this.tweens.length-1;
+            while(i>-1)
             {
-                if (this.vars.blurFilter != null)
-                {
-                    _loc_4 = this.vars.blurFilter;
-                    this.addFilter("blurFilter", _loc_4, BlurFilter, ["blurX", "blurY", "quality"], new BlurFilter(0, 0, _loc_4.quality || 2));
-                }
-                if (this.vars.glowFilter != null)
-                {
-                    _loc_4 = this.vars.glowFilter;
-                    this.addFilter("glowFilter", _loc_4, GlowFilter, ["alpha", "blurX", "blurY", "color", "quality", "strength", "inner", "knockout"], new GlowFilter(16777215, 0, 0, 0, _loc_4.strength || 1, _loc_4.quality || 2, _loc_4.inner, _loc_4.knockout));
-                }
-                if (this.vars.colorMatrixFilter != null)
-                {
-                    _loc_4 = this.vars.colorMatrixFilter;
-                    _loc_5 = this.addFilter("colorMatrixFilter", _loc_4, ColorMatrixFilter, [], new ColorMatrixFilter(this._matrix));
-                    this._cmf = _loc_5.filter;
-                    this._matrix = ColorMatrixFilter(this._cmf).matrix;
-                    if (_loc_4.matrix != null && _loc_4.matrix is Array)
-                    {
-                        this._endMatrix = _loc_4.matrix;
-                    }
-                    else
-                    {
-                        if (_loc_4.relative == true)
-                        {
-                            this._endMatrix = this._matrix.slice();
-                        }
-                        else
-                        {
-                            this._endMatrix = _idMatrix.slice();
-                        }
-                        this._endMatrix = setBrightness(this._endMatrix, _loc_4.brightness);
-                        this._endMatrix = setContrast(this._endMatrix, _loc_4.contrast);
-                        this._endMatrix = setHue(this._endMatrix, _loc_4.hue);
-                        this._endMatrix = setSaturation(this._endMatrix, _loc_4.saturation);
-                        this._endMatrix = setThreshold(this._endMatrix, _loc_4.threshold);
-                        if (!isNaN(_loc_4.colorize))
-                        {
-                            this._endMatrix = colorize(this._endMatrix, _loc_4.colorize, _loc_4.amount);
-                        }
-                        else if (!isNaN(_loc_4.color))
-                        {
-                            this._endMatrix = colorize(this._endMatrix, _loc_4.color, _loc_4.amount);
-                        }
-                    }
-                    _loc_3 = 0;
-                    while (_loc_3 < this._endMatrix.length)
-                    {
-                        
-                        if (this._matrix[_loc_3] != this._endMatrix[_loc_3] && this._matrix[_loc_3] != undefined)
-                        {
-                            this.tweens[this.tweens.length] = [this._matrix, _loc_3.toString(), this._matrix[_loc_3], this._endMatrix[_loc_3] - this._matrix[_loc_3], "colorMatrixFilter"];
-                        }
-                        _loc_3++;
-                    }
-                }
-                if (this.vars.dropShadowFilter != null)
-                {
-                    _loc_4 = this.vars.dropShadowFilter;
-                    this.addFilter("dropShadowFilter", _loc_4, DropShadowFilter, ["alpha", "angle", "blurX", "blurY", "color", "distance", "quality", "strength", "inner", "knockout", "hideObject"], new DropShadowFilter(0, 45, 0, 0, 0, 0, 1, _loc_4.quality || 2, _loc_4.inner, _loc_4.knockout, _loc_4.hideObject));
-                }
-                if (this.vars.bevelFilter != null)
-                {
-                    _loc_4 = this.vars.bevelFilter;
-                    this.addFilter("bevelFilter", _loc_4, BevelFilter, ["angle", "blurX", "blurY", "distance", "highlightAlpha", "highlightColor", "quality", "shadowAlpha", "shadowColor", "strength"], new BevelFilter(0, 0, 16777215, 0.5, 0, 0.5, 2, 2, 0, _loc_4.quality || 2));
-                }
-                if (this.vars.runBackwards == true)
-                {
-                    _loc_3 = this._clrsa.length - 1;
-                    while (_loc_3 > -1)
-                    {
-                        
-                        _loc_6 = this._clrsa[_loc_3];
-                        this._clrsa[_loc_3].sr = _loc_6.sr + _loc_6.cr;
-                        _loc_6.cr = _loc_6.cr * -1;
-                        _loc_6.sg = _loc_6.sg + _loc_6.cg;
-                        _loc_6.cg = _loc_6.cg * -1;
-                        _loc_6.sb = _loc_6.sb + _loc_6.cb;
-                        _loc_6.cb = _loc_6.cb * -1;
-                        _loc_6.f[_loc_6.p] = _loc_6.sr << 16 | _loc_6.sg << 8 | _loc_6.sb;
-                        _loc_3 = _loc_3 - 1;
-                    }
-                }
-                super.initTweenVals(true, param2);
+               tp=this.tweens[i];
+               if(tp[5])
+               {
+                  val=tp[2]+factor*tp[3];
+                  neg=val<0?-1:1;
+                  tp[0][tp[1]]=val%1*neg>0.5?int(val)+neg:int(val);
+               }
+               else
+               {
+                  tp[0][tp[1]]=tp[2]+factor*tp[3];
+               }
+               i--;
             }
-            else
+         }
+         if(this._hf)
+         {
+            i=this._clrsa.length-1;
+            while(i>-1)
             {
-                super.initTweenVals(param1, param2);
+               tp=this._clrsa[i];
+               tp.f[tp.p]=tp.sr+factor*tp.cr<<16|tp.sg+factor*tp.cg<<8|tp.sb+factor*tp.cb;
+               i--;
             }
-            if (this._roundProps)
+            if(this._cmf!=null)
             {
-                _loc_3 = this.vars.roundProps.length - 1;
-                while (_loc_3 > -1)
-                {
-                    
-                    _loc_8 = this.vars.roundProps[_loc_3];
-                    _loc_7 = this.tweens.length - 1;
-                    while (_loc_7 > -1)
-                    {
-                        
-                        if (this.tweens[_loc_7][1] == _loc_8 && this.tweens[_loc_7][0] == this.target)
-                        {
-                            this.tweens[_loc_7][5] = true;
-                            break;
-                        }
-                        _loc_7 = _loc_7 - 1;
-                    }
-                    _loc_3 = _loc_3 - 1;
-                }
+               ColorMatrixFilter(this._cmf).matrix=this._matrix;
             }
-            return;
-        }// end function
+            f=this.target.filters;
+            i=0;
+            loop0:
+            for(;i<this._filters.length;i++)
+            {
+               j=f.length-1;
+               while(j>-1)
+               {
+                  if(f[j] is this._filters[i].type)
+                  {
+                     f.splice(j,1,this._filters[i].filter);
+                     continue loop0;
+                  }
+                  j--;
+               }
+            }
+            this.target.filters=f;
+         }
+         if(_hst)
+         {
+            i=_subTweens.length-1;
+            while(i>-1)
+            {
+               _subTweens[i].proxy(_subTweens[i],time);
+               i--;
+            }
+         }
+         if(_hasUpdate)
+         {
+            this.vars.onUpdate.apply(null,this.vars.onUpdateParams);
+         }
+         if(time==this.duration)
+         {
+            complete(true);
+         }
+      }
 
-        private function addFilter(param1:String, param2:Object, param3:Class, param4:Array, param5:BitmapFilter) : Object
-        {
-            var _loc_8:* = 0;
-            var _loc_9:* = null;
-            var _loc_10:* = NaN;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_6:* = {type:param3, name:param1};
-            var _loc_7:* = this.target.filters;
-            _loc_8 = 0;
-            while (_loc_8 < _loc_7.length)
-            {
-                
-                if (_loc_7[_loc_8] is param3)
-                {
-                    _loc_6.filter = _loc_7[_loc_8];
-                    break;
-                }
-                _loc_8++;
-            }
-            if (_loc_6.filter == undefined)
-            {
-                _loc_6.filter = param5;
-                _loc_7[_loc_7.length] = _loc_6.filter;
-                this.target.filters = _loc_7;
-            }
-            _loc_8 = 0;
-            while (_loc_8 < param4.length)
-            {
-                
-                _loc_9 = param4[_loc_8];
-                if (param2[_loc_9] != undefined)
-                {
-                    if (_loc_9 == "color" || _loc_9 == "highlightColor" || _loc_9 == "shadowColor")
-                    {
-                        _loc_11 = HEXtoRGB(_loc_6.filter[_loc_9]);
-                        _loc_12 = HEXtoRGB(param2[_loc_9]);
-                        this._clrsa[this._clrsa.length] = {f:_loc_6.filter, p:_loc_9, sr:_loc_11.rb, cr:_loc_12.rb - _loc_11.rb, sg:_loc_11.gb, cg:_loc_12.gb - _loc_11.gb, sb:_loc_11.bb, cb:_loc_12.bb - _loc_11.bb};
-                    }
-                    else if (_loc_9 == "quality" || _loc_9 == "inner" || _loc_9 == "knockout" || _loc_9 == "hideObject")
-                    {
-                        _loc_6.filter[_loc_9] = param2[_loc_9];
-                    }
-                    else
-                    {
-                        if (typeof(param2[_loc_9]) == "number")
-                        {
-                            _loc_10 = param2[_loc_9] - _loc_6.filter[_loc_9];
-                        }
-                        else
-                        {
-                            _loc_10 = Number(param2[_loc_9]);
-                        }
-                        this.tweens[this.tweens.length] = [_loc_6.filter, _loc_9, _loc_6.filter[_loc_9], _loc_10, param1];
-                    }
-                }
-                _loc_8++;
-            }
-            this._filters[this._filters.length] = _loc_6;
-            this._hf = true;
-            return _loc_6;
-        }// end function
+      override public function killVars($vars:Object) : void {
+         if(TweenLite.overwriteManager.enabled)
+         {
+            TweenLite.overwriteManager.killVars($vars,this.vars,this.tweens,_subTweens,this._filters||[]);
+         }
+      }
 
-        override public function render(param1:uint) : void
-        {
-            var _loc_3:* = NaN;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = NaN;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            var _loc_9:* = 0;
-            var _loc_2:* = (param1 - this.startTime) * 0.001 * this.combinedTimeScale;
-            if (_loc_2 >= this.duration)
-            {
-                _loc_2 = this.duration;
-                _loc_3 = this.ease == this.vars.ease || this.duration == 0.001 ? (1) : (0);
-            }
-            else
-            {
-                _loc_3 = this.ease(_loc_2, 0, 1, this.duration);
-            }
-            if (!this._roundProps)
-            {
-                _loc_5 = this.tweens.length - 1;
-                while (_loc_5 > -1)
-                {
-                    
-                    _loc_4 = this.tweens[_loc_5];
-                    _loc_4[0][_loc_4[1]] = _loc_4[2] + _loc_3 * _loc_4[3];
-                    _loc_5 = _loc_5 - 1;
-                }
-            }
-            else
-            {
-                _loc_5 = this.tweens.length - 1;
-                while (_loc_5 > -1)
-                {
-                    
-                    _loc_4 = this.tweens[_loc_5];
-                    if (_loc_4[5])
-                    {
-                        _loc_6 = _loc_4[2] + _loc_3 * _loc_4[3];
-                        _loc_7 = _loc_6 < 0 ? (-1) : (1);
-                        _loc_4[0][_loc_4[1]] = _loc_6 % 1 * _loc_7 > 0.5 ? (int(_loc_6) + _loc_7) : (int(_loc_6));
-                    }
-                    else
-                    {
-                        _loc_4[0][_loc_4[1]] = _loc_4[2] + _loc_3 * _loc_4[3];
-                    }
-                    _loc_5 = _loc_5 - 1;
-                }
-            }
-            if (this._hf)
-            {
-                _loc_5 = this._clrsa.length - 1;
-                while (_loc_5 > -1)
-                {
-                    
-                    _loc_4 = this._clrsa[_loc_5];
-                    _loc_4.f[_loc_4.p] = _loc_4.sr + _loc_3 * _loc_4.cr << 16 | _loc_4.sg + _loc_3 * _loc_4.cg << 8 | _loc_4.sb + _loc_3 * _loc_4.cb;
-                    _loc_5 = _loc_5 - 1;
-                }
-                if (this._cmf != null)
-                {
-                    ColorMatrixFilter(this._cmf).matrix = this._matrix;
-                }
-                _loc_8 = this.target.filters;
-                _loc_5 = 0;
-                while (_loc_5 < this._filters.length)
-                {
-                    
-                    _loc_9 = _loc_8.length - 1;
-                    while (_loc_9 > -1)
-                    {
-                        
-                        if (_loc_8[_loc_9] is this._filters[_loc_5].type)
-                        {
-                            _loc_8.splice(_loc_9, 1, this._filters[_loc_5].filter);
-                            break;
-                        }
-                        _loc_9 = _loc_9 - 1;
-                    }
-                    _loc_5++;
-                }
-                this.target.filters = _loc_8;
-            }
-            if (_hst)
-            {
-                _loc_5 = _subTweens.length - 1;
-                while (_loc_5 > -1)
-                {
-                    
-                    _subTweens[_loc_5].proxy(_subTweens[_loc_5], _loc_2);
-                    _loc_5 = _loc_5 - 1;
-                }
-            }
-            if (_hasUpdate)
-            {
-                this.vars.onUpdate.apply(null, this.vars.onUpdateParams);
-            }
-            if (_loc_2 == this.duration)
-            {
-                complete(true);
-            }
-            return;
-        }// end function
+      public function get timeScale() : Number {
+         return this._timeScale;
+      }
 
-        override public function killVars(param1:Object) : void
-        {
-            if (TweenLite.overwriteManager.enabled)
-            {
-                TweenLite.overwriteManager.killVars(param1, this.vars, this.tweens, _subTweens, this._filters || []);
-            }
-            return;
-        }// end function
+      public function set timeScale($n:Number) : void {
+         if($n<1.0E-5)
+         {
+            $n=this._timeScale=1.0E-5;
+         }
+         else
+         {
+            this._timeScale=$n;
+            $n=$n*_globalTimeScale;
+         }
+         this.initTime=currentTime-(currentTime-this.initTime-this.delay*1000/this.combinedTimeScale)*this.combinedTimeScale*1/$n-this.delay*1000/$n;
+         if(this.startTime!=9.99999999999999E14)
+         {
+            this.startTime=this.initTime+this.delay*1000/$n;
+         }
+         this.combinedTimeScale=$n;
+      }
 
-        public function get timeScale() : Number
-        {
-            return this._timeScale;
-        }// end function
+      override public function set enabled($b:Boolean) : void {
+         super.enabled=$b;
+         if($b)
+         {
+            this.combinedTimeScale=this._timeScale*_globalTimeScale;
+         }
+      }
+   }
 
-        public function set timeScale(param1:Number) : void
-        {
-            if (param1 < 1e-005)
-            {
-                var _loc_2:* = 1e-005;
-                this._timeScale = 1e-005;
-                param1 = _loc_2;
-            }
-            else
-            {
-                this._timeScale = param1;
-                param1 = param1 * _globalTimeScale;
-            }
-            this.initTime = currentTime - (currentTime - this.initTime - this.delay * (1000 / this.combinedTimeScale)) * this.combinedTimeScale * (1 / param1) - this.delay * (1000 / param1);
-            if (this.startTime != 999999999999999)
-            {
-                this.startTime = this.initTime + this.delay * (1000 / param1);
-            }
-            this.combinedTimeScale = param1;
-            return;
-        }// end function
-
-        override public function set enabled(param1:Boolean) : void
-        {
-            super.enabled = param1;
-            if (param1)
-            {
-                this.combinedTimeScale = this._timeScale * _globalTimeScale;
-            }
-            return;
-        }// end function
-
-        public static function to(param1:Object, param2:Number, param3:Object) : TweenFilterLite
-        {
-            return new TweenFilterLite(param1, param2, param3);
-        }// end function
-
-        public static function from(param1:Object, param2:Number, param3:Object) : TweenFilterLite
-        {
-            param3.runBackwards = true;
-            return new TweenFilterLite(param1, param2, param3);
-        }// end function
-
-        public static function setGlobalTimeScale(param1:Number) : void
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = null;
-            if (param1 < 1e-005)
-            {
-                param1 = 1e-005;
-            }
-            var _loc_2:* = masterList;
-            _globalTimeScale = param1;
-            for each (_loc_4 in _loc_2)
-            {
-                
-                _loc_3 = _loc_4.length - 1;
-                while (_loc_3 > -1)
-                {
-                    
-                    if (_loc_4[_loc_3] is TweenFilterLite)
-                    {
-                        _loc_4[_loc_3].timeScale = _loc_4[_loc_3].timeScale * 1;
-                    }
-                    _loc_3 = _loc_3 - 1;
-                }
-            }
-            return;
-        }// end function
-
-        public static function HEXtoRGB(param1:Number) : Object
-        {
-            return {rb:param1 >> 16, gb:param1 >> 8 & 255, bb:param1 & 255};
-        }// end function
-
-        public static function colorize(param1:Array, param2:Number, param3:Number = 1) : Array
-        {
-            if (isNaN(param2))
-            {
-                return param1;
-            }
-            if (isNaN(param3))
-            {
-                param3 = 1;
-            }
-            var _loc_4:* = (param2 >> 16 & 255) / 255;
-            var _loc_5:* = (param2 >> 8 & 255) / 255;
-            var _loc_6:* = (param2 & 255) / 255;
-            var _loc_7:* = 1 - param3;
-            var _loc_8:* = [1 - param3 + param3 * _loc_4 * _lumR, param3 * _loc_4 * _lumG, param3 * _loc_4 * _lumB, 0, 0, param3 * _loc_5 * _lumR, _loc_7 + param3 * _loc_5 * _lumG, param3 * _loc_5 * _lumB, 0, 0, param3 * _loc_6 * _lumR, param3 * _loc_6 * _lumG, _loc_7 + param3 * _loc_6 * _lumB, 0, 0, 0, 0, 0, 1, 0];
-            return applyMatrix(_loc_8, param1);
-        }// end function
-
-        public static function setThreshold(param1:Array, param2:Number) : Array
-        {
-            if (isNaN(param2))
-            {
-                return param1;
-            }
-            var _loc_3:* = [_lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, _lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, _lumR * 256, _lumG * 256, _lumB * 256, 0, -256 * param2, 0, 0, 0, 1, 0];
-            return applyMatrix(_loc_3, param1);
-        }// end function
-
-        public static function setHue(param1:Array, param2:Number) : Array
-        {
-            if (isNaN(param2))
-            {
-                return param1;
-            }
-            param2 = param2 * (Math.PI / 180);
-            var _loc_3:* = Math.cos(param2);
-            var _loc_4:* = Math.sin(param2);
-            var _loc_5:* = [_lumR + _loc_3 * (1 - _lumR) + _loc_4 * (-_lumR), _lumG + _loc_3 * (-_lumG) + _loc_4 * (-_lumG), _lumB + _loc_3 * (-_lumB) + _loc_4 * (1 - _lumB), 0, 0, _lumR + _loc_3 * (-_lumR) + _loc_4 * 0.143, _lumG + _loc_3 * (1 - _lumG) + _loc_4 * 0.14, _lumB + _loc_3 * (-_lumB) + _loc_4 * -0.283, 0, 0, _lumR + _loc_3 * (-_lumR) + _loc_4 * (-(1 - _lumR)), _lumG + _loc_3 * (-_lumG) + _loc_4 * _lumG, _lumB + _loc_3 * (1 - _lumB) + _loc_4 * _lumB, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1];
-            return applyMatrix(_loc_5, param1);
-        }// end function
-
-        public static function setBrightness(param1:Array, param2:Number) : Array
-        {
-            if (isNaN(param2))
-            {
-                return param1;
-            }
-            param2 = param2 * 100 - 100;
-            return applyMatrix([1, 0, 0, 0, param2, 0, 1, 0, 0, param2, 0, 0, 1, 0, param2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1], param1);
-        }// end function
-
-        public static function setSaturation(param1:Array, param2:Number) : Array
-        {
-            if (isNaN(param2))
-            {
-                return param1;
-            }
-            var _loc_3:* = 1 - param2;
-            var _loc_4:* = _loc_3 * _lumR;
-            var _loc_5:* = _loc_3 * _lumG;
-            var _loc_6:* = _loc_3 * _lumB;
-            var _loc_7:* = [_loc_4 + param2, _loc_5, _loc_6, 0, 0, _loc_4, _loc_5 + param2, _loc_6, 0, 0, _loc_4, _loc_5, _loc_6 + param2, 0, 0, 0, 0, 0, 1, 0];
-            return applyMatrix(_loc_7, param1);
-        }// end function
-
-        public static function setContrast(param1:Array, param2:Number) : Array
-        {
-            if (isNaN(param2))
-            {
-                return param1;
-            }
-            param2 = param2 + 0.01;
-            var _loc_3:* = [param2, 0, 0, 0, 128 * (1 - param2), 0, param2, 0, 0, 128 * (1 - param2), 0, 0, param2, 0, 128 * (1 - param2), 0, 0, 0, 1, 0];
-            return applyMatrix(_loc_3, param1);
-        }// end function
-
-        public static function applyMatrix(param1:Array, param2:Array) : Array
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            if (!(param1 is Array) || !(param2 is Array))
-            {
-                return param2;
-            }
-            var _loc_3:* = [];
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            _loc_6 = 0;
-            while (_loc_6 < 4)
-            {
-                
-                _loc_7 = 0;
-                while (_loc_7 < 5)
-                {
-                    
-                    if (_loc_7 == 4)
-                    {
-                        _loc_5 = param1[_loc_4 + 4];
-                    }
-                    else
-                    {
-                        _loc_5 = 0;
-                    }
-                    _loc_3[_loc_4 + _loc_7] = param1[_loc_4] * param2[_loc_7] + param1[(_loc_4 + 1)] * param2[_loc_7 + 5] + param1[_loc_4 + 2] * param2[_loc_7 + 10] + param1[_loc_4 + 3] * param2[_loc_7 + 15] + _loc_5;
-                    _loc_7++;
-                }
-                _loc_4 = _loc_4 + 5;
-                _loc_6++;
-            }
-            return _loc_3;
-        }// end function
-
-        public static function set globalTimeScale(param1:Number) : void
-        {
-            setGlobalTimeScale(param1);
-            return;
-        }// end function
-
-        public static function get globalTimeScale() : Number
-        {
-            return _globalTimeScale;
-        }// end function
-
-    }
 }

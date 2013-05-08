@@ -1,166 +1,157 @@
-﻿package com.ankamagames.dofus.console.debug
+package com.ankamagames.dofus.console.debug
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.atouin.renderers.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.jerakine.console.*;
-    import com.ankamagames.jerakine.map.*;
-    import com.ankamagames.jerakine.pathfinding.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.types.zones.*;
-    import com.ankamagames.jerakine.utils.display.*;
+   import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
+   import com.ankamagames.jerakine.console.ConsoleHandler;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.atouin.types.Selection;
+   import com.ankamagames.jerakine.types.zones.Lozenge;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.atouin.utils.DataMapProvider;
+   import com.ankamagames.jerakine.map.IDataMapProvider;
+   import com.ankamagames.atouin.renderers.ZoneDARenderer;
+   import com.ankamagames.jerakine.types.Color;
+   import com.ankamagames.jerakine.types.zones.Custom;
+   import com.ankamagames.jerakine.map.LosDetector;
+   import com.ankamagames.atouin.managers.SelectionManager;
+   import com.ankamagames.jerakine.pathfinding.Pathfinding;
+   import com.ankamagames.jerakine.utils.display.Dofus1Line;
 
-    public class IAInstructionHandler extends Object implements ConsoleInstructionHandler
-    {
 
-        public function IAInstructionHandler()
-        {
-            return;
-        }// end function
+   public class IAInstructionHandler extends Object implements ConsoleInstructionHandler
+   {
+         
 
-        public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
-        {
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = 0;
-            var _loc_12:* = 0;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = 0;
-            var _loc_18:* = null;
-            var _loc_19:* = 0;
-            var _loc_20:* = null;
-            var _loc_21:* = null;
-            var _loc_22:* = 0;
-            var _loc_4:* = DataMapProvider.getInstance();
-            switch(param2)
-            {
-                case "debuglos":
-                {
-                    if (param3.length != 2)
-                    {
-                        param1.output("Arguments needed : cell and range");
-                    }
-                    else if (param3.length == 2)
-                    {
-                        _loc_5 = uint(param3[0]);
-                        _loc_6 = MapPoint.fromCellId(_loc_5);
-                        _loc_7 = uint(param3[1]);
-                        _loc_8 = new Selection();
-                        _loc_9 = new Lozenge(0, _loc_7, _loc_4);
-                        _loc_10 = _loc_9.getCells(_loc_5);
-                        _loc_8.renderer = new ZoneDARenderer();
-                        _loc_8.color = new Color(26112);
-                        _loc_8.zone = new Custom(LosDetector.getCell(_loc_4, _loc_10, _loc_6));
-                        SelectionManager.getInstance().addSelection(_loc_8, "CellsFreeForLOS");
-                        SelectionManager.getInstance().update("CellsFreeForLOS");
-                    }
-                    break;
-                }
-                case "tracepath":
-                {
-                    if (param3.length != 2)
-                    {
-                        param1.output("Arguments needed : start and end of the path");
-                    }
-                    else if (param3.length == 2)
-                    {
-                        _loc_11 = uint(param3[0]);
-                        _loc_12 = uint(param3[1]);
-                        _loc_13 = MapPoint.fromCellId(_loc_12);
-                        if (_loc_4.height == 0 || _loc_4.width == 0 || !_loc_4.pointMov(_loc_13.x, _loc_13.y, true))
-                        {
-                            param1.output("Problem with the map or the end.");
-                        }
-                        else
-                        {
-                            _loc_14 = MapPoint.fromCellId(_loc_11);
-                            _loc_15 = Pathfinding.findPath(_loc_4, _loc_14, _loc_13).getCells();
-                            _loc_16 = new Selection();
-                            _loc_16.renderer = new ZoneDARenderer();
-                            _loc_16.color = new Color(26112);
-                            _loc_16.zone = new Custom(_loc_15);
-                            SelectionManager.getInstance().addSelection(_loc_16, "CellsForPath");
-                            SelectionManager.getInstance().update("CellsForPath");
-                        }
-                    }
-                    break;
-                }
-                case "debugcellsinline":
-                {
-                    if (param3.length != 2)
-                    {
-                        param1.output("Arguments needed : cell and cell");
-                    }
-                    else if (param3.length == 2)
-                    {
-                        _loc_17 = uint(param3[0]);
-                        _loc_18 = MapPoint.fromCellId(_loc_17);
-                        _loc_19 = uint(param3[1]);
-                        _loc_20 = MapPoint.fromCellId(_loc_19);
-                        _loc_21 = Dofus1Line.getLine(_loc_18.x, _loc_18.y, 0, _loc_20.x, _loc_20.y, 0);
-                        _loc_8 = new Selection();
-                        _loc_10 = new Vector.<uint>;
-                        _loc_22 = 0;
-                        while (_loc_22 < _loc_21.length)
-                        {
-                            
-                            _loc_10.push(MapPoint.fromCoords(_loc_21[_loc_22].x, _loc_21[_loc_22].y).cellId);
-                            _loc_22++;
-                        }
-                        _loc_8.renderer = new ZoneDARenderer();
-                        _loc_8.color = new Color(26112);
-                        _loc_8.zone = new Custom(_loc_10);
-                        SelectionManager.getInstance().addSelection(_loc_8, "CellsFreeForLOS");
-                        SelectionManager.getInstance().update("CellsFreeForLOS");
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public function IAInstructionHandler() {
+         super();
+      }
 
-        public function getHelp(param1:String) : String
-        {
-            switch(param1)
-            {
-                case "debuglos":
-                {
-                    return "Display all cells which have LOS with the given cell.";
-                }
-                case "tracepath":
-                {
-                    return "Display all cells of the path between the start and the end.";
-                }
-                case "debugcellsinline":
-                {
-                    return "Display all cells of line between the start and the end.";
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return "Unknown command";
-        }// end function
 
-        public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
-        {
-            return [];
-        }// end function
 
-    }
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var cell:uint = 0;
+         var cellPoint:MapPoint = null;
+         var range:uint = 0;
+         var cellsSelection:Selection = null;
+         var lozenge:Lozenge = null;
+         var cells:Vector.<uint> = null;
+         var start:uint = 0;
+         var end:uint = 0;
+         var endPoint:MapPoint = null;
+         var startPoint:MapPoint = null;
+         var cellsPath:Vector.<uint> = null;
+         var cellsPathSelection:Selection = null;
+         var fromCell:uint = 0;
+         var fromPoint:MapPoint = null;
+         var toCell:uint = 0;
+         var toPoint:MapPoint = null;
+         var cellsInLine:Array = null;
+         var i:* = 0;
+         var map:IDataMapProvider = DataMapProvider.getInstance();
+         switch(cmd)
+         {
+            case "debuglos":
+               if(args.length!=2)
+               {
+                  console.output("Arguments needed : cell and range");
+               }
+               else
+               {
+                  if(args.length==2)
+                  {
+                     cell=uint(args[0]);
+                     cellPoint=MapPoint.fromCellId(cell);
+                     range=uint(args[1]);
+                     cellsSelection=new Selection();
+                     lozenge=new Lozenge(0,range,map);
+                     cells=lozenge.getCells(cell);
+                     cellsSelection.renderer=new ZoneDARenderer();
+                     cellsSelection.color=new Color(26112);
+                     cellsSelection.zone=new Custom(LosDetector.getCell(map,cells,cellPoint));
+                     SelectionManager.getInstance().addSelection(cellsSelection,"CellsFreeForLOS");
+                     SelectionManager.getInstance().update("CellsFreeForLOS");
+                  }
+               }
+               break;
+            case "tracepath":
+               if(args.length!=2)
+               {
+                  console.output("Arguments needed : start and end of the path");
+               }
+               else
+               {
+                  if(args.length==2)
+                  {
+                     start=uint(args[0]);
+                     end=uint(args[1]);
+                     endPoint=MapPoint.fromCellId(end);
+                     if((map.height==0)||(map.width==0)||(!map.pointMov(endPoint.x,endPoint.y,true)))
+                     {
+                        console.output("Problem with the map or the end.");
+                     }
+                     else
+                     {
+                        startPoint=MapPoint.fromCellId(start);
+                        cellsPath=Pathfinding.findPath(map,startPoint,endPoint).getCells();
+                        cellsPathSelection=new Selection();
+                        cellsPathSelection.renderer=new ZoneDARenderer();
+                        cellsPathSelection.color=new Color(26112);
+                        cellsPathSelection.zone=new Custom(cellsPath);
+                        SelectionManager.getInstance().addSelection(cellsPathSelection,"CellsForPath");
+                        SelectionManager.getInstance().update("CellsForPath");
+                     }
+                  }
+               }
+               break;
+            case "debugcellsinline":
+               if(args.length!=2)
+               {
+                  console.output("Arguments needed : cell and cell");
+               }
+               else
+               {
+                  if(args.length==2)
+                  {
+                     fromCell=uint(args[0]);
+                     fromPoint=MapPoint.fromCellId(fromCell);
+                     toCell=uint(args[1]);
+                     toPoint=MapPoint.fromCellId(toCell);
+                     cellsInLine=Dofus1Line.getLine(fromPoint.x,fromPoint.y,0,toPoint.x,toPoint.y,0);
+                     cellsSelection=new Selection();
+                     cells=new Vector.<uint>();
+                     i=0;
+                     while(i<cellsInLine.length)
+                     {
+                        cells.push(MapPoint.fromCoords(cellsInLine[i].x,cellsInLine[i].y).cellId);
+                        i++;
+                     }
+                     cellsSelection.renderer=new ZoneDARenderer();
+                     cellsSelection.color=new Color(26112);
+                     cellsSelection.zone=new Custom(cells);
+                     SelectionManager.getInstance().addSelection(cellsSelection,"CellsFreeForLOS");
+                     SelectionManager.getInstance().update("CellsFreeForLOS");
+                  }
+               }
+               break;
+         }
+      }
+
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
+         {
+            case "debuglos":
+               return "Display all cells which have LOS with the given cell.";
+            case "tracepath":
+               return "Display all cells of the path between the start and the end.";
+            case "debugcellsinline":
+               return "Display all cells of line between the start and the end.";
+            default:
+               return "Unknown command";
+         }
+      }
+
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         return [];
+      }
+   }
+
 }

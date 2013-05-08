@@ -1,84 +1,78 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.mount
+package com.ankamagames.dofus.network.messages.game.context.mount
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class MountDataErrorMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var reason:uint = 0;
-        public static const protocolId:uint = 6172;
 
-        public function MountDataErrorMessage()
-        {
+   public class MountDataErrorMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function MountDataErrorMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6172;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var reason:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6172;
+      }
+
+      public function initMountDataErrorMessage(reason:uint=0) : MountDataErrorMessage {
+         this.reason=reason;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.reason=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MountDataErrorMessage(output);
+      }
+
+      public function serializeAs_MountDataErrorMessage(output:IDataOutput) : void {
+         output.writeByte(this.reason);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MountDataErrorMessage(input);
+      }
+
+      public function deserializeAs_MountDataErrorMessage(input:IDataInput) : void {
+         this.reason=input.readByte();
+         if(this.reason<0)
+         {
+            throw new Error("Forbidden value ("+this.reason+") on element of MountDataErrorMessage.reason.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 6172;
-        }// end function
-
-        public function initMountDataErrorMessage(param1:uint = 0) : MountDataErrorMessage
-        {
-            this.reason = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.reason = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_MountDataErrorMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_MountDataErrorMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.reason);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_MountDataErrorMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_MountDataErrorMessage(param1:IDataInput) : void
-        {
-            this.reason = param1.readByte();
-            if (this.reason < 0)
-            {
-                throw new Error("Forbidden value (" + this.reason + ") on element of MountDataErrorMessage.reason.");
-            }
-            return;
-        }// end function
-
-    }
 }

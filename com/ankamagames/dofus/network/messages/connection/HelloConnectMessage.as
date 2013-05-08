@@ -1,103 +1,92 @@
-﻿package com.ankamagames.dofus.network.messages.connection
+package com.ankamagames.dofus.network.messages.connection
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class HelloConnectMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var salt:String = "";
-        public var key:Vector.<int>;
-        public static const protocolId:uint = 3;
 
-        public function HelloConnectMessage()
-        {
-            this.key = new Vector.<int>;
-            return;
-        }// end function
+   public class HelloConnectMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function HelloConnectMessage() {
+         this.key=new Vector.<int>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 3;
-        }// end function
+      public static const protocolId:uint = 3;
 
-        public function initHelloConnectMessage(param1:String = "", param2:Vector.<int> = null) : HelloConnectMessage
-        {
-            this.salt = param1;
-            this.key = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.salt = "";
-            this.key = new Vector.<int>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var salt:String = "";
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var key:Vector.<int>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_HelloConnectMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 3;
+      }
 
-        public function serializeAs_HelloConnectMessage(param1:IDataOutput) : void
-        {
-            param1.writeUTF(this.salt);
-            param1.writeShort(this.key.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.key.length)
-            {
-                
-                param1.writeByte(this.key[_loc_2]);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      public function initHelloConnectMessage(salt:String="", key:Vector.<int>=null) : HelloConnectMessage {
+         this.salt=salt;
+         this.key=key;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_HelloConnectMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.salt="";
+         this.key=new Vector.<int>();
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_HelloConnectMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            this.salt = param1.readUTF();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readByte();
-                this.key.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_HelloConnectMessage(output);
+      }
+
+      public function serializeAs_HelloConnectMessage(output:IDataOutput) : void {
+         output.writeUTF(this.salt);
+         output.writeShort(this.key.length);
+         var _i2:uint = 0;
+         while(_i2<this.key.length)
+         {
+            output.writeByte(this.key[_i2]);
+            _i2++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_HelloConnectMessage(input);
+      }
+
+      public function deserializeAs_HelloConnectMessage(input:IDataInput) : void {
+         var _val2:* = 0;
+         this.salt=input.readUTF();
+         var _keyLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_keyLen)
+         {
+            _val2=input.readByte();
+            this.key.push(_val2);
+            _i2++;
+         }
+      }
+   }
+
 }

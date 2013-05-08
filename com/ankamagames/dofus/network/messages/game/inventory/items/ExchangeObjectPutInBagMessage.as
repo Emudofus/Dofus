@@ -1,88 +1,77 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeObjectMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeObjectPutInBagMessage extends ExchangeObjectMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var object:ObjectItem;
-        public static const protocolId:uint = 6009;
 
-        public function ExchangeObjectPutInBagMessage()
-        {
-            this.object = new ObjectItem();
-            return;
-        }// end function
+   public class ExchangeObjectPutInBagMessage extends ExchangeObjectMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function ExchangeObjectPutInBagMessage() {
+         this.object=new ObjectItem();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6009;
-        }// end function
+      public static const protocolId:uint = 6009;
 
-        public function initExchangeObjectPutInBagMessage(param1:Boolean = false, param2:ObjectItem = null) : ExchangeObjectPutInBagMessage
-        {
-            super.initExchangeObjectMessage(param1);
-            this.object = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.object = new ObjectItem();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var object:ObjectItem;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6009;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeObjectPutInBagMessage(param1);
-            return;
-        }// end function
+      public function initExchangeObjectPutInBagMessage(remote:Boolean=false, object:ObjectItem=null) : ExchangeObjectPutInBagMessage {
+         super.initExchangeObjectMessage(remote);
+         this.object=object;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ExchangeObjectPutInBagMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_ExchangeObjectMessage(param1);
-            this.object.serializeAs_ObjectItem(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.object=new ObjectItem();
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeObjectPutInBagMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ExchangeObjectPutInBagMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.object = new ObjectItem();
-            this.object.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeObjectPutInBagMessage(output);
+      }
+
+      public function serializeAs_ExchangeObjectPutInBagMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeObjectMessage(output);
+         this.object.serializeAs_ObjectItem(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeObjectPutInBagMessage(input);
+      }
+
+      public function deserializeAs_ExchangeObjectPutInBagMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.object=new ObjectItem();
+         this.object.deserialize(input);
+      }
+   }
+
 }

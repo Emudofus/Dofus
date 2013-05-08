@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.party
+package com.ankamagames.dofus.logic.game.common.actions.party
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class TeleportBuddiesAnswerAction extends Object implements Action
-    {
-        public var accept:Boolean;
 
-        public function TeleportBuddiesAnswerAction()
-        {
-            return;
-        }// end function
+   public class TeleportBuddiesAnswerAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : TeleportBuddiesAnswerAction
-        {
-            var _loc_2:* = new TeleportBuddiesAnswerAction;
-            _loc_2.accept = param1;
-            return _loc_2;
-        }// end function
+      public function TeleportBuddiesAnswerAction() {
+         super();
+      }
 
-    }
+      public static function create(accept:Boolean) : TeleportBuddiesAnswerAction {
+         var a:TeleportBuddiesAnswerAction = new TeleportBuddiesAnswerAction();
+         a.accept=accept;
+         return a;
+      }
+
+      public var accept:Boolean;
+   }
+
 }

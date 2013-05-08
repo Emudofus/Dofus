@@ -1,45 +1,46 @@
-﻿package com.ankamagames.tiphon.engine
+package com.ankamagames.tiphon.engine
 {
-    import __AS3__.vec.*;
+   import __AS3__.vec.Vector;
 
-    final public class SubstituteAnimationManager extends Object
-    {
-        private static var _like:Vector.<String> = new Vector.<String>;
-        private static var _defaultAnimations:Vector.<String> = new Vector.<String>;
 
-        public function SubstituteAnimationManager()
-        {
-            return;
-        }// end function
+   public final class SubstituteAnimationManager extends Object
+   {
+         
 
-        public static function setDefaultAnimation(param1:String, param2:String) : void
-        {
-            var _loc_3:* = _like.indexOf(param1);
-            if (_loc_3 == -1)
+      public function SubstituteAnimationManager() {
+         super();
+      }
+
+      private static var _like:Vector.<String> = new Vector.<String>();
+
+      private static var _defaultAnimations:Vector.<String> = new Vector.<String>();
+
+      public static function setDefaultAnimation(like:String, defaultAnim:String) : void {
+         var indexLike:int = _like.indexOf(like);
+         if(indexLike==-1)
+         {
+            _like.push(like);
+            _defaultAnimations.push(defaultAnim);
+         }
+         else
+         {
+            _defaultAnimations[indexLike]=defaultAnim;
+         }
+      }
+
+      public static function getDefaultAnimation(currentAnimation:String) : String {
+         var like:String = null;
+         for each (like in _like)
+         {
+            if(currentAnimation.indexOf(like)==0)
             {
-                _like.push(param1);
-                _defaultAnimations.push(param2);
+               return _defaultAnimations[_like.indexOf(like)];
             }
-            else
-            {
-                _defaultAnimations[_loc_3] = param2;
-            }
-            return;
-        }// end function
+         }
+         return null;
+      }
 
-        public static function getDefaultAnimation(param1:String) : String
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in _like)
-            {
-                
-                if (param1.indexOf(_loc_2) == 0)
-                {
-                    return _defaultAnimations[_like.indexOf(_loc_2)];
-                }
-            }
-            return null;
-        }// end function
 
-    }
+   }
+
 }

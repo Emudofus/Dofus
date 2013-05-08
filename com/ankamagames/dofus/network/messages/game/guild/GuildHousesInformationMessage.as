@@ -1,100 +1,88 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild
+package com.ankamagames.dofus.network.messages.game.guild
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.house.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.house.HouseInformationsForGuild;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GuildHousesInformationMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var housesInformations:Vector.<HouseInformationsForGuild>;
-        public static const protocolId:uint = 5919;
 
-        public function GuildHousesInformationMessage()
-        {
-            this.housesInformations = new Vector.<HouseInformationsForGuild>;
-            return;
-        }// end function
+   public class GuildHousesInformationMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GuildHousesInformationMessage() {
+         this.housesInformations=new Vector.<HouseInformationsForGuild>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5919;
-        }// end function
+      public static const protocolId:uint = 5919;
 
-        public function initGuildHousesInformationMessage(param1:Vector.<HouseInformationsForGuild> = null) : GuildHousesInformationMessage
-        {
-            this.housesInformations = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.housesInformations = new Vector.<HouseInformationsForGuild>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var housesInformations:Vector.<HouseInformationsForGuild>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5919;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GuildHousesInformationMessage(param1);
-            return;
-        }// end function
+      public function initGuildHousesInformationMessage(housesInformations:Vector.<HouseInformationsForGuild>=null) : GuildHousesInformationMessage {
+         this.housesInformations=housesInformations;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_GuildHousesInformationMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.housesInformations.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.housesInformations.length)
-            {
-                
-                (this.housesInformations[_loc_2] as HouseInformationsForGuild).serializeAs_HouseInformationsForGuild(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.housesInformations=new Vector.<HouseInformationsForGuild>();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GuildHousesInformationMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_GuildHousesInformationMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new HouseInformationsForGuild();
-                _loc_4.deserialize(param1);
-                this.housesInformations.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildHousesInformationMessage(output);
+      }
+
+      public function serializeAs_GuildHousesInformationMessage(output:IDataOutput) : void {
+         output.writeShort(this.housesInformations.length);
+         var _i1:uint = 0;
+         while(_i1<this.housesInformations.length)
+         {
+            (this.housesInformations[_i1] as HouseInformationsForGuild).serializeAs_HouseInformationsForGuild(output);
+            _i1++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildHousesInformationMessage(input);
+      }
+
+      public function deserializeAs_GuildHousesInformationMessage(input:IDataInput) : void {
+         var _item1:HouseInformationsForGuild = null;
+         var _housesInformationsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_housesInformationsLen)
+         {
+            _item1=new HouseInformationsForGuild();
+            _item1.deserialize(input);
+            this.housesInformations.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

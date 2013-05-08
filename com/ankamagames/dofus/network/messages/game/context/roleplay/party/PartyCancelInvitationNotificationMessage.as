@@ -1,105 +1,109 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PartyCancelInvitationNotificationMessage extends AbstractPartyEventMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var cancelerId:uint = 0;
-        public var guestId:uint = 0;
-        public static const protocolId:uint = 6251;
 
-        public function PartyCancelInvitationNotificationMessage()
-        {
-            return;
-        }// end function
+   public class PartyCancelInvitationNotificationMessage extends AbstractPartyEventMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function PartyCancelInvitationNotificationMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6251;
-        }// end function
+      public static const protocolId:uint = 6251;
 
-        public function initPartyCancelInvitationNotificationMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0) : PartyCancelInvitationNotificationMessage
-        {
-            super.initAbstractPartyEventMessage(param1);
-            this.cancelerId = param2;
-            this.guestId = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.cancelerId = 0;
-            this.guestId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var cancelerId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var guestId:uint = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PartyCancelInvitationNotificationMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6251;
+      }
 
-        public function serializeAs_PartyCancelInvitationNotificationMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractPartyEventMessage(param1);
-            if (this.cancelerId < 0)
+      public function initPartyCancelInvitationNotificationMessage(partyId:uint=0, cancelerId:uint=0, guestId:uint=0) : PartyCancelInvitationNotificationMessage {
+         super.initAbstractPartyEventMessage(partyId);
+         this.cancelerId=cancelerId;
+         this.guestId=guestId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.cancelerId=0;
+         this.guestId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyCancelInvitationNotificationMessage(output);
+      }
+
+      public function serializeAs_PartyCancelInvitationNotificationMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyEventMessage(output);
+         if(this.cancelerId<0)
+         {
+            throw new Error("Forbidden value ("+this.cancelerId+") on element cancelerId.");
+         }
+         else
+         {
+            output.writeInt(this.cancelerId);
+            if(this.guestId<0)
             {
-                throw new Error("Forbidden value (" + this.cancelerId + ") on element cancelerId.");
+               throw new Error("Forbidden value ("+this.guestId+") on element guestId.");
             }
-            param1.writeInt(this.cancelerId);
-            if (this.guestId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.guestId + ") on element guestId.");
+               output.writeInt(this.guestId);
+               return;
             }
-            param1.writeInt(this.guestId);
-            return;
-        }// end function
+         }
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PartyCancelInvitationNotificationMessage(param1);
-            return;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyCancelInvitationNotificationMessage(input);
+      }
 
-        public function deserializeAs_PartyCancelInvitationNotificationMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.cancelerId = param1.readInt();
-            if (this.cancelerId < 0)
+      public function deserializeAs_PartyCancelInvitationNotificationMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.cancelerId=input.readInt();
+         if(this.cancelerId<0)
+         {
+            throw new Error("Forbidden value ("+this.cancelerId+") on element of PartyCancelInvitationNotificationMessage.cancelerId.");
+         }
+         else
+         {
+            this.guestId=input.readInt();
+            if(this.guestId<0)
             {
-                throw new Error("Forbidden value (" + this.cancelerId + ") on element of PartyCancelInvitationNotificationMessage.cancelerId.");
+               throw new Error("Forbidden value ("+this.guestId+") on element of PartyCancelInvitationNotificationMessage.guestId.");
             }
-            this.guestId = param1.readInt();
-            if (this.guestId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.guestId + ") on element of PartyCancelInvitationNotificationMessage.guestId.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

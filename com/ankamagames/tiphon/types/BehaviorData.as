@@ -1,59 +1,61 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.tiphon.display.*;
+   import com.ankamagames.tiphon.display.TiphonSprite;
 
-    public class BehaviorData extends Object
-    {
-        private var _animation:String;
-        private var _animationStartValue:String;
-        private var _direction:int;
-        private var _directionStartValue:int;
-        private var _parent:TiphonSprite;
-        public var lock:Boolean = false;
 
-        public function BehaviorData(param1:String, param2:int, param3:TiphonSprite)
-        {
-            this._animation = param1;
-            this._animationStartValue = param1;
-            this._parent = param3;
-            this._direction = param2;
-            this._directionStartValue = param2;
-            return;
-        }// end function
+   public class BehaviorData extends Object
+   {
+         
 
-        public function get animation() : String
-        {
-            return this._animation;
-        }// end function
+      public function BehaviorData(animation:String, direction:int, parent:TiphonSprite) {
+         super();
+         this._animation=animation;
+         this._animationStartValue=animation;
+         this._parent=parent;
+         this._direction=direction;
+         this._directionStartValue=direction;
+      }
 
-        public function get direction() : int
-        {
-            return this._direction;
-        }// end function
 
-        public function set animation(param1:String) : void
-        {
-            if (!this.lock)
-            {
-                this._animation = param1;
-            }
-            return;
-        }// end function
 
-        public function get animationStartValue() : String
-        {
-            return this._animationStartValue;
-        }// end function
+      private var _animation:String;
 
-        public function get directionStartValue() : int
-        {
-            return this._directionStartValue;
-        }// end function
+      private var _animationStartValue:String;
 
-        public function get parent() : TiphonSprite
-        {
-            return this._parent;
-        }// end function
+      private var _direction:int;
 
-    }
+      private var _directionStartValue:int;
+
+      private var _parent:TiphonSprite;
+
+      public var lock:Boolean = false;
+
+      public function get animation() : String {
+         return this._animation;
+      }
+
+      public function get direction() : int {
+         return this._direction;
+      }
+
+      public function set animation(v:String) : void {
+         if(!this.lock)
+         {
+            this._animation=v;
+         }
+      }
+
+      public function get animationStartValue() : String {
+         return this._animationStartValue;
+      }
+
+      public function get directionStartValue() : int {
+         return this._directionStartValue;
+      }
+
+      public function get parent() : TiphonSprite {
+         return this._parent;
+      }
+   }
+
 }

@@ -1,32 +1,32 @@
-﻿package com.ankamagames.jerakine.pools
+package com.ankamagames.jerakine.pools
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.pools.*;
-    import flash.errors.*;
-    import flash.net.*;
-    import flash.utils.*;
+   import flash.net.URLLoader;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.errors.IOError;
+   import flash.net.URLRequest;
 
-    public class PoolableURLLoader extends URLLoader implements Poolable
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(PoolableURLLoader));
 
-        public function PoolableURLLoader(param1:URLRequest = null)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class PoolableURLLoader extends URLLoader implements Poolable
+   {
+         
 
-        public function free() : void
-        {
-            try
-            {
-                close();
-            }
-            catch (ioe:IOError)
-            {
-            }
-            return;
-        }// end function
+      public function PoolableURLLoader(request:URLRequest=null) {
+         super(request);
+      }
 
-    }
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PoolableURLLoader));
+
+      public function free() : void {
+         try
+         {
+            close();
+         }
+         catch(ioe:IOError)
+         {
+         }
+      }
+   }
+
 }

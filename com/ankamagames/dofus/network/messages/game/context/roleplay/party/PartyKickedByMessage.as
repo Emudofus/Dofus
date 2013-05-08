@@ -1,92 +1,89 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PartyKickedByMessage extends AbstractPartyMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var kickerId:uint = 0;
-        public static const protocolId:uint = 5590;
 
-        public function PartyKickedByMessage()
-        {
+   public class PartyKickedByMessage extends AbstractPartyMessage implements INetworkMessage
+   {
+         
+
+      public function PartyKickedByMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5590;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
+
+      public var kickerId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5590;
+      }
+
+      public function initPartyKickedByMessage(partyId:uint=0, kickerId:uint=0) : PartyKickedByMessage {
+         super.initAbstractPartyMessage(partyId);
+         this.kickerId=kickerId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.kickerId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyKickedByMessage(output);
+      }
+
+      public function serializeAs_PartyKickedByMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
+         if(this.kickerId<0)
+         {
+            throw new Error("Forbidden value ("+this.kickerId+") on element kickerId.");
+         }
+         else
+         {
+            output.writeInt(this.kickerId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyKickedByMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5590;
-        }// end function
-
-        public function initPartyKickedByMessage(param1:uint = 0, param2:uint = 0) : PartyKickedByMessage
-        {
-            super.initAbstractPartyMessage(param1);
-            this.kickerId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.kickerId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_PartyKickedByMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.kickerId=input.readInt();
+         if(this.kickerId<0)
+         {
+            throw new Error("Forbidden value ("+this.kickerId+") on element of PartyKickedByMessage.kickerId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PartyKickedByMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_PartyKickedByMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractPartyMessage(param1);
-            if (this.kickerId < 0)
-            {
-                throw new Error("Forbidden value (" + this.kickerId + ") on element kickerId.");
-            }
-            param1.writeInt(this.kickerId);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PartyKickedByMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_PartyKickedByMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.kickerId = param1.readInt();
-            if (this.kickerId < 0)
-            {
-                throw new Error("Forbidden value (" + this.kickerId + ") on element of PartyKickedByMessage.kickerId.");
-            }
-            return;
-        }// end function
-
-    }
 }

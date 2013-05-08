@@ -1,70 +1,70 @@
-﻿package com.ankamagames.dofus.network.types.game.shortcut
+package com.ankamagames.dofus.network.types.game.shortcut
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class ShortcutEmote extends Shortcut implements INetworkType
-    {
-        public var emoteId:uint = 0;
-        public static const protocolId:uint = 389;
 
-        public function ShortcutEmote()
-        {
+   public class ShortcutEmote extends Shortcut implements INetworkType
+   {
+         
+
+      public function ShortcutEmote() {
+         super();
+      }
+
+      public static const protocolId:uint = 389;
+
+      public var emoteId:uint = 0;
+
+      override public function getTypeId() : uint {
+         return 389;
+      }
+
+      public function initShortcutEmote(slot:uint=0, emoteId:uint=0) : ShortcutEmote {
+         super.initShortcut(slot);
+         this.emoteId=emoteId;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.emoteId=0;
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutEmote(output);
+      }
+
+      public function serializeAs_ShortcutEmote(output:IDataOutput) : void {
+         super.serializeAs_Shortcut(output);
+         if(this.emoteId<0)
+         {
+            throw new Error("Forbidden value ("+this.emoteId+") on element emoteId.");
+         }
+         else
+         {
+            output.writeByte(this.emoteId);
             return;
-        }// end function
+         }
+      }
 
-        override public function getTypeId() : uint
-        {
-            return 389;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutEmote(input);
+      }
 
-        public function initShortcutEmote(param1:uint = 0, param2:uint = 0) : ShortcutEmote
-        {
-            super.initShortcut(param1);
-            this.emoteId = param2;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.emoteId = 0;
+      public function deserializeAs_ShortcutEmote(input:IDataInput) : void {
+         super.deserialize(input);
+         this.emoteId=input.readByte();
+         if(this.emoteId<0)
+         {
+            throw new Error("Forbidden value ("+this.emoteId+") on element of ShortcutEmote.emoteId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ShortcutEmote(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ShortcutEmote(param1:IDataOutput) : void
-        {
-            super.serializeAs_Shortcut(param1);
-            if (this.emoteId < 0)
-            {
-                throw new Error("Forbidden value (" + this.emoteId + ") on element emoteId.");
-            }
-            param1.writeByte(this.emoteId);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ShortcutEmote(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ShortcutEmote(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.emoteId = param1.readByte();
-            if (this.emoteId < 0)
-            {
-                throw new Error("Forbidden value (" + this.emoteId + ") on element of ShortcutEmote.emoteId.");
-            }
-            return;
-        }// end function
-
-    }
 }

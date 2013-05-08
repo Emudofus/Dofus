@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ChatRefreshChannelAction extends Object implements Action
-    {
 
-        public function ChatRefreshChannelAction()
-        {
-            return;
-        }// end function
+   public class ChatRefreshChannelAction extends Object implements Action
+   {
+         
 
-        public static function create() : ChatRefreshChannelAction
-        {
-            var _loc_1:* = new ChatRefreshChannelAction;
-            return _loc_1;
-        }// end function
+      public function ChatRefreshChannelAction() {
+         super();
+      }
 
-    }
+      public static function create() : ChatRefreshChannelAction {
+         var a:ChatRefreshChannelAction = new ChatRefreshChannelAction();
+         return a;
+      }
+
+
+   }
+
 }

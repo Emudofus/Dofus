@@ -1,886 +1,802 @@
-﻿package com.ankamagames.dofus.internalDatacenter.spells
+package com.ankamagames.dofus.internalDatacenter.spells
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.components.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.dofus.datacenter.effects.instances.*;
-    import com.ankamagames.dofus.datacenter.spells.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.types.game.character.characteristic.*;
-    import com.ankamagames.dofus.uiApi.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.display.spellZone.*;
-    import flash.utils.*;
+   import flash.utils.Proxy;
+   import com.ankamagames.jerakine.interfaces.ISlotData;
+   import com.ankamagames.berilia.interfaces.IClonable;
+   import com.ankamagames.jerakine.utils.display.spellZone.ICellZoneProvider;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterSpellModification;
+   import com.ankamagames.berilia.managers.SlotDataHolderManager;
+   import com.ankamagames.dofus.datacenter.spells.Spell;
+   import com.ankamagames.dofus.logic.game.fight.managers.CurrentPlayedFighterManager;
+   import com.ankamagames.dofus.network.enums.CharacterSpellModificationTypeEnum;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceDice;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.datacenter.spells.SpellLevel;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.jerakine.utils.display.spellZone.IZoneShape;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.jerakine.data.XmlConfig;
+   import com.ankamagames.berilia.components.Slot;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterBaseCharacteristic;
+   import com.ankamagames.dofus.uiApi.PlayedCharacterApi;
+   import flash.utils.flash_proxy;
+   import com.ankamagames.jerakine.interfaces.ISlotDataHolder;
 
-    dynamic public class SpellWrapper extends Proxy implements ISlotData, IClonable, ICellZoneProvider, IDataCenter
-    {
-        private var _uri:Uri;
-        private var _slotDataHolderManager:SlotDataHolderManager;
-        private var _spellLevel:SpellLevel;
-        public var position:uint;
-        public var id:uint = 0;
-        public var spellLevel:int;
-        public var effects:Vector.<EffectInstance>;
-        public var criticalEffect:Vector.<EffectInstance>;
-        public var gfxId:int;
-        public var playerId:int;
-        public var versionNum:int;
-        private var _actualCooldown:uint = 0;
-        private static var _cache:Array = new Array();
-        private static var _playersCache:Dictionary = new Dictionary();
-        private static var _cac:Array = new Array();
-        private static var _errorIconUri:Uri;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellWrapper));
+   use namespace flash_proxy;
 
-        public function SpellWrapper()
-        {
-            return;
-        }// end function
+   public dynamic class SpellWrapper extends Proxy implements ISlotData, IClonable, ICellZoneProvider, IDataCenter
+   {
+         
 
-        public function set actualCooldown(param1:uint) : void
-        {
-            this._actualCooldown = param1;
-            this._slotDataHolderManager.refreshAll();
-            return;
-        }// end function
+      public function SpellWrapper() {
+         super();
+      }
 
-        public function get actualCooldown() : uint
-        {
-            return PlayedCharacterManager.getInstance().isFighting ? (this._actualCooldown) : (0);
-        }// end function
+      private static var _cache:Array = new Array();
 
-        public function get spellLevelInfos() : SpellLevel
-        {
-            return this._spellLevel;
-        }// end function
+      private static var _playersCache:Dictionary = new Dictionary();
 
-        public function get minimalRange() : uint
-        {
-            return this["minRange"];
-        }// end function
+      private static var _cac:Array = new Array();
 
-        public function get maximalRange() : uint
-        {
-            return this["range"];
-        }// end function
+      private static var _errorIconUri:Uri;
 
-        public function get castZoneInLine() : Boolean
-        {
-            return this["castInLine"];
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellWrapper));
 
-        public function get castZoneInDiagonal() : Boolean
-        {
-            return this["castInDiagonal"];
-        }// end function
-
-        public function get spellZoneEffects() : Vector.<IZoneShape>
-        {
-            var _loc_1:* = null;
-            if (this.id != 0 || !PlayedCharacterManager.getInstance().currentWeapon)
+      public static function create(position:int, spellID:uint, spellLevel:int, useCache:Boolean=true, playerId:int=0) : SpellWrapper {
+         var spell:SpellWrapper = null;
+         var effectInstance:EffectInstance = null;
+         var damageBaseSpellModif:CharacterSpellModification = null;
+         var damageSpellModif:CharacterSpellModification = null;
+         var healSpellModif:CharacterSpellModification = null;
+         var modif:* = 0;
+         if(spellID==0)
+         {
+            useCache=false;
+         }
+         var position:int = 63;
+         if(useCache)
+         {
+            if((_cache[spellID])&&(_cache[spellID].length<0)&&(_cache[spellID][position])&&(!playerId))
             {
-                _loc_1 = this.spell.getSpellLevel(this.spellLevel);
-                if (_loc_1)
-                {
-                    return _loc_1.spellZoneEffects;
-                }
+               spell=_cache[spellID][position];
             }
+            else
+            {
+               if((_playersCache[playerId]&&_playersCache[playerId][spellID])&&(_playersCache[playerId][spellID].length<0)&&(_playersCache[playerId][spellID][position]))
+               {
+                  spell=_playersCache[playerId][spellID][position];
+               }
+            }
+         }
+         if((spellID==0)&&(!(_cac==null))&&(_cac.length<0)&&(_cac[position]))
+         {
+            spell=_cac[position];
+         }
+         if(!spell)
+         {
+            spell=new SpellWrapper();
+            spell.id=spellID;
+            if(useCache)
+            {
+               if(playerId)
+               {
+                  if(!_playersCache[playerId])
+                  {
+                     _playersCache[playerId]=new Array();
+                  }
+                  if(!_playersCache[playerId][spellID])
+                  {
+                     _playersCache[playerId][spellID]=new Array();
+                  }
+                  _playersCache[playerId][spellID][position]=spell;
+               }
+               else
+               {
+                  if(!_cache[spellID])
+                  {
+                     _cache[spellID]=new Array();
+                  }
+                  _cache[spellID][position]=spell;
+               }
+            }
+            spell._slotDataHolderManager=new SlotDataHolderManager(spell);
+         }
+         if(spellID==0)
+         {
+            if(!_cac)
+            {
+               _cac=new Array();
+            }
+            _cac[position]=spell;
+         }
+         spell.id=spellID;
+         spell.gfxId=spellID;
+         if(position!=-1)
+         {
+            spell.position=position;
+         }
+         spell.spellLevel=spellLevel;
+         spell.playerId=playerId;
+         spell.effects=new Vector.<EffectInstance>();
+         spell.criticalEffect=new Vector.<EffectInstance>();
+         var spellData:Spell = Spell.getSpellById(spellID);
+         spell._spellLevel=spellData.getSpellLevel(spellLevel);
+         for each (effectInstance in spell._spellLevel.effects)
+         {
+            effectInstance=effectInstance.clone();
+            if(effectInstance.category==2)
+            {
+               damageBaseSpellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(spellID,CharacterSpellModificationTypeEnum.BASE_DAMAGE);
+               if((damageBaseSpellModif)&&(effectInstance is EffectInstanceDice))
+               {
+                  modif=damageBaseSpellModif.value.alignGiftBonus+damageBaseSpellModif.value.base+damageBaseSpellModif.value.contextModif+damageBaseSpellModif.value.objectsAndMountBonus;
+                  (effectInstance as EffectInstanceDice).diceNum=(effectInstance as EffectInstanceDice).diceNum+modif;
+                  (effectInstance as EffectInstanceDice).diceSide=(effectInstance as EffectInstanceDice).diceSide+modif;
+               }
+               damageSpellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(spellID,CharacterSpellModificationTypeEnum.DAMAGE);
+               healSpellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(spellID,CharacterSpellModificationTypeEnum.HEAL_BONUS);
+               if(damageSpellModif)
+               {
+                  effectInstance.modificator=damageSpellModif.value.alignGiftBonus+damageSpellModif.value.base+damageSpellModif.value.contextModif+damageSpellModif.value.objectsAndMountBonus;
+               }
+               else
+               {
+                  if(healSpellModif)
+                  {
+                     effectInstance.modificator=healSpellModif.value.alignGiftBonus+healSpellModif.value.base+healSpellModif.value.contextModif+healSpellModif.value.objectsAndMountBonus;
+                  }
+               }
+            }
+            spell.effects.push(effectInstance);
+         }
+         for each (effectInstance in spell._spellLevel.criticalEffect)
+         {
+            effectInstance=effectInstance.clone();
+            if(effectInstance.category==2)
+            {
+               damageBaseSpellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(spellID,CharacterSpellModificationTypeEnum.BASE_DAMAGE);
+               if((damageBaseSpellModif)&&(effectInstance is EffectInstanceDice))
+               {
+                  modif=damageBaseSpellModif.value.alignGiftBonus+damageBaseSpellModif.value.base+damageBaseSpellModif.value.contextModif+damageBaseSpellModif.value.objectsAndMountBonus;
+                  (effectInstance as EffectInstanceDice).diceNum=(effectInstance as EffectInstanceDice).diceNum+modif;
+                  (effectInstance as EffectInstanceDice).diceSide=(effectInstance as EffectInstanceDice).diceSide+modif;
+               }
+               damageSpellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(spellID,CharacterSpellModificationTypeEnum.DAMAGE);
+               healSpellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(spellID,CharacterSpellModificationTypeEnum.HEAL_BONUS);
+               if(damageSpellModif)
+               {
+                  effectInstance.modificator=damageSpellModif.value.alignGiftBonus+damageSpellModif.value.base+damageSpellModif.value.contextModif+damageSpellModif.value.objectsAndMountBonus;
+               }
+               else
+               {
+                  if(healSpellModif)
+                  {
+                     effectInstance.modificator=healSpellModif.value.alignGiftBonus+healSpellModif.value.base+healSpellModif.value.contextModif+healSpellModif.value.objectsAndMountBonus;
+                  }
+               }
+            }
+            spell.criticalEffect.push(effectInstance);
+         }
+         return spell;
+      }
+
+      public static function getSpellWrapperById(spellId:uint, playerID:int, position:int) : SpellWrapper {
+         var i:* = 0;
+         if(playerID!=0)
+         {
+            if(!_playersCache[playerID])
+            {
+               return null;
+            }
+            if((!_playersCache[playerID][spellId])&&(_cache[spellId]))
+            {
+               _playersCache[playerID][spellId]=new Array();
+               i=0;
+               while(i<20)
+               {
+                  if(_cache[spellId][i])
+                  {
+                     _playersCache[playerID][spellId][i]=_cache[spellId][i].clone();
+                  }
+                  i++;
+               }
+            }
+            if((spellId==0)&&(_cac)&&(_cac[position]))
+            {
+               return _cac[position];
+            }
+            return _playersCache[playerID][spellId][position];
+         }
+         return _cache[spellId][position];
+      }
+
+      public static function getFirstSpellWrapperById(spellId:uint, playerID:int) : SpellWrapper {
+         var array:Array = null;
+         var i:* = 0;
+         var j:* = 0;
+         if(playerID!=0)
+         {
+            if(!_playersCache[playerID])
+            {
+               return null;
+            }
+            if((!_playersCache[playerID][spellId])&&(_cache[spellId]))
+            {
+               _playersCache[playerID][spellId]=new Array();
+               i=0;
+               while(i<20)
+               {
+                  if(_cache[spellId][i])
+                  {
+                     _playersCache[playerID][spellId][i]=_cache[spellId][i].clone();
+                  }
+                  i++;
+               }
+            }
+            if((spellId==0)&&(_cac)&&(_cac.length))
+            {
+               array=_cac;
+            }
+            else
+            {
+               array=_playersCache[playerID][spellId];
+            }
+         }
+         else
+         {
+            array=_cache[spellId];
+         }
+         if(array)
+         {
+            j=0;
+            while(j<array.length)
+            {
+               if(array[j])
+               {
+                  return array[j];
+               }
+               j++;
+            }
+         }
+         return null;
+      }
+
+      public static function getSpellWrappersById(spellId:uint, playerID:int) : Array {
+         var i:* = 0;
+         if(playerID!=0)
+         {
+            if(!_playersCache[playerID])
+            {
+               return null;
+            }
+            if((!_playersCache[playerID][spellId])&&(_cache[spellId]))
+            {
+               _playersCache[playerID][spellId]=new Array();
+               i=0;
+               while(i<20)
+               {
+                  if(_cache[spellId][i])
+                  {
+                     _playersCache[playerID][spellId][i]=_cache[spellId][i].clone();
+                  }
+                  i++;
+               }
+            }
+            if(spellId==0)
+            {
+               return _cac;
+            }
+            return _playersCache[playerID][spellId];
+         }
+         return _cache[spellId];
+      }
+
+      public static function refreshAllPlayerSpellHolder(playerId:int) : void {
+         var spell:Array = null;
+         var wrapper:SpellWrapper = null;
+         var cac:SpellWrapper = null;
+         var sdhm:SlotDataHolderManager = null;
+         for each (spell in _playersCache[playerId])
+         {
+            for each (wrapper in spell)
+            {
+               wrapper._slotDataHolderManager.refreshAll();
+            }
+         }
+         if(_cac)
+         {
+            for each (cac in _cac)
+            {
+               if(cac)
+               {
+                  sdhm=cac._slotDataHolderManager;
+                  SpellWrapper(cac)._slotDataHolderManager.refreshAll();
+               }
+            }
+         }
+         else
+         {
+            trace("CaC Semble ne pas exister");
+         }
+      }
+
+      public static function resetAllCoolDown(playerId:int, accessKey:Object) : void {
+         var spell:Array = null;
+         var wrapper:SpellWrapper = null;
+         SecureCenter.checkAccessKey(accessKey);
+         for each (spell in _playersCache[playerId])
+         {
+            for each (wrapper in spell)
+            {
+               SpellWrapper(wrapper).actualCooldown=0;
+            }
+         }
+      }
+
+      public static function removeAllSpellWrapperBut(playerId:int, accessKey:Object) : void {
+         var id:String = null;
+         var num:* = 0;
+         var i:* = 0;
+         SecureCenter.checkAccessKey(accessKey);
+         var temp:Array = new Array();
+         for (id in _playersCache)
+         {
+            if(int(id)!=playerId)
+            {
+               temp.push(id);
+            }
+         }
+         num=temp.length;
+         i=-1;
+         while(++i<num)
+         {
+            delete _playersCache[[temp[i]]];
+         }
+      }
+
+      public static function removeAllSpellWrapper() : void {
+         _playersCache=new Dictionary();
+         _cache=new Array();
+      }
+
+      private var _uri:Uri;
+
+      private var _slotDataHolderManager:SlotDataHolderManager;
+
+      private var _spellLevel:SpellLevel;
+
+      public var position:uint;
+
+      public var id:uint = 0;
+
+      public var spellLevel:int;
+
+      public var effects:Vector.<EffectInstance>;
+
+      public var criticalEffect:Vector.<EffectInstance>;
+
+      public var gfxId:int;
+
+      public var playerId:int;
+
+      public var versionNum:int;
+
+      private var _actualCooldown:uint = 0;
+
+      public function set actualCooldown(u:uint) : void {
+         this._actualCooldown=u;
+         this._slotDataHolderManager.refreshAll();
+      }
+
+      public function get actualCooldown() : uint {
+         return PlayedCharacterManager.getInstance().isFighting?this._actualCooldown:0;
+      }
+
+      public function get spellLevelInfos() : SpellLevel {
+         return this._spellLevel;
+      }
+
+      public function get minimalRange() : uint {
+         return this["minRange"];
+      }
+
+      public function get maximalRange() : uint {
+         return this["range"];
+      }
+
+      public function get castZoneInLine() : Boolean {
+         return this["castInLine"];
+      }
+
+      public function get castZoneInDiagonal() : Boolean {
+         return this["castInDiagonal"];
+      }
+
+      public function get spellZoneEffects() : Vector.<IZoneShape> {
+         var sl:SpellLevel = null;
+         if((!(this.id==0))||(!PlayedCharacterManager.getInstance().currentWeapon))
+         {
+            sl=this.spell.getSpellLevel(this.spellLevel);
+            if(sl)
+            {
+               return sl.spellZoneEffects;
+            }
+         }
+         return null;
+      }
+
+      public function get hideEffects() : Boolean {
+         if((this.id==0)&&(!(PlayedCharacterManager.getInstance().currentWeapon==null)))
+         {
+            return (PlayedCharacterManager.getInstance().currentWeapon as ItemWrapper).hideEffects;
+         }
+         var sl:SpellLevel = this.spell.getSpellLevel(this.spellLevel);
+         if(sl)
+         {
+            return sl.hideEffects;
+         }
+         return false;
+      }
+
+      public function get backGroundIconUri() : Uri {
+         if((this.id==0)&&(!(PlayedCharacterManager.getInstance().currentWeapon==null)))
+         {
+            return new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/spells/all.swf|noIcon"));
+         }
+         return null;
+      }
+
+      public function get iconUri() : Uri {
+         return this.fullSizeIconUri;
+      }
+
+      public function get fullSizeIconUri() : Uri {
+         if((!this._uri)||(this.id==0))
+         {
+            if((this.id==0)&&(!(PlayedCharacterManager.getInstance().currentWeapon==null)))
+            {
+               this._uri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.spells").concat("all.swf|weapon_").concat(PlayedCharacterManager.getInstance().currentWeapon.typeId));
+            }
+            else
+            {
+               this._uri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.spells").concat("all.swf|sort_").concat(this.spell.iconId));
+            }
+            this._uri.tag=Slot.NEED_CACHE_AS_BITMAP;
+         }
+         return this._uri;
+      }
+
+      public function get errorIconUri() : Uri {
+         if(!_errorIconUri)
+         {
+            _errorIconUri=new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.spells").concat("all.swf|noIcon"));
+         }
+         return _errorIconUri;
+      }
+
+      public function get info1() : String {
+         if((this.actualCooldown==0)||(!PlayedCharacterManager.getInstance().isFighting))
+         {
             return null;
-        }// end function
+         }
+         if(this.actualCooldown==63)
+         {
+            return "-";
+         }
+         return this.actualCooldown.toString();
+      }
 
-        public function get hideEffects() : Boolean
-        {
-            if (this.id == 0 && PlayedCharacterManager.getInstance().currentWeapon != null)
-            {
-                return (PlayedCharacterManager.getInstance().currentWeapon as ItemWrapper).hideEffects;
-            }
-            var _loc_1:* = this.spell.getSpellLevel(this.spellLevel);
-            if (_loc_1)
-            {
-                return _loc_1.hideEffects;
-            }
-            return false;
-        }// end function
+      public function get timer() : int {
+         return 0;
+      }
 
-        public function get backGroundIconUri() : Uri
-        {
-            if (this.id == 0 && PlayedCharacterManager.getInstance().currentWeapon != null)
+      public function get active() : Boolean {
+         if(!PlayedCharacterManager.getInstance().isFighting)
+         {
+            return true;
+         }
+         var canCast:Boolean = CurrentPlayedFighterManager.getInstance().canCastThisSpell(this.spellId,this.spellLevel);
+         return canCast;
+      }
+
+      public function get spell() : Spell {
+         return Spell.getSpellById(this.id);
+      }
+
+      public function get spellId() : uint {
+         return this.spell.id;
+      }
+
+      public function get playerCriticalRate() : int {
+         var characteristics:CharacterCharacteristicsInformations = null;
+         var criticalHit:CharacterBaseCharacteristic = null;
+         var agility:CharacterBaseCharacteristic = null;
+         var totalCriticalHit:* = 0;
+         var totalAgility:* = 0;
+         var baseCritik:* = 0;
+         var critikPlusBonus:* = 0;
+         var critikRate:* = 0;
+         var currentCriticalHitProbability:Number = (this["isSpellWeapon"])&&(!this["isDefaultSpellWeapon"])?this.getWeaponProperty("criticalHitProbability"):this.getCriticalHitProbability();
+         if((currentCriticalHitProbability)&&(PlayedCharacterApi.knowSpell(this.spell.id)>=0))
+         {
+            characteristics=PlayedCharacterManager.getInstance().characteristics;
+            if(characteristics)
             {
-                return new Uri(XmlConfig.getInstance().getEntry("config.content.path").concat("gfx/spells/all.swf|noIcon"));
+               criticalHit=characteristics.criticalHit;
+               agility=characteristics.agility;
+               totalCriticalHit=criticalHit.alignGiftBonus+criticalHit.base+criticalHit.contextModif+criticalHit.objectsAndMountBonus;
+               totalAgility=agility.alignGiftBonus+agility.base+agility.contextModif+agility.objectsAndMountBonus;
+               if(totalAgility<0)
+               {
+                  totalAgility=0;
+               }
+               baseCritik=currentCriticalHitProbability-totalCriticalHit;
+               critikPlusBonus=int(baseCritik*Math.E*1.1/Math.log(totalAgility+12));
+               critikRate=Math.min(baseCritik,critikPlusBonus);
+               if(critikRate<2)
+               {
+                  critikRate=2;
+               }
+               return critikRate;
             }
+         }
+         return 0;
+      }
+
+      public function get playerCriticalFailureRate() : int {
+         var characteristics:CharacterCharacteristicsInformations = null;
+         var criticalMiss:Object = null;
+         var totalCriticalMiss:* = 0;
+         var currentCriticalfailProbability:Number = this.criticalFailureProbability;
+         if((currentCriticalfailProbability)&&(PlayedCharacterApi.knowSpell(this.spell.id)>=0))
+         {
+            characteristics=PlayedCharacterManager.getInstance().characteristics;
+            if(characteristics)
+            {
+               criticalMiss=characteristics.criticalMiss;
+               totalCriticalMiss=currentCriticalfailProbability-criticalMiss.alignGiftBonus-criticalMiss.base-criticalMiss.contextModif-criticalMiss.objectsAndMountBonus;
+               return totalCriticalMiss;
+            }
+         }
+         return 0;
+      }
+
+      public function get maximalRangeWithBoosts() : int {
+         var characteristics:CharacterCharacteristicsInformations = null;
+         var bonus:* = 0;
+         if(this._spellLevel.rangeCanBeBoosted)
+         {
+            characteristics=PlayedCharacterManager.getInstance().characteristics;
+            bonus=characteristics.range.base+characteristics.range.alignGiftBonus+characteristics.range.contextModif+characteristics.range.objectsAndMountBonus;
+            if(this.maximalRange+bonus<this.minimalRange)
+            {
+               return this.minimalRange;
+            }
+            return this.maximalRange+bonus;
+         }
+         return this.maximalRange;
+      }
+
+      override flash_proxy function hasProperty(name:*) : Boolean {
+         return isAttribute(name);
+      }
+
+      override flash_proxy function getProperty(name:*) : * {
+         var playedFighter:CurrentPlayedFighterManager = null;
+         var spellModif:CharacterSpellModification = null;
+         if(isAttribute(name))
+         {
+            return this[name];
+         }
+         if((this.id==0)&&(!(PlayedCharacterManager.getInstance().currentWeapon==null)))
+         {
+            return this.getWeaponProperty(name);
+         }
+         playedFighter=CurrentPlayedFighterManager.getInstance();
+         switch(name.toString())
+         {
+            case "id":
+            case "nameId":
+            case "descriptionId":
+            case "typeId":
+            case "scriptParams":
+            case "scriptParamsCritical":
+            case "scriptId":
+            case "scriptIdCritical":
+            case "iconId":
+            case "spellLevels":
+            case "useParamCache":
+            case "name":
+            case "description":
+               return Spell.getSpellById(this.id)[name];
+            case "spellBreed":
+            case "needFreeCell":
+            case "needTakenCell":
+            case "criticalFailureEndsTurn":
+            case "criticalFailureProbability":
+            case "minPlayerLevel":
+            case "minRange":
+            case "maxStack":
+            case "globalCooldown":
+               return this._spellLevel[name.toString()];
+            case "criticalHitProbability":
+               return this.getCriticalHitProbability();
+            case "maxCastPerTurn":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN);
+               if(spellModif)
+               {
+                  return this._spellLevel["maxCastPerTurn"]+spellModif.value.contextModif+spellModif.value.objectsAndMountBonus;
+               }
+               return this._spellLevel["maxCastPerTurn"];
+            case "range":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.RANGE);
+               if(spellModif)
+               {
+                  return this._spellLevel["range"]+spellModif.value.contextModif+spellModif.value.objectsAndMountBonus;
+               }
+               return this._spellLevel["range"];
+            case "maxCastPerTarget":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET);
+               if(spellModif)
+               {
+                  return this._spellLevel["maxCastPerTarget"]+spellModif.value.contextModif+spellModif.value.objectsAndMountBonus;
+               }
+               return this._spellLevel["maxCastPerTarget"];
+            case "castInLine":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.CAST_LINE);
+               if(spellModif)
+               {
+                  return (this._spellLevel["castInLine"])&&(spellModif.value.contextModif+spellModif.value.objectsAndMountBonus+spellModif.value.base+spellModif.value.alignGiftBonus==0);
+               }
+               return this._spellLevel["castInLine"];
+            case "castInDiagonal":
+               return this._spellLevel["castInDiagonal"];
+            case "castTestLos":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.LOS);
+               if(spellModif)
+               {
+                  return (this._spellLevel["castTestLos"])&&(spellModif.value.contextModif+spellModif.value.objectsAndMountBonus+spellModif.value.base+spellModif.value.alignGiftBonus==0);
+               }
+               return this._spellLevel["castTestLos"];
+            case "rangeCanBeBoosted":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.RANGEABLE);
+               if(spellModif)
+               {
+                  return (this._spellLevel["rangeCanBeBoosted"])||(spellModif.value.contextModif+spellModif.value.objectsAndMountBonus+spellModif.value.base+spellModif.value.alignGiftBonus<0);
+               }
+               return this._spellLevel["rangeCanBeBoosted"];
+            case "apCost":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.AP_COST);
+               if(spellModif)
+               {
+                  return this._spellLevel["apCost"]-spellModif.value.contextModif+spellModif.value.objectsAndMountBonus+spellModif.value.base+spellModif.value.alignGiftBonus;
+               }
+               return this._spellLevel["apCost"];
+            case "minCastInterval":
+               spellModif=CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.CAST_INTERVAL);
+               if(spellModif)
+               {
+                  return this._spellLevel["minCastInterval"]-spellModif.value.contextModif+spellModif.value.objectsAndMountBonus+spellModif.value.base+spellModif.value.alignGiftBonus;
+               }
+               return this._spellLevel["minCastInterval"];
+            case "isSpellWeapon":
+               return this.id==0;
+            case "isDefaultSpellWeapon":
+               return (this.id==0)&&(!PlayedCharacterManager.getInstance().currentWeapon);
+            case "statesRequired":
+               return this._spellLevel.statesRequired;
+            case "statesForbidden":
+               return this._spellLevel.statesForbidden;
+            default:
+               return;
+         }
+      }
+
+      override flash_proxy function callProperty(name:*, ... rest) : * {
+         return null;
+      }
+
+      private function getWeaponProperty(name:*) : * {
+         var modificator:* = 0;
+         var weapon:ItemWrapper = PlayedCharacterManager.getInstance().currentWeapon as ItemWrapper;
+         if(!weapon)
+         {
             return null;
-        }// end function
+         }
+         switch(name.toString())
+         {
+            case "id":
+               return 0;
+            case "nameId":
+            case "descriptionId":
+            case "iconId":
+            case "name":
+            case "description":
+            case "criticalFailureProbability":
+            case "criticalHitProbability":
+            case "castInLine":
+            case "castInDiagonal":
+            case "castTestLos":
+            case "apCost":
+            case "minRange":
+            case "range":
+               return weapon[name];
+            case "isDefaultSpellWeapon":
+            case "useParamCache":
+            case "needTakenCell":
+            case "rangeCanBeBoosted":
+               return false;
+            case "isSpellWeapon":
+            case "needFreeCell":
+            case "criticalFailureEndsTurn":
+               return true;
+            case "minCastInterval":
+            case "minPlayerLevel":
+            case "maxStack":
+            case "maxCastPerTurn":
+            case "maxCastPerTarget":
+               return 0;
+            case "typeId":
+               return 24;
+            case "scriptParams":
+            case "scriptParamsCritical":
+            case "spellLevels":
+               return null;
+            case "scriptId":
+            case "scriptIdCritical":
+            case "spellBreed":
+               return 0;
+            default:
+               return;
+         }
+      }
 
-        public function get iconUri() : Uri
-        {
-            return this.fullSizeIconUri;
-        }// end function
+      private function getCriticalHitProbability() : Number {
+         var modifValue:* = 0;
+         var spellModif:CharacterSpellModification = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id,CharacterSpellModificationTypeEnum.CRITICAL_HIT_BONUS);
+         if(spellModif)
+         {
+            modifValue=spellModif.value.contextModif+spellModif.value.objectsAndMountBonus+spellModif.value.alignGiftBonus+spellModif.value.base;
+            return this._spellLevel["criticalHitProbability"]<0?Math.max(this._spellLevel["criticalHitProbability"]-modifValue,2):0;
+         }
+         return this._spellLevel["criticalHitProbability"];
+      }
 
-        public function get fullSizeIconUri() : Uri
-        {
-            if (!this._uri || this.id == 0)
-            {
-                if (this.id == 0 && PlayedCharacterManager.getInstance().currentWeapon != null)
-                {
-                    this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.spells").concat("all.swf|weapon_").concat(PlayedCharacterManager.getInstance().currentWeapon.typeId));
-                }
-                else
-                {
-                    this._uri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.spells").concat("all.swf|sort_").concat(this.spell.iconId));
-                }
-                this._uri.tag = Slot.NEED_CACHE_AS_BITMAP;
-            }
-            return this._uri;
-        }// end function
+      public function clone() : * {
+         var returnSpellWrapper:SpellWrapper = null;
+         var useCache:Boolean = false;
+         if((!(_cache[this.spellId]==null))||(_playersCache[this.playerId][this.spellId]))
+         {
+            useCache=true;
+         }
+         returnSpellWrapper=SpellWrapper.create(this.position,this.id,this.spellLevel,useCache,this.playerId);
+         return returnSpellWrapper;
+      }
 
-        public function get errorIconUri() : Uri
-        {
-            if (!_errorIconUri)
-            {
-                _errorIconUri = new Uri(XmlConfig.getInstance().getEntry("config.gfx.path.spells").concat("all.swf|noIcon"));
-            }
-            return _errorIconUri;
-        }// end function
+      public function addHolder(h:ISlotDataHolder) : void {
+         this._slotDataHolderManager.addHolder(h);
+      }
 
-        public function get info1() : String
-        {
-            if (this.actualCooldown == 0 || !PlayedCharacterManager.getInstance().isFighting)
-            {
-                return null;
-            }
-            if (this.actualCooldown == 63)
-            {
-                return "-";
-            }
-            return this.actualCooldown.toString();
-        }// end function
+      public function setLinkedSlotData(slotData:ISlotData) : void {
+         this._slotDataHolderManager.setLinkedSlotData(slotData);
+      }
 
-        public function get timer() : int
-        {
-            return 0;
-        }// end function
+      public function removeHolder(h:ISlotDataHolder) : void {
+         this._slotDataHolderManager.removeHolder(h);
+      }
 
-        public function get active() : Boolean
-        {
-            if (!PlayedCharacterManager.getInstance().isFighting)
-            {
-                return true;
-            }
-            var _loc_1:* = CurrentPlayedFighterManager.getInstance().canCastThisSpell(this.spellId, this.spellLevel);
-            return _loc_1;
-        }// end function
+      public function toString() : String {
+         return "[SpellWrapper #"+this.id+"]";
+      }
+   }
 
-        public function get spell() : Spell
-        {
-            return Spell.getSpellById(this.id);
-        }// end function
-
-        public function get spellId() : uint
-        {
-            return this.spell.id;
-        }// end function
-
-        public function get playerCriticalRate() : int
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            var _loc_1:* = this.getCriticalHitProbability();
-            if (_loc_1 && PlayedCharacterApi.knowSpell(this.spell.id) >= 0)
-            {
-                _loc_2 = PlayedCharacterManager.getInstance().characteristics;
-                if (_loc_2)
-                {
-                    _loc_3 = _loc_2.criticalHit;
-                    _loc_4 = _loc_2.agility;
-                    _loc_5 = _loc_3.alignGiftBonus + _loc_3.base + _loc_3.contextModif + _loc_3.objectsAndMountBonus;
-                    _loc_6 = _loc_4.alignGiftBonus + _loc_4.base + _loc_4.contextModif + _loc_4.objectsAndMountBonus;
-                    if (_loc_6 < 0)
-                    {
-                        _loc_6 = 0;
-                    }
-                    _loc_7 = _loc_1 - _loc_5;
-                    _loc_8 = int(_loc_7 * Math.E * 1.1 / Math.log(_loc_6 + 12));
-                    _loc_9 = Math.min(_loc_7, _loc_8);
-                    if (_loc_9 < 2)
-                    {
-                        _loc_9 = 2;
-                    }
-                    return _loc_9;
-                }
-            }
-            return 0;
-        }// end function
-
-        public function get playerCriticalFailureRate() : int
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_1:* = this.criticalFailureProbability;
-            if (_loc_1 && PlayedCharacterApi.knowSpell(this.spell.id) >= 0)
-            {
-                _loc_2 = PlayedCharacterManager.getInstance().characteristics;
-                if (_loc_2)
-                {
-                    _loc_3 = _loc_2.criticalMiss;
-                    _loc_4 = _loc_1 - _loc_3.alignGiftBonus - _loc_3.base - _loc_3.contextModif - _loc_3.objectsAndMountBonus;
-                    return _loc_4;
-                }
-            }
-            return 0;
-        }// end function
-
-        public function get maximalRangeWithBoosts() : int
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = 0;
-            if (this._spellLevel.rangeCanBeBoosted)
-            {
-                _loc_1 = PlayedCharacterManager.getInstance().characteristics;
-                _loc_2 = _loc_1.range.base + _loc_1.range.alignGiftBonus + _loc_1.range.contextModif + _loc_1.range.objectsAndMountBonus;
-                if (this.maximalRange + _loc_2 < this.minimalRange)
-                {
-                    return this.minimalRange;
-                }
-                return this.maximalRange + _loc_2;
-            }
-            else
-            {
-            }
-            return this.maximalRange;
-        }// end function
-
-        override function hasProperty(param1) : Boolean
-        {
-            return isAttribute(param1);
-        }// end function
-
-        override function getProperty(param1)
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (isAttribute(param1))
-            {
-                return this[param1];
-            }
-            if (this.id == 0 && PlayedCharacterManager.getInstance().currentWeapon != null)
-            {
-                return this.getWeaponProperty(param1);
-            }
-            _loc_2 = CurrentPlayedFighterManager.getInstance();
-            switch(param1.toString())
-            {
-                case "id":
-                case "nameId":
-                case "descriptionId":
-                case "typeId":
-                case "scriptParams":
-                case "scriptParamsCritical":
-                case "scriptId":
-                case "scriptIdCritical":
-                case "iconId":
-                case "spellLevels":
-                case "useParamCache":
-                case "name":
-                case "description":
-                {
-                    return Spell.getSpellById(this.id)[param1];
-                }
-                case "spellBreed":
-                case "needFreeCell":
-                case "needTakenCell":
-                case "criticalFailureEndsTurn":
-                case "criticalFailureProbability":
-                case "minPlayerLevel":
-                case "minRange":
-                case "maxStack":
-                case "globalCooldown":
-                {
-                    return this._spellLevel[param1.toString()];
-                }
-                case "criticalHitProbability":
-                {
-                    return this.getCriticalHitProbability();
-                }
-                case "maxCastPerTurn":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["maxCastPerTurn"] + _loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus;
-                    }
-                    return this._spellLevel["maxCastPerTurn"];
-                }
-                case "range":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.RANGE);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["range"] + _loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus;
-                    }
-                    return this._spellLevel["range"];
-                }
-                case "maxCastPerTarget":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["maxCastPerTarget"] + _loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus;
-                    }
-                    return this._spellLevel["maxCastPerTarget"];
-                }
-                case "castInLine":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.CAST_LINE);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["castInLine"] && _loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus + _loc_3.value.base + _loc_3.value.alignGiftBonus == 0;
-                    }
-                    return this._spellLevel["castInLine"];
-                }
-                case "castInDiagonal":
-                {
-                    return this._spellLevel["castInDiagonal"];
-                }
-                case "castTestLos":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.LOS);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["castTestLos"] && _loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus + _loc_3.value.base + _loc_3.value.alignGiftBonus == 0;
-                    }
-                    return this._spellLevel["castTestLos"];
-                }
-                case "rangeCanBeBoosted":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.RANGEABLE);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["rangeCanBeBoosted"] || _loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus + _loc_3.value.base + _loc_3.value.alignGiftBonus > 0;
-                    }
-                    return this._spellLevel["rangeCanBeBoosted"];
-                }
-                case "apCost":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.AP_COST);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["apCost"] - (_loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus + _loc_3.value.base + _loc_3.value.alignGiftBonus);
-                    }
-                    return this._spellLevel["apCost"];
-                }
-                case "minCastInterval":
-                {
-                    _loc_3 = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.CAST_INTERVAL);
-                    if (_loc_3)
-                    {
-                        return this._spellLevel["minCastInterval"] - (_loc_3.value.contextModif + _loc_3.value.objectsAndMountBonus + _loc_3.value.base + _loc_3.value.alignGiftBonus);
-                    }
-                    return this._spellLevel["minCastInterval"];
-                }
-                case "isSpellWeapon":
-                {
-                    return this.id == 0;
-                }
-                case "isDefaultSpellWeapon":
-                {
-                    return this.id == 0 && !PlayedCharacterManager.getInstance().currentWeapon;
-                }
-                case "statesRequired":
-                {
-                    return this._spellLevel.statesRequired;
-                }
-                case "statesForbidden":
-                {
-                    return this._spellLevel.statesForbidden;
-                }
-                default:
-                {
-                    break;
-                    break;
-                }
-            }
-            return;
-        }// end function
-
-        override function callProperty(param1, ... args)
-        {
-            return null;
-        }// end function
-
-        private function getWeaponProperty(param1)
-        {
-            var _loc_3:* = 0;
-            var _loc_2:* = PlayedCharacterManager.getInstance().currentWeapon as ItemWrapper;
-            if (!_loc_2)
-            {
-                return null;
-            }
-            switch(param1.toString())
-            {
-                case "id":
-                {
-                    return 0;
-                }
-                case "nameId":
-                case "descriptionId":
-                case "iconId":
-                case "name":
-                case "description":
-                case "criticalFailureProbability":
-                case "criticalHitProbability":
-                case "castInLine":
-                case "castInDiagonal":
-                case "castTestLos":
-                case "apCost":
-                case "minRange":
-                case "range":
-                {
-                    return _loc_2[param1];
-                }
-                case "isDefaultSpellWeapon":
-                case "useParamCache":
-                case "needTakenCell":
-                case "rangeCanBeBoosted":
-                {
-                    return false;
-                }
-                case "isSpellWeapon":
-                case "needFreeCell":
-                case "criticalFailureEndsTurn":
-                {
-                    return true;
-                }
-                case "minCastInterval":
-                case "minPlayerLevel":
-                case "maxStack":
-                case "maxCastPerTurn":
-                case "maxCastPerTarget":
-                {
-                    return 0;
-                }
-                case "typeId":
-                {
-                    return 24;
-                }
-                case "scriptParams":
-                case "scriptParamsCritical":
-                case "spellLevels":
-                {
-                    return null;
-                }
-                case "scriptId":
-                case "scriptIdCritical":
-                case "spellBreed":
-                {
-                    return 0;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
-
-        private function getCriticalHitProbability() : Number
-        {
-            var _loc_2:* = 0;
-            var _loc_1:* = CurrentPlayedFighterManager.getInstance().getSpellModifications(this.id, CharacterSpellModificationTypeEnum.CRITICAL_HIT_BONUS);
-            if (_loc_1)
-            {
-                _loc_2 = _loc_1.value.contextModif + _loc_1.value.objectsAndMountBonus + _loc_1.value.alignGiftBonus + _loc_1.value.base;
-                return this._spellLevel["criticalHitProbability"] > 0 ? (Math.max(this._spellLevel["criticalHitProbability"] - _loc_2, 2)) : (0);
-            }
-            else
-            {
-            }
-            return this._spellLevel["criticalHitProbability"];
-        }// end function
-
-        public function clone()
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = false;
-            if (_cache[this.spellId] != null || _playersCache[this.playerId][this.spellId])
-            {
-                _loc_1 = true;
-            }
-            _loc_2 = SpellWrapper.create(this.position, this.id, this.spellLevel, _loc_1, this.playerId);
-            return _loc_2;
-        }// end function
-
-        public function addHolder(param1:ISlotDataHolder) : void
-        {
-            this._slotDataHolderManager.addHolder(param1);
-            return;
-        }// end function
-
-        public function setLinkedSlotData(param1:ISlotData) : void
-        {
-            this._slotDataHolderManager.setLinkedSlotData(param1);
-            return;
-        }// end function
-
-        public function removeHolder(param1:ISlotDataHolder) : void
-        {
-            this._slotDataHolderManager.removeHolder(param1);
-            return;
-        }// end function
-
-        public function toString() : String
-        {
-            return "[SpellWrapper #" + this.id + "]";
-        }// end function
-
-        public static function create(param1:int, param2:uint, param3:int, param4:Boolean = true, param5:int = 0) : SpellWrapper
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = 0;
-            if (param2 == 0)
-            {
-                param4 = false;
-            }
-            param1 = 63;
-            if (param4)
-            {
-                if (_cache[param2] && _cache[param2].length > 0 && _cache[param2][param1] && !param5)
-                {
-                    _loc_6 = _cache[param2][param1];
-                }
-                else if (_playersCache[param5] && _playersCache[param5][param2] && _playersCache[param5][param2].length > 0 && _playersCache[param5][param2][param1])
-                {
-                    _loc_6 = _playersCache[param5][param2][param1];
-                }
-            }
-            if (param2 == 0 && _cac != null && _cac.length > 0 && _cac[param1])
-            {
-                _loc_6 = _cac[param1];
-            }
-            if (!_loc_6)
-            {
-                _loc_6 = new SpellWrapper;
-                _loc_6.id = param2;
-                if (param4)
-                {
-                    if (param5)
-                    {
-                        if (!_playersCache[param5])
-                        {
-                            _playersCache[param5] = new Array();
-                        }
-                        if (!_playersCache[param5][param2])
-                        {
-                            _playersCache[param5][param2] = new Array();
-                        }
-                        _playersCache[param5][param2][param1] = _loc_6;
-                    }
-                    else
-                    {
-                        if (!_cache[param2])
-                        {
-                            _cache[param2] = new Array();
-                        }
-                        _cache[param2][param1] = _loc_6;
-                    }
-                }
-                _loc_6._slotDataHolderManager = new SlotDataHolderManager(_loc_6);
-            }
-            if (param2 == 0)
-            {
-                if (!_cac)
-                {
-                    _cac = new Array();
-                }
-                _cac[param1] = _loc_6;
-            }
-            _loc_6.id = param2;
-            _loc_6.gfxId = param2;
-            if (param1 != -1)
-            {
-                _loc_6.position = param1;
-            }
-            _loc_6.spellLevel = param3;
-            _loc_6.playerId = param5;
-            _loc_6.effects = new Vector.<EffectInstance>;
-            _loc_6.criticalEffect = new Vector.<EffectInstance>;
-            _loc_6._spellLevel = SpellLevel.getLevelById(Spell.getSpellById(param2).spellLevels[(param3 - 1)]);
-            for each (_loc_7 in _loc_6._spellLevel.effects)
-            {
-                
-                _loc_7 = _loc_7.clone();
-                if (_loc_7.category == 2)
-                {
-                    _loc_8 = CurrentPlayedFighterManager.getInstance().getSpellModifications(param2, CharacterSpellModificationTypeEnum.BASE_DAMAGE);
-                    if (_loc_8 && _loc_7 is EffectInstanceDice)
-                    {
-                        _loc_11 = _loc_8.value.alignGiftBonus + _loc_8.value.base + _loc_8.value.contextModif + _loc_8.value.objectsAndMountBonus;
-                        (_loc_7 as EffectInstanceDice).diceNum = (_loc_7 as EffectInstanceDice).diceNum + _loc_11;
-                        (_loc_7 as EffectInstanceDice).diceSide = (_loc_7 as EffectInstanceDice).diceSide + _loc_11;
-                    }
-                    _loc_9 = CurrentPlayedFighterManager.getInstance().getSpellModifications(param2, CharacterSpellModificationTypeEnum.DAMAGE);
-                    _loc_10 = CurrentPlayedFighterManager.getInstance().getSpellModifications(param2, CharacterSpellModificationTypeEnum.HEAL_BONUS);
-                    if (_loc_9)
-                    {
-                        _loc_7.modificator = _loc_9.value.alignGiftBonus + _loc_9.value.base + _loc_9.value.contextModif + _loc_9.value.objectsAndMountBonus;
-                    }
-                    else if (_loc_10)
-                    {
-                        _loc_7.modificator = _loc_10.value.alignGiftBonus + _loc_10.value.base + _loc_10.value.contextModif + _loc_10.value.objectsAndMountBonus;
-                    }
-                }
-                _loc_6.effects.push(_loc_7);
-            }
-            for each (_loc_7 in _loc_6._spellLevel.criticalEffect)
-            {
-                
-                _loc_7 = _loc_7.clone();
-                if (_loc_7.category == 2)
-                {
-                    _loc_8 = CurrentPlayedFighterManager.getInstance().getSpellModifications(param2, CharacterSpellModificationTypeEnum.BASE_DAMAGE);
-                    if (_loc_8 && _loc_7 is EffectInstanceDice)
-                    {
-                        _loc_11 = _loc_8.value.alignGiftBonus + _loc_8.value.base + _loc_8.value.contextModif + _loc_8.value.objectsAndMountBonus;
-                        (_loc_7 as EffectInstanceDice).diceNum = (_loc_7 as EffectInstanceDice).diceNum + _loc_11;
-                        (_loc_7 as EffectInstanceDice).diceSide = (_loc_7 as EffectInstanceDice).diceSide + _loc_11;
-                    }
-                    _loc_9 = CurrentPlayedFighterManager.getInstance().getSpellModifications(param2, CharacterSpellModificationTypeEnum.DAMAGE);
-                    _loc_10 = CurrentPlayedFighterManager.getInstance().getSpellModifications(param2, CharacterSpellModificationTypeEnum.HEAL_BONUS);
-                    if (_loc_9)
-                    {
-                        _loc_7.modificator = _loc_9.value.alignGiftBonus + _loc_9.value.base + _loc_9.value.contextModif + _loc_9.value.objectsAndMountBonus;
-                    }
-                    else if (_loc_10)
-                    {
-                        _loc_7.modificator = _loc_10.value.alignGiftBonus + _loc_10.value.base + _loc_10.value.contextModif + _loc_10.value.objectsAndMountBonus;
-                    }
-                }
-                _loc_6.criticalEffect.push(_loc_7);
-            }
-            return _loc_6;
-        }// end function
-
-        public static function getSpellWrapperById(param1:uint, param2:int, param3:int) : SpellWrapper
-        {
-            var _loc_4:* = 0;
-            if (param2 != 0)
-            {
-                if (!_playersCache[param2])
-                {
-                    return null;
-                }
-                if (!_playersCache[param2][param1] && _cache[param1])
-                {
-                    _playersCache[param2][param1] = new Array();
-                    _loc_4 = 0;
-                    while (_loc_4 < 20)
-                    {
-                        
-                        if (_cache[param1][_loc_4])
-                        {
-                            _playersCache[param2][param1][_loc_4] = _cache[param1][_loc_4].clone();
-                        }
-                        _loc_4++;
-                    }
-                }
-                if (param1 == 0 && _cac && _cac[param3])
-                {
-                    return _cac[param3];
-                }
-                return _playersCache[param2][param1][param3];
-            }
-            else
-            {
-            }
-            return _cache[param1][param3];
-        }// end function
-
-        public static function getFirstSpellWrapperById(param1:uint, param2:int) : SpellWrapper
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            if (param2 != 0)
-            {
-                if (!_playersCache[param2])
-                {
-                    return null;
-                }
-                if (!_playersCache[param2][param1] && _cache[param1])
-                {
-                    _playersCache[param2][param1] = new Array();
-                    _loc_4 = 0;
-                    while (_loc_4 < 20)
-                    {
-                        
-                        if (_cache[param1][_loc_4])
-                        {
-                            _playersCache[param2][param1][_loc_4] = _cache[param1][_loc_4].clone();
-                        }
-                        _loc_4++;
-                    }
-                }
-                if (param1 == 0 && _cac && _cac.length)
-                {
-                    _loc_3 = _cac;
-                }
-                else
-                {
-                    _loc_3 = _playersCache[param2][param1];
-                }
-            }
-            else
-            {
-                _loc_3 = _cache[param1];
-            }
-            if (_loc_3)
-            {
-                _loc_5 = 0;
-                while (_loc_5 < _loc_3.length)
-                {
-                    
-                    if (_loc_3[_loc_5])
-                    {
-                        return _loc_3[_loc_5];
-                    }
-                    _loc_5++;
-                }
-            }
-            return null;
-        }// end function
-
-        public static function getSpellWrappersById(param1:uint, param2:int) : Array
-        {
-            var _loc_3:* = 0;
-            if (param2 != 0)
-            {
-                if (!_playersCache[param2])
-                {
-                    return null;
-                }
-                if (!_playersCache[param2][param1] && _cache[param1])
-                {
-                    _playersCache[param2][param1] = new Array();
-                    _loc_3 = 0;
-                    while (_loc_3 < 20)
-                    {
-                        
-                        if (_cache[param1][_loc_3])
-                        {
-                            _playersCache[param2][param1][_loc_3] = _cache[param1][_loc_3].clone();
-                        }
-                        _loc_3++;
-                    }
-                }
-                if (param1 == 0)
-                {
-                    return _cac;
-                }
-                return _playersCache[param2][param1];
-            }
-            else
-            {
-            }
-            return _cache[param1];
-        }// end function
-
-        public static function refreshAllPlayerSpellHolder(param1:int) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            for each (_loc_2 in _playersCache[param1])
-            {
-                
-                for each (_loc_3 in _loc_2)
-                {
-                    
-                    _loc_3._slotDataHolderManager.refreshAll();
-                }
-            }
-            if (_cac)
-            {
-                for each (_loc_4 in _cac)
-                {
-                    
-                    if (_loc_4)
-                    {
-                        _loc_5 = _loc_4._slotDataHolderManager;
-                        SpellWrapper.SpellWrapper(_loc_4)._slotDataHolderManager.refreshAll();
-                    }
-                }
-                ;
-            }
-            return;
-        }// end function
-
-        public static function resetAllCoolDown(param1:int, param2:Object) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            SecureCenter.checkAccessKey(param2);
-            for each (_loc_3 in _playersCache[param1])
-            {
-                
-                for each (_loc_4 in _loc_3)
-                {
-                    
-                    SpellWrapper.SpellWrapper(_loc_4).actualCooldown = 0;
-                }
-            }
-            return;
-        }// end function
-
-        public static function removeAllSpellWrapperBut(param1:int, param2:Object) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            SecureCenter.checkAccessKey(param2);
-            var _loc_3:* = new Array();
-            for (_loc_4 in _playersCache)
-            {
-                
-                if (int(_loc_4) != param1)
-                {
-                    _loc_3.push(_loc_4);
-                }
-            }
-            _loc_5 = _loc_3.length;
-            _loc_6 = -1;
-            while (++_loc_6 < _loc_5)
-            {
-                
-                delete _playersCache[_loc_3[_loc_6]];
-            }
-            return;
-        }// end function
-
-        public static function removeAllSpellWrapper() : void
-        {
-            _playersCache = new Dictionary();
-            _cache = new Array();
-            return;
-        }// end function
-
-    }
 }

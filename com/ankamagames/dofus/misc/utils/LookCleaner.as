@@ -1,41 +1,42 @@
-﻿package com.ankamagames.dofus.misc.utils
+package com.ankamagames.dofus.misc.utils
 {
-    import com.ankamagames.dofus.datacenter.breeds.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.tiphon.types.look.*;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.dofus.datacenter.breeds.Breed;
+   import com.ankamagames.dofus.network.enums.SubEntityBindingPointCategoryEnum;
 
-    public class LookCleaner extends Object
-    {
 
-        public function LookCleaner()
-        {
-            return;
-        }// end function
+   public class LookCleaner extends Object
+   {
+         
 
-        public static function clean(param1:TiphonEntityLook) : TiphonEntityLook
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = param1.clone();
-            var _loc_3:* = _loc_2.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER, 0);
-            if (_loc_3)
+      public function LookCleaner() {
+         super();
+      }
+
+      public static function clean(look:TiphonEntityLook) : TiphonEntityLook {
+         var breed:Breed = null;
+         var result:TiphonEntityLook = look.clone();
+         var ridderLook:TiphonEntityLook = result.getSubEntity(SubEntityBindingPointCategoryEnum.HOOK_POINT_CATEGORY_MOUNT_DRIVER,0);
+         if(ridderLook)
+         {
+            if(ridderLook.getBone()==2)
             {
-                if (_loc_3.getBone() == 2)
-                {
-                    _loc_3.setBone(1);
-                }
-                return _loc_3;
+               ridderLook.setBone(1);
             }
-            for each (_loc_4 in Breed.getBreeds())
+            return ridderLook;
+         }
+         for each (breed in Breed.getBreeds())
+         {
+            if(breed.creatureBonesId==result.getBone())
             {
-                
-                if (_loc_4.creatureBonesId == _loc_2.getBone())
-                {
-                    _loc_2.setBone(1);
-                    break;
-                }
+               result.setBone(1);
+               break;
             }
-            return _loc_2;
-        }// end function
+         }
+         return result;
+      }
 
-    }
+
+   }
+
 }

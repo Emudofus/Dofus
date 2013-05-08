@@ -1,12 +1,14 @@
-﻿package com.ankamagames.berilia.interfaces
+package com.ankamagames.berilia.interfaces
 {
 
-    public interface IMenuMaker
-    {
 
-        public function IMenuMaker();
+   public interface IMenuMaker
+   {
+         
 
-        function createMenu(param1, param2:Object) : Array;
 
-    }
+
+      function createMenu(param1:*, param2:Object) : Array;
+   }
+
 }

@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.logic.common.managers
+package com.ankamagames.dofus.logic.common.managers
 {
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.internalDatacenter.spells.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.fight.frames.*;
-    import com.ankamagames.dofus.logic.game.fight.managers.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import flash.utils.Timer;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import flash.display.Stage;
+   import flash.geom.Rectangle;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightContextFrame;
+   import com.ankamagames.dofus.logic.game.fight.managers.SpellZoneManager;
+   import flash.events.TimerEvent;
+   import flash.events.Event;
+   import com.ankamagames.berilia.types.data.TextTooltipInfo;
+   import com.ankamagames.berilia.enums.StrataEnum;
 
-    public class HyperlinkSpellManager extends Object
-    {
-        public static var lastSpellTooltipId:int = -1;
-        private static var _zoneTimer:Timer;
 
-        public function HyperlinkSpellManager()
-        {
+   public class HyperlinkSpellManager extends Object
+   {
+         
+
+      public function HyperlinkSpellManager() {
+         super();
+      }
+
+      public static var lastSpellTooltipId:int = -1;
+
+      private static var _zoneTimer:Timer;
+
+      public static function showSpell(spellId:int, spellLevel:int) : void {
+         var spellCacheId:int = spellId*10+spellLevel;
+         if((spellCacheId==lastSpellTooltipId)&&(TooltipManager.isVisible("Hyperlink")))
+         {
+            TooltipManager.hide("Hyperlink");
+            lastSpellTooltipId=-1;
             return;
-        }// end function
+         }
+         lastSpellTooltipId=spellCacheId;
+         HyperlinkItemManager.lastItemTooltipId=-1;
+         var spellWrapper:SpellWrapper = SpellWrapper.create(-1,spellId,spellLevel);
+         var stage:Stage = StageShareManager.stage;
+         var target:Rectangle = new Rectangle(stage.mouseX,stage.mouseY,10,10);
+         TooltipManager.show(spellWrapper,target,UiModuleManager.getInstance().getModule("Ankama_Tooltips"),false,"Hyperlink",6,2,50,true,null,null,null,null,true);
+      }
 
-        public static function showSpell(param1:int, param2:int) : void
-        {
-            var _loc_3:* = param1 * 10 + param2;
-            if (_loc_3 == lastSpellTooltipId && TooltipManager.isVisible("Hyperlink"))
+      public static function getSpellName(spellId:int, spellLevel:int) : String {
+         var spellWrapper:SpellWrapper = SpellWrapper.create(-1,spellId,spellLevel);
+         return "["+spellWrapper.name+" "+I18n.getUiText("ui.common.short.level")+spellLevel+"]";
+      }
+
+      public static function showSpellArea(casterId:int, targetCellId:int, sourceCellId:int, spellId:int, spellLevelId:int) : void {
+         if(Kernel.getWorker().getFrame(FightContextFrame))
+         {
+            SpellZoneManager.getInstance().displaySpellZone(casterId,targetCellId,sourceCellId,spellId,spellLevelId);
+            if(!_zoneTimer)
             {
-                TooltipManager.hide("Hyperlink");
-                lastSpellTooltipId = -1;
-                return;
+               _zoneTimer=new Timer(2000);
+               _zoneTimer.addEventListener(TimerEvent.TIMER,onStopZoneTimer);
             }
-            lastSpellTooltipId = _loc_3;
-            HyperlinkItemManager.lastItemTooltipId = -1;
-            var _loc_4:* = SpellWrapper.create(-1, param1, param2);
-            var _loc_5:* = StageShareManager.stage;
-            var _loc_6:* = new Rectangle(_loc_5.mouseX, _loc_5.mouseY, 10, 10);
-            TooltipManager.show(_loc_4, _loc_6, UiModuleManager.getInstance().getModule("Ankama_Tooltips"), false, "Hyperlink", 6, 2, 50, true, null, null, null, null, true);
-            return;
-        }// end function
+            _zoneTimer.reset();
+            _zoneTimer.start();
+         }
+      }
 
-        public static function getSpellName(param1:int, param2:int) : String
-        {
-            var _loc_3:* = SpellWrapper.create(-1, param1, param2);
-            return "[" + _loc_3.name + " " + I18n.getUiText("ui.common.short.level") + param2 + "]";
-        }// end function
+      private static function onStopZoneTimer(e:Event) : void {
+         if(_zoneTimer)
+         {
+            _zoneTimer.removeEventListener(TimerEvent.TIMER,onStopZoneTimer);
+            _zoneTimer.stop();
+            _zoneTimer=null;
+         }
+         SpellZoneManager.getInstance().removeSpellZone();
+      }
 
-        public static function showSpellArea(param1:int, param2:int, param3:int, param4:int, param5:int) : void
-        {
-            if (Kernel.getWorker().getFrame(FightContextFrame))
-            {
-                SpellZoneManager.getInstance().displaySpellZone(param1, param2, param3, param4, param5);
-                if (!_zoneTimer)
-                {
-                    _zoneTimer = new Timer(2000);
-                    _zoneTimer.addEventListener(TimerEvent.TIMER, onStopZoneTimer);
-                }
-                _zoneTimer.reset();
-                _zoneTimer.start();
-            }
-            return;
-        }// end function
+      public static function rollOver(pX:int, pY:int, casterId:int, targetCellId:int, sourceCellId:int, spellId:int, spellLevelId:int) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.showSpellZone"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      }
 
-        private static function onStopZoneTimer(event:Event) : void
-        {
-            if (_zoneTimer)
-            {
-                _zoneTimer.removeEventListener(TimerEvent.TIMER, onStopZoneTimer);
-                _zoneTimer.stop();
-                _zoneTimer = null;
-            }
-            SpellZoneManager.getInstance().removeSpellZone();
-            return;
-        }// end function
 
-        public static function rollOver(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:int) : void
-        {
-            var _loc_8:* = new Rectangle(param1, param2, 10, 10);
-            var _loc_9:* = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.showSpellZone"));
-            TooltipManager.show(_loc_9, _loc_8, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
-            return;
-        }// end function
+   }
 
-    }
 }

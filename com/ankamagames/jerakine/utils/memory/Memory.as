@@ -1,48 +1,48 @@
-﻿package com.ankamagames.jerakine.utils.memory
+package com.ankamagames.jerakine.utils.memory
 {
-    import flash.net.*;
-    import flash.system.*;
+   import flash.system.System;
+   import flash.net.LocalConnection;
 
-    public class Memory extends Object
-    {
-        private static const MOD:uint = 1024;
-        private static const UNITS:Array = ["B", "KB", "MB", "GB", "TB", "PB"];
 
-        public function Memory()
-        {
-            return;
-        }// end function
+   public class Memory extends Object
+   {
+         
 
-        public static function usage() : uint
-        {
-            return System.totalMemory;
-        }// end function
+      public function Memory() {
+         super();
+      }
 
-        public static function humanReadableUsage() : String
-        {
-            var _loc_1:* = System.totalMemory;
-            var _loc_2:* = 0;
-            while (_loc_1 > MOD)
-            {
-                
-                _loc_1 = _loc_1 / MOD;
-                _loc_2 = _loc_2 + 1;
-            }
-            return _loc_1 + " " + UNITS[_loc_2];
-        }// end function
+      private static const MOD:uint = 1024;
 
-        public static function gc() : void
-        {
-            try
-            {
-                new LocalConnection().connect("foo");
-                new LocalConnection().connect("foo");
-            }
-            catch (e)
-            {
-            }
-            return;
-        }// end function
+      private static const UNITS:Array = ["B","KB","MB","GB","TB","PB"];
 
-    }
+      public static function usage() : uint {
+         return System.totalMemory;
+      }
+
+      public static function humanReadableUsage() : String {
+         var memory:uint = System.totalMemory;
+         var i:uint = 0;
+         while(memory>MOD)
+         {
+            memory=memory/MOD;
+            i++;
+         }
+         return memory+" "+UNITS[i];
+      }
+
+      public static function gc() : void {
+         try
+         {
+            new LocalConnection().connect("foo");
+            new LocalConnection().connect("foo");
+         }
+         catch(e:*)
+         {
+         }
+      }
+
+
+   }
+
 }

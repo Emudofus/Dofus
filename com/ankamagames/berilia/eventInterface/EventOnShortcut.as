@@ -1,13 +1,14 @@
-﻿package com.ankamagames.berilia.eventInterface
+package com.ankamagames.berilia.eventInterface
 {
-    import com.ankamagames.berilia.eventInterface.*;
 
-    public interface EventOnShortcut extends UIEvent
-    {
 
-        public function EventOnShortcut();
+   public interface EventOnShortcut extends UIEvent
+   {
+         
 
-        function eventOnShortcut(param1:String) : Boolean;
 
-    }
+
+      function eventOnShortcut(param1:String) : Boolean;
+   }
+
 }

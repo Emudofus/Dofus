@@ -1,22 +1,29 @@
-﻿package com.ankamagames.atouin.types
+package com.ankamagames.atouin.types
 {
-    import flash.display.*;
+   import flash.display.DisplayObjectContainer;
 
-    public class InteractiveCell extends Object
-    {
-        public var cellId:uint;
-        public var sprite:DisplayObjectContainer;
-        public var x:Number;
-        public var y:Number;
 
-        public function InteractiveCell(param1:uint, param2:DisplayObjectContainer, param3:Number, param4:Number)
-        {
-            this.cellId = param1;
-            this.sprite = param2;
-            this.x = param3;
-            this.y = param4;
-            return;
-        }// end function
+   public class InteractiveCell extends Object
+   {
+         
 
-    }
+      public function InteractiveCell(_cellId:uint, _sprite:DisplayObjectContainer, _x:Number, _y:Number) {
+         super();
+         this.cellId=_cellId;
+         this.sprite=_sprite;
+         this.x=_x;
+         this.y=_y;
+      }
+
+
+
+      public var cellId:uint;
+
+      public var sprite:DisplayObjectContainer;
+
+      public var x:Number;
+
+      public var y:Number;
+   }
+
 }

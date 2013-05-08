@@ -1,21 +1,21 @@
-﻿package flashx.textLayout.events
+package flashx.textLayout.events
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class TextLayoutEvent extends Event
-    {
-        public static const SCROLL:String = "scroll";
 
-        public function TextLayoutEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
-        {
-            super(param1, param2, param3);
-            return;
-        }// end function
+   public class TextLayoutEvent extends Event
+   {
+         
 
-        override public function clone() : Event
-        {
-            return new TextLayoutEvent(type, bubbles, cancelable);
-        }// end function
+      public function TextLayoutEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
+      }
 
-    }
+      public static const SCROLL:String = "scroll";
+
+      override public function clone() : Event {
+         return new TextLayoutEvent(type,bubbles,cancelable);
+      }
+   }
+
 }

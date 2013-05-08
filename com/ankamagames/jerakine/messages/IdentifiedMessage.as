@@ -1,13 +1,14 @@
-﻿package com.ankamagames.jerakine.messages
+package com.ankamagames.jerakine.messages
 {
-    import com.ankamagames.jerakine.messages.*;
 
-    public interface IdentifiedMessage extends Message
-    {
 
-        public function IdentifiedMessage();
+   public interface IdentifiedMessage extends Message
+   {
+         
 
-        function getMessageId() : uint;
 
-    }
+
+      function getMessageId() : uint;
+   }
+
 }

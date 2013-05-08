@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions.preset
+package com.ankamagames.dofus.logic.game.roleplay.actions.preset
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class InventoryPresetDeleteAction extends Object implements Action
-    {
-        public var presetId:uint;
 
-        public function InventoryPresetDeleteAction()
-        {
-            return;
-        }// end function
+   public class InventoryPresetDeleteAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : InventoryPresetDeleteAction
-        {
-            var _loc_2:* = new InventoryPresetDeleteAction;
-            _loc_2.presetId = param1;
-            return _loc_2;
-        }// end function
+      public function InventoryPresetDeleteAction() {
+         super();
+      }
 
-    }
+      public static function create(presetId:uint) : InventoryPresetDeleteAction {
+         var a:InventoryPresetDeleteAction = new InventoryPresetDeleteAction();
+         a.presetId=presetId;
+         return a;
+      }
+
+      public var presetId:uint;
+   }
+
 }

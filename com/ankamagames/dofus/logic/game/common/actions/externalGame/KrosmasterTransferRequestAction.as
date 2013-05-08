@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.externalGame
+package com.ankamagames.dofus.logic.game.common.actions.externalGame
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class KrosmasterTransferRequestAction extends Object implements Action
-    {
-        public var figureId:String;
 
-        public function KrosmasterTransferRequestAction()
-        {
-            return;
-        }// end function
+   public class KrosmasterTransferRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : KrosmasterTransferRequestAction
-        {
-            var _loc_2:* = new KrosmasterTransferRequestAction;
-            _loc_2.figureId = param1;
-            return _loc_2;
-        }// end function
+      public function KrosmasterTransferRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(figureId:String) : KrosmasterTransferRequestAction {
+         var action:KrosmasterTransferRequestAction = new KrosmasterTransferRequestAction();
+         action.figureId=figureId;
+         return action;
+      }
+
+      public var figureId:String;
+   }
+
 }

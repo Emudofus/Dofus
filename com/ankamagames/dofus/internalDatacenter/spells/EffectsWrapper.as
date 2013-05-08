@@ -1,21 +1,27 @@
-﻿package com.ankamagames.dofus.internalDatacenter.spells
+package com.ankamagames.dofus.internalDatacenter.spells
 {
-    import com.ankamagames.dofus.datacenter.spells.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.dofus.datacenter.spells.Spell;
 
-    public class EffectsWrapper extends Object implements IDataCenter
-    {
-        public var effects:Array;
-        public var spellName:String = "";
-        public var casterName:String = "";
 
-        public function EffectsWrapper(param1:Array, param2:Spell, param3:String)
-        {
-            this.effects = param1;
-            this.spellName = param2.name;
-            this.casterName = param3;
-            return;
-        }// end function
+   public class EffectsWrapper extends Object implements IDataCenter
+   {
+         
 
-    }
+      public function EffectsWrapper(effect:Array, spell:Spell, name:String) {
+         super();
+         this.effects=effect;
+         this.spellName=spell.name;
+         this.casterName=name;
+      }
+
+
+
+      public var effects:Array;
+
+      public var spellName:String = "";
+
+      public var casterName:String = "";
+   }
+
 }

@@ -1,24 +1,25 @@
-﻿package com.ankamagames.tubul.events
+package com.ankamagames.tubul.events
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class AudioBusVolumeEvent extends Event
-    {
-        public var newVolume:Number;
-        public static const VOLUME_CHANGED:String = "volume_changed";
 
-        public function AudioBusVolumeEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
-        {
-            super(param1, param2, param3);
-            return;
-        }// end function
+   public class AudioBusVolumeEvent extends Event
+   {
+         
 
-        override public function clone() : Event
-        {
-            var _loc_1:* = new AudioBusVolumeEvent(type, bubbles, cancelable);
-            _loc_1.newVolume = this.newVolume;
-            return _loc_1;
-        }// end function
+      public function AudioBusVolumeEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
+      }
 
-    }
+      public static const VOLUME_CHANGED:String = "volume_changed";
+
+      public var newVolume:Number;
+
+      override public function clone() : Event {
+         var abve:AudioBusVolumeEvent = new AudioBusVolumeEvent(type,bubbles,cancelable);
+         abve.newVolume=this.newVolume;
+         return abve;
+      }
+   }
+
 }

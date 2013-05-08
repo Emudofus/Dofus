@@ -1,71 +1,94 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay.quest
+package com.ankamagames.dofus.network.types.game.context.roleplay.quest
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class QuestObjectiveInformations extends Object implements INetworkType
-    {
-        public var objectiveId:uint = 0;
-        public var objectiveStatus:Boolean = false;
-        public static const protocolId:uint = 385;
 
-        public function QuestObjectiveInformations()
-        {
-            return;
-        }// end function
+   public class QuestObjectiveInformations extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 385;
-        }// end function
+      public function QuestObjectiveInformations() {
+         this.dialogParams=new Vector.<String>();
+         super();
+      }
 
-        public function initQuestObjectiveInformations(param1:uint = 0, param2:Boolean = false) : QuestObjectiveInformations
-        {
-            this.objectiveId = param1;
-            this.objectiveStatus = param2;
-            return this;
-        }// end function
+      public static const protocolId:uint = 385;
 
-        public function reset() : void
-        {
-            this.objectiveId = 0;
-            this.objectiveStatus = false;
-            return;
-        }// end function
+      public var objectiveId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_QuestObjectiveInformations(param1);
-            return;
-        }// end function
+      public var objectiveStatus:Boolean = false;
 
-        public function serializeAs_QuestObjectiveInformations(param1:IDataOutput) : void
-        {
-            if (this.objectiveId < 0)
+      public var dialogParams:Vector.<String>;
+
+      public function getTypeId() : uint {
+         return 385;
+      }
+
+      public function initQuestObjectiveInformations(objectiveId:uint=0, objectiveStatus:Boolean=false, dialogParams:Vector.<String>=null) : QuestObjectiveInformations {
+         this.objectiveId=objectiveId;
+         this.objectiveStatus=objectiveStatus;
+         this.dialogParams=dialogParams;
+         return this;
+      }
+
+      public function reset() : void {
+         this.objectiveId=0;
+         this.objectiveStatus=false;
+         this.dialogParams=new Vector.<String>();
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_QuestObjectiveInformations(output);
+      }
+
+      public function serializeAs_QuestObjectiveInformations(output:IDataOutput) : void {
+         if(this.objectiveId<0)
+         {
+            throw new Error("Forbidden value ("+this.objectiveId+") on element objectiveId.");
+         }
+         else
+         {
+            output.writeShort(this.objectiveId);
+            output.writeBoolean(this.objectiveStatus);
+            output.writeShort(this.dialogParams.length);
+            _i3=0;
+            while(_i3<this.dialogParams.length)
             {
-                throw new Error("Forbidden value (" + this.objectiveId + ") on element objectiveId.");
+               output.writeUTF(this.dialogParams[_i3]);
+               _i3++;
             }
-            param1.writeShort(this.objectiveId);
-            param1.writeBoolean(this.objectiveStatus);
             return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_QuestObjectiveInformations(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_QuestObjectiveInformations(input);
+      }
 
-        public function deserializeAs_QuestObjectiveInformations(param1:IDataInput) : void
-        {
-            this.objectiveId = param1.readShort();
-            if (this.objectiveId < 0)
+      public function deserializeAs_QuestObjectiveInformations(input:IDataInput) : void {
+         var _val3:String = null;
+         this.objectiveId=input.readShort();
+         if(this.objectiveId<0)
+         {
+            throw new Error("Forbidden value ("+this.objectiveId+") on element of QuestObjectiveInformations.objectiveId.");
+         }
+         else
+         {
+            this.objectiveStatus=input.readBoolean();
+            _dialogParamsLen=input.readUnsignedShort();
+            _i3=0;
+            while(_i3<_dialogParamsLen)
             {
-                throw new Error("Forbidden value (" + this.objectiveId + ") on element of QuestObjectiveInformations.objectiveId.");
+               _val3=input.readUTF();
+               this.dialogParams.push(_val3);
+               _i3++;
             }
-            this.objectiveStatus = param1.readBoolean();
             return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

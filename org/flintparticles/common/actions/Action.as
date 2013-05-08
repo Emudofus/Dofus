@@ -1,20 +1,22 @@
-﻿package org.flintparticles.common.actions
+package org.flintparticles.common.actions
 {
-    import org.flintparticles.common.emitters.*;
-    import org.flintparticles.common.particles.*;
+   import org.flintparticles.common.emitters.Emitter;
+   import org.flintparticles.common.particles.Particle;
 
-    public interface Action
-    {
 
-        public function Action();
+   public interface Action
+   {
+         
 
-        function getDefaultPriority() : Number;
 
-        function addedToEmitter(param1:Emitter) : void;
 
-        function removedFromEmitter(param1:Emitter) : void;
+      function getDefaultPriority() : Number;
 
-        function update(param1:Emitter, param2:Particle, param3:Number) : void;
+      function addedToEmitter(param1:Emitter) : void;
 
-    }
+      function removedFromEmitter(param1:Emitter) : void;
+
+      function update(param1:Emitter, param2:Particle, param3:Number) : void;
+   }
+
 }

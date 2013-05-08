@@ -1,113 +1,110 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild.tax
+package com.ankamagames.dofus.network.messages.game.guild.tax
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.character.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GuildFightPlayersEnemiesListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fightId:Number = 0;
-        public var playerInfo:Vector.<CharacterMinimalPlusLookInformations>;
-        public static const protocolId:uint = 5928;
 
-        public function GuildFightPlayersEnemiesListMessage()
-        {
-            this.playerInfo = new Vector.<CharacterMinimalPlusLookInformations>;
-            return;
-        }// end function
+   public class GuildFightPlayersEnemiesListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GuildFightPlayersEnemiesListMessage() {
+         this.playerInfo=new Vector.<CharacterMinimalPlusLookInformations>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5928;
-        }// end function
+      public static const protocolId:uint = 5928;
 
-        public function initGuildFightPlayersEnemiesListMessage(param1:Number = 0, param2:Vector.<CharacterMinimalPlusLookInformations> = null) : GuildFightPlayersEnemiesListMessage
-        {
-            this.fightId = param1;
-            this.playerInfo = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fightId = 0;
-            this.playerInfo = new Vector.<CharacterMinimalPlusLookInformations>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fightId:Number = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var playerInfo:Vector.<CharacterMinimalPlusLookInformations>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GuildFightPlayersEnemiesListMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5928;
+      }
 
-        public function serializeAs_GuildFightPlayersEnemiesListMessage(param1:IDataOutput) : void
-        {
-            if (this.fightId < 0)
+      public function initGuildFightPlayersEnemiesListMessage(fightId:Number=0, playerInfo:Vector.<CharacterMinimalPlusLookInformations>=null) : GuildFightPlayersEnemiesListMessage {
+         this.fightId=fightId;
+         this.playerInfo=playerInfo;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.fightId=0;
+         this.playerInfo=new Vector.<CharacterMinimalPlusLookInformations>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildFightPlayersEnemiesListMessage(output);
+      }
+
+      public function serializeAs_GuildFightPlayersEnemiesListMessage(output:IDataOutput) : void {
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element fightId.");
+         }
+         else
+         {
+            output.writeDouble(this.fightId);
+            output.writeShort(this.playerInfo.length);
+            _i2=0;
+            while(_i2<this.playerInfo.length)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
-            }
-            param1.writeDouble(this.fightId);
-            param1.writeShort(this.playerInfo.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.playerInfo.length)
-            {
-                
-                (this.playerInfo[_loc_2] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(param1);
-                _loc_2 = _loc_2 + 1;
+               (this.playerInfo[_i2] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(output);
+               _i2++;
             }
             return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GuildFightPlayersEnemiesListMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildFightPlayersEnemiesListMessage(input);
+      }
 
-        public function deserializeAs_GuildFightPlayersEnemiesListMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.fightId = param1.readDouble();
-            if (this.fightId < 0)
+      public function deserializeAs_GuildFightPlayersEnemiesListMessage(input:IDataInput) : void {
+         var _item2:CharacterMinimalPlusLookInformations = null;
+         this.fightId=input.readDouble();
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element of GuildFightPlayersEnemiesListMessage.fightId.");
+         }
+         else
+         {
+            _playerInfoLen=input.readUnsignedShort();
+            _i2=0;
+            while(_i2<_playerInfoLen)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element of GuildFightPlayersEnemiesListMessage.fightId.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new CharacterMinimalPlusLookInformations();
-                _loc_4.deserialize(param1);
-                this.playerInfo.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
+               _item2=new CharacterMinimalPlusLookInformations();
+               _item2.deserialize(input);
+               this.playerInfo.push(_item2);
+               _i2++;
             }
             return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

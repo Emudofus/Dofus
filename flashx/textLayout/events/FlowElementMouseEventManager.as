@@ -1,527 +1,495 @@
-﻿package flashx.textLayout.events
+package flashx.textLayout.events
 {
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.ui.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
-    import flashx.textLayout.utils.*;
+   import flash.display.DisplayObjectContainer;
+   import flashx.textLayout.utils.HitTestArea;
+   import flashx.textLayout.elements.FlowElement;
+   import flash.events.MouseEvent;
+   import flash.geom.Point;
+   import flash.geom.Matrix;
+   import flash.display.DisplayObject;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.utils.GeometryUtil;
+   import flashx.textLayout.elements.TextRange;
+   import flash.events.KeyboardEvent;
+   import flashx.textLayout.elements.FlowGroupElement;
+   import flashx.textLayout.elements.LinkElement;
+   import flash.events.Event;
+   import flash.display.Sprite;
+   import flash.ui.Mouse;
+   import flash.ui.MouseCursor;
+   import flashx.textLayout.formats.BlockProgression;
 
-    public class FlowElementMouseEventManager extends Object
-    {
-        private var _container:DisplayObjectContainer;
-        private var _hitTests:HitTestArea = null;
-        private var _currentElement:FlowElement = null;
-        private var _mouseDownElement:FlowElement = null;
-        private var _needsCtrlKey:Boolean = false;
-        private var _ctrlKeyState:Boolean = false;
-        private var _lastMouseEvent:MouseEvent = null;
-        private var _blockInteraction:Boolean = false;
-        private const OWNER_HANDLES_EVENT:int = 0;
-        private const THIS_HANDLES_EVENT:int = 1;
-        private const THIS_LISTENS_FOR_EVENTS:int = 2;
-        private var _eventListeners:Object;
-        private var _hitRects:Object = null;
+   use namespace tlf_internal;
 
-        public function FlowElementMouseEventManager(param1:DisplayObjectContainer, param2:Array)
-        {
-            var _loc_3:* = null;
-            this._container = param1;
-            this._eventListeners = {};
-            var _loc_4:* = this.THIS_HANDLES_EVENT;
-            this._eventListeners[KeyboardEvent.KEY_UP] = this.THIS_HANDLES_EVENT;
-            this._eventListeners[KeyboardEvent.KEY_DOWN] = _loc_4;
-            this._eventListeners[MouseEvent.MOUSE_MOVE] = _loc_4;
-            this._eventListeners[MouseEvent.MOUSE_UP] = _loc_4;
-            this._eventListeners[MouseEvent.MOUSE_DOWN] = _loc_4;
-            this._eventListeners[MouseEvent.MOUSE_OUT] = _loc_4;
-            this._eventListeners[MouseEvent.MOUSE_OVER] = _loc_4;
-            for each (_loc_3 in param2)
+   public class FlowElementMouseEventManager extends Object
+   {
+         
+
+      public function FlowElementMouseEventManager(container:DisplayObjectContainer, eventNames:Array) {
+         var name:String = null;
+         super();
+         this._container=container;
+         this._eventListeners={};
+         this._eventListeners[MouseEvent.MOUSE_OVER]=this._eventListeners[MouseEvent.MOUSE_OUT]=this._eventListeners[MouseEvent.MOUSE_DOWN]=this._eventListeners[MouseEvent.MOUSE_UP]=this._eventListeners[MouseEvent.MOUSE_MOVE]=this._eventListeners[KeyboardEvent.KEY_DOWN]=this._eventListeners[KeyboardEvent.KEY_UP]=this.THIS_HANDLES_EVENT;
+         for each (name in eventNames)
+         {
+            this._eventListeners[name]=this.OWNER_HANDLES_EVENT;
+         }
+      }
+
+
+
+      private var _container:DisplayObjectContainer;
+
+      private var _hitTests:HitTestArea = null;
+
+      private var _currentElement:FlowElement = null;
+
+      private var _mouseDownElement:FlowElement = null;
+
+      private var _needsCtrlKey:Boolean = false;
+
+      private var _ctrlKeyState:Boolean = false;
+
+      private var _lastMouseEvent:MouseEvent = null;
+
+      private var _blockInteraction:Boolean = false;
+
+      private const OWNER_HANDLES_EVENT:int = 0;
+
+      private const THIS_HANDLES_EVENT:int = 1;
+
+      private const THIS_LISTENS_FOR_EVENTS:int = 2;
+
+      private var _eventListeners:Object;
+
+      private var _hitRects:Object = null;
+
+      public function mouseToContainer(evt:MouseEvent) : Point {
+         var m:Matrix = null;
+         var obj:DisplayObject = evt.target as DisplayObject;
+         var containerPoint:Point = new Point(evt.localX,evt.localY);
+         while(obj!=this._container)
+         {
+            m=obj.transform.matrix;
+            containerPoint.offset(m.tx,m.ty);
+            obj=obj.parent;
+            if(!obj)
             {
-                
-                this._eventListeners[_loc_3] = this.OWNER_HANDLES_EVENT;
-            }
-            return;
-        }// end function
-
-        public function mouseToContainer(event:MouseEvent) : Point
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = event.target as DisplayObject;
-            var _loc_3:* = new Point(event.localX, event.localY);
-            while (_loc_2 != this._container)
-            {
-                
-                _loc_4 = _loc_2.transform.matrix;
-                _loc_3.offset(_loc_4.tx, _loc_4.ty);
-                _loc_2 = _loc_2.parent;
-                if (!_loc_2)
-                {
-                    break;
-                }
-            }
-            return _loc_3;
-        }// end function
-
-        public function get needsCtrlKey() : Boolean
-        {
-            return this._needsCtrlKey;
-        }// end function
-
-        public function set needsCtrlKey(param1:Boolean) : void
-        {
-            this._needsCtrlKey = param1;
-            return;
-        }// end function
-
-        public function updateHitTests(param1:Number, param2:Rectangle, param3:TextFlow, param4:int, param5:int, param6:Boolean = false) : void
-        {
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_10:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = 0;
-            var _loc_14:* = 0;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            this._needsCtrlKey = param6;
-            var _loc_9:* = [];
-            if (param3.interactiveObjectCount != 0 && param4 != param5)
-            {
-                this.collectElements(param3, param4, param5, _loc_9);
-            }
-            var _loc_11:* = 0;
-            if (_loc_9.length != 0)
-            {
-                _loc_10 = {};
-                for each (_loc_12 in _loc_9)
-                {
-                    
-                    _loc_13 = _loc_12.getAbsoluteStart();
-                    _loc_14 = Math.min(_loc_13 + _loc_12.textLength, param5);
-                    _loc_15 = GeometryUtil.getHighlightBounds(new TextRange(_loc_12.getTextFlow(), _loc_13, _loc_14));
-                    for each (_loc_8 in _loc_15)
-                    {
-                        
-                        _loc_7 = _loc_8.rect;
-                        _loc_7.x = param2.x + _loc_8.textLine.x + _loc_7.x + param1;
-                        _loc_7.y = param2.y + _loc_8.textLine.y + _loc_7.y;
-                        _loc_7 = _loc_7.intersection(param2);
-                        if (!_loc_7.isEmpty())
-                        {
-                            _loc_7.x = int(_loc_7.x);
-                            _loc_7.y = int(_loc_7.y);
-                            _loc_7.width = int(_loc_7.width);
-                            _loc_7.height = int(_loc_7.height);
-                            _loc_16 = _loc_7.toString();
-                            _loc_17 = _loc_10[_loc_16];
-                            if (!_loc_17 || _loc_17.owner != _loc_12)
-                            {
-                                _loc_10[_loc_16] = {rect:_loc_7, owner:_loc_12};
-                                _loc_11++;
-                            }
-                        }
-                    }
-                }
-            }
-            if (_loc_11 > 0)
-            {
-                if (!this._hitTests)
-                {
-                    this.startHitTests();
-                }
-                this._hitRects = _loc_10;
-                this._hitTests = new HitTestArea(_loc_10);
             }
             else
             {
-                this.stopHitTests();
+               continue;
             }
-            return;
-        }// end function
+         }
+      }
 
-        function startHitTests() : void
-        {
-            this._currentElement = null;
-            this._mouseDownElement = null;
-            this._ctrlKeyState = false;
-            this.addEventListener(MouseEvent.MOUSE_OVER, false);
-            this.addEventListener(MouseEvent.MOUSE_OUT, false);
-            this.addEventListener(MouseEvent.MOUSE_DOWN, false);
-            this.addEventListener(MouseEvent.MOUSE_UP, false);
-            this.addEventListener(MouseEvent.MOUSE_MOVE, false);
-            return;
-        }// end function
+      public function get needsCtrlKey() : Boolean {
+         return this._needsCtrlKey;
+      }
 
-        public function stopHitTests() : void
-        {
-            this.removeEventListener(MouseEvent.MOUSE_OVER, false);
-            this.removeEventListener(MouseEvent.MOUSE_OUT, false);
-            this.removeEventListener(MouseEvent.MOUSE_DOWN, false);
-            this.removeEventListener(MouseEvent.MOUSE_UP, false);
-            this.removeEventListener(MouseEvent.MOUSE_MOVE, false);
-            this.removeEventListener(KeyboardEvent.KEY_DOWN, true);
-            this.removeEventListener(KeyboardEvent.KEY_UP, true);
-            this._hitRects = null;
-            this._hitTests = null;
-            this._currentElement = null;
-            this._mouseDownElement = null;
-            this._ctrlKeyState = false;
-            return;
-        }// end function
+      public function set needsCtrlKey(k:Boolean) : void {
+         this._needsCtrlKey=k;
+      }
 
-        private function addEventListener(param1:String, param2:Boolean = false) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (this._eventListeners[param1] === this.THIS_HANDLES_EVENT)
+      public function updateHitTests(xoffset:Number, clipRect:Rectangle, textFlow:TextFlow, startPos:int, endPos:int, needsCtrlKey:Boolean=false) : void {
+         var rect:Rectangle = null;
+         var obj:Object = null;
+         var newHitRects:Object = null;
+         var element:FlowElement = null;
+         var elemStart:* = 0;
+         var elemEnd:* = 0;
+         var elemRects:Array = null;
+         var name:String = null;
+         var oldObj:Object = null;
+         this._needsCtrlKey=needsCtrlKey;
+         var elements:Array = [];
+         if((!(textFlow.interactiveObjectCount==0))&&(!(startPos==endPos)))
+         {
+            this.collectElements(textFlow,startPos,endPos,elements);
+         }
+         var rectCount:int = 0;
+         if(elements.length!=0)
+         {
+            newHitRects={};
+            for each (element in elements)
             {
-                if (param2)
-                {
-                    _loc_3 = this._container.stage;
-                    if (!_loc_3)
-                    {
-                        _loc_3 = this._container;
-                    }
-                    _loc_4 = this.hitTestKeyEventHandler;
-                }
-                else
-                {
-                    _loc_3 = this._container;
-                    _loc_4 = this.hitTestMouseEventHandler;
-                }
-                _loc_3.addEventListener(param1, _loc_4, false, 1);
-                this._eventListeners[param1] = this.THIS_LISTENS_FOR_EVENTS;
+               elemStart=element.getAbsoluteStart();
+               elemEnd=Math.min(elemStart+element.textLength,endPos);
+               elemRects=GeometryUtil.getHighlightBounds(new TextRange(element.getTextFlow(),elemStart,elemEnd));
+               for each (obj in elemRects)
+               {
+                  rect=obj.rect;
+                  rect.x=clipRect.x+obj.textLine.x+rect.x+xoffset;
+                  rect.y=clipRect.y+obj.textLine.y+rect.y;
+                  rect=rect.intersection(clipRect);
+                  if(!rect.isEmpty())
+                  {
+                     rect.x=int(rect.x);
+                     rect.y=int(rect.y);
+                     rect.width=int(rect.width);
+                     rect.height=int(rect.height);
+                     name=rect.toString();
+                     oldObj=newHitRects[name];
+                     if((!oldObj)||(!(oldObj.owner==element)))
+                     {
+                        newHitRects[name]=
+                           {
+                              rect:rect,
+                              owner:element
+                           }
+                        ;
+                        rectCount++;
+                     }
+                  }
+               }
             }
-            return;
-        }// end function
-
-        private function removeEventListener(param1:String, param2:Boolean) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (this._eventListeners[param1] === this.THIS_LISTENS_FOR_EVENTS)
+         }
+         if(rectCount>0)
+         {
+            if(!this._hitTests)
             {
-                if (param2)
-                {
-                    _loc_3 = this._container.stage;
-                    if (!_loc_3)
-                    {
-                        _loc_3 = this._container;
-                    }
-                    _loc_4 = this.hitTestKeyEventHandler;
-                }
-                else
-                {
-                    _loc_3 = this._container;
-                    _loc_4 = this.hitTestMouseEventHandler;
-                }
-                _loc_3.removeEventListener(param1, _loc_4);
-                this._eventListeners[param1] = this.THIS_HANDLES_EVENT;
+               this.startHitTests();
             }
-            return;
-        }// end function
+            this._hitRects=newHitRects;
+            this._hitTests=new HitTestArea(newHitRects);
+         }
+         else
+         {
+            this.stopHitTests();
+         }
+      }
 
-        function collectElements(param1:FlowGroupElement, param2:int, param3:int, param4:Array) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_5:* = param1.findChildIndexAtPosition(param2);
-            while (_loc_5 < param1.numChildren)
-            {
-                
-                _loc_6 = param1.getChildAt(_loc_5);
-                if (_loc_6.parentRelativeStart >= param3)
-                {
-                    break;
-                }
-                if (_loc_6.hasActiveEventMirror() || _loc_6 is LinkElement)
-                {
-                    param4.push(_loc_6);
-                }
-                _loc_7 = _loc_6 as FlowGroupElement;
-                if (_loc_7)
-                {
-                    this.collectElements(_loc_7, Math.max(param2 - _loc_7.parentRelativeStart, 0), param3 - _loc_7.parentRelativeStart, param4);
-                }
-                _loc_5++;
-            }
-            return;
-        }// end function
+      tlf_internal function startHitTests() : void {
+         this._currentElement=null;
+         this._mouseDownElement=null;
+         this._ctrlKeyState=false;
+         this.addEventListener(MouseEvent.MOUSE_OVER,false);
+         this.addEventListener(MouseEvent.MOUSE_OUT,false);
+         this.addEventListener(MouseEvent.MOUSE_DOWN,false);
+         this.addEventListener(MouseEvent.MOUSE_UP,false);
+         this.addEventListener(MouseEvent.MOUSE_MOVE,false);
+      }
 
-        public function dispatchEvent(event:Event) : void
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = event as MouseEvent;
-            if (_loc_2)
+      public function stopHitTests() : void {
+         this.removeEventListener(MouseEvent.MOUSE_OVER,false);
+         this.removeEventListener(MouseEvent.MOUSE_OUT,false);
+         this.removeEventListener(MouseEvent.MOUSE_DOWN,false);
+         this.removeEventListener(MouseEvent.MOUSE_UP,false);
+         this.removeEventListener(MouseEvent.MOUSE_MOVE,false);
+         this.removeEventListener(KeyboardEvent.KEY_DOWN,true);
+         this.removeEventListener(KeyboardEvent.KEY_UP,true);
+         this._hitRects=null;
+         this._hitTests=null;
+         this._currentElement=null;
+         this._mouseDownElement=null;
+         this._ctrlKeyState=false;
+      }
+
+      private function addEventListener(name:String, kbdEvent:Boolean=false) : void {
+         var target:DisplayObjectContainer = null;
+         var listener:Function = null;
+         if(this._eventListeners[name]===this.THIS_HANDLES_EVENT)
+         {
+            if(kbdEvent)
             {
-                this.hitTestMouseEventHandler(_loc_2);
+               target=this._container.stage;
+               if(!target)
+               {
+                  target=this._container;
+               }
+               listener=this.hitTestKeyEventHandler;
             }
             else
             {
-                _loc_3 = event as KeyboardEvent;
-                if (_loc_3)
-                {
-                    this.hitTestKeyEventHandler(_loc_3);
-                }
+               target=this._container;
+               listener=this.hitTestMouseEventHandler;
             }
-            return;
-        }// end function
+            target.addEventListener(name,listener,false,1);
+            this._eventListeners[name]=this.THIS_LISTENS_FOR_EVENTS;
+         }
+      }
 
-        private function hitTestKeyEventHandler(event:KeyboardEvent) : void
-        {
-            if (!this._blockInteraction)
+      private function removeEventListener(name:String, kbdEvent:Boolean) : void {
+         var target:DisplayObjectContainer = null;
+         var listener:Function = null;
+         if(this._eventListeners[name]===this.THIS_LISTENS_FOR_EVENTS)
+         {
+            if(kbdEvent)
             {
-                this.checkCtrlKeyState(event.ctrlKey);
-            }
-            return;
-        }// end function
-
-        private function checkCtrlKeyState(param1:Boolean) : void
-        {
-            var _loc_2:* = this._currentElement as LinkElement;
-            if (!_loc_2 || !this._needsCtrlKey || !this._lastMouseEvent || param1 == this._ctrlKeyState)
-            {
-                return;
-            }
-            this._ctrlKeyState = param1;
-            if (this._ctrlKeyState)
-            {
-                _loc_2.mouseOverHandler(this, this._lastMouseEvent);
+               target=this._container.stage;
+               if(!target)
+               {
+                  target=this._container;
+               }
+               listener=this.hitTestKeyEventHandler;
             }
             else
             {
-                _loc_2.mouseOutHandler(this, this._lastMouseEvent);
+               target=this._container;
+               listener=this.hitTestMouseEventHandler;
             }
-            return;
-        }// end function
+            target.removeEventListener(name,listener);
+            this._eventListeners[name]=this.THIS_HANDLES_EVENT;
+         }
+      }
 
-        private function hitTestMouseEventHandler(event:MouseEvent) : void
-        {
-            if (!this._hitTests)
+      tlf_internal function collectElements(parent:FlowGroupElement, startPosition:int, endPosition:int, results:Array) : void {
+         var child:FlowElement = null;
+         var group:FlowGroupElement = null;
+         var i:int = parent.findChildIndexAtPosition(startPosition);
+         while(i<parent.numChildren)
+         {
+            child=parent.getChildAt(i);
+            if(child.parentRelativeStart>=endPosition)
             {
-                return;
             }
-            this._lastMouseEvent = event;
-            var _loc_2:* = this.mouseToContainer(event);
-            var _loc_3:* = this._hitTests.hitTest(_loc_2.x, _loc_2.y);
-            if (_loc_3 != this._currentElement)
+            else
             {
-                this._mouseDownElement = null;
-                if (this._currentElement)
-                {
-                    this.localDispatchEvent(FlowElementMouseEvent.ROLL_OUT, event);
-                }
-                else if (event.buttonDown)
-                {
-                    this._blockInteraction = true;
-                }
-                this._currentElement = _loc_3;
-                if (this._currentElement)
-                {
-                    this.localDispatchEvent(FlowElementMouseEvent.ROLL_OVER, event);
-                }
-                else
-                {
-                    this._blockInteraction = false;
-                }
+               if((child.hasActiveEventMirror())||(child is LinkElement))
+               {
+                  results.push(child);
+               }
+               group=child as FlowGroupElement;
+               if(group)
+               {
+                  this.collectElements(group,Math.max(startPosition-group.parentRelativeStart,0),endPosition-group.parentRelativeStart,results);
+               }
+               i++;
+               continue;
             }
-            var _loc_4:* = false;
-            var _loc_5:* = null;
-            switch(event.type)
-            {
-                case MouseEvent.MOUSE_MOVE:
-                {
-                    _loc_5 = FlowElementMouseEvent.MOUSE_MOVE;
-                    if (!this._blockInteraction)
-                    {
-                        this.checkCtrlKeyState(event.ctrlKey);
-                    }
-                    break;
-                }
-                case MouseEvent.MOUSE_DOWN:
-                {
-                    this._mouseDownElement = this._currentElement;
-                    _loc_5 = FlowElementMouseEvent.MOUSE_DOWN;
-                    break;
-                }
-                case MouseEvent.MOUSE_UP:
-                {
-                    _loc_5 = FlowElementMouseEvent.MOUSE_UP;
-                    _loc_4 = this._currentElement == this._mouseDownElement;
-                    this._mouseDownElement = null;
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            if (this._currentElement && _loc_5)
-            {
-                this.localDispatchEvent(_loc_5, event);
-                if (_loc_4)
-                {
-                    this.localDispatchEvent(FlowElementMouseEvent.CLICK, event);
-                }
-            }
-            return;
-        }// end function
+         }
+      }
 
-        function dispatchFlowElementMouseEvent(param1:String, param2:MouseEvent) : Boolean
-        {
-            if (this._needsCtrlKey && !param2.ctrlKey && param1 != FlowElementMouseEvent.ROLL_OUT)
+      public function dispatchEvent(evt:Event) : void {
+         var keyEvt:KeyboardEvent = null;
+         var mouseEvt:MouseEvent = evt as MouseEvent;
+         if(mouseEvt)
+         {
+            this.hitTestMouseEventHandler(mouseEvt);
+         }
+         else
+         {
+            keyEvt=evt as KeyboardEvent;
+            if(keyEvt)
             {
-                return false;
+               this.hitTestKeyEventHandler(keyEvt);
             }
-            var _loc_3:* = this._currentElement.hasActiveEventMirror();
-            var _loc_4:* = this._currentElement.getTextFlow();
-            var _loc_5:* = false;
-            if (_loc_4)
+         }
+      }
+
+      private function hitTestKeyEventHandler(evt:KeyboardEvent) : void {
+         if(!this._blockInteraction)
+         {
+            this.checkCtrlKeyState(evt.ctrlKey);
+         }
+      }
+
+      private function checkCtrlKeyState(curState:Boolean) : void {
+         var link:LinkElement = this._currentElement as LinkElement;
+         if((!link)||(!this._needsCtrlKey)||(!this._lastMouseEvent)||(curState==this._ctrlKeyState))
+         {
+            return;
+         }
+         this._ctrlKeyState=curState;
+         if(this._ctrlKeyState)
+         {
+            link.mouseOverHandler(this,this._lastMouseEvent);
+         }
+         else
+         {
+            link.mouseOutHandler(this,this._lastMouseEvent);
+         }
+      }
+
+      private function hitTestMouseEventHandler(evt:MouseEvent) : void {
+         if(!this._hitTests)
+         {
+            return;
+         }
+         this._lastMouseEvent=evt;
+         var containerPoint:Point = this.mouseToContainer(evt);
+         var hitElement:FlowElement = this._hitTests.hitTest(containerPoint.x,containerPoint.y);
+         if(hitElement!=this._currentElement)
+         {
+            this._mouseDownElement=null;
+            if(this._currentElement)
             {
-                _loc_5 = _loc_4.hasEventListener(param1);
+               this.localDispatchEvent(FlowElementMouseEvent.ROLL_OUT,evt);
             }
-            if (!_loc_3 && !_loc_5)
+            else
             {
-                return false;
+               if(evt.buttonDown)
+               {
+                  this._blockInteraction=true;
+               }
             }
-            var _loc_6:* = new FlowElementMouseEvent(param1, false, true, this._currentElement, param2);
-            if (_loc_3)
+            this._currentElement=hitElement;
+            if(this._currentElement)
             {
-                this._currentElement.getEventMirror().dispatchEvent(_loc_6);
-                if (_loc_6.isDefaultPrevented())
-                {
-                    return true;
-                }
+               this.localDispatchEvent(FlowElementMouseEvent.ROLL_OVER,evt);
             }
-            if (_loc_5)
+            else
             {
-                _loc_4.dispatchEvent(_loc_6);
-                if (_loc_6.isDefaultPrevented())
-                {
-                    return true;
-                }
+               this._blockInteraction=false;
             }
+         }
+         var isClick:Boolean = false;
+         var eventType:String = null;
+         switch(evt.type)
+         {
+            case MouseEvent.MOUSE_MOVE:
+               eventType=FlowElementMouseEvent.MOUSE_MOVE;
+               if(!this._blockInteraction)
+               {
+                  this.checkCtrlKeyState(evt.ctrlKey);
+               }
+               break;
+            case MouseEvent.MOUSE_DOWN:
+               this._mouseDownElement=this._currentElement;
+               eventType=FlowElementMouseEvent.MOUSE_DOWN;
+               break;
+            case MouseEvent.MOUSE_UP:
+               eventType=FlowElementMouseEvent.MOUSE_UP;
+               isClick=this._currentElement==this._mouseDownElement;
+               this._mouseDownElement=null;
+               break;
+         }
+         if((this._currentElement)&&(eventType))
+         {
+            this.localDispatchEvent(eventType,evt);
+            if(isClick)
+            {
+               this.localDispatchEvent(FlowElementMouseEvent.CLICK,evt);
+            }
+         }
+      }
+
+      tlf_internal function dispatchFlowElementMouseEvent(type:String, originalEvent:MouseEvent) : Boolean {
+         if((this._needsCtrlKey)&&(!originalEvent.ctrlKey)&&(!(type==FlowElementMouseEvent.ROLL_OUT)))
+         {
             return false;
-        }// end function
+         }
+         var locallyListening:Boolean = this._currentElement.hasActiveEventMirror();
+         var textFlow:TextFlow = this._currentElement.getTextFlow();
+         var textFlowListening:Boolean = false;
+         if(textFlow)
+         {
+            textFlowListening=textFlow.hasEventListener(type);
+         }
+         if((!locallyListening)&&(!textFlowListening))
+         {
+            return false;
+         }
+         var event:FlowElementMouseEvent = new FlowElementMouseEvent(type,false,true,this._currentElement,originalEvent);
+         if(locallyListening)
+         {
+            this._currentElement.getEventMirror().dispatchEvent(event);
+            if(event.isDefaultPrevented())
+            {
+               return true;
+            }
+         }
+         if(textFlowListening)
+         {
+            textFlow.dispatchEvent(event);
+            if(event.isDefaultPrevented())
+            {
+               return true;
+            }
+         }
+         return false;
+      }
 
-        private function localDispatchEvent(param1:String, param2:MouseEvent) : void
-        {
-            if (this._blockInteraction || !this._currentElement)
-            {
-                return;
-            }
-            if (this._needsCtrlKey)
-            {
-                switch(param1)
-                {
-                    case FlowElementMouseEvent.ROLL_OVER:
-                    {
-                        this.addEventListener(KeyboardEvent.KEY_DOWN, true);
-                        this.addEventListener(KeyboardEvent.KEY_UP, true);
-                        break;
-                    }
-                    case FlowElementMouseEvent.ROLL_OUT:
-                    {
-                        this.removeEventListener(KeyboardEvent.KEY_DOWN, true);
-                        this.removeEventListener(KeyboardEvent.KEY_UP, true);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-            }
-            if (this.dispatchFlowElementMouseEvent(param1, param2))
-            {
-                return;
-            }
-            var _loc_3:* = !this._needsCtrlKey || param2.ctrlKey ? (this._currentElement as LinkElement) : (null);
-            if (!_loc_3)
-            {
-                return;
-            }
-            switch(param1)
-            {
-                case FlowElementMouseEvent.MOUSE_DOWN:
-                {
-                    _loc_3.mouseDownHandler(this, param2);
-                    break;
-                }
-                case FlowElementMouseEvent.MOUSE_MOVE:
-                {
-                    _loc_3.mouseMoveHandler(this, param2);
-                    break;
-                }
-                case FlowElementMouseEvent.ROLL_OUT:
-                {
-                    _loc_3.mouseOutHandler(this, param2);
-                    break;
-                }
-                case FlowElementMouseEvent.ROLL_OVER:
-                {
-                    _loc_3.mouseOverHandler(this, param2);
-                    break;
-                }
-                case FlowElementMouseEvent.MOUSE_UP:
-                {
-                    _loc_3.mouseUpHandler(this, param2);
-                    break;
-                }
-                case FlowElementMouseEvent.CLICK:
-                {
-                    _loc_3.mouseClickHandler(this, param2);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
+      private function localDispatchEvent(type:String, evt:MouseEvent) : void {
+         if((this._blockInteraction)||(!this._currentElement))
+         {
             return;
-        }// end function
-
-        function setHandCursor(param1:Boolean = true) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (this._currentElement == null)
+         }
+         if(this._needsCtrlKey)
+         {
+            switch(type)
             {
-                return;
+               case FlowElementMouseEvent.ROLL_OVER:
+                  this.addEventListener(KeyboardEvent.KEY_DOWN,true);
+                  this.addEventListener(KeyboardEvent.KEY_UP,true);
+                  break;
+               case FlowElementMouseEvent.ROLL_OUT:
+                  this.removeEventListener(KeyboardEvent.KEY_DOWN,true);
+                  this.removeEventListener(KeyboardEvent.KEY_UP,true);
+                  break;
             }
-            var _loc_2:* = this._currentElement.getTextFlow();
-            if (_loc_2 != null && _loc_2.flowComposer && _loc_2.flowComposer.numControllers)
-            {
-                _loc_3 = this._container as Sprite;
-                if (_loc_3)
-                {
-                    _loc_3.buttonMode = param1;
-                    _loc_3.useHandCursor = param1;
-                }
-                if (param1)
-                {
-                    Mouse.cursor = MouseCursor.BUTTON;
-                }
-                else
-                {
-                    _loc_4 = _loc_2.computedFormat.blockProgression;
-                    if (_loc_2.interactionManager && _loc_4 != BlockProgression.RL)
-                    {
-                        Mouse.cursor = MouseCursor.IBEAM;
-                    }
-                    else
-                    {
-                        Mouse.cursor = MouseCursor.AUTO;
-                    }
-                }
-                Mouse.hide();
-                Mouse.show();
-            }
+         }
+         if(this.dispatchFlowElementMouseEvent(type,evt))
+         {
             return;
-        }// end function
+         }
+         var link:LinkElement = (!this._needsCtrlKey)||(evt.ctrlKey)?this._currentElement as LinkElement:null;
+         if(!link)
+         {
+            return;
+         }
+         switch(type)
+         {
+            case FlowElementMouseEvent.MOUSE_DOWN:
+               link.mouseDownHandler(this,evt);
+               break;
+            case FlowElementMouseEvent.MOUSE_MOVE:
+               link.mouseMoveHandler(this,evt);
+               break;
+            case FlowElementMouseEvent.ROLL_OUT:
+               link.mouseOutHandler(this,evt);
+               break;
+            case FlowElementMouseEvent.ROLL_OVER:
+               link.mouseOverHandler(this,evt);
+               break;
+            case FlowElementMouseEvent.MOUSE_UP:
+               link.mouseUpHandler(this,evt);
+               break;
+            case FlowElementMouseEvent.CLICK:
+               link.mouseClickHandler(this,evt);
+               break;
+         }
+      }
 
-    }
+      tlf_internal function setHandCursor(state:Boolean=true) : void {
+         var sprite:Sprite = null;
+         var wmode:String = null;
+         if(this._currentElement==null)
+         {
+            return;
+         }
+         var tf:TextFlow = this._currentElement.getTextFlow();
+         if((!(tf==null))&&(tf.flowComposer)&&(tf.flowComposer.numControllers))
+         {
+            sprite=this._container as Sprite;
+            if(sprite)
+            {
+               sprite.buttonMode=state;
+               sprite.useHandCursor=state;
+            }
+            if(state)
+            {
+               Mouse.cursor=MouseCursor.BUTTON;
+            }
+            else
+            {
+               wmode=tf.computedFormat.blockProgression;
+               if((tf.interactionManager)&&(!(wmode==BlockProgression.RL)))
+               {
+                  Mouse.cursor=MouseCursor.IBEAM;
+               }
+               else
+               {
+                  Mouse.cursor=MouseCursor.AUTO;
+               }
+            }
+            Mouse.hide();
+            Mouse.show();
+         }
+      }
+   }
+
 }

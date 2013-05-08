@@ -1,10 +1,14 @@
-﻿package mx.core
+package mx.core
 {
 
-    public interface IFlexAsset
-    {
 
-        public function IFlexAsset();
+   public interface IFlexAsset
+   {
+         
 
-    }
+
+
+
+   }
+
 }
