@@ -1,25 +1,26 @@
-﻿package com.ankamagames.tubul.events
+package com.ankamagames.tubul.events
 {
-    import com.ankamagames.tubul.interfaces.*;
-    import flash.events.*;
+   import flash.events.Event;
+   import com.ankamagames.tubul.interfaces.ISound;
 
-    public class MP3SoundEvent extends Event
-    {
-        public var sound:ISound;
-        public static const SOON_END_OF_FILE:String = "SOON_END_OF_FILE";
 
-        public function MP3SoundEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
-        {
-            super(param1, param2, param3);
-            return;
-        }// end function
+   public class MP3SoundEvent extends Event
+   {
+         
 
-        override public function clone() : Event
-        {
-            var _loc_1:* = new MP3SoundEvent(type, bubbles, cancelable);
-            _loc_1.sound = this.sound;
-            return _loc_1;
-        }// end function
+      public function MP3SoundEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
+      }
 
-    }
+      public static const SOON_END_OF_FILE:String = "SOON_END_OF_FILE";
+
+      public var sound:ISound;
+
+      override public function clone() : Event {
+         var mse:MP3SoundEvent = new MP3SoundEvent(type,bubbles,cancelable);
+         mse.sound=this.sound;
+         return mse;
+      }
+   }
+
 }

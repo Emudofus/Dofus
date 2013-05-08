@@ -1,94 +1,85 @@
-﻿package com.ankamagames.dofus.logic.game.fight.miscs
+package com.ankamagames.dofus.logic.game.fight.miscs
 {
-    import com.ankamagames.dofus.types.enums.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.tiphon.engine.*;
-    import com.ankamagames.tiphon.types.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.utils.*;
+   import com.ankamagames.tiphon.types.IAnimationModifier;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.tiphon.types.AnimationModifierPriority;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import com.ankamagames.jerakine.types.Swl;
+   import com.ankamagames.tiphon.engine.Tiphon;
+   import com.ankamagames.dofus.types.enums.AnimationEnum;
 
-    public class CustomAnimStatiqueAnimationModifier extends Object implements IAnimationModifier
-    {
-        public var randomStatique:Boolean;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomAnimStatiqueAnimationModifier));
 
-        public function CustomAnimStatiqueAnimationModifier()
-        {
-            return;
-        }// end function
+   public class CustomAnimStatiqueAnimationModifier extends Object implements IAnimationModifier
+   {
+         
 
-        public function get priority() : int
-        {
-            return AnimationModifierPriority.NORMAL;
-        }// end function
+      public function CustomAnimStatiqueAnimationModifier() {
+         super();
+      }
 
-        public function getModifiedAnimation(param1:String, param2:TiphonEntityLook) : String
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            switch(param1)
-            {
-                case AnimationEnum.ANIM_STATIQUE:
-                {
-                    if (param2.getBone() == 1)
-                    {
-                        if (this.randomStatique)
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(CustomAnimStatiqueAnimationModifier));
+
+      public var randomStatique:Boolean;
+
+      public function get priority() : int {
+         return AnimationModifierPriority.NORMAL;
+      }
+
+      public function getModifiedAnimation(pAnimation:String, pLook:TiphonEntityLook) : String {
+         var lib:Swl = null;
+         var statics:Array = null;
+         var anim:String = null;
+         var animName:String = null;
+         var random:* = 0;
+         var skinId:* = 0;
+         switch(pAnimation)
+         {
+            case AnimationEnum.ANIM_STATIQUE:
+               if(pLook.getBone()==1)
+               {
+                  if(this.randomStatique)
+                  {
+                     lib=Tiphon.skullLibrary.getResourceById(pLook.getBone(),AnimationEnum.ANIM_STATIQUE);
+                     statics=new Array();
+                     if(lib)
+                     {
+                        for each (anim in lib.getDefinitions())
                         {
-                            _loc_3 = Tiphon.skullLibrary.getResourceById(param2.getBone(), AnimationEnum.ANIM_STATIQUE);
-                            _loc_4 = new Array();
-                            if (_loc_3)
-                            {
-                                for each (_loc_5 in _loc_3.getDefinitions())
-                                {
-                                    
-                                    if (_loc_5.indexOf(AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString()) == 0)
-                                    {
-                                        _loc_6 = _loc_5.split("_")[0];
-                                        if (_loc_4.indexOf(_loc_6) == -1)
-                                        {
-                                            _loc_4.push(_loc_6);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                _loc_4.push(AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString());
-                            }
-                            if (_loc_4.length > 1)
-                            {
-                                _loc_7 = Math.floor(Math.random() * _loc_4.length);
-                                return _loc_4[_loc_7];
-                            }
-                            return _loc_4[0];
+                           if(anim.indexOf(AnimationEnum.ANIM_STATIQUE+pLook.firstSkin.toString())==0)
+                           {
+                              animName=anim.split("_")[0];
+                              if(statics.indexOf(animName)==-1)
+                              {
+                                 statics.push(animName);
+                              }
+                           }
                         }
-                        else
-                        {
-                            _loc_8 = param2.firstSkin;
-                            if (_loc_8 == 1114 || _loc_8 == 1115 || _loc_8 == 1402 || _loc_8 == 1463)
-                            {
-                                return AnimationEnum.ANIM_STATIQUE;
-                            }
-                            return AnimationEnum.ANIM_STATIQUE + param2.firstSkin.toString();
-                        }
-                    }
-                    else
-                    {
-                        return param1;
-                    }
-                }
-                default:
-                {
-                    return param1;
-                    break;
-                }
-            }
-        }// end function
+                     }
+                     else
+                     {
+                        statics.push(AnimationEnum.ANIM_STATIQUE+pLook.firstSkin.toString());
+                     }
+                     if(statics.length>1)
+                     {
+                        random=Math.floor(Math.random()*statics.length);
+                        return statics[random];
+                     }
+                     return statics[0];
+                  }
+                  skinId=pLook.firstSkin;
+                  if((skinId==1114)||(skinId==1115)||(skinId==1402)||(skinId==1463)||(skinId==pLook.defaultSkin))
+                  {
+                     return AnimationEnum.ANIM_STATIQUE;
+                  }
+                  return AnimationEnum.ANIM_STATIQUE+pLook.firstSkin.toString();
+               }
+               return pAnimation;
+            default:
+               return pAnimation;
+         }
+      }
+   }
 
-    }
 }

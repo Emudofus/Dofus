@@ -1,33 +1,36 @@
-﻿package com.ankamagames.dofus.scripts
+package com.ankamagames.dofus.scripts
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.types.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.script.runners.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.script.runners.IRunner;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.dofus.logic.game.common.misc.ISpellCastProvider;
+   import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.sequencer.ISequencable;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
 
-    public class SpellFxRunner extends FxRunner implements IRunner
-    {
-        private var _spellCastProvider:ISpellCastProvider;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellFxRunner));
 
-        public function SpellFxRunner(param1:ISpellCastProvider)
-        {
-            super(DofusEntities.getEntity(param1.castingSpell.casterId), param1.castingSpell.targetedCell);
-            this._spellCastProvider = param1;
-            return;
-        }// end function
+   public class SpellFxRunner extends FxRunner implements IRunner
+   {
+         
 
-        public function get castingSpell() : CastingSpell
-        {
-            return this._spellCastProvider.castingSpell;
-        }// end function
+      public function SpellFxRunner(spellCastProvider:ISpellCastProvider) {
+         super(DofusEntities.getEntity(spellCastProvider.castingSpell.casterId),spellCastProvider.castingSpell.targetedCell);
+         this._spellCastProvider=spellCastProvider;
+      }
 
-        public function get stepsBuffer() : Vector.<ISequencable>
-        {
-            return this._spellCastProvider.stepsBuffer;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(SpellFxRunner));
 
-    }
+      private var _spellCastProvider:ISpellCastProvider;
+
+      public function get castingSpell() : CastingSpell {
+         return this._spellCastProvider.castingSpell;
+      }
+
+      public function get stepsBuffer() : Vector.<ISequencable> {
+         return this._spellCastProvider.stepsBuffer;
+      }
+   }
+
 }

@@ -1,38 +1,39 @@
-﻿package com.ankamagames.jerakine.resources.adapters.impl
+package com.ankamagames.jerakine.resources.adapters.impl
 {
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.adapters.*;
+   import com.ankamagames.jerakine.resources.adapters.AbstractUrlLoaderAdapter;
+   import com.ankamagames.jerakine.resources.adapters.IAdapter;
+   import com.ankamagames.jerakine.resources.ResourceErrorCode;
+   import com.ankamagames.jerakine.resources.ResourceType;
 
-    public class XmlAdapter extends AbstractUrlLoaderAdapter implements IAdapter
-    {
 
-        public function XmlAdapter()
-        {
-            return;
-        }// end function
+   public class XmlAdapter extends AbstractUrlLoaderAdapter implements IAdapter
+   {
+         
 
-        override protected function getResource(param1:String, param2)
-        {
-            var str:String;
-            var dataFormat:* = param1;
-            var data:* = param2;
-            var xml:XML;
-            try
-            {
-                str = data.toString();
-                xml = new XML(data);
-            }
-            catch (te:TypeError)
-            {
-                this.dispatchFailure(te.message, ResourceErrorCode.XML_MALFORMED_FILE);
-            }
-            return xml;
-        }// end function
+      public function XmlAdapter() {
+         super();
+      }
 
-        override public function getResourceType() : uint
-        {
-            return ResourceType.RESOURCE_XML;
-        }// end function
 
-    }
+
+      override protected function getResource(dataFormat:String, data:*) : * {
+         var str:String = null;
+         var xml:XML = null;
+         try
+         {
+            str=data.toString();
+            xml=new XML(data);
+         }
+         catch(te:TypeError)
+         {
+            this.dispatchFailure(te.message,ResourceErrorCode.XML_MALFORMED_FILE);
+         }
+         return xml;
+      }
+
+      override public function getResourceType() : uint {
+         return ResourceType.RESOURCE_XML;
+      }
+   }
+
 }

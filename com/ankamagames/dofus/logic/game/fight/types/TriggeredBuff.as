@@ -1,115 +1,108 @@
-﻿package com.ankamagames.dofus.logic.game.fight.types
+package com.ankamagames.dofus.logic.game.fight.types
 {
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.dofus.network.types.game.actions.fight.*;
+   import com.ankamagames.dofus.datacenter.effects.Effect;
+   import com.ankamagames.dofus.network.types.game.actions.fight.FightTriggeredEffect;
 
-    public class TriggeredBuff extends BasicBuff
-    {
-        public var delay:int;
 
-        public function TriggeredBuff(param1:FightTriggeredEffect = null, param2:CastingSpell = null, param3:uint = 0)
-        {
-            if (param1)
+   public class TriggeredBuff extends BasicBuff
+   {
+         
+
+      public function TriggeredBuff(effect:FightTriggeredEffect=null, castingSpell:CastingSpell=null, actionId:uint=0) {
+         if(effect)
+         {
+            super(effect,castingSpell,actionId,effect.param1,effect.param2,effect.param3);
+            this.delay=effect.delay;
+            _effect.delay=this.delay;
+         }
+      }
+
+
+
+      public var delay:int;
+
+      override public function initParam(param1:int, param2:int, param3:int) : void {
+         var min:* = 0;
+         var max:* = 0;
+         super.initParam(param1,param2,param3);
+         if(Effect.getEffectById(actionId).forceMinMax)
+         {
+            min=param3+param1;
+            max=param1*param2+param3;
+            if(min==max)
             {
-                super(param1, param2, param3, param1.param1, param1.param2, param1.param3);
-                this.delay = param1.delay;
-                _effect.delay = this.delay;
+               param1=min;
+               param2=param3=0;
             }
-            return;
-        }// end function
-
-        override public function initParam(param1:int, param2:int, param3:int) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            super.initParam(param1, param2, param3);
-            if (Effect.getEffectById(actionId).forceMinMax)
+            else
             {
-                _loc_4 = param3 + param1;
-                _loc_5 = param1 * param2 + param3;
-                if (_loc_4 == _loc_5)
-                {
-                    param1 = _loc_4;
-                    var _loc_6:* = 0;
-                    param3 = 0;
-                    param2 = _loc_6;
-                }
-                else if (_loc_4 > _loc_5)
-                {
-                    param1 = _loc_5;
-                    param2 = _loc_4;
-                    param3 = 0;
-                }
-                else
-                {
-                    param1 = _loc_4;
-                    param2 = _loc_5;
-                    param3 = 0;
-                }
+               if(min>max)
+               {
+                  param1=max;
+                  param2=min;
+                  param3=0;
+               }
+               else
+               {
+                  param1=min;
+                  param2=max;
+                  param3=0;
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        override public function clone(param1:int = 0) : BasicBuff
-        {
-            var _loc_2:* = new TriggeredBuff();
-            _loc_2.id = uid;
-            _loc_2.uid = uid;
-            _loc_2.actionId = actionId;
-            _loc_2.targetId = targetId;
-            _loc_2.castingSpell = castingSpell;
-            _loc_2.duration = duration;
-            _loc_2.dispelable = dispelable;
-            _loc_2.source = source;
-            _loc_2.aliveSource = aliveSource;
-            _loc_2.parentBoostUid = parentBoostUid;
-            _loc_2.initParam(param1, param2, param3);
-            _loc_2.delay = this.delay;
-            _loc_2._effect.delay = this.delay;
-            return _loc_2;
-        }// end function
+      override public function clone(id:int=0) : BasicBuff {
+         var tb:TriggeredBuff = new TriggeredBuff();
+         tb.id=uid;
+         tb.uid=uid;
+         tb.actionId=actionId;
+         tb.targetId=targetId;
+         tb.castingSpell=castingSpell;
+         tb.duration=duration;
+         tb.dispelable=dispelable;
+         tb.source=source;
+         tb.aliveSource=aliveSource;
+         tb.parentBoostUid=parentBoostUid;
+         tb.initParam(param1,param2,param3);
+         tb.delay=this.delay;
+         tb._effect.delay=this.delay;
+         return tb;
+      }
 
-        override public function get active() : Boolean
-        {
-            return this.delay > 0 || super.active;
-        }// end function
+      override public function get active() : Boolean {
+         return (this.delay<0)||(super.active);
+      }
 
-        override public function get trigger() : Boolean
-        {
-            return true;
-        }// end function
+      override public function get trigger() : Boolean {
+         return true;
+      }
 
-        override public function incrementDuration(param1:int, param2:Boolean = false) : Boolean
-        {
-            if (this.delay > 0 && !param2)
+      override public function incrementDuration(delta:int, dispellEffect:Boolean=false) : Boolean {
+         if((this.delay<0)&&(!dispellEffect))
+         {
+            if(this.delay+delta>=0)
             {
-                if (this.delay + param1 >= 0)
-                {
-                    var _loc_3:* = this;
-                    var _loc_4:* = this.delay - 1;
-                    _loc_3.delay = _loc_4;
-                    var _loc_3:* = effects;
-                    var _loc_4:* = effects.delay - 1;
-                    _loc_3.delay = _loc_4;
-                }
-                else
-                {
-                    param1 = param1 + this.delay;
-                    this.delay = 0;
-                    effects.delay = 0;
-                }
+               this.delay--;
+               effects.delay--;
             }
-            if (param1 != 0)
+            else
             {
-                return super.incrementDuration(param1, param2);
+               delta=delta+this.delay;
+               this.delay=0;
+               effects.delay=0;
             }
-            return true;
-        }// end function
+         }
+         if(delta!=0)
+         {
+            return super.incrementDuration(delta,dispellEffect);
+         }
+         return true;
+      }
 
-        override public function get unusableNextTurn() : Boolean
-        {
-            return this.delay <= 1 && super.unusableNextTurn;
-        }// end function
+      override public function get unusableNextTurn() : Boolean {
+         return (this.delay<=1)&&(super.unusableNextTurn);
+      }
+   }
 
-    }
 }

@@ -1,15 +1,17 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.tiphon.types.look.*;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
 
-    public interface IAnimationModifier
-    {
 
-        public function IAnimationModifier();
+   public interface IAnimationModifier
+   {
+         
 
-        function get priority() : int;
 
-        function getModifiedAnimation(param1:String, param2:TiphonEntityLook) : String;
 
-    }
+      function get priority() : int;
+
+      function getModifiedAnimation(param1:String, param2:TiphonEntityLook) : String;
+   }
+
 }

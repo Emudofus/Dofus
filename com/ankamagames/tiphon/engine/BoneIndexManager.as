@@ -1,199 +1,192 @@
-﻿package com.ankamagames.tiphon.engine
+package com.ankamagames.tiphon.engine
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.jerakine.utils.files.*;
-    import com.ankamagames.tiphon.*;
-    import com.ankamagames.tiphon.types.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.tiphon.types.TiphonUtility;
+   import com.ankamagames.tiphon.TiphonConstants;
+   import com.ankamagames.jerakine.resources.events.ResourceLoaderProgressEvent;
+   import com.ankamagames.jerakine.utils.files.FileUtils;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class BoneIndexManager extends EventDispatcher
-    {
-        private var _loader:IResourceLoader;
-        private var _index:Dictionary;
-        private var _transitions:Dictionary;
-        private var _animNameModifier:Function;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(BoneIndexManager));
-        private static var _self:BoneIndexManager;
 
-        public function BoneIndexManager()
-        {
-            this._index = new Dictionary();
-            this._transitions = new Dictionary();
-            if (_self)
-            {
-                throw new SingletonError();
-            }
+   public class BoneIndexManager extends EventDispatcher
+   {
+         
+
+      public function BoneIndexManager() {
+         this._index=new Dictionary();
+         this._transitions=new Dictionary();
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function init(param1:String) : void
-        {
-            this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onXmlLoaded);
-            this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onXmlFailed);
-            this._loader.load(new Uri(param1));
-            return;
-        }// end function
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(BoneIndexManager));
 
-        public function setAnimNameModifier(param1:Function) : void
-        {
-            this._animNameModifier = param1;
-            return;
-        }// end function
+      private static var _self:BoneIndexManager;
 
-        public function addTransition(param1:uint, param2:String, param3:String, param4:uint, param5:String) : void
-        {
-            if (!this._transitions[param1])
+      public static function getInstance() : BoneIndexManager {
+         if(!_self)
+         {
+            _self=new BoneIndexManager();
+         }
+         return _self;
+      }
+
+      private var _loader:IResourceLoader;
+
+      private var _index:Dictionary;
+
+      private var _transitions:Dictionary;
+
+      private var _animNameModifier:Function;
+
+      public function init(boneIndexPath:String) : void {
+         this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.PARALLEL_LOADER);
+         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onXmlLoaded);
+         this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onXmlFailed);
+         this._loader.load(new Uri(boneIndexPath));
+      }
+
+      public function setAnimNameModifier(fct:Function) : void {
+         this._animNameModifier=fct;
+      }
+
+      public function addTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint, transitionalAnim:String) : void {
+         if(!this._transitions[boneId])
+         {
+            this._transitions[boneId]=new Dictionary();
+         }
+         this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction]=transitionalAnim;
+      }
+
+      public function hasTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint) : Boolean {
+         if(this._animNameModifier!=null)
+         {
+            startAnim=this._animNameModifier(boneId,startAnim);
+            endAnim=this._animNameModifier(boneId,endAnim);
+         }
+         return (this._transitions[boneId])&&((!(this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction]==null))||(!(this._transitions[boneId][startAnim+"_"+endAnim+"_"+TiphonUtility.getFlipDirection(direction)]==null)));
+      }
+
+      public function getTransition(boneId:uint, startAnim:String, endAnim:String, direction:uint) : String {
+         if(this._animNameModifier!=null)
+         {
+            startAnim=this._animNameModifier(boneId,startAnim);
+            endAnim=this._animNameModifier(boneId,endAnim);
+         }
+         if(!this._transitions[boneId])
+         {
+            return null;
+         }
+         if(this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction])
+         {
+            return this._transitions[boneId][startAnim+"_"+endAnim+"_"+direction];
+         }
+         return this._transitions[boneId][startAnim+"_"+endAnim+"_"+TiphonUtility.getFlipDirection(direction)];
+      }
+
+      public function getBoneFile(boneId:uint, animName:String) : Uri {
+         if((!this._index[boneId])||(!this._index[boneId][animName]))
+         {
+            return new Uri(TiphonConstants.SWF_SKULL_PATH+boneId+".swl");
+         }
+         return new Uri(TiphonConstants.SWF_SKULL_PATH+this._index[boneId][animName]);
+      }
+
+      public function hasAnim(boneId:uint, animName:String, direction:int) : Boolean {
+         return (this._index[boneId])&&(this._index[boneId][animName]);
+      }
+
+      public function hasCustomBone(boneId:uint) : Boolean {
+         return this._index[boneId];
+      }
+
+      public function getAllCustomAnimations(boneId:int) : Array {
+         var anim:String = null;
+         var animationsList:Dictionary = this._index[boneId];
+         if(!animationsList)
+         {
+            return null;
+         }
+         var list:Array = new Array();
+         for (anim in animationsList)
+         {
+            list.push(anim);
+         }
+         return list;
+      }
+
+      private function onXmlLoaded(e:ResourceLoadedEvent) : void {
+         var group:XML = null;
+         var uri:Uri = null;
+         this._loader.removeEventListener(ResourceLoadedEvent.LOADED,this.onXmlLoaded);
+         this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onSubXmlLoaded);
+         this._loader.addEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE,this.onAllSubXmlLoaded);
+         var folder:String = FileUtils.getFilePath(e.uri.uri);
+         var xml:XML = e.resource as XML;
+         var subXml:Array = new Array();
+         for each (group in xml..group)
+         {
+            uri=new Uri(folder+"/"+group.@id.toString()+".xml");
+            uri.tag=parseInt(group.@id.toString());
+            subXml.push(uri);
+         }
+         this._loader.load(subXml);
+      }
+
+      private function onSubXmlLoaded(e:ResourceLoadedEvent) : void {
+         var className:String = null;
+         var file:XML = null;
+         var animClass:XML = null;
+         var animInfo:Array = null;
+         var xml:XML = e.resource as XML;
+         for each (file in xml..file)
+         {
+            for each (animClass in file..resource)
             {
-                this._transitions[param1] = new Dictionary();
+               className=animClass.@name.toString();
+               if(className.indexOf("Anim")!=-1)
+               {
+                  if(!this._index[e.uri.tag])
+                  {
+                     this._index[e.uri.tag]=new Dictionary();
+                  }
+                  this._index[e.uri.tag][className]=file.@name.toString();
+                  if(className.indexOf("_to_")!=-1)
+                  {
+                     animInfo=className.split("_");
+                     _self.addTransition(e.uri.tag,animInfo[0],animInfo[2],parseInt(animInfo[3]),animInfo[0]+"_to_"+animInfo[2]);
+                  }
+               }
             }
-            this._transitions[param1][param2 + "_" + param3 + "_" + param4] = param5;
-            return;
-        }// end function
+         }
+      }
 
-        public function hasTransition(param1:uint, param2:String, param3:String, param4:uint) : Boolean
-        {
-            if (this._animNameModifier != null)
-            {
-                param2 = this._animNameModifier(param1, param2);
-                param3 = this._animNameModifier(param1, param3);
-            }
-            return this._transitions[param1] && (this._transitions[param1][param2 + "_" + param3 + "_" + param4] != null || this._transitions[param1][param2 + "_" + param3 + "_" + TiphonUtility.getFlipDirection(param4)] != null);
-        }// end function
+      private function onXmlFailed(e:ResourceErrorEvent) : void {
+         _log.error("Impossible de charger ou parser le fichier d\'index d\'animation : "+e.uri);
+      }
 
-        public function getTransition(param1:uint, param2:String, param3:String, param4:uint) : String
-        {
-            if (this._animNameModifier != null)
-            {
-                param2 = this._animNameModifier(param1, param2);
-                param3 = this._animNameModifier(param1, param3);
-            }
-            if (!this._transitions[param1])
-            {
-                return null;
-            }
-            if (this._transitions[param1][param2 + "_" + param3 + "_" + param4])
-            {
-                return this._transitions[param1][param2 + "_" + param3 + "_" + param4];
-            }
-            return this._transitions[param1][param2 + "_" + param3 + "_" + TiphonUtility.getFlipDirection(param4)];
-        }// end function
+      private function onAllSubXmlLoaded(e:ResourceLoaderProgressEvent) : void {
+         this._loader=null;
+         dispatchEvent(new Event(Event.INIT));
+      }
+   }
 
-        public function getBoneFile(param1:uint, param2:String) : Uri
-        {
-            if (!this._index[param1] || !this._index[param1][param2])
-            {
-                return new Uri(TiphonConstants.SWF_SKULL_PATH + param1 + ".swl");
-            }
-            return new Uri(TiphonConstants.SWF_SKULL_PATH + this._index[param1][param2]);
-        }// end function
-
-        public function hasAnim(param1:uint, param2:String, param3:int) : Boolean
-        {
-            return this._index[param1] && this._index[param1][param2];
-        }// end function
-
-        public function hasCustomBone(param1:uint) : Boolean
-        {
-            return this._index[param1];
-        }// end function
-
-        public function getAllCustomAnimations(param1:int) : Array
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = this._index[param1];
-            if (!_loc_2)
-            {
-                return null;
-            }
-            var _loc_3:* = new Array();
-            for (_loc_4 in _loc_2)
-            {
-                
-                _loc_3.push(_loc_4);
-            }
-            return _loc_3;
-        }// end function
-
-        private function onXmlLoaded(event:ResourceLoadedEvent) : void
-        {
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            this._loader.removeEventListener(ResourceLoadedEvent.LOADED, this.onXmlLoaded);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onSubXmlLoaded);
-            this._loader.addEventListener(ResourceLoaderProgressEvent.LOADER_COMPLETE, this.onAllSubXmlLoaded);
-            var _loc_2:* = FileUtils.getFilePath(event.uri.uri);
-            var _loc_3:* = event.resource as XML;
-            var _loc_4:* = new Array();
-            for each (_loc_5 in _loc_3..group)
-            {
-                
-                _loc_6 = new Uri(_loc_2 + "/" + _loc_5.@id.toString() + ".xml");
-                _loc_6.tag = parseInt(_loc_5.@id.toString());
-                _loc_4.push(_loc_6);
-            }
-            this._loader.load(_loc_4);
-            return;
-        }// end function
-
-        private function onSubXmlLoaded(event:ResourceLoadedEvent) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_2:* = event.resource as XML;
-            for each (_loc_4 in _loc_2..file)
-            {
-                
-                for each (_loc_5 in _loc_4..resource)
-                {
-                    
-                    _loc_3 = _loc_5.@name.toString();
-                    if (_loc_3.indexOf("Anim") != -1)
-                    {
-                        if (!this._index[event.uri.tag])
-                        {
-                            this._index[event.uri.tag] = new Dictionary();
-                        }
-                        this._index[event.uri.tag][_loc_3] = _loc_4.@name.toString();
-                        if (_loc_3.indexOf("_to_") != -1)
-                        {
-                            _loc_6 = _loc_3.split("_");
-                            _self.addTransition(event.uri.tag, _loc_6[0], _loc_6[2], parseInt(_loc_6[3]), _loc_6[0] + "_to_" + _loc_6[2]);
-                        }
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        private function onXmlFailed(event:ResourceErrorEvent) : void
-        {
-            _log.error("Impossible de charger ou parser le fichier d\'index d\'animation : " + event.uri);
-            return;
-        }// end function
-
-        private function onAllSubXmlLoaded(event:ResourceLoaderProgressEvent) : void
-        {
-            this._loader = null;
-            dispatchEvent(new Event(Event.INIT));
-            return;
-        }// end function
-
-        public static function getInstance() : BoneIndexManager
-        {
-            if (!_self)
-            {
-                _self = new BoneIndexManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

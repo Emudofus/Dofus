@@ -1,34 +1,41 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.social
+package com.ankamagames.dofus.logic.game.common.actions.social
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ChatReportAction extends Object implements Action
-    {
-        public var reportedId:uint;
-        public var reason:uint;
-        public var channel:uint;
-        public var timestamp:Number;
-        public var fingerprint:String;
-        public var message:String;
-        public var name:String;
 
-        public function ChatReportAction()
-        {
-            return;
-        }// end function
+   public class ChatReportAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint, param3:String, param4:uint, param5:String, param6:String, param7:Number) : ChatReportAction
-        {
-            var _loc_8:* = new ChatReportAction;
-            new ChatReportAction.reportedId = param1;
-            _loc_8.reason = param2;
-            _loc_8.channel = param4;
-            _loc_8.timestamp = param7;
-            _loc_8.fingerprint = param5;
-            _loc_8.message = param6;
-            _loc_8.name = param3;
-            return _loc_8;
-        }// end function
+      public function ChatReportAction() {
+         super();
+      }
 
-    }
+      public static function create(reportedId:uint, reason:uint, name:String, channel:uint, fingerprint:String, message:String, timestamp:Number) : ChatReportAction {
+         var a:ChatReportAction = new ChatReportAction();
+         a.reportedId=reportedId;
+         a.reason=reason;
+         a.channel=channel;
+         a.timestamp=timestamp;
+         a.fingerprint=fingerprint;
+         a.message=message;
+         a.name=name;
+         return a;
+      }
+
+      public var reportedId:uint;
+
+      public var reason:uint;
+
+      public var channel:uint;
+
+      public var timestamp:Number;
+
+      public var fingerprint:String;
+
+      public var message:String;
+
+      public var name:String;
+   }
+
 }

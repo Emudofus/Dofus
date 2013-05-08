@@ -1,15 +1,20 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    final public class TextJustify extends Object
-    {
-        public static const DISTRIBUTE:String = "distribute";
-        public static const INTER_WORD:String = "interWord";
 
-        public function TextJustify()
-        {
-            return;
-        }// end function
+   public final class TextJustify extends Object
+   {
+         
 
-    }
+      public function TextJustify() {
+         super();
+      }
+
+      public static const DISTRIBUTE:String = "distribute";
+
+      public static const INTER_WORD:String = "interWord";
+
+
+   }
+
 }

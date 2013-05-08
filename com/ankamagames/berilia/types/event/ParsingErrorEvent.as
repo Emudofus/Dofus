@@ -1,30 +1,31 @@
-﻿package com.ankamagames.berilia.types.event
+package com.ankamagames.berilia.types.event
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class ParsingErrorEvent extends Event
-    {
-        private var _url:String;
-        private var _msg:String;
-        public static const ERROR:String = "ParsingErrorEvent_Error";
 
-        public function ParsingErrorEvent(param1:String, param2:String)
-        {
-            super(ERROR);
-            this._url = param1;
-            this._msg = param2;
-            return;
-        }// end function
+   public class ParsingErrorEvent extends Event
+   {
+         
 
-        public function get url() : String
-        {
-            return this._url;
-        }// end function
+      public function ParsingErrorEvent(url:String, msg:String) {
+         super(ERROR);
+         this._url=url;
+         this._msg=msg;
+      }
 
-        public function get msg() : String
-        {
-            return this._msg;
-        }// end function
+      public static const ERROR:String = "ParsingErrorEvent_Error";
 
-    }
+      private var _url:String;
+
+      private var _msg:String;
+
+      public function get url() : String {
+         return this._url;
+      }
+
+      public function get msg() : String {
+         return this._msg;
+      }
+   }
+
 }

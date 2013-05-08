@@ -1,12 +1,14 @@
-﻿package mx.core
+package mx.core
 {
 
-    public interface IBorder
-    {
 
-        public function IBorder();
+   public interface IBorder
+   {
+         
 
-        function get borderMetrics() : EdgeMetrics;
 
-    }
+
+      function get borderMetrics() : EdgeMetrics;
+   }
+
 }

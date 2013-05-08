@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.fight.actions
+package com.ankamagames.dofus.logic.game.fight.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ToggleLockFightAction extends Object implements Action
-    {
 
-        public function ToggleLockFightAction()
-        {
-            return;
-        }// end function
+   public class ToggleLockFightAction extends Object implements Action
+   {
+         
 
-        public static function create() : ToggleLockFightAction
-        {
-            var _loc_1:* = new ToggleLockFightAction;
-            return _loc_1;
-        }// end function
+      public function ToggleLockFightAction() {
+         super();
+      }
 
-    }
+      public static function create() : ToggleLockFightAction {
+         var a:ToggleLockFightAction = new ToggleLockFightAction();
+         return a;
+      }
+
+
+   }
+
 }

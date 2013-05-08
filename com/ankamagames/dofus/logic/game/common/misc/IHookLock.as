@@ -1,15 +1,17 @@
-﻿package com.ankamagames.dofus.logic.game.common.misc
+package com.ankamagames.dofus.logic.game.common.misc
 {
-    import com.ankamagames.berilia.types.data.*;
+   import com.ankamagames.berilia.types.data.Hook;
 
-    public interface IHookLock
-    {
 
-        public function IHookLock();
+   public interface IHookLock
+   {
+         
 
-        function addHook(param1:Hook, param2:Array) : void;
 
-        function release() : void;
 
-    }
+      function addHook(param1:Hook, param2:Array) : void;
+
+      function release() : void;
+   }
+
 }

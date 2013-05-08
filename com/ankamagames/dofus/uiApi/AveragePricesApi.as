@@ -1,72 +1,71 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.dofus.logic.game.common.frames.AveragePricesFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.jerakine.utils.misc.StringUtils;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class AveragePricesApi extends Object implements IApi
-    {
-        protected var _log:Logger;
-        private var _module:UiModule;
 
-        public function AveragePricesApi()
-        {
-            this._log = Log.getLogger(getQualifiedClassName(AveragePricesApi));
-            return;
-        }// end function
+   public class AveragePricesApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function AveragePricesApi() {
+         this._log=Log.getLogger(getQualifiedClassName(AveragePricesApi));
+         super();
+      }
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
 
-        public function getItemAveragePrice(param1:uint) : int
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            if (this.dataAvailable())
+
+      protected var _log:Logger;
+
+      private var _module:UiModule;
+
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
+
+      public function destroy() : void {
+         this._module=null;
+      }
+
+      public function getItemAveragePrice(pItemId:uint) : int {
+         var avgPrice:* = 0;
+         var avgPricesFrame:AveragePricesFrame = null;
+         if(this.dataAvailable())
+         {
+            avgPricesFrame=Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
+            avgPrice=avgPricesFrame.pricesData.items["item"+pItemId];
+         }
+         return avgPrice;
+      }
+
+      public function getItemAveragePriceString(pItem:*, pAddLineBreakBefore:Boolean=false) : String {
+         var averagePrice:* = 0;
+         var priceAvailable:* = false;
+         var str:String = "";
+         if(pItem.isTradeable)
+         {
+            averagePrice=this.getItemAveragePrice(pItem.objectGID);
+            priceAvailable=averagePrice<0;
+            str=str+((pAddLineBreakBefore?"\n":"")+I18n.getUiText("ui.item.averageprice")+" : "+(priceAvailable?StringUtils.kamasToString(averagePrice):I18n.getUiText("ui.item.averageprice.unavailable")));
+            if((priceAvailable)&&(pItem.quantity<1))
             {
-                _loc_3 = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
-                _loc_2 = _loc_3.pricesData.items["item" + param1];
+               str=str+("\n"+I18n.getUiText("ui.item.averageprice.stack")+" : "+StringUtils.kamasToString(averagePrice*pItem.quantity));
             }
-            return _loc_2;
-        }// end function
+         }
+         return str;
+      }
 
-        public function getItemAveragePriceString(param1, param2:Boolean = false) : String
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = false;
-            var _loc_3:* = "";
-            if (param1.isTradeable)
-            {
-                _loc_4 = this.getItemAveragePrice(param1.objectGID);
-                _loc_5 = _loc_4 > 0;
-                _loc_3 = _loc_3 + ((param2 ? ("\n") : ("")) + I18n.getUiText("ui.item.averageprice") + " : " + (_loc_5 ? (StringUtils.kamasToString(_loc_4)) : (I18n.getUiText("ui.item.averageprice.unavailable"))));
-                if (_loc_5 && param1.quantity > 1)
-                {
-                    _loc_3 = _loc_3 + ("\n" + I18n.getUiText("ui.item.averageprice.stack") + " : " + StringUtils.kamasToString(_loc_4 * param1.quantity));
-                }
-            }
-            return _loc_3;
-        }// end function
+      public function dataAvailable() : Boolean {
+         var avgPricesFrame:AveragePricesFrame = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
+         return avgPricesFrame.dataAvailable;
+      }
+   }
 
-        public function dataAvailable() : Boolean
-        {
-            var _loc_1:* = Kernel.getWorker().getFrame(AveragePricesFrame) as AveragePricesFrame;
-            return _loc_1.dataAvailable;
-        }// end function
-
-    }
 }

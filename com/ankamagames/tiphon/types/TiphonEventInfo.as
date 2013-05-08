@@ -1,103 +1,98 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
 
-    public class TiphonEventInfo extends Object
-    {
-        public var type:String;
-        private var _label:String;
-        private var _sprite:Object;
-        private var _params:String;
-        private var _animationType:String;
-        private var _direction:int = -1;
 
-        public function TiphonEventInfo(param1:String, param2:String = "")
-        {
-            this.type = param1;
-            this._params = param2;
-            return;
-        }// end function
+   public class TiphonEventInfo extends Object
+   {
+         
 
-        public function set label(param1:String) : void
-        {
-            this._label = param1;
-            return;
-        }// end function
+      public function TiphonEventInfo(pType:String, pParams:String="") {
+         super();
+         this.type=pType;
+         this._params=pParams;
+      }
 
-        public function get label() : String
-        {
-            return this._label;
-        }// end function
 
-        public function get sprite()
-        {
-            return this._sprite;
-        }// end function
 
-        public function get params() : String
-        {
-            return this._params;
-        }// end function
+      public var type:String;
 
-        public function get animationType() : String
-        {
-            if (this._animationType == null)
+      private var _label:String;
+
+      private var _sprite;
+
+      private var _params:String;
+
+      private var _animationType:String;
+
+      private var _direction:int = -1;
+
+      public function set label(pLabel:String) : void {
+         this._label=pLabel;
+      }
+
+      public function get label() : String {
+         return this._label;
+      }
+
+      public function get sprite() : * {
+         return this._sprite;
+      }
+
+      public function get params() : String {
+         return this._params;
+      }
+
+      public function get animationType() : String {
+         if(this._animationType==null)
+         {
+            return "undefined";
+         }
+         return this._animationType;
+      }
+
+      public function get direction() : int {
+         return this._direction;
+      }
+
+      public function get animationName() : String {
+         return this._animationType+"_"+this._direction;
+      }
+
+      public function set animationName(pAnimationName:String) : void {
+         var splited:Array = pAnimationName.split("_");
+         var size:uint = splited.length;
+         this._animationType="";
+         var i:uint = 0;
+         while(i<size-1)
+         {
+            if(i>0)
             {
-                return "undefined";
+               this._animationType=this._animationType+("_"+splited[i]);
             }
-            return this._animationType;
-        }// end function
-
-        public function get direction() : int
-        {
-            return this._direction;
-        }// end function
-
-        public function get animationName() : String
-        {
-            return this._animationType + "_" + this._direction;
-        }// end function
-
-        public function set animationName(param1:String) : void
-        {
-            var _loc_2:* = param1.split("_");
-            var _loc_3:* = _loc_2.length;
-            this._animationType = "";
-            var _loc_4:* = 0;
-            while (_loc_4 < (_loc_3 - 1))
+            else
             {
-                
-                if (_loc_4 > 0)
-                {
-                    this._animationType = this._animationType + ("_" + _loc_2[_loc_4]);
-                }
-                else
-                {
-                    this._animationType = _loc_2[_loc_4];
-                }
-                _loc_4 = _loc_4 + 1;
+               this._animationType=splited[i];
             }
-            this._direction = _loc_2[(_loc_2.length - 1)];
-            if (this._direction == 3)
-            {
-                this._direction = 1;
-            }
-            if (this._direction == 7)
-            {
-                this._direction = 5;
-            }
-            return;
-        }// end function
+            i++;
+         }
+         this._direction=splited[splited.length-1];
+         if(this._direction==3)
+         {
+            this._direction=1;
+         }
+         if(this._direction==7)
+         {
+            this._direction=5;
+         }
+      }
 
-        public function duplicate() : TiphonEventInfo
-        {
-            return new TiphonEventInfo(this.type, this._params);
-        }// end function
+      public function duplicate() : TiphonEventInfo {
+         return new TiphonEventInfo(this.type,this._params);
+      }
 
-        public function destroy() : void
-        {
-            this._sprite = null;
-            return;
-        }// end function
+      public function destroy() : void {
+         this._sprite=null;
+      }
+   }
 
-    }
 }

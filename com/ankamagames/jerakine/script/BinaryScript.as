@@ -1,24 +1,28 @@
-﻿package com.ankamagames.jerakine.script
+package com.ankamagames.jerakine.script
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public class BinaryScript extends Object
-    {
-        private var _data:ByteArray;
-        public var path:String;
 
-        public function BinaryScript(param1:ByteArray, param2:String)
-        {
-            this._data = param1;
-            this.path = param2;
-            return;
-        }// end function
+   public class BinaryScript extends Object
+   {
+         
 
-        public function get data() : ByteArray
-        {
-            this._data.position = 0;
-            return this._data;
-        }// end function
+      public function BinaryScript(data:ByteArray, path:String) {
+         super();
+         this._data=data;
+         this.path=path;
+      }
 
-    }
+
+
+      private var _data:ByteArray;
+
+      public function get data() : ByteArray {
+         this._data.position=0;
+         return this._data;
+      }
+
+      public var path:String;
+   }
+
 }

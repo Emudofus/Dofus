@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.tinsel
+package com.ankamagames.dofus.logic.game.common.actions.tinsel
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OrnamentSelectRequestAction extends Object implements Action
-    {
-        public var ornamentId:int;
 
-        public function OrnamentSelectRequestAction()
-        {
-            return;
-        }// end function
+   public class OrnamentSelectRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : OrnamentSelectRequestAction
-        {
-            var _loc_2:* = new OrnamentSelectRequestAction;
-            _loc_2.ornamentId = param1;
-            return _loc_2;
-        }// end function
+      public function OrnamentSelectRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(ornamentId:int) : OrnamentSelectRequestAction {
+         var action:OrnamentSelectRequestAction = new OrnamentSelectRequestAction();
+         action.ornamentId=ornamentId;
+         return action;
+      }
+
+      public var ornamentId:int;
+   }
+
 }

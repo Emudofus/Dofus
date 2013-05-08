@@ -1,188 +1,213 @@
-﻿package com.ankamagames.dofus.network.messages.game.prism
+package com.ankamagames.dofus.network.messages.game.prism
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.prism.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.prism.PrismSubAreaInformation;
+   import com.ankamagames.dofus.network.types.game.prism.VillageConquestPrismInformation;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PrismWorldInformationMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var nbSubOwned:uint = 0;
-        public var subTotal:uint = 0;
-        public var maxSub:uint = 0;
-        public var subAreasInformation:Vector.<PrismSubAreaInformation>;
-        public var nbConqsOwned:uint = 0;
-        public var conqsTotal:uint = 0;
-        public var conquetesInformation:Vector.<VillageConquestPrismInformation>;
-        public static const protocolId:uint = 5854;
 
-        public function PrismWorldInformationMessage()
-        {
-            this.subAreasInformation = new Vector.<PrismSubAreaInformation>;
-            this.conquetesInformation = new Vector.<VillageConquestPrismInformation>;
-            return;
-        }// end function
+   public class PrismWorldInformationMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PrismWorldInformationMessage() {
+         this.subAreasInformation=new Vector.<PrismSubAreaInformation>();
+         this.conquetesInformation=new Vector.<VillageConquestPrismInformation>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5854;
-        }// end function
+      public static const protocolId:uint = 5854;
 
-        public function initPrismWorldInformationMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0, param4:Vector.<PrismSubAreaInformation> = null, param5:uint = 0, param6:uint = 0, param7:Vector.<VillageConquestPrismInformation> = null) : PrismWorldInformationMessage
-        {
-            this.nbSubOwned = param1;
-            this.subTotal = param2;
-            this.maxSub = param3;
-            this.subAreasInformation = param4;
-            this.nbConqsOwned = param5;
-            this.conqsTotal = param6;
-            this.conquetesInformation = param7;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.nbSubOwned = 0;
-            this.subTotal = 0;
-            this.maxSub = 0;
-            this.subAreasInformation = new Vector.<PrismSubAreaInformation>;
-            this.nbConqsOwned = 0;
-            this.conqsTotal = 0;
-            this.conquetesInformation = new Vector.<VillageConquestPrismInformation>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var nbSubOwned:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var subTotal:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PrismWorldInformationMessage(param1);
-            return;
-        }// end function
+      public var maxSub:uint = 0;
 
-        public function serializeAs_PrismWorldInformationMessage(param1:IDataOutput) : void
-        {
-            if (this.nbSubOwned < 0)
-            {
-                throw new Error("Forbidden value (" + this.nbSubOwned + ") on element nbSubOwned.");
-            }
-            param1.writeInt(this.nbSubOwned);
-            if (this.subTotal < 0)
-            {
-                throw new Error("Forbidden value (" + this.subTotal + ") on element subTotal.");
-            }
-            param1.writeInt(this.subTotal);
-            if (this.maxSub < 0)
-            {
-                throw new Error("Forbidden value (" + this.maxSub + ") on element maxSub.");
-            }
-            param1.writeInt(this.maxSub);
-            param1.writeShort(this.subAreasInformation.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.subAreasInformation.length)
-            {
-                
-                (this.subAreasInformation[_loc_2] as PrismSubAreaInformation).serializeAs_PrismSubAreaInformation(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            if (this.nbConqsOwned < 0)
-            {
-                throw new Error("Forbidden value (" + this.nbConqsOwned + ") on element nbConqsOwned.");
-            }
-            param1.writeInt(this.nbConqsOwned);
-            if (this.conqsTotal < 0)
-            {
-                throw new Error("Forbidden value (" + this.conqsTotal + ") on element conqsTotal.");
-            }
-            param1.writeInt(this.conqsTotal);
-            param1.writeShort(this.conquetesInformation.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.conquetesInformation.length)
-            {
-                
-                (this.conquetesInformation[_loc_3] as VillageConquestPrismInformation).serializeAs_VillageConquestPrismInformation(param1);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      public var subAreasInformation:Vector.<PrismSubAreaInformation>;
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PrismWorldInformationMessage(param1);
-            return;
-        }// end function
+      public var nbConqsOwned:uint = 0;
 
-        public function deserializeAs_PrismWorldInformationMessage(param1:IDataInput) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            this.nbSubOwned = param1.readInt();
-            if (this.nbSubOwned < 0)
-            {
-                throw new Error("Forbidden value (" + this.nbSubOwned + ") on element of PrismWorldInformationMessage.nbSubOwned.");
-            }
-            this.subTotal = param1.readInt();
-            if (this.subTotal < 0)
-            {
-                throw new Error("Forbidden value (" + this.subTotal + ") on element of PrismWorldInformationMessage.subTotal.");
-            }
-            this.maxSub = param1.readInt();
-            if (this.maxSub < 0)
-            {
-                throw new Error("Forbidden value (" + this.maxSub + ") on element of PrismWorldInformationMessage.maxSub.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_6 = new PrismSubAreaInformation();
-                _loc_6.deserialize(param1);
-                this.subAreasInformation.push(_loc_6);
-                _loc_3 = _loc_3 + 1;
-            }
-            this.nbConqsOwned = param1.readInt();
-            if (this.nbConqsOwned < 0)
-            {
-                throw new Error("Forbidden value (" + this.nbConqsOwned + ") on element of PrismWorldInformationMessage.nbConqsOwned.");
-            }
-            this.conqsTotal = param1.readInt();
-            if (this.conqsTotal < 0)
-            {
-                throw new Error("Forbidden value (" + this.conqsTotal + ") on element of PrismWorldInformationMessage.conqsTotal.");
-            }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_7 = new VillageConquestPrismInformation();
-                _loc_7.deserialize(param1);
-                this.conquetesInformation.push(_loc_7);
-                _loc_5 = _loc_5 + 1;
-            }
-            return;
-        }// end function
+      public var conqsTotal:uint = 0;
 
-    }
+      public var conquetesInformation:Vector.<VillageConquestPrismInformation>;
+
+      override public function getMessageId() : uint {
+         return 5854;
+      }
+
+      public function initPrismWorldInformationMessage(nbSubOwned:uint=0, subTotal:uint=0, maxSub:uint=0, subAreasInformation:Vector.<PrismSubAreaInformation>=null, nbConqsOwned:uint=0, conqsTotal:uint=0, conquetesInformation:Vector.<VillageConquestPrismInformation>=null) : PrismWorldInformationMessage {
+         this.nbSubOwned=nbSubOwned;
+         this.subTotal=subTotal;
+         this.maxSub=maxSub;
+         this.subAreasInformation=subAreasInformation;
+         this.nbConqsOwned=nbConqsOwned;
+         this.conqsTotal=conqsTotal;
+         this.conquetesInformation=conquetesInformation;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.nbSubOwned=0;
+         this.subTotal=0;
+         this.maxSub=0;
+         this.subAreasInformation=new Vector.<PrismSubAreaInformation>();
+         this.nbConqsOwned=0;
+         this.conqsTotal=0;
+         this.conquetesInformation=new Vector.<VillageConquestPrismInformation>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PrismWorldInformationMessage(output);
+      }
+
+      public function serializeAs_PrismWorldInformationMessage(output:IDataOutput) : void {
+         if(this.nbSubOwned<0)
+         {
+            throw new Error("Forbidden value ("+this.nbSubOwned+") on element nbSubOwned.");
+         }
+         else
+         {
+            output.writeInt(this.nbSubOwned);
+            if(this.subTotal<0)
+            {
+               throw new Error("Forbidden value ("+this.subTotal+") on element subTotal.");
+            }
+            else
+            {
+               output.writeInt(this.subTotal);
+               if(this.maxSub<0)
+               {
+                  throw new Error("Forbidden value ("+this.maxSub+") on element maxSub.");
+               }
+               else
+               {
+                  output.writeInt(this.maxSub);
+                  output.writeShort(this.subAreasInformation.length);
+                  _i4=0;
+                  while(_i4<this.subAreasInformation.length)
+                  {
+                     (this.subAreasInformation[_i4] as PrismSubAreaInformation).serializeAs_PrismSubAreaInformation(output);
+                     _i4++;
+                  }
+                  if(this.nbConqsOwned<0)
+                  {
+                     throw new Error("Forbidden value ("+this.nbConqsOwned+") on element nbConqsOwned.");
+                  }
+                  else
+                  {
+                     output.writeInt(this.nbConqsOwned);
+                     if(this.conqsTotal<0)
+                     {
+                        throw new Error("Forbidden value ("+this.conqsTotal+") on element conqsTotal.");
+                     }
+                     else
+                     {
+                        output.writeInt(this.conqsTotal);
+                        output.writeShort(this.conquetesInformation.length);
+                        _i7=0;
+                        while(_i7<this.conquetesInformation.length)
+                        {
+                           (this.conquetesInformation[_i7] as VillageConquestPrismInformation).serializeAs_VillageConquestPrismInformation(output);
+                           _i7++;
+                        }
+                        return;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PrismWorldInformationMessage(input);
+      }
+
+      public function deserializeAs_PrismWorldInformationMessage(input:IDataInput) : void {
+         var _item4:PrismSubAreaInformation = null;
+         var _item7:VillageConquestPrismInformation = null;
+         this.nbSubOwned=input.readInt();
+         if(this.nbSubOwned<0)
+         {
+            throw new Error("Forbidden value ("+this.nbSubOwned+") on element of PrismWorldInformationMessage.nbSubOwned.");
+         }
+         else
+         {
+            this.subTotal=input.readInt();
+            if(this.subTotal<0)
+            {
+               throw new Error("Forbidden value ("+this.subTotal+") on element of PrismWorldInformationMessage.subTotal.");
+            }
+            else
+            {
+               this.maxSub=input.readInt();
+               if(this.maxSub<0)
+               {
+                  throw new Error("Forbidden value ("+this.maxSub+") on element of PrismWorldInformationMessage.maxSub.");
+               }
+               else
+               {
+                  _subAreasInformationLen=input.readUnsignedShort();
+                  _i4=0;
+                  while(_i4<_subAreasInformationLen)
+                  {
+                     _item4=new PrismSubAreaInformation();
+                     _item4.deserialize(input);
+                     this.subAreasInformation.push(_item4);
+                     _i4++;
+                  }
+                  this.nbConqsOwned=input.readInt();
+                  if(this.nbConqsOwned<0)
+                  {
+                     throw new Error("Forbidden value ("+this.nbConqsOwned+") on element of PrismWorldInformationMessage.nbConqsOwned.");
+                  }
+                  else
+                  {
+                     this.conqsTotal=input.readInt();
+                     if(this.conqsTotal<0)
+                     {
+                        throw new Error("Forbidden value ("+this.conqsTotal+") on element of PrismWorldInformationMessage.conqsTotal.");
+                     }
+                     else
+                     {
+                        _conquetesInformationLen=input.readUnsignedShort();
+                        _i7=0;
+                        while(_i7<_conquetesInformationLen)
+                        {
+                           _item7=new VillageConquestPrismInformation();
+                           _item7.deserialize(input);
+                           this.conquetesInformation.push(_item7);
+                           _i7++;
+                        }
+                        return;
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
 }

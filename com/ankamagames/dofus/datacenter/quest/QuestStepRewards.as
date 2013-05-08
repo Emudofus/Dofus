@@ -1,35 +1,43 @@
-﻿package com.ankamagames.dofus.datacenter.quest
+package com.ankamagames.dofus.datacenter.quest
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
+   import __AS3__.vec.Vector;
 
-    public class QuestStepRewards extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var stepId:uint;
-        public var levelMin:int;
-        public var levelMax:int;
-        public var itemsReward:Vector.<Vector.<uint>>;
-        public var emotesReward:Vector.<uint>;
-        public var jobsReward:Vector.<uint>;
-        public var spellsReward:Vector.<uint>;
-        private static const MODULE:String = "QuestStepRewards";
 
-        public function QuestStepRewards()
-        {
-            return;
-        }// end function
+   public class QuestStepRewards extends Object implements IDataCenter
+   {
+         
 
-        public static function getQuestStepRewardsById(param1:int) : QuestStepRewards
-        {
-            return GameData.getObject(MODULE, param1) as QuestStepRewards;
-        }// end function
+      public function QuestStepRewards() {
+         super();
+      }
 
-        public static function getQuestStepRewards() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static const MODULE:String = "QuestStepRewards";
 
-    }
+      public static function getQuestStepRewardsById(id:int) : QuestStepRewards {
+         return GameData.getObject(MODULE,id) as QuestStepRewards;
+      }
+
+      public static function getQuestStepRewards() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var stepId:uint;
+
+      public var levelMin:int;
+
+      public var levelMax:int;
+
+      public var itemsReward:Vector.<Vector.<uint>>;
+
+      public var emotesReward:Vector.<uint>;
+
+      public var jobsReward:Vector.<uint>;
+
+      public var spellsReward:Vector.<uint>;
+   }
+
 }

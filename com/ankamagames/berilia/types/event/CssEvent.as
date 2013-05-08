@@ -1,24 +1,25 @@
-﻿package com.ankamagames.berilia.types.event
+package com.ankamagames.berilia.types.event
 {
-    import com.ankamagames.berilia.types.data.*;
-    import flash.events.*;
+   import flash.events.Event;
+   import com.ankamagames.berilia.types.data.ExtendedStyleSheet;
 
-    public class CssEvent extends Event
-    {
-        private var _stylesheet:ExtendedStyleSheet;
-        public static const CSS_PARSED:String = "event_css_parsed";
 
-        public function CssEvent(param1:String, param2:Boolean = false, param3:Boolean = false, param4:ExtendedStyleSheet = null)
-        {
-            super(param1, param2, param3);
-            this._stylesheet = param4;
-            return;
-        }// end function
+   public class CssEvent extends Event
+   {
+         
 
-        public function get stylesheet() : ExtendedStyleSheet
-        {
-            return this._stylesheet;
-        }// end function
+      public function CssEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, stylesheet:ExtendedStyleSheet=null) {
+         super(type,bubbles,cancelable);
+         this._stylesheet=stylesheet;
+      }
 
-    }
+      public static const CSS_PARSED:String = "event_css_parsed";
+
+      private var _stylesheet:ExtendedStyleSheet;
+
+      public function get stylesheet() : ExtendedStyleSheet {
+         return this._stylesheet;
+      }
+   }
+
 }

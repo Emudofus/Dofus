@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.guild
+package com.ankamagames.dofus.logic.game.common.actions.guild
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuildInvitationByNameAction extends Object implements Action
-    {
-        public var target:String;
 
-        public function GuildInvitationByNameAction()
-        {
-            return;
-        }// end function
+   public class GuildInvitationByNameAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : GuildInvitationByNameAction
-        {
-            var _loc_2:* = new GuildInvitationByNameAction;
-            _loc_2.target = param1;
-            return _loc_2;
-        }// end function
+      public function GuildInvitationByNameAction() {
+         super();
+      }
 
-    }
+      public static function create(pTarget:String) : GuildInvitationByNameAction {
+         var action:GuildInvitationByNameAction = new GuildInvitationByNameAction();
+         action.target=pTarget;
+         return action;
+      }
+
+      public var target:String;
+   }
+
 }

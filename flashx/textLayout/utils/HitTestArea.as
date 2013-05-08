@@ -1,168 +1,185 @@
-﻿package flashx.textLayout.utils
+package flashx.textLayout.utils
 {
-    import flash.geom.*;
-    import flashx.textLayout.elements.*;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.elements.FlowElement;
+   import flashx.textLayout.tlf_internal;
 
-    public class HitTestArea extends Object
-    {
-        private var tl:HitTestArea = null;
-        private var tr:HitTestArea = null;
-        private var bl:HitTestArea = null;
-        private var br:HitTestArea = null;
-        private var _rect:Rectangle;
-        private var _xm:Number;
-        private var _ym:Number;
-        private var _owner:FlowElement = null;
+   use namespace tlf_internal;
 
-        public function HitTestArea(param1:Object)
-        {
-            this.initialize(param1);
+   public class HitTestArea extends Object
+   {
+         
+
+      public function HitTestArea(objects:Object) {
+         super();
+         this.initialize(objects);
+      }
+
+
+
+      private var tl:HitTestArea = null;
+
+      private var tr:HitTestArea = null;
+
+      private var bl:HitTestArea = null;
+
+      private var br:HitTestArea = null;
+
+      private var _rect:Rectangle;
+
+      private var _xm:Number;
+
+      private var _ym:Number;
+
+      private var _owner:FlowElement = null;
+
+      tlf_internal function initialize(objects:Object) : void {
+         var obj:Object = null;
+         var r:Rectangle = null;
+         var quadrant:Rectangle = null;
+         var dxLower:* = NaN;
+         var dxUpper:* = NaN;
+         var dyLower:* = NaN;
+         var dyUpper:* = NaN;
+         var count:int = 0;
+         if(objects)
+         {
+            for (obj in objects)
+            {
+               if(++count>1)
+               {
+                  break;
+               }
+            }
+         }
+         if(count==0)
+         {
+            this._rect=new Rectangle();
+            this._xm=this._ym=0;
             return;
-        }// end function
+         }
+         if(count==1)
+         {
+            if(!(objects hasNext _loc10_))
+            {
+            }
+            else
+            {
+               obj=nextValue(_loc10_,_loc11_);
+               this._rect=obj.rect;
+               this._xm=this._rect.left;
+               this._ym=this._rect.top;
+               this._owner=obj.owner;
+               return;
+            }
+         }
+         for each (obj in objects)
+         {
+            r=obj.rect;
+            if(!this._rect)
+            {
+               this._rect=r;
+            }
+            else
+            {
+               this._rect=this._rect.union(r);
+            }
+         }
+         this._xm=Math.ceil(this._rect.left+this._rect.width/2);
+         this._ym=Math.ceil(this._rect.top+this._rect.height/2);
+         if((this._rect.width<=3)||(this._rect.height<=3))
+         {
+            if(!(objects hasNext _loc10_))
+            {
+            }
+            else
+            {
+               obj=nextValue(_loc10_,_loc11_);
+               this._owner=obj.owner;
+               return;
+            }
+         }
+         for each (obj in objects)
+         {
+            r=obj.rect;
+            if(r.equals(this._rect))
+            {
+            }
+            else
+            {
+               if(r.contains(this._xm,this._ym))
+               {
+                  dxLower=this._xm-r.left;
+                  dxUpper=r.right-this._xm;
+                  dyLower=this._ym-r.top;
+                  dyUpper=r.bottom-this._ym;
+                  this._xm=dxLower>dxUpper?this._xm+dxUpper:this._xm-dxLower;
+                  this._ym=dyLower>dyUpper?this._ym+dyUpper:this._ym-dyLower;
+                  break;
+               }
+            }
+         }
+         quadrant=new Rectangle(this._rect.left,this._rect.top,this._xm-this._rect.left,this._ym-this._rect.top);
+         this.addQuadrant(objects,"tl",quadrant);
+         quadrant.left=this._xm;
+         quadrant.right=this._rect.right;
+         this.addQuadrant(objects,"tr",quadrant);
+         quadrant.left=this._rect.left;
+         quadrant.top=this._ym;
+         quadrant.right=this._xm;
+         quadrant.bottom=this._rect.bottom;
+         this.addQuadrant(objects,"bl",quadrant);
+         quadrant.left=this._xm;
+         quadrant.right=this._rect.right;
+         this.addQuadrant(objects,"br",quadrant);
+      }
 
-        function initialize(param1:Object) : void
-        {
-            var _loc_2:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = NaN;
-            var _loc_7:* = NaN;
-            var _loc_8:* = NaN;
-            var _loc_9:* = NaN;
-            var _loc_3:* = 0;
-            if (param1)
-            {
-                for (_loc_2 in param1)
-                {
-                    
-                    if (++_loc_3 > 1)
-                    {
-                        break;
-                    }
-                }
-            }
-            if (++_loc_3 == 0)
-            {
-                this._rect = new Rectangle();
-                var _loc_10:* = 0;
-                this._ym = 0;
-                this._xm = _loc_10;
-                return;
-            }
-            if (_loc_3 == 1)
-            {
-                for each (_loc_2 in param1)
-                {
-                    
-                    this._rect = _loc_2.rect;
-                    this._xm = this._rect.left;
-                    this._ym = this._rect.top;
-                    this._owner = _loc_2.owner;
-                    return;
-                }
-            }
-            for each (_loc_2 in param1)
-            {
-                
-                _loc_4 = _loc_2.rect;
-                if (!this._rect)
-                {
-                    this._rect = _loc_4;
-                    continue;
-                }
-                this._rect = this._rect.union(_loc_4);
-            }
-            this._xm = Math.ceil(this._rect.left + this._rect.width / 2);
-            this._ym = Math.ceil(this._rect.top + this._rect.height / 2);
-            if (this._rect.width <= 3 || this._rect.height <= 3)
-            {
-                for each (_loc_2 in param1)
-                {
-                    
-                    this._owner = _loc_2.owner;
-                    return;
-                }
-            }
-            for each (_loc_2 in param1)
-            {
-                
-                _loc_4 = _loc_2.rect;
-                if (_loc_4.equals(this._rect))
-                {
-                    continue;
-                }
-                if (_loc_4.contains(this._xm, this._ym))
-                {
-                    _loc_6 = this._xm - _loc_4.left;
-                    _loc_7 = _loc_4.right - this._xm;
-                    _loc_8 = this._ym - _loc_4.top;
-                    _loc_9 = _loc_4.bottom - this._ym;
-                    this._xm = _loc_6 > _loc_7 ? (this._xm + _loc_7) : (this._xm - _loc_6);
-                    this._ym = _loc_8 > _loc_9 ? (this._ym + _loc_9) : (this._ym - _loc_8);
-                    break;
-                }
-            }
-            _loc_5 = new Rectangle(this._rect.left, this._rect.top, this._xm - this._rect.left, this._ym - this._rect.top);
-            this.addQuadrant(param1, "tl", _loc_5);
-            _loc_5.left = this._xm;
-            _loc_5.right = this._rect.right;
-            this.addQuadrant(param1, "tr", _loc_5);
-            _loc_5.left = this._rect.left;
-            _loc_5.top = this._ym;
-            _loc_5.right = this._xm;
-            _loc_5.bottom = this._rect.bottom;
-            this.addQuadrant(param1, "bl", _loc_5);
-            _loc_5.left = this._xm;
-            _loc_5.right = this._rect.right;
-            this.addQuadrant(param1, "br", _loc_5);
+      public function hitTest(x:Number, y:Number) : FlowElement {
+         if(!this._rect.contains(x,y))
+         {
+            return null;
+         }
+         if(this._owner)
+         {
+            return this._owner;
+         }
+         var quadrantName:String = y<this._ym?"t":"b";
+         quadrantName=quadrantName+(x<this._xm?"l":"r");
+         var quadrant:HitTestArea = this[quadrantName];
+         if(quadrant==null)
+         {
+            return null;
+         }
+         return quadrant.hitTest(x,y);
+      }
+
+      private function addQuadrant(objects:Object, propName:String, quadrant:Rectangle) : void {
+         var obj:Object = null;
+         var intersect:Rectangle = null;
+         if(quadrant.isEmpty())
+         {
             return;
-        }// end function
+         }
+         var qrects:Object = {};
+         var i:int = 0;
+         for each (obj in objects)
+         {
+            intersect=obj.rect.intersection(quadrant);
+            if(!intersect.isEmpty())
+            {
+               qrects[i++]=
+                  {
+                     owner:obj.owner,
+                     rect:intersect
+                  }
+               ;
+            }
+         }
+         if(i>0)
+         {
+            this[propName]=new HitTestArea(qrects);
+         }
+      }
+   }
 
-        public function hitTest(param1:Number, param2:Number) : FlowElement
-        {
-            if (!this._rect.contains(param1, param2))
-            {
-                return null;
-            }
-            if (this._owner)
-            {
-                return this._owner;
-            }
-            var _loc_3:* = param2 < this._ym ? ("t") : ("b");
-            _loc_3 = _loc_3 + (param1 < this._xm ? ("l") : ("r"));
-            var _loc_4:* = this[_loc_3];
-            if (this[_loc_3] == null)
-            {
-                return null;
-            }
-            return _loc_4.hitTest(param1, param2);
-        }// end function
-
-        private function addQuadrant(param1:Object, param2:String, param3:Rectangle) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            if (param3.isEmpty())
-            {
-                return;
-            }
-            var _loc_4:* = {};
-            var _loc_5:* = 0;
-            for each (_loc_6 in param1)
-            {
-                
-                _loc_7 = _loc_6.rect.intersection(param3);
-                if (!_loc_7.isEmpty())
-                {
-                    _loc_4[++_loc_5] = {owner:_loc_6.owner, rect:_loc_7};
-                }
-            }
-            if (_loc_5 > 0)
-            {
-                this[param2] = new HitTestArea(_loc_4);
-            }
-            return;
-        }// end function
-
-    }
 }

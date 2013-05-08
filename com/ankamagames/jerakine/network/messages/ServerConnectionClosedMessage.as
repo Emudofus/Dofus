@@ -1,22 +1,25 @@
-﻿package com.ankamagames.jerakine.network.messages
+package com.ankamagames.jerakine.network.messages
 {
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.network.*;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.network.ServerConnection;
 
-    public class ServerConnectionClosedMessage extends Object implements Message
-    {
-        private var _closedConnection:ServerConnection;
 
-        public function ServerConnectionClosedMessage(param1:ServerConnection)
-        {
-            this._closedConnection = param1;
-            return;
-        }// end function
+   public class ServerConnectionClosedMessage extends Object implements Message
+   {
+         
 
-        public function get closedConnection() : ServerConnection
-        {
-            return this._closedConnection;
-        }// end function
+      public function ServerConnectionClosedMessage(closedConnection:ServerConnection) {
+         super();
+         this._closedConnection=closedConnection;
+      }
 
-    }
+
+
+      private var _closedConnection:ServerConnection;
+
+      public function get closedConnection() : ServerConnection {
+         return this._closedConnection;
+      }
+   }
+
 }

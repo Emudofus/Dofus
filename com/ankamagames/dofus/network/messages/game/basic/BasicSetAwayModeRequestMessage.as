@@ -1,89 +1,80 @@
-﻿package com.ankamagames.dofus.network.messages.game.basic
+package com.ankamagames.dofus.network.messages.game.basic
 {
-    import com.ankamagames.jerakine.network.*;
-    import com.ankamagames.jerakine.network.utils.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
 
-    public class BasicSetAwayModeRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var enable:Boolean = false;
-        public var invisible:Boolean = false;
-        public static const protocolId:uint = 5665;
 
-        public function BasicSetAwayModeRequestMessage()
-        {
-            return;
-        }// end function
+   public class BasicSetAwayModeRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function BasicSetAwayModeRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5665;
-        }// end function
+      public static const protocolId:uint = 5665;
 
-        public function initBasicSetAwayModeRequestMessage(param1:Boolean = false, param2:Boolean = false) : BasicSetAwayModeRequestMessage
-        {
-            this.enable = param1;
-            this.invisible = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.enable = false;
-            this.invisible = false;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var enable:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var invisible:Boolean = false;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_BasicSetAwayModeRequestMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5665;
+      }
 
-        public function serializeAs_BasicSetAwayModeRequestMessage(param1:IDataOutput) : void
-        {
-            var _loc_2:* = 0;
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.enable);
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.invisible);
-            param1.writeByte(_loc_2);
-            return;
-        }// end function
+      public function initBasicSetAwayModeRequestMessage(enable:Boolean=false, invisible:Boolean=false) : BasicSetAwayModeRequestMessage {
+         this.enable=enable;
+         this.invisible=invisible;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_BasicSetAwayModeRequestMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.enable=false;
+         this.invisible=false;
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_BasicSetAwayModeRequestMessage(param1:IDataInput) : void
-        {
-            var _loc_2:* = param1.readByte();
-            this.enable = BooleanByteWrapper.getFlag(_loc_2, 0);
-            this.invisible = BooleanByteWrapper.getFlag(_loc_2, 1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicSetAwayModeRequestMessage(output);
+      }
+
+      public function serializeAs_BasicSetAwayModeRequestMessage(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0=BooleanByteWrapper.setFlag(_box0,0,this.enable);
+         _box0=BooleanByteWrapper.setFlag(_box0,1,this.invisible);
+         output.writeByte(_box0);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicSetAwayModeRequestMessage(input);
+      }
+
+      public function deserializeAs_BasicSetAwayModeRequestMessage(input:IDataInput) : void {
+         var _box0:uint = input.readByte();
+         this.enable=BooleanByteWrapper.getFlag(_box0,0);
+         this.invisible=BooleanByteWrapper.getFlag(_box0,1);
+      }
+   }
+
 }

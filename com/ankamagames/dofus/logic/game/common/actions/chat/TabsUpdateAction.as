@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class TabsUpdateAction extends Object implements Action
-    {
-        public var tabs:Array;
-        public var tabsNames:Array;
 
-        public function TabsUpdateAction()
-        {
-            return;
-        }// end function
+   public class TabsUpdateAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Array = null, param2:Array = null) : TabsUpdateAction
-        {
-            var _loc_3:* = new TabsUpdateAction;
-            _loc_3.tabs = param1;
-            _loc_3.tabsNames = param2;
-            return _loc_3;
-        }// end function
+      public function TabsUpdateAction() {
+         super();
+      }
 
-    }
+      public static function create(tabs:Array=null, tabsNames:Array=null) : TabsUpdateAction {
+         var a:TabsUpdateAction = new TabsUpdateAction();
+         a.tabs=tabs;
+         a.tabsNames=tabsNames;
+         return a;
+      }
+
+      public var tabs:Array;
+
+      public var tabsNames:Array;
+   }
+
 }

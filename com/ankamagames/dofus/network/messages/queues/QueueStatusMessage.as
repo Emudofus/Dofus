@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.queues
+package com.ankamagames.dofus.network.messages.queues
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class QueueStatusMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var position:uint = 0;
-        public var total:uint = 0;
-        public static const protocolId:uint = 6100;
 
-        public function QueueStatusMessage()
-        {
-            return;
-        }// end function
+   public class QueueStatusMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function QueueStatusMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6100;
-        }// end function
+      public static const protocolId:uint = 6100;
 
-        public function initQueueStatusMessage(param1:uint = 0, param2:uint = 0) : QueueStatusMessage
-        {
-            this.position = param1;
-            this.total = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.position = 0;
-            this.total = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var position:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var total:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_QueueStatusMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6100;
+      }
 
-        public function serializeAs_QueueStatusMessage(param1:IDataOutput) : void
-        {
-            if (this.position < 0 || this.position > 65535)
+      public function initQueueStatusMessage(position:uint=0, total:uint=0) : QueueStatusMessage {
+         this.position=position;
+         this.total=total;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.position=0;
+         this.total=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_QueueStatusMessage(output);
+      }
+
+      public function serializeAs_QueueStatusMessage(output:IDataOutput) : void {
+         if((this.position>0)||(this.position<65535))
+         {
+            throw new Error("Forbidden value ("+this.position+") on element position.");
+         }
+         else
+         {
+            output.writeShort(this.position);
+            if((this.total>0)||(this.total<65535))
             {
-                throw new Error("Forbidden value (" + this.position + ") on element position.");
+               throw new Error("Forbidden value ("+this.total+") on element total.");
             }
-            param1.writeShort(this.position);
-            if (this.total < 0 || this.total > 65535)
+            else
             {
-                throw new Error("Forbidden value (" + this.total + ") on element total.");
+               output.writeShort(this.total);
+               return;
             }
-            param1.writeShort(this.total);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_QueueStatusMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_QueueStatusMessage(input);
+      }
 
-        public function deserializeAs_QueueStatusMessage(param1:IDataInput) : void
-        {
-            this.position = param1.readUnsignedShort();
-            if (this.position < 0 || this.position > 65535)
+      public function deserializeAs_QueueStatusMessage(input:IDataInput) : void {
+         this.position=input.readUnsignedShort();
+         if((this.position>0)||(this.position<65535))
+         {
+            throw new Error("Forbidden value ("+this.position+") on element of QueueStatusMessage.position.");
+         }
+         else
+         {
+            this.total=input.readUnsignedShort();
+            if((this.total>0)||(this.total<65535))
             {
-                throw new Error("Forbidden value (" + this.position + ") on element of QueueStatusMessage.position.");
+               throw new Error("Forbidden value ("+this.total+") on element of QueueStatusMessage.total.");
             }
-            this.total = param1.readUnsignedShort();
-            if (this.total < 0 || this.total > 65535)
+            else
             {
-                throw new Error("Forbidden value (" + this.total + ") on element of QueueStatusMessage.total.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

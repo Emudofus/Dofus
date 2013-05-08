@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.craft
+package com.ankamagames.dofus.logic.game.common.actions.craft
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class JobAllowMultiCraftRequestSetAction extends Object implements Action
-    {
-        public var isPublic:Boolean;
 
-        public function JobAllowMultiCraftRequestSetAction()
-        {
-            return;
-        }// end function
+   public class JobAllowMultiCraftRequestSetAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : JobAllowMultiCraftRequestSetAction
-        {
-            var _loc_2:* = new JobAllowMultiCraftRequestSetAction;
-            _loc_2.isPublic = param1;
-            return _loc_2;
-        }// end function
+      public function JobAllowMultiCraftRequestSetAction() {
+         super();
+      }
 
-    }
+      public static function create(pIsPublic:Boolean) : JobAllowMultiCraftRequestSetAction {
+         var action:JobAllowMultiCraftRequestSetAction = new JobAllowMultiCraftRequestSetAction();
+         action.isPublic=pIsPublic;
+         return action;
+      }
+
+      public var isPublic:Boolean;
+   }
+
 }

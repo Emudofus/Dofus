@@ -1,43 +1,43 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.datacenter.documents.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.dofus.datacenter.documents.Document;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class DocumentApi extends Object implements IApi
-    {
-        protected var _log:Logger;
-        private var _module:UiModule;
 
-        public function DocumentApi()
-        {
-            this._log = Log.getLogger(getQualifiedClassName());
-            return;
-        }// end function
+   public class DocumentApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function DocumentApi() {
+         this._log=Log.getLogger(getQualifiedClassName(DocumentApi));
+         super();
+      }
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
 
-        public function getDocument(param1:uint) : Object
-        {
-            return Document.getDocumentById(param1);
-        }// end function
 
-        public function getType(param1:uint) : uint
-        {
-            return Document.getDocumentById(param1).typeId;
-        }// end function
+      protected var _log:Logger;
 
-    }
+      private var _module:UiModule;
+
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
+
+      public function destroy() : void {
+         this._module=null;
+      }
+
+      public function getDocument(pDocId:uint) : Object {
+         return Document.getDocumentById(pDocId);
+      }
+
+      public function getType(pDocId:uint) : uint {
+         return Document.getDocumentById(pDocId).typeId;
+      }
+   }
+
 }

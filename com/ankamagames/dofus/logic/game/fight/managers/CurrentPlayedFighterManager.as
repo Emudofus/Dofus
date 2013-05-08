@@ -1,363 +1,349 @@
-﻿package com.ankamagames.dofus.logic.game.fight.managers
+package com.ankamagames.dofus.logic.game.fight.managers
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.items.*;
-    import com.ankamagames.dofus.datacenter.spells.*;
-    import com.ankamagames.dofus.internalDatacenter.spells.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.types.*;
-    import com.ankamagames.dofus.logic.game.fight.types.castSpellManager.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.types.game.character.characteristic.*;
-    import com.ankamagames.dofus.types.entities.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.FightHookList;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.logic.game.common.managers.InventoryManager;
+   import com.ankamagames.dofus.misc.lists.InventoryHookList;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+   import com.ankamagames.dofus.logic.game.fight.types.SpellCastInFightManager;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterSpellModification;
+   import com.ankamagames.dofus.datacenter.items.Weapon;
+   import com.ankamagames.dofus.datacenter.spells.SpellState;
+   import com.ankamagames.dofus.datacenter.spells.Spell;
+   import com.ankamagames.dofus.datacenter.spells.SpellLevel;
+   import com.ankamagames.dofus.datacenter.items.Item;
+   import com.ankamagames.dofus.logic.game.common.misc.SpellModificator;
+   import com.ankamagames.dofus.network.enums.CharacterSpellModificationTypeEnum;
+   import com.ankamagames.dofus.logic.game.fight.types.castSpellManager.SpellManager;
 
-    final public class CurrentPlayedFighterManager extends Object
-    {
-        private var _currentFighterId:int = 0;
-        private var _currentFighterIsRealPlayer:Boolean = true;
-        private var _characteristicsInformationsList:Dictionary;
-        private var _spellCastInFightManagerList:Dictionary;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(CurrentPlayedFighterManager));
-        private static var _self:CurrentPlayedFighterManager;
 
-        public function CurrentPlayedFighterManager()
-        {
-            this._characteristicsInformationsList = new Dictionary();
-            this._spellCastInFightManagerList = new Dictionary();
+   public final class CurrentPlayedFighterManager extends Object
+   {
+         
+
+      public function CurrentPlayedFighterManager() {
+         this._characteristicsInformationsList=new Dictionary();
+         this._spellCastInFightManagerList=new Dictionary();
+         super();
+      }
+
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(CurrentPlayedFighterManager));
+
+      private static var _self:CurrentPlayedFighterManager;
+
+      public static function getInstance() : CurrentPlayedFighterManager {
+         if(_self==null)
+         {
+            _self=new CurrentPlayedFighterManager();
+            _self.currentFighterId=PlayedCharacterManager.getInstance().id;
+         }
+         return _self;
+      }
+
+      private var _currentFighterId:int = 0;
+
+      private var _currentFighterIsRealPlayer:Boolean = true;
+
+      private var _characteristicsInformationsList:Dictionary;
+
+      private var _spellCastInFightManagerList:Dictionary;
+
+      public function get currentFighterId() : int {
+         return this._currentFighterId;
+      }
+
+      public function set currentFighterId(id:int) : void {
+         if(id==this._currentFighterId)
+         {
             return;
-        }// end function
+         }
+         var lastFighterId:int = this._currentFighterId;
+         this._currentFighterId=id;
+         var playerManager:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         this._currentFighterIsRealPlayer=this._currentFighterId==playerManager.id;
+         var lastFighterEntity:AnimatedCharacter = DofusEntities.getEntity(lastFighterId) as AnimatedCharacter;
+         if(lastFighterEntity)
+         {
+            lastFighterEntity.setCanSeeThrough(false);
+         }
+         var currentFighterEntity:AnimatedCharacter = DofusEntities.getEntity(this._currentFighterId) as AnimatedCharacter;
+         if(currentFighterEntity)
+         {
+            currentFighterEntity.setCanSeeThrough(true);
+         }
+         if((!(PlayedCharacterManager.getInstance().id==id))||(lastFighterId))
+         {
+            KernelEventsManager.getInstance().processCallback(FightHookList.SlaveStatsList,this.getCharacteristicsInformations());
+         }
+         if(this._currentFighterIsRealPlayer)
+         {
+            KernelEventsManager.getInstance().processCallback(FightHookList.ShowMonsterArtwork,0);
+         }
+         else
+         {
+            KernelEventsManager.getInstance().processCallback(FightHookList.ShowMonsterArtwork,1519);
+         }
+      }
 
-        public function get currentFighterId() : int
-        {
-            return this._currentFighterId;
-        }// end function
+      public function isRealPlayer() : Boolean {
+         return this._currentFighterIsRealPlayer;
+      }
 
-        public function set currentFighterId(param1:int) : void
-        {
-            if (param1 == this._currentFighterId)
-            {
-                return;
-            }
-            var _loc_2:* = this._currentFighterId;
-            this._currentFighterId = param1;
-            var _loc_3:* = PlayedCharacterManager.getInstance();
-            this._currentFighterIsRealPlayer = this._currentFighterId == _loc_3.id;
-            var _loc_4:* = DofusEntities.getEntity(_loc_2) as AnimatedCharacter;
-            if (DofusEntities.getEntity(_loc_2) as AnimatedCharacter)
-            {
-                _loc_4.setCanSeeThrough(false);
-            }
-            var _loc_5:* = DofusEntities.getEntity(this._currentFighterId) as AnimatedCharacter;
-            if (DofusEntities.getEntity(this._currentFighterId) as AnimatedCharacter)
-            {
-                _loc_5.setCanSeeThrough(true);
-            }
-            if (PlayedCharacterManager.getInstance().id != param1 || _loc_2)
-            {
-                KernelEventsManager.getInstance().processCallback(FightHookList.SlaveStatsList, this.getCharacteristicsInformations());
-            }
-            if (this._currentFighterIsRealPlayer)
-            {
-                KernelEventsManager.getInstance().processCallback(FightHookList.ShowMonsterArtwork, 0);
-            }
-            else
-            {
-                KernelEventsManager.getInstance().processCallback(FightHookList.ShowMonsterArtwork, 1519);
-            }
-            return;
-        }// end function
+      public function resetPlayerSpellList() : void {
+         var playerManager:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         this.currentFighterId=playerManager.id;
+         var spellList:Array = playerManager.playerSpellList;
+         if(playerManager.spellsInventory!=spellList)
+         {
+            playerManager.spellsInventory=spellList;
+            KernelEventsManager.getInstance().processCallback(HookList.SpellList,spellList);
+         }
+         if(playerManager.playerShortcutList!=InventoryManager.getInstance().shortcutBarSpells)
+         {
+            InventoryManager.getInstance().shortcutBarSpells=playerManager.playerShortcutList;
+            KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent,1);
+         }
+      }
 
-        public function isRealPlayer() : Boolean
-        {
-            return this._currentFighterIsRealPlayer;
-        }// end function
+      public function setCharacteristicsInformations(id:int, characteristics:CharacterCharacteristicsInformations) : void {
+         this._characteristicsInformationsList[id]=characteristics;
+      }
 
-        public function resetPlayerSpellList() : void
-        {
-            var _loc_1:* = PlayedCharacterManager.getInstance();
-            this.currentFighterId = _loc_1.id;
-            var _loc_2:* = _loc_1.playerSpellList;
-            if (_loc_1.spellsInventory != _loc_2)
-            {
-                _loc_1.spellsInventory = _loc_2;
-                KernelEventsManager.getInstance().processCallback(HookList.SpellList, _loc_2);
-            }
-            if (_loc_1.playerShortcutList != InventoryManager.getInstance().shortcutBarSpells)
-            {
-                InventoryManager.getInstance().shortcutBarSpells = _loc_1.playerShortcutList;
-                KernelEventsManager.getInstance().processCallback(InventoryHookList.ShortcutBarViewContent, 1);
-            }
-            return;
-        }// end function
+      public function getCharacteristicsInformations() : CharacterCharacteristicsInformations {
+         var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         if((this._currentFighterIsRealPlayer)||(!player.isFighting))
+         {
+            return PlayedCharacterManager.getInstance().characteristics;
+         }
+         return this._characteristicsInformationsList[this._currentFighterId];
+      }
 
-        public function setCharacteristicsInformations(param1:int, param2:CharacterCharacteristicsInformations) : void
-        {
-            this._characteristicsInformationsList[param1] = param2;
-            return;
-        }// end function
+      public function getSpellById(spellId:uint) : SpellWrapper {
+         var thisSpell:SpellWrapper = null;
+         var spellKnown:SpellWrapper = null;
+         var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         for each (spellKnown in player.spellsInventory)
+         {
+            if(spellKnown.id==spellId)
+            {
+               return spellKnown;
+            }
+         }
+         return null;
+      }
 
-        public function getCharacteristicsInformations() : CharacterCharacteristicsInformations
-        {
-            var _loc_1:* = PlayedCharacterManager.getInstance();
-            if (this._currentFighterIsRealPlayer || !_loc_1.isFighting)
-            {
-                return PlayedCharacterManager.getInstance().characteristics;
-            }
-            return this._characteristicsInformationsList[this._currentFighterId];
-        }// end function
+      public function getSpellCastManager() : SpellCastInFightManager {
+         var scm:SpellCastInFightManager = this._spellCastInFightManagerList[this._currentFighterId];
+         if(!scm)
+         {
+            scm=new SpellCastInFightManager(this._currentFighterId);
+            this._spellCastInFightManagerList[this._currentFighterId]=scm;
+         }
+         return scm;
+      }
 
-        public function getSpellById(param1:uint) : SpellWrapper
-        {
-            var _loc_2:* = null;
-            var _loc_4:* = null;
-            var _loc_3:* = PlayedCharacterManager.getInstance();
-            for each (_loc_4 in _loc_3.spellsInventory)
-            {
-                
-                if (_loc_4.id == param1)
-                {
-                    return _loc_4;
-                }
-            }
-            return null;
-        }// end function
+      public function getSpellCastManagerById(id:int) : SpellCastInFightManager {
+         var scm:SpellCastInFightManager = this._spellCastInFightManagerList[id];
+         if(!scm)
+         {
+            scm=new SpellCastInFightManager(id);
+            this._spellCastInFightManagerList[this._currentFighterId]=scm;
+         }
+         return scm;
+      }
 
-        public function getSpellCastManager() : SpellCastInFightManager
-        {
-            var _loc_1:* = this._spellCastInFightManagerList[this._currentFighterId];
-            if (!_loc_1)
+      public function canCastThisSpell(spellId:uint, lvl:uint, pTargetId:int=2147483647) : Boolean {
+         var thisSpell:SpellWrapper = null;
+         var spellKnown:SpellWrapper = null;
+         var apCost:uint = 0;
+         var maxCastPerTurn:uint = 0;
+         var spellModification:CharacterSpellModification = null;
+         var state:* = 0;
+         var stateRequired:* = 0;
+         var weapon:Weapon = null;
+         var currentState:SpellState = null;
+         var weapon2:Weapon = null;
+         var numberCastOnTarget:uint = 0;
+         var spell:Spell = Spell.getSpellById(spellId);
+         var spellLevel:SpellLevel = spell.getSpellLevel(lvl);
+         if(spellLevel==null)
+         {
+            return false;
+         }
+         var player:PlayedCharacterManager = PlayedCharacterManager.getInstance();
+         if(spellLevel.minPlayerLevel>player.infos.level)
+         {
+            return false;
+         }
+         for each (spellKnown in player.spellsInventory)
+         {
+            if(spellKnown.id==spellId)
             {
-                _loc_1 = new SpellCastInFightManager(this._currentFighterId);
-                this._spellCastInFightManagerList[this._currentFighterId] = _loc_1;
+               thisSpell=spellKnown;
             }
-            return _loc_1;
-        }// end function
-
-        public function getSpellCastManagerById(param1:int) : SpellCastInFightManager
-        {
-            var _loc_2:* = this._spellCastInFightManagerList[param1];
-            if (!_loc_2)
+         }
+         if(!thisSpell)
+         {
+            return false;
+         }
+         var characteristics:CharacterCharacteristicsInformations = this.getCharacteristicsInformations();
+         if(!characteristics)
+         {
+            return false;
+         }
+         var currentPA:int = characteristics.actionPointsCurrent;
+         if((spellId==0)&&(!(player.currentWeapon==null)))
+         {
+            weapon=Item.getItemById(player.currentWeapon.objectGID) as Weapon;
+            if(!weapon)
             {
-                _loc_2 = new SpellCastInFightManager(param1);
-                this._spellCastInFightManagerList[this._currentFighterId] = _loc_2;
+               return false;
             }
-            return _loc_2;
-        }// end function
-
-        public function canCastThisSpell(param1:uint, param2:uint, param3:int = 2147483647) : Boolean
-        {
-            var _loc_6:* = null;
-            var _loc_8:* = null;
-            var _loc_11:* = 0;
-            var _loc_13:* = null;
-            var _loc_15:* = 0;
-            var _loc_16:* = 0;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            var _loc_21:* = null;
-            var _loc_22:* = 0;
-            var _loc_4:* = Spell.getSpellById(param1);
-            var _loc_5:* = Spell.getSpellById(param1).getSpellLevel(param2);
-            if (Spell.getSpellById(param1).getSpellLevel(param2) == null)
+            apCost=weapon.apCost;
+            maxCastPerTurn=weapon.maxCastPerTurn;
+         }
+         else
+         {
+            apCost=thisSpell.apCost;
+            maxCastPerTurn=thisSpell.maxCastPerTurn;
+         }
+         var spellModifs:SpellModificator = new SpellModificator();
+         for each (spellModification in characteristics.spellModifications)
+         {
+            if(spellModification.spellId==spellId)
             {
-                return false;
+               switch(spellModification.modificationType)
+               {
+                  case CharacterSpellModificationTypeEnum.AP_COST:
+                     spellModifs.apCost=spellModification.value;
+                     break;
+                  case CharacterSpellModificationTypeEnum.CAST_INTERVAL:
+                     spellModifs.castInterval=spellModification.value;
+                     break;
+                  case CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET:
+                     spellModifs.castIntervalSet=spellModification.value;
+                     break;
+                  case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET:
+                     spellModifs.maxCastPerTarget=spellModification.value;
+                     break;
+                  case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN:
+                     spellModifs.maxCastPerTurn=spellModification.value;
+                     break;
+               }
             }
-            var _loc_7:* = PlayedCharacterManager.getInstance();
-            for each (_loc_8 in _loc_7.spellsInventory)
+         }
+         if(apCost>currentPA)
+         {
+            return false;
+         }
+         var states:Array = FightersStateManager.getInstance().getStates(this._currentFighterId);
+         if(!states)
+         {
+            states=new Array();
+         }
+         for each (state in states)
+         {
+            currentState=SpellState.getSpellStateById(state);
+            if((currentState.preventsFight)&&(spellId==0))
             {
-                
-                if (_loc_8.id == param1)
-                {
-                    _loc_6 = _loc_8;
-                    continue;
-                }
+               return false;
             }
-            if (!_loc_6)
+            if((currentState.id==101)&&(spellId==0))
             {
-                return false;
+               weapon2=Item.getItemById(player.currentWeapon.objectGID) as Weapon;
+               if(weapon2.typeId!=2)
+               {
+                  return false;
+               }
             }
-            var _loc_9:* = this.getCharacteristicsInformations();
-            if (!this.getCharacteristicsInformations())
+            if((spellLevel.statesForbidden)&&(!(spellLevel.statesForbidden.indexOf(state)==-1)))
             {
-                return false;
+               return false;
             }
-            var _loc_10:* = _loc_9.actionPointsCurrent;
-            if (param1 == 0 && _loc_7.currentWeapon != null)
+            if(currentState.preventsSpellCast)
             {
-                _loc_19 = Item.getItemById(_loc_7.currentWeapon.objectGID) as Weapon;
-                if (!_loc_19)
-                {
-                    return false;
-                }
-                _loc_11 = _loc_19.apCost;
+               if(spellLevel.statesRequired)
+               {
+                  if(spellLevel.statesRequired.indexOf(state)==-1)
+                  {
+                     return false;
+                  }
+                  continue;
+               }
+               return false;
             }
-            else
+         }
+         for each (stateRequired in spellLevel.statesRequired)
+         {
+            if(states.indexOf(stateRequired)==-1)
             {
-                _loc_11 = _loc_6.apCost;
+               return false;
             }
-            var _loc_12:* = new SpellModificator();
-            for each (_loc_13 in _loc_9.spellModifications)
-            {
-                
-                if (_loc_13.spellId == param1)
-                {
-                    switch(_loc_13.modificationType)
-                    {
-                        case CharacterSpellModificationTypeEnum.AP_COST:
-                        {
-                            _loc_12.apCost = _loc_13.value;
-                            break;
-                        }
-                        case CharacterSpellModificationTypeEnum.CAST_INTERVAL:
-                        {
-                            _loc_12.castInterval = _loc_13.value;
-                            break;
-                        }
-                        case CharacterSpellModificationTypeEnum.CAST_INTERVAL_SET:
-                        {
-                            _loc_12.castIntervalSet = _loc_13.value;
-                            break;
-                        }
-                        case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TARGET:
-                        {
-                            _loc_12.maxCastPerTarget = _loc_13.value;
-                            break;
-                        }
-                        case CharacterSpellModificationTypeEnum.MAX_CAST_PER_TURN:
-                        {
-                            _loc_12.maxCastPerTurn = _loc_13.value;
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            if (_loc_11 > _loc_10)
-            {
-                return false;
-            }
-            var _loc_14:* = FightersStateManager.getInstance().getStates(this._currentFighterId);
-            if (!FightersStateManager.getInstance().getStates(this._currentFighterId))
-            {
-                _loc_14 = new Array();
-            }
-            for each (_loc_15 in _loc_14)
-            {
-                
-                _loc_20 = SpellState.getSpellStateById(_loc_15);
-                if (_loc_20.preventsFight && param1 == 0)
-                {
-                    return false;
-                }
-                if (_loc_20.id == 101 && param1 == 0)
-                {
-                    _loc_21 = Item.getItemById(_loc_7.currentWeapon.objectGID) as Weapon;
-                    if (_loc_21.typeId != 2)
-                    {
-                        return false;
-                    }
-                }
-                if (_loc_5.statesForbidden && _loc_5.statesForbidden.indexOf(_loc_15) != -1)
-                {
-                    return false;
-                }
-                if (_loc_20.preventsSpellCast)
-                {
-                    if (_loc_5.statesRequired)
-                    {
-                        if (_loc_5.statesRequired.indexOf(_loc_15) == -1)
-                        {
-                            return false;
-                        }
-                        continue;
-                    }
-                    return false;
-                }
-            }
-            for each (_loc_16 in _loc_5.statesRequired)
-            {
-                
-                if (_loc_14.indexOf(_loc_16) == -1)
-                {
-                    return false;
-                }
-            }
-            if (_loc_5.canSummon && !_loc_7.canSummon())
-            {
-                return false;
-            }
-            if (_loc_5.canBomb && !_loc_7.canBomb())
-            {
-                return false;
-            }
-            if (!_loc_7.isFighting)
-            {
-                return true;
-            }
-            var _loc_17:* = this.getSpellCastManager();
-            var _loc_18:* = this.getSpellCastManager().getSpellManagerBySpellId(param1);
-            if (this.getSpellCastManager().getSpellManagerBySpellId(param1) == null)
-            {
-                return true;
-            }
-            if (_loc_6.maxCastPerTurn <= _loc_18.numberCastThisTurn && _loc_6.maxCastPerTurn > 0)
-            {
-                return false;
-            }
-            if (_loc_18.cooldown > 0 || _loc_6.actualCooldown > 0)
-            {
-                return false;
-            }
-            _loc_22 = _loc_18.getCastOnEntity(param3);
-            if (_loc_5.maxCastPerTarget + _loc_12.getTotalBonus(_loc_12.maxCastPerTarget) <= _loc_22 && _loc_5.maxCastPerTarget > 0)
-            {
-                return false;
-            }
+         }
+         if((spellLevel.canSummon)&&(!player.canSummon()))
+         {
+            return false;
+         }
+         if((spellLevel.canBomb)&&(!player.canBomb()))
+         {
+            return false;
+         }
+         if(!player.isFighting)
+         {
             return true;
-        }// end function
+         }
+         var spellCastManager:SpellCastInFightManager = this.getSpellCastManager();
+         var spellManager:SpellManager = spellCastManager.getSpellManagerBySpellId(spellId);
+         if(spellManager==null)
+         {
+            return true;
+         }
+         if((maxCastPerTurn<=spellManager.numberCastThisTurn)&&(maxCastPerTurn<0))
+         {
+            return false;
+         }
+         if((spellManager.cooldown<0)||(thisSpell.actualCooldown<0))
+         {
+            return false;
+         }
+         numberCastOnTarget=spellManager.getCastOnEntity(pTargetId);
+         if((spellLevel.maxCastPerTarget+spellModifs.getTotalBonus(spellModifs.maxCastPerTarget)<=numberCastOnTarget)&&(spellLevel.maxCastPerTarget<0))
+         {
+            return false;
+         }
+         return true;
+      }
 
-        public function endFight() : void
-        {
-            this._currentFighterId = 0;
-            this._characteristicsInformationsList = new Dictionary();
-            this._spellCastInFightManagerList = new Dictionary();
-            return;
-        }// end function
+      public function endFight() : void {
+         this._currentFighterId=0;
+         this._characteristicsInformationsList=new Dictionary();
+         this._spellCastInFightManagerList=new Dictionary();
+      }
 
-        public function getSpellModifications(param1:int, param2:int) : CharacterSpellModification
-        {
-            var _loc_4:* = null;
-            var _loc_3:* = this.getCharacteristicsInformations();
-            if (_loc_3)
+      public function getSpellModifications(spellId:int, carac:int) : CharacterSpellModification {
+         var spellModification:CharacterSpellModification = null;
+         var characteristics:CharacterCharacteristicsInformations = this.getCharacteristicsInformations();
+         if(characteristics)
+         {
+            for each (spellModification in characteristics.spellModifications)
             {
-                for each (_loc_4 in _loc_3.spellModifications)
-                {
-                    
-                    if (_loc_4.spellId == param1 && _loc_4.modificationType == param2)
-                    {
-                        return _loc_4;
-                    }
-                }
+               if((spellModification.spellId==spellId)&&(spellModification.modificationType==carac))
+               {
+                  return spellModification;
+               }
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
+   }
 
-        public static function getInstance() : CurrentPlayedFighterManager
-        {
-            if (_self == null)
-            {
-                _self = new CurrentPlayedFighterManager;
-                _self.currentFighterId = PlayedCharacterManager.getInstance().id;
-            }
-            return _self;
-        }// end function
-
-    }
 }

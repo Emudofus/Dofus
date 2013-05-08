@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.character.stats
+package com.ankamagames.dofus.network.messages.game.character.stats
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class LifePointsRegenBeginMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var regenRate:uint = 0;
-        public static const protocolId:uint = 5684;
 
-        public function LifePointsRegenBeginMessage()
-        {
+   public class LifePointsRegenBeginMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function LifePointsRegenBeginMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5684;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var regenRate:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5684;
+      }
+
+      public function initLifePointsRegenBeginMessage(regenRate:uint=0) : LifePointsRegenBeginMessage {
+         this.regenRate=regenRate;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.regenRate=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_LifePointsRegenBeginMessage(output);
+      }
+
+      public function serializeAs_LifePointsRegenBeginMessage(output:IDataOutput) : void {
+         if((this.regenRate>0)||(this.regenRate<255))
+         {
+            throw new Error("Forbidden value ("+this.regenRate+") on element regenRate.");
+         }
+         else
+         {
+            output.writeByte(this.regenRate);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_LifePointsRegenBeginMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5684;
-        }// end function
-
-        public function initLifePointsRegenBeginMessage(param1:uint = 0) : LifePointsRegenBeginMessage
-        {
-            this.regenRate = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.regenRate = 0;
-            this._isInitialized = false;
+      public function deserializeAs_LifePointsRegenBeginMessage(input:IDataInput) : void {
+         this.regenRate=input.readUnsignedByte();
+         if((this.regenRate>0)||(this.regenRate<255))
+         {
+            throw new Error("Forbidden value ("+this.regenRate+") on element of LifePointsRegenBeginMessage.regenRate.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_LifePointsRegenBeginMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_LifePointsRegenBeginMessage(param1:IDataOutput) : void
-        {
-            if (this.regenRate < 0 || this.regenRate > 255)
-            {
-                throw new Error("Forbidden value (" + this.regenRate + ") on element regenRate.");
-            }
-            param1.writeByte(this.regenRate);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_LifePointsRegenBeginMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_LifePointsRegenBeginMessage(param1:IDataInput) : void
-        {
-            this.regenRate = param1.readUnsignedByte();
-            if (this.regenRate < 0 || this.regenRate > 255)
-            {
-                throw new Error("Forbidden value (" + this.regenRate + ") on element of LifePointsRegenBeginMessage.regenRate.");
-            }
-            return;
-        }// end function
-
-    }
 }

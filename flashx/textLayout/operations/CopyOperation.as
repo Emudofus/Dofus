@@ -1,39 +1,39 @@
-﻿package flashx.textLayout.operations
+package flashx.textLayout.operations
 {
-    import flashx.textLayout.edit.*;
+   import flashx.textLayout.edit.TextClipboard;
+   import flashx.textLayout.edit.TextScrap;
+   import flashx.textLayout.edit.SelectionState;
 
-    public class CopyOperation extends FlowTextOperation
-    {
 
-        public function CopyOperation(param1:SelectionState)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class CopyOperation extends FlowTextOperation
+   {
+         
 
-        override public function doOperation() : Boolean
-        {
-            if (originalSelectionState.activePosition != originalSelectionState.anchorPosition)
-            {
-                TextClipboard.setContents(TextScrap.createTextScrap(originalSelectionState));
-            }
-            return true;
-        }// end function
+      public function CopyOperation(operationState:SelectionState) {
+         super(operationState);
+      }
 
-        override public function undo() : SelectionState
-        {
-            return originalSelectionState;
-        }// end function
 
-        override public function redo() : SelectionState
-        {
-            return originalSelectionState;
-        }// end function
 
-        override public function canUndo() : Boolean
-        {
-            return false;
-        }// end function
+      override public function doOperation() : Boolean {
+         if(originalSelectionState.activePosition!=originalSelectionState.anchorPosition)
+         {
+            TextClipboard.setContents(TextScrap.createTextScrap(originalSelectionState));
+         }
+         return true;
+      }
 
-    }
+      override public function undo() : SelectionState {
+         return originalSelectionState;
+      }
+
+      override public function redo() : SelectionState {
+         return originalSelectionState;
+      }
+
+      override public function canUndo() : Boolean {
+         return false;
+      }
+   }
+
 }

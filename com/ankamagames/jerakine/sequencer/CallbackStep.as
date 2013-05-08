@@ -1,23 +1,25 @@
-﻿package com.ankamagames.jerakine.sequencer
+package com.ankamagames.jerakine.sequencer
 {
-    import com.ankamagames.jerakine.types.*;
+   import com.ankamagames.jerakine.types.Callback;
 
-    public class CallbackStep extends AbstractSequencable
-    {
-        private var _callback:Callback;
 
-        public function CallbackStep(param1:Callback)
-        {
-            this._callback = param1;
-            return;
-        }// end function
+   public class CallbackStep extends AbstractSequencable
+   {
+         
 
-        override public function start() : void
-        {
-            this._callback.exec();
-            executeCallbacks();
-            return;
-        }// end function
+      public function CallbackStep(callback:Callback) {
+         super();
+         this._callback=callback;
+      }
 
-    }
+
+
+      private var _callback:Callback;
+
+      override public function start() : void {
+         this._callback.exec();
+         executeCallbacks();
+      }
+   }
+
 }

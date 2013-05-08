@@ -1,159 +1,174 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItemQuantity;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeGuildTaxCollectorGetMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var collectorName:String = "";
-        public var worldX:int = 0;
-        public var worldY:int = 0;
-        public var mapId:int = 0;
-        public var subAreaId:uint = 0;
-        public var userName:String = "";
-        public var experience:Number = 0;
-        public var objectsInfos:Vector.<ObjectItemQuantity>;
-        public static const protocolId:uint = 5762;
 
-        public function ExchangeGuildTaxCollectorGetMessage()
-        {
-            this.objectsInfos = new Vector.<ObjectItemQuantity>;
-            return;
-        }// end function
+   public class ExchangeGuildTaxCollectorGetMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeGuildTaxCollectorGetMessage() {
+         this.objectsInfos=new Vector.<ObjectItemQuantity>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5762;
-        }// end function
+      public static const protocolId:uint = 5762;
 
-        public function initExchangeGuildTaxCollectorGetMessage(param1:String = "", param2:int = 0, param3:int = 0, param4:int = 0, param5:uint = 0, param6:String = "", param7:Number = 0, param8:Vector.<ObjectItemQuantity> = null) : ExchangeGuildTaxCollectorGetMessage
-        {
-            this.collectorName = param1;
-            this.worldX = param2;
-            this.worldY = param3;
-            this.mapId = param4;
-            this.subAreaId = param5;
-            this.userName = param6;
-            this.experience = param7;
-            this.objectsInfos = param8;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.collectorName = "";
-            this.worldX = 0;
-            this.worldY = 0;
-            this.mapId = 0;
-            this.subAreaId = 0;
-            this.userName = "";
-            this.experience = 0;
-            this.objectsInfos = new Vector.<ObjectItemQuantity>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var collectorName:String = "";
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var worldX:int = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeGuildTaxCollectorGetMessage(param1);
-            return;
-        }// end function
+      public var worldY:int = 0;
 
-        public function serializeAs_ExchangeGuildTaxCollectorGetMessage(param1:IDataOutput) : void
-        {
-            param1.writeUTF(this.collectorName);
-            if (this.worldX < -255 || this.worldX > 255)
+      public var mapId:int = 0;
+
+      public var subAreaId:uint = 0;
+
+      public var userName:String = "";
+
+      public var experience:Number = 0;
+
+      public var objectsInfos:Vector.<ObjectItemQuantity>;
+
+      override public function getMessageId() : uint {
+         return 5762;
+      }
+
+      public function initExchangeGuildTaxCollectorGetMessage(collectorName:String="", worldX:int=0, worldY:int=0, mapId:int=0, subAreaId:uint=0, userName:String="", experience:Number=0, objectsInfos:Vector.<ObjectItemQuantity>=null) : ExchangeGuildTaxCollectorGetMessage {
+         this.collectorName=collectorName;
+         this.worldX=worldX;
+         this.worldY=worldY;
+         this.mapId=mapId;
+         this.subAreaId=subAreaId;
+         this.userName=userName;
+         this.experience=experience;
+         this.objectsInfos=objectsInfos;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.collectorName="";
+         this.worldX=0;
+         this.worldY=0;
+         this.mapId=0;
+         this.subAreaId=0;
+         this.userName="";
+         this.experience=0;
+         this.objectsInfos=new Vector.<ObjectItemQuantity>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeGuildTaxCollectorGetMessage(output);
+      }
+
+      public function serializeAs_ExchangeGuildTaxCollectorGetMessage(output:IDataOutput) : void {
+         output.writeUTF(this.collectorName);
+         if((this.worldX>-255)||(this.worldX<255))
+         {
+            throw new Error("Forbidden value ("+this.worldX+") on element worldX.");
+         }
+         else
+         {
+            output.writeShort(this.worldX);
+            if((this.worldY>-255)||(this.worldY<255))
             {
-                throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+               throw new Error("Forbidden value ("+this.worldY+") on element worldY.");
             }
-            param1.writeShort(this.worldX);
-            if (this.worldY < -255 || this.worldY > 255)
+            else
             {
-                throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+               output.writeShort(this.worldY);
+               output.writeInt(this.mapId);
+               if(this.subAreaId<0)
+               {
+                  throw new Error("Forbidden value ("+this.subAreaId+") on element subAreaId.");
+               }
+               else
+               {
+                  output.writeShort(this.subAreaId);
+                  output.writeUTF(this.userName);
+                  output.writeDouble(this.experience);
+                  output.writeShort(this.objectsInfos.length);
+                  _i8=0;
+                  while(_i8<this.objectsInfos.length)
+                  {
+                     (this.objectsInfos[_i8] as ObjectItemQuantity).serializeAs_ObjectItemQuantity(output);
+                     _i8++;
+                  }
+                  return;
+               }
             }
-            param1.writeShort(this.worldY);
-            param1.writeInt(this.mapId);
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
-            }
-            param1.writeShort(this.subAreaId);
-            param1.writeUTF(this.userName);
-            param1.writeDouble(this.experience);
-            param1.writeShort(this.objectsInfos.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.objectsInfos.length)
-            {
-                
-                (this.objectsInfos[_loc_2] as ObjectItemQuantity).serializeAs_ObjectItemQuantity(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeGuildTaxCollectorGetMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeGuildTaxCollectorGetMessage(input);
+      }
 
-        public function deserializeAs_ExchangeGuildTaxCollectorGetMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.collectorName = param1.readUTF();
-            this.worldX = param1.readShort();
-            if (this.worldX < -255 || this.worldX > 255)
+      public function deserializeAs_ExchangeGuildTaxCollectorGetMessage(input:IDataInput) : void {
+         var _item8:ObjectItemQuantity = null;
+         this.collectorName=input.readUTF();
+         this.worldX=input.readShort();
+         if((this.worldX>-255)||(this.worldX<255))
+         {
+            throw new Error("Forbidden value ("+this.worldX+") on element of ExchangeGuildTaxCollectorGetMessage.worldX.");
+         }
+         else
+         {
+            this.worldY=input.readShort();
+            if((this.worldY>-255)||(this.worldY<255))
             {
-                throw new Error("Forbidden value (" + this.worldX + ") on element of ExchangeGuildTaxCollectorGetMessage.worldX.");
+               throw new Error("Forbidden value ("+this.worldY+") on element of ExchangeGuildTaxCollectorGetMessage.worldY.");
             }
-            this.worldY = param1.readShort();
-            if (this.worldY < -255 || this.worldY > 255)
+            else
             {
-                throw new Error("Forbidden value (" + this.worldY + ") on element of ExchangeGuildTaxCollectorGetMessage.worldY.");
+               this.mapId=input.readInt();
+               this.subAreaId=input.readShort();
+               if(this.subAreaId<0)
+               {
+                  throw new Error("Forbidden value ("+this.subAreaId+") on element of ExchangeGuildTaxCollectorGetMessage.subAreaId.");
+               }
+               else
+               {
+                  this.userName=input.readUTF();
+                  this.experience=input.readDouble();
+                  _objectsInfosLen=input.readUnsignedShort();
+                  _i8=0;
+                  while(_i8<_objectsInfosLen)
+                  {
+                     _item8=new ObjectItemQuantity();
+                     _item8.deserialize(input);
+                     this.objectsInfos.push(_item8);
+                     _i8++;
+                  }
+                  return;
+               }
             }
-            this.mapId = param1.readInt();
-            this.subAreaId = param1.readShort();
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element of ExchangeGuildTaxCollectorGetMessage.subAreaId.");
-            }
-            this.userName = param1.readUTF();
-            this.experience = param1.readDouble();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new ObjectItemQuantity();
-                _loc_4.deserialize(param1);
-                this.objectsInfos.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

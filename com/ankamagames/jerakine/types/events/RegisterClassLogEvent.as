@@ -1,28 +1,29 @@
-﻿package com.ankamagames.jerakine.types.events
+package com.ankamagames.jerakine.types.events
 {
-    import com.ankamagames.jerakine.logger.*;
-    import flash.events.*;
+   import com.ankamagames.jerakine.logger.LogEvent;
+   import flash.events.Event;
 
-    public class RegisterClassLogEvent extends LogEvent
-    {
-        private var _className:String;
 
-        public function RegisterClassLogEvent(param1:String)
-        {
-            super(null, null, 0);
-            this._className = param1;
-            return;
-        }// end function
+   public class RegisterClassLogEvent extends LogEvent
+   {
+         
 
-        public function get className() : String
-        {
-            return this._className;
-        }// end function
+      public function RegisterClassLogEvent(className:String) {
+         super(null,null,0);
+         this._className=className;
+      }
 
-        override public function clone() : Event
-        {
-            return new RegisterClassLogEvent(this._className);
-        }// end function
 
-    }
+
+      private var _className:String;
+
+      public function get className() : String {
+         return this._className;
+      }
+
+      override public function clone() : Event {
+         return new RegisterClassLogEvent(this._className);
+      }
+   }
+
 }

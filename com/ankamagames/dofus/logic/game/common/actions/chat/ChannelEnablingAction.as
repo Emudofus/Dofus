@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ChannelEnablingAction extends Object implements Action
-    {
-        public var channel:uint;
-        public var enable:Boolean;
 
-        public function ChannelEnablingAction()
-        {
-            return;
-        }// end function
+   public class ChannelEnablingAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:Boolean = true) : ChannelEnablingAction
-        {
-            var _loc_3:* = new ChannelEnablingAction;
-            _loc_3.channel = param1;
-            _loc_3.enable = param2;
-            return _loc_3;
-        }// end function
+      public function ChannelEnablingAction() {
+         super();
+      }
 
-    }
+      public static function create(channel:uint, enable:Boolean=true) : ChannelEnablingAction {
+         var a:ChannelEnablingAction = new ChannelEnablingAction();
+         a.channel=channel;
+         a.enable=enable;
+         return a;
+      }
+
+      public var channel:uint;
+
+      public var enable:Boolean;
+   }
+
 }

@@ -1,22 +1,23 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import flash.utils.*;
+   import flash.utils.getQualifiedClassName;
 
-    public class DisplayInfoSprite extends DynamicSprite
-    {
 
-        public function DisplayInfoSprite()
-        {
-            return;
-        }// end function
+   public class DisplayInfoSprite extends DynamicSprite
+   {
+         
 
-        override public function init(param1:IAnimationSpriteHandler) : void
-        {
-            alpha = 0;
-            var _loc_2:* = getQualifiedClassName(this).split("_")[1];
-            param1.registerInfoSprite(this, _loc_2);
-            return;
-        }// end function
+      public function DisplayInfoSprite() {
+         super();
+      }
 
-    }
+
+
+      override public function init(handler:IAnimationSpriteHandler) : void {
+         alpha=0;
+         var nViewIndex:String = getQualifiedClassName(this).split("_")[1];
+         handler.registerInfoSprite(this,nViewIndex);
+      }
+   }
+
 }

@@ -1,24 +1,25 @@
-﻿package com.ankamagames.jerakine.types.events
+package com.ankamagames.jerakine.types.events
 {
-    import com.ankamagames.jerakine.sequencer.*;
-    import flash.events.*;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.sequencer.ISequencer;
 
-    public class SequencerEvent extends Event
-    {
-        private var _sequancer:ISequencer;
-        public static const SEQUENCE_END:String = "onSequenceEnd";
 
-        public function SequencerEvent(param1:String, param2:Boolean = false, param3:Boolean = false, param4:ISequencer = null)
-        {
-            super(param1, param2, param3);
-            this._sequancer = param4;
-            return;
-        }// end function
+   public class SequencerEvent extends Event
+   {
+         
 
-        public function get sequencer() : ISequencer
-        {
-            return this._sequancer;
-        }// end function
+      public function SequencerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, sequancer:ISequencer=null) {
+         super(type,bubbles,cancelable);
+         this._sequancer=sequancer;
+      }
 
-    }
+      public static const SEQUENCE_END:String = "onSequenceEnd";
+
+      private var _sequancer:ISequencer;
+
+      public function get sequencer() : ISequencer {
+         return this._sequancer;
+      }
+   }
+
 }

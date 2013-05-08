@@ -1,85 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.approach
+package com.ankamagames.dofus.network.messages.game.approach
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AuthenticationTicketMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var lang:String = "";
-        public var ticket:String = "";
-        public static const protocolId:uint = 110;
 
-        public function AuthenticationTicketMessage()
-        {
-            return;
-        }// end function
+   public class AuthenticationTicketMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function AuthenticationTicketMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 110;
-        }// end function
+      public static const protocolId:uint = 110;
 
-        public function initAuthenticationTicketMessage(param1:String = "", param2:String = "") : AuthenticationTicketMessage
-        {
-            this.lang = param1;
-            this.ticket = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.lang = "";
-            this.ticket = "";
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var lang:String = "";
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var ticket:String = "";
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AuthenticationTicketMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 110;
+      }
 
-        public function serializeAs_AuthenticationTicketMessage(param1:IDataOutput) : void
-        {
-            param1.writeUTF(this.lang);
-            param1.writeUTF(this.ticket);
-            return;
-        }// end function
+      public function initAuthenticationTicketMessage(lang:String="", ticket:String="") : AuthenticationTicketMessage {
+         this.lang=lang;
+         this.ticket=ticket;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AuthenticationTicketMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.lang="";
+         this.ticket="";
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_AuthenticationTicketMessage(param1:IDataInput) : void
-        {
-            this.lang = param1.readUTF();
-            this.ticket = param1.readUTF();
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AuthenticationTicketMessage(output);
+      }
+
+      public function serializeAs_AuthenticationTicketMessage(output:IDataOutput) : void {
+         output.writeUTF(this.lang);
+         output.writeUTF(this.ticket);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AuthenticationTicketMessage(input);
+      }
+
+      public function deserializeAs_AuthenticationTicketMessage(input:IDataInput) : void {
+         this.lang=input.readUTF();
+         this.ticket=input.readUTF();
+      }
+   }
+
 }

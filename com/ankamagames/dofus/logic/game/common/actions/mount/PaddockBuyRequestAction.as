@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.mount
+package com.ankamagames.dofus.logic.game.common.actions.mount
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PaddockBuyRequestAction extends Object implements Action
-    {
 
-        public function PaddockBuyRequestAction()
-        {
-            return;
-        }// end function
+   public class PaddockBuyRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : PaddockBuyRequestAction
-        {
-            return new PaddockBuyRequestAction;
-        }// end function
+      public function PaddockBuyRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : PaddockBuyRequestAction {
+         return new PaddockBuyRequestAction();
+      }
+
+
+   }
+
 }

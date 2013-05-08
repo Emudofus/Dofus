@@ -1,2016 +1,1805 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.factories.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.externalnotification.*;
-    import com.ankamagames.dofus.externalnotification.enums.*;
-    import com.ankamagames.dofus.internalDatacenter.people.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.actions.party.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.messages.*;
-    import com.ankamagames.dofus.logic.game.common.types.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.logic.game.roleplay.types.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.misc.utils.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.context.fight.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.party.*;
-    import com.ankamagames.dofus.network.messages.game.interactive.meeting.*;
-    import com.ankamagames.dofus.network.types.game.character.alignment.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
-    import com.ankamagames.dofus.types.enums.*;
-    import com.ankamagames.dofus.uiApi.*;
-    import com.ankamagames.dofusModuleLibrary.enum.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.utils.pattern.*;
-    import com.ankamagames.jerakine.utils.system.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.people.PartyMemberWrapper;
+   import flash.utils.Timer;
+   import flash.utils.Dictionary;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.DungeonPartyFinderPlayer;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyInvitationAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationDungeonMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyCannotJoinErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyNewGuestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyInvitationDetailsRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationDetailsRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationDungeonDetailsMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationDetailsMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyAcceptInvitationAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyAcceptInvitationMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyJoinMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyGuestInformations;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyRefuseInvitationAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyRefuseInvitationMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyRefuseInvitationNotificationMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyDeletedMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyCancelInvitationAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyCancelInvitationMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyCancelInvitationNotificationMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationCancelledForGuestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyRestrictedMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyKickRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyKickRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyKickedByMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyLeaveMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyMemberRemoveMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyLeaveRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyLeaveRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyLeaderUpdateMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyUpdateLightMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyAbdicateThroneAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyAbdicateThroneMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyPledgeLoyaltyRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyPledgeLoyaltyRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyLoyaltyStatusMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyFollowStatusUpdateMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyFollowMemberAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyFollowMemberRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyStopFollowingMemberAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyStopFollowRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyAllFollowMemberAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyFollowThisMemberRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyAllStopFollowingMemberAction;
+   import com.ankamagames.dofus.logic.game.common.actions.party.PartyShowMenuAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyLocateMembersMessage;
+   import com.ankamagames.dofus.network.messages.game.interactive.meeting.TeleportBuddiesMessage;
+   import com.ankamagames.dofus.network.messages.game.interactive.meeting.TeleportBuddiesRequestedMessage;
+   import com.ankamagames.dofus.network.messages.game.interactive.meeting.TeleportToBuddyOfferMessage;
+   import com.ankamagames.dofus.network.messages.game.interactive.meeting.TeleportToBuddyCloseMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.TeleportToBuddyAnswerAction;
+   import com.ankamagames.dofus.network.messages.game.interactive.meeting.TeleportToBuddyAnswerMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.DungeonPartyFinderAvailableDungeonsAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderAvailableDungeonsRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderAvailableDungeonsMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.DungeonPartyFinderListenAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderListenRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderListenErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderRoomContentMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderRoomContentUpdateMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.DungeonPartyFinderRegisterAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderRegisterRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderRegisterSuccessMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.DungeonPartyFinderRegisterErrorMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.ArenaRegisterAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.GameRolePlayArenaRegisterMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.ArenaUnregisterAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.GameRolePlayArenaUnregisterMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.GameRolePlayArenaRegistrationStatusMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.GameRolePlayArenaFightPropositionMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.party.ArenaFightAnswerAction;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.GameRolePlayArenaFightAnswerMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.GameRolePlayArenaFighterStatusMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.GameRolePlayArenaUpdatePlayerInfosMessage;
+   import com.ankamagames.dofus.network.messages.game.context.fight.GameFightJoinMessage;
+   import com.ankamagames.dofus.logic.game.common.messages.FightEndingMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.GameRolePlayRemoveChallengeMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationArenaRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyInvitationDungeonRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyMemberInFightMessage;
+   import com.ankamagames.dofus.logic.game.common.types.PartyFightInformationsData;
+   import com.ankamagames.dofus.logic.game.roleplay.types.Fight;
+   import com.ankamagames.dofus.logic.game.roleplay.types.FightTeam;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightTeamMemberInformations;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.MapComplementaryInformationsDataMessage;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightCommonInformations;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightTeamInformations;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.logic.common.managers.NotificationManager;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.datacenter.world.Dungeon;
+   import com.ankamagames.dofus.types.enums.NotificationTypeEnum;
+   import com.ankamagames.dofus.network.enums.PartyTypeEnum;
+   import com.ankamagames.dofus.externalnotification.enums.ExternalNotificationTypeEnum;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import com.ankamagames.dofus.externalnotification.ExternalNotificationManager;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
+   import com.ankamagames.dofus.network.enums.PartyJoinErrorEnum;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberArenaInformations;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.misc.lists.ChatHookList;
+   import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofusModuleLibrary.enum.CompassTypeEnum;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.jerakine.utils.pattern.PatternDecoder;
+   import com.ankamagames.dofus.misc.lists.RoleplayHookList;
+   import com.ankamagames.dofus.network.enums.PvpArenaStepEnum;
+   import com.ankamagames.dofus.network.enums.FightTypeEnum;
+   import flash.events.TimerEvent;
+   import com.ankamagames.dofus.misc.utils.ParamsDecoder;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.party.PartyNewMemberMessage;
+   import com.ankamagames.dofus.network.enums.PvpArenaTypeEnum;
+   import com.ankamagames.dofus.network.types.game.character.alignment.ActorAlignmentInformations;
+   import com.ankamagames.dofus.uiApi.SocialApi;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
+   import com.ankamagames.berilia.factories.MenusFactory;
+   import com.ankamagames.dofus.logic.game.common.actions.party.TeleportBuddiesAnswerAction;
 
-    public class PartyManagementFrame extends Object implements Frame
-    {
-        private var _playerNameInvited:String;
-        private var _partyMembers:Vector.<PartyMemberWrapper>;
-        private var _arenaPartyMembers:Vector.<PartyMemberWrapper>;
-        private var _arenaReadyPartyMemberIds:Array;
-        private var _arenaAlliesIds:Array;
-        private var _timerRegen:Timer;
-        private var _dicRegen:Dictionary;
-        private var _dicRegenArena:Dictionary;
-        private var _currentInvitations:Dictionary;
-        private var _teleportBuddiesDialogFrame:TeleportBuddiesDialogFrame;
-        private var _partyLoyalty:Boolean = false;
-        private var _isArenaRegistered:Boolean = false;
-        private var _arenaCurrentStatus:int = 3;
-        private var _partyId:int;
-        private var _arenaPartyId:int;
-        private var _arenaLeader:PartyMemberWrapper;
-        private var _arenaRanks:Array;
-        private var _todaysFights:int;
-        private var _todaysWonFights:int;
-        private var _playerDungeons:Vector.<uint>;
-        private var _playerSubscribedDungeons:Vector.<uint>;
-        private var _dungeonFighters:Vector.<DungeonPartyFinderPlayer>;
-        private var _lastFightType:int = -1;
-        public var allMemberFollowPlayerId:uint = 0;
-        private var _partyFightsInformations:Dictionary;
-        private var _partyFightNotification:Array;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(PartyManagementFrame));
 
-        public function PartyManagementFrame()
-        {
-            this._partyMembers = new Vector.<PartyMemberWrapper>;
-            this._arenaPartyMembers = new Vector.<PartyMemberWrapper>;
-            this._arenaReadyPartyMemberIds = new Array();
-            this._arenaAlliesIds = new Array();
-            this._playerDungeons = new Vector.<uint>;
-            this._playerSubscribedDungeons = new Vector.<uint>;
-            this._dungeonFighters = new Vector.<DungeonPartyFinderPlayer>;
-            this._dicRegen = new Dictionary();
-            this._dicRegenArena = new Dictionary();
-            this._currentInvitations = new Dictionary(true);
-            this._partyFightsInformations = new Dictionary();
-            this._partyFightNotification = new Array();
-            this._timerRegen = new Timer(1000);
-            this._timerRegen.addEventListener(TimerEvent.TIMER, this.onTimerTick);
-            return;
-        }// end function
+   public class PartyManagementFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function PartyManagementFrame() {
+         this._partyMembers=new Vector.<PartyMemberWrapper>();
+         this._arenaPartyMembers=new Vector.<PartyMemberWrapper>();
+         this._arenaReadyPartyMemberIds=new Array();
+         this._arenaAlliesIds=new Array();
+         this._playerDungeons=new Vector.<uint>();
+         this._playerSubscribedDungeons=new Vector.<uint>();
+         this._dungeonFighters=new Vector.<DungeonPartyFinderPlayer>();
+         super();
+         this._dicRegen=new Dictionary();
+         this._dicRegenArena=new Dictionary();
+         this._currentInvitations=new Dictionary(true);
+         this._partyFightsInformations=new Dictionary();
+         this._partyFightNotification=new Array();
+         this._timerRegen=new Timer(1000);
+         this._timerRegen.addEventListener(TimerEvent.TIMER,this.onTimerTick);
+      }
 
-        public function get partyMembers() : Vector.<PartyMemberWrapper>
-        {
-            return this._partyMembers;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(PartyManagementFrame));
 
-        public function get arenaPartyMembers() : Vector.<PartyMemberWrapper>
-        {
-            return this._arenaPartyMembers;
-        }// end function
+      private var _playerNameInvited:String;
 
-        public function get subscribedDungeons() : Vector.<uint>
-        {
-            return this._playerSubscribedDungeons;
-        }// end function
+      private var _partyMembers:Vector.<PartyMemberWrapper>;
 
-        public function get partyLoyalty() : Boolean
-        {
-            return this._partyLoyalty;
-        }// end function
+      private var _arenaPartyMembers:Vector.<PartyMemberWrapper>;
 
-        public function get isArenaRegistered() : Boolean
-        {
-            return this._isArenaRegistered;
-        }// end function
+      private var _arenaReadyPartyMemberIds:Array;
 
-        public function get arenaCurrentStatus() : int
-        {
-            return this._arenaCurrentStatus;
-        }// end function
+      private var _arenaAlliesIds:Array;
 
-        public function get arenaLeader() : PartyMemberWrapper
-        {
-            return this._arenaLeader;
-        }// end function
+      private var _timerRegen:Timer;
 
-        public function get arenaPartyId() : int
-        {
-            return this._arenaPartyId;
-        }// end function
+      private var _dicRegen:Dictionary;
 
-        public function get partyId() : int
-        {
-            return this._partyId;
-        }// end function
+      private var _dicRegenArena:Dictionary;
 
-        public function get arenaReadyPartyMemberIds() : Array
-        {
-            return this._arenaReadyPartyMemberIds;
-        }// end function
+      private var _currentInvitations:Dictionary;
 
-        public function get arenaAlliesIds() : Array
-        {
-            return this._arenaAlliesIds;
-        }// end function
+      private var _teleportBuddiesDialogFrame:TeleportBuddiesDialogFrame;
 
-        public function get arenaRanks() : Array
-        {
-            return this._arenaRanks;
-        }// end function
+      private var _partyLoyalty:Boolean = false;
 
-        public function get todaysArenaFights() : int
-        {
-            return this._todaysFights;
-        }// end function
+      private var _isArenaRegistered:Boolean = false;
 
-        public function get todaysWonArenaFights() : int
-        {
-            return this._todaysWonFights;
-        }// end function
+      private var _arenaCurrentStatus:int = 3;
 
-        private function get roleplayContextFrame() : RoleplayContextFrame
-        {
-            return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-        }// end function
+      private var _partyId:int;
 
-        private function get roleplayEntitiesFrame() : RoleplayEntitiesFrame
-        {
-            return Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-        }// end function
+      private var _arenaPartyId:int;
 
-        public function set lastFightType(param1:int) : void
-        {
-            this._lastFightType = param1;
-            return;
-        }// end function
+      private var _arenaLeader:PartyMemberWrapper;
 
-        public function pushed() : Boolean
-        {
-            this._arenaRanks = new Array();
-            this._teleportBuddiesDialogFrame = new TeleportBuddiesDialogFrame();
-            return true;
-        }// end function
+      private var _arenaRanks:Array;
 
-        public function process(param1:Message) : Boolean
-        {
-            var pia:PartyInvitationAction;
-            var pidmsg:PartyInvitationDungeonMessage;
-            var pidmsgNid:uint;
-            var pimsg:PartyInvitationMessage;
-            var textInvitationKey:String;
-            var extNotifType:int;
-            var pimsgNid:uint;
-            var pcjenmsg:PartyCannotJoinErrorMessage;
-            var reasonText:String;
-            var pngmsg:PartyNewGuestMessage;
-            var canBeHostMember:PartyMemberWrapper;
-            var newGuest:PartyMemberWrapper;
-            var pidra:PartyInvitationDetailsRequestAction;
-            var pidrmsg:PartyInvitationDetailsRequestMessage;
-            var piddmsg:PartyInvitationDungeonDetailsMessage;
-            var pidemsg:PartyInvitationDetailsMessage;
-            var paia:PartyAcceptInvitationAction;
-            var paimsg:PartyAcceptInvitationMessage;
-            var pumsg:PartyUpdateMessage;
-            var member:PartyMemberWrapper;
-            var newMember:PartyMemberWrapper;
-            var existingMember:Boolean;
-            var pjmsg:PartyJoinMessage;
-            var memberJoin:PartyMemberInformations;
-            var partyMember:PartyMemberWrapper;
-            var guest:PartyGuestInformations;
-            var partyGuest:PartyMemberWrapper;
-            var canBeHostMember2:PartyMemberWrapper;
-            var arena:Boolean;
-            var pria:PartyRefuseInvitationAction;
-            var primsg:PartyRefuseInvitationMessage;
-            var prinmsg:PartyRefuseInvitationNotificationMessage;
-            var guestRefusingIndex:int;
-            var prinGuestName:String;
-            var iMember:int;
-            var pdmsg:PartyDeletedMessage;
-            var pcia:PartyCancelInvitationAction;
-            var pcimsg:PartyCancelInvitationMessage;
-            var pcinmsg:PartyCancelInvitationNotificationMessage;
-            var guestRefusingIndex2:int;
-            var pcinGuestName:String;
-            var pcinCancelerName:String;
-            var iMember2:int;
-            var picfgmsg:PartyInvitationCancelledForGuestMessage;
-            var prmsg:PartyRestrictedMessage;
-            var pka:PartyKickRequestAction;
-            var pkickrimsg:PartyKickRequestMessage;
-            var pkbmsg:PartyKickedByMessage;
-            var plmsg:PartyLeaveMessage;
-            var pmrmsg:PartyMemberRemoveMessage;
-            var memberToRemoveIndex:int;
-            var iMember3:int;
-            var plra:PartyLeaveRequestAction;
-            var plrmsg:PartyLeaveRequestMessage;
-            var plulmsg:PartyLeaderUpdateMessage;
-            var partyMem:PartyMemberWrapper;
-            var pulmsg:PartyUpdateLightMessage;
-            var partyMemb:PartyMemberWrapper;
-            var lptmanager:LifePointTickManager;
-            var pata:PartyAbdicateThroneAction;
-            var patmsg:PartyAbdicateThroneMessage;
-            var pplra:PartyPledgeLoyaltyRequestAction;
-            var pplrmsg:PartyPledgeLoyaltyRequestMessage;
-            var plsmsg:PartyLoyaltyStatusMessage;
-            var pfsumsg:PartyFollowStatusUpdateMessage;
-            var pfma:PartyFollowMemberAction;
-            var pfmrmsg:PartyFollowMemberRequestMessage;
-            var psfma:PartyStopFollowingMemberAction;
-            var psfrmsg:PartyStopFollowRequestMessage;
-            var pafma:PartyAllFollowMemberAction;
-            var pftmrmsg:PartyFollowThisMemberRequestMessage;
-            var pasfma:PartyAllStopFollowingMemberAction;
-            var pftmrmsg2:PartyFollowThisMemberRequestMessage;
-            var psma:PartyShowMenuAction;
-            var modContextMenu:Object;
-            var menu:Object;
-            var plmmsg:PartyLocateMembersMessage;
-            var tbmsg:TeleportBuddiesMessage;
-            var commonModTp:Object;
-            var tbrmsg:TeleportBuddiesRequestedMessage;
-            var hostName:String;
-            var poorBuddiesNames:String;
-            var dungeonPropName:String;
-            var prinText:String;
-            var ttbomsg:TeleportToBuddyOfferMessage;
-            var buddyName:String;
-            var dungeonName:String;
-            var notifyUser:Boolean;
-            var ttbomsgNid:uint;
-            var ttbcmsg:TeleportToBuddyCloseMessage;
-            var ttbaa:TeleportToBuddyAnswerAction;
-            var ttbamsg:TeleportToBuddyAnswerMessage;
-            var dpfada:DungeonPartyFinderAvailableDungeonsAction;
-            var dpfadrmsg:DungeonPartyFinderAvailableDungeonsRequestMessage;
-            var dpfadmsg:DungeonPartyFinderAvailableDungeonsMessage;
-            var dpfla:DungeonPartyFinderListenAction;
-            var dpflrmsg:DungeonPartyFinderListenRequestMessage;
-            var dpflemsg:DungeonPartyFinderListenErrorMessage;
-            var dpfrcmsg:DungeonPartyFinderRoomContentMessage;
-            var dpfrcumsg:DungeonPartyFinderRoomContentUpdateMessage;
-            var tempDjFighters:Vector.<DungeonPartyFinderPlayer>;
-            var dpfra:DungeonPartyFinderRegisterAction;
-            var dungeons:Vector.<uint>;
-            var dpfrrmsg:DungeonPartyFinderRegisterRequestMessage;
-            var dpfrsmsg:DungeonPartyFinderRegisterSuccessMessage;
-            var resultText:String;
-            var dpfremsg:DungeonPartyFinderRegisterErrorMessage;
-            var errortext:String;
-            var ara:ArenaRegisterAction;
-            var grparmsg:GameRolePlayArenaRegisterMessage;
-            var aua:ArenaUnregisterAction;
-            var grpaumsg:GameRolePlayArenaUnregisterMessage;
-            var grparsmsg:GameRolePlayArenaRegistrationStatusMessage;
-            var grpafpmsg:GameRolePlayArenaFightPropositionMessage;
-            var grpafpmsgNid:uint;
-            var afaa:ArenaFightAnswerAction;
-            var grpafamsg:GameRolePlayArenaFightAnswerMessage;
-            var grpafsmsg:GameRolePlayArenaFighterStatusMessage;
-            var grpaupimsg:GameRolePlayArenaUpdatePlayerInfosMessage;
-            var gfjmsg:GameFightJoinMessage;
-            var femsg:FightEndingMessage;
-            var grpcm:GameRolePlayRemoveChallengeMessage;
-            var notificationId:String;
-            var fightNotificationIndex:int;
-            var piarmsg:PartyInvitationArenaRequestMessage;
-            var pirmsg:PartyInvitationRequestMessage;
-            var pidgrmsg:PartyInvitationDungeonRequestMessage;
-            var prinText2:String;
-            var pcinText:String;
-            var picfgInviterName:String;
-            var picfgText:String;
-            var buddyPropMember:PartyMemberWrapper;
-            var buddyMember:PartyMemberWrapper;
-            var fighterDungeon:DungeonPartyFinderPlayer;
-            var iFD:int;
-            var currentfighterDungeon:DungeonPartyFinderPlayer;
-            var removedfighterId:int;
-            var addedfighterDungeon:DungeonPartyFinderPlayer;
-            var dungeonId:uint;
-            var paramDonjons:String;
-            var djId:int;
-            var allyId:int;
-            var commonMod:Object;
-            var pemifmmsg:PartyMemberInFightMessage;
-            var fightCause:String;
-            var fightId:int;
-            var memberName:String;
-            var fightMapId:int;
-            var fightInformation:PartyFightInformationsData;
-            var channel:uint;
-            var timestamp:Number;
-            var params:Array;
-            var partyFightMsg:String;
-            var fightTeamLeaderId:int;
-            var entitiesFrame:RoleplayEntitiesFrame;
-            var fight:Fight;
-            var team:FightTeam;
-            var fightTeamMember:FightTeamMemberInformations;
-            var foundLeader:Boolean;
-            var mcidm:MapComplementaryInformationsDataMessage;
-            var mapId:uint;
-            var partyFight:PartyFightInformationsData;
-            var mapFight:FightCommonInformations;
-            var foundFight:Boolean;
-            var fti:FightTeamInformations;
-            var teamMember:FightTeamMemberInformations;
-            var leaderId:int;
-            var fightTeams:Vector.<FightTeamInformations>;
-            var msg:* = param1;
-            switch(true)
-            {
-                case msg is PartyInvitationAction:
-                {
-                    pia = msg as PartyInvitationAction;
-                    this._playerNameInvited = pia.name;
-                    if (pia.inArena)
-                    {
-                        piarmsg = new PartyInvitationArenaRequestMessage();
-                        piarmsg.initPartyInvitationArenaRequestMessage(pia.name);
-                        ConnectionsHandler.getConnection().send(piarmsg);
-                    }
-                    else if (pia.dungeon == 0)
-                    {
-                        pirmsg = new PartyInvitationRequestMessage();
-                        pirmsg.initPartyInvitationRequestMessage(pia.name);
-                        ConnectionsHandler.getConnection().send(pirmsg);
-                    }
-                    else
-                    {
-                        pidgrmsg = new PartyInvitationDungeonRequestMessage();
-                        pidgrmsg.initPartyInvitationDungeonRequestMessage(pia.name, pia.dungeon);
-                        ConnectionsHandler.getConnection().send(pidgrmsg);
-                    }
-                    return true;
-                }
-                case msg is PartyInvitationDungeonMessage:
-                {
-                    pidmsg = msg as PartyInvitationDungeonMessage;
-                    this._currentInvitations[pidmsg.partyId] = {fromName:pidmsg.fromName};
-                    pidmsgNid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"), I18n.getUiText("ui.party.playerInvitationToDungeon", [pidmsg.fromName, Dungeon.getDungeonById(pidmsg.dungeonId).name]), NotificationTypeEnum.INVITATION, "partyInvit_" + pidmsg.partyId);
-                    NotificationManager.getInstance().addButtonToNotification(pidmsgNid, I18n.getUiText("ui.common.details"), "PartyInvitationDetailsRequest", [pidmsg.partyId], false, 130);
-                    NotificationManager.getInstance().addButtonToNotification(pidmsgNid, I18n.getUiText("ui.common.accept"), "PartyAcceptInvitation", [pidmsg.partyId], true, 130);
-                    NotificationManager.getInstance().addCallbackToNotification(pidmsgNid, "PartyRefuseInvitation", [pidmsg.partyId]);
-                    NotificationManager.getInstance().sendNotification(pidmsgNid);
-                    return true;
-                }
-                case msg is PartyInvitationMessage:
-                {
-                    pimsg = msg as PartyInvitationMessage;
-                    this._currentInvitations[pimsg.partyId] = {fromName:pimsg.fromName};
-                    if (pimsg.partyType == PartyTypeEnum.PARTY_TYPE_ARENA)
-                    {
-                        textInvitationKey;
-                        extNotifType = ExternalNotificationTypeEnum.KOLO_INVITATION;
-                    }
-                    else if (pimsg.partyType == PartyTypeEnum.PARTY_TYPE_CLASSICAL)
-                    {
-                        textInvitationKey;
-                        extNotifType = ExternalNotificationTypeEnum.GROUP_INVITATION;
-                    }
-                    if (AirScanner.hasAir() && extNotifType > 0 && ExternalNotificationManager.getInstance().canAddExternalNotification(extNotifType))
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, extNotifType, [pimsg.fromName]);
-                    }
-                    pimsgNid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"), I18n.getUiText(textInvitationKey, [pimsg.fromName]), NotificationTypeEnum.INVITATION, "partyInvit_" + pimsg.partyId);
-                    NotificationManager.getInstance().addButtonToNotification(pimsgNid, I18n.getUiText("ui.common.details"), "PartyInvitationDetailsRequest", [pimsg.partyId]);
-                    NotificationManager.getInstance().addButtonToNotification(pimsgNid, I18n.getUiText("ui.common.accept"), "PartyAcceptInvitation", [pimsg.partyId], true);
-                    NotificationManager.getInstance().addCallbackToNotification(pimsgNid, "PartyRefuseInvitation", [pimsg.partyId]);
-                    NotificationManager.getInstance().sendNotification(pimsgNid);
-                    return true;
-                }
-                case msg is PartyCannotJoinErrorMessage:
-                {
-                    pcjenmsg = msg as PartyCannotJoinErrorMessage;
-                    reasonText;
-                    switch(pcjenmsg.reason)
-                    {
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PARTY_FULL:
+      private var _todaysFights:int;
+
+      private var _todaysWonFights:int;
+
+      private var _playerDungeons:Vector.<uint>;
+
+      private var _playerSubscribedDungeons:Vector.<uint>;
+
+      private var _dungeonFighters:Vector.<DungeonPartyFinderPlayer>;
+
+      private var _lastFightType:int = -1;
+
+      public var allMemberFollowPlayerId:uint = 0;
+
+      private var _partyFightsInformations:Dictionary;
+
+      private var _partyFightNotification:Array;
+
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
+
+      public function get partyMembers() : Vector.<PartyMemberWrapper> {
+         return this._partyMembers;
+      }
+
+      public function get arenaPartyMembers() : Vector.<PartyMemberWrapper> {
+         return this._arenaPartyMembers;
+      }
+
+      public function get subscribedDungeons() : Vector.<uint> {
+         return this._playerSubscribedDungeons;
+      }
+
+      public function get partyLoyalty() : Boolean {
+         return this._partyLoyalty;
+      }
+
+      public function get isArenaRegistered() : Boolean {
+         return this._isArenaRegistered;
+      }
+
+      public function get arenaCurrentStatus() : int {
+         return this._arenaCurrentStatus;
+      }
+
+      public function get arenaLeader() : PartyMemberWrapper {
+         return this._arenaLeader;
+      }
+
+      public function get arenaPartyId() : int {
+         return this._arenaPartyId;
+      }
+
+      public function get partyId() : int {
+         return this._partyId;
+      }
+
+      public function get arenaReadyPartyMemberIds() : Array {
+         return this._arenaReadyPartyMemberIds;
+      }
+
+      public function get arenaAlliesIds() : Array {
+         return this._arenaAlliesIds;
+      }
+
+      public function get arenaRanks() : Array {
+         return this._arenaRanks;
+      }
+
+      public function get todaysArenaFights() : int {
+         return this._todaysFights;
+      }
+
+      public function get todaysWonArenaFights() : int {
+         return this._todaysWonFights;
+      }
+
+      private function get roleplayContextFrame() : RoleplayContextFrame {
+         return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+      }
+
+      private function get roleplayEntitiesFrame() : RoleplayEntitiesFrame {
+         return Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+      }
+
+      public function set lastFightType(n:int) : void {
+         this._lastFightType=n;
+      }
+
+      public function pushed() : Boolean {
+         this._arenaRanks=new Array();
+         this._teleportBuddiesDialogFrame=new TeleportBuddiesDialogFrame();
+         return true;
+      }
+
+      public function process(msg:Message) : Boolean {
+         var pia:PartyInvitationAction = null;
+         var pidmsg:PartyInvitationDungeonMessage = null;
+         var pidmsgNid:uint = 0;
+         var pimsg:PartyInvitationMessage = null;
+         var textInvitationKey:String = null;
+         var extNotifType:int = 0;
+         var pimsgNid:uint = 0;
+         var pcjenmsg:PartyCannotJoinErrorMessage = null;
+         var reasonText:String = null;
+         var pngmsg:PartyNewGuestMessage = null;
+         var canBeHostMember:PartyMemberWrapper = null;
+         var newGuest:PartyMemberWrapper = null;
+         var pidra:PartyInvitationDetailsRequestAction = null;
+         var pidrmsg:PartyInvitationDetailsRequestMessage = null;
+         var piddmsg:PartyInvitationDungeonDetailsMessage = null;
+         var pidemsg:PartyInvitationDetailsMessage = null;
+         var paia:PartyAcceptInvitationAction = null;
+         var paimsg:PartyAcceptInvitationMessage = null;
+         var pumsg:PartyUpdateMessage = null;
+         var member:PartyMemberWrapper = null;
+         var newMember:PartyMemberWrapper = null;
+         var existingMember:Boolean = false;
+         var pjmsg:PartyJoinMessage = null;
+         var memberJoin:PartyMemberInformations = null;
+         var partyMember:PartyMemberWrapper = null;
+         var guest:PartyGuestInformations = null;
+         var partyGuest:PartyMemberWrapper = null;
+         var canBeHostMember2:PartyMemberWrapper = null;
+         var arena:Boolean = false;
+         var pria:PartyRefuseInvitationAction = null;
+         var primsg:PartyRefuseInvitationMessage = null;
+         var prinmsg:PartyRefuseInvitationNotificationMessage = null;
+         var guestRefusingIndex:int = 0;
+         var prinGuestName:String = null;
+         var iMember:int = 0;
+         var pdmsg:PartyDeletedMessage = null;
+         var pcia:PartyCancelInvitationAction = null;
+         var pcimsg:PartyCancelInvitationMessage = null;
+         var pcinmsg:PartyCancelInvitationNotificationMessage = null;
+         var guestRefusingIndex2:int = 0;
+         var pcinGuestName:String = null;
+         var pcinCancelerName:String = null;
+         var iMember2:int = 0;
+         var picfgmsg:PartyInvitationCancelledForGuestMessage = null;
+         var prmsg:PartyRestrictedMessage = null;
+         var pka:PartyKickRequestAction = null;
+         var pkickrimsg:PartyKickRequestMessage = null;
+         var pkbmsg:PartyKickedByMessage = null;
+         var plmsg:PartyLeaveMessage = null;
+         var pmrmsg:PartyMemberRemoveMessage = null;
+         var memberToRemoveIndex:int = 0;
+         var iMember3:int = 0;
+         var plra:PartyLeaveRequestAction = null;
+         var plrmsg:PartyLeaveRequestMessage = null;
+         var plulmsg:PartyLeaderUpdateMessage = null;
+         var partyMem:PartyMemberWrapper = null;
+         var pulmsg:PartyUpdateLightMessage = null;
+         var partyMemb:PartyMemberWrapper = null;
+         var lptmanager:LifePointTickManager = null;
+         var pata:PartyAbdicateThroneAction = null;
+         var patmsg:PartyAbdicateThroneMessage = null;
+         var pplra:PartyPledgeLoyaltyRequestAction = null;
+         var pplrmsg:PartyPledgeLoyaltyRequestMessage = null;
+         var plsmsg:PartyLoyaltyStatusMessage = null;
+         var pfsumsg:PartyFollowStatusUpdateMessage = null;
+         var pfma:PartyFollowMemberAction = null;
+         var pfmrmsg:PartyFollowMemberRequestMessage = null;
+         var psfma:PartyStopFollowingMemberAction = null;
+         var psfrmsg:PartyStopFollowRequestMessage = null;
+         var pafma:PartyAllFollowMemberAction = null;
+         var pftmrmsg:PartyFollowThisMemberRequestMessage = null;
+         var pasfma:PartyAllStopFollowingMemberAction = null;
+         var pftmrmsg2:PartyFollowThisMemberRequestMessage = null;
+         var psma:PartyShowMenuAction = null;
+         var modContextMenu:Object = null;
+         var menu:Object = null;
+         var plmmsg:PartyLocateMembersMessage = null;
+         var tbmsg:TeleportBuddiesMessage = null;
+         var commonModTp:Object = null;
+         var tbrmsg:TeleportBuddiesRequestedMessage = null;
+         var hostName:String = null;
+         var poorBuddiesNames:String = null;
+         var dungeonPropName:String = null;
+         var prinText:String = null;
+         var ttbomsg:TeleportToBuddyOfferMessage = null;
+         var buddyName:String = null;
+         var dungeonName:String = null;
+         var notifyUser:Boolean = false;
+         var ttbomsgNid:uint = 0;
+         var ttbcmsg:TeleportToBuddyCloseMessage = null;
+         var ttbaa:TeleportToBuddyAnswerAction = null;
+         var ttbamsg:TeleportToBuddyAnswerMessage = null;
+         var dpfada:DungeonPartyFinderAvailableDungeonsAction = null;
+         var dpfadrmsg:DungeonPartyFinderAvailableDungeonsRequestMessage = null;
+         var dpfadmsg:DungeonPartyFinderAvailableDungeonsMessage = null;
+         var dpfla:DungeonPartyFinderListenAction = null;
+         var dpflrmsg:DungeonPartyFinderListenRequestMessage = null;
+         var dpflemsg:DungeonPartyFinderListenErrorMessage = null;
+         var dpfrcmsg:DungeonPartyFinderRoomContentMessage = null;
+         var dpfrcumsg:DungeonPartyFinderRoomContentUpdateMessage = null;
+         var tempDjFighters:Vector.<DungeonPartyFinderPlayer> = null;
+         var dpfra:DungeonPartyFinderRegisterAction = null;
+         var dungeons:Vector.<uint> = null;
+         var dpfrrmsg:DungeonPartyFinderRegisterRequestMessage = null;
+         var dpfrsmsg:DungeonPartyFinderRegisterSuccessMessage = null;
+         var resultText:String = null;
+         var dpfremsg:DungeonPartyFinderRegisterErrorMessage = null;
+         var errortext:String = null;
+         var ara:ArenaRegisterAction = null;
+         var grparmsg:GameRolePlayArenaRegisterMessage = null;
+         var aua:ArenaUnregisterAction = null;
+         var grpaumsg:GameRolePlayArenaUnregisterMessage = null;
+         var grparsmsg:GameRolePlayArenaRegistrationStatusMessage = null;
+         var grpafpmsg:GameRolePlayArenaFightPropositionMessage = null;
+         var grpafpmsgNid:uint = 0;
+         var afaa:ArenaFightAnswerAction = null;
+         var grpafamsg:GameRolePlayArenaFightAnswerMessage = null;
+         var grpafsmsg:GameRolePlayArenaFighterStatusMessage = null;
+         var grpaupimsg:GameRolePlayArenaUpdatePlayerInfosMessage = null;
+         var gfjmsg:GameFightJoinMessage = null;
+         var femsg:FightEndingMessage = null;
+         var grpcm:GameRolePlayRemoveChallengeMessage = null;
+         var notificationId:String = null;
+         var fightNotificationIndex:int = 0;
+         var piarmsg:PartyInvitationArenaRequestMessage = null;
+         var pirmsg:PartyInvitationRequestMessage = null;
+         var pidgrmsg:PartyInvitationDungeonRequestMessage = null;
+         var prinText2:String = null;
+         var pcinText:String = null;
+         var picfgInviterName:String = null;
+         var picfgText:String = null;
+         var buddyPropMember:PartyMemberWrapper = null;
+         var buddyMember:PartyMemberWrapper = null;
+         var fighterDungeon:DungeonPartyFinderPlayer = null;
+         var iFD:int = 0;
+         var currentfighterDungeon:DungeonPartyFinderPlayer = null;
+         var removedfighterId:int = 0;
+         var addedfighterDungeon:DungeonPartyFinderPlayer = null;
+         var dungeonId:uint = 0;
+         var paramDonjons:String = null;
+         var djId:int = 0;
+         var allyId:int = 0;
+         var commonMod:Object = null;
+         var pemifmmsg:PartyMemberInFightMessage = null;
+         var fightCause:String = null;
+         var fightId:int = 0;
+         var memberName:String = null;
+         var fightMapId:int = 0;
+         var fightInformation:PartyFightInformationsData = null;
+         var channel:uint = 0;
+         var timestamp:Number = NaN;
+         var params:Array = null;
+         var partyFightMsg:String = null;
+         var fightTeamLeaderId:int = 0;
+         var entitiesFrame:RoleplayEntitiesFrame = null;
+         var fight:Fight = null;
+         var team:FightTeam = null;
+         var fightTeamMember:FightTeamMemberInformations = null;
+         var foundLeader:Boolean = false;
+         var mcidm:MapComplementaryInformationsDataMessage = null;
+         var mapId:uint = 0;
+         var partyFight:PartyFightInformationsData = null;
+         var mapFight:FightCommonInformations = null;
+         var foundFight:Boolean = false;
+         var fti:FightTeamInformations = null;
+         var teamMember:FightTeamMemberInformations = null;
+         var leaderId:int = 0;
+         var fightTeams:Vector.<FightTeamInformations> = null;
+         switch(true)
+         {
+            case msg is PartyInvitationAction:
+               pia=msg as PartyInvitationAction;
+               this._playerNameInvited=pia.name;
+               if(pia.inArena)
+               {
+                  piarmsg=new PartyInvitationArenaRequestMessage();
+                  piarmsg.initPartyInvitationArenaRequestMessage(pia.name);
+                  ConnectionsHandler.getConnection().send(piarmsg);
+               }
+               else
+               {
+                  if(pia.dungeon==0)
+                  {
+                     pirmsg=new PartyInvitationRequestMessage();
+                     pirmsg.initPartyInvitationRequestMessage(pia.name);
+                     ConnectionsHandler.getConnection().send(pirmsg);
+                  }
+                  else
+                  {
+                     pidgrmsg=new PartyInvitationDungeonRequestMessage();
+                     pidgrmsg.initPartyInvitationDungeonRequestMessage(pia.name,pia.dungeon);
+                     ConnectionsHandler.getConnection().send(pidgrmsg);
+                  }
+               }
+               return true;
+            case msg is PartyInvitationDungeonMessage:
+               pidmsg=msg as PartyInvitationDungeonMessage;
+               this._currentInvitations[pidmsg.partyId]={fromName:pidmsg.fromName};
+               pidmsgNid=NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"),I18n.getUiText("ui.party.playerInvitationToDungeon",[pidmsg.fromName,Dungeon.getDungeonById(pidmsg.dungeonId).name]),NotificationTypeEnum.INVITATION,"partyInvit_"+pidmsg.partyId);
+               NotificationManager.getInstance().addButtonToNotification(pidmsgNid,I18n.getUiText("ui.common.details"),"PartyInvitationDetailsRequest",[pidmsg.partyId],false,130);
+               NotificationManager.getInstance().addButtonToNotification(pidmsgNid,I18n.getUiText("ui.common.accept"),"PartyAcceptInvitation",[pidmsg.partyId],true,130);
+               NotificationManager.getInstance().addCallbackToNotification(pidmsgNid,"PartyRefuseInvitation",[pidmsg.partyId]);
+               NotificationManager.getInstance().sendNotification(pidmsgNid);
+               return true;
+            case msg is PartyInvitationMessage:
+               pimsg=msg as PartyInvitationMessage;
+               this._currentInvitations[pimsg.partyId]={fromName:pimsg.fromName};
+               if(pimsg.partyType==PartyTypeEnum.PARTY_TYPE_ARENA)
+               {
+                  textInvitationKey="ui.party.playerInvitationArena";
+                  extNotifType=ExternalNotificationTypeEnum.KOLO_INVITATION;
+               }
+               else
+               {
+                  if(pimsg.partyType==PartyTypeEnum.PARTY_TYPE_CLASSICAL)
+                  {
+                     textInvitationKey="ui.party.playerInvitation";
+                     extNotifType=ExternalNotificationTypeEnum.GROUP_INVITATION;
+                  }
+               }
+               if((AirScanner.hasAir())&&(extNotifType<0)&&(ExternalNotificationManager.getInstance().canAddExternalNotification(extNotifType)))
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,extNotifType,[pimsg.fromName]);
+               }
+               pimsgNid=NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"),I18n.getUiText(textInvitationKey,[pimsg.fromName]),NotificationTypeEnum.INVITATION,"partyInvit_"+pimsg.partyId);
+               NotificationManager.getInstance().addButtonToNotification(pimsgNid,I18n.getUiText("ui.common.details"),"PartyInvitationDetailsRequest",[pimsg.partyId]);
+               NotificationManager.getInstance().addButtonToNotification(pimsgNid,I18n.getUiText("ui.common.accept"),"PartyAcceptInvitation",[pimsg.partyId],true);
+               NotificationManager.getInstance().addCallbackToNotification(pimsgNid,"PartyRefuseInvitation",[pimsg.partyId]);
+               NotificationManager.getInstance().sendNotification(pimsgNid);
+               return true;
+            case msg is PartyCannotJoinErrorMessage:
+               pcjenmsg=msg as PartyCannotJoinErrorMessage;
+               reasonText="";
+               switch(pcjenmsg.reason)
+               {
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PARTY_FULL:
+                     reasonText=I18n.getUiText("ui.party.partyFull");
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PARTY_NOT_FOUND:
+                     reasonText=I18n.getUiText("ui.party.cantFindParty");
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY:
+                     reasonText=I18n.getUiText("ui.party.cantInvitPlayerBusy");
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_NOT_FOUND:
+                     reasonText=I18n.getUiText("ui.common.playerNotFound",[this._playerNameInvited]);
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION:
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_LOYAL:
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_TOO_SOLLICITED:
+                     reasonText=I18n.getUiText("ui.party.playerTooSollicited");
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMODIFIABLE:
+                     reasonText=I18n.getUiText("ui.party.partyUnmodifiable");
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_ALREADY_INVITED:
+                     reasonText=I18n.getUiText("ui.party.playerAlreayBeingInvited");
+                     break;
+                  case PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNKNOWN:
+               }
+               reasonText=I18n.getUiText("ui.party.cantInvit");
+               if(reasonText!="")
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.PartyCannotJoinError,reasonText);
+               }
+               return true;
+            case msg is PartyNewGuestMessage:
+               pngmsg=msg as PartyNewGuestMessage;
+               newGuest=new PartyMemberWrapper(pngmsg.guest.guestId,pngmsg.guest.name,pngmsg.guest.status.statusId,false,false,0,pngmsg.guest.guestLook);
+               newGuest.breed=pngmsg.guest.breed;
+               newGuest.hostId=pngmsg.guest.hostId;
+               if(pngmsg.partyId==this._arenaPartyId)
+               {
+                  for each (canBeHostMember in this._arenaPartyMembers)
+                  {
+                     if(canBeHostMember.id==pngmsg.guest.hostId)
+                     {
+                        newGuest.hostName=canBeHostMember.name;
+                     }
+                  }
+                  this._arenaPartyMembers.push(newGuest);
+               }
+               else
+               {
+                  if(pngmsg.partyId==this._partyId)
+                  {
+                     for each (canBeHostMember in this._partyMembers)
+                     {
+                        if(canBeHostMember.id==pngmsg.guest.hostId)
                         {
-                            reasonText = I18n.getUiText("ui.party.partyFull");
-                            break;
+                           newGuest.hostName=canBeHostMember.name;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PARTY_NOT_FOUND:
+                     }
+                     this._partyMembers.push(newGuest);
+                  }
+               }
+               if((!(pngmsg.partyId==this._arenaPartyId))&&(!(pngmsg.partyId==this._partyId)))
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdateDetails,pngmsg.partyId,newGuest,false);
+               }
+               else
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdate,pngmsg.partyId,newGuest.id);
+               }
+               return true;
+            case msg is PartyInvitationDetailsRequestAction:
+               pidra=msg as PartyInvitationDetailsRequestAction;
+               pidrmsg=new PartyInvitationDetailsRequestMessage();
+               pidrmsg.initPartyInvitationDetailsRequestMessage(pidra.partyId);
+               ConnectionsHandler.getConnection().send(pidrmsg);
+               NotificationManager.getInstance().hideNotification("partyInvit_"+pidra.partyId);
+               return true;
+            case msg is PartyInvitationDungeonDetailsMessage:
+               piddmsg=msg as PartyInvitationDungeonDetailsMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation,piddmsg.partyId,piddmsg.fromName,piddmsg.leaderId,piddmsg.partyType,piddmsg.members,piddmsg.guests,piddmsg.dungeonId,piddmsg.playersDungeonReady);
+               return true;
+            case msg is PartyInvitationDetailsMessage:
+               pidemsg=msg as PartyInvitationDetailsMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation,pidemsg.partyId,pidemsg.fromName,pidemsg.leaderId,pidemsg.partyType,pidemsg.members,pidemsg.guests,0,null);
+               return true;
+            case msg is PartyAcceptInvitationAction:
+               paia=msg as PartyAcceptInvitationAction;
+               NotificationManager.getInstance().closeNotification("partyInvit_"+paia.partyId);
+               paimsg=new PartyAcceptInvitationMessage();
+               paimsg.initPartyAcceptInvitationMessage(paia.partyId);
+               ConnectionsHandler.getConnection().send(paimsg);
+               delete this._currentInvitations[[paimsg.partyId]];
+               return true;
+            case msg is PartyNewMemberMessage:
+            case msg is PartyUpdateMessage:
+               pumsg=msg as PartyUpdateMessage;
+               existingMember=false;
+               if(pumsg.partyId==this._arenaPartyId)
+               {
+                  for each (member in this._arenaPartyMembers)
+                  {
+                     if(member.id==pumsg.memberInformations.id)
+                     {
+                        member.name=pumsg.memberInformations.name;
+                        member.isMember=true;
+                        member.level=pumsg.memberInformations.level;
+                        member.entityLook=pumsg.memberInformations.entityLook;
+                        member.lifePoints=pumsg.memberInformations.lifePoints;
+                        member.maxLifePoints=pumsg.memberInformations.maxLifePoints;
+                        member.maxInitiative=pumsg.memberInformations.initiative;
+                        member.rank=(pumsg.memberInformations as PartyMemberArenaInformations).rank;
+                        member.pvpEnabled=pumsg.memberInformations.pvpEnabled;
+                        member.alignmentSide=pumsg.memberInformations.alignmentSide;
+                        member.regenRate=pumsg.memberInformations.regenRate;
+                        member.worldX=pumsg.memberInformations.worldX;
+                        member.worldY=pumsg.memberInformations.worldY;
+                        member.mapId=pumsg.memberInformations.mapId;
+                        member.subAreaId=pumsg.memberInformations.subAreaId;
+                        existingMember=true;
+                     }
+                  }
+                  if(!existingMember)
+                  {
+                     newMember=new PartyMemberWrapper(pumsg.memberInformations.id,pumsg.memberInformations.name,pumsg.memberInformations.status.statusId,true,false,pumsg.memberInformations.level,pumsg.memberInformations.entityLook,pumsg.memberInformations.lifePoints,pumsg.memberInformations.maxLifePoints,pumsg.memberInformations.initiative,0,pumsg.memberInformations.pvpEnabled,pumsg.memberInformations.alignmentSide,pumsg.memberInformations.regenRate,(pumsg.memberInformations as PartyMemberArenaInformations).rank,pumsg.memberInformations.worldX,pumsg.memberInformations.worldY,pumsg.memberInformations.mapId,pumsg.memberInformations.subAreaId);
+                     this._arenaPartyMembers.push(newMember);
+                  }
+               }
+               else
+               {
+                  if(pumsg.partyId==this._partyId)
+                  {
+                     for each (member in this._partyMembers)
+                     {
+                        if(member.id==pumsg.memberInformations.id)
                         {
-                            reasonText = I18n.getUiText("ui.party.cantFindParty");
-                            break;
+                           member.name=pumsg.memberInformations.name;
+                           member.isMember=true;
+                           member.level=pumsg.memberInformations.level;
+                           member.entityLook=pumsg.memberInformations.entityLook;
+                           member.lifePoints=pumsg.memberInformations.lifePoints;
+                           member.maxLifePoints=pumsg.memberInformations.maxLifePoints;
+                           member.maxInitiative=pumsg.memberInformations.initiative;
+                           member.prospecting=pumsg.memberInformations.prospecting;
+                           member.pvpEnabled=pumsg.memberInformations.pvpEnabled;
+                           member.alignmentSide=pumsg.memberInformations.alignmentSide;
+                           member.regenRate=pumsg.memberInformations.regenRate;
+                           member.worldX=pumsg.memberInformations.worldX;
+                           member.worldY=pumsg.memberInformations.worldY;
+                           member.mapId=pumsg.memberInformations.mapId;
+                           member.subAreaId=pumsg.memberInformations.subAreaId;
+                           existingMember=true;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_BUSY:
+                     }
+                     if(!existingMember)
+                     {
+                        newMember=new PartyMemberWrapper(pumsg.memberInformations.id,pumsg.memberInformations.name,pumsg.memberInformations.status.statusId,true,false,pumsg.memberInformations.level,pumsg.memberInformations.entityLook,pumsg.memberInformations.lifePoints,pumsg.memberInformations.maxLifePoints,pumsg.memberInformations.initiative,pumsg.memberInformations.prospecting,pumsg.memberInformations.pvpEnabled,pumsg.memberInformations.alignmentSide,pumsg.memberInformations.regenRate,pumsg.memberInformations.worldX,pumsg.memberInformations.worldY,pumsg.memberInformations.mapId,pumsg.memberInformations.subAreaId);
+                        this._partyMembers.push(newMember);
+                     }
+                  }
+               }
+               if((!(pumsg.partyId==this._arenaPartyId))&&(!(pumsg.partyId==this._partyId)))
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdateDetails,pumsg.partyId,pumsg.memberInformations,true);
+               }
+               else
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdate,pumsg.partyId,pumsg.memberInformations.id);
+               }
+               return true;
+            case msg is PartyJoinMessage:
+               pjmsg=msg as PartyJoinMessage;
+               if(pjmsg.partyType==PartyTypeEnum.PARTY_TYPE_ARENA)
+               {
+                  this._arenaPartyMembers=new Vector.<PartyMemberWrapper>();
+                  this._arenaPartyId=pjmsg.partyId;
+                  for each (memberJoin in pjmsg.members)
+                  {
+                     partyMember=new PartyMemberWrapper(memberJoin.id,memberJoin.name,memberJoin.status.statusId,true,false,memberJoin.level,memberJoin.entityLook,memberJoin.lifePoints,memberJoin.maxLifePoints,memberJoin.initiative,memberJoin.prospecting,memberJoin.pvpEnabled,memberJoin.alignmentSide,memberJoin.regenRate,(memberJoin as PartyMemberArenaInformations).rank);
+                     if(memberJoin.id==pjmsg.partyLeaderId)
+                     {
+                        partyMember.isLeader=true;
+                        this._arenaLeader=partyMember;
+                     }
+                     this._arenaPartyMembers.push(partyMember);
+                  }
+                  for each (guest in pjmsg.guests)
+                  {
+                     partyGuest=new PartyMemberWrapper(guest.guestId,guest.name,guest.status.statusId,false,false,0,guest.guestLook);
+                     partyGuest.hostId=guest.hostId;
+                     for each (canBeHostMember2 in this._arenaPartyMembers)
+                     {
+                        if(canBeHostMember2.id==guest.hostId)
                         {
-                            reasonText = I18n.getUiText("ui.party.cantInvitPlayerBusy");
-                            break;
+                           partyGuest.hostName=canBeHostMember2.name;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_NOT_FOUND:
+                     }
+                     this._arenaPartyMembers.push(partyGuest);
+                  }
+               }
+               else
+               {
+                  this._partyMembers=new Vector.<PartyMemberWrapper>();
+                  this._partyId=pjmsg.partyId;
+                  for each (memberJoin in pjmsg.members)
+                  {
+                     partyMember=new PartyMemberWrapper(memberJoin.id,memberJoin.name,memberJoin.status.statusId,true,false,memberJoin.level,memberJoin.entityLook,memberJoin.lifePoints,memberJoin.maxLifePoints,memberJoin.initiative,memberJoin.prospecting,memberJoin.pvpEnabled,memberJoin.alignmentSide,memberJoin.regenRate);
+                     if(memberJoin.id==pjmsg.partyLeaderId)
+                     {
+                        partyMember.isLeader=true;
+                     }
+                     this._partyMembers.push(partyMember);
+                  }
+                  for each (guest in pjmsg.guests)
+                  {
+                     partyGuest=new PartyMemberWrapper(guest.guestId,guest.name,guest.status.statusId,false,false,0,guest.guestLook);
+                     partyGuest.hostId=guest.hostId;
+                     for each (canBeHostMember2 in this._partyMembers)
+                     {
+                        if(canBeHostMember2.id==guest.hostId)
                         {
-                            reasonText = I18n.getUiText("ui.common.playerNotFound", [this._playerNameInvited]);
-                            break;
+                           partyGuest.hostName=canBeHostMember2.name;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMET_CRITERION:
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_LOYAL:
+                     }
+                     this._partyMembers.push(partyGuest);
+                  }
+               }
+               this._timerRegen.start();
+               arena=pjmsg.partyType==PartyTypeEnum.PARTY_TYPE_ARENA;
+               KernelEventsManager.getInstance().processCallback(HookList.PartyJoin,pjmsg.partyId,arena?this._arenaPartyMembers:this._partyMembers,pjmsg.restricted,arena);
+               PlayedCharacterManager.getInstance().isInParty=true;
+               if(pjmsg.partyLeaderId==PlayedCharacterManager.getInstance().infos.id)
+               {
+                  PlayedCharacterManager.getInstance().isPartyLeader=true;
+               }
+               return true;
+            case msg is PartyRefuseInvitationAction:
+               pria=msg as PartyRefuseInvitationAction;
+               primsg=new PartyRefuseInvitationMessage();
+               primsg.initPartyRefuseInvitationMessage(pria.partyId);
+               ConnectionsHandler.getConnection().send(primsg);
+               NotificationManager.getInstance().closeNotification("partyInvit_"+pria.partyId);
+               delete this._currentInvitations[[pria.partyId]];
+               return true;
+            case msg is PartyRefuseInvitationNotificationMessage:
+               prinmsg=msg as PartyRefuseInvitationNotificationMessage;
+               guestRefusingIndex=0;
+               if(prinmsg.partyId==this._arenaPartyId)
+               {
+                  iMember=0;
+                  while(iMember<this._arenaPartyMembers.length)
+                  {
+                     if(prinmsg.guestId==this._arenaPartyMembers[iMember].id)
+                     {
+                        guestRefusingIndex=iMember;
+                        prinGuestName=this._arenaPartyMembers[iMember].name;
+                     }
+                     iMember++;
+                  }
+                  if(guestRefusingIndex!=0)
+                  {
+                     this._arenaPartyMembers.splice(guestRefusingIndex,1);
+                  }
+               }
+               else
+               {
+                  if(prinmsg.partyId==this._partyId)
+                  {
+                     iMember=0;
+                     while(iMember<this._partyMembers.length)
+                     {
+                        if(prinmsg.guestId==this._partyMembers[iMember].id)
                         {
-                            break;
+                           guestRefusingIndex=iMember;
+                           prinGuestName=this._partyMembers[iMember].name;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_TOO_SOLLICITED:
+                        iMember++;
+                     }
+                     if(guestRefusingIndex!=0)
+                     {
+                        this._partyMembers.splice(guestRefusingIndex,1);
+                     }
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.PartyMemberRemove,prinmsg.partyId,prinmsg.guestId);
+               if(guestRefusingIndex!=0)
+               {
+                  prinText2=I18n.getUiText("ui.party.invitationRefused",[prinGuestName]);
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,prinText2,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               return true;
+            case msg is PartyDeletedMessage:
+               pdmsg=msg as PartyDeletedMessage;
+               this.deleteParty(pdmsg.partyId);
+               return true;
+            case msg is PartyCancelInvitationAction:
+               pcia=msg as PartyCancelInvitationAction;
+               pcimsg=new PartyCancelInvitationMessage();
+               pcimsg.initPartyCancelInvitationMessage(pcia.partyId,pcia.guestId);
+               ConnectionsHandler.getConnection().send(pcimsg);
+               return true;
+            case msg is PartyCancelInvitationNotificationMessage:
+               pcinmsg=msg as PartyCancelInvitationNotificationMessage;
+               guestRefusingIndex2=0;
+               if(pcinmsg.partyId==this._arenaPartyId)
+               {
+                  iMember2=0;
+                  while(iMember2<this._arenaPartyMembers.length)
+                  {
+                     if(pcinmsg.guestId==this._arenaPartyMembers[iMember2].id)
+                     {
+                        guestRefusingIndex2=iMember2;
+                        pcinGuestName=this._arenaPartyMembers[iMember2].name;
+                     }
+                     if(pcinmsg.cancelerId==this._arenaPartyMembers[iMember2].id)
+                     {
+                        pcinCancelerName=this._arenaPartyMembers[iMember2].name;
+                     }
+                     iMember2++;
+                  }
+                  if(guestRefusingIndex2!=0)
+                  {
+                     this._arenaPartyMembers.splice(guestRefusingIndex2,1);
+                  }
+               }
+               else
+               {
+                  if(pcinmsg.partyId==this._partyId)
+                  {
+                     iMember2=0;
+                     while(iMember2<this._partyMembers.length)
+                     {
+                        if(pcinmsg.guestId==this._partyMembers[iMember2].id)
                         {
-                            reasonText = I18n.getUiText("ui.party.playerTooSollicited");
-                            break;
+                           guestRefusingIndex2=iMember2;
+                           pcinGuestName=this._partyMembers[iMember2].name;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNMODIFIABLE:
+                        if(pcinmsg.cancelerId==this._partyMembers[iMember2].id)
                         {
-                            reasonText = I18n.getUiText("ui.party.partyUnmodifiable");
-                            break;
+                           pcinCancelerName=this._partyMembers[iMember2].name;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_PLAYER_ALREADY_INVITED:
+                        iMember2++;
+                     }
+                     if(guestRefusingIndex2!=0)
+                     {
+                        this._partyMembers.splice(guestRefusingIndex2,1);
+                     }
+                  }
+               }
+               if(guestRefusingIndex2!=0)
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.PartyMemberRemove,pcinmsg.partyId,pcinmsg.guestId);
+                  pcinText=I18n.getUiText("ui.party.invitationCancelled",[pcinCancelerName,pcinGuestName]);
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,pcinText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               }
+               return true;
+            case msg is PartyInvitationCancelledForGuestMessage:
+               picfgmsg=msg as PartyInvitationCancelledForGuestMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.PartyCancelledInvitation,picfgmsg.partyId);
+               NotificationManager.getInstance().closeNotification("partyInvit_"+picfgmsg.partyId);
+               if(this._currentInvitations[picfgmsg.partyId])
+               {
+                  picfgInviterName=this._currentInvitations[picfgmsg.partyId].fromName;
+                  picfgText=I18n.getUiText("ui.party.invitationCancelledForGuest",[picfgInviterName]);
+                  KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,picfgText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+                  delete this._currentInvitations[[picfgmsg.partyId]];
+               }
+               return true;
+            case msg is PartyRestrictedMessage:
+               prmsg=msg as PartyRestrictedMessage;
+               KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty,prmsg.restricted);
+               return true;
+            case msg is PartyKickRequestAction:
+               pka=msg as PartyKickRequestAction;
+               pkickrimsg=new PartyKickRequestMessage();
+               pkickrimsg.initPartyKickRequestMessage(pka.partyId,pka.playerId);
+               ConnectionsHandler.getConnection().send(pkickrimsg);
+               return true;
+            case msg is PartyKickedByMessage:
+               pkbmsg=msg as PartyKickedByMessage;
+               this.deleteParty(pkbmsg.partyId);
+               return true;
+            case msg is PartyLeaveMessage:
+               plmsg=msg as PartyLeaveMessage;
+               this.deleteParty(plmsg.partyId);
+               return true;
+            case msg is PartyMemberRemoveMessage:
+               pmrmsg=msg as PartyMemberRemoveMessage;
+               memberToRemoveIndex=0;
+               if(pmrmsg.partyId==this._arenaPartyId)
+               {
+                  iMember3=0;
+                  while(iMember3<this._arenaPartyMembers.length)
+                  {
+                     if(pmrmsg.leavingPlayerId==this._arenaPartyMembers[iMember3].id)
+                     {
+                        memberToRemoveIndex=iMember3;
+                     }
+                     iMember3++;
+                  }
+                  this._arenaPartyMembers.splice(memberToRemoveIndex,1);
+               }
+               else
+               {
+                  if(pmrmsg.partyId==this._partyId)
+                  {
+                     iMember3=0;
+                     while(iMember3<this._partyMembers.length)
+                     {
+                        if(pmrmsg.leavingPlayerId==this._partyMembers[iMember3].id)
                         {
-                            reasonText = I18n.getUiText("ui.party.playerAlreayBeingInvited");
-                            break;
+                           memberToRemoveIndex=iMember3;
                         }
-                        case PartyJoinErrorEnum.PARTY_JOIN_ERROR_UNKNOWN:
+                        iMember3++;
+                     }
+                     this._partyMembers.splice(memberToRemoveIndex,1);
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.PartyMemberRemove,pmrmsg.partyId,pmrmsg.leavingPlayerId);
+               return true;
+            case msg is PartyLeaveRequestAction:
+               plra=msg as PartyLeaveRequestAction;
+               plrmsg=new PartyLeaveRequestMessage();
+               plrmsg.initPartyLeaveRequestMessage(plra.partyId);
+               ConnectionsHandler.getConnection().send(plrmsg);
+               return true;
+            case msg is PartyLeaderUpdateMessage:
+               plulmsg=msg as PartyLeaderUpdateMessage;
+               if(plulmsg.partyId==this._arenaPartyId)
+               {
+                  for each (partyMem in this._arenaPartyMembers)
+                  {
+                     if(partyMem.id==plulmsg.partyLeaderId)
+                     {
+                        partyMem.isLeader=true;
+                        this._arenaLeader=partyMem;
+                     }
+                     else
+                     {
+                        partyMem.isLeader=false;
+                     }
+                  }
+                  KernelEventsManager.getInstance().processCallback(HookList.PartyUpdate,plulmsg.partyId,this._arenaPartyMembers);
+               }
+               else
+               {
+                  if(plulmsg.partyId==this._partyId)
+                  {
+                     for each (partyMem in this._partyMembers)
+                     {
+                        if(partyMem.id==plulmsg.partyLeaderId)
                         {
+                           partyMem.isLeader=true;
                         }
+                        else
+                        {
+                           partyMem.isLeader=false;
+                        }
+                     }
+                     KernelEventsManager.getInstance().processCallback(HookList.PartyUpdate,plulmsg.partyId,this._partyMembers);
+                  }
+               }
+               if(plulmsg.partyLeaderId==PlayedCharacterManager.getInstance().infos.id)
+               {
+                  PlayedCharacterManager.getInstance().isPartyLeader=true;
+               }
+               else
+               {
+                  PlayedCharacterManager.getInstance().isPartyLeader=false;
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.PartyLeaderUpdate,plulmsg.partyId,plulmsg.partyLeaderId);
+               return true;
+            case msg is PartyUpdateLightMessage:
+               pulmsg=msg as PartyUpdateLightMessage;
+               if(pulmsg.partyId==this._arenaPartyId)
+               {
+                  for each (partyMemb in this._arenaPartyMembers)
+                  {
+                     if(partyMemb.id==pulmsg.id)
+                     {
+                        partyMemb.lifePoints=pulmsg.lifePoints;
+                        partyMemb.maxLifePoints=pulmsg.maxLifePoints;
+                        partyMemb.prospecting=pulmsg.prospecting;
+                        partyMemb.regenRate=pulmsg.regenRate;
+                     }
+                     if(this._dicRegenArena[partyMemb.id]==null)
+                     {
+                        lptmanager=new LifePointTickManager();
+                     }
+                     else
+                     {
+                        lptmanager=this._dicRegenArena[partyMemb.id];
+                     }
+                     lptmanager.originalLifePoint=partyMemb.lifePoints;
+                     lptmanager.regenRate=partyMemb.regenRate;
+                     lptmanager.tickNumber=1;
+                     this._dicRegenArena[partyMemb.id]=lptmanager;
+                  }
+               }
+               else
+               {
+                  if(pulmsg.partyId==this._partyId)
+                  {
+                     for each (partyMemb in this._partyMembers)
+                     {
+                        if(partyMemb.id==pulmsg.id)
+                        {
+                           partyMemb.lifePoints=pulmsg.lifePoints;
+                           partyMemb.maxLifePoints=pulmsg.maxLifePoints;
+                           partyMemb.prospecting=pulmsg.prospecting;
+                           partyMemb.regenRate=pulmsg.regenRate;
+                        }
+                        if(this._dicRegen[partyMemb.id]==null)
+                        {
+                           lptmanager=new LifePointTickManager();
+                        }
+                        else
+                        {
+                           lptmanager=this._dicRegen[partyMemb.id];
+                        }
+                        lptmanager.originalLifePoint=partyMemb.lifePoints;
+                        lptmanager.regenRate=partyMemb.regenRate;
+                        lptmanager.tickNumber=1;
+                        this._dicRegen[partyMemb.id]=lptmanager;
+                     }
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdate,pulmsg.partyId,pulmsg.id);
+               return true;
+            case msg is PartyAbdicateThroneAction:
+               pata=msg as PartyAbdicateThroneAction;
+               patmsg=new PartyAbdicateThroneMessage();
+               patmsg.initPartyAbdicateThroneMessage(pata.partyId,pata.playerId);
+               ConnectionsHandler.getConnection().send(patmsg);
+               return true;
+            case msg is PartyPledgeLoyaltyRequestAction:
+               pplra=msg as PartyPledgeLoyaltyRequestAction;
+               pplrmsg=new PartyPledgeLoyaltyRequestMessage();
+               pplrmsg.initPartyPledgeLoyaltyRequestMessage(pplra.partyId,pplra.loyal);
+               ConnectionsHandler.getConnection().send(pplrmsg);
+               return true;
+            case msg is PartyLoyaltyStatusMessage:
+               plsmsg=msg as PartyLoyaltyStatusMessage;
+               this._partyLoyalty=plsmsg.loyal;
+               KernelEventsManager.getInstance().processCallback(HookList.PartyLoyaltyStatus,plsmsg.partyId,plsmsg.loyal);
+               return true;
+            case msg is PartyFollowStatusUpdateMessage:
+               pfsumsg=msg as PartyFollowStatusUpdateMessage;
+               if(pfsumsg.success)
+               {
+                  if(pfsumsg.followedId==0)
+                  {
+                     KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag,"flag_srv"+CompassTypeEnum.COMPASS_TYPE_PARTY+"_"+PlayedCharacterManager.getInstance().followingPlayerId);
+                     KernelEventsManager.getInstance().processCallback(HookList.PartyMemberFollowUpdate,pfsumsg.partyId,PlayedCharacterManager.getInstance().followingPlayerId,false);
+                     PlayedCharacterManager.getInstance().followingPlayerId=-1;
+                  }
+                  else
+                  {
+                     KernelEventsManager.getInstance().processCallback(HookList.PartyMemberFollowUpdate,pfsumsg.partyId,pfsumsg.followedId,true);
+                     PlayedCharacterManager.getInstance().followingPlayerId=pfsumsg.followedId;
+                  }
+               }
+               return true;
+            case msg is PartyFollowMemberAction:
+               pfma=msg as PartyFollowMemberAction;
+               pfmrmsg=new PartyFollowMemberRequestMessage();
+               pfmrmsg.initPartyFollowMemberRequestMessage(pfma.partyId,pfma.playerId);
+               ConnectionsHandler.getConnection().send(pfmrmsg);
+               return true;
+            case msg is PartyStopFollowingMemberAction:
+               psfma=msg as PartyStopFollowingMemberAction;
+               psfrmsg=new PartyStopFollowRequestMessage();
+               psfrmsg.initPartyStopFollowRequestMessage(psfma.partyId);
+               ConnectionsHandler.getConnection().send(psfrmsg);
+               return true;
+            case msg is PartyAllFollowMemberAction:
+               pafma=msg as PartyAllFollowMemberAction;
+               pftmrmsg=new PartyFollowThisMemberRequestMessage();
+               pftmrmsg.initPartyFollowThisMemberRequestMessage(pafma.partyId,pafma.playerId,true);
+               this.allMemberFollowPlayerId=pafma.playerId;
+               ConnectionsHandler.getConnection().send(pftmrmsg);
+               return true;
+            case msg is PartyAllStopFollowingMemberAction:
+               pasfma=msg as PartyAllStopFollowingMemberAction;
+               pftmrmsg2=new PartyFollowThisMemberRequestMessage();
+               pftmrmsg2.initPartyFollowThisMemberRequestMessage(pasfma.partyId,pasfma.playerId,false);
+               this.allMemberFollowPlayerId=0;
+               ConnectionsHandler.getConnection().send(pftmrmsg2);
+               return true;
+            case msg is PartyShowMenuAction:
+               psma=msg as PartyShowMenuAction;
+               modContextMenu=UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+               menu=this.createPartyPlayerContextMenu(psma.playerId,psma.partyId);
+               modContextMenu.createContextMenu(menu);
+               return true;
+            case msg is PartyLocateMembersMessage:
+               plmmsg=msg as PartyLocateMembersMessage;
+               return true;
+            case msg is TeleportBuddiesMessage:
+               tbmsg=msg as TeleportBuddiesMessage;
+               Kernel.getWorker().addFrame(this._teleportBuddiesDialogFrame);
+               commonModTp=UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+               commonModTp.openPopup(I18n.getUiText("ui.common.confirm"),I18n.getUiText("ui.party.teleportMembersProposition"),[I18n.getUiText("ui.common.yes"),I18n.getUiText("ui.common.no")],[this.teleportWantedFunction,this.teleportUnwantedFunction],this.teleportWantedFunction,this.teleportUnwantedFunction);
+               return true;
+            case msg is TeleportBuddiesRequestedMessage:
+               tbrmsg=msg as TeleportBuddiesRequestedMessage;
+               poorBuddiesNames="";
+               for each (buddyPropMember in this._partyMembers)
+               {
+                  if(buddyPropMember.id==tbrmsg.inviterId)
+                  {
+                     hostName=buddyPropMember.name;
+                  }
+                  else
+                  {
+                     if(tbrmsg.invalidBuddiesIds.indexOf(buddyPropMember.id)!=-1)
+                     {
+                        poorBuddiesNames=poorBuddiesNames+(buddyPropMember.name+", ");
+                     }
+                  }
+               }
+               dungeonPropName=Dungeon.getDungeonById(tbrmsg.dungeonId).name;
+               prinText=I18n.getUiText("ui.party.teleportWish",[hostName,dungeonPropName]);
+               if(poorBuddiesNames!="")
+               {
+                  poorBuddiesNames=poorBuddiesNames.substring(0,poorBuddiesNames.length-2);
+                  prinText=prinText+(" "+PatternDecoder.combine(I18n.getUiText("ui.party.teleportCriterionFallenAngels",[poorBuddiesNames]),"n",poorBuddiesNames.split(", ").length==1));
+               }
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,prinText,ChatActivableChannelsEnum.CHANNEL_PARTY,TimeManager.getInstance().getTimestamp());
+               if(Kernel.getWorker().contains(TeleportBuddiesDialogFrame))
+               {
+                  Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(TeleportBuddiesDialogFrame) as TeleportBuddiesDialogFrame);
+               }
+               return true;
+            case msg is TeleportToBuddyOfferMessage:
+               ttbomsg=msg as TeleportToBuddyOfferMessage;
+               for each (buddyMember in this._partyMembers)
+               {
+                  if(buddyMember.id==ttbomsg.buddyId)
+                  {
+                     buddyName=buddyMember.name;
+                  }
+               }
+               dungeonName=Dungeon.getDungeonById(ttbomsg.dungeonId).name;
+               notifyUser=true;
+               if((AirScanner.hasAir())&&(ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.DUNGEON_TELEPORT)))
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,ExternalNotificationTypeEnum.DUNGEON_TELEPORT,[buddyName,dungeonName]);
+                  notifyUser=ExternalNotificationManager.getInstance().notificationNotify(ExternalNotificationTypeEnum.DUNGEON_TELEPORT);
+               }
+               ttbomsgNid=NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"),I18n.getUiText("ui.party.teleportProposition",[buddyName,dungeonName]),NotificationTypeEnum.PRIORITY_INVITATION,"teleportProposition");
+               NotificationManager.getInstance().addTimerToNotification(ttbomsgNid,ttbomsg.timeLeft,false,false,notifyUser);
+               NotificationManager.getInstance().addButtonToNotification(ttbomsgNid,I18n.getUiText("ui.common.refuse"),"TeleportToBuddyAnswer",[ttbomsg.dungeonId,ttbomsg.buddyId,false],false,130);
+               NotificationManager.getInstance().addButtonToNotification(ttbomsgNid,I18n.getUiText("ui.common.accept"),"TeleportToBuddyAnswer",[ttbomsg.dungeonId,ttbomsg.buddyId,true],false,130);
+               NotificationManager.getInstance().addCallbackToNotification(ttbomsgNid,"TeleportToBuddyAnswer",[ttbomsg.dungeonId,ttbomsg.buddyId,false]);
+               NotificationManager.getInstance().sendNotification(ttbomsgNid);
+               return true;
+            case msg is TeleportToBuddyCloseMessage:
+               ttbcmsg=msg as TeleportToBuddyCloseMessage;
+               NotificationManager.getInstance().closeNotification("teleportProposition");
+               return true;
+            case msg is TeleportToBuddyAnswerAction:
+               ttbaa=msg as TeleportToBuddyAnswerAction;
+               ttbamsg=new TeleportToBuddyAnswerMessage();
+               ttbamsg.initTeleportToBuddyAnswerMessage(ttbaa.dungeonId,ttbaa.buddyId,ttbaa.accept);
+               ConnectionsHandler.getConnection().send(ttbamsg);
+               return true;
+            case msg is DungeonPartyFinderAvailableDungeonsAction:
+               dpfada=msg as DungeonPartyFinderAvailableDungeonsAction;
+               dpfadrmsg=new DungeonPartyFinderAvailableDungeonsRequestMessage();
+               dpfadrmsg.initDungeonPartyFinderAvailableDungeonsRequestMessage();
+               ConnectionsHandler.getConnection().send(dpfadrmsg);
+               return true;
+            case msg is DungeonPartyFinderAvailableDungeonsMessage:
+               dpfadmsg=msg as DungeonPartyFinderAvailableDungeonsMessage;
+               if(dpfadmsg.dungeonIds!=this._playerDungeons)
+               {
+                  this._playerDungeons=dpfadmsg.dungeonIds;
+               }
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderAvailableDungeons,this._playerDungeons);
+               return true;
+            case msg is DungeonPartyFinderListenAction:
+               dpfla=msg as DungeonPartyFinderListenAction;
+               dpflrmsg=new DungeonPartyFinderListenRequestMessage();
+               dpflrmsg.initDungeonPartyFinderListenRequestMessage(dpfla.dungeonId);
+               ConnectionsHandler.getConnection().send(dpflrmsg);
+               return true;
+            case msg is DungeonPartyFinderListenErrorMessage:
+               dpflemsg=msg as DungeonPartyFinderListenErrorMessage;
+               return true;
+            case msg is DungeonPartyFinderRoomContentMessage:
+               dpfrcmsg=msg as DungeonPartyFinderRoomContentMessage;
+               this._dungeonFighters=new Vector.<DungeonPartyFinderPlayer>();
+               for each (fighterDungeon in dpfrcmsg.players)
+               {
+                  this._dungeonFighters.push(fighterDungeon);
+               }
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderRoomContent,this._dungeonFighters);
+               return true;
+            case msg is DungeonPartyFinderRoomContentUpdateMessage:
+               dpfrcumsg=msg as DungeonPartyFinderRoomContentUpdateMessage;
+               tempDjFighters=this._dungeonFighters.concat();
+               iFD=tempDjFighters.length-1;
+               while(iFD>=0)
+               {
+                  currentfighterDungeon=tempDjFighters[iFD];
+                  for each (removedfighterId in dpfrcumsg.removedPlayersIds)
+                  {
+                     if(currentfighterDungeon.playerId==removedfighterId)
+                     {
+                        this._dungeonFighters.splice(iFD,1);
+                     }
+                  }
+                  iFD--;
+               }
+               for each (addedfighterDungeon in dpfrcumsg.addedPlayers)
+               {
+                  this._dungeonFighters.push(addedfighterDungeon);
+               }
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderRoomContent,this._dungeonFighters);
+               return true;
+            case msg is DungeonPartyFinderRegisterAction:
+               dpfra=msg as DungeonPartyFinderRegisterAction;
+               dungeons=new Vector.<uint>();
+               for each (dungeonId in dpfra.dungeons)
+               {
+                  dungeons.push(dungeonId);
+               }
+               dpfrrmsg=new DungeonPartyFinderRegisterRequestMessage();
+               dpfrrmsg.initDungeonPartyFinderRegisterRequestMessage(dungeons);
+               ConnectionsHandler.getConnection().send(dpfrrmsg);
+               return true;
+            case msg is DungeonPartyFinderRegisterSuccessMessage:
+               dpfrsmsg=msg as DungeonPartyFinderRegisterSuccessMessage;
+               if(dpfrsmsg.dungeonIds.length>0)
+               {
+                  paramDonjons="";
+                  for each (djId in dpfrsmsg.dungeonIds)
+                  {
+                     paramDonjons=paramDonjons+(Dungeon.getDungeonById(djId).name+", ");
+                  }
+                  paramDonjons=paramDonjons.substring(0,paramDonjons.length-2);
+                  resultText=I18n.getUiText("ui.teamSearch.registerSuccess",[paramDonjons]);
+               }
+               else
+               {
+                  resultText=I18n.getUiText("ui.teamSearch.registerQuit");
+               }
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,resultText,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               this._playerSubscribedDungeons=dpfrsmsg.dungeonIds;
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderRegister,dpfrsmsg.dungeonIds.length<0);
+               return true;
+            case msg is DungeonPartyFinderRegisterErrorMessage:
+               dpfremsg=msg as DungeonPartyFinderRegisterErrorMessage;
+               errortext=I18n.getUiText("ui.teamSearch.registerError");
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,errortext,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               return true;
+            case msg is ArenaRegisterAction:
+               ara=msg as ArenaRegisterAction;
+               grparmsg=new GameRolePlayArenaRegisterMessage();
+               grparmsg.initGameRolePlayArenaRegisterMessage(ara.fightTypeId);
+               ConnectionsHandler.getConnection().send(grparmsg);
+               return true;
+            case msg is ArenaUnregisterAction:
+               aua=msg as ArenaUnregisterAction;
+               grpaumsg=new GameRolePlayArenaUnregisterMessage();
+               grpaumsg.initGameRolePlayArenaUnregisterMessage();
+               ConnectionsHandler.getConnection().send(grpaumsg);
+               return true;
+            case msg is GameRolePlayArenaRegistrationStatusMessage:
+               grparsmsg=msg as GameRolePlayArenaRegistrationStatusMessage;
+               _log.debug("GameRolePlayArenaRegistrationStatusMessage "+grparsmsg.registered+" : "+grparsmsg.step);
+               if(grparsmsg.registered)
+               {
+                  this._arenaCurrentStatus=PvpArenaStepEnum.ARENA_STEP_REGISTRED;
+                  this._isArenaRegistered=true;
+               }
+               else
+               {
+                  this._arenaCurrentStatus=grparsmsg.step;
+                  this._isArenaRegistered=false;
+               }
+               this._arenaReadyPartyMemberIds=new Array();
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate,this._isArenaRegistered,this._arenaCurrentStatus);
+               return true;
+            case msg is GameRolePlayArenaFightPropositionMessage:
+               grpafpmsg=msg as GameRolePlayArenaFightPropositionMessage;
+               this._arenaCurrentStatus=PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT;
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaFightProposition,grpafpmsg.alliesId);
+               this._arenaAlliesIds=new Array();
+               for each (allyId in grpafpmsg.alliesId)
+               {
+                  this._arenaAlliesIds.push(allyId);
+               }
+               grpafpmsgNid=NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.koliseum"),I18n.getUiText("ui.party.fightFound"),NotificationTypeEnum.PRIORITY_INVITATION,"fightProposition_"+grpafpmsg.fightId);
+               NotificationManager.getInstance().addTimerToNotification(grpafpmsgNid,grpafpmsg.duration,false);
+               NotificationManager.getInstance().addButtonToNotification(grpafpmsgNid,I18n.getUiText("ui.common.refuse"),"ArenaFightAnswer",[grpafpmsg.fightId,false],true,130);
+               NotificationManager.getInstance().addButtonToNotification(grpafpmsgNid,I18n.getUiText("ui.common.accept"),"ArenaFightAnswer",[grpafpmsg.fightId,true],true,130);
+               NotificationManager.getInstance().addCallbackToNotification(grpafpmsgNid,"ArenaFightAnswer",[grpafpmsg.fightId,false]);
+               NotificationManager.getInstance().sendNotification(grpafpmsgNid);
+               if((AirScanner.hasAir())&&(ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.KOLO_FIGHT)))
+               {
+                  KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,ExternalNotificationTypeEnum.KOLO_FIGHT);
+               }
+               return true;
+            case msg is ArenaFightAnswerAction:
+               afaa=msg as ArenaFightAnswerAction;
+               grpafamsg=new GameRolePlayArenaFightAnswerMessage();
+               grpafamsg.initGameRolePlayArenaFightAnswerMessage(afaa.fightId,afaa.accept);
+               ConnectionsHandler.getConnection().send(grpafamsg);
+               return true;
+            case msg is GameRolePlayArenaFighterStatusMessage:
+               grpafsmsg=msg as GameRolePlayArenaFighterStatusMessage;
+               if(!grpafsmsg.accepted)
+               {
+                  if(grpafsmsg.playerId==PlayedCharacterManager.getInstance().id)
+                  {
+                     this._arenaCurrentStatus=PvpArenaStepEnum.ARENA_STEP_UNREGISTER;
+                     this._isArenaRegistered=false;
+                  }
+                  else
+                  {
+                     this._arenaCurrentStatus=PvpArenaStepEnum.ARENA_STEP_REGISTRED;
+                  }
+                  NotificationManager.getInstance().closeNotification("fightProposition_"+grpafsmsg.fightId,true);
+                  this._arenaReadyPartyMemberIds=new Array();
+                  this._arenaAlliesIds=new Array();
+                  KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate,this._isArenaRegistered,this._arenaCurrentStatus);
+               }
+               else
+               {
+                  this._arenaReadyPartyMemberIds.push(grpafsmsg.playerId);
+               }
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaFighterStatusUpdate,grpafsmsg.playerId,grpafsmsg.accepted);
+               return true;
+            case msg is GameRolePlayArenaUpdatePlayerInfosMessage:
+               grpaupimsg=msg as GameRolePlayArenaUpdatePlayerInfosMessage;
+               this._arenaRanks[0]=grpaupimsg.rank;
+               this._arenaRanks[1]=grpaupimsg.bestDailyRank;
+               this._arenaRanks[2]=grpaupimsg.bestRank;
+               this._todaysFights=grpaupimsg.arenaFightcount;
+               this._todaysWonFights=grpaupimsg.victoryCount;
+               KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaUpdateRank,this._arenaRanks,this._todaysFights,this._todaysWonFights);
+               return true;
+            case msg is GameFightJoinMessage:
+               gfjmsg=msg as GameFightJoinMessage;
+               if((gfjmsg.fightType==FightTypeEnum.FIGHT_TYPE_PVP_ARENA)&&(!gfjmsg.isSpectator))
+               {
+                  this._arenaCurrentStatus=PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT;
+                  this._isArenaRegistered=false;
+                  KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate,this._isArenaRegistered,this._arenaCurrentStatus);
+               }
+               this.cleanPartyFightNotifications();
+               return false;
+            case msg is FightEndingMessage:
+               femsg=msg as FightEndingMessage;
+               if(this._lastFightType==FightTypeEnum.FIGHT_TYPE_PVP_ARENA)
+               {
+                  this._arenaCurrentStatus=PvpArenaStepEnum.ARENA_STEP_UNREGISTER;
+                  this._isArenaRegistered=false;
+                  this._arenaReadyPartyMemberIds=new Array();
+                  KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate,this._isArenaRegistered,this._arenaCurrentStatus);
+                  if((this._arenaLeader)&&(PlayedCharacterManager.getInstance().id==this._arenaLeader.id))
+                  {
+                     commonMod=UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
+                     commonMod.openPopup(I18n.getUiText("ui.common.confirm"),I18n.getUiText("ui.party.arenaPopupReinscription"),[I18n.getUiText("ui.common.yes"),I18n.getUiText("ui.common.no")],[this.reinscriptionWantedFunction,null],this.reinscriptionWantedFunction,new function():void
+                     {
+                        
+                        });
+                     }
+                  }
+                  return true;
+               case msg is PartyMemberInFightMessage:
+                  if(!PlayedCharacterManager.getInstance().isFighting)
+                  {
+                     pemifmmsg=msg as PartyMemberInFightMessage;
+                     switch(pemifmmsg.reason)
+                     {
+                        case 1:
+                           fightCause=I18n.getUiText("ui.party.memberStartFight.monsterAttack");
+                           break;
+                        case 2:
+                           fightCause=I18n.getUiText("ui.party.memberStartFight.playerAttack");
+                           break;
+                        case 3:
+                           fightCause=I18n.getUiText("ui.party.memberStartFight.attackPlayer");
+                           break;
                         default:
+                           fightCause=I18n.getUiText("ui.party.memberStartFight.unknownReason");
+                     }
+                     fightId=pemifmmsg.fightId;
+                     memberName=pemifmmsg.memberName;
+                     fightMapId=pemifmmsg.fightMap.mapId;
+                     fightInformation=new PartyFightInformationsData(fightMapId,fightId,memberName,pemifmmsg.memberId,pemifmmsg.secondsBeforeFightStart);
+                     fightInformation.timeUntilFightbegin.addEventListener(TimerEvent.TIMER_COMPLETE,this.onFightStartTimerComplete);
+                     fightInformation.timeUntilFightbegin.start();
+                     if(!this._partyFightsInformations[fightMapId])
+                     {
+                        this._partyFightsInformations[fightMapId]=new Array();
+                     }
+                     this._partyFightsInformations[fightMapId].push(fightInformation);
+                     channel=ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO;
+                     timestamp=TimeManager.getInstance().getTimestamp();
+                     params=new Array();
+                     params.push(memberName);
+                     params.push(pemifmmsg.memberId);
+                     params.push(fightMapId);
+                     partyFightMsg=ParamsDecoder.applyParams(fightCause,params);
+                     KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,partyFightMsg,channel,timestamp,false);
+                     if(PlayedCharacterManager.getInstance().currentMap.mapId==fightMapId)
+                     {
+                        entitiesFrame=Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+                        fight=entitiesFrame.fights[fightInformation.fightId];
+                        foundLeader=false;
+                        for each (team in fight.teams)
                         {
-                            reasonText = I18n.getUiText("ui.party.cantInvit");
-                            break;
-                            break;
+                           for each (fightTeamMember in team.teamInfos.teamMembers)
+                           {
+                              if(fightTeamMember.id==fightInformation.memberId)
+                              {
+                                 fightTeamLeaderId=team.teamInfos.leaderId;
+                                 foundLeader=true;
+                                 break;
+                              }
+                              if(foundLeader)
+                              {
+                                 break;
+                              }
+                           }
                         }
-                    }
-                    if (reasonText != "")
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyCannotJoinError, reasonText);
-                    }
-                    return true;
-                }
-                case msg is PartyNewGuestMessage:
-                {
-                    pngmsg = msg as PartyNewGuestMessage;
-                    newGuest = new PartyMemberWrapper(pngmsg.guest.guestId, pngmsg.guest.name, false, false, 0, pngmsg.guest.guestLook);
-                    newGuest.breed = pngmsg.guest.breed;
-                    newGuest.hostId = pngmsg.guest.hostId;
-                    if (pngmsg.partyId == this._arenaPartyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._arenaPartyMembers;
-                        while (_loc_4 in _loc_3)
+                        this.createPartyFightNotification(fightMapId,fightInformation,fightTeamLeaderId);
+                     }
+                     if((AirScanner.hasAir())&&(ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.PARTY_FIGHT_START)))
+                     {
+                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification,ExternalNotificationTypeEnum.PARTY_FIGHT_START,[memberName,fightMapId]);
+                     }
+                  }
+                  return true;
+               case msg is MapComplementaryInformationsDataMessage:
+                  this.cleanPartyFightNotifications();
+                  if(this._partyFightsInformations)
+                  {
+                     mcidm=msg as MapComplementaryInformationsDataMessage;
+                     mapId=mcidm.mapId;
+                     foundFight=false;
+                     leaderId=-1;
+                     if(this._partyFightsInformations[mapId])
+                     {
+                        for each (partyFight in this._partyFightsInformations[mapId])
                         {
-                            
-                            canBeHostMember = _loc_4[_loc_3];
-                            if (canBeHostMember.id == pngmsg.guest.hostId)
-                            {
-                                newGuest.hostName = canBeHostMember.name;
-                            }
-                        }
-                        this._arenaPartyMembers.push(newGuest);
-                    }
-                    else if (pngmsg.partyId == this._partyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._partyMembers;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            canBeHostMember = _loc_4[_loc_3];
-                            if (canBeHostMember.id == pngmsg.guest.hostId)
-                            {
-                                newGuest.hostName = canBeHostMember.name;
-                            }
-                        }
-                        this._partyMembers.push(newGuest);
-                    }
-                    if (pngmsg.partyId != this._arenaPartyId && pngmsg.partyId != this._partyId)
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdateDetails, pngmsg.partyId, newGuest, false);
-                    }
-                    else
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdate, pngmsg.partyId, newGuest.id);
-                    }
-                    return true;
-                }
-                case msg is PartyInvitationDetailsRequestAction:
-                {
-                    pidra = msg as PartyInvitationDetailsRequestAction;
-                    pidrmsg = new PartyInvitationDetailsRequestMessage();
-                    pidrmsg.initPartyInvitationDetailsRequestMessage(pidra.partyId);
-                    ConnectionsHandler.getConnection().send(pidrmsg);
-                    NotificationManager.getInstance().hideNotification("partyInvit_" + pidra.partyId);
-                    return true;
-                }
-                case msg is PartyInvitationDungeonDetailsMessage:
-                {
-                    piddmsg = msg as PartyInvitationDungeonDetailsMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation, piddmsg.partyId, piddmsg.fromName, piddmsg.leaderId, piddmsg.partyType, piddmsg.members, piddmsg.guests, piddmsg.dungeonId, piddmsg.playersDungeonReady);
-                    return true;
-                }
-                case msg is PartyInvitationDetailsMessage:
-                {
-                    pidemsg = msg as PartyInvitationDetailsMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyInvitation, pidemsg.partyId, pidemsg.fromName, pidemsg.leaderId, pidemsg.partyType, pidemsg.members, pidemsg.guests, 0, null);
-                    return true;
-                }
-                case msg is PartyAcceptInvitationAction:
-                {
-                    paia = msg as PartyAcceptInvitationAction;
-                    NotificationManager.getInstance().closeNotification("partyInvit_" + paia.partyId);
-                    paimsg = new PartyAcceptInvitationMessage();
-                    paimsg.initPartyAcceptInvitationMessage(paia.partyId);
-                    ConnectionsHandler.getConnection().send(paimsg);
-                    delete this._currentInvitations[paimsg.partyId];
-                    return true;
-                }
-                case msg is PartyNewMemberMessage:
-                case msg is PartyUpdateMessage:
-                {
-                    pumsg = msg as PartyUpdateMessage;
-                    existingMember;
-                    if (pumsg.partyId == this._arenaPartyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._arenaPartyMembers;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            member = _loc_4[_loc_3];
-                            if (member.id == pumsg.memberInformations.id)
-                            {
-                                member.name = pumsg.memberInformations.name;
-                                member.isMember = true;
-                                member.level = pumsg.memberInformations.level;
-                                member.entityLook = pumsg.memberInformations.entityLook;
-                                member.lifePoints = pumsg.memberInformations.lifePoints;
-                                member.maxLifePoints = pumsg.memberInformations.maxLifePoints;
-                                member.maxInitiative = pumsg.memberInformations.initiative;
-                                member.rank = (pumsg.memberInformations as PartyMemberArenaInformations).rank;
-                                member.pvpEnabled = pumsg.memberInformations.pvpEnabled;
-                                member.alignmentSide = pumsg.memberInformations.alignmentSide;
-                                member.regenRate = pumsg.memberInformations.regenRate;
-                                member.worldX = pumsg.memberInformations.worldX;
-                                member.worldY = pumsg.memberInformations.worldY;
-                                member.mapId = pumsg.memberInformations.mapId;
-                                member.subAreaId = pumsg.memberInformations.subAreaId;
-                                existingMember;
-                            }
-                        }
-                        if (!existingMember)
-                        {
-                            newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, 0, pumsg.memberInformations.pvpEnabled, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, (pumsg.memberInformations as PartyMemberArenaInformations).rank, pumsg.memberInformations.worldX, pumsg.memberInformations.worldY, pumsg.memberInformations.mapId, pumsg.memberInformations.subAreaId);
-                            this._arenaPartyMembers.push(newMember);
-                        }
-                    }
-                    else if (pumsg.partyId == this._partyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._partyMembers;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            member = _loc_4[_loc_3];
-                            if (member.id == pumsg.memberInformations.id)
-                            {
-                                member.name = pumsg.memberInformations.name;
-                                member.isMember = true;
-                                member.level = pumsg.memberInformations.level;
-                                member.entityLook = pumsg.memberInformations.entityLook;
-                                member.lifePoints = pumsg.memberInformations.lifePoints;
-                                member.maxLifePoints = pumsg.memberInformations.maxLifePoints;
-                                member.maxInitiative = pumsg.memberInformations.initiative;
-                                member.prospecting = pumsg.memberInformations.prospecting;
-                                member.pvpEnabled = pumsg.memberInformations.pvpEnabled;
-                                member.alignmentSide = pumsg.memberInformations.alignmentSide;
-                                member.regenRate = pumsg.memberInformations.regenRate;
-                                member.worldX = pumsg.memberInformations.worldX;
-                                member.worldY = pumsg.memberInformations.worldY;
-                                member.mapId = pumsg.memberInformations.mapId;
-                                member.subAreaId = pumsg.memberInformations.subAreaId;
-                                existingMember;
-                            }
-                        }
-                        if (!existingMember)
-                        {
-                            newMember = new PartyMemberWrapper(pumsg.memberInformations.id, pumsg.memberInformations.name, true, false, pumsg.memberInformations.level, pumsg.memberInformations.entityLook, pumsg.memberInformations.lifePoints, pumsg.memberInformations.maxLifePoints, pumsg.memberInformations.initiative, pumsg.memberInformations.prospecting, pumsg.memberInformations.pvpEnabled, pumsg.memberInformations.alignmentSide, pumsg.memberInformations.regenRate, pumsg.memberInformations.worldX, pumsg.memberInformations.worldY, pumsg.memberInformations.mapId, pumsg.memberInformations.subAreaId);
-                            this._partyMembers.push(newMember);
-                        }
-                    }
-                    if (pumsg.partyId != this._arenaPartyId && pumsg.partyId != this._partyId)
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdateDetails, pumsg.partyId, pumsg.memberInformations, true);
-                    }
-                    else
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdate, pumsg.partyId, pumsg.memberInformations.id);
-                    }
-                    return true;
-                }
-                case msg is PartyJoinMessage:
-                {
-                    pjmsg = msg as PartyJoinMessage;
-                    if (pjmsg.partyType == PartyTypeEnum.PARTY_TYPE_ARENA)
-                    {
-                        this._arenaPartyMembers = new Vector.<PartyMemberWrapper>;
-                        this._arenaPartyId = pjmsg.partyId;
-                        var _loc_3:* = 0;
-                        var _loc_4:* = pjmsg.members;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            memberJoin = _loc_4[_loc_3];
-                            partyMember = new PartyMemberWrapper(memberJoin.id, memberJoin.name, true, false, memberJoin.level, memberJoin.entityLook, memberJoin.lifePoints, memberJoin.maxLifePoints, memberJoin.initiative, memberJoin.prospecting, memberJoin.pvpEnabled, memberJoin.alignmentSide, memberJoin.regenRate, (memberJoin as PartyMemberArenaInformations).rank);
-                            if (memberJoin.id == pjmsg.partyLeaderId)
-                            {
-                                partyMember.isLeader = true;
-                                this._arenaLeader = partyMember;
-                            }
-                            this._arenaPartyMembers.push(partyMember);
-                        }
-                        var _loc_3:* = 0;
-                        var _loc_4:* = pjmsg.guests;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            guest = _loc_4[_loc_3];
-                            partyGuest = new PartyMemberWrapper(guest.guestId, guest.name, false, false, 0, guest.guestLook);
-                            partyGuest.hostId = guest.hostId;
-                            var _loc_5:* = 0;
-                            var _loc_6:* = this._arenaPartyMembers;
-                            while (_loc_6 in _loc_5)
-                            {
-                                
-                                canBeHostMember2 = _loc_6[_loc_5];
-                                if (canBeHostMember2.id == guest.hostId)
-                                {
-                                    partyGuest.hostName = canBeHostMember2.name;
-                                }
-                            }
-                            this._arenaPartyMembers.push(partyGuest);
-                        }
-                    }
-                    else
-                    {
-                        this._partyMembers = new Vector.<PartyMemberWrapper>;
-                        this._partyId = pjmsg.partyId;
-                        var _loc_3:* = 0;
-                        var _loc_4:* = pjmsg.members;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            memberJoin = _loc_4[_loc_3];
-                            partyMember = new PartyMemberWrapper(memberJoin.id, memberJoin.name, true, false, memberJoin.level, memberJoin.entityLook, memberJoin.lifePoints, memberJoin.maxLifePoints, memberJoin.initiative, memberJoin.prospecting, memberJoin.pvpEnabled, memberJoin.alignmentSide, memberJoin.regenRate);
-                            if (memberJoin.id == pjmsg.partyLeaderId)
-                            {
-                                partyMember.isLeader = true;
-                            }
-                            this._partyMembers.push(partyMember);
-                        }
-                        var _loc_3:* = 0;
-                        var _loc_4:* = pjmsg.guests;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            guest = _loc_4[_loc_3];
-                            partyGuest = new PartyMemberWrapper(guest.guestId, guest.name, false, false, 0, guest.guestLook);
-                            partyGuest.hostId = guest.hostId;
-                            var _loc_5:* = 0;
-                            var _loc_6:* = this._partyMembers;
-                            while (_loc_6 in _loc_5)
-                            {
-                                
-                                canBeHostMember2 = _loc_6[_loc_5];
-                                if (canBeHostMember2.id == guest.hostId)
-                                {
-                                    partyGuest.hostName = canBeHostMember2.name;
-                                }
-                            }
-                            this._partyMembers.push(partyGuest);
-                        }
-                    }
-                    this._timerRegen.start();
-                    arena = pjmsg.partyType == PartyTypeEnum.PARTY_TYPE_ARENA;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyJoin, pjmsg.partyId, arena ? (this._arenaPartyMembers) : (this._partyMembers), pjmsg.restricted, arena);
-                    PlayedCharacterManager.getInstance().isInParty = true;
-                    if (pjmsg.partyLeaderId == PlayedCharacterManager.getInstance().infos.id)
-                    {
-                        PlayedCharacterManager.getInstance().isPartyLeader = true;
-                    }
-                    return true;
-                }
-                case msg is PartyRefuseInvitationAction:
-                {
-                    pria = msg as PartyRefuseInvitationAction;
-                    primsg = new PartyRefuseInvitationMessage();
-                    primsg.initPartyRefuseInvitationMessage(pria.partyId);
-                    ConnectionsHandler.getConnection().send(primsg);
-                    NotificationManager.getInstance().closeNotification("partyInvit_" + pria.partyId);
-                    delete this._currentInvitations[pria.partyId];
-                    return true;
-                }
-                case msg is PartyRefuseInvitationNotificationMessage:
-                {
-                    prinmsg = msg as PartyRefuseInvitationNotificationMessage;
-                    guestRefusingIndex;
-                    if (prinmsg.partyId == this._arenaPartyId)
-                    {
-                        iMember;
-                        while (iMember < this._arenaPartyMembers.length)
-                        {
-                            
-                            if (prinmsg.guestId == this._arenaPartyMembers[iMember].id)
-                            {
-                                guestRefusingIndex = iMember;
-                                prinGuestName = this._arenaPartyMembers[iMember].name;
-                            }
-                            iMember = (iMember + 1);
-                        }
-                        if (guestRefusingIndex != 0)
-                        {
-                            this._arenaPartyMembers.splice(guestRefusingIndex, 1);
-                        }
-                    }
-                    else if (prinmsg.partyId == this._partyId)
-                    {
-                        iMember;
-                        while (iMember < this._partyMembers.length)
-                        {
-                            
-                            if (prinmsg.guestId == this._partyMembers[iMember].id)
-                            {
-                                guestRefusingIndex = iMember;
-                                prinGuestName = this._partyMembers[iMember].name;
-                            }
-                            iMember = (iMember + 1);
-                        }
-                        if (guestRefusingIndex != 0)
-                        {
-                            this._partyMembers.splice(guestRefusingIndex, 1);
-                        }
-                    }
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyMemberRemove, prinmsg.partyId, prinmsg.guestId);
-                    if (guestRefusingIndex != 0)
-                    {
-                        prinText2 = I18n.getUiText("ui.party.invitationRefused", [prinGuestName]);
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, prinText2, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                    }
-                    return true;
-                }
-                case msg is PartyDeletedMessage:
-                {
-                    pdmsg = msg as PartyDeletedMessage;
-                    this.deleteParty(pdmsg.partyId);
-                    return true;
-                }
-                case msg is PartyCancelInvitationAction:
-                {
-                    pcia = msg as PartyCancelInvitationAction;
-                    pcimsg = new PartyCancelInvitationMessage();
-                    pcimsg.initPartyCancelInvitationMessage(pcia.partyId, pcia.guestId);
-                    ConnectionsHandler.getConnection().send(pcimsg);
-                    return true;
-                }
-                case msg is PartyCancelInvitationNotificationMessage:
-                {
-                    pcinmsg = msg as PartyCancelInvitationNotificationMessage;
-                    guestRefusingIndex2;
-                    if (pcinmsg.partyId == this._arenaPartyId)
-                    {
-                        iMember2;
-                        while (iMember2 < this._arenaPartyMembers.length)
-                        {
-                            
-                            if (pcinmsg.guestId == this._arenaPartyMembers[iMember2].id)
-                            {
-                                guestRefusingIndex2 = iMember2;
-                                pcinGuestName = this._arenaPartyMembers[iMember2].name;
-                            }
-                            if (pcinmsg.cancelerId == this._arenaPartyMembers[iMember2].id)
-                            {
-                                pcinCancelerName = this._arenaPartyMembers[iMember2].name;
-                            }
-                            iMember2 = (iMember2 + 1);
-                        }
-                        if (guestRefusingIndex2 != 0)
-                        {
-                            this._arenaPartyMembers.splice(guestRefusingIndex2, 1);
-                        }
-                    }
-                    else if (pcinmsg.partyId == this._partyId)
-                    {
-                        iMember2;
-                        while (iMember2 < this._partyMembers.length)
-                        {
-                            
-                            if (pcinmsg.guestId == this._partyMembers[iMember2].id)
-                            {
-                                guestRefusingIndex2 = iMember2;
-                                pcinGuestName = this._partyMembers[iMember2].name;
-                            }
-                            if (pcinmsg.cancelerId == this._partyMembers[iMember2].id)
-                            {
-                                pcinCancelerName = this._partyMembers[iMember2].name;
-                            }
-                            iMember2 = (iMember2 + 1);
-                        }
-                        if (guestRefusingIndex2 != 0)
-                        {
-                            this._partyMembers.splice(guestRefusingIndex2, 1);
-                        }
-                    }
-                    if (guestRefusingIndex2 != 0)
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyMemberRemove, pcinmsg.partyId, pcinmsg.guestId);
-                        pcinText = I18n.getUiText("ui.party.invitationCancelled", [pcinCancelerName, pcinGuestName]);
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, pcinText, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                    }
-                    return true;
-                }
-                case msg is PartyInvitationCancelledForGuestMessage:
-                {
-                    picfgmsg = msg as PartyInvitationCancelledForGuestMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyCancelledInvitation, picfgmsg.partyId);
-                    NotificationManager.getInstance().closeNotification("partyInvit_" + picfgmsg.partyId);
-                    if (this._currentInvitations[picfgmsg.partyId])
-                    {
-                        picfgInviterName = this._currentInvitations[picfgmsg.partyId].fromName;
-                        picfgText = I18n.getUiText("ui.party.invitationCancelledForGuest", [picfgInviterName]);
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, picfgText, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                        delete this._currentInvitations[picfgmsg.partyId];
-                    }
-                    return true;
-                }
-                case msg is PartyRestrictedMessage:
-                {
-                    prmsg = msg as PartyRestrictedMessage;
-                    KernelEventsManager.getInstance().processCallback(HookList.OptionLockParty, prmsg.restricted);
-                    return true;
-                }
-                case msg is PartyKickRequestAction:
-                {
-                    pka = msg as PartyKickRequestAction;
-                    pkickrimsg = new PartyKickRequestMessage();
-                    pkickrimsg.initPartyKickRequestMessage(pka.partyId, pka.playerId);
-                    ConnectionsHandler.getConnection().send(pkickrimsg);
-                    return true;
-                }
-                case msg is PartyKickedByMessage:
-                {
-                    pkbmsg = msg as PartyKickedByMessage;
-                    this.deleteParty(pkbmsg.partyId);
-                    return true;
-                }
-                case msg is PartyLeaveMessage:
-                {
-                    plmsg = msg as PartyLeaveMessage;
-                    this.deleteParty(plmsg.partyId);
-                    return true;
-                }
-                case msg is PartyMemberRemoveMessage:
-                {
-                    pmrmsg = msg as PartyMemberRemoveMessage;
-                    memberToRemoveIndex;
-                    if (pmrmsg.partyId == this._arenaPartyId)
-                    {
-                        iMember3;
-                        while (iMember3 < this._arenaPartyMembers.length)
-                        {
-                            
-                            if (pmrmsg.leavingPlayerId == this._arenaPartyMembers[iMember3].id)
-                            {
-                                memberToRemoveIndex = iMember3;
-                            }
-                            iMember3 = (iMember3 + 1);
-                        }
-                        this._arenaPartyMembers.splice(memberToRemoveIndex, 1);
-                    }
-                    else if (pmrmsg.partyId == this._partyId)
-                    {
-                        iMember3;
-                        while (iMember3 < this._partyMembers.length)
-                        {
-                            
-                            if (pmrmsg.leavingPlayerId == this._partyMembers[iMember3].id)
-                            {
-                                memberToRemoveIndex = iMember3;
-                            }
-                            iMember3 = (iMember3 + 1);
-                        }
-                        this._partyMembers.splice(memberToRemoveIndex, 1);
-                    }
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyMemberRemove, pmrmsg.partyId, pmrmsg.leavingPlayerId);
-                    return true;
-                }
-                case msg is PartyLeaveRequestAction:
-                {
-                    plra = msg as PartyLeaveRequestAction;
-                    plrmsg = new PartyLeaveRequestMessage();
-                    plrmsg.initPartyLeaveRequestMessage(plra.partyId);
-                    ConnectionsHandler.getConnection().send(plrmsg);
-                    return true;
-                }
-                case msg is PartyLeaderUpdateMessage:
-                {
-                    plulmsg = msg as PartyLeaderUpdateMessage;
-                    if (plulmsg.partyId == this._arenaPartyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._arenaPartyMembers;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            partyMem = _loc_4[_loc_3];
-                            if (partyMem.id == plulmsg.partyLeaderId)
-                            {
-                                partyMem.isLeader = true;
-                                this._arenaLeader = partyMem;
-                                continue;
-                            }
-                            partyMem.isLeader = false;
-                        }
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyUpdate, plulmsg.partyId, this._arenaPartyMembers);
-                    }
-                    else if (plulmsg.partyId == this._partyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._partyMembers;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            partyMem = _loc_4[_loc_3];
-                            if (partyMem.id == plulmsg.partyLeaderId)
-                            {
-                                partyMem.isLeader = true;
-                                continue;
-                            }
-                            partyMem.isLeader = false;
-                        }
-                        KernelEventsManager.getInstance().processCallback(HookList.PartyUpdate, plulmsg.partyId, this._partyMembers);
-                    }
-                    if (plulmsg.partyLeaderId == PlayedCharacterManager.getInstance().infos.id)
-                    {
-                        PlayedCharacterManager.getInstance().isPartyLeader = true;
-                    }
-                    else
-                    {
-                        PlayedCharacterManager.getInstance().isPartyLeader = false;
-                    }
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyLeaderUpdate, plulmsg.partyId, plulmsg.partyLeaderId);
-                    return true;
-                }
-                case msg is PartyUpdateLightMessage:
-                {
-                    pulmsg = msg as PartyUpdateLightMessage;
-                    if (pulmsg.partyId == this._arenaPartyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._arenaPartyMembers;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            partyMemb = _loc_4[_loc_3];
-                            if (partyMemb.id == pulmsg.id)
-                            {
-                                partyMemb.lifePoints = pulmsg.lifePoints;
-                                partyMemb.maxLifePoints = pulmsg.maxLifePoints;
-                                partyMemb.prospecting = pulmsg.prospecting;
-                                partyMemb.regenRate = pulmsg.regenRate;
-                            }
-                            if (this._dicRegenArena[partyMemb.id] == null)
-                            {
-                                lptmanager = new LifePointTickManager();
-                            }
-                            else
-                            {
-                                lptmanager = this._dicRegenArena[partyMemb.id];
-                            }
-                            lptmanager.originalLifePoint = partyMemb.lifePoints;
-                            lptmanager.regenRate = partyMemb.regenRate;
-                            lptmanager.tickNumber = 1;
-                            this._dicRegenArena[partyMemb.id] = lptmanager;
-                        }
-                    }
-                    else if (pulmsg.partyId == this._partyId)
-                    {
-                        var _loc_3:* = 0;
-                        var _loc_4:* = this._partyMembers;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            partyMemb = _loc_4[_loc_3];
-                            if (partyMemb.id == pulmsg.id)
-                            {
-                                partyMemb.lifePoints = pulmsg.lifePoints;
-                                partyMemb.maxLifePoints = pulmsg.maxLifePoints;
-                                partyMemb.prospecting = pulmsg.prospecting;
-                                partyMemb.regenRate = pulmsg.regenRate;
-                            }
-                            if (this._dicRegen[partyMemb.id] == null)
-                            {
-                                lptmanager = new LifePointTickManager();
-                            }
-                            else
-                            {
-                                lptmanager = this._dicRegen[partyMemb.id];
-                            }
-                            lptmanager.originalLifePoint = partyMemb.lifePoints;
-                            lptmanager.regenRate = partyMemb.regenRate;
-                            lptmanager.tickNumber = 1;
-                            this._dicRegen[partyMemb.id] = lptmanager;
-                        }
-                    }
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyMemberUpdate, pulmsg.partyId, pulmsg.id);
-                    return true;
-                }
-                case msg is PartyAbdicateThroneAction:
-                {
-                    pata = msg as PartyAbdicateThroneAction;
-                    patmsg = new PartyAbdicateThroneMessage();
-                    patmsg.initPartyAbdicateThroneMessage(pata.partyId, pata.playerId);
-                    ConnectionsHandler.getConnection().send(patmsg);
-                    return true;
-                }
-                case msg is PartyPledgeLoyaltyRequestAction:
-                {
-                    pplra = msg as PartyPledgeLoyaltyRequestAction;
-                    pplrmsg = new PartyPledgeLoyaltyRequestMessage();
-                    pplrmsg.initPartyPledgeLoyaltyRequestMessage(pplra.partyId, pplra.loyal);
-                    ConnectionsHandler.getConnection().send(pplrmsg);
-                    return true;
-                }
-                case msg is PartyLoyaltyStatusMessage:
-                {
-                    plsmsg = msg as PartyLoyaltyStatusMessage;
-                    this._partyLoyalty = plsmsg.loyal;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyLoyaltyStatus, plsmsg.partyId, plsmsg.loyal);
-                    return true;
-                }
-                case msg is PartyFollowStatusUpdateMessage:
-                {
-                    pfsumsg = msg as PartyFollowStatusUpdateMessage;
-                    if (pfsumsg.success)
-                    {
-                        if (pfsumsg.followedId == 0)
-                        {
-                            KernelEventsManager.getInstance().processCallback(HookList.RemoveMapFlag, "flag_srv" + CompassTypeEnum.COMPASS_TYPE_PARTY + "_" + PlayedCharacterManager.getInstance().followingPlayerId);
-                            KernelEventsManager.getInstance().processCallback(HookList.PartyMemberFollowUpdate, pfsumsg.partyId, PlayedCharacterManager.getInstance().followingPlayerId, false);
-                            PlayedCharacterManager.getInstance().followingPlayerId = -1;
-                        }
-                        else
-                        {
-                            KernelEventsManager.getInstance().processCallback(HookList.PartyMemberFollowUpdate, pfsumsg.partyId, pfsumsg.followedId, true);
-                            PlayedCharacterManager.getInstance().followingPlayerId = pfsumsg.followedId;
-                        }
-                    }
-                    return true;
-                }
-                case msg is PartyFollowMemberAction:
-                {
-                    pfma = msg as PartyFollowMemberAction;
-                    pfmrmsg = new PartyFollowMemberRequestMessage();
-                    pfmrmsg.initPartyFollowMemberRequestMessage(pfma.partyId, pfma.playerId);
-                    ConnectionsHandler.getConnection().send(pfmrmsg);
-                    return true;
-                }
-                case msg is PartyStopFollowingMemberAction:
-                {
-                    psfma = msg as PartyStopFollowingMemberAction;
-                    psfrmsg = new PartyStopFollowRequestMessage();
-                    psfrmsg.initPartyStopFollowRequestMessage(psfma.partyId);
-                    ConnectionsHandler.getConnection().send(psfrmsg);
-                    return true;
-                }
-                case msg is PartyAllFollowMemberAction:
-                {
-                    pafma = msg as PartyAllFollowMemberAction;
-                    pftmrmsg = new PartyFollowThisMemberRequestMessage();
-                    pftmrmsg.initPartyFollowThisMemberRequestMessage(pafma.partyId, pafma.playerId, true);
-                    this.allMemberFollowPlayerId = pafma.playerId;
-                    ConnectionsHandler.getConnection().send(pftmrmsg);
-                    return true;
-                }
-                case msg is PartyAllStopFollowingMemberAction:
-                {
-                    pasfma = msg as PartyAllStopFollowingMemberAction;
-                    pftmrmsg2 = new PartyFollowThisMemberRequestMessage();
-                    pftmrmsg2.initPartyFollowThisMemberRequestMessage(pasfma.partyId, pasfma.playerId, false);
-                    this.allMemberFollowPlayerId = 0;
-                    ConnectionsHandler.getConnection().send(pftmrmsg2);
-                    return true;
-                }
-                case msg is PartyShowMenuAction:
-                {
-                    psma = msg as PartyShowMenuAction;
-                    modContextMenu = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
-                    menu = this.createPartyPlayerContextMenu(psma.playerId, psma.partyId);
-                    modContextMenu.createContextMenu(menu);
-                    return true;
-                }
-                case msg is PartyLocateMembersMessage:
-                {
-                    plmmsg = msg as PartyLocateMembersMessage;
-                    return true;
-                }
-                case msg is TeleportBuddiesMessage:
-                {
-                    tbmsg = msg as TeleportBuddiesMessage;
-                    Kernel.getWorker().addFrame(this._teleportBuddiesDialogFrame);
-                    commonModTp = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                    commonModTp.openPopup(I18n.getUiText("ui.common.confirm"), I18n.getUiText("ui.party.teleportMembersProposition"), [I18n.getUiText("ui.common.yes"), I18n.getUiText("ui.common.no")], [this.teleportWantedFunction, this.teleportUnwantedFunction], this.teleportWantedFunction, this.teleportUnwantedFunction);
-                    return true;
-                }
-                case msg is TeleportBuddiesRequestedMessage:
-                {
-                    tbrmsg = msg as TeleportBuddiesRequestedMessage;
-                    poorBuddiesNames;
-                    var _loc_3:* = 0;
-                    var _loc_4:* = this._partyMembers;
-                    while (_loc_4 in _loc_3)
-                    {
-                        
-                        buddyPropMember = _loc_4[_loc_3];
-                        if (buddyPropMember.id == tbrmsg.inviterId)
-                        {
-                            hostName = buddyPropMember.name;
-                            continue;
-                        }
-                        if (tbrmsg.invalidBuddiesIds.indexOf(buddyPropMember.id) != -1)
-                        {
-                            poorBuddiesNames = poorBuddiesNames + (buddyPropMember.name + ", ");
-                        }
-                    }
-                    dungeonPropName = Dungeon.getDungeonById(tbrmsg.dungeonId).name;
-                    prinText = I18n.getUiText("ui.party.teleportWish", [hostName, dungeonPropName]);
-                    if (poorBuddiesNames != "")
-                    {
-                        poorBuddiesNames = poorBuddiesNames.substring(0, poorBuddiesNames.length - 2);
-                        prinText = prinText + (" " + PatternDecoder.combine(I18n.getUiText("ui.party.teleportCriterionFallenAngels", [poorBuddiesNames]), "n", poorBuddiesNames.split(", ").length == 1));
-                    }
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, prinText, ChatActivableChannelsEnum.CHANNEL_PARTY, TimeManager.getInstance().getTimestamp());
-                    if (Kernel.getWorker().contains(TeleportBuddiesDialogFrame))
-                    {
-                        Kernel.getWorker().removeFrame(Kernel.getWorker().getFrame(TeleportBuddiesDialogFrame) as TeleportBuddiesDialogFrame);
-                    }
-                    return true;
-                }
-                case msg is TeleportToBuddyOfferMessage:
-                {
-                    ttbomsg = msg as TeleportToBuddyOfferMessage;
-                    var _loc_3:* = 0;
-                    var _loc_4:* = this._partyMembers;
-                    while (_loc_4 in _loc_3)
-                    {
-                        
-                        buddyMember = _loc_4[_loc_3];
-                        if (buddyMember.id == ttbomsg.buddyId)
-                        {
-                            buddyName = buddyMember.name;
-                        }
-                    }
-                    dungeonName = Dungeon.getDungeonById(ttbomsg.dungeonId).name;
-                    notifyUser;
-                    if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.DUNGEON_TELEPORT))
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.DUNGEON_TELEPORT, [buddyName, dungeonName]);
-                        notifyUser = ExternalNotificationManager.getInstance().notificationNotify(ExternalNotificationTypeEnum.DUNGEON_TELEPORT);
-                    }
-                    ttbomsgNid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.invitation"), I18n.getUiText("ui.party.teleportProposition", [buddyName, dungeonName]), NotificationTypeEnum.PRIORITY_INVITATION, "teleportProposition");
-                    NotificationManager.getInstance().addTimerToNotification(ttbomsgNid, ttbomsg.timeLeft, false, false, notifyUser);
-                    NotificationManager.getInstance().addButtonToNotification(ttbomsgNid, I18n.getUiText("ui.common.refuse"), "TeleportToBuddyAnswer", [ttbomsg.dungeonId, ttbomsg.buddyId, false], false, 130);
-                    NotificationManager.getInstance().addButtonToNotification(ttbomsgNid, I18n.getUiText("ui.common.accept"), "TeleportToBuddyAnswer", [ttbomsg.dungeonId, ttbomsg.buddyId, true], false, 130);
-                    NotificationManager.getInstance().addCallbackToNotification(ttbomsgNid, "TeleportToBuddyAnswer", [ttbomsg.dungeonId, ttbomsg.buddyId, false]);
-                    NotificationManager.getInstance().sendNotification(ttbomsgNid);
-                    return true;
-                }
-                case msg is TeleportToBuddyCloseMessage:
-                {
-                    ttbcmsg = msg as TeleportToBuddyCloseMessage;
-                    NotificationManager.getInstance().closeNotification("teleportProposition");
-                    return true;
-                }
-                case msg is TeleportToBuddyAnswerAction:
-                {
-                    ttbaa = msg as TeleportToBuddyAnswerAction;
-                    ttbamsg = new TeleportToBuddyAnswerMessage();
-                    ttbamsg.initTeleportToBuddyAnswerMessage(ttbaa.dungeonId, ttbaa.buddyId, ttbaa.accept);
-                    ConnectionsHandler.getConnection().send(ttbamsg);
-                    return true;
-                }
-                case msg is DungeonPartyFinderAvailableDungeonsAction:
-                {
-                    dpfada = msg as DungeonPartyFinderAvailableDungeonsAction;
-                    dpfadrmsg = new DungeonPartyFinderAvailableDungeonsRequestMessage();
-                    dpfadrmsg.initDungeonPartyFinderAvailableDungeonsRequestMessage();
-                    ConnectionsHandler.getConnection().send(dpfadrmsg);
-                    return true;
-                }
-                case msg is DungeonPartyFinderAvailableDungeonsMessage:
-                {
-                    dpfadmsg = msg as DungeonPartyFinderAvailableDungeonsMessage;
-                    if (dpfadmsg.dungeonIds != this._playerDungeons)
-                    {
-                        this._playerDungeons = dpfadmsg.dungeonIds;
-                    }
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderAvailableDungeons, this._playerDungeons);
-                    return true;
-                }
-                case msg is DungeonPartyFinderListenAction:
-                {
-                    dpfla = msg as DungeonPartyFinderListenAction;
-                    dpflrmsg = new DungeonPartyFinderListenRequestMessage();
-                    dpflrmsg.initDungeonPartyFinderListenRequestMessage(dpfla.dungeonId);
-                    ConnectionsHandler.getConnection().send(dpflrmsg);
-                    return true;
-                }
-                case msg is DungeonPartyFinderListenErrorMessage:
-                {
-                    dpflemsg = msg as DungeonPartyFinderListenErrorMessage;
-                    return true;
-                }
-                case msg is DungeonPartyFinderRoomContentMessage:
-                {
-                    dpfrcmsg = msg as DungeonPartyFinderRoomContentMessage;
-                    this._dungeonFighters = new Vector.<DungeonPartyFinderPlayer>;
-                    var _loc_3:* = 0;
-                    var _loc_4:* = dpfrcmsg.players;
-                    while (_loc_4 in _loc_3)
-                    {
-                        
-                        fighterDungeon = _loc_4[_loc_3];
-                        this._dungeonFighters.push(fighterDungeon);
-                    }
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderRoomContent, this._dungeonFighters);
-                    return true;
-                }
-                case msg is DungeonPartyFinderRoomContentUpdateMessage:
-                {
-                    dpfrcumsg = msg as DungeonPartyFinderRoomContentUpdateMessage;
-                    tempDjFighters = this._dungeonFighters.concat();
-                    iFD = (tempDjFighters.length - 1);
-                    while (iFD >= 0)
-                    {
-                        
-                        currentfighterDungeon = tempDjFighters[iFD];
-                        var _loc_3:* = 0;
-                        var _loc_4:* = dpfrcumsg.removedPlayersIds;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            removedfighterId = _loc_4[_loc_3];
-                            if (currentfighterDungeon.playerId == removedfighterId)
-                            {
-                                this._dungeonFighters.splice(iFD, 1);
-                            }
-                        }
-                        iFD = (iFD - 1);
-                    }
-                    var _loc_3:* = 0;
-                    var _loc_4:* = dpfrcumsg.addedPlayers;
-                    while (_loc_4 in _loc_3)
-                    {
-                        
-                        addedfighterDungeon = _loc_4[_loc_3];
-                        this._dungeonFighters.push(addedfighterDungeon);
-                    }
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderRoomContent, this._dungeonFighters);
-                    return true;
-                }
-                case msg is DungeonPartyFinderRegisterAction:
-                {
-                    dpfra = msg as DungeonPartyFinderRegisterAction;
-                    dungeons = new Vector.<uint>;
-                    var _loc_3:* = 0;
-                    var _loc_4:* = dpfra.dungeons;
-                    while (_loc_4 in _loc_3)
-                    {
-                        
-                        dungeonId = _loc_4[_loc_3];
-                        dungeons.push(dungeonId);
-                    }
-                    dpfrrmsg = new DungeonPartyFinderRegisterRequestMessage();
-                    dpfrrmsg.initDungeonPartyFinderRegisterRequestMessage(dungeons);
-                    ConnectionsHandler.getConnection().send(dpfrrmsg);
-                    return true;
-                }
-                case msg is DungeonPartyFinderRegisterSuccessMessage:
-                {
-                    dpfrsmsg = msg as DungeonPartyFinderRegisterSuccessMessage;
-                    if (dpfrsmsg.dungeonIds.length > 0)
-                    {
-                        paramDonjons;
-                        var _loc_3:* = 0;
-                        var _loc_4:* = dpfrsmsg.dungeonIds;
-                        while (_loc_4 in _loc_3)
-                        {
-                            
-                            djId = _loc_4[_loc_3];
-                            paramDonjons = paramDonjons + (Dungeon.getDungeonById(djId).name + ", ");
-                        }
-                        paramDonjons = paramDonjons.substring(0, paramDonjons.length - 2);
-                        resultText = I18n.getUiText("ui.teamSearch.registerSuccess", [paramDonjons]);
-                    }
-                    else
-                    {
-                        resultText = I18n.getUiText("ui.teamSearch.registerQuit");
-                    }
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, resultText, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                    this._playerSubscribedDungeons = dpfrsmsg.dungeonIds;
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.DungeonPartyFinderRegister, dpfrsmsg.dungeonIds.length > 0);
-                    return true;
-                }
-                case msg is DungeonPartyFinderRegisterErrorMessage:
-                {
-                    dpfremsg = msg as DungeonPartyFinderRegisterErrorMessage;
-                    errortext = I18n.getUiText("ui.teamSearch.registerError");
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, errortext, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                    return true;
-                }
-                case msg is ArenaRegisterAction:
-                {
-                    ara = msg as ArenaRegisterAction;
-                    grparmsg = new GameRolePlayArenaRegisterMessage();
-                    grparmsg.initGameRolePlayArenaRegisterMessage(ara.fightTypeId);
-                    ConnectionsHandler.getConnection().send(grparmsg);
-                    return true;
-                }
-                case msg is ArenaUnregisterAction:
-                {
-                    aua = msg as ArenaUnregisterAction;
-                    grpaumsg = new GameRolePlayArenaUnregisterMessage();
-                    grpaumsg.initGameRolePlayArenaUnregisterMessage();
-                    ConnectionsHandler.getConnection().send(grpaumsg);
-                    return true;
-                }
-                case msg is GameRolePlayArenaRegistrationStatusMessage:
-                {
-                    grparsmsg = msg as GameRolePlayArenaRegistrationStatusMessage;
-                    _log.debug("GameRolePlayArenaRegistrationStatusMessage " + grparsmsg.registered + " : " + grparsmsg.step);
-                    if (grparsmsg.registered)
-                    {
-                        this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_REGISTRED;
-                        this._isArenaRegistered = true;
-                    }
-                    else
-                    {
-                        this._arenaCurrentStatus = grparsmsg.step;
-                        this._isArenaRegistered = false;
-                    }
-                    this._arenaReadyPartyMemberIds = new Array();
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate, this._isArenaRegistered, this._arenaCurrentStatus);
-                    return true;
-                }
-                case msg is GameRolePlayArenaFightPropositionMessage:
-                {
-                    grpafpmsg = msg as GameRolePlayArenaFightPropositionMessage;
-                    this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_WAITING_FIGHT;
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaFightProposition, grpafpmsg.alliesId);
-                    this._arenaAlliesIds = new Array();
-                    var _loc_3:* = 0;
-                    var _loc_4:* = grpafpmsg.alliesId;
-                    while (_loc_4 in _loc_3)
-                    {
-                        
-                        allyId = _loc_4[_loc_3];
-                        this._arenaAlliesIds.push(allyId);
-                    }
-                    grpafpmsgNid = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.common.koliseum"), I18n.getUiText("ui.party.fightFound"), NotificationTypeEnum.PRIORITY_INVITATION, "fightProposition_" + grpafpmsg.fightId);
-                    NotificationManager.getInstance().addTimerToNotification(grpafpmsgNid, grpafpmsg.duration, false);
-                    NotificationManager.getInstance().addButtonToNotification(grpafpmsgNid, I18n.getUiText("ui.common.refuse"), "ArenaFightAnswer", [grpafpmsg.fightId, false], true, 130);
-                    NotificationManager.getInstance().addButtonToNotification(grpafpmsgNid, I18n.getUiText("ui.common.accept"), "ArenaFightAnswer", [grpafpmsg.fightId, true], true, 130);
-                    NotificationManager.getInstance().addCallbackToNotification(grpafpmsgNid, "ArenaFightAnswer", [grpafpmsg.fightId, false]);
-                    NotificationManager.getInstance().sendNotification(grpafpmsgNid);
-                    if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.KOLO_FIGHT))
-                    {
-                        KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.KOLO_FIGHT);
-                    }
-                    return true;
-                }
-                case msg is ArenaFightAnswerAction:
-                {
-                    afaa = msg as ArenaFightAnswerAction;
-                    grpafamsg = new GameRolePlayArenaFightAnswerMessage();
-                    grpafamsg.initGameRolePlayArenaFightAnswerMessage(afaa.fightId, afaa.accept);
-                    ConnectionsHandler.getConnection().send(grpafamsg);
-                    return true;
-                }
-                case msg is GameRolePlayArenaFighterStatusMessage:
-                {
-                    grpafsmsg = msg as GameRolePlayArenaFighterStatusMessage;
-                    if (!grpafsmsg.accepted)
-                    {
-                        if (grpafsmsg.playerId == PlayedCharacterManager.getInstance().id)
-                        {
-                            this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_UNREGISTER;
-                            this._isArenaRegistered = false;
-                        }
-                        else
-                        {
-                            this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_REGISTRED;
-                        }
-                        NotificationManager.getInstance().closeNotification("fightProposition_" + grpafsmsg.fightId, true);
-                        this._arenaReadyPartyMemberIds = new Array();
-                        this._arenaAlliesIds = new Array();
-                        KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate, this._isArenaRegistered, this._arenaCurrentStatus);
-                    }
-                    else
-                    {
-                        this._arenaReadyPartyMemberIds.push(grpafsmsg.playerId);
-                    }
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaFighterStatusUpdate, grpafsmsg.playerId, grpafsmsg.accepted);
-                    return true;
-                }
-                case msg is GameRolePlayArenaUpdatePlayerInfosMessage:
-                {
-                    grpaupimsg = msg as GameRolePlayArenaUpdatePlayerInfosMessage;
-                    this._arenaRanks[0] = grpaupimsg.rank;
-                    this._arenaRanks[1] = grpaupimsg.bestDailyRank;
-                    this._arenaRanks[2] = grpaupimsg.bestRank;
-                    this._todaysFights = grpaupimsg.arenaFightcount;
-                    this._todaysWonFights = grpaupimsg.victoryCount;
-                    KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaUpdateRank, this._arenaRanks, this._todaysFights, this._todaysWonFights);
-                    return true;
-                }
-                case msg is GameFightJoinMessage:
-                {
-                    gfjmsg = msg as GameFightJoinMessage;
-                    if (gfjmsg.fightType == FightTypeEnum.FIGHT_TYPE_PVP_ARENA && !gfjmsg.isSpectator)
-                    {
-                        this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_STARTING_FIGHT;
-                        this._isArenaRegistered = false;
-                        KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate, this._isArenaRegistered, this._arenaCurrentStatus);
-                    }
-                    this.cleanPartyFightNotifications();
-                    return false;
-                }
-                case msg is FightEndingMessage:
-                {
-                    femsg = msg as FightEndingMessage;
-                    if (this._lastFightType == FightTypeEnum.FIGHT_TYPE_PVP_ARENA)
-                    {
-                        this._arenaCurrentStatus = PvpArenaStepEnum.ARENA_STEP_UNREGISTER;
-                        this._isArenaRegistered = false;
-                        this._arenaReadyPartyMemberIds = new Array();
-                        KernelEventsManager.getInstance().processCallback(RoleplayHookList.ArenaRegistrationStatusUpdate, this._isArenaRegistered, this._arenaCurrentStatus);
-                        if (this._arenaLeader && PlayedCharacterManager.getInstance().id == this._arenaLeader.id)
-                        {
-                            commonMod = UiModuleManager.getInstance().getModule("Ankama_Common").mainClass;
-                            commonMod.openPopup(I18n.getUiText("ui.common.confirm"), I18n.getUiText("ui.party.arenaPopupReinscription"), [I18n.getUiText("ui.common.yes"), I18n.getUiText("ui.common.no")], [this.reinscriptionWantedFunction, null], this.reinscriptionWantedFunction, function () : void
-            {
-                return;
-            }// end function
-            );
-                        }
-                    }
-                    return true;
-                }
-                case msg is PartyMemberInFightMessage:
-                {
-                    if (!PlayedCharacterManager.getInstance().isFighting)
-                    {
-                        pemifmmsg = msg as PartyMemberInFightMessage;
-                        switch(pemifmmsg.reason)
-                        {
-                            case 1:
-                            {
-                                fightCause = I18n.getUiText("ui.party.memberStartFight.monsterAttack");
-                                break;
-                            }
-                            case 2:
-                            {
-                                fightCause = I18n.getUiText("ui.party.memberStartFight.playerAttack");
-                                break;
-                            }
-                            case 3:
-                            {
-                                fightCause = I18n.getUiText("ui.party.memberStartFight.attackPlayer");
-                                break;
-                            }
-                            default:
-                            {
-                                fightCause = I18n.getUiText("ui.party.memberStartFight.unknownReason");
-                                break;
-                                break;
-                            }
-                        }
-                        fightId = pemifmmsg.fightId;
-                        memberName = pemifmmsg.memberName;
-                        fightMapId = pemifmmsg.fightMap.mapId;
-                        fightInformation = new PartyFightInformationsData(fightMapId, fightId, memberName, pemifmmsg.memberId, pemifmmsg.secondsBeforeFightStart);
-                        fightInformation.timeUntilFightbegin.addEventListener(TimerEvent.TIMER_COMPLETE, this.onFightStartTimerComplete);
-                        fightInformation.timeUntilFightbegin.start();
-                        if (!this._partyFightsInformations[fightMapId])
-                        {
-                            this._partyFightsInformations[fightMapId] = new Array();
-                        }
-                        this._partyFightsInformations[fightMapId].push(fightInformation);
-                        channel = ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO;
-                        timestamp = TimeManager.getInstance().getTimestamp();
-                        params = new Array();
-                        params.push(memberName);
-                        params.push(fightMapId);
-                        partyFightMsg = ParamsDecoder.applyParams(fightCause, params);
-                        KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, partyFightMsg, channel, timestamp, false);
-                        if (PlayedCharacterManager.getInstance().currentMap.mapId == fightMapId)
-                        {
-                            entitiesFrame = Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-                            fight = entitiesFrame.fights[fightInformation.fightId];
-                            foundLeader;
-                            var _loc_3:* = 0;
-                            var _loc_4:* = fight.teams;
-                            while (_loc_4 in _loc_3)
-                            {
-                                
-                                team = _loc_4[_loc_3];
-                                var _loc_5:* = 0;
-                                var _loc_6:* = team.teamInfos.teamMembers;
-                                while (_loc_6 in _loc_5)
-                                {
-                                    
-                                    fightTeamMember = _loc_6[_loc_5];
-                                    if (fightTeamMember.id == fightInformation.memberId)
+                           for each (mapFight in mcidm.fights)
+                           {
+                              if(mapFight.fightId==partyFight.fightId)
+                              {
+                                 foundFight=true;
+                                 fightTeams=mapFight.fightTeams;
+                                 for each (fti in fightTeams)
+                                 {
+                                    for each (teamMember in fti.teamMembers)
                                     {
-                                        fightTeamLeaderId = team.teamInfos.leaderId;
-                                        foundLeader;
-                                        break;
+                                       if(teamMember.id==partyFight.memberId)
+                                       {
+                                          leaderId=fti.leaderId;
+                                       }
                                     }
-                                    if (foundLeader)
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                            this.createPartyFightNotification(fightMapId, fightInformation, fightTeamLeaderId);
+                                 }
+                                 break;
+                              }
+                           }
+                           if(foundFight)
+                           {
+                              this.createPartyFightNotification(mapId,partyFight,leaderId);
+                           }
+                           else
+                           {
+                              this.deletePartyFightInformation(mapId,partyFight);
+                           }
                         }
-                        if (AirScanner.hasAir() && ExternalNotificationManager.getInstance().canAddExternalNotification(ExternalNotificationTypeEnum.PARTY_FIGHT_START))
-                        {
-                            KernelEventsManager.getInstance().processCallback(HookList.ExternalNotification, ExternalNotificationTypeEnum.PARTY_FIGHT_START, [memberName, fightMapId]);
-                        }
-                    }
-                    return true;
-                }
-                case msg is MapComplementaryInformationsDataMessage:
-                {
-                    this.cleanPartyFightNotifications();
-                    if (this._partyFightsInformations)
-                    {
-                        mcidm = msg as MapComplementaryInformationsDataMessage;
-                        mapId = mcidm.mapId;
-                        foundFight;
-                        leaderId;
-                        if (this._partyFightsInformations[mapId])
-                        {
-                            var _loc_3:* = 0;
-                            var _loc_4:* = this._partyFightsInformations[mapId];
-                            while (_loc_4 in _loc_3)
-                            {
-                                
-                                partyFight = _loc_4[_loc_3];
-                                var _loc_5:* = 0;
-                                var _loc_6:* = mcidm.fights;
-                                while (_loc_6 in _loc_5)
-                                {
-                                    
-                                    mapFight = _loc_6[_loc_5];
-                                    if (mapFight.fightId == partyFight.fightId)
-                                    {
-                                        foundFight;
-                                        fightTeams = mapFight.fightTeams;
-                                        var _loc_7:* = 0;
-                                        var _loc_8:* = fightTeams;
-                                        while (_loc_8 in _loc_7)
-                                        {
-                                            
-                                            fti = _loc_8[_loc_7];
-                                            var _loc_9:* = 0;
-                                            var _loc_10:* = fti.teamMembers;
-                                            while (_loc_10 in _loc_9)
-                                            {
-                                                
-                                                teamMember = _loc_10[_loc_9];
-                                                if (teamMember.id == partyFight.memberId)
-                                                {
-                                                    leaderId = fti.leaderId;
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                                if (foundFight)
-                                {
-                                    this.createPartyFightNotification(mapId, partyFight, leaderId);
-                                    continue;
-                                }
-                                this.deletePartyFightInformation(mapId, partyFight);
-                            }
-                        }
-                    }
-                    return false;
-                }
-                case msg is GameRolePlayRemoveChallengeMessage:
-                {
-                    grpcm = msg as GameRolePlayRemoveChallengeMessage;
-                    fightNotificationIndex = this._partyFightNotification.indexOf("partyFight" + grpcm.fightId);
-                    if (fightNotificationIndex > -1)
-                    {
-                        NotificationManager.getInstance().closeNotification(this._partyFightNotification[fightNotificationIndex], false);
-                    }
-                    return false;
-                }
-                default:
-                {
-                    break;
-                }
+                     }
+                  }
+                  return false;
+               case msg is GameRolePlayRemoveChallengeMessage:
+                  grpcm=msg as GameRolePlayRemoveChallengeMessage;
+                  fightNotificationIndex=this._partyFightNotification.indexOf("partyFight"+grpcm.fightId);
+                  if(fightNotificationIndex>-1)
+                  {
+                     NotificationManager.getInstance().closeNotification(this._partyFightNotification[fightNotificationIndex],false);
+                  }
+                  return false;
+               default:
+                  return false;
             }
-            return false;
-        }// end function
+      }
 
-        private function cleanPartyFightNotifications() : void
-        {
-            var _loc_1:* = null;
-            if (this._partyFightNotification.length > 0)
+      private function cleanPartyFightNotifications() : void {
+         var notifName:String = null;
+         if(this._partyFightNotification.length>0)
+         {
+            for each (notifName in this._partyFightNotification)
             {
-                for each (_loc_1 in this._partyFightNotification)
-                {
-                    
-                    NotificationManager.getInstance().closeNotification(_loc_1, false);
-                }
-                this._partyFightNotification = new Array();
+               NotificationManager.getInstance().closeNotification(notifName,false);
             }
-            return;
-        }// end function
+            this._partyFightNotification=new Array();
+         }
+      }
 
-        private function createPartyFightNotification(param1:uint, param2:PartyFightInformationsData, param3:int) : void
-        {
-            var _loc_4:* = I18n.getUiText("ui.party.joinTeamFightQuestion");
-            var _loc_5:* = new Array();
-            new Array().push(param2.memberName);
-            var _loc_6:* = ParamsDecoder.applyParams(_loc_4, _loc_5);
-            var _loc_7:* = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.party.teamFightTitle"), _loc_6, NotificationTypeEnum.PRIORITY_INVITATION, "partyFight" + param2.fightId);
-            var _loc_8:* = new Date();
-            var _loc_9:* = (param2.fightStartDate - _loc_8.getTime()) / 1000;
-            NotificationManager.getInstance().addTimerToNotification(_loc_7, _loc_9, false);
-            NotificationManager.getInstance().addButtonToNotification(_loc_7, I18n.getUiText("ui.common.join"), "JoinFightRequest", [param2.fightId, param3], true, 130);
-            this._partyFightNotification.push("partyFight" + param2.fightId);
-            NotificationManager.getInstance().sendNotification(_loc_7);
-            return;
-        }// end function
+      private function createPartyFightNotification(mapId:uint, currentFight:PartyFightInformationsData, fightTeamLeaderId:int) : void {
+         var notifBaseText:String = I18n.getUiText("ui.party.joinTeamFightQuestion");
+         var params:Array = new Array();
+         params.push(currentFight.memberName);
+         params.push(currentFight.memberId);
+         var notifText:String = ParamsDecoder.applyParams(notifBaseText,params);
+         var pfimsgNid:uint = NotificationManager.getInstance().prepareNotification(I18n.getUiText("ui.party.teamFightTitle"),notifText,NotificationTypeEnum.PRIORITY_INVITATION,"partyFight"+currentFight.fightId);
+         var currentDate:Date = new Date();
+         var timeTillHiding:int = (currentFight.fightStartDate-currentDate.getTime())/1000;
+         NotificationManager.getInstance().addTimerToNotification(pfimsgNid,timeTillHiding,false);
+         NotificationManager.getInstance().addButtonToNotification(pfimsgNid,I18n.getUiText("ui.common.join"),"JoinFightRequest",[currentFight.fightId,fightTeamLeaderId],true,130);
+         this._partyFightNotification.push("partyFight"+currentFight.fightId);
+         NotificationManager.getInstance().sendNotification(pfimsgNid);
+      }
 
-        public function pulled() : Boolean
-        {
+      public function pulled() : Boolean {
+         this._timerRegen.stop();
+         this._timerRegen.removeEventListener(TimerEvent.TIMER,this.onTimerTick);
+         this._timerRegen=null;
+         return true;
+      }
+
+      public function reinscriptionWantedFunction() : void {
+         var action:ArenaRegisterAction = new ArenaRegisterAction();
+         action.fightTypeId=PvpArenaTypeEnum.ARENA_TYPE_3VS3;
+         this.process(action);
+      }
+
+      public function getGroupMemberById(id:int) : PartyMemberWrapper {
+         var m:PartyMemberWrapper = null;
+         for each (m in this._partyMembers)
+         {
+            if(m.id==id)
+            {
+               return m;
+            }
+         }
+         return null;
+      }
+
+      private function deleteParty(partyId:int) : void {
+         var isArena:Boolean = false;
+         if(partyId==this._arenaPartyId)
+         {
+            isArena=true;
+            this._arenaPartyMembers=new Vector.<PartyMemberWrapper>();
+            this._arenaPartyId=0;
+            this._arenaLeader=null;
+         }
+         else
+         {
+            if(partyId==this._partyId)
+            {
+               this._partyMembers=new Vector.<PartyMemberWrapper>();
+               this._partyId=0;
+            }
+         }
+         if((this._arenaPartyId==0)&&(this._partyId==0))
+         {
             this._timerRegen.stop();
-            this._timerRegen.removeEventListener(TimerEvent.TIMER, this.onTimerTick);
-            this._timerRegen = null;
-            return true;
-        }// end function
+            PlayedCharacterManager.getInstance().isInParty=false;
+            PlayedCharacterManager.getInstance().isPartyLeader=false;
+         }
+         KernelEventsManager.getInstance().processCallback(HookList.PartyLeave,partyId,isArena);
+      }
 
-        public function reinscriptionWantedFunction() : void
-        {
-            var _loc_1:* = new ArenaRegisterAction();
-            _loc_1.fightTypeId = PvpArenaTypeEnum.ARENA_TYPE_3VS3;
-            this.process(_loc_1);
-            return;
-        }// end function
-
-        public function getGroupMemberById(param1:int) : PartyMemberWrapper
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this._partyMembers)
+      private function createPartyPlayerContextMenu(pPlayerId:uint, pPartyId:int) : Object {
+         var playerAlignmentInfos:ActorAlignmentInformations = null;
+         var member:PartyMemberWrapper = null;
+         var entityId:* = 0;
+         var playerName:String = "";
+         var socialApi:SocialApi = new SocialApi();
+         var playerIsOnSameMap:Boolean = false;
+         if(pPartyId==this._arenaPartyId)
+         {
+            for each (member in this._arenaPartyMembers)
             {
-                
-                if (_loc_2.id == param1)
-                {
-                    return _loc_2;
-                }
+               if(member.id==pPlayerId)
+               {
+                  playerName=member.name;
+               }
             }
+         }
+         else
+         {
+            if(pPartyId==this._partyId)
+            {
+               for each (member in this._partyMembers)
+               {
+                  if(member.id==pPlayerId)
+                  {
+                     playerName=member.name;
+                  }
+               }
+            }
+         }
+         if(playerName=="")
+         {
             return null;
-        }// end function
-
-        private function deleteParty(param1:int) : void
-        {
-            var _loc_2:* = false;
-            if (param1 == this._arenaPartyId)
+         }
+         if(this.roleplayEntitiesFrame)
+         {
+            for each (entityId in this.roleplayEntitiesFrame.playersId)
             {
-                _loc_2 = true;
-                this._arenaPartyMembers = new Vector.<PartyMemberWrapper>;
-                this._arenaPartyId = 0;
-                this._arenaLeader = null;
+               if(entityId==pPlayerId)
+               {
+                  playerIsOnSameMap=true;
+                  if(this.roleplayEntitiesFrame.getEntityInfos(entityId) is GameRolePlayCharacterInformations)
+                  {
+                     playerAlignmentInfos=(this.roleplayEntitiesFrame.getEntityInfos(entityId) as GameRolePlayCharacterInformations).alignmentInfos;
+                  }
+               }
             }
-            else if (param1 == this._partyId)
+         }
+         return MenusFactory.create(
             {
-                this._partyMembers = new Vector.<PartyMemberWrapper>;
-                this._partyId = 0;
+               id:pPlayerId,
+               name:playerName,
+               onSameMap:playerIsOnSameMap,
+               alignmentInfos:playerAlignmentInfos
             }
-            if (this._arenaPartyId == 0 && this._partyId == 0)
+         ,"partyMember",pPartyId);
+      }
+
+      private function onTimerTick(pEvent:TimerEvent) : void {
+         var member:PartyMemberWrapper = null;
+         var playerLPTM:LifePointTickManager = null;
+         var additionalLifePoint:uint = 0;
+         var newLifePoints:uint = 0;
+         var lptm:LifePointTickManager = null;
+         var playerLPTM2:LifePointTickManager = null;
+         var additionalLifePoint2:uint = 0;
+         var newLifePoints2:uint = 0;
+         var lptm2:LifePointTickManager = null;
+         for each (member in this._partyMembers)
+         {
+            if((member.lifePoints>member.maxLifePoints)&&(member.regenRate<0))
             {
-                this._timerRegen.stop();
-                PlayedCharacterManager.getInstance().isInParty = false;
-                PlayedCharacterManager.getInstance().isPartyLeader = false;
+               if(this._dicRegen[member.id]==null)
+               {
+                  lptm=new LifePointTickManager();
+                  lptm.originalLifePoint=member.lifePoints;
+                  lptm.regenRate=member.regenRate;
+                  lptm.tickNumber=1;
+                  this._dicRegen[member.id]=lptm;
+               }
+               playerLPTM=this._dicRegen[member.id] as LifePointTickManager;
+               additionalLifePoint=Math.floor(playerLPTM.tickNumber*10/playerLPTM.regenRate);
+               newLifePoints=playerLPTM.originalLifePoint+additionalLifePoint;
+               if(newLifePoints>=member.maxLifePoints)
+               {
+                  newLifePoints=member.maxLifePoints;
+               }
+               member.lifePoints=newLifePoints;
+               playerLPTM.tickNumber++;
+               KernelEventsManager.getInstance().processCallback(HookList.PartyMemberLifeUpdate,this._partyId,member.id,member.lifePoints,member.initiative);
             }
-            KernelEventsManager.getInstance().processCallback(HookList.PartyLeave, param1, _loc_2);
-            return;
-        }// end function
-
-        private function createPartyPlayerContextMenu(param1:uint, param2:int) : Object
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_3:* = "";
-            var _loc_4:* = new SocialApi();
-            var _loc_5:* = false;
-            if (param2 == this._arenaPartyId)
+         }
+         for each (member in this._arenaPartyMembers)
+         {
+            if((member.lifePoints>member.maxLifePoints)&&(member.regenRate<0))
             {
-                for each (_loc_7 in this._arenaPartyMembers)
-                {
-                    
-                    if (_loc_7.id == param1)
-                    {
-                        _loc_3 = _loc_7.name;
-                    }
-                }
+               if(this._dicRegenArena[member.id]==null)
+               {
+                  lptm2=new LifePointTickManager();
+                  lptm2.originalLifePoint=member.lifePoints;
+                  lptm2.regenRate=member.regenRate;
+                  lptm2.tickNumber=1;
+                  this._dicRegenArena[member.id]=lptm2;
+               }
+               playerLPTM2=this._dicRegenArena[member.id] as LifePointTickManager;
+               additionalLifePoint2=Math.floor(playerLPTM2.tickNumber*10/playerLPTM2.regenRate);
+               newLifePoints2=playerLPTM2.originalLifePoint+additionalLifePoint2;
+               if(newLifePoints2>=member.maxLifePoints)
+               {
+                  newLifePoints2=member.maxLifePoints;
+               }
+               member.lifePoints=newLifePoints2;
+               playerLPTM2.tickNumber++;
+               KernelEventsManager.getInstance().processCallback(HookList.PartyMemberLifeUpdate,this._arenaPartyId,member.id,member.lifePoints,member.initiative);
             }
-            else if (param2 == this._partyId)
+         }
+      }
+
+      private function onFightStartTimerComplete(pEvent:TimerEvent) : void {
+         var key:Object = null;
+         var fight:PartyFightInformationsData = null;
+         for (key in this._partyFightsInformations)
+         {
+            for each (fight in this._partyFightsInformations[key])
             {
-                for each (_loc_7 in this._partyMembers)
-                {
-                    
-                    if (_loc_7.id == param1)
-                    {
-                        _loc_3 = _loc_7.name;
-                    }
-                }
+               if(fight.timeUntilFightbegin==pEvent.currentTarget)
+               {
+                  this.deletePartyFightInformation(key,fight);
+                  return;
+               }
             }
-            if (_loc_3 == "")
-            {
-                return null;
-            }
-            if (this.roleplayEntitiesFrame)
-            {
-                for each (_loc_8 in this.roleplayEntitiesFrame.playersId)
-                {
-                    
-                    if (_loc_8 == param1)
-                    {
-                        _loc_5 = true;
-                        if (this.roleplayEntitiesFrame.getEntityInfos(_loc_8) is GameRolePlayCharacterInformations)
-                        {
-                            _loc_6 = (this.roleplayEntitiesFrame.getEntityInfos(_loc_8) as GameRolePlayCharacterInformations).alignmentInfos;
-                        }
-                    }
-                }
-            }
-            return MenusFactory.create({id:param1, name:_loc_3, onSameMap:_loc_5, alignmentInfos:_loc_6}, "partyMember", param2);
-        }// end function
+         }
+      }
 
-        private function onTimerTick(event:TimerEvent) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            var _loc_10:* = null;
-            for each (_loc_2 in this._partyMembers)
-            {
-                
-                if (_loc_2.lifePoints < _loc_2.maxLifePoints && _loc_2.regenRate > 0)
-                {
-                    if (this._dicRegen[_loc_2.id] == null)
-                    {
-                        _loc_6 = new LifePointTickManager();
-                        _loc_6.originalLifePoint = _loc_2.lifePoints;
-                        _loc_6.regenRate = _loc_2.regenRate;
-                        _loc_6.tickNumber = 1;
-                        this._dicRegen[_loc_2.id] = _loc_6;
-                    }
-                    _loc_3 = this._dicRegen[_loc_2.id] as LifePointTickManager;
-                    _loc_4 = Math.floor(_loc_3.tickNumber * (10 / _loc_3.regenRate));
-                    _loc_5 = _loc_3.originalLifePoint + _loc_4;
-                    if (_loc_5 >= _loc_2.maxLifePoints)
-                    {
-                        _loc_5 = _loc_2.maxLifePoints;
-                    }
-                    _loc_2.lifePoints = _loc_5;
-                    var _loc_13:* = _loc_3;
-                    var _loc_14:* = _loc_3.tickNumber + 1;
-                    _loc_13.tickNumber = _loc_14;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyMemberLifeUpdate, this._partyId, _loc_2.id, _loc_2.lifePoints, _loc_2.initiative);
-                }
-            }
-            for each (_loc_2 in this._arenaPartyMembers)
-            {
-                
-                if (_loc_2.lifePoints < _loc_2.maxLifePoints && _loc_2.regenRate > 0)
-                {
-                    if (this._dicRegenArena[_loc_2.id] == null)
-                    {
-                        _loc_10 = new LifePointTickManager();
-                        _loc_10.originalLifePoint = _loc_2.lifePoints;
-                        _loc_10.regenRate = _loc_2.regenRate;
-                        _loc_10.tickNumber = 1;
-                        this._dicRegenArena[_loc_2.id] = _loc_10;
-                    }
-                    _loc_7 = this._dicRegenArena[_loc_2.id] as LifePointTickManager;
-                    _loc_8 = Math.floor(_loc_7.tickNumber * (10 / _loc_7.regenRate));
-                    _loc_9 = _loc_7.originalLifePoint + _loc_8;
-                    if (_loc_9 >= _loc_2.maxLifePoints)
-                    {
-                        _loc_9 = _loc_2.maxLifePoints;
-                    }
-                    _loc_2.lifePoints = _loc_9;
-                    var _loc_13:* = _loc_7;
-                    var _loc_14:* = _loc_7.tickNumber + 1;
-                    _loc_13.tickNumber = _loc_14;
-                    KernelEventsManager.getInstance().processCallback(HookList.PartyMemberLifeUpdate, this._arenaPartyId, _loc_2.id, _loc_2.lifePoints, _loc_2.initiative);
-                }
-            }
-            return;
-        }// end function
+      private function deletePartyFightInformation(key:Object, fight:PartyFightInformationsData) : void {
+         fight.timeUntilFightbegin.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onFightStartTimerComplete);
+         if(this._partyFightsInformations[key].length>1)
+         {
+            this._partyFightsInformations[key].splice(this._partyFightsInformations[key].indexOf(fight));
+         }
+         else
+         {
+            delete this._partyFightsInformations[[key]];
+         }
+      }
 
-        private function onFightStartTimerComplete(event:TimerEvent) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            for (_loc_2 in this._partyFightsInformations)
-            {
-                
-                for each (_loc_3 in this._partyFightsInformations[_loc_2])
-                {
-                    
-                    if (_loc_3.timeUntilFightbegin == event.currentTarget)
-                    {
-                        this.deletePartyFightInformation(_loc_2, _loc_3);
-                        return;
-                    }
-                }
-            }
-            return;
-        }// end function
+      public function teleportWantedFunction() : void {
+         var action:TeleportBuddiesAnswerAction = new TeleportBuddiesAnswerAction();
+         action.accept=true;
+         this._teleportBuddiesDialogFrame.process(action);
+      }
 
-        private function deletePartyFightInformation(param1:Object, param2:PartyFightInformationsData) : void
-        {
-            param2.timeUntilFightbegin.removeEventListener(TimerEvent.TIMER_COMPLETE, this.onFightStartTimerComplete);
-            if (this._partyFightsInformations[param1].length > 1)
-            {
-                this._partyFightsInformations[param1].splice(this._partyFightsInformations[param1].indexOf(param2));
-            }
-            else
-            {
-                delete this._partyFightsInformations[param1];
-            }
-            return;
-        }// end function
-
-        public function teleportWantedFunction() : void
-        {
-            var _loc_1:* = new TeleportBuddiesAnswerAction();
-            _loc_1.accept = true;
-            this._teleportBuddiesDialogFrame.process(_loc_1);
-            return;
-        }// end function
-
-        public function teleportUnwantedFunction() : void
-        {
-            var _loc_1:* = new TeleportBuddiesAnswerAction();
-            _loc_1.accept = false;
-            this._teleportBuddiesDialogFrame.process(_loc_1);
-            return;
-        }// end function
-
-    }
-}
-
-import __AS3__.vec.*;
-
-import com.ankamagames.berilia.factories.*;
-
-import com.ankamagames.berilia.managers.*;
-
-import com.ankamagames.dofus.datacenter.world.*;
-
-import com.ankamagames.dofus.externalnotification.*;
-
-import com.ankamagames.dofus.externalnotification.enums.*;
-
-import com.ankamagames.dofus.internalDatacenter.people.*;
-
-import com.ankamagames.dofus.kernel.*;
-
-import com.ankamagames.dofus.kernel.net.*;
-
-import com.ankamagames.dofus.logic.common.managers.*;
-
-import com.ankamagames.dofus.logic.game.common.actions.party.*;
-
-import com.ankamagames.dofus.logic.game.common.managers.*;
-
-import com.ankamagames.dofus.logic.game.common.messages.*;
-
-import com.ankamagames.dofus.logic.game.common.types.*;
-
-import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-
-import com.ankamagames.dofus.logic.game.roleplay.types.*;
-
-import com.ankamagames.dofus.misc.lists.*;
-
-import com.ankamagames.dofus.misc.utils.*;
-
-import com.ankamagames.dofus.network.enums.*;
-
-import com.ankamagames.dofus.network.messages.game.context.fight.*;
-
-import com.ankamagames.dofus.network.messages.game.context.roleplay.*;
-
-import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.*;
-
-import com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena.*;
-
-import com.ankamagames.dofus.network.messages.game.context.roleplay.party.*;
-
-import com.ankamagames.dofus.network.messages.game.interactive.meeting.*;
-
-import com.ankamagames.dofus.network.types.game.character.alignment.*;
-
-import com.ankamagames.dofus.network.types.game.context.fight.*;
-
-import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-
-import com.ankamagames.dofus.network.types.game.context.roleplay.party.*;
-
-import com.ankamagames.dofus.types.enums.*;
-
-import com.ankamagames.dofus.uiApi.*;
-
-import com.ankamagames.dofusModuleLibrary.enum.*;
-
-import com.ankamagames.jerakine.data.*;
-
-import com.ankamagames.jerakine.logger.*;
-
-import com.ankamagames.jerakine.messages.*;
-
-import com.ankamagames.jerakine.types.enums.*;
-
-import com.ankamagames.jerakine.utils.pattern.*;
-
-import com.ankamagames.jerakine.utils.system.*;
-
-import flash.events.*;
-
-import flash.utils.*;
-
-class LifePointTickManager extends Object
-{
-    public var originalLifePoint:uint;
-    public var regenRate:uint;
-    public var tickNumber:uint;
-
-    function LifePointTickManager()
-    {
-        return;
-    }// end function
+      public function teleportUnwantedFunction() : void {
+         var action:TeleportBuddiesAnswerAction = new TeleportBuddiesAnswerAction();
+         action.accept=false;
+         this._teleportBuddiesDialogFrame.process(action);
+      }
+   }
 
 }
 
+   import com.ankamagames.dofus.network.types.game.context.roleplay.party.PartyMemberInformations;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+
+
+   class PartyMember extends Object
+   {
+         
+
+      function PartyMember() {
+         super();
+      }
+
+
+
+      public var isLeader:Boolean = false;
+
+      public var infos:PartyMemberInformations;
+
+      public var skin:TiphonEntityLook;
+
+      public var skinModified:Boolean = false;
+   }
+
+
+
+
+   class LifePointTickManager extends Object
+   {
+         
+
+      function LifePointTickManager() {
+         super();
+      }
+
+
+
+      public var originalLifePoint:uint;
+
+      public var regenRate:uint;
+
+      public var tickNumber:uint;
+   }

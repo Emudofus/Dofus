@@ -1,28 +1,30 @@
-﻿package mx.core
+package mx.core
 {
-    import flash.display.*;
-    import mx.utils.*;
+   import flash.display.MovieClip;
+   import mx.utils.NameUtil;
 
-    public class FlexMovieClip extends MovieClip
-    {
-        static const VERSION:String = "4.6.0.23201";
+   use namespace mx_internal;
 
-        public function FlexMovieClip()
-        {
-            try
-            {
-                name = NameUtil.createUniqueName(this);
-            }
-            catch (e:Error)
-            {
-            }
-            return;
-        }// end function
+   public class FlexMovieClip extends MovieClip
+   {
+         
 
-        override public function toString() : String
-        {
-            return NameUtil.displayObjectToString(this);
-        }// end function
+      public function FlexMovieClip() {
+         super();
+         try
+         {
+            name=NameUtil.createUniqueName(this);
+         }
+         catch(e:Error)
+         {
+         }
+      }
 
-    }
+      mx_internal  static const VERSION:String = "4.6.0.23201";
+
+      override public function toString() : String {
+         return NameUtil.displayObjectToString(this);
+      }
+   }
+
 }

@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.mount
+package com.ankamagames.dofus.logic.game.common.actions.mount
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PaddockMoveItemRequestAction extends Object implements Action
-    {
-        public var object:Object;
 
-        public function PaddockMoveItemRequestAction()
-        {
-            return;
-        }// end function
+   public class PaddockMoveItemRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Object) : PaddockMoveItemRequestAction
-        {
-            var _loc_2:* = new PaddockMoveItemRequestAction;
-            _loc_2.object = param1;
-            return _loc_2;
-        }// end function
+      public function PaddockMoveItemRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(object:Object) : PaddockMoveItemRequestAction {
+         var o:PaddockMoveItemRequestAction = new PaddockMoveItemRequestAction();
+         o.object=object;
+         return o;
+      }
+
+      public var object:Object;
+   }
+
 }

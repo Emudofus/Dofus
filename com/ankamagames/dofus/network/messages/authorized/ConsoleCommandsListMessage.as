@@ -1,142 +1,128 @@
-﻿package com.ankamagames.dofus.network.messages.authorized
+package com.ankamagames.dofus.network.messages.authorized
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ConsoleCommandsListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var aliases:Vector.<String>;
-        public var arguments:Vector.<String>;
-        public var descriptions:Vector.<String>;
-        public static const protocolId:uint = 6127;
 
-        public function ConsoleCommandsListMessage()
-        {
-            this.aliases = new Vector.<String>;
-            this.arguments = new Vector.<String>;
-            this.descriptions = new Vector.<String>;
-            return;
-        }// end function
+   public class ConsoleCommandsListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ConsoleCommandsListMessage() {
+         this.aliases=new Vector.<String>();
+         this.arguments=new Vector.<String>();
+         this.descriptions=new Vector.<String>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6127;
-        }// end function
+      public static const protocolId:uint = 6127;
 
-        public function initConsoleCommandsListMessage(param1:Vector.<String> = null, param2:Vector.<String> = null, param3:Vector.<String> = null) : ConsoleCommandsListMessage
-        {
-            this.aliases = param1;
-            this.arguments = param2;
-            this.descriptions = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.aliases = new Vector.<String>;
-            this.arguments = new Vector.<String>;
-            this.descriptions = new Vector.<String>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var aliases:Vector.<String>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var arguments:Vector.<String>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ConsoleCommandsListMessage(param1);
-            return;
-        }// end function
+      public var descriptions:Vector.<String>;
 
-        public function serializeAs_ConsoleCommandsListMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.aliases.length);
-            arguments = 0;
-            while (arguments < this.aliases.length)
-            {
-                
-                param1.writeUTF(this.aliases[arguments]);
-                arguments = arguments + 1;
-            }
-            param1.writeShort(arguments.length);
-            var _loc_4:* = 0;
-            while (_loc_4 < arguments.length)
-            {
-                
-                param1.writeUTF(arguments[_loc_4]);
-                _loc_4 = _loc_4 + 1;
-            }
-            param1.writeShort(this.descriptions.length);
-            var _loc_5:* = 0;
-            while (_loc_5 < this.descriptions.length)
-            {
-                
-                param1.writeUTF(this.descriptions[_loc_5]);
-                _loc_5 = _loc_5 + 1;
-            }
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6127;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ConsoleCommandsListMessage(param1);
-            return;
-        }// end function
+      public function initConsoleCommandsListMessage(aliases:Vector.<String>=null, arguments:Vector.<String>=null, descriptions:Vector.<String>=null) : ConsoleCommandsListMessage {
+         this.aliases=aliases;
+         this.arguments=arguments;
+         this.descriptions=descriptions;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserializeAs_ConsoleCommandsListMessage(param1:IDataInput) : void
-        {
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            arguments = param1.readUnsignedShort();
-            var _loc_4:* = 0;
-            while (_loc_4 < arguments)
-            {
-                
-                _loc_9 = param1.readUTF();
-                this.aliases.push(_loc_9);
-                _loc_4 = _loc_4 + 1;
-            }
-            var _loc_5:* = param1.readUnsignedShort();
-            var _loc_6:* = 0;
-            while (_loc_6 < _loc_5)
-            {
-                
-                _loc_10 = param1.readUTF();
-                arguments.push(_loc_10);
-                _loc_6 = _loc_6 + 1;
-            }
-            var _loc_7:* = param1.readUnsignedShort();
-            var _loc_8:* = 0;
-            while (_loc_8 < _loc_7)
-            {
-                
-                _loc_11 = param1.readUTF();
-                this.descriptions.push(_loc_11);
-                _loc_8 = _loc_8 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.aliases=new Vector.<String>();
+         this.arguments=new Vector.<String>();
+         this.descriptions=new Vector.<String>();
+         this._isInitialized=false;
+      }
 
-    }
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ConsoleCommandsListMessage(output);
+      }
+
+      public function serializeAs_ConsoleCommandsListMessage(output:IDataOutput) : void {
+         output.writeShort(this.aliases.length);
+         var _i1:uint = 0;
+         while(_i1<this.aliases.length)
+         {
+            output.writeUTF(this.aliases[_i1]);
+            _i1++;
+         }
+         output.writeShort(arguments.length);
+         var _i2:uint = 0;
+         while(_i2<arguments.length)
+         {
+            output.writeUTF(arguments[_i2]);
+            _i2++;
+         }
+         output.writeShort(this.descriptions.length);
+         var _i3:uint = 0;
+         while(_i3<this.descriptions.length)
+         {
+            output.writeUTF(this.descriptions[_i3]);
+            _i3++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ConsoleCommandsListMessage(input);
+      }
+
+      public function deserializeAs_ConsoleCommandsListMessage(input:IDataInput) : void {
+         var _val1:String = null;
+         var _val2:String = null;
+         var _val3:String = null;
+         var _aliasesLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_aliasesLen)
+         {
+            _val1=input.readUTF();
+            this.aliases.push(_val1);
+            _i1++;
+         }
+         var _argumentsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_argumentsLen)
+         {
+            _val2=input.readUTF();
+            arguments.push(_val2);
+            _i2++;
+         }
+         var _descriptionsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3<_descriptionsLen)
+         {
+            _val3=input.readUTF();
+            this.descriptions.push(_val3);
+            _i3++;
+         }
+      }
+   }
+
 }

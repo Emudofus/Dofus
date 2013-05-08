@@ -1,59 +1,63 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
-    import flash.text.engine.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import flash.text.engine.TextLine;
+   import flashx.textLayout.tlf_internal;
+   import flash.text.engine.TextBlock;
 
-    public class TextLineRecycler extends Object
-    {
-        private static const _textLineRecyclerCanBeEnabled:Boolean = new TextBlock().hasOwnProperty("recreateTextLine");
-        private static var _textLineRecyclerEnabled:Boolean = _textLineRecyclerCanBeEnabled;
-        private static var reusableLineCache:Dictionary = new Dictionary(true);
+   use namespace tlf_internal;
 
-        public function TextLineRecycler()
-        {
-            return;
-        }// end function
+   public class TextLineRecycler extends Object
+   {
+         
 
-        public static function get textLineRecyclerEnabled() : Boolean
-        {
-            return _textLineRecyclerEnabled;
-        }// end function
+      public function TextLineRecycler() {
+         super();
+      }
 
-        public static function set textLineRecyclerEnabled(param1:Boolean) : void
-        {
-            _textLineRecyclerEnabled = param1 ? (_textLineRecyclerCanBeEnabled) : (false);
-            return;
-        }// end function
+      private static const _textLineRecyclerCanBeEnabled:Boolean = new TextBlock().hasOwnProperty("recreateTextLine");
 
-        public static function addLineForReuse(param1:TextLine) : void
-        {
-            if (_textLineRecyclerEnabled)
+      private static var _textLineRecyclerEnabled:Boolean = _textLineRecyclerCanBeEnabled;
+
+      public static function get textLineRecyclerEnabled() : Boolean {
+         return _textLineRecyclerEnabled;
+      }
+
+      public static function set textLineRecyclerEnabled(value:Boolean) : void {
+         _textLineRecyclerEnabled=value?_textLineRecyclerCanBeEnabled:false;
+      }
+
+      private static var reusableLineCache:Dictionary = new Dictionary(true);
+
+      public static function addLineForReuse(textLine:TextLine) : void {
+         if(_textLineRecyclerEnabled)
+         {
+            reusableLineCache[textLine]=null;
+         }
+      }
+
+      public static function getLineForReuse() : TextLine {
+         var obj:Object = null;
+         if(_textLineRecyclerEnabled)
+         {
+            if(!(reusableLineCache hasNext _loc2_))
             {
-                reusableLineCache[param1] = null;
             }
-            return;
-        }// end function
-
-        public static function getLineForReuse() : TextLine
-        {
-            var _loc_1:* = null;
-            if (_textLineRecyclerEnabled)
+            else
             {
-                for (_loc_1 in reusableLineCache)
-                {
-                    
-                    delete reusableLineCache[_loc_1];
-                    return _loc_1 as TextLine;
-                }
+               obj=nextName(_loc2_,_loc3_);
+               delete reusableLineCache[[obj]];
+               return obj as TextLine;
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
 
-        static function emptyReusableLineCache() : void
-        {
-            reusableLineCache = new Dictionary(true);
-            return;
-        }// end function
+      tlf_internal  static function emptyReusableLineCache() : void {
+         reusableLineCache=new Dictionary(true);
+      }
 
-    }
+
+   }
+
 }

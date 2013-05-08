@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PlaySoundAction extends Object implements Action
-    {
-        public var soundId:String;
 
-        public function PlaySoundAction()
-        {
-            return;
-        }// end function
+   public class PlaySoundAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : PlaySoundAction
-        {
-            var _loc_2:* = new PlaySoundAction;
-            _loc_2.soundId = param1;
-            return _loc_2;
-        }// end function
+      public function PlaySoundAction() {
+         super();
+      }
 
-    }
+      public static function create(pSoundId:String) : PlaySoundAction {
+         var action:PlaySoundAction = new PlaySoundAction();
+         action.soundId=pSoundId;
+         return action;
+      }
+
+      public var soundId:String;
+   }
+
 }

@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.connection.actions
+package com.ankamagames.dofus.logic.connection.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ServerSelectionAction extends Object implements Action
-    {
-        public var serverId:int;
 
-        public function ServerSelectionAction()
-        {
-            return;
-        }// end function
+   public class ServerSelectionAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : ServerSelectionAction
-        {
-            var _loc_2:* = new ServerSelectionAction;
-            _loc_2.serverId = param1;
-            return _loc_2;
-        }// end function
+      public function ServerSelectionAction() {
+         super();
+      }
 
-    }
+      public static function create(serverId:int) : ServerSelectionAction {
+         var a:ServerSelectionAction = new ServerSelectionAction();
+         a.serverId=serverId;
+         return a;
+      }
+
+      public var serverId:int;
+   }
+
 }

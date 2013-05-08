@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay
+package com.ankamagames.dofus.network.messages.game.context.roleplay
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ChangeMapMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var mapId:uint = 0;
-        public static const protocolId:uint = 221;
 
-        public function ChangeMapMessage()
-        {
+   public class ChangeMapMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function ChangeMapMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 221;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var mapId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 221;
+      }
+
+      public function initChangeMapMessage(mapId:uint=0) : ChangeMapMessage {
+         this.mapId=mapId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.mapId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChangeMapMessage(output);
+      }
+
+      public function serializeAs_ChangeMapMessage(output:IDataOutput) : void {
+         if(this.mapId<0)
+         {
+            throw new Error("Forbidden value ("+this.mapId+") on element mapId.");
+         }
+         else
+         {
+            output.writeInt(this.mapId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChangeMapMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 221;
-        }// end function
-
-        public function initChangeMapMessage(param1:uint = 0) : ChangeMapMessage
-        {
-            this.mapId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.mapId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_ChangeMapMessage(input:IDataInput) : void {
+         this.mapId=input.readInt();
+         if(this.mapId<0)
+         {
+            throw new Error("Forbidden value ("+this.mapId+") on element of ChangeMapMessage.mapId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ChangeMapMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ChangeMapMessage(param1:IDataOutput) : void
-        {
-            if (this.mapId < 0)
-            {
-                throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
-            }
-            param1.writeInt(this.mapId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ChangeMapMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ChangeMapMessage(param1:IDataInput) : void
-        {
-            this.mapId = param1.readInt();
-            if (this.mapId < 0)
-            {
-                throw new Error("Forbidden value (" + this.mapId + ") on element of ChangeMapMessage.mapId.");
-            }
-            return;
-        }// end function
-
-    }
 }

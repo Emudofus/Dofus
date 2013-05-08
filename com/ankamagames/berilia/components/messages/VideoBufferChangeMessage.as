@@ -1,22 +1,24 @@
-﻿package com.ankamagames.berilia.components.messages
+package com.ankamagames.berilia.components.messages
 {
-    import flash.display.*;
+   import flash.display.InteractiveObject;
 
-    public class VideoBufferChangeMessage extends ComponentMessage
-    {
-        private var _state:uint;
 
-        public function VideoBufferChangeMessage(param1:InteractiveObject, param2:uint) : void
-        {
-            super(param1);
-            this._state = param2;
-            return;
-        }// end function
+   public class VideoBufferChangeMessage extends ComponentMessage
+   {
+         
 
-        public function get state() : uint
-        {
-            return this._state;
-        }// end function
+      public function VideoBufferChangeMessage(target:InteractiveObject, state:uint) {
+         super(target);
+         this._state=state;
+      }
 
-    }
+
+
+      private var _state:uint;
+
+      public function get state() : uint {
+         return this._state;
+      }
+   }
+
 }

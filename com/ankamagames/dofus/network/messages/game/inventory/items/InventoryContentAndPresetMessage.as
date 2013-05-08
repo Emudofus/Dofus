@@ -1,104 +1,92 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.inventory.preset.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.inventory.preset.Preset;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItem;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class InventoryContentAndPresetMessage extends InventoryContentMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var presets:Vector.<Preset>;
-        public static const protocolId:uint = 6162;
 
-        public function InventoryContentAndPresetMessage()
-        {
-            this.presets = new Vector.<Preset>;
-            return;
-        }// end function
+   public class InventoryContentAndPresetMessage extends InventoryContentMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function InventoryContentAndPresetMessage() {
+         this.presets=new Vector.<Preset>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6162;
-        }// end function
+      public static const protocolId:uint = 6162;
 
-        public function initInventoryContentAndPresetMessage(param1:Vector.<ObjectItem> = null, param2:uint = 0, param3:Vector.<Preset> = null) : InventoryContentAndPresetMessage
-        {
-            super.initInventoryContentMessage(param1, param2);
-            this.presets = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.presets = new Vector.<Preset>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var presets:Vector.<Preset>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6162;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_InventoryContentAndPresetMessage(param1);
-            return;
-        }// end function
+      public function initInventoryContentAndPresetMessage(objects:Vector.<ObjectItem>=null, kamas:uint=0, presets:Vector.<Preset>=null) : InventoryContentAndPresetMessage {
+         super.initInventoryContentMessage(objects,kamas);
+         this.presets=presets;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_InventoryContentAndPresetMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_InventoryContentMessage(param1);
-            param1.writeShort(this.presets.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.presets.length)
-            {
-                
-                (this.presets[_loc_2] as Preset).serializeAs_Preset(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.presets=new Vector.<Preset>();
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_InventoryContentAndPresetMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_InventoryContentAndPresetMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            super.deserialize(param1);
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new Preset();
-                _loc_4.deserialize(param1);
-                this.presets.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_InventoryContentAndPresetMessage(output);
+      }
+
+      public function serializeAs_InventoryContentAndPresetMessage(output:IDataOutput) : void {
+         super.serializeAs_InventoryContentMessage(output);
+         output.writeShort(this.presets.length);
+         var _i1:uint = 0;
+         while(_i1<this.presets.length)
+         {
+            (this.presets[_i1] as Preset).serializeAs_Preset(output);
+            _i1++;
+         }
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_InventoryContentAndPresetMessage(input);
+      }
+
+      public function deserializeAs_InventoryContentAndPresetMessage(input:IDataInput) : void {
+         var _item1:Preset = null;
+         super.deserialize(input);
+         var _presetsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_presetsLen)
+         {
+            _item1=new Preset();
+            _item1.deserialize(input);
+            this.presets.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

@@ -1,32 +1,33 @@
-﻿package com.ankamagames.tubul.interfaces
+package com.ankamagames.tubul.interfaces
 {
-    import com.ankamagames.tubul.interfaces.*;
-    import flash.geom.*;
+   import flash.geom.Point;
 
-    public interface ILocalizedSound extends ISound
-    {
 
-        public function ILocalizedSound();
+   public interface ILocalizedSound extends ISound
+   {
+         
 
-        function get range() : Number;
 
-        function set range(param1:Number) : void;
 
-        function get saturationRange() : Number;
+      function get range() : Number;
 
-        function set saturationRange(param1:Number) : void;
+      function set range(param1:Number) : void;
 
-        function get position() : Point;
+      function get saturationRange() : Number;
 
-        function set position(param1:Point) : void;
+      function set saturationRange(param1:Number) : void;
 
-        function get pan() : Number;
+      function get position() : Point;
 
-        function set pan(param1:Number) : void;
+      function set position(param1:Point) : void;
 
-        function get volumeMax() : Number;
+      function get pan() : Number;
 
-        function set volumeMax(param1:Number) : void;
+      function set pan(param1:Number) : void;
 
-    }
+      function get volumeMax() : Number;
+
+      function set volumeMax(param1:Number) : void;
+   }
+
 }

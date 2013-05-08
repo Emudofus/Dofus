@@ -1,130 +1,128 @@
-﻿package com.ankamagames.jerakine.resources.adapters.impl
+package com.ankamagames.jerakine.resources.adapters.impl
 {
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.adapters.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import com.ankamagames.jerakine.utils.system.*;
-    import flash.display.*;
-    import flash.errors.*;
-    import flash.events.*;
-    import flash.net.*;
-    import flash.system.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.resources.adapters.AbstractUrlLoaderAdapter;
+   import com.ankamagames.jerakine.resources.adapters.IAdapter;
+   import flash.utils.ByteArray;
+   import com.ankamagames.jerakine.resources.ResourceType;
+   import flash.system.LoaderContext;
+   import flash.display.Loader;
+   import flash.errors.EOFError;
+   import com.ankamagames.jerakine.resources.ResourceErrorCode;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import flash.system.ApplicationDomain;
+   import com.ankamagames.jerakine.utils.misc.ApplicationDomainShareManager;
+   import flash.events.Event;
+   import flash.events.IOErrorEvent;
+   import flash.net.URLLoaderDataFormat;
+   import flash.display.LoaderInfo;
+   import flash.events.ErrorEvent;
+   import flash.events.SecurityErrorEvent;
 
-    public class DxAdapter extends AbstractUrlLoaderAdapter implements IAdapter
-    {
-        private var _scriptClass:Class;
 
-        public function DxAdapter()
-        {
+   public class DxAdapter extends AbstractUrlLoaderAdapter implements IAdapter
+   {
+         
+
+      public function DxAdapter() {
+         super();
+      }
+
+      private static function decipherSwf(output:ByteArray, input:ByteArray, key:ByteArray) : void {
+         var b:* = 0;
+         var d:* = 0;
+         var i:uint = 0;
+         while(input.bytesAvailable>0)
+         {
+            b=input.readByte();
+            d=b^key[i%key.length];
+            output.writeByte(d);
+            i++;
+         }
+      }
+
+      private var _scriptClass:Class;
+
+      override protected function getResource(dataFormat:String, data:*) : * {
+         return this._scriptClass;
+      }
+
+      override public function getResourceType() : uint {
+         return ResourceType.RESOURCE_DX;
+      }
+
+      override protected function process(dataFormat:String, data:*) : void {
+         var file:uint = 0;
+         var version:uint = 0;
+         var keyLen:int = 0;
+         var key:ByteArray = null;
+         var swfData:ByteArray = null;
+         try
+         {
+            file=data.readByte();
+            if(file!=83)
+            {
+               dispatchFailure("Malformated script file (wrong header).",ResourceErrorCode.DX_MALFORMED_SCRIPT);
+               return;
+            }
+            version=data.readByte();
+            keyLen=data.readShort();
+            key=new ByteArray();
+            data.readBytes(key,0,keyLen);
+            swfData=new ByteArray();
+            data.readBytes(swfData);
+         }
+         catch(eof:EOFError)
+         {
+            dispatchFailure("Malformated script file (end of file).",ResourceErrorCode.DX_MALFORMED_SCRIPT);
             return;
-        }// end function
+         }
+         var swf:ByteArray = new ByteArray();
+         decipherSwf(swf,swfData,key);
+         var loaderContext:LoaderContext = getUri().loaderContext;
+         if(!loaderContext)
+         {
+            loaderContext=new LoaderContext();
+         }
+         AirScanner.allowByteCodeExecution(loaderContext,true);
+         loaderContext.applicationDomain=new ApplicationDomain(ApplicationDomainShareManager.currentApplicationDomain);
+         var ldr:Loader = new Loader();
+         ldr.contentLoaderInfo.addEventListener(Event.INIT,this.onScriptInit);
+         ldr.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,this.onScriptError);
+         ldr.loadBytes(swf,loaderContext);
+      }
 
-        override protected function getResource(param1:String, param2)
-        {
-            return this._scriptClass;
-        }// end function
+      override protected function getDataFormat() : String {
+         return URLLoaderDataFormat.BINARY;
+      }
 
-        override public function getResourceType() : uint
-        {
-            return ResourceType.RESOURCE_DX;
-        }// end function
+      private function onScriptInit(e:Event) : void {
+         var ap:ApplicationDomain = (e.target as LoaderInfo).applicationDomain;
+         if(ap.hasDefinition("Script"))
+         {
+            this._scriptClass=ap.getDefinition("Script") as Class;
+            dispatchSuccess(null,null);
+         }
+         else
+         {
+            dispatchFailure("There wasn\'t any script class inside of the script binaries.",ResourceErrorCode.DX_NO_SCRIPT_INSIDE);
+         }
+      }
 
-        override protected function process(param1:String, param2) : void
-        {
-            var file:uint;
-            var version:uint;
-            var keyLen:int;
-            var key:ByteArray;
-            var swfData:ByteArray;
-            var dataFormat:* = param1;
-            var data:* = param2;
-            try
+      private function onScriptError(ee:ErrorEvent) : void {
+         var errCode:uint = ResourceErrorCode.UNKNOWN_ERROR;
+         if(ee is IOErrorEvent)
+         {
+            errCode=ResourceErrorCode.DX_MALFORMED_BINARY;
+         }
+         else
+         {
+            if(ee is SecurityErrorEvent)
             {
-                file = data.readByte();
-                if (file != 83)
-                {
-                    dispatchFailure("Malformated script file (wrong header).", ResourceErrorCode.DX_MALFORMED_SCRIPT);
-                    return;
-                }
-                version = data.readByte();
-                keyLen = data.readShort();
-                key = new ByteArray();
-                data.readBytes(key, 0, keyLen);
-                swfData = new ByteArray();
-                data.readBytes(swfData);
+               errCode=ResourceErrorCode.DX_SECURITY_ERROR;
             }
-            catch (eof:EOFError)
-            {
-                dispatchFailure("Malformated script file (end of file).", ResourceErrorCode.DX_MALFORMED_SCRIPT);
-                return;
-            }
-            var swf:* = new ByteArray();
-            decipherSwf(swf, swfData, key);
-            var loaderContext:* = getUri().loaderContext;
-            if (!loaderContext)
-            {
-                loaderContext = new LoaderContext();
-            }
-            AirScanner.allowByteCodeExecution(loaderContext, true);
-            loaderContext.applicationDomain = new ApplicationDomain(ApplicationDomainShareManager.currentApplicationDomain);
-            var ldr:* = new Loader();
-            ldr.contentLoaderInfo.addEventListener(Event.INIT, this.onScriptInit);
-            ldr.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.onScriptError);
-            ldr.loadBytes(swf, loaderContext);
-            return;
-        }// end function
+         }
+         dispatchFailure("Script loading from binaries failed: "+ee.text,errCode);
+      }
+   }
 
-        override protected function getDataFormat() : String
-        {
-            return URLLoaderDataFormat.BINARY;
-        }// end function
-
-        private function onScriptInit(event:Event) : void
-        {
-            var _loc_2:* = (event.target as LoaderInfo).applicationDomain;
-            if (_loc_2.hasDefinition("Script"))
-            {
-                this._scriptClass = _loc_2.getDefinition("Script") as Class;
-                dispatchSuccess(null, null);
-            }
-            else
-            {
-                dispatchFailure("There wasn\'t any script class inside of the script binaries.", ResourceErrorCode.DX_NO_SCRIPT_INSIDE);
-            }
-            return;
-        }// end function
-
-        private function onScriptError(event:ErrorEvent) : void
-        {
-            var _loc_2:* = ResourceErrorCode.UNKNOWN_ERROR;
-            if (event is IOErrorEvent)
-            {
-                _loc_2 = ResourceErrorCode.DX_MALFORMED_BINARY;
-            }
-            else if (event is SecurityErrorEvent)
-            {
-                _loc_2 = ResourceErrorCode.DX_SECURITY_ERROR;
-            }
-            dispatchFailure("Script loading from binaries failed: " + event.text, _loc_2);
-            return;
-        }// end function
-
-        private static function decipherSwf(param1:ByteArray, param2:ByteArray, param3:ByteArray) : void
-        {
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_4:* = 0;
-            while (param2.bytesAvailable > 0)
-            {
-                
-                _loc_5 = param2.readByte();
-                _loc_6 = _loc_5 ^ param3[_loc_4 % param3.length];
-                param1.writeByte(_loc_6);
-                _loc_4 = _loc_4 + 1;
-            }
-            return;
-        }// end function
-
-    }
 }

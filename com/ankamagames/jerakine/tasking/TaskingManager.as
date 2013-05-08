@@ -1,80 +1,82 @@
-﻿package com.ankamagames.jerakine.tasking
+package com.ankamagames.jerakine.tasking
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.utils.display.EnterFrameDispatcher;
+   import flash.events.Event;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    final public class TaskingManager extends Object
-    {
-        private var _running:Boolean;
-        private var _queue:Vector.<SplittedTask>;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(TaskingManager));
-        private static var _self:TaskingManager;
 
-        public function TaskingManager()
-        {
-            if (_self)
-            {
-                throw new SingletonError("Direct initialization of singleton is forbidden. Please access TaskingManager using the getInstance method.");
-            }
-            this._queue = new Vector.<SplittedTask>;
+   public final class TaskingManager extends Object
+   {
+         
+
+      public function TaskingManager() {
+         super();
+         if(_self)
+         {
+            throw new SingletonError("Direct initialization of singleton is forbidden. Please access TaskingManager using the getInstance method.");
+         }
+         else
+         {
+            this._queue=new Vector.<SplittedTask>();
             return;
-        }// end function
+         }
+      }
 
-        public function get running() : Boolean
-        {
-            return this._running;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TaskingManager));
 
-        public function get queue() : Vector.<SplittedTask>
-        {
-            return this._queue;
-        }// end function
+      private static var _self:TaskingManager;
 
-        public function addTask(param1:SplittedTask) : void
-        {
-            this._queue.push(param1);
-            if (!this._running)
+      public static function getInstance() : TaskingManager {
+         if(_self==null)
+         {
+            _self=new TaskingManager();
+         }
+         return _self;
+      }
+
+      private var _running:Boolean;
+
+      private var _queue:Vector.<SplittedTask>;
+
+      public function get running() : Boolean {
+         return this._running;
+      }
+
+      public function get queue() : Vector.<SplittedTask> {
+         return this._queue;
+      }
+
+      public function addTask(task:SplittedTask) : void {
+         this._queue.push(task);
+         if(!this._running)
+         {
+            EnterFrameDispatcher.addEventListener(this.onEnterFrame,"TaskingManager");
+            this._running=true;
+         }
+      }
+
+      private function onEnterFrame(e:Event) : void {
+         var result:* = false;
+         var task:SplittedTask = this._queue[0] as SplittedTask;
+         var iter:uint = 0;
+         result=task.step();
+         while((++iter>task.stepsPerFrame())&&(!result))
+         {
+         }
+         if(result)
+         {
+            this._queue.shift();
+            if(this._queue.length==0)
             {
-                EnterFrameDispatcher.addEventListener(this.onEnterFrame, "TaskingManager");
-                this._running = true;
+               EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
+               this._running=false;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-        private function onEnterFrame(event:Event) : void
-        {
-            var _loc_3:* = false;
-            var _loc_2:* = this._queue[0] as SplittedTask;
-            var _loc_4:* = 0;
-            do
-            {
-                
-                _loc_3 = _loc_2.step();
-            }while (++_loc_4 < _loc_2.stepsPerFrame() && !_loc_3)
-            if (_loc_3)
-            {
-                this._queue.shift();
-                if (this._queue.length == 0)
-                {
-                    EnterFrameDispatcher.removeEventListener(this.onEnterFrame);
-                    this._running = false;
-                }
-            }
-            return;
-        }// end function
-
-        public static function getInstance() : TaskingManager
-        {
-            if (_self == null)
-            {
-                _self = new TaskingManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

@@ -1,44 +1,45 @@
-﻿package com.ankamagames.dofus.datacenter.misc
+package com.ankamagames.dofus.datacenter.misc
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.data.GameData;
 
-    public class Pack extends Object implements IDataCenter
-    {
-        public var id:int;
-        public var name:String;
-        public var hasSubAreas:Boolean;
-        private static const MODULE:String = "Pack";
 
-        public function Pack()
-        {
-            return;
-        }// end function
+   public class Pack extends Object implements IDataCenter
+   {
+         
 
-        public static function getPackById(param1:int) : Pack
-        {
-            return GameData.getObject(MODULE, param1) as ;
-        }// end function
+      public function Pack() {
+         super();
+      }
 
-        public static function getPackByName(param1:String) : Pack
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = getAllPacks();
-            for each (_loc_3 in _loc_2)
+      public static const MODULE:String = "Pack";
+
+      public static function getPackById(id:int) : Pack {
+         return GameData.getObject(MODULE,id) as Pack;
+      }
+
+      public static function getPackByName(name:String) : Pack {
+         var pack:Pack = null;
+         var packs:Array = getAllPacks();
+         for each (pack in packs)
+         {
+            if(name==pack.name)
             {
-                
-                if (param1 == _loc_3.name)
-                {
-                    return _loc_3;
-                }
+               return pack;
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
 
-        public static function getAllPacks() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static function getAllPacks() : Array {
+         return GameData.getObjects(MODULE);
+      }
 
-    }
+      public var id:int;
+
+      public var name:String;
+
+      public var hasSubAreas:Boolean;
+   }
+
 }

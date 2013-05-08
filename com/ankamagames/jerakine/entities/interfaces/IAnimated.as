@@ -1,20 +1,22 @@
-﻿package com.ankamagames.jerakine.entities.interfaces
+package com.ankamagames.jerakine.entities.interfaces
 {
 
-    public interface IAnimated
-    {
 
-        public function IAnimated();
+   public interface IAnimated
+   {
+         
 
-        function getDirection() : uint;
 
-        function setDirection(param1:uint) : void;
 
-        function getAnimation() : String;
+      function getDirection() : uint;
 
-        function setAnimation(param1:String) : void;
+      function setDirection(param1:uint) : void;
 
-        function setAnimationAndDirection(param1:String, param2:uint) : void;
+      function getAnimation() : String;
 
-    }
+      function setAnimation(param1:String) : void;
+
+      function setAnimationAndDirection(param1:String, param2:uint, param3:Boolean=false) : void;
+   }
+
 }

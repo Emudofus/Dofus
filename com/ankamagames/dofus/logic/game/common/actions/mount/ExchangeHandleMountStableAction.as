@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.mount
+package com.ankamagames.dofus.logic.game.common.actions.mount
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeHandleMountStableAction extends Object implements Action
-    {
-        public var rideId:uint;
-        public var actionType:int;
 
-        public function ExchangeHandleMountStableAction()
-        {
-            return;
-        }// end function
+   public class ExchangeHandleMountStableAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint) : ExchangeHandleMountStableAction
-        {
-            var _loc_3:* = new ExchangeHandleMountStableAction;
-            _loc_3.actionType = param1;
-            _loc_3.rideId = param2;
-            return _loc_3;
-        }// end function
+      public function ExchangeHandleMountStableAction() {
+         super();
+      }
 
-    }
+      public static function create(actionType:uint, mountId:uint) : ExchangeHandleMountStableAction {
+         var act:ExchangeHandleMountStableAction = new ExchangeHandleMountStableAction();
+         act.actionType=actionType;
+         act.rideId=mountId;
+         return act;
+      }
+
+      public var rideId:uint;
+
+      public var actionType:int;
+   }
+
 }

@@ -1,83 +1,72 @@
-﻿package com.ankamagames.jerakine.types
+package com.ankamagames.jerakine.types
 {
-    import flash.utils.*;
+   import flash.utils.IExternalizable;
+   import flash.utils.IDataInput;
+   import flash.utils.IDataOutput;
 
-    public class Color extends Object implements IExternalizable
-    {
-        public var red:uint;
-        public var green:uint;
-        public var blue:uint;
 
-        public function Color(param1:uint = 0)
-        {
-            this.parseColor(param1);
-            return;
-        }// end function
+   public class Color extends Object implements IExternalizable
+   {
+         
 
-        public function get color() : uint
-        {
-            return (this.red & 255) << 16 | (this.green & 255) << 8 | this.blue & 255;
-        }// end function
+      public function Color(color:uint=0) {
+         super();
+         this.parseColor(color);
+      }
 
-        public function set color(param1:uint) : void
-        {
-            this.parseColor(param1);
-            return;
-        }// end function
 
-        public function readExternal(param1:IDataInput) : void
-        {
-            this.red = param1.readUnsignedByte();
-            this.green = param1.readUnsignedByte();
-            this.blue = param1.readUnsignedByte();
-            return;
-        }// end function
 
-        public function writeExternal(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.red);
-            param1.writeByte(this.green);
-            param1.writeByte(this.blue);
-            return;
-        }// end function
+      public var red:uint;
 
-        public function toString() : String
-        {
-            return "[AdvancedColor(R=\"" + this.red + "\",G=\"" + this.green + "\",B=\"" + this.blue + "\")]";
-        }// end function
+      public var green:uint;
 
-        public function release() : void
-        {
-            var _loc_1:* = 0;
-            this.blue = 0;
-            this.green = _loc_1;
-            this.red = _loc_1;
-            return;
-        }// end function
+      public var blue:uint;
 
-        public function adjustDarkness(param1:Number) : void
-        {
-            this.red = (1 - param1) * this.red;
-            this.green = (1 - param1) * this.green;
-            this.blue = (1 - param1) * this.blue;
-            return;
-        }// end function
+      public function get color() : uint {
+         return (this.red&255)<<16|(this.green&255)<<8|this.blue&255;
+      }
 
-        public function adjustLight(param1:Number) : void
-        {
-            this.red = this.red + param1 * (255 - this.red);
-            this.green = this.green + param1 * (255 - this.green);
-            this.blue = this.blue + param1 * (255 - this.blue);
-            return;
-        }// end function
+      public function set color(value:uint) : void {
+         this.parseColor(value);
+      }
 
-        private function parseColor(param1:uint) : void
-        {
-            this.red = (param1 & 16711680) >> 16;
-            this.green = (param1 & 65280) >> 8;
-            this.blue = param1 & 255;
-            return;
-        }// end function
+      public function readExternal(input:IDataInput) : void {
+         this.red=input.readUnsignedByte();
+         this.green=input.readUnsignedByte();
+         this.blue=input.readUnsignedByte();
+      }
 
-    }
+      public function writeExternal(output:IDataOutput) : void {
+         output.writeByte(this.red);
+         output.writeByte(this.green);
+         output.writeByte(this.blue);
+      }
+
+      public function toString() : String {
+         return "[AdvancedColor(R=\""+this.red+"\",G=\""+this.green+"\",B=\""+this.blue+"\")]";
+      }
+
+      public function release() : void {
+         this.red=this.green=this.blue=0;
+      }
+
+      public function adjustDarkness(nValue:Number) : void {
+         this.red=(1-nValue)*this.red;
+         this.green=(1-nValue)*this.green;
+         this.blue=(1-nValue)*this.blue;
+      }
+
+      public function adjustLight(nValue:Number) : void {
+         this.red=this.red+nValue*(255-this.red);
+         this.green=this.green+nValue*(255-this.green);
+         this.blue=this.blue+nValue*(255-this.blue);
+      }
+
+      private function parseColor(color:uint) : void {
+         this.red=(color&16711680)>>16;
+         this.green=(color&65280)>>8;
+         this.blue=color&255;
+      }
+   }
+
 }

@@ -1,31 +1,33 @@
-﻿package com.ankamagames.jerakine.interfaces
+package com.ankamagames.jerakine.interfaces
 {
-    import flash.geom.*;
+   import flash.geom.Point;
 
-    public interface IRectangle
-    {
 
-        public function IRectangle();
+   public interface IRectangle
+   {
+         
 
-        function get x() : Number;
 
-        function set x(param1:Number) : void;
 
-        function get y() : Number;
+      function get x() : Number;
 
-        function set y(param1:Number) : void;
+      function set x(param1:Number) : void;
 
-        function get width() : Number;
+      function get y() : Number;
 
-        function set width(param1:Number) : void;
+      function set y(param1:Number) : void;
 
-        function get height() : Number;
+      function get width() : Number;
 
-        function set height(param1:Number) : void;
+      function set width(param1:Number) : void;
 
-        function localToGlobal(param1:Point) : Point;
+      function get height() : Number;
 
-        function globalToLocal(param1:Point) : Point;
+      function set height(param1:Number) : void;
 
-    }
+      function localToGlobal(param1:Point) : Point;
+
+      function globalToLocal(param1:Point) : Point;
+   }
+
 }

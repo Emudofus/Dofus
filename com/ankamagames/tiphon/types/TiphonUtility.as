@@ -1,83 +1,92 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.display.*;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import flash.display.DisplayObjectContainer;
+   import com.ankamagames.tiphon.display.TiphonSprite;
 
-    public class TiphonUtility extends Object
-    {
 
-        public function TiphonUtility()
-        {
-            return;
-        }// end function
+   public class TiphonUtility extends Object
+   {
+         
 
-        public static function getLookWithoutMount(param1:TiphonEntityLook) : TiphonEntityLook
-        {
-            var _loc_3:* = 0;
-            var _loc_2:* = param1.getSubEntity(2, 0);
-            if (_loc_2)
-            {
-                _loc_3 = _loc_2.getBone();
-                if (_loc_3 == 1084)
-                {
-                    _loc_2.setBone(44);
-                }
-                else if (_loc_3 == 1068)
-                {
-                    _loc_2.setBone(113);
-                }
-                else if (_loc_3 == 1202)
-                {
-                    _loc_2.setBone(453);
-                }
-                else if (_loc_3 == 1575 || _loc_3 == 1576 || _loc_3 == 2)
-                {
-                    _loc_2.setBone(1);
-                }
-                return _loc_2;
-            }
-            return param1;
-        }// end function
+      public function TiphonUtility() {
+         super();
+      }
 
-        public static function getEntityWithoutMount(param1:TiphonSprite) : DisplayObjectContainer
-        {
-            if (param1 == null)
+      public static function getLookWithoutMount(look:TiphonEntityLook) : TiphonEntityLook {
+         var boneId:* = 0;
+         var ridderLook:TiphonEntityLook = look.getSubEntity(2,0);
+         if(ridderLook)
+         {
+            boneId=ridderLook.getBone();
+            if(boneId==1084)
             {
-                return null;
+               ridderLook.setBone(44);
             }
-            var _loc_2:* = param1.getSubEntitySlot(2, 0);
-            return _loc_2 == null ? (param1) : (_loc_2);
-        }// end function
+            else
+            {
+               if(boneId==1068)
+               {
+                  ridderLook.setBone(113);
+               }
+               else
+               {
+                  if(boneId==1202)
+                  {
+                     ridderLook.setBone(453);
+                  }
+                  else
+                  {
+                     if((boneId==1575)||(boneId==1576)||(boneId==2))
+                     {
+                        ridderLook.setBone(1);
+                     }
+                  }
+               }
+            }
+            return ridderLook;
+         }
+         return look;
+      }
 
-        public static function getFlipDirection(param1:int) : uint
-        {
-            if (param1 == 0)
-            {
-                return 4;
-            }
-            if (param1 == 1)
-            {
-                return 3;
-            }
-            if (param1 == 7)
-            {
-                return 5;
-            }
-            if (param1 == 4)
-            {
-                return 0;
-            }
-            if (param1 == 3)
-            {
-                return 1;
-            }
-            if (param1 == 5)
-            {
-                return 7;
-            }
-            return param1;
-        }// end function
+      public static function getEntityWithoutMount(ent:TiphonSprite) : DisplayObjectContainer {
+         if(ent==null)
+         {
+            return null;
+         }
+         var rider:DisplayObjectContainer = ent.getSubEntitySlot(2,0);
+         return rider==null?ent:rider;
+      }
 
-    }
+      public static function getFlipDirection(direction:int) : uint {
+         if(direction==0)
+         {
+            return 4;
+         }
+         if(direction==1)
+         {
+            return 3;
+         }
+         if(direction==7)
+         {
+            return 5;
+         }
+         if(direction==4)
+         {
+            return 0;
+         }
+         if(direction==3)
+         {
+            return 1;
+         }
+         if(direction==5)
+         {
+            return 7;
+         }
+         return direction;
+      }
+
+
+   }
+
 }

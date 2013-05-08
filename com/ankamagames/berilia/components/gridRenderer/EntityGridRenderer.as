@@ -1,167 +1,169 @@
-﻿package com.ankamagames.berilia.components.gridRenderer
+package com.ankamagames.berilia.components.gridRenderer
 {
-    import com.ankamagames.berilia.*;
-    import com.ankamagames.berilia.components.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.graphic.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.display.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IGridRenderer;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.components.Grid;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.display.Sprite;
+   import flash.display.DisplayObject;
+   import com.ankamagames.berilia.components.EntityDisplayer;
+   import com.ankamagames.berilia.types.graphic.GraphicContainer;
+   import com.ankamagames.berilia.components.Texture;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.berilia.UIComponent;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class EntityGridRenderer extends Object implements IGridRenderer
-    {
-        protected var _log:Logger;
-        private var _grid:Grid;
-        private var _emptyTexture:Uri;
-        private var _mask:Sprite;
 
-        public function EntityGridRenderer(param1:String)
-        {
-            this._log = Log.getLogger(getQualifiedClassName(EntityGridRenderer));
-            var _loc_2:* = param1 ? (param1.split(",")) : ([]);
-            this._emptyTexture = _loc_2[0] && _loc_2[0].length ? (new Uri(_loc_2[0])) : (null);
-            this._mask = new Sprite();
-            return;
-        }// end function
+   public class EntityGridRenderer extends Object implements IGridRenderer
+   {
+         
 
-        public function set grid(param1:Grid) : void
-        {
-            this._grid = param1;
-            return;
-        }// end function
+      public function EntityGridRenderer(strParams:String) {
+         this._log=Log.getLogger(getQualifiedClassName(EntityGridRenderer));
+         super();
+         var params:Array = strParams?strParams.split(","):[];
+         this._emptyTexture=(params[0])&&(params[0].length)?new Uri(params[0]):null;
+         this._mask=new Sprite();
+      }
 
-        public function render(param1, param2:uint, param3:Boolean, param4:uint = 0) : DisplayObject
-        {
-            var _loc_7:* = null;
-            var _loc_5:* = new GraphicContainer();
-            new GraphicContainer().mouseEnabled = true;
-            var _loc_6:* = new Texture();
-            new Texture().width = this._grid.slotWidth;
-            _loc_6.height = this._grid.slotHeight;
-            _loc_6.uri = this._emptyTexture;
-            _loc_6.finalize();
-            _loc_5.addChild(_loc_6);
-            _loc_5.width = this._grid.slotWidth;
-            _loc_5.height = this._grid.slotHeight;
-            if (param1)
+
+
+      protected var _log:Logger;
+
+      private var _grid:Grid;
+
+      private var _emptyTexture:Uri;
+
+      private var _mask:Sprite;
+
+      public function set grid(g:Grid) : void {
+         this._grid=g;
+      }
+
+      public function render(data:*, index:uint, selected:Boolean, subIndex:uint=0) : DisplayObject {
+         var entDisp:EntityDisplayer = null;
+         var ctr:GraphicContainer = new GraphicContainer();
+         ctr.mouseEnabled=true;
+         var background:Texture = new Texture();
+         background.width=this._grid.slotWidth;
+         background.height=this._grid.slotHeight;
+         background.uri=this._emptyTexture;
+         background.finalize();
+         ctr.addChild(background);
+         ctr.width=this._grid.slotWidth;
+         ctr.height=this._grid.slotHeight;
+         if(data)
+         {
+            entDisp=new EntityDisplayer();
+            entDisp.name="entity";
+            entDisp.width=this._grid.slotWidth;
+            entDisp.height=this._grid.slotHeight;
+            entDisp.look=data.entityLook;
+            entDisp.direction=3;
+            entDisp.scale=2;
+            entDisp.yOffset=20;
+            ctr.addChild(entDisp);
+            this._mask=new Sprite();
+            this._mask.graphics.beginFill(16711680);
+            this._mask.graphics.drawRoundRect(3,3,ctr.width-6,ctr.height-6,6,6);
+            this._mask.graphics.endFill();
+            ctr.addChild(this._mask);
+            entDisp.mask=this._mask;
+         }
+         return ctr;
+      }
+
+      public function update(data:*, index:uint, dispObj:DisplayObject, selected:Boolean, subIndex:uint=0) : void {
+         var ctr:GraphicContainer = null;
+         var ed:EntityDisplayer = null;
+         var entDisp:EntityDisplayer = null;
+         if(dispObj is GraphicContainer)
+         {
+            ctr=GraphicContainer(dispObj);
+            ctr.mouseEnabled=true;
+            ed=ctr.getChildByName("entity") as EntityDisplayer;
+            if(data)
             {
-                _loc_7 = new EntityDisplayer();
-                _loc_7.name = "entity";
-                _loc_7.width = this._grid.slotWidth;
-                _loc_7.height = this._grid.slotHeight;
-                _loc_7.look = param1.entityLook;
-                _loc_7.direction = 3;
-                _loc_7.scale = 2;
-                _loc_7.yOffset = 20;
-                _loc_5.addChild(_loc_7);
-                this._mask = new Sprite();
-                this._mask.graphics.beginFill(16711680);
-                this._mask.graphics.drawRoundRect(3, 3, _loc_5.width - 6, _loc_5.height - 6, 6, 6);
-                this._mask.graphics.endFill();
-                _loc_5.addChild(this._mask);
-                _loc_7.mask = this._mask;
+               if(ed)
+               {
+                  if(ed.look.toString()==data.entityLook.toString())
+                  {
+                     return;
+                  }
+                  ed.look=SecureCenter.unsecure(data.entityLook);
+               }
+               else
+               {
+                  entDisp=new EntityDisplayer();
+                  entDisp.name="entity";
+                  entDisp.width=this._grid.slotWidth;
+                  entDisp.height=this._grid.slotHeight;
+                  entDisp.look=SecureCenter.unsecure(data.entityLook);
+                  entDisp.direction=3;
+                  entDisp.scale=2;
+                  entDisp.yOffset=20;
+                  ctr.addChild(entDisp);
+                  this._mask=new Sprite();
+                  this._mask.graphics.beginFill(255);
+                  this._mask.graphics.drawRoundRect(3,3,ctr.width-6,ctr.height-6,6,6);
+                  this._mask.graphics.endFill();
+                  ctr.addChild(this._mask);
+                  entDisp.mask=this._mask;
+               }
             }
-            return _loc_5;
-        }// end function
-
-        public function update(param1, param2:uint, param3:DisplayObject, param4:Boolean, param5:uint = 0) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            if (param3 is GraphicContainer)
+            else
             {
-                _loc_6 = GraphicContainer(param3);
-                _loc_6.mouseEnabled = true;
-                _loc_7 = _loc_6.getChildByName("entity") as EntityDisplayer;
-                if (param1)
-                {
-                    if (_loc_7)
-                    {
-                        if (_loc_7.look.toString() == param1.entityLook.toString())
-                        {
-                            return;
-                        }
-                        _loc_7.look = SecureCenter.unsecure(param1.entityLook);
-                    }
-                    else
-                    {
-                        _loc_8 = new EntityDisplayer();
-                        _loc_8.name = "entity";
-                        _loc_8.width = this._grid.slotWidth;
-                        _loc_8.height = this._grid.slotHeight;
-                        _loc_8.look = SecureCenter.unsecure(param1.entityLook);
-                        _loc_8.direction = 3;
-                        _loc_8.scale = 2;
-                        _loc_8.yOffset = 20;
-                        _loc_6.addChild(_loc_8);
-                        this._mask = new Sprite();
-                        this._mask.graphics.beginFill(255);
-                        this._mask.graphics.drawRoundRect(3, 3, _loc_6.width - 6, _loc_6.height - 6, 6, 6);
-                        this._mask.graphics.endFill();
-                        _loc_6.addChild(this._mask);
-                        _loc_8.mask = this._mask;
-                    }
-                }
-                else if (_loc_7)
-                {
-                    _loc_6.removeChild(_loc_7);
-                    if (this._mask && _loc_6.getChildByName(this._mask.name))
-                    {
-                        _loc_6.removeChild(this._mask);
-                    }
-                    _loc_7.remove();
-                }
+               if(ed)
+               {
+                  ctr.removeChild(ed);
+                  if((this._mask)&&(ctr.getChildByName(this._mask.name)))
+                  {
+                     ctr.removeChild(this._mask);
+                  }
+                  ed.remove();
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function getDataLength(param1, param2:Boolean) : uint
-        {
-            return param1 % 2;
-        }// end function
+      public function getDataLength(data:*, selected:Boolean) : uint {
+         return data%2;
+      }
 
-        public function remove(param1:DisplayObject) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (param1 is GraphicContainer)
+      public function remove(dispObj:DisplayObject) : void {
+         var ed:EntityDisplayer = null;
+         var mask:DisplayObject = null;
+         if(dispObj is GraphicContainer)
+         {
+            ed=GraphicContainer(dispObj).getChildByName("entity") as EntityDisplayer;
+            if(ed)
             {
-                _loc_2 = GraphicContainer(param1).getChildByName("entity") as EntityDisplayer;
-                if (_loc_2)
-                {
-                    _loc_2.remove();
-                }
-                _loc_3 = GraphicContainer(param1).getChildByName(this._mask.name);
-                if (_loc_3)
-                {
-                    GraphicContainer(param1).removeChild(_loc_3);
-                }
-                GraphicContainer(param1).remove();
+               ed.remove();
             }
-            return;
-        }// end function
+            mask=GraphicContainer(dispObj).getChildByName(this._mask.name);
+            if(mask)
+            {
+               GraphicContainer(dispObj).removeChild(mask);
+            }
+            GraphicContainer(dispObj).remove();
+         }
+      }
 
-        public function destroy() : void
-        {
-            this._grid = null;
-            this._emptyTexture = null;
-            this._mask = null;
-            return;
-        }// end function
+      public function destroy() : void {
+         this._grid=null;
+         this._emptyTexture=null;
+         this._mask=null;
+      }
 
-        public function renderModificator(param1:Array) : Array
-        {
-            return param1;
-        }// end function
+      public function renderModificator(childs:Array) : Array {
+         return childs;
+      }
 
-        public function eventModificator(param1:Message, param2:String, param3:Array, param4:UIComponent) : String
-        {
-            return param2;
-        }// end function
+      public function eventModificator(msg:Message, functionName:String, args:Array, target:UIComponent) : String {
+         return functionName;
+      }
+   }
 
-    }
 }

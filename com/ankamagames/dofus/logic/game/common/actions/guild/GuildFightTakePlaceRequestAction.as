@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.guild
+package com.ankamagames.dofus.logic.game.common.actions.guild
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuildFightTakePlaceRequestAction extends Object implements Action
-    {
-        public var taxCollectorId:uint;
-        public var replacedCharacterId:uint;
 
-        public function GuildFightTakePlaceRequestAction()
-        {
-            return;
-        }// end function
+   public class GuildFightTakePlaceRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint) : GuildFightTakePlaceRequestAction
-        {
-            var _loc_3:* = new GuildFightTakePlaceRequestAction;
-            _loc_3.taxCollectorId = param1;
-            _loc_3.replacedCharacterId = param2;
-            return _loc_3;
-        }// end function
+      public function GuildFightTakePlaceRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pTaxCollectorId:uint, replacedCharacterId:uint) : GuildFightTakePlaceRequestAction {
+         var action:GuildFightTakePlaceRequestAction = new GuildFightTakePlaceRequestAction();
+         action.taxCollectorId=pTaxCollectorId;
+         action.replacedCharacterId=replacedCharacterId;
+         return action;
+      }
+
+      public var taxCollectorId:uint;
+
+      public var replacedCharacterId:uint;
+   }
+
 }

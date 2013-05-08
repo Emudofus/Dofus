@@ -1,95 +1,94 @@
-﻿package com.ankamagames.dofus.network.types.game.context.roleplay.job
+package com.ankamagames.dofus.network.types.game.context.roleplay.job
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.interactive.skill.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.interactive.skill.SkillActionDescription;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class JobDescription extends Object implements INetworkType
-    {
-        public var jobId:uint = 0;
-        public var skills:Vector.<SkillActionDescription>;
-        public static const protocolId:uint = 101;
 
-        public function JobDescription()
-        {
-            this.skills = new Vector.<SkillActionDescription>;
-            return;
-        }// end function
+   public class JobDescription extends Object implements INetworkType
+   {
+         
 
-        public function getTypeId() : uint
-        {
-            return 101;
-        }// end function
+      public function JobDescription() {
+         this.skills=new Vector.<SkillActionDescription>();
+         super();
+      }
 
-        public function initJobDescription(param1:uint = 0, param2:Vector.<SkillActionDescription> = null) : JobDescription
-        {
-            this.jobId = param1;
-            this.skills = param2;
-            return this;
-        }// end function
+      public static const protocolId:uint = 101;
 
-        public function reset() : void
-        {
-            this.jobId = 0;
-            this.skills = new Vector.<SkillActionDescription>;
-            return;
-        }// end function
+      public var jobId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_JobDescription(param1);
-            return;
-        }// end function
+      public var skills:Vector.<SkillActionDescription>;
 
-        public function serializeAs_JobDescription(param1:IDataOutput) : void
-        {
-            if (this.jobId < 0)
+      public function getTypeId() : uint {
+         return 101;
+      }
+
+      public function initJobDescription(jobId:uint=0, skills:Vector.<SkillActionDescription>=null) : JobDescription {
+         this.jobId=jobId;
+         this.skills=skills;
+         return this;
+      }
+
+      public function reset() : void {
+         this.jobId=0;
+         this.skills=new Vector.<SkillActionDescription>();
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_JobDescription(output);
+      }
+
+      public function serializeAs_JobDescription(output:IDataOutput) : void {
+         if(this.jobId<0)
+         {
+            throw new Error("Forbidden value ("+this.jobId+") on element jobId.");
+         }
+         else
+         {
+            output.writeByte(this.jobId);
+            output.writeShort(this.skills.length);
+            _i2=0;
+            while(_i2<this.skills.length)
             {
-                throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
-            }
-            param1.writeByte(this.jobId);
-            param1.writeShort(this.skills.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.skills.length)
-            {
-                
-                param1.writeShort((this.skills[_loc_2] as SkillActionDescription).getTypeId());
-                (this.skills[_loc_2] as SkillActionDescription).serialize(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_JobDescription(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_JobDescription(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            this.jobId = param1.readByte();
-            if (this.jobId < 0)
-            {
-                throw new Error("Forbidden value (" + this.jobId + ") on element of JobDescription.jobId.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUnsignedShort();
-                _loc_5 = ProtocolTypeManager.getInstance(SkillActionDescription, _loc_4);
-                _loc_5.deserialize(param1);
-                this.skills.push(_loc_5);
-                _loc_3 = _loc_3 + 1;
+               output.writeShort((this.skills[_i2] as SkillActionDescription).getTypeId());
+               (this.skills[_i2] as SkillActionDescription).serialize(output);
+               _i2++;
             }
             return;
-        }// end function
+         }
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_JobDescription(input);
+      }
+
+      public function deserializeAs_JobDescription(input:IDataInput) : void {
+         var _id2:uint = 0;
+         var _item2:SkillActionDescription = null;
+         this.jobId=input.readByte();
+         if(this.jobId<0)
+         {
+            throw new Error("Forbidden value ("+this.jobId+") on element of JobDescription.jobId.");
+         }
+         else
+         {
+            _skillsLen=input.readUnsignedShort();
+            _i2=0;
+            while(_i2<_skillsLen)
+            {
+               _id2=input.readUnsignedShort();
+               _item2=ProtocolTypeManager.getInstance(SkillActionDescription,_id2);
+               _item2.deserialize(input);
+               this.skills.push(_item2);
+               _i2++;
+            }
+            return;
+         }
+      }
+   }
+
 }

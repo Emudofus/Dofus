@@ -1,52 +1,54 @@
-﻿package com.ankamagames.atouin.types
+package com.ankamagames.atouin.types
 {
 
-    public interface ICellContainer
-    {
 
-        public function ICellContainer();
+   public interface ICellContainer
+   {
+         
 
-        function get cellId() : uint;
 
-        function set cellId(param1:uint) : void;
 
-        function get layerId() : int;
+      function get cellId() : uint;
 
-        function set layerId(param1:int) : void;
+      function set cellId(param1:uint) : void;
 
-        function get cacheAsBitmap() : Boolean;
+      function get layerId() : int;
 
-        function set cacheAsBitmap(param1:Boolean) : void;
+      function set layerId(param1:int) : void;
 
-        function get mouseChildren() : Boolean;
+      function get cacheAsBitmap() : Boolean;
 
-        function set mouseChildren(param1:Boolean) : void;
+      function set cacheAsBitmap(param1:Boolean) : void;
 
-        function get mouseEnabled() : Boolean;
+      function get mouseChildren() : Boolean;
 
-        function set mouseEnabled(param1:Boolean) : void;
+      function set mouseChildren(param1:Boolean) : void;
 
-        function get startX() : int;
+      function get mouseEnabled() : Boolean;
 
-        function set startX(param1:int) : void;
+      function set mouseEnabled(param1:Boolean) : void;
 
-        function get startY() : int;
+      function get startX() : int;
 
-        function set startY(param1:int) : void;
+      function set startX(param1:int) : void;
 
-        function get depth() : int;
+      function get startY() : int;
 
-        function set depth(param1:int) : void;
+      function set startY(param1:int) : void;
 
-        function get x() : Number;
+      function get depth() : int;
 
-        function set x(param1:Number) : void;
+      function set depth(param1:int) : void;
 
-        function get y() : Number;
+      function get x() : Number;
 
-        function set y(param1:Number) : void;
+      function set x(param1:Number) : void;
 
-        function addFakeChild(param1:Object, param2:Object, param3:Object) : void;
+      function get y() : Number;
 
-    }
+      function set y(param1:Number) : void;
+
+      function addFakeChild(param1:Object, param2:Object, param3:Object) : void;
+   }
+
 }

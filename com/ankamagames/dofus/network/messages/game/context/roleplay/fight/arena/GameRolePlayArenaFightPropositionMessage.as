@@ -1,132 +1,144 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
+package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayArenaFightPropositionMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fightId:uint = 0;
-        public var alliesId:Vector.<uint>;
-        public var duration:uint = 0;
-        public static const protocolId:uint = 6276;
 
-        public function GameRolePlayArenaFightPropositionMessage()
-        {
-            this.alliesId = new Vector.<uint>;
-            return;
-        }// end function
+   public class GameRolePlayArenaFightPropositionMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameRolePlayArenaFightPropositionMessage() {
+         this.alliesId=new Vector.<uint>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6276;
-        }// end function
+      public static const protocolId:uint = 6276;
 
-        public function initGameRolePlayArenaFightPropositionMessage(param1:uint = 0, param2:Vector.<uint> = null, param3:uint = 0) : GameRolePlayArenaFightPropositionMessage
-        {
-            this.fightId = param1;
-            this.alliesId = param2;
-            this.duration = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fightId = 0;
-            this.alliesId = new Vector.<uint>;
-            this.duration = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fightId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var alliesId:Vector.<uint>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayArenaFightPropositionMessage(param1);
-            return;
-        }// end function
+      public var duration:uint = 0;
 
-        public function serializeAs_GameRolePlayArenaFightPropositionMessage(param1:IDataOutput) : void
-        {
-            if (this.fightId < 0)
+      override public function getMessageId() : uint {
+         return 6276;
+      }
+
+      public function initGameRolePlayArenaFightPropositionMessage(fightId:uint=0, alliesId:Vector.<uint>=null, duration:uint=0) : GameRolePlayArenaFightPropositionMessage {
+         this.fightId=fightId;
+         this.alliesId=alliesId;
+         this.duration=duration;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.fightId=0;
+         this.alliesId=new Vector.<uint>();
+         this.duration=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayArenaFightPropositionMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayArenaFightPropositionMessage(output:IDataOutput) : void {
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element fightId.");
+         }
+         else
+         {
+            output.writeInt(this.fightId);
+            output.writeShort(this.alliesId.length);
+            _i2=0;
+            while(_i2<this.alliesId.length)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+               if(this.alliesId[_i2]<0)
+               {
+                  throw new Error("Forbidden value ("+this.alliesId[_i2]+") on element 2 (starting at 1) of alliesId.");
+               }
+               else
+               {
+                  output.writeInt(this.alliesId[_i2]);
+                  _i2++;
+                  continue;
+               }
             }
-            param1.writeInt(this.fightId);
-            param1.writeShort(this.alliesId.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.alliesId.length)
+            if(this.duration<0)
             {
-                
-                if (this.alliesId[_loc_2] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.alliesId[_loc_2] + ") on element 2 (starting at 1) of alliesId.");
-                }
-                param1.writeInt(this.alliesId[_loc_2]);
-                _loc_2 = _loc_2 + 1;
+               throw new Error("Forbidden value ("+this.duration+") on element duration.");
             }
-            if (this.duration < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.duration + ") on element duration.");
+               output.writeShort(this.duration);
+               return;
             }
-            param1.writeShort(this.duration);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayArenaFightPropositionMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayArenaFightPropositionMessage(input);
+      }
 
-        public function deserializeAs_GameRolePlayArenaFightPropositionMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            this.fightId = param1.readInt();
-            if (this.fightId < 0)
+      public function deserializeAs_GameRolePlayArenaFightPropositionMessage(input:IDataInput) : void {
+         var _val2:uint = 0;
+         this.fightId=input.readInt();
+         if(this.fightId<0)
+         {
+            throw new Error("Forbidden value ("+this.fightId+") on element of GameRolePlayArenaFightPropositionMessage.fightId.");
+         }
+         else
+         {
+            _alliesIdLen=input.readUnsignedShort();
+            _i2=0;
+            while(_i2<_alliesIdLen)
             {
-                throw new Error("Forbidden value (" + this.fightId + ") on element of GameRolePlayArenaFightPropositionMessage.fightId.");
+               _val2=input.readInt();
+               if(_val2<0)
+               {
+                  throw new Error("Forbidden value ("+_val2+") on elements of alliesId.");
+               }
+               else
+               {
+                  this.alliesId.push(_val2);
+                  _i2++;
+                  continue;
+               }
             }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
+            this.duration=input.readShort();
+            if(this.duration<0)
             {
-                
-                _loc_4 = param1.readInt();
-                if (_loc_4 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_4 + ") on elements of alliesId.");
-                }
-                this.alliesId.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
+               throw new Error("Forbidden value ("+this.duration+") on element of GameRolePlayArenaFightPropositionMessage.duration.");
             }
-            this.duration = param1.readShort();
-            if (this.duration < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.duration + ") on element of GameRolePlayArenaFightPropositionMessage.duration.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

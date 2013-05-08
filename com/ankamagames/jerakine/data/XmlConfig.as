@@ -1,58 +1,56 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    import com.ankamagames.jerakine.utils.errors.*;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class XmlConfig extends Object
-    {
-        private var _constants:Array;
-        private static var _self:XmlConfig;
 
-        public function XmlConfig()
-        {
-            this._constants = new Array();
-            if (_self)
-            {
-                throw new SingletonError();
-            }
+   public class XmlConfig extends Object
+   {
+         
+
+      public function XmlConfig() {
+         this._constants=new Array();
+         super();
+         if(_self)
+         {
+            throw new SingletonError();
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        public function init(param1:Array) : void
-        {
-            this._constants = param1;
-            return;
-        }// end function
+      private static var _self:XmlConfig;
 
-        public function addCategory(param1:Array) : void
-        {
-            var _loc_2:* = undefined;
-            for (_loc_2 in param1)
-            {
-                
-                this._constants[_loc_2] = param1[_loc_2];
-            }
-            return;
-        }// end function
+      public static function getInstance() : XmlConfig {
+         if(!_self)
+         {
+            _self=new XmlConfig();
+         }
+         return _self;
+      }
 
-        public function getEntry(param1:String)
-        {
-            return this._constants[param1];
-        }// end function
+      private var _constants:Array;
 
-        public function setEntry(param1:String, param2) : void
-        {
-            this._constants[param1] = param2;
-            return;
-        }// end function
+      public function init(constants:Array) : void {
+         this._constants=constants;
+      }
 
-        public static function getInstance() : XmlConfig
-        {
-            if (!_self)
-            {
-                _self = new XmlConfig;
-            }
-            return _self;
-        }// end function
+      public function addCategory(constants:Array) : void {
+         var i:* = undefined;
+         for (i in constants)
+         {
+            this._constants[i]=constants[i];
+         }
+      }
 
-    }
+      public function getEntry(name:String) : * {
+         return this._constants[name];
+      }
+
+      public function setEntry(sKey:String, sValue:*) : void {
+         this._constants[sKey]=sValue;
+      }
+   }
+
 }

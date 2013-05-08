@@ -1,51 +1,53 @@
-﻿package com.ankamagames.jerakine.script.api
+package com.ankamagames.jerakine.script.api
 {
-    import flash.display.*;
-    import flash.filters.*;
-    import flash.geom.*;
+   import flash.filters.BevelFilter;
+   import flash.filters.BlurFilter;
+   import flash.filters.ColorMatrixFilter;
+   import flash.filters.ConvolutionFilter;
+   import flash.filters.DisplacementMapFilter;
+   import flash.display.BitmapData;
+   import flash.geom.Point;
+   import flash.filters.DropShadowFilter;
+   import flash.filters.GlowFilter;
 
-    public class EffectsApi extends Object
-    {
 
-        public function EffectsApi()
-        {
-            return;
-        }// end function
+   public class EffectsApi extends Object
+   {
+         
 
-        public static function CreateBevelFilter(param1:Number = 4, param2:Number = 45, param3:uint = 16777215, param4:Number = 1, param5:uint = 0, param6:Number = 1, param7:Number = 4, param8:Number = 4, param9:Number = 1, param10:int = 1, param11:String = "inner", param12:Boolean = false) : BevelFilter
-        {
-            return new BevelFilter(param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12);
-        }// end function
+      public function EffectsApi() {
+         super();
+      }
 
-        public static function CreateBlurFilter(param1:Number = 4, param2:Number = 4, param3:int = 1) : BlurFilter
-        {
-            return new BlurFilter(param1, param2, param3);
-        }// end function
+      public static function CreateBevelFilter(distance:Number=4.0, angle:Number=45, highlightColor:uint=16777215, highlightAlpha:Number=1.0, shadowColor:uint=0, shadowAlpha:Number=1.0, blurX:Number=4.0, blurY:Number=4.0, strength:Number=1, quality:int=1, type:String="inner", knockout:Boolean=false) : BevelFilter {
+         return new BevelFilter(distance,angle,highlightColor,highlightAlpha,shadowColor,shadowAlpha,blurX,blurY,strength,quality,type,knockout);
+      }
 
-        public static function CreateColorMatrixFilter(param1:Array = null) : ColorMatrixFilter
-        {
-            return new ColorMatrixFilter(param1);
-        }// end function
+      public static function CreateBlurFilter(blurX:Number=4.0, blurY:Number=4.0, quality:int=1) : BlurFilter {
+         return new BlurFilter(blurX,blurY,quality);
+      }
 
-        public static function CreateConvolutionFilter(param1:Number = 0, param2:Number = 0, param3:Array = null, param4:Number = 1, param5:Number = 0, param6:Boolean = true, param7:Boolean = true, param8:uint = 0, param9:Number = 0) : ConvolutionFilter
-        {
-            return new ConvolutionFilter(param1, param2, param3, param4, param5, param6, param7, param8, param9);
-        }// end function
+      public static function CreateColorMatrixFilter(matrix:Array=null) : ColorMatrixFilter {
+         return new ColorMatrixFilter(matrix);
+      }
 
-        public static function CreateDisplacementMapFilter(param1:BitmapData = null, param2:Point = null, param3:uint = 0, param4:uint = 0, param5:Number = 0, param6:Number = 0, param7:String = "wrap", param8:uint = 0, param9:Number = 0) : DisplacementMapFilter
-        {
-            return new DisplacementMapFilter(param1, param2, param3, param4, param5, param6, param7, param8, param9);
-        }// end function
+      public static function CreateConvolutionFilter(matrixX:Number=0, matrixY:Number=0, matrix:Array=null, divisor:Number=1.0, bias:Number=0.0, preserveAlpha:Boolean=true, clamp:Boolean=true, color:uint=0, alpha:Number=0.0) : ConvolutionFilter {
+         return new ConvolutionFilter(matrixX,matrixY,matrix,divisor,bias,preserveAlpha,clamp,color,alpha);
+      }
 
-        public static function CreateDropShadowFilter(param1:Number = 4, param2:Number = 45, param3:uint = 0, param4:Number = 1, param5:Number = 4, param6:Number = 4, param7:Number = 1, param8:int = 1, param9:Boolean = false, param10:Boolean = false, param11:Boolean = false) : DropShadowFilter
-        {
-            return new DropShadowFilter(param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11);
-        }// end function
+      public static function CreateDisplacementMapFilter(mapBitmap:BitmapData=null, mapPoint:Point=null, componentX:uint=0, componentY:uint=0, scaleX:Number=0.0, scaleY:Number=0.0, mode:String="wrap", color:uint=0, alpha:Number=0.0) : DisplacementMapFilter {
+         return new DisplacementMapFilter(mapBitmap,mapPoint,componentX,componentY,scaleX,scaleY,mode,color,alpha);
+      }
 
-        public static function CreateGlowFilter(param1:uint = 4.27819e+009, param2:Number = 1, param3:Number = 6, param4:Number = 6, param5:Number = 2, param6:int = 1, param7:Boolean = false, param8:Boolean = false) : GlowFilter
-        {
-            return new GlowFilter(param1, param2, param3, param4, param5, param6, param7, param8);
-        }// end function
+      public static function CreateDropShadowFilter(distance:Number=4.0, angle:Number=45, color:uint=0, alpha:Number=1.0, blurX:Number=4.0, blurY:Number=4.0, strength:Number=1.0, quality:int=1, inner:Boolean=false, knockout:Boolean=false, hideObject:Boolean=false) : DropShadowFilter {
+         return new DropShadowFilter(distance,angle,color,alpha,blurX,blurY,strength,quality,inner,knockout,hideObject);
+      }
 
-    }
+      public static function CreateGlowFilter(color:uint=4.27819008E9, alpha:Number=1.0, blurX:Number=6.0, blurY:Number=6.0, strength:Number=2, quality:int=1, inner:Boolean=false, knockout:Boolean=false) : GlowFilter {
+         return new GlowFilter(color,alpha,blurX,blurY,strength,quality,inner,knockout);
+      }
+
+
+   }
+
 }

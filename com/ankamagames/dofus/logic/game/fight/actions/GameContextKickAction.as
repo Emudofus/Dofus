@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.fight.actions
+package com.ankamagames.dofus.logic.game.fight.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GameContextKickAction extends Object implements Action
-    {
-        public var targetId:uint;
 
-        public function GameContextKickAction()
-        {
-            return;
-        }// end function
+   public class GameContextKickAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : GameContextKickAction
-        {
-            var _loc_2:* = new GameContextKickAction;
-            _loc_2.targetId = param1;
-            return _loc_2;
-        }// end function
+      public function GameContextKickAction() {
+         super();
+      }
 
-    }
+      public static function create(targetId:uint) : GameContextKickAction {
+         var a:GameContextKickAction = new GameContextKickAction();
+         a.targetId=targetId;
+         return a;
+      }
+
+      public var targetId:uint;
+   }
+
 }

@@ -1,98 +1,96 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions.fight
+package com.ankamagames.dofus.network.messages.game.actions.fight
 {
-    import com.ankamagames.dofus.network.messages.game.actions.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.network.messages.game.actions.AbstractGameActionMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameActionFightLifePointsGainMessage extends AbstractGameActionMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var targetId:int = 0;
-        public var delta:uint = 0;
-        public static const protocolId:uint = 6311;
 
-        public function GameActionFightLifePointsGainMessage()
-        {
+   public class GameActionFightLifePointsGainMessage extends AbstractGameActionMessage implements INetworkMessage
+   {
+         
+
+      public function GameActionFightLifePointsGainMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6311;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
+
+      public var targetId:int = 0;
+
+      public var delta:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 6311;
+      }
+
+      public function initGameActionFightLifePointsGainMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, delta:uint=0) : GameActionFightLifePointsGainMessage {
+         super.initAbstractGameActionMessage(actionId,sourceId);
+         this.targetId=targetId;
+         this.delta=delta;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.targetId=0;
+         this.delta=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightLifePointsGainMessage(output);
+      }
+
+      public function serializeAs_GameActionFightLifePointsGainMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(output);
+         output.writeInt(this.targetId);
+         if(this.delta<0)
+         {
+            throw new Error("Forbidden value ("+this.delta+") on element delta.");
+         }
+         else
+         {
+            output.writeShort(this.delta);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightLifePointsGainMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6311;
-        }// end function
-
-        public function initGameActionFightLifePointsGainMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 0) : GameActionFightLifePointsGainMessage
-        {
-            super.initAbstractGameActionMessage(param1, param2);
-            this.targetId = param3;
-            this.delta = param4;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.targetId = 0;
-            this.delta = 0;
-            this._isInitialized = false;
+      public function deserializeAs_GameActionFightLifePointsGainMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.targetId=input.readInt();
+         this.delta=input.readShort();
+         if(this.delta<0)
+         {
+            throw new Error("Forbidden value ("+this.delta+") on element of GameActionFightLifePointsGainMessage.delta.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameActionFightLifePointsGainMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_GameActionFightLifePointsGainMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractGameActionMessage(param1);
-            param1.writeInt(this.targetId);
-            if (this.delta < 0)
-            {
-                throw new Error("Forbidden value (" + this.delta + ") on element delta.");
-            }
-            param1.writeShort(this.delta);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameActionFightLifePointsGainMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_GameActionFightLifePointsGainMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.targetId = param1.readInt();
-            this.delta = param1.readShort();
-            if (this.delta < 0)
-            {
-                throw new Error("Forbidden value (" + this.delta + ") on element of GameActionFightLifePointsGainMessage.delta.");
-            }
-            return;
-        }// end function
-
-    }
 }

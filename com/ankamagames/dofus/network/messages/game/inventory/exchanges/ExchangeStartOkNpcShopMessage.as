@@ -1,118 +1,116 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItemToSellInNpcShop;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeStartOkNpcShopMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var npcSellerId:int = 0;
-        public var tokenId:uint = 0;
-        public var objectsInfos:Vector.<ObjectItemToSellInNpcShop>;
-        public static const protocolId:uint = 5761;
 
-        public function ExchangeStartOkNpcShopMessage()
-        {
-            this.objectsInfos = new Vector.<ObjectItemToSellInNpcShop>;
-            return;
-        }// end function
+   public class ExchangeStartOkNpcShopMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeStartOkNpcShopMessage() {
+         this.objectsInfos=new Vector.<ObjectItemToSellInNpcShop>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5761;
-        }// end function
+      public static const protocolId:uint = 5761;
 
-        public function initExchangeStartOkNpcShopMessage(param1:int = 0, param2:uint = 0, param3:Vector.<ObjectItemToSellInNpcShop> = null) : ExchangeStartOkNpcShopMessage
-        {
-            this.npcSellerId = param1;
-            this.tokenId = param2;
-            this.objectsInfos = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.npcSellerId = 0;
-            this.tokenId = 0;
-            this.objectsInfos = new Vector.<ObjectItemToSellInNpcShop>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var npcSellerId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var tokenId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeStartOkNpcShopMessage(param1);
-            return;
-        }// end function
+      public var objectsInfos:Vector.<ObjectItemToSellInNpcShop>;
 
-        public function serializeAs_ExchangeStartOkNpcShopMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.npcSellerId);
-            if (this.tokenId < 0)
+      override public function getMessageId() : uint {
+         return 5761;
+      }
+
+      public function initExchangeStartOkNpcShopMessage(npcSellerId:int=0, tokenId:uint=0, objectsInfos:Vector.<ObjectItemToSellInNpcShop>=null) : ExchangeStartOkNpcShopMessage {
+         this.npcSellerId=npcSellerId;
+         this.tokenId=tokenId;
+         this.objectsInfos=objectsInfos;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.npcSellerId=0;
+         this.tokenId=0;
+         this.objectsInfos=new Vector.<ObjectItemToSellInNpcShop>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeStartOkNpcShopMessage(output);
+      }
+
+      public function serializeAs_ExchangeStartOkNpcShopMessage(output:IDataOutput) : void {
+         output.writeInt(this.npcSellerId);
+         if(this.tokenId<0)
+         {
+            throw new Error("Forbidden value ("+this.tokenId+") on element tokenId.");
+         }
+         else
+         {
+            output.writeInt(this.tokenId);
+            output.writeShort(this.objectsInfos.length);
+            _i3=0;
+            while(_i3<this.objectsInfos.length)
             {
-                throw new Error("Forbidden value (" + this.tokenId + ") on element tokenId.");
-            }
-            param1.writeInt(this.tokenId);
-            param1.writeShort(this.objectsInfos.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.objectsInfos.length)
-            {
-                
-                (this.objectsInfos[_loc_2] as ObjectItemToSellInNpcShop).serializeAs_ObjectItemToSellInNpcShop(param1);
-                _loc_2 = _loc_2 + 1;
+               (this.objectsInfos[_i3] as ObjectItemToSellInNpcShop).serializeAs_ObjectItemToSellInNpcShop(output);
+               _i3++;
             }
             return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeStartOkNpcShopMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeStartOkNpcShopMessage(input);
+      }
 
-        public function deserializeAs_ExchangeStartOkNpcShopMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.npcSellerId = param1.readInt();
-            this.tokenId = param1.readInt();
-            if (this.tokenId < 0)
+      public function deserializeAs_ExchangeStartOkNpcShopMessage(input:IDataInput) : void {
+         var _item3:ObjectItemToSellInNpcShop = null;
+         this.npcSellerId=input.readInt();
+         this.tokenId=input.readInt();
+         if(this.tokenId<0)
+         {
+            throw new Error("Forbidden value ("+this.tokenId+") on element of ExchangeStartOkNpcShopMessage.tokenId.");
+         }
+         else
+         {
+            _objectsInfosLen=input.readUnsignedShort();
+            _i3=0;
+            while(_i3<_objectsInfosLen)
             {
-                throw new Error("Forbidden value (" + this.tokenId + ") on element of ExchangeStartOkNpcShopMessage.tokenId.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new ObjectItemToSellInNpcShop();
-                _loc_4.deserialize(param1);
-                this.objectsInfos.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
+               _item3=new ObjectItemToSellInNpcShop();
+               _item3.deserialize(input);
+               this.objectsInfos.push(_item3);
+               _i3++;
             }
             return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

@@ -1,18 +1,20 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    public interface ITabStopFormat
-    {
 
-        public function ITabStopFormat();
+   public interface ITabStopFormat
+   {
+         
 
-        function getStyle(param1:String);
 
-        function get position();
 
-        function get alignment();
+      function getStyle(param1:String) : *;
 
-        function get decimalAlignmentToken();
+      function get position() : *;
 
-    }
+      function get alignment() : *;
+
+      function get decimalAlignmentToken() : *;
+   }
+
 }

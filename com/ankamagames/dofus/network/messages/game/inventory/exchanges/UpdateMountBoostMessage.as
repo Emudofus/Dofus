@@ -1,109 +1,98 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.mount.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.mount.UpdateMountBoost;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class UpdateMountBoostMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var rideId:Number = 0;
-        public var boostToUpdateList:Vector.<UpdateMountBoost>;
-        public static const protocolId:uint = 6179;
 
-        public function UpdateMountBoostMessage()
-        {
-            this.boostToUpdateList = new Vector.<UpdateMountBoost>;
-            return;
-        }// end function
+   public class UpdateMountBoostMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function UpdateMountBoostMessage() {
+         this.boostToUpdateList=new Vector.<UpdateMountBoost>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6179;
-        }// end function
+      public static const protocolId:uint = 6179;
 
-        public function initUpdateMountBoostMessage(param1:Number = 0, param2:Vector.<UpdateMountBoost> = null) : UpdateMountBoostMessage
-        {
-            this.rideId = param1;
-            this.boostToUpdateList = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.rideId = 0;
-            this.boostToUpdateList = new Vector.<UpdateMountBoost>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var rideId:Number = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var boostToUpdateList:Vector.<UpdateMountBoost>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_UpdateMountBoostMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6179;
+      }
 
-        public function serializeAs_UpdateMountBoostMessage(param1:IDataOutput) : void
-        {
-            param1.writeDouble(this.rideId);
-            param1.writeShort(this.boostToUpdateList.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.boostToUpdateList.length)
-            {
-                
-                param1.writeShort((this.boostToUpdateList[_loc_2] as UpdateMountBoost).getTypeId());
-                (this.boostToUpdateList[_loc_2] as UpdateMountBoost).serialize(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      public function initUpdateMountBoostMessage(rideId:Number=0, boostToUpdateList:Vector.<UpdateMountBoost>=null) : UpdateMountBoostMessage {
+         this.rideId=rideId;
+         this.boostToUpdateList=boostToUpdateList;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_UpdateMountBoostMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.rideId=0;
+         this.boostToUpdateList=new Vector.<UpdateMountBoost>();
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_UpdateMountBoostMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            this.rideId = param1.readDouble();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUnsignedShort();
-                _loc_5 = ProtocolTypeManager.getInstance(UpdateMountBoost, _loc_4);
-                _loc_5.deserialize(param1);
-                this.boostToUpdateList.push(_loc_5);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_UpdateMountBoostMessage(output);
+      }
+
+      public function serializeAs_UpdateMountBoostMessage(output:IDataOutput) : void {
+         output.writeDouble(this.rideId);
+         output.writeShort(this.boostToUpdateList.length);
+         var _i2:uint = 0;
+         while(_i2<this.boostToUpdateList.length)
+         {
+            output.writeShort((this.boostToUpdateList[_i2] as UpdateMountBoost).getTypeId());
+            (this.boostToUpdateList[_i2] as UpdateMountBoost).serialize(output);
+            _i2++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_UpdateMountBoostMessage(input);
+      }
+
+      public function deserializeAs_UpdateMountBoostMessage(input:IDataInput) : void {
+         var _id2:uint = 0;
+         var _item2:UpdateMountBoost = null;
+         this.rideId=input.readDouble();
+         var _boostToUpdateListLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_boostToUpdateListLen)
+         {
+            _id2=input.readUnsignedShort();
+            _item2=ProtocolTypeManager.getInstance(UpdateMountBoost,_id2);
+            _item2.deserialize(input);
+            this.boostToUpdateList.push(_item2);
+            _i2++;
+         }
+      }
+   }
+
 }

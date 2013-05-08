@@ -1,22 +1,24 @@
-﻿package com.ankamagames.jerakine.newCache
+package com.ankamagames.jerakine.newCache
 {
 
-    public interface ICache
-    {
 
-        public function ICache();
+   public interface ICache
+   {
+         
 
-        function get size() : uint;
 
-        function destroy() : void;
 
-        function contains(param1) : Boolean;
+      function get size() : uint;
 
-        function extract(param1);
+      function destroy() : void;
 
-        function peek(param1);
+      function contains(param1:*) : Boolean;
 
-        function store(param1, param2) : void;
+      function extract(param1:*) : *;
 
-    }
+      function peek(param1:*) : *;
+
+      function store(param1:*, param2:*) : void;
+   }
+
 }

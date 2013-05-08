@@ -1,79 +1,67 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.party
+package com.ankamagames.dofus.network.messages.game.context.roleplay.party
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PartyLeaveRequestMessage extends AbstractPartyMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 5593;
 
-        public function PartyLeaveRequestMessage()
-        {
-            return;
-        }// end function
+   public class PartyLeaveRequestMessage extends AbstractPartyMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function PartyLeaveRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5593;
-        }// end function
+      public static const protocolId:uint = 5593;
 
-        public function initPartyLeaveRequestMessage(param1:uint = 0) : PartyLeaveRequestMessage
-        {
-            super.initAbstractPartyMessage(param1);
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5593;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public function initPartyLeaveRequestMessage(partyId:uint=0) : PartyLeaveRequestMessage {
+         super.initAbstractPartyMessage(partyId);
+         this._isInitialized=true;
+         return this;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PartyLeaveRequestMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this._isInitialized=false;
+      }
 
-        public function serializeAs_PartyLeaveRequestMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractPartyMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PartyLeaveRequestMessage(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserializeAs_PartyLeaveRequestMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PartyLeaveRequestMessage(output);
+      }
 
-    }
+      public function serializeAs_PartyLeaveRequestMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractPartyMessage(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PartyLeaveRequestMessage(input);
+      }
+
+      public function deserializeAs_PartyLeaveRequestMessage(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

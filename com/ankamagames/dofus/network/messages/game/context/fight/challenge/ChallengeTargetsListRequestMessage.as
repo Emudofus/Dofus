@@ -1,88 +1,86 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight.challenge
+package com.ankamagames.dofus.network.messages.game.context.fight.challenge
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ChallengeTargetsListRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var challengeId:uint = 0;
-        public static const protocolId:uint = 5614;
 
-        public function ChallengeTargetsListRequestMessage()
-        {
+   public class ChallengeTargetsListRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function ChallengeTargetsListRequestMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 5614;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var challengeId:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 5614;
+      }
+
+      public function initChallengeTargetsListRequestMessage(challengeId:uint=0) : ChallengeTargetsListRequestMessage {
+         this.challengeId=challengeId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.challengeId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChallengeTargetsListRequestMessage(output);
+      }
+
+      public function serializeAs_ChallengeTargetsListRequestMessage(output:IDataOutput) : void {
+         if(this.challengeId<0)
+         {
+            throw new Error("Forbidden value ("+this.challengeId+") on element challengeId.");
+         }
+         else
+         {
+            output.writeShort(this.challengeId);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChallengeTargetsListRequestMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5614;
-        }// end function
-
-        public function initChallengeTargetsListRequestMessage(param1:uint = 0) : ChallengeTargetsListRequestMessage
-        {
-            this.challengeId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.challengeId = 0;
-            this._isInitialized = false;
+      public function deserializeAs_ChallengeTargetsListRequestMessage(input:IDataInput) : void {
+         this.challengeId=input.readShort();
+         if(this.challengeId<0)
+         {
+            throw new Error("Forbidden value ("+this.challengeId+") on element of ChallengeTargetsListRequestMessage.challengeId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ChallengeTargetsListRequestMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ChallengeTargetsListRequestMessage(param1:IDataOutput) : void
-        {
-            if (this.challengeId < 0)
-            {
-                throw new Error("Forbidden value (" + this.challengeId + ") on element challengeId.");
-            }
-            param1.writeShort(this.challengeId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ChallengeTargetsListRequestMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ChallengeTargetsListRequestMessage(param1:IDataInput) : void
-        {
-            this.challengeId = param1.readShort();
-            if (this.challengeId < 0)
-            {
-                throw new Error("Forbidden value (" + this.challengeId + ") on element of ChallengeTargetsListRequestMessage.challengeId.");
-            }
-            return;
-        }// end function
-
-    }
 }

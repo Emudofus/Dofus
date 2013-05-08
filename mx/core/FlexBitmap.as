@@ -1,29 +1,31 @@
-﻿package mx.core
+package mx.core
 {
-    import flash.display.*;
-    import mx.utils.*;
+   import flash.display.Bitmap;
+   import mx.utils.NameUtil;
+   import flash.display.BitmapData;
 
-    public class FlexBitmap extends Bitmap
-    {
-        static const VERSION:String = "4.6.0.23201";
+   use namespace mx_internal;
 
-        public function FlexBitmap(param1:BitmapData = null, param2:String = "auto", param3:Boolean = false)
-        {
-            super(param1, param2, param3);
-            try
-            {
-                name = NameUtil.createUniqueName(this);
-            }
-            catch (e:Error)
-            {
-            }
-            return;
-        }// end function
+   public class FlexBitmap extends Bitmap
+   {
+         
 
-        override public function toString() : String
-        {
-            return NameUtil.displayObjectToString(this);
-        }// end function
+      public function FlexBitmap(bitmapData:BitmapData=null, pixelSnapping:String="auto", smoothing:Boolean=false) {
+         super(bitmapData,pixelSnapping,smoothing);
+         try
+         {
+            name=NameUtil.createUniqueName(this);
+         }
+         catch(e:Error)
+         {
+         }
+      }
 
-    }
+      mx_internal  static const VERSION:String = "4.6.0.23201";
+
+      override public function toString() : String {
+         return NameUtil.displayObjectToString(this);
+      }
+   }
+
 }

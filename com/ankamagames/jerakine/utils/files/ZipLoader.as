@@ -1,171 +1,163 @@
-﻿package com.ankamagames.jerakine.utils.files
+package com.ankamagames.jerakine.utils.files
 {
-    import com.ankamagames.jerakine.cache.*;
-    import flash.events.*;
-    import flash.net.*;
-    import flash.utils.*;
-    import nochump.util.zip.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.cache.ICachable;
+   import nochump.util.zip.ZipFile;
+   import flash.net.URLLoader;
+   import flash.net.URLRequest;
+   import flash.net.URLLoaderDataFormat;
+   import flash.events.Event;
+   import flash.events.HTTPStatusEvent;
+   import flash.events.IOErrorEvent;
+   import flash.events.SecurityErrorEvent;
+   import flash.events.ProgressEvent;
+   import flash.utils.ByteArray;
+   import nochump.util.zip.ZipEntry;
 
-    public class ZipLoader extends EventDispatcher implements ICachable
-    {
-        private var _zipFile:ZipFile;
-        private var _files:Array;
-        private var _filesNames:Array;
-        private var _oExtraData:Object;
-        private var _inUse:Boolean;
-        private var _name:String;
-        private var _loader:URLLoader;
-        public var url:String;
-        public var loaded:Boolean;
 
-        public function ZipLoader(param1:URLRequest = null, param2 = null)
-        {
-            if (param1)
+   public class ZipLoader extends EventDispatcher implements ICachable
+   {
+         
+
+      public function ZipLoader(fileRequest:URLRequest=null, oExtraData:*=null) {
+         super();
+         if(fileRequest)
+         {
+            this._name="ZIP_"+fileRequest.url;
+         }
+         this._oExtraData=oExtraData;
+         if(fileRequest!=null)
+         {
+            this.load(fileRequest);
+         }
+      }
+
+
+
+      private var _zipFile:ZipFile;
+
+      private var _files:Array;
+
+      private var _filesNames:Array;
+
+      private var _oExtraData;
+
+      private var _inUse:Boolean;
+
+      private var _name:String;
+
+      private var _loader:URLLoader;
+
+      public var url:String;
+
+      public var loaded:Boolean;
+
+      public function get inUse() : Boolean {
+         return this._inUse;
+      }
+
+      public function set inUse(value:Boolean) : void {
+         this._inUse=value;
+      }
+
+      public function get name() : String {
+         return this._name;
+      }
+
+      public function set name(value:String) : void {
+         this._name=value;
+      }
+
+      public function get extraData() : * {
+         return this._oExtraData;
+      }
+
+      public function load(request:URLRequest) : void {
+         this.loaded=false;
+         this._files=new Array();
+         this._filesNames=new Array();
+         this._name="ZIP_"+request.url;
+         this._zipFile=null;
+         this._loader=new URLLoader();
+         this._loader.dataFormat=URLLoaderDataFormat.BINARY;
+         this._loader.addEventListener(Event.COMPLETE,this.onLoadComplete);
+         this._loader.addEventListener(HTTPStatusEvent.HTTP_STATUS,this.onHttpStatus);
+         this._loader.addEventListener(IOErrorEvent.IO_ERROR,this.onIOError);
+         this._loader.addEventListener(Event.OPEN,this.onOpen);
+         this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.onSecurityError);
+         this._loader.addEventListener(ProgressEvent.PROGRESS,this.onProgress);
+         this._loader.load(request);
+         this.url=request.url;
+      }
+
+      public function getFilesList() : Array {
+         return this._filesNames;
+      }
+
+      public function getFileDatas(fileName:String) : ByteArray {
+         return this._zipFile.getInput(this._files[fileName]);
+      }
+
+      public function fileExists(fileName:String) : Boolean {
+         var i:uint = 0;
+         while(i<this._filesNames.length)
+         {
+            if(this._filesNames[i]==fileName)
             {
-                this._name = "ZIP_" + param1.url;
+               return true;
             }
-            this._oExtraData = param2;
-            if (param1 != null)
+            i++;
+         }
+         return false;
+      }
+
+      public function destroy() : void {
+         try
+         {
+            if(this._loader)
             {
-                this.load(param1);
+               this._loader.close();
             }
-            return;
-        }// end function
+         }
+         catch(e:Error)
+         {
+         }
+      }
 
-        public function get inUse() : Boolean
-        {
-            return this._inUse;
-        }// end function
+      private function onLoadComplete(e:Event) : void {
+         var entry:ZipEntry = null;
+         var zipData:ByteArray = ByteArray(URLLoader(e.target).data);
+         this._zipFile=new ZipFile(zipData);
+         var i:uint = 0;
+         while(i<this._zipFile.entries.length)
+         {
+            entry=this._zipFile.entries[i];
+            this._files[entry.name]=entry;
+            this._filesNames.push(entry.name);
+            i++;
+         }
+         dispatchEvent(e);
+      }
 
-        public function set inUse(param1:Boolean) : void
-        {
-            this._inUse = param1;
-            return;
-        }// end function
+      private function onHttpStatus(httpse:HTTPStatusEvent) : void {
+         dispatchEvent(httpse);
+      }
 
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
+      private function onIOError(ioe:IOErrorEvent) : void {
+         dispatchEvent(ioe);
+      }
 
-        public function set name(param1:String) : void
-        {
-            this._name = param1;
-            return;
-        }// end function
+      private function onOpen(e:Event) : void {
+         dispatchEvent(e);
+      }
 
-        public function get extraData()
-        {
-            return this._oExtraData;
-        }// end function
+      private function onSecurityError(se:SecurityErrorEvent) : void {
+         dispatchEvent(se);
+      }
 
-        public function load(param1:URLRequest) : void
-        {
-            this.loaded = false;
-            this._files = new Array();
-            this._filesNames = new Array();
-            this._name = "ZIP_" + param1.url;
-            this._zipFile = null;
-            this._loader = new URLLoader();
-            this._loader.dataFormat = URLLoaderDataFormat.BINARY;
-            this._loader.addEventListener(Event.COMPLETE, this.onLoadComplete);
-            this._loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, this.onHttpStatus);
-            this._loader.addEventListener(IOErrorEvent.IO_ERROR, this.onIOError);
-            this._loader.addEventListener(Event.OPEN, this.onOpen);
-            this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onSecurityError);
-            this._loader.addEventListener(ProgressEvent.PROGRESS, this.onProgress);
-            this._loader.load(param1);
-            this.url = param1.url;
-            return;
-        }// end function
+      private function onProgress(pe:ProgressEvent) : void {
+         dispatchEvent(pe);
+      }
+   }
 
-        public function getFilesList() : Array
-        {
-            return this._filesNames;
-        }// end function
-
-        public function getFileDatas(param1:String) : ByteArray
-        {
-            return this._zipFile.getInput(this._files[param1]);
-        }// end function
-
-        public function fileExists(param1:String) : Boolean
-        {
-            var _loc_2:* = 0;
-            while (_loc_2 < this._filesNames.length)
-            {
-                
-                if (this._filesNames[_loc_2] == param1)
-                {
-                    return true;
-                }
-                _loc_2 = _loc_2 + 1;
-            }
-            return false;
-        }// end function
-
-        public function destroy() : void
-        {
-            try
-            {
-                if (this._loader)
-                {
-                    this._loader.close();
-                }
-            }
-            catch (e:Error)
-            {
-            }
-            return;
-        }// end function
-
-        private function onLoadComplete(event:Event) : void
-        {
-            var _loc_4:* = null;
-            var _loc_2:* = ByteArray(URLLoader(event.target).data);
-            this._zipFile = new ZipFile(_loc_2);
-            var _loc_3:* = 0;
-            while (_loc_3 < this._zipFile.entries.length)
-            {
-                
-                _loc_4 = this._zipFile.entries[_loc_3];
-                this._files[_loc_4.name] = _loc_4;
-                this._filesNames.push(_loc_4.name);
-                _loc_3 = _loc_3 + 1;
-            }
-            dispatchEvent(event);
-            return;
-        }// end function
-
-        private function onHttpStatus(event:HTTPStatusEvent) : void
-        {
-            dispatchEvent(event);
-            return;
-        }// end function
-
-        private function onIOError(event:IOErrorEvent) : void
-        {
-            dispatchEvent(event);
-            return;
-        }// end function
-
-        private function onOpen(event:Event) : void
-        {
-            dispatchEvent(event);
-            return;
-        }// end function
-
-        private function onSecurityError(event:SecurityErrorEvent) : void
-        {
-            dispatchEvent(event);
-            return;
-        }// end function
-
-        private function onProgress(event:ProgressEvent) : void
-        {
-            dispatchEvent(event);
-            return;
-        }// end function
-
-    }
 }

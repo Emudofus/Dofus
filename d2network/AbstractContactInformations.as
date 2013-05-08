@@ -1,23 +1,24 @@
-﻿package d2network
+package d2network
 {
 
-    public class AbstractContactInformations extends Object
-    {
 
-        public function AbstractContactInformations()
-        {
-            return;
-        }// end function
+   public class AbstractContactInformations extends Object
+   {
+         
 
-        public function get accountId() : uint
-        {
-            return new uint();
-        }// end function
+      public function AbstractContactInformations() {
+         super();
+      }
 
-        public function get accountName() : String
-        {
-            return new String();
-        }// end function
 
-    }
+
+      public function get accountId() : uint {
+         return new uint();
+      }
+
+      public function get accountName() : String {
+         return new String();
+      }
+   }
+
 }

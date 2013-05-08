@@ -1,21 +1,23 @@
-﻿package com.hurlant.crypto.prng
+package com.hurlant.crypto.prng
 {
-    import flash.utils.*;
+   import flash.utils.ByteArray;
 
-    public interface IPRNG
-    {
 
-        public function IPRNG();
+   public interface IPRNG
+   {
+         
 
-        function getPoolSize() : uint;
 
-        function init(param1:ByteArray) : void;
 
-        function next() : uint;
+      function getPoolSize() : uint;
 
-        function dispose() : void;
+      function init(param1:ByteArray) : void;
 
-        function toString() : String;
+      function next() : uint;
 
-    }
+      function dispose() : void;
+
+      function toString() : String;
+   }
+
 }

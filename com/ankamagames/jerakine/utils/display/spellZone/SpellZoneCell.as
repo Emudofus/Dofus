@@ -1,120 +1,110 @@
-﻿package com.ankamagames.jerakine.utils.display.spellZone
+package com.ankamagames.jerakine.utils.display.spellZone
 {
-    import com.ankamagames.jerakine.types.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.filters.*;
+   import flash.display.Sprite;
+   import flash.events.MouseEvent;
+   import com.ankamagames.jerakine.types.Color;
+   import flash.filters.ColorMatrixFilter;
 
-    public class SpellZoneCell extends Sprite
-    {
-        private var _cellWidth:uint;
-        private var _cellHeight:uint;
-        private var _cellId:uint;
-        private var _defaultColor:uint = 16777215;
-        private var _alpha:Number = 0.5;
-        private var _spriteCell:Class;
-        public var posX:int;
-        public var posY:int;
-        public var isRangedCell:Boolean = false;
 
-        public function SpellZoneCell(param1:uint, param2:uint, param3:uint)
-        {
-            this._cellWidth = param1;
-            this._cellHeight = param2;
-            this._cellId = param3;
-            width = this._cellWidth;
-            height = this._cellHeight;
-            return;
-        }// end function
+   public class SpellZoneCell extends Sprite
+   {
+         
 
-        public function set defaultColor(param1:uint) : void
-        {
-            this._defaultColor = param1;
-            return;
-        }// end function
+      public function SpellZoneCell(pWidth:uint, pHeight:uint, pId:uint) {
+         super();
+         this._cellWidth=pWidth;
+         this._cellHeight=pHeight;
+         this._cellId=pId;
+         width=this._cellWidth;
+         height=this._cellHeight;
+      }
 
-        private function addListeners() : void
-        {
-            addEventListener(MouseEvent.MOUSE_OVER, this.onRollOver);
-            addEventListener(MouseEvent.MOUSE_OUT, this.onRollOut);
-            addEventListener(MouseEvent.CLICK, this.onClick);
-            return;
-        }// end function
 
-        private function removeListeners() : void
-        {
-            removeEventListener(MouseEvent.MOUSE_OVER, this.onRollOver);
-            removeEventListener(MouseEvent.MOUSE_OUT, this.onRollOut);
-            removeEventListener(MouseEvent.CLICK, this.onClick);
-            return;
-        }// end function
 
-        public function setNormalCell() : void
-        {
-            this.removeListeners();
-            this._defaultColor = 0;
-            this.changeColorToDefault();
-            this.isRangedCell = false;
-            return;
-        }// end function
+      private var _cellWidth:uint;
 
-        public function get cellId() : uint
-        {
-            return this._cellId;
-        }// end function
+      private var _cellHeight:uint;
 
-        private function onRollOver(event:MouseEvent) : void
-        {
-            var _loc_2:* = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOVER);
-            _loc_2.cell = this;
-            dispatchEvent(_loc_2);
-            return;
-        }// end function
+      private var _cellId:uint;
 
-        private function onRollOut(event:MouseEvent) : void
-        {
-            this.colorCell(this._defaultColor);
-            var _loc_2:* = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOUT);
-            _loc_2.cell = this;
-            dispatchEvent(_loc_2);
-            return;
-        }// end function
+      private var _defaultColor:uint = 16777215;
 
-        private function onClick(event:MouseEvent) : void
-        {
-            return;
-        }// end function
+      private var _alpha:Number = 0.5;
 
-        public function colorCell(param1:uint, param2:Boolean = false) : void
-        {
-            var _loc_3:* = new Color(param1);
-            this.filters = [new ColorMatrixFilter([_loc_3.red / 255, 0, 0, 0, 0, 0, _loc_3.green / 255, 0, 0, 0, 0, 0, _loc_3.blue / 255, 0, 0, 0, 0, 0, this._alpha, 0])];
-            if (param2)
-            {
-                this._defaultColor = param1;
-            }
-            return;
-        }// end function
+      private var _spriteCell:Class;
 
-        public function changeColorToDefault() : void
-        {
-            this.colorCell(this._defaultColor, true);
-            return;
-        }// end function
+      public var posX:int;
 
-        public function setRangeCell() : void
-        {
-            this.colorCell(SpellZoneCellManager.RANGE_COLOR, true);
-            this.addListeners();
-            this.isRangedCell = true;
-            return;
-        }// end function
+      public var posY:int;
 
-        public function setSpellCell() : void
-        {
-            this.colorCell(SpellZoneCellManager.SPELL_COLOR, false);
-            return;
-        }// end function
+      public var isRangedCell:Boolean = false;
 
-    }
+      public function set defaultColor(pColor:uint) : void {
+         this._defaultColor=pColor;
+      }
+
+      private function addListeners() : void {
+         addEventListener(MouseEvent.MOUSE_OVER,this.onRollOver);
+         addEventListener(MouseEvent.MOUSE_OUT,this.onRollOut);
+         addEventListener(MouseEvent.CLICK,this.onClick);
+      }
+
+      private function removeListeners() : void {
+         removeEventListener(MouseEvent.MOUSE_OVER,this.onRollOver);
+         removeEventListener(MouseEvent.MOUSE_OUT,this.onRollOut);
+         removeEventListener(MouseEvent.CLICK,this.onClick);
+      }
+
+      public function setNormalCell() : void {
+         this.removeListeners();
+         this._defaultColor=0;
+         this.changeColorToDefault();
+         this.isRangedCell=false;
+      }
+
+      public function get cellId() : uint {
+         return this._cellId;
+      }
+
+      private function onRollOver(e:MouseEvent) : void {
+         var event:SpellZoneEvent = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOVER);
+         event.cell=this;
+         dispatchEvent(event);
+      }
+
+      private function onRollOut(e:MouseEvent) : void {
+         this.colorCell(this._defaultColor);
+         var event:SpellZoneEvent = new SpellZoneEvent(SpellZoneEvent.CELL_ROLLOUT);
+         event.cell=this;
+         dispatchEvent(event);
+      }
+
+      private function onClick(e:MouseEvent) : void {
+         
+      }
+
+      public function colorCell(color:uint, setDefault:Boolean=false) : void {
+         var oColor:Color = new Color(color);
+         this.filters=[new ColorMatrixFilter([oColor.red/255,0,0,0,0,0,oColor.green/255,0,0,0,0,0,oColor.blue/255,0,0,0,0,0,this._alpha,0])];
+         if(setDefault)
+         {
+            this._defaultColor=color;
+         }
+      }
+
+      public function changeColorToDefault() : void {
+         this.colorCell(this._defaultColor,true);
+      }
+
+      public function setRangeCell() : void {
+         this.colorCell(SpellZoneCellManager.RANGE_COLOR,true);
+         this.addListeners();
+         this.isRangedCell=true;
+      }
+
+      public function setSpellCell() : void {
+         this.colorCell(SpellZoneCellManager.SPELL_COLOR,false);
+      }
+   }
+
 }

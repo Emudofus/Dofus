@@ -1,140 +1,137 @@
-﻿package com.ankamagames.atouin.renderers
+package com.ankamagames.atouin.renderers
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.events.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import com.ankamagames.atouin.utils.IZoneRenderer;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.atouin.types.ZoneTile;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.Color;
+   import com.ankamagames.atouin.types.DataMapContainer;
+   import flash.geom.ColorTransform;
+   import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
+   import com.ankamagames.atouin.Atouin;
 
-    public class ZoneDARenderer extends Object implements IZoneRenderer
-    {
-        protected var _cells:Vector.<uint>;
-        protected var _aZoneTile:Array;
-        protected var _aCellTile:Array;
-        private var _alpha:Number = 0.7;
-        public var strata:uint = 0;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ZoneDARenderer));
-        private static var zoneTileCache:Array = new Array();
 
-        public function ZoneDARenderer(param1:uint = 0, param2:Number = 1)
-        {
-            this._aZoneTile = new Array();
-            this._aCellTile = new Array();
-            this.strata = param1;
-            this._alpha = param2;
-            Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onPropertyChanged);
+   public class ZoneDARenderer extends Object implements IZoneRenderer
+   {
+         
+
+      public function ZoneDARenderer(nStrata:uint=0, alpha:Number=1) {
+         super();
+         this._aZoneTile=new Array();
+         this._aCellTile=new Array();
+         this.strata=nStrata;
+         this._alpha=alpha;
+         Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ZoneDARenderer));
+
+      private static var zoneTileCache:Array = new Array();
+
+      private static function getZoneTile() : ZoneTile {
+         if(zoneTileCache.length)
+         {
+            return zoneTileCache.shift();
+         }
+         return new ZoneTile();
+      }
+
+      private static function destroyZoneTile(zt:ZoneTile) : void {
+         zt.remove();
+         zoneTileCache.push(zt);
+      }
+
+      protected var _cells:Vector.<uint>;
+
+      protected var _aZoneTile:Array;
+
+      protected var _aCellTile:Array;
+
+      private var _alpha:Number = 0.7;
+
+      public var strata:uint = 0;
+
+      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, bAlpha:Boolean=false) : void {
+         var j:* = 0;
+         var zt:ZoneTile = null;
+         var ct:ColorTransform = null;
+         this._cells=cells;
+         var num:int = cells.length;
+         j=0;
+         while(j<num)
+         {
+            zt=this._aZoneTile[j];
+            if(!zt)
+            {
+               zt=getZoneTile();
+               this._aZoneTile[j]=zt;
+               zt.strata=this.strata;
+               ct=new ColorTransform();
+               zt.color=oColor.color;
+            }
+            this._aCellTile[j]=cells[j];
+            zt.cellId=cells[j];
+            zt.text=this.getText(j);
+            zt.display();
+            j++;
+         }
+         while(j<num)
+         {
+            zt=this._aZoneTile[j];
+            if(zt)
+            {
+               destroyZoneTile(zt);
+            }
+            j++;
+         }
+      }
+
+      protected function getText(count:int) : String {
+         return null;
+      }
+
+      public function remove(cells:Vector.<uint>, mapContainer:DataMapContainer) : void {
+         var j:* = 0;
+         var zt:ZoneTile = null;
+         if(!cells)
+         {
             return;
-        }// end function
-
-        public function render(param1:Vector.<uint>, param2:Color, param3:DataMapContainer, param4:Boolean = false) : void
-        {
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_8:* = null;
-            this._cells = param1;
-            var _loc_7:* = param1.length;
-            _loc_5 = 0;
-            while (_loc_5 < _loc_7)
+         }
+         var count:int = 0;
+         var mapping:Array = new Array();
+         var num:int = cells.length;
+         j=0;
+         while(j<num)
+         {
+            mapping[cells[j]]=true;
+            j++;
+         }
+         num=this._aCellTile.length;
+         var i:int = 0;
+         while(i<num)
+         {
+            if(mapping[this._aCellTile[i]])
             {
-                
-                _loc_6 = this._aZoneTile[_loc_5];
-                if (!_loc_6)
-                {
-                    _loc_6 = getZoneTile();
-                    this._aZoneTile[_loc_5] = _loc_6;
-                    _loc_6.strata = this.strata;
-                    _loc_8 = new ColorTransform();
-                    _loc_6.color = param2.color;
-                }
-                this._aCellTile[_loc_5] = param1[_loc_5];
-                _loc_6.cellId = param1[_loc_5];
-                _loc_6.text = this.getText(_loc_5);
-                _loc_6.display();
-                _loc_5++;
+               count++;
+               zt=this._aZoneTile[i];
+               if(zt)
+               {
+                  destroyZoneTile(zt);
+               }
+               this._aCellTile.splice(i,1);
+               this._aZoneTile.splice(i,1);
+               i--;
+               num--;
             }
-            while (_loc_5 < _loc_7)
-            {
-                
-                _loc_6 = this._aZoneTile[_loc_5];
-                if (_loc_6)
-                {
-                    destroyZoneTile(_loc_6);
-                }
-                _loc_5++;
-            }
-            return;
-        }// end function
+            i++;
+         }
+      }
 
-        protected function getText(param1:int) : String
-        {
-            return null;
-        }// end function
+      private function onPropertyChanged(e:PropertyChangeEvent) : void {
+         
+      }
+   }
 
-        public function remove(param1:Vector.<uint>, param2:DataMapContainer) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_8:* = null;
-            if (!param1)
-            {
-                return;
-            }
-            var _loc_3:* = 0;
-            var _loc_5:* = new Array();
-            var _loc_6:* = param1.length;
-            _loc_4 = 0;
-            while (_loc_4 < _loc_6)
-            {
-                
-                _loc_5[param1[_loc_4]] = true;
-                _loc_4++;
-            }
-            _loc_6 = this._aCellTile.length;
-            var _loc_7:* = 0;
-            while (_loc_7 < _loc_6)
-            {
-                
-                if (_loc_5[this._aCellTile[_loc_7]])
-                {
-                    _loc_3++;
-                    _loc_8 = this._aZoneTile[_loc_7];
-                    if (_loc_8)
-                    {
-                        destroyZoneTile(_loc_8);
-                    }
-                    this._aCellTile.splice(_loc_7, 1);
-                    this._aZoneTile.splice(_loc_7, 1);
-                    _loc_7 = _loc_7 - 1;
-                    _loc_6 = _loc_6 - 1;
-                }
-                _loc_7++;
-            }
-            return;
-        }// end function
-
-        private function onPropertyChanged(event:PropertyChangeEvent) : void
-        {
-            return;
-        }// end function
-
-        private static function getZoneTile() : ZoneTile
-        {
-            if (zoneTileCache.length)
-            {
-                return zoneTileCache.shift();
-            }
-            return new ZoneTile();
-        }// end function
-
-        private static function destroyZoneTile(param1:ZoneTile) : void
-        {
-            param1.remove();
-            zoneTileCache.push(param1);
-            return;
-        }// end function
-
-    }
 }

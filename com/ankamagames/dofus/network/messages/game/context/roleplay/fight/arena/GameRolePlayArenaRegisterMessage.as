@@ -1,84 +1,78 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
+package com.ankamagames.dofus.network.messages.game.context.roleplay.fight.arena
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameRolePlayArenaRegisterMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var battleMode:uint = 3;
-        public static const protocolId:uint = 6280;
 
-        public function GameRolePlayArenaRegisterMessage()
-        {
+   public class GameRolePlayArenaRegisterMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function GameRolePlayArenaRegisterMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6280;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var battleMode:uint = 3;
+
+      override public function getMessageId() : uint {
+         return 6280;
+      }
+
+      public function initGameRolePlayArenaRegisterMessage(battleMode:uint=3) : GameRolePlayArenaRegisterMessage {
+         this.battleMode=battleMode;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.battleMode=3;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameRolePlayArenaRegisterMessage(output);
+      }
+
+      public function serializeAs_GameRolePlayArenaRegisterMessage(output:IDataOutput) : void {
+         output.writeInt(this.battleMode);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameRolePlayArenaRegisterMessage(input);
+      }
+
+      public function deserializeAs_GameRolePlayArenaRegisterMessage(input:IDataInput) : void {
+         this.battleMode=input.readInt();
+         if(this.battleMode<0)
+         {
+            throw new Error("Forbidden value ("+this.battleMode+") on element of GameRolePlayArenaRegisterMessage.battleMode.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 6280;
-        }// end function
-
-        public function initGameRolePlayArenaRegisterMessage(param1:uint = 3) : GameRolePlayArenaRegisterMessage
-        {
-            this.battleMode = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.battleMode = 3;
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameRolePlayArenaRegisterMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_GameRolePlayArenaRegisterMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.battleMode);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameRolePlayArenaRegisterMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_GameRolePlayArenaRegisterMessage(param1:IDataInput) : void
-        {
-            this.battleMode = param1.readInt();
-            if (this.battleMode < 0)
-            {
-                throw new Error("Forbidden value (" + this.battleMode + ") on element of GameRolePlayArenaRegisterMessage.battleMode.");
-            }
-            return;
-        }// end function
-
-    }
 }

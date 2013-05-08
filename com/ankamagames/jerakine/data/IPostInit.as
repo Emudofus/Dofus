@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
 
-    public interface IPostInit
-    {
 
-        public function IPostInit();
+   public interface IPostInit
+   {
+         
 
-        function postInit() : void;
 
-    }
+
+      function postInit() : void;
+   }
+
 }

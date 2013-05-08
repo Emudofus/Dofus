@@ -1,22 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class IncreaseSpellLevelAction extends Object implements Action
-    {
-        public var spellId:uint;
 
-        public function IncreaseSpellLevelAction()
-        {
-            return;
-        }// end function
+   public class IncreaseSpellLevelAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : IncreaseSpellLevelAction
-        {
-            var _loc_2:* = new IncreaseSpellLevelAction;
-            _loc_2.spellId = param1;
-            return _loc_2;
-        }// end function
+      public function IncreaseSpellLevelAction() {
+         super();
+      }
 
-    }
+      public static function create(pSpellId:uint, pSpellLevel:uint) : IncreaseSpellLevelAction {
+         var a:IncreaseSpellLevelAction = new IncreaseSpellLevelAction();
+         a.spellId=pSpellId;
+         a.spellLevel=pSpellLevel;
+         return a;
+      }
+
+      public var spellId:uint;
+
+      public var spellLevel:uint;
+   }
+
 }

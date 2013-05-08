@@ -1,44 +1,47 @@
-﻿package com.ankamagames.jerakine.BalanceManager.type
+package com.ankamagames.jerakine.BalanceManager.type
 {
-    import com.ankamagames.jerakine.BalanceManager.events.*;
-    import flash.events.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.BalanceManager.events.BalanceEvent;
 
-    public class BalancedObject extends EventDispatcher
-    {
-        public var item:Object;
-        private var _nbCall:uint;
-        public var chanceToBeNonCall:Number;
-        public var chanceToBeCall:Number;
 
-        public function BalancedObject(param1:Object)
-        {
-            this.item = param1;
-            this.nbCall = 0;
-            return;
-        }// end function
+   public class BalancedObject extends EventDispatcher
+   {
+         
 
-        public function increment() : uint
-        {
-            this.nbCall = this._nbCall + 1;
-            return this._nbCall;
-        }// end function
+      public function BalancedObject(pItem:Object) {
+         super();
+         this.item=pItem;
+         this.nbCall=0;
+      }
 
-        public function set nbCall(param1:uint) : void
-        {
-            var _loc_2:* = this._nbCall;
-            this._nbCall = param1;
-            var _loc_3:* = new BalanceEvent(BalanceEvent.BALANCE_UPDATE);
-            _loc_3.previousBalance = _loc_2;
-            _loc_3.newBalance = this._nbCall;
-            _loc_3.item = this.item;
-            dispatchEvent(_loc_3);
-            return;
-        }// end function
 
-        public function get nbCall() : uint
-        {
-            return this._nbCall;
-        }// end function
 
-    }
+      public var item:Object;
+
+      private var _nbCall:uint;
+
+      public var chanceToBeNonCall:Number;
+
+      public var chanceToBeCall:Number;
+
+      public function increment() : uint {
+         this.nbCall=this._nbCall+1;
+         return this._nbCall;
+      }
+
+      public function set nbCall(pNbCall:uint) : void {
+         var previousNbCall:uint = this._nbCall;
+         this._nbCall=pNbCall;
+         var be:BalanceEvent = new BalanceEvent(BalanceEvent.BALANCE_UPDATE);
+         be.previousBalance=previousNbCall;
+         be.newBalance=this._nbCall;
+         be.item=this.item;
+         dispatchEvent(be);
+      }
+
+      public function get nbCall() : uint {
+         return this._nbCall;
+      }
+   }
+
 }

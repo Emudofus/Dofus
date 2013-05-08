@@ -1,28 +1,32 @@
-﻿package d2network
+package d2network
 {
 
-    public class IgnoredOnlineInformations extends IgnoredInformations
-    {
 
-        public function IgnoredOnlineInformations()
-        {
-            return;
-        }// end function
+   public class IgnoredOnlineInformations extends IgnoredInformations
+   {
+         
 
-        public function get playerName() : String
-        {
-            return new String();
-        }// end function
+      public function IgnoredOnlineInformations() {
+         super();
+      }
 
-        public function get breed() : int
-        {
-            return new int();
-        }// end function
 
-        public function get sex() : Boolean
-        {
-            return new Boolean();
-        }// end function
 
-    }
+      public function get playerId() : uint {
+         return new uint();
+      }
+
+      public function get playerName() : String {
+         return new String();
+      }
+
+      public function get breed() : int {
+         return new int();
+      }
+
+      public function get sex() : Boolean {
+         return new Boolean();
+      }
+   }
+
 }

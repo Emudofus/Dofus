@@ -1,16 +1,19 @@
-﻿package com.ankamagames.dofus.logic.game.common.misc
+package com.ankamagames.dofus.logic.game.common.misc
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.logic.game.fight.types.*;
+   import com.ankamagames.dofus.logic.game.fight.types.CastingSpell;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.sequencer.ISequencable;
 
-    public interface ISpellCastProvider
-    {
 
-        public function ISpellCastProvider();
+   public interface ISpellCastProvider
+   {
+         
 
-        function get castingSpell() : CastingSpell;
 
-        function get stepsBuffer() : Vector.<ISequencable>;
 
-    }
+      function get castingSpell() : CastingSpell;
+
+      function get stepsBuffer() : Vector.<ISequencable>;
+   }
+
 }

@@ -1,248 +1,202 @@
-﻿package com.ankamagames.jerakine.json
+package com.ankamagames.jerakine.json
 {
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import flash.utils.describeType;
+   import flash.utils.getQualifiedClassName;
 
-    public class JSONEncoder extends Object
-    {
-        private var _depthLimit:uint = 0;
-        private var _showObjectType:Boolean = false;
-        private var jsonString:String;
 
-        public function JSONEncoder(param1, param2:uint = 0, param3:Boolean = false)
-        {
-            this._depthLimit = param2;
-            this._showObjectType = param3;
-            this.jsonString = this.convertToString(param1);
-            return;
-        }// end function
+   public class JSONEncoder extends Object
+   {
+         
 
-        public function getString() : String
-        {
-            return this.jsonString;
-        }// end function
+      public function JSONEncoder(value:*, pMaxDepth:uint=0, pShowObjectType:Boolean=false) {
+         super();
+         this._depthLimit=pMaxDepth;
+         this._showObjectType=pShowObjectType;
+         this.jsonString=this.convertToString(value);
+      }
 
-        private function convertToString(param1, param2:int = 0) : String
-        {
-            if (this._depthLimit != 0 && param2 > this._depthLimit)
-            {
-                return "";
-            }
-            if (param1 is String)
-            {
-                return this.escapeString(param1 as String);
-            }
-            if (param1 is Number)
-            {
-                return isFinite(param1 as Number) ? (param1.toString()) : ("null");
-            }
-            else if (param1 is Boolean)
-            {
-                return param1 ? ("true") : ("false");
-            }
-            else
-            {
-                if (param1 is Array || param1 is Vector.<int> || param1 is Vector.<uint> || param1 is Vector.<String> || param1 is Vector.<Boolean> || param1 is Vector.<null> || param1 is Dictionary)
-                {
-                    return this.arrayToString(param1, (param2 + 1));
-                }
-                if (param1 is Object && param1 != null)
-                {
-                    return this.objectToString(param1, (param2 + 1));
-                }
-            }
-            return "null";
-        }// end function
 
-        private function escapeString(param1:String) : String
-        {
-            var _loc_3:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_2:* = "";
-            var _loc_4:* = param1.length;
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_3 = param1.charAt(_loc_5);
-                switch(_loc_3)
-                {
-                    case "\"":
-                    {
-                        _loc_2 = _loc_2 + "\\\"";
-                        break;
-                    }
-                    case "\\":
-                    {
-                        _loc_2 = _loc_2 + "\\\\";
-                        break;
-                    }
-                    case "\b":
-                    {
-                        _loc_2 = _loc_2 + "\\b";
-                        break;
-                    }
-                    case "\f":
-                    {
-                        _loc_2 = _loc_2 + "\\f";
-                        break;
-                    }
-                    case "\n":
-                    {
-                        _loc_2 = _loc_2 + "\\n";
-                        break;
-                    }
-                    case "\r":
-                    {
-                        _loc_2 = _loc_2 + "\\r";
-                        break;
-                    }
-                    case "\t":
-                    {
-                        _loc_2 = _loc_2 + "\\t";
-                        break;
-                    }
-                    default:
-                    {
-                        if (_loc_3 < " ")
-                        {
-                            _loc_6 = _loc_3.charCodeAt(0).toString(16);
-                            _loc_7 = _loc_6.length == 2 ? ("00") : ("000");
-                            _loc_2 = _loc_2 + ("\\u" + _loc_7 + _loc_6);
-                        }
-                        else
-                        {
-                            _loc_2 = _loc_2 + _loc_3;
-                        }
-                        break;
-                    }
-                }
-                _loc_5++;
-            }
-            return "\"" + _loc_2 + "\"";
-        }// end function
 
-        private function arrayToString(param1, param2:int) : String
-        {
-            var _loc_4:* = undefined;
-            if (this._depthLimit != 0 && param2 > this._depthLimit)
-            {
-                return "";
-            }
-            var _loc_3:* = "";
-            for each (_loc_4 in param1)
-            {
-                
-                if (_loc_3.length > 0)
-                {
-                    _loc_3 = _loc_3 + ",";
-                }
-                _loc_3 = _loc_3 + this.convertToString(_loc_4);
-            }
-            return "[" + _loc_3 + "]";
-        }// end function
+      private var _depthLimit:uint = 0;
 
-        private function objectToString(param1:Object, param2:int) : String
-        {
-            var className:Array;
-            var value:Object;
-            var key:String;
-            var v:XML;
-            var o:* = param1;
-            var depth:* = param2;
-            if (this._depthLimit != 0 && depth > this._depthLimit)
-            {
-                return "";
-            }
-            var s:String;
-            var classInfo:* = describeType(o);
-            if (classInfo.@name.toString() == "Object")
-            {
-                var _loc_4:* = 0;
-                var _loc_5:* = o;
-                while (_loc_5 in _loc_4)
-                {
-                    
-                    key = _loc_5[_loc_4];
-                    value = o[key];
-                    if (value is Function)
-                    {
-                        continue;
-                    }
-                    if (s.length > 0)
-                    {
-                        s = s + ",";
-                    }
-                    s = s + (this.escapeString(key) + ":" + this.convertToString(value));
-                }
-            }
-            else
-            {
-                var _loc_4:* = 0;
-                var _loc_7:* = 0;
-                var _loc_8:* = classInfo..;
-                var _loc_6:* = new XMLList("");
-                for each (_loc_9 in _loc_8)
-                {
-                    
-                    var _loc_10:* = _loc_8[_loc_7];
-                    with (_loc_8[_loc_7])
-                    {
-                        if (name() == "variable" || name() == "accessor" && attribute("access").charAt(0) == "r")
-                        {
-                            _loc_6[_loc_7] = _loc_9;
-                        }
-                    }
-                }
-                var _loc_5:* = _loc_6;
-                do
-                {
-                    
-                    v = _loc_5[_loc_4];
-                    var _loc_7:* = 0;
-                    var _loc_8:* = v.metadata;
-                    var _loc_6:* = new XMLList("");
-                    for each (_loc_9 in _loc_8)
-                    {
-                        
-                        var _loc_10:* = _loc_8[_loc_7];
-                        with (_loc_8[_loc_7])
-                        {
-                            if (@name == "Transient")
-                            {
-                                _loc_6[_loc_7] = _loc_9;
-                            }
-                        }
-                    }
-                    if (v.metadata && _loc_6.length() > 0)
-                    {
-                    }
-                    else
-                    {
-                        if (s.length > 0)
-                        {
-                            s = s + ",";
-                        }
-                        try
-                        {
-                            s = s + (this.escapeString(v.@name.toString()) + ":" + this.convertToString(o[v.@name]));
-                        }
-                        catch (e:Error)
-                        {
-                        }
-                    }
-                }while (_loc_5 in _loc_4)
-            }
-            if (this._showObjectType)
-            {
-                className = getQualifiedClassName(o).split("::");
-            }
-            if (className != null)
-            {
-                return "{" + this.escapeString("type") + ":" + this.escapeString(className.pop()) + ", " + this.escapeString("value") + ":{" + s + "}}";
-            }
-            return "{" + s + "}";
-        }// end function
+      private var _showObjectType:Boolean = false;
 
-    }
+      private var jsonString:String;
+
+      public function getString() : String {
+         return this.jsonString;
+      }
+
+      private function convertToString(value:*, depth:int=0) : String {
+         if((!(this._depthLimit==0))&&(depth<this._depthLimit))
+         {
+            return "";
+         }
+         if(value is String)
+         {
+            return this.escapeString(value as String);
+         }
+         if(value is Number)
+         {
+            return isFinite(value as Number)?value.toString():"null";
+         }
+         if(value is Boolean)
+         {
+            return value?"true":"false";
+         }
+         if((value is Array)||(value is Vector.<int>)||(value is Vector.<uint>)||(value is Vector.<String>)||(value is Vector.<Boolean>)||(value is Vector.<*>)||(value is Dictionary))
+         {
+            return this.arrayToString(value,depth+1);
+         }
+         if((value is Object)&&(!(value==null)))
+         {
+            return this.objectToString(value,depth+1);
+         }
+         return "null";
+      }
+
+      private function escapeString(str:String) : String {
+         var ch:String = null;
+         var hexCode:String = null;
+         var zeroPad:String = null;
+         var s:String = "";
+         var len:Number = str.length;
+         var i:int = 0;
+         while(i<len)
+         {
+            ch=str.charAt(i);
+            switch(ch)
+            {
+               case "\"":
+                  s=s+"\\\"";
+                  break;
+               case "\\":
+                  s=s+"\\\\";
+                  break;
+               case "\b":
+                  s=s+"\\b";
+                  break;
+               case "\f":
+                  s=s+"\\f";
+                  break;
+               case "\n":
+                  s=s+"\\n";
+                  break;
+               case "\r":
+                  s=s+"\\r";
+                  break;
+               case "\t":
+                  s=s+"\\t";
+                  break;
+               default:
+                  if(ch<" ")
+                  {
+                     hexCode=ch.charCodeAt(0).toString(16);
+                     zeroPad=hexCode.length==2?"00":"000";
+                     s=s+("\\u"+zeroPad+hexCode);
+                  }
+                  else
+                  {
+                     s=s+ch;
+                  }
+            }
+            i++;
+         }
+         return "\""+s+"\"";
+      }
+
+      private function arrayToString(a:*, depth:int) : String {
+         var value:* = undefined;
+         if((!(this._depthLimit==0))&&(depth<this._depthLimit))
+         {
+            return "";
+         }
+         var s:String = "";
+         for each (value in a)
+         {
+            if(s.length>0)
+            {
+               s=s+",";
+            }
+            s=s+this.convertToString(value);
+         }
+         return "["+s+"]";
+      }
+
+      private function objectToString(o:Object, depth:int) : String {
+         var className:Array = null;
+         var value:Object = null;
+         var key:String = null;
+         var v:XML = null;
+         if((!(this._depthLimit==0))&&(depth<this._depthLimit))
+         {
+            return "";
+         }
+         var s:String = "";
+         var classInfo:XML = describeType(o);
+         if(classInfo.@name.toString()=="Object")
+         {
+            for (key in o)
+            {
+               value=o[key];
+               if(value is Function)
+               {
+               }
+               else
+               {
+                  if(s.length>0)
+                  {
+                     s=s+",";
+                  }
+                  s=s+(this.escapeString(key)+":"+this.convertToString(value));
+               }
+            }
+         }
+         else
+         {
+            for each (_loc10_ in classInfo..*)
+            {
+               with(_loc10_)
+               {
+                  
+                  if((name()=="variable")||(name()=="accessor")&&(attribute("access").charAt(0)=="r"))
+                  {
+                     _loc6_[_loc7_]=_loc9_;
+                  }
+               }
+            }
+            for each (v in _loc6_)
+            {
+               if((v.metadata)&&(_loc6_.length()<0))
+               {
+               }
+               else
+               {
+                  if(s.length>0)
+                  {
+                     s=s+",";
+                  }
+                  try
+                  {
+                     s=s+(this.escapeString(v.@name.toString())+":"+this.convertToString(o[v.@name]));
+                  }
+                  catch(e:Error)
+                  {
+                  }
+               }
+            }
+         }
+         if(this._showObjectType)
+         {
+            className=getQualifiedClassName(o).split("::");
+         }
+         if(className!=null)
+         {
+            return "{"+this.escapeString("type")+":"+this.escapeString(className.pop())+", "+this.escapeString("value")+":{"+s+"}}";
+         }
+         return "{"+s+"}";
+      }
+   }
+
 }

@@ -1,22 +1,25 @@
-﻿package com.ankamagames.jerakine.entities.messages
+package com.ankamagames.jerakine.entities.messages
 {
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.jerakine.entities.interfaces.IInteractive;
 
-    public class EntityInteractionMessage extends Object implements Message
-    {
-        private var _entity:IInteractive;
 
-        public function EntityInteractionMessage(param1:IInteractive)
-        {
-            this._entity = param1;
-            return;
-        }// end function
+   public class EntityInteractionMessage extends Object implements Message
+   {
+         
 
-        public function get entity() : IInteractive
-        {
-            return this._entity;
-        }// end function
+      public function EntityInteractionMessage(entity:IInteractive) {
+         super();
+         this._entity=entity;
+      }
 
-    }
+
+
+      private var _entity:IInteractive;
+
+      public function get entity() : IInteractive {
+         return this._entity;
+      }
+   }
+
 }

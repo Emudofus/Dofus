@@ -1,37 +1,38 @@
-﻿package com.ankamagames.tubul.interfaces
+package com.ankamagames.tubul.interfaces
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.tubul.interfaces.*;
-    import com.ankamagames.tubul.types.*;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.tubul.types.VolumeFadeEffect;
 
-    public interface IAudioBus extends ISoundController
-    {
 
-        public function IAudioBus();
+   public interface IAudioBus extends ISoundController
+   {
+         
 
-        function get soundList() : Vector.<ISound>;
 
-        function get id() : uint;
 
-        function get name() : String;
+      function get soundList() : Vector.<ISound>;
 
-        function set volumeMax(param1:Number) : void;
+      function get id() : uint;
 
-        function get volumeMax() : Number;
+      function get name() : String;
 
-        function get numberSoundsLimitation() : int;
+      function set volumeMax(param1:Number) : void;
 
-        function set numberSoundsLimitation(param1:int) : void;
+      function get volumeMax() : Number;
 
-        function addISound(param1:ISound) : void;
+      function get numberSoundsLimitation() : int;
 
-        function playISound(param1:ISound, param2:Boolean = false, param3:int = -1) : void;
+      function set numberSoundsLimitation(param1:int) : void;
 
-        function clear(param1:VolumeFadeEffect = null) : void;
+      function addISound(param1:ISound) : void;
 
-        function contains(param1:ISound) : Boolean;
+      function playISound(param1:ISound, param2:Boolean=false, param3:int=-1) : void;
 
-        function clearCache() : void;
+      function clear(param1:VolumeFadeEffect=null) : void;
 
-    }
+      function contains(param1:ISound) : Boolean;
+
+      function clearCache() : void;
+   }
+
 }

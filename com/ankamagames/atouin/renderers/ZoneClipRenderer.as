@@ -1,222 +1,208 @@
-﻿package com.ankamagames.atouin.renderers
+package com.ankamagames.atouin.renderers
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.types.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.events.*;
-    import com.ankamagames.jerakine.utils.prng.*;
+   import com.ankamagames.atouin.utils.IZoneRenderer;
+   import com.ankamagames.atouin.types.ZoneClipTile;
+   import com.ankamagames.jerakine.types.Uri;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.Color;
+   import com.ankamagames.atouin.types.DataMapContainer;
+   import com.ankamagames.jerakine.utils.prng.ParkMillerCarta;
+   import com.ankamagames.jerakine.utils.prng.PRNG;
+   import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
+   import com.ankamagames.atouin.Atouin;
 
-    public class ZoneClipRenderer extends Object implements IZoneRenderer
-    {
-        private var _uri:Uri;
-        private var _clipName:Array;
-        private var _currentMapId:int;
-        private var _needBorders:Boolean;
-        protected var _aZoneTile:Array;
-        protected var _aCellTile:Array;
-        public var strata:uint = 0;
-        protected var _cells:Vector.<uint>;
-        private static var zoneTile:Array = new Array();
 
-        public function ZoneClipRenderer(param1:uint, param2:String, param3:Array, param4:int = -1, param5:Boolean = false)
-        {
-            this._aZoneTile = new Array();
-            this._aCellTile = new Array();
-            this.strata = param1;
-            this._currentMapId = param4;
-            this._needBorders = param5;
-            this._uri = new Uri(param2);
-            this._clipName = param3;
-            Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onPropertyChanged);
+   public class ZoneClipRenderer extends Object implements IZoneRenderer
+   {
+         
+
+      public function ZoneClipRenderer(nStrata:uint, pClipUri:String, pClipName:Array, pCurrentMap:int=-1, pNeedBorders:Boolean=false) {
+         super();
+         this._aZoneTile=new Array();
+         this._aCellTile=new Array();
+         this.strata=nStrata;
+         this._currentMapId=pCurrentMap;
+         this._needBorders=pNeedBorders;
+         this._uri=new Uri(pClipUri);
+         this._clipName=pClipName;
+         Atouin.getInstance().options.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
+      }
+
+      private static var zoneTile:Array = new Array();
+
+      private static function getZoneTile(pUri:Uri, pClipName:String, pNeedBorders:Boolean) : ZoneClipTile {
+         var zct:ZoneClipTile = null;
+         var ct:CachedTile = getData(pUri.fileName,pClipName);
+         if(ct.length)
+         {
+            return ct.shift();
+         }
+         zct=new ZoneClipTile(pUri,pClipName,pNeedBorders);
+         return zct;
+      }
+
+      private static function destroyZoneTile(zt:ZoneClipTile) : void {
+         zt.remove();
+         var ct:CachedTile = getData(zt.uri.fileName,zt.clipName);
+         ct.push(zt);
+      }
+
+      private static function getData(uri:String, clip:String) : CachedTile {
+         var i:* = 0;
+         var len:int = zoneTile.length;
+         i=0;
+         while(i<len)
+         {
+            if((zoneTile[i].uriName==uri)&&(zoneTile[i].clipName==clip))
+            {
+               return zoneTile[i] as ZoneClipRenderer;
+            }
+            i=i+1;
+         }
+         var e:CachedTile = new CachedTile(uri,clip);
+         zoneTile.push(e);
+         return e;
+      }
+
+      private var _uri:Uri;
+
+      private var _clipName:Array;
+
+      private var _currentMapId:int;
+
+      private var _needBorders:Boolean;
+
+      protected var _aZoneTile:Array;
+
+      protected var _aCellTile:Array;
+
+      public var strata:uint = 0;
+
+      protected var _cells:Vector.<uint>;
+
+      public function render(cells:Vector.<uint>, oColor:Color, mapContainer:DataMapContainer, bAlpha:Boolean=false) : void {
+         var rndNum:* = 0;
+         var j:* = 0;
+         var zt:ZoneClipTile = null;
+         this._cells=cells;
+         var rnd:PRNG = new ParkMillerCarta();
+         rnd.seed(this._currentMapId+5435);
+         var num:int = cells.length;
+         j=0;
+         while(j<num)
+         {
+            zt=this._aZoneTile[j];
+            if(!zt)
+            {
+               rndNum=rnd.nextIntR(0,this._clipName.length*8);
+               zt=getZoneTile(this._uri,this._clipName[(rndNum>0)||(rndNum<this._clipName.length-1)?0:rndNum],this._needBorders);
+               this._aZoneTile[j]=zt;
+               zt.strata=this.strata;
+            }
+            this._aCellTile[j]=cells[j];
+            zt.cellId=cells[j];
+            zt.display();
+            j++;
+         }
+         while(j<num)
+         {
+            zt=this._aZoneTile[j];
+            if(zt)
+            {
+               destroyZoneTile(zt);
+            }
+            j++;
+         }
+      }
+
+      public function remove(cells:Vector.<uint>, mapContainer:DataMapContainer) : void {
+         var j:* = 0;
+         var zt:ZoneClipTile = null;
+         if(!cells)
+         {
             return;
-        }// end function
-
-        public function render(param1:Vector.<uint>, param2:Color, param3:DataMapContainer, param4:Boolean = false) : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            this._cells = param1;
-            var _loc_5:* = new ParkMillerCarta();
-            new ParkMillerCarta().seed(this._currentMapId + 5435);
-            var _loc_9:* = param1.length;
-            _loc_7 = 0;
-            while (_loc_7 < _loc_9)
+         }
+         var count:int = 0;
+         var mapping:Array = new Array();
+         var num:int = cells.length;
+         j=0;
+         while(j<num)
+         {
+            mapping[cells[j]]=true;
+            j++;
+         }
+         num=this._aCellTile.length;
+         var i:int = 0;
+         while(i<num)
+         {
+            if(mapping[this._aCellTile[i]])
             {
-                
-                _loc_8 = this._aZoneTile[_loc_7];
-                if (!_loc_8)
-                {
-                    _loc_6 = _loc_5.nextIntR(0, this._clipName.length * 8);
-                    _loc_8 = getZoneTile(this._uri, this._clipName[_loc_6 < 0 || _loc_6 > (this._clipName.length - 1) ? (0) : (_loc_6)], this._needBorders);
-                    this._aZoneTile[_loc_7] = _loc_8;
-                    _loc_8.strata = this.strata;
-                }
-                this._aCellTile[_loc_7] = param1[_loc_7];
-                _loc_8.cellId = param1[_loc_7];
-                _loc_8.display();
-                _loc_7++;
+               count++;
+               zt=this._aZoneTile[i];
+               if(zt)
+               {
+                  destroyZoneTile(zt);
+               }
+               this._aCellTile.splice(i,1);
+               this._aZoneTile.splice(i,1);
+               i--;
+               num--;
             }
-            while (_loc_7 < _loc_9)
+            i++;
+         }
+      }
+
+      private function onPropertyChanged(e:PropertyChangeEvent) : void {
+         var j:* = 0;
+         var zt:ZoneClipTile = null;
+         if(e.propertyName=="transparentOverlayMode")
+         {
+            j=0;
+            while(j<this._aZoneTile.length)
             {
-                
-                _loc_8 = this._aZoneTile[_loc_7];
-                if (_loc_8)
-                {
-                    destroyZoneTile(_loc_8);
-                }
-                _loc_7++;
+               zt=this._aZoneTile[j];
+               zt.remove();
+               zt.display();
+               j++;
             }
-            return;
-        }// end function
-
-        public function remove(param1:Vector.<uint>, param2:DataMapContainer) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_8:* = null;
-            if (!param1)
-            {
-                return;
-            }
-            var _loc_3:* = 0;
-            var _loc_5:* = new Array();
-            var _loc_6:* = param1.length;
-            _loc_4 = 0;
-            while (_loc_4 < _loc_6)
-            {
-                
-                _loc_5[param1[_loc_4]] = true;
-                _loc_4++;
-            }
-            _loc_6 = this._aCellTile.length;
-            var _loc_7:* = 0;
-            while (_loc_7 < _loc_6)
-            {
-                
-                if (_loc_5[this._aCellTile[_loc_7]])
-                {
-                    _loc_3++;
-                    _loc_8 = this._aZoneTile[_loc_7];
-                    if (_loc_8)
-                    {
-                        destroyZoneTile(_loc_8);
-                    }
-                    this._aCellTile.splice(_loc_7, 1);
-                    this._aZoneTile.splice(_loc_7, 1);
-                    _loc_7 = _loc_7 - 1;
-                    _loc_6 = _loc_6 - 1;
-                }
-                _loc_7++;
-            }
-            return;
-        }// end function
-
-        private function onPropertyChanged(event:PropertyChangeEvent) : void
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            if (event.propertyName == "transparentOverlayMode")
-            {
-                _loc_2 = 0;
-                while (_loc_2 < this._aZoneTile.length)
-                {
-                    
-                    _loc_3 = this._aZoneTile[_loc_2];
-                    _loc_3.remove();
-                    _loc_3.display();
-                    _loc_2++;
-                }
-            }
-            return;
-        }// end function
-
-        private static function getZoneTile(param1:Uri, param2:String, param3:Boolean) : ZoneClipTile
-        {
-            var _loc_5:* = null;
-            var _loc_4:* = getData(param1.fileName, param2);
-            if (getData(param1.fileName, param2).length)
-            {
-                return _loc_4.shift();
-            }
-            _loc_5 = new ZoneClipTile(param1, param2, param3);
-            return _loc_5;
-        }// end function
-
-        private static function destroyZoneTile(param1:ZoneClipTile) : void
-        {
-            param1.remove();
-            var _loc_2:* = getData(param1.uri.fileName, param1.clipName);
-            _loc_2.push(param1);
-            return;
-        }// end function
-
-        private static function getData(param1:String, param2:String) : CachedTile
-        {
-            var _loc_3:* = 0;
-            var _loc_4:* = zoneTile.length;
-            _loc_3 = 0;
-            while (_loc_3 < _loc_4)
-            {
-                
-                if (zoneTile[_loc_3].uriName == param1 && zoneTile[_loc_3].clipName == param2)
-                {
-                    return zoneTile[_loc_3] as ;
-                }
-                _loc_3 = _loc_3 + 1;
-            }
-            var _loc_5:* = new CachedTile(param1, param2);
-            zoneTile.push(_loc_5);
-            return _loc_5;
-        }// end function
-
-    }
-}
-
-import __AS3__.vec.*;
-
-import com.ankamagames.atouin.*;
-
-import com.ankamagames.atouin.types.*;
-
-import com.ankamagames.atouin.utils.*;
-
-import com.ankamagames.jerakine.types.*;
-
-import com.ankamagames.jerakine.types.events.*;
-
-import com.ankamagames.jerakine.utils.prng.*;
-
-class CachedTile extends Object
-{
-    public var uriName:String;
-    public var clipName:String;
-    private var _list:Vector.<ZoneClipTile>;
-
-    function CachedTile(param1:String, param2:String) : void
-    {
-        this.uriName = param1;
-        this.clipName = param2;
-        this._list = new Vector.<ZoneClipTile>;
-        return;
-    }// end function
-
-    public function push(param1:ZoneClipTile) : void
-    {
-        this._list.push(param1);
-        return;
-    }// end function
-
-    public function shift() : ZoneClipTile
-    {
-        return this._list.shift();
-    }// end function
-
-    public function get length() : uint
-    {
-        return this._list.length;
-    }// end function
+         }
+      }
+   }
 
 }
 
+   import __AS3__.vec.Vector;
+   import com.ankamagames.atouin.types.ZoneClipTile;
+
+
+   class CachedTile extends Object
+   {
+         
+
+      function CachedTile(pName:String, pClip:String) {
+         super();
+         this.uriName=pName;
+         this.clipName=pClip;
+         this._list=new Vector.<ZoneClipTile>();
+      }
+
+
+
+      public var uriName:String;
+
+      public var clipName:String;
+
+      private var _list:Vector.<ZoneClipTile>;
+
+      public function push(value:ZoneClipTile) : void {
+         this._list.push(value);
+      }
+
+      public function shift() : ZoneClipTile {
+         return this._list.shift();
+      }
+
+      public function get length() : uint {
+         return this._list.length;
+      }
+   }

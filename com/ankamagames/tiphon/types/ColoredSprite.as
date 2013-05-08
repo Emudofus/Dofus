@@ -1,44 +1,44 @@
-﻿package com.ankamagames.tiphon.types
+package com.ankamagames.tiphon.types
 {
-    import com.ankamagames.jerakine.logger.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.geom.ColorTransform;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class ColoredSprite extends DynamicSprite
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ColoredSprite));
-        private static const NEUTRAL_COLOR_TRANSFORM:ColorTransform = new ColorTransform();
 
-        public function ColoredSprite()
-        {
-            return;
-        }// end function
+   public class ColoredSprite extends DynamicSprite
+   {
+         
 
-        override public function init(param1:IAnimationSpriteHandler) : void
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = parseInt(getQualifiedClassName(this).split("_")[1]);
-            _loc_3 = param1.getColorTransform(_loc_2);
-            if (_loc_3)
-            {
-                this.colorize(_loc_3);
-            }
-            param1.registerColoredSprite(this, _loc_2);
-            return;
-        }// end function
+      public function ColoredSprite() {
+         super();
+      }
 
-        public function colorize(param1:ColorTransform) : void
-        {
-            if (param1)
-            {
-                transform.colorTransform = param1;
-            }
-            else
-            {
-                transform.colorTransform = NEUTRAL_COLOR_TRANSFORM;
-            }
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ColoredSprite));
 
-    }
+      private static const NEUTRAL_COLOR_TRANSFORM:ColorTransform = new ColorTransform();
+
+      override public function init(handler:IAnimationSpriteHandler) : void {
+         var colorT:ColorTransform = null;
+         var nColorIndex:uint = parseInt(getQualifiedClassName(this).split("_")[1]);
+         colorT=handler.getColorTransform(nColorIndex);
+         if(colorT)
+         {
+            this.colorize(colorT);
+         }
+         handler.registerColoredSprite(this,nColorIndex);
+      }
+
+      public function colorize(colorT:ColorTransform) : void {
+         if(colorT)
+         {
+            transform.colorTransform=colorT;
+         }
+         else
+         {
+            transform.colorTransform=NEUTRAL_COLOR_TRANSFORM;
+         }
+      }
+   }
+
 }

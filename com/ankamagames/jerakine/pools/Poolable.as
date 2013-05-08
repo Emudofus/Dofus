@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.pools
+package com.ankamagames.jerakine.pools
 {
 
-    public interface Poolable
-    {
 
-        public function Poolable();
+   public interface Poolable
+   {
+         
 
-        function free() : void;
 
-    }
+
+      function free() : void;
+   }
+
 }

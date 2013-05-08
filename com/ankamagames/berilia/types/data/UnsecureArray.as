@@ -1,19 +1,21 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.Secure;
 
-    dynamic public class UnsecureArray extends Array implements Secure
-    {
 
-        public function UnsecureArray()
-        {
-            return;
-        }// end function
+   public dynamic class UnsecureArray extends Array implements Secure
+   {
+         
 
-        public function getObject(param1:Object)
-        {
-            return this;
-        }// end function
+      public function UnsecureArray() {
+         super();
+      }
 
-    }
+
+
+      public function getObject(accessKey:Object) : * {
+         return this;
+      }
+   }
+
 }

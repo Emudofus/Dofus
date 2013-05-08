@@ -1,46 +1,44 @@
-﻿package com.ankamagames.dofus.logic.common.managers
+package com.ankamagames.dofus.logic.common.managers
 {
-    import com.ankamagames.berilia.enums.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.jerakine.data.*;
-    import flash.geom.*;
-    import flash.net.*;
+   import flash.net.navigateToURL;
+   import flash.net.URLRequest;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.ChatHookList;
+   import flash.geom.Rectangle;
+   import com.ankamagames.berilia.types.data.TextTooltipInfo;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.enums.StrataEnum;
 
-    public class HyperlinkURLManager extends Object
-    {
 
-        public function HyperlinkURLManager()
-        {
-            return;
-        }// end function
+   public class HyperlinkURLManager extends Object
+   {
+         
 
-        public static function openURL(param1:String) : void
-        {
-            navigateToURL(new URLRequest(param1), "_blank");
-            return;
-        }// end function
+      public function HyperlinkURLManager() {
+         super();
+      }
 
-        public static function chatLinkRelease(param1:String, param2:uint, param3:String) : void
-        {
-            KernelEventsManager.getInstance().processCallback(ChatHookList.ChatLinkRelease, param1, param2, param3);
-            return;
-        }// end function
+      public static function openURL(url:String) : void {
+         navigateToURL(new URLRequest(url),"_blank");
+      }
 
-        public static function chatWarning() : void
-        {
-            KernelEventsManager.getInstance().processCallback(ChatHookList.ChatWarning);
-            return;
-        }// end function
+      public static function chatLinkRelease(link:String, sender:uint, senderName:String) : void {
+         KernelEventsManager.getInstance().processCallback(ChatHookList.ChatLinkRelease,link,sender,senderName);
+      }
 
-        public static function rollOver(param1:int, param2:int, param3:String, param4:uint, param5:String) : void
-        {
-            var _loc_6:* = new Rectangle(param1, param2, 10, 10);
-            var _loc_7:* = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.url"));
-            TooltipManager.show(_loc_7, _loc_6, UiModuleManager.getInstance().getModule("Ankama_GameUiCore"), false, "HyperLink", 6, 2, 3, true, null, null, null, null, false, StrataEnum.STRATA_TOOLTIP, 1);
-            return;
-        }// end function
+      public static function chatWarning() : void {
+         KernelEventsManager.getInstance().processCallback(ChatHookList.ChatWarning);
+      }
 
-    }
+      public static function rollOver(pX:int, pY:int, link:String, sender:uint, senderName:String) : void {
+         var target:Rectangle = new Rectangle(pX,pY,10,10);
+         var info:TextTooltipInfo = new TextTooltipInfo(I18n.getUiText("ui.tooltip.chat.url"));
+         TooltipManager.show(info,target,UiModuleManager.getInstance().getModule("Ankama_GameUiCore"),false,"HyperLink",6,2,3,true,null,null,null,null,false,StrataEnum.STRATA_TOOLTIP,1);
+      }
+
+
+   }
+
 }

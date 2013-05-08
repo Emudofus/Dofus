@@ -1,44 +1,48 @@
-﻿package com.ankamagames.jerakine.utils.crypto
+package com.ankamagames.jerakine.utils.crypto
 {
-    import com.hurlant.crypto.rsa.*;
-    import com.hurlant.math.*;
-    import flash.utils.*;
+   import com.hurlant.crypto.rsa.RSAKey;
+   import flash.utils.IDataInput;
+   import com.hurlant.math.BigInteger;
 
-    public class SignatureKey extends RSAKey
-    {
-        private var _canSign:Boolean;
-        private static const PUBLIC_KEY_HEADER:String = "DofusPublicKey";
-        private static const PRIVATE_KEY_HEADER:String = "DofusPrivateKey";
 
-        public function SignatureKey(param1:BigInteger, param2:int, param3:BigInteger = null, param4:BigInteger = null, param5:BigInteger = null, param6:BigInteger = null, param7:BigInteger = null, param8:BigInteger = null)
-        {
-            super(param1, param2, param3, param4, param5, param6, param7, param8);
-            return;
-        }// end function
+   public class SignatureKey extends RSAKey
+   {
+         
 
-        public function get canSign() : Boolean
-        {
-            return canEncrypt;
-        }// end function
+      public function SignatureKey(N:BigInteger, E:int, D:BigInteger=null, P:BigInteger=null, Q:BigInteger=null, DP:BigInteger=null, DQ:BigInteger=null, C:BigInteger=null) {
+         super(N,E,D,P,Q,DP,DQ,C);
+      }
 
-        public static function fromByte(param1:IDataInput) : SignatureKey
-        {
-            var _loc_3:* = null;
-            var _loc_2:* = param1.readUTF();
-            if (_loc_2 != PUBLIC_KEY_HEADER && _loc_2 != PRIVATE_KEY_HEADER)
+      private static const PUBLIC_KEY_HEADER:String = "DofusPublicKey";
+
+      private static const PRIVATE_KEY_HEADER:String = "DofusPrivateKey";
+
+      public static function fromByte(input:IDataInput) : SignatureKey {
+         var k:RSAKey = null;
+         var header:String = input.readUTF();
+         if((!(header==PUBLIC_KEY_HEADER))&&(!(header==PRIVATE_KEY_HEADER)))
+         {
+            throw Error("Invalid public or private header");
+         }
+         else
+         {
+            if(header==PUBLIC_KEY_HEADER)
             {
-                throw Error("Invalid public or private header");
-            }
-            if (_loc_2 == PUBLIC_KEY_HEADER)
-            {
-                _loc_3 = RSAKey.parsePublicKey(param1.readUTF(), param1.readUTF());
+               k=RSAKey.parsePublicKey(input.readUTF(),input.readUTF());
             }
             else
             {
-                _loc_3 = RSAKey.parsePrivateKey(param1.readUTF(), param1.readUTF(), param1.readUTF(), param1.readUTF(), param1.readUTF(), param1.readUTF(), param1.readUTF());
+               k=RSAKey.parsePrivateKey(input.readUTF(),input.readUTF(),input.readUTF(),input.readUTF(),input.readUTF(),input.readUTF(),input.readUTF());
             }
-            return new SignatureKey(_loc_3.n, _loc_3.e, _loc_3.d, _loc_3.p, _loc_3.q, _loc_3.dmp1, _loc_3.dmq1, _loc_3.coeff);
-        }// end function
+            return new SignatureKey(k.n,k.e,k.d,k.p,k.q,k.dmp1,k.dmq1,k.coeff);
+         }
+      }
 
-    }
+      private var _canSign:Boolean;
+
+      public function get canSign() : Boolean {
+         return canEncrypt;
+      }
+   }
+
 }

@@ -1,110 +1,107 @@
-﻿package com.ankamagames.atouin.data.map
+package com.ankamagames.atouin.data.map
 {
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.atouin.data.map.elements.*;
-    import com.ankamagames.atouin.utils.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.geom.Point;
+   import com.ankamagames.atouin.AtouinConstants;
+   import com.ankamagames.atouin.utils.CellIdConverter;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.IDataInput;
+   import com.ankamagames.atouin.data.map.elements.BasicElement;
 
-    public class Cell extends Object
-    {
-        public var cellId:int;
-        public var elementsCount:int;
-        public var elements:Array;
-        private var _layer:Layer;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Cell));
-        private static var _cellCoords:Point;
 
-        public function Cell(param1:Layer)
-        {
-            this._layer = param1;
-            return;
-        }// end function
+   public class Cell extends Object
+   {
+         
 
-        public function get layer() : Layer
-        {
-            return this._layer;
-        }// end function
+      public function Cell(layer:Layer) {
+         super();
+         this._layer=layer;
+      }
 
-        public function get coords() : Point
-        {
-            return CellIdConverter.cellIdToCoord(this.cellId);
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Cell));
 
-        public function get pixelCoords() : Point
-        {
-            return cellPixelCoords(this.cellId);
-        }// end function
+      private static var _cellCoords:Point;
 
-        public function fromRaw(param1:IDataInput, param2:int) : void
-        {
-            var be:BasicElement;
-            var i:int;
-            var raw:* = param1;
-            var mapVersion:* = param2;
-            try
+      public static function cellCoords(cellId:uint) : Point {
+         if(_cellCoords==null)
+         {
+            _cellCoords=new Point();
+         }
+         _cellCoords.x=cellId%AtouinConstants.MAP_WIDTH;
+         _cellCoords.y=Math.floor(cellId/AtouinConstants.MAP_WIDTH);
+         return _cellCoords;
+      }
+
+      public static function cellId(p:Point) : uint {
+         return CellIdConverter.coordToCellId(p.x,p.y);
+      }
+
+      public static function cellIdByXY(x:int, y:int) : uint {
+         return CellIdConverter.coordToCellId(x,y);
+      }
+
+      public static function cellPixelCoords(cellId:uint) : Point {
+         var p:Point = cellCoords(cellId);
+         p.x=p.x*AtouinConstants.CELL_WIDTH+(p.y%2==1?AtouinConstants.CELL_HALF_WIDTH:0);
+         p.y=p.y*AtouinConstants.CELL_HALF_HEIGHT;
+         return p;
+      }
+
+      public var cellId:int;
+
+      public var elementsCount:int;
+
+      public var elements:Array;
+
+      private var _layer:Layer;
+
+      public function get layer() : Layer {
+         return this._layer;
+      }
+
+      public function get coords() : Point {
+         return CellIdConverter.cellIdToCoord(this.cellId);
+      }
+
+      public function get pixelCoords() : Point {
+         return cellPixelCoords(this.cellId);
+      }
+
+      public function fromRaw(raw:IDataInput, mapVersion:int) : void {
+         var be:BasicElement = null;
+         var i:int = 0;
+         try
+         {
+            this.cellId=raw.readShort();
+            if(AtouinConstants.DEBUG_FILES_PARSING)
             {
-                this.cellId = raw.readShort();
-                if (AtouinConstants.DEBUG_FILES_PARSING)
-                {
-                    _log.debug("    (Cell) Id : " + this.cellId);
-                }
-                this.elementsCount = raw.readShort();
-                if (AtouinConstants.DEBUG_FILES_PARSING)
-                {
-                    _log.debug("    (Cell) Elements count : " + this.elementsCount);
-                }
-                this.elements = new Array();
-                i;
-                while (i < this.elementsCount)
-                {
-                    
-                    be = BasicElement.getElementFromType(raw.readByte(), this);
-                    if (AtouinConstants.DEBUG_FILES_PARSING)
-                    {
-                        _log.debug("    (Cell) Element at index " + i + " :");
-                    }
-                    be.fromRaw(raw, mapVersion);
-                    this.elements.push(be);
-                    i = (i + 1);
-                }
+               _log.debug("    (Cell) Id : "+this.cellId);
             }
-            catch (e)
+            this.elementsCount=raw.readShort();
+            if(AtouinConstants.DEBUG_FILES_PARSING)
             {
-                throw e;
+               _log.debug("    (Cell) Elements count : "+this.elementsCount);
             }
-            return;
-        }// end function
-
-        public static function cellCoords(param1:uint) : Point
-        {
-            if (_cellCoords == null)
+            this.elements=new Array();
+            i=0;
+            while(i<this.elementsCount)
             {
-                _cellCoords = new Point();
+               be=BasicElement.getElementFromType(raw.readByte(),this);
+               if(AtouinConstants.DEBUG_FILES_PARSING)
+               {
+                  _log.debug("    (Cell) Element at index "+i+" :");
+               }
+               be.fromRaw(raw,mapVersion);
+               this.elements.push(be);
+               i++;
             }
-            _cellCoords.x = param1 % AtouinConstants.MAP_WIDTH;
-            _cellCoords.y = Math.floor(param1 / AtouinConstants.MAP_WIDTH);
-            return _cellCoords;
-        }// end function
+         }
+         catch(e:*)
+         {
+            throw e;
+         }
+      }
+   }
 
-        public static function cellId(param1:Point) : uint
-        {
-            return CellIdConverter.coordToCellId(param1.x, param1.y);
-        }// end function
-
-        public static function cellIdByXY(param1:int, param2:int) : uint
-        {
-            return CellIdConverter.coordToCellId(param1, param2);
-        }// end function
-
-        public static function cellPixelCoords(param1:uint) : Point
-        {
-            var _loc_2:* = cellCoords(param1);
-            _loc_2.x = _loc_2.x * AtouinConstants.CELL_WIDTH + (_loc_2.y % 2 == 1 ? (AtouinConstants.CELL_HALF_WIDTH) : (0));
-            _loc_2.y = _loc_2.y * AtouinConstants.CELL_HALF_HEIGHT;
-            return _loc_2;
-        }// end function
-
-    }
 }

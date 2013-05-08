@@ -1,268 +1,259 @@
-﻿package com.ankamagames.tubul.types
+package com.ankamagames.tubul.types
 {
-    import com.ankamagames.tubul.*;
-    import com.ankamagames.tubul.events.*;
-    import flash.events.*;
-    import flash.media.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import flash.media.Sound;
+   import flash.utils.Dictionary;
+   import com.ankamagames.tubul.events.LoopEvent;
+   import flash.media.SoundChannel;
+   import com.ankamagames.tubul.Tubul;
+   import flash.media.SoundTransform;
+   import flash.utils.ByteArray;
+   import com.ankamagames.tubul.events.SoundWrapperEvent;
 
-    public class SoundWrapper extends EventDispatcher
-    {
-        private var _currentLoop:uint;
-        private var _snd:Sound;
-        private var _loops:int;
-        private var _length:Number;
-        private var _stDic:Dictionary;
-        private var _duration:Number;
-        private var _endOfFileEventDispatched:Boolean = false;
-        private var _notify:Boolean = false;
-        private var _notifyTime:Number;
-        var _volume:Number = 1;
-        var _leftToLeft:Number = 1;
-        var _rightToLeft:Number = 0;
-        var _rightToRight:Number = 1;
-        var _leftToRight:Number = 0;
-        var _pan:Number = 0;
-        var soundData:ByteArray;
-        var hadBeenCut:Boolean;
-        var _extractFinished:Boolean;
 
-        public function SoundWrapper(param1:Sound, param2:int = 1)
-        {
-            this._snd = param1;
-            this._loops = param2;
-            this._length = param1.length;
-            this.currentLoop = 0;
-            if (this._snd != null)
+   public class SoundWrapper extends EventDispatcher
+   {
+         
+
+      public function SoundWrapper(snd:Sound, loops:int=1) {
+         super();
+         this._snd=snd;
+         this._loops=loops;
+         this._length=snd.length;
+         this.currentLoop=0;
+         if(this._snd!=null)
+         {
+            this._duration=Math.floor(this._snd.length)/1000;
+         }
+      }
+
+
+
+      private var _currentLoop:uint;
+
+      private var _snd:Sound;
+
+      private var _loops:int;
+
+      private var _length:Number;
+
+      private var _stDic:Dictionary;
+
+      private var _duration:Number;
+
+      private var _endOfFileEventDispatched:Boolean = false;
+
+      private var _notify:Boolean = false;
+
+      private var _notifyTime:Number;
+
+      var _volume:Number = 1;
+
+      var _leftToLeft:Number = 1;
+
+      var _rightToLeft:Number = 0;
+
+      var _rightToRight:Number = 1;
+
+      var _leftToRight:Number = 0;
+
+      var _pan:Number = 0;
+
+      public function get currentLoop() : uint {
+         return this._currentLoop;
+      }
+
+      public function set currentLoop(pLoop:uint) : void {
+         this._currentLoop=pLoop;
+         var e:LoopEvent = new LoopEvent(LoopEvent.SOUND_LOOP);
+         e.loop=this._currentLoop;
+         e.sound=this;
+         dispatchEvent(e);
+      }
+
+      public function get position() : Number {
+         var sc:SoundChannel = null;
+         if((this.soundData==null)&&(this.sound==null))
+         {
+            return -1;
+         }
+         var pos:Number = 0;
+         if(this.soundData!=null)
+         {
+            pos=Math.round(this.soundData.position/8*44.1)/1000;
+         }
+         else
+         {
+            sc=Tubul.getInstance().soundMerger.getSoundChannel(this);
+            if(sc!=null)
             {
-                this._duration = Math.floor(this._snd.length) / 1000;
+               pos=Math.round(sc.position)/1000;
             }
+         }
+         return pos;
+      }
+
+      public function get duration() : Number {
+         return this._duration;
+      }
+
+      public function get sound() : Sound {
+         return this._snd;
+      }
+
+      public function get loops() : int {
+         return this._loops;
+      }
+
+      public function set loops(pLoops:int) : void {
+         this._loops=pLoops;
+      }
+
+      public function get length() : Number {
+         return this._length;
+      }
+
+      public function get volume() : Number {
+         return this._volume;
+      }
+
+      public function set volume(v:Number) : void {
+         this._volume=v;
+         var st:SoundTransform = this.getSoundTransform();
+         st.volume=this._volume;
+         this.applySoundTransform(st);
+      }
+
+      public function get leftToLeft() : Number {
+         return this._leftToLeft;
+      }
+
+      public function set leftToLeft(v:Number) : void {
+         this._leftToLeft=v;
+         var st:SoundTransform = this.getSoundTransform();
+         st.leftToLeft=this._leftToLeft;
+         this.applySoundTransform(st);
+      }
+
+      public function get rightToLeft() : Number {
+         return this._rightToLeft;
+      }
+
+      public function set rightToLeft(v:Number) : void {
+         this._rightToLeft=v;
+         var st:SoundTransform = this.getSoundTransform();
+         st.rightToLeft=this._rightToLeft;
+         this.applySoundTransform(st);
+      }
+
+      public function get rightToRight() : Number {
+         return this._rightToRight;
+      }
+
+      public function set rightToRight(v:Number) : void {
+         this._rightToRight=v;
+         var st:SoundTransform = this.getSoundTransform();
+         st.rightToRight=this._rightToRight;
+         this.applySoundTransform(st);
+      }
+
+      public function get leftToRight() : Number {
+         return this._leftToRight;
+      }
+
+      public function set leftToRight(v:Number) : void {
+         this._leftToRight=v;
+         var st:SoundTransform = this.getSoundTransform();
+         st.leftToRight=this._leftToRight;
+         this.applySoundTransform(st);
+      }
+
+      public function get pan() : Number {
+         return this._pan;
+      }
+
+      public function set pan(v:Number) : void {
+         this._pan=v;
+         var st:SoundTransform = this.getSoundTransform();
+         st.pan=this._pan;
+         this.applySoundTransform(st);
+      }
+
+      var soundData:ByteArray;
+
+      var hadBeenCut:Boolean;
+
+      var _extractFinished:Boolean;
+
+      function extractFinished() : void {
+         this._extractFinished=true;
+         this._snd=null;
+      }
+
+      public function checkSoundPosition() : void {
+         var swe:SoundWrapperEvent = null;
+         if(this._notify==false)
+         {
             return;
-        }// end function
-
-        public function get currentLoop() : uint
-        {
-            return this._currentLoop;
-        }// end function
-
-        public function set currentLoop(param1:uint) : void
-        {
-            this._currentLoop = param1;
-            var _loc_2:* = new LoopEvent(LoopEvent.SOUND_LOOP);
-            _loc_2.loop = this._currentLoop;
-            _loc_2.sound = this;
-            dispatchEvent(_loc_2);
-            return;
-        }// end function
-
-        public function get position() : Number
-        {
-            var _loc_2:* = null;
-            if (this.soundData == null && this.sound == null)
+         }
+         if(this.duration-this.position<this._notifyTime+0.5)
+         {
+            if((this.currentLoop==this._loops-1)&&(this._endOfFileEventDispatched==false))
             {
-                return -1;
+               swe=new SoundWrapperEvent(SoundWrapperEvent.SOON_END_OF_FILE);
+               dispatchEvent(swe);
+               this._endOfFileEventDispatched=true;
             }
-            var _loc_1:* = 0;
-            if (this.soundData != null)
+         }
+         else
+         {
+            this._endOfFileEventDispatched=false;
+         }
+      }
+
+      public function getSoundTransform() : SoundTransform {
+         var stInDic:* = undefined;
+         if(this._stDic)
+         {
+            if(!(this._stDic hasNext _loc3_))
             {
-                _loc_1 = Math.round(this.soundData.position / (8 * 44.1)) / 1000;
             }
             else
             {
-                _loc_2 = Tubul.getInstance().soundMerger.getSoundChannel(this);
-                if (_loc_2 != null)
-                {
-                    _loc_1 = Math.round(_loc_2.position) / 1000;
-                }
+               stInDic=nextName(_loc3_,_loc4_);
+               return stInDic;
             }
-            return _loc_1;
-        }// end function
+         }
+         if(!this._stDic)
+         {
+            this._stDic=new Dictionary(true);
+         }
+         var st:SoundTransform = new SoundTransform(this._volume,this._pan);
+         st.leftToLeft=this._leftToLeft;
+         st.leftToRight=this._leftToRight;
+         st.rightToLeft=this._rightToLeft;
+         st.rightToRight=this._rightToRight;
+         this._stDic[st]=true;
+         return st;
+      }
 
-        public function get duration() : Number
-        {
-            return this._duration;
-        }// end function
-
-        public function get sound() : Sound
-        {
-            return this._snd;
-        }// end function
-
-        public function get loops() : int
-        {
-            return this._loops;
-        }// end function
-
-        public function set loops(param1:int) : void
-        {
-            this._loops = param1;
+      public function notifyWhenEndOfFile(pNotify:Boolean=false, pTime:Number=-1) : void {
+         this._notify=pNotify;
+         if((pNotify)&&(pTime<=0))
+         {
+            this._notify=false;
             return;
-        }// end function
+         }
+         this._notifyTime=pTime;
+      }
 
-        public function get length() : Number
-        {
-            return this._length;
-        }// end function
+      private function applySoundTransform(st:SoundTransform) : void {
+         var soundChannel:SoundChannel = Tubul.getInstance().soundMerger.getSoundChannel(this);
+         if(soundChannel!=null)
+         {
+            soundChannel.soundTransform=st;
+         }
+      }
+   }
 
-        public function get volume() : Number
-        {
-            return this._volume;
-        }// end function
-
-        public function set volume(param1:Number) : void
-        {
-            this._volume = param1;
-            var _loc_2:* = this.getSoundTransform();
-            _loc_2.volume = this._volume;
-            this.applySoundTransform(_loc_2);
-            return;
-        }// end function
-
-        public function get leftToLeft() : Number
-        {
-            return this._leftToLeft;
-        }// end function
-
-        public function set leftToLeft(param1:Number) : void
-        {
-            this._leftToLeft = param1;
-            var _loc_2:* = this.getSoundTransform();
-            _loc_2.leftToLeft = this._leftToLeft;
-            this.applySoundTransform(_loc_2);
-            return;
-        }// end function
-
-        public function get rightToLeft() : Number
-        {
-            return this._rightToLeft;
-        }// end function
-
-        public function set rightToLeft(param1:Number) : void
-        {
-            this._rightToLeft = param1;
-            var _loc_2:* = this.getSoundTransform();
-            _loc_2.rightToLeft = this._rightToLeft;
-            this.applySoundTransform(_loc_2);
-            return;
-        }// end function
-
-        public function get rightToRight() : Number
-        {
-            return this._rightToRight;
-        }// end function
-
-        public function set rightToRight(param1:Number) : void
-        {
-            this._rightToRight = param1;
-            var _loc_2:* = this.getSoundTransform();
-            _loc_2.rightToRight = this._rightToRight;
-            this.applySoundTransform(_loc_2);
-            return;
-        }// end function
-
-        public function get leftToRight() : Number
-        {
-            return this._leftToRight;
-        }// end function
-
-        public function set leftToRight(param1:Number) : void
-        {
-            this._leftToRight = param1;
-            var _loc_2:* = this.getSoundTransform();
-            _loc_2.leftToRight = this._leftToRight;
-            this.applySoundTransform(_loc_2);
-            return;
-        }// end function
-
-        public function get pan() : Number
-        {
-            return this._pan;
-        }// end function
-
-        public function set pan(param1:Number) : void
-        {
-            this._pan = param1;
-            var _loc_2:* = this.getSoundTransform();
-            _loc_2.pan = this._pan;
-            this.applySoundTransform(_loc_2);
-            return;
-        }// end function
-
-        function extractFinished() : void
-        {
-            this._extractFinished = true;
-            this._snd = null;
-            return;
-        }// end function
-
-        public function checkSoundPosition() : void
-        {
-            var _loc_1:* = null;
-            if (this._notify == false)
-            {
-                return;
-            }
-            if (this.duration - this.position < this._notifyTime + 0.5)
-            {
-                if (this.currentLoop == (this._loops - 1) && this._endOfFileEventDispatched == false)
-                {
-                    _loc_1 = new SoundWrapperEvent(SoundWrapperEvent.SOON_END_OF_FILE);
-                    dispatchEvent(_loc_1);
-                    this._endOfFileEventDispatched = true;
-                }
-            }
-            else
-            {
-                this._endOfFileEventDispatched = false;
-            }
-            return;
-        }// end function
-
-        public function getSoundTransform() : SoundTransform
-        {
-            var _loc_2:* = undefined;
-            if (this._stDic)
-            {
-                for (_loc_2 in this._stDic)
-                {
-                    
-                    return _loc_2;
-                }
-            }
-            if (!this._stDic)
-            {
-                this._stDic = new Dictionary(true);
-            }
-            var _loc_1:* = new SoundTransform(this._volume, this._pan);
-            _loc_1.leftToLeft = this._leftToLeft;
-            _loc_1.leftToRight = this._leftToRight;
-            _loc_1.rightToLeft = this._rightToLeft;
-            _loc_1.rightToRight = this._rightToRight;
-            this._stDic[_loc_1] = true;
-            return _loc_1;
-        }// end function
-
-        public function notifyWhenEndOfFile(param1:Boolean = false, param2:Number = -1) : void
-        {
-            this._notify = param1;
-            if (param1 && param2 <= 0)
-            {
-                this._notify = false;
-                return;
-            }
-            this._notifyTime = param2;
-            return;
-        }// end function
-
-        private function applySoundTransform(param1:SoundTransform) : void
-        {
-            var _loc_2:* = Tubul.getInstance().soundMerger.getSoundChannel(this);
-            if (_loc_2 != null)
-            {
-                _loc_2.soundTransform = param1;
-            }
-            return;
-        }// end function
-
-    }
 }

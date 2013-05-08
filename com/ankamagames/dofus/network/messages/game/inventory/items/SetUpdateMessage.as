@@ -1,147 +1,151 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.items
+package com.ankamagames.dofus.network.messages.game.inventory.items
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.data.items.effects.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class SetUpdateMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var setId:uint = 0;
-        public var setObjects:Vector.<uint>;
-        public var setEffects:Vector.<ObjectEffect>;
-        public static const protocolId:uint = 5503;
 
-        public function SetUpdateMessage()
-        {
-            this.setObjects = new Vector.<uint>;
-            this.setEffects = new Vector.<ObjectEffect>;
-            return;
-        }// end function
+   public class SetUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function SetUpdateMessage() {
+         this.setObjects=new Vector.<uint>();
+         this.setEffects=new Vector.<ObjectEffect>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5503;
-        }// end function
+      public static const protocolId:uint = 5503;
 
-        public function initSetUpdateMessage(param1:uint = 0, param2:Vector.<uint> = null, param3:Vector.<ObjectEffect> = null) : SetUpdateMessage
-        {
-            this.setId = param1;
-            this.setObjects = param2;
-            this.setEffects = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.setId = 0;
-            this.setObjects = new Vector.<uint>;
-            this.setEffects = new Vector.<ObjectEffect>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var setId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var setObjects:Vector.<uint>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_SetUpdateMessage(param1);
-            return;
-        }// end function
+      public var setEffects:Vector.<ObjectEffect>;
 
-        public function serializeAs_SetUpdateMessage(param1:IDataOutput) : void
-        {
-            if (this.setId < 0)
+      override public function getMessageId() : uint {
+         return 5503;
+      }
+
+      public function initSetUpdateMessage(setId:uint=0, setObjects:Vector.<uint>=null, setEffects:Vector.<ObjectEffect>=null) : SetUpdateMessage {
+         this.setId=setId;
+         this.setObjects=setObjects;
+         this.setEffects=setEffects;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.setId=0;
+         this.setObjects=new Vector.<uint>();
+         this.setEffects=new Vector.<ObjectEffect>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SetUpdateMessage(output);
+      }
+
+      public function serializeAs_SetUpdateMessage(output:IDataOutput) : void {
+         if(this.setId<0)
+         {
+            throw new Error("Forbidden value ("+this.setId+") on element setId.");
+         }
+         else
+         {
+            output.writeShort(this.setId);
+            output.writeShort(this.setObjects.length);
+            _i2=0;
+            while(_i2<this.setObjects.length)
             {
-                throw new Error("Forbidden value (" + this.setId + ") on element setId.");
+               if(this.setObjects[_i2]<0)
+               {
+                  throw new Error("Forbidden value ("+this.setObjects[_i2]+") on element 2 (starting at 1) of setObjects.");
+               }
+               else
+               {
+                  output.writeShort(this.setObjects[_i2]);
+                  _i2++;
+                  continue;
+               }
             }
-            param1.writeShort(this.setId);
-            param1.writeShort(this.setObjects.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.setObjects.length)
+            output.writeShort(this.setEffects.length);
+            _i3=0;
+            while(_i3<this.setEffects.length)
             {
-                
-                if (this.setObjects[_loc_2] < 0)
-                {
-                    throw new Error("Forbidden value (" + this.setObjects[_loc_2] + ") on element 2 (starting at 1) of setObjects.");
-                }
-                param1.writeShort(this.setObjects[_loc_2]);
-                _loc_2 = _loc_2 + 1;
-            }
-            param1.writeShort(this.setEffects.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.setEffects.length)
-            {
-                
-                param1.writeShort((this.setEffects[_loc_3] as ObjectEffect).getTypeId());
-                (this.setEffects[_loc_3] as ObjectEffect).serialize(param1);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_SetUpdateMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_SetUpdateMessage(param1:IDataInput) : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_8:* = null;
-            this.setId = param1.readShort();
-            if (this.setId < 0)
-            {
-                throw new Error("Forbidden value (" + this.setId + ") on element of SetUpdateMessage.setId.");
-            }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_6 = param1.readShort();
-                if (_loc_6 < 0)
-                {
-                    throw new Error("Forbidden value (" + _loc_6 + ") on elements of setObjects.");
-                }
-                this.setObjects.push(_loc_6);
-                _loc_3 = _loc_3 + 1;
-            }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_7 = param1.readUnsignedShort();
-                _loc_8 = ProtocolTypeManager.getInstance(ObjectEffect, _loc_7);
-                _loc_8.deserialize(param1);
-                this.setEffects.push(_loc_8);
-                _loc_5 = _loc_5 + 1;
+               output.writeShort((this.setEffects[_i3] as ObjectEffect).getTypeId());
+               (this.setEffects[_i3] as ObjectEffect).serialize(output);
+               _i3++;
             }
             return;
-        }// end function
+         }
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SetUpdateMessage(input);
+      }
+
+      public function deserializeAs_SetUpdateMessage(input:IDataInput) : void {
+         var _val2:uint = 0;
+         var _id3:uint = 0;
+         var _item3:ObjectEffect = null;
+         this.setId=input.readShort();
+         if(this.setId<0)
+         {
+            throw new Error("Forbidden value ("+this.setId+") on element of SetUpdateMessage.setId.");
+         }
+         else
+         {
+            _setObjectsLen=input.readUnsignedShort();
+            _i2=0;
+            while(_i2<_setObjectsLen)
+            {
+               _val2=input.readShort();
+               if(_val2<0)
+               {
+                  throw new Error("Forbidden value ("+_val2+") on elements of setObjects.");
+               }
+               else
+               {
+                  this.setObjects.push(_val2);
+                  _i2++;
+                  continue;
+               }
+            }
+            _setEffectsLen=input.readUnsignedShort();
+            _i3=0;
+            while(_i3<_setEffectsLen)
+            {
+               _id3=input.readUnsignedShort();
+               _item3=ProtocolTypeManager.getInstance(ObjectEffect,_id3);
+               _item3.deserialize(input);
+               this.setEffects.push(_item3);
+               _i3++;
+            }
+            return;
+         }
+      }
+   }
+
 }

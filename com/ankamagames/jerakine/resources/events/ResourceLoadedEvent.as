@@ -1,29 +1,32 @@
-﻿package com.ankamagames.jerakine.resources.events
+package com.ankamagames.jerakine.resources.events
 {
-    import com.ankamagames.jerakine.types.*;
-    import flash.events.*;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.events.Event;
 
-    public class ResourceLoadedEvent extends ResourceEvent
-    {
-        public var resource:Object;
-        public var resourceType:uint = 255;
-        public var uri:Uri;
-        public static const LOADED:String = "loaded";
 
-        public function ResourceLoadedEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
-        {
-            super(param1, param2, param3);
-            return;
-        }// end function
+   public class ResourceLoadedEvent extends ResourceEvent
+   {
+         
 
-        override public function clone() : Event
-        {
-            var _loc_1:* = new ResourceLoadedEvent(type, bubbles, cancelable);
-            _loc_1.resource = this.resource;
-            _loc_1.resourceType = this.resourceType;
-            _loc_1.uri = this.uri;
-            return _loc_1;
-        }// end function
+      public function ResourceLoadedEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
+      }
 
-    }
+      public static const LOADED:String = "loaded";
+
+      public var resource;
+
+      public var resourceType:uint = 255;
+
+      public var uri:Uri;
+
+      override public function clone() : Event {
+         var re:ResourceLoadedEvent = new ResourceLoadedEvent(type,bubbles,cancelable);
+         re.resource=this.resource;
+         re.resourceType=this.resourceType;
+         re.uri=this.uri;
+         return re;
+      }
+   }
+
 }

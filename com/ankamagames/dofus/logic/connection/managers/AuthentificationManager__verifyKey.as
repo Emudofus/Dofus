@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.logic.connection.managers
+package com.ankamagames.dofus.logic.connection.managers
 {
-    import mx.core.*;
+   import mx.core.ByteArrayAsset;
 
-    public class AuthentificationManager__verifyKey extends ByteArrayAsset
-    {
 
-        public function AuthentificationManager__verifyKey()
-        {
-            return;
-        }// end function
+   public class AuthentificationManager__verifyKey extends ByteArrayAsset
+   {
+         
 
-    }
+      public function AuthentificationManager__verifyKey() {
+         super();
+      }
+
+
+
+
+   }
+
 }

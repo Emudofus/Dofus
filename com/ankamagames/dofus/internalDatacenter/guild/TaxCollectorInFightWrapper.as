@@ -1,89 +1,84 @@
-﻿package com.ankamagames.dofus.internalDatacenter.guild
+package com.ankamagames.dofus.internalDatacenter.guild
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.network.types.game.character.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.character.CharacterMinimalPlusLookInformations;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.SocialFrame;
 
-    public class TaxCollectorInFightWrapper extends Object implements IDataCenter
-    {
-        public var uniqueId:int;
-        public var allyCharactersInformations:Vector.<TaxCollectorFightersWrapper>;
-        public var enemyCharactersInformations:Vector.<TaxCollectorFightersWrapper>;
 
-        public function TaxCollectorInFightWrapper()
-        {
-            return;
-        }// end function
+   public class TaxCollectorInFightWrapper extends Object implements IDataCenter
+   {
+         
 
-        public function update(param1:int, param2:Vector.<CharacterMinimalPlusLookInformations>, param3:Vector.<CharacterMinimalPlusLookInformations>) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            this.uniqueId = param1;
-            this.allyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
-            this.enemyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
-            for each (_loc_4 in param2)
-            {
-                
-                this.allyCharactersInformations.push(TaxCollectorFightersWrapper.create(0, _loc_4));
-            }
-            for each (_loc_5 in param3)
-            {
-                
-                this.enemyCharactersInformations.push(TaxCollectorFightersWrapper.create(1, _loc_5));
-            }
-            return;
-        }// end function
+      public function TaxCollectorInFightWrapper() {
+         super();
+      }
 
-        public function addPonyFighter(param1:TaxCollectorWrapper) : void
-        {
-            var _loc_2:* = null;
-            if (this.allyCharactersInformations == null)
-            {
-                this.allyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
-            }
-            if (this.allyCharactersInformations.length == 0 || !this.allyCharactersInformations[0] || this.allyCharactersInformations[0].playerCharactersInformations.entityLook != param1.entityLook)
-            {
-                _loc_2 = new CharacterMinimalPlusLookInformations();
-                _loc_2.entityLook = param1.entityLook;
-                _loc_2.id = param1.uniqueId;
-                if (Kernel.getWorker().getFrame(SocialFrame) != null)
-                {
-                    _loc_2.level = (Kernel.getWorker().getFrame(SocialFrame) as SocialFrame).guild.level;
-                }
-                else
-                {
-                    _loc_2.level = 0;
-                }
-                _loc_2.name = param1.lastName + " " + param1.firstName;
-                this.allyCharactersInformations.splice(0, 0, TaxCollectorFightersWrapper.create(0, _loc_2));
-            }
-            return;
-        }// end function
+      public static function create(pId:int, pAllies:Vector.<CharacterMinimalPlusLookInformations>=null, pEnemies:Vector.<CharacterMinimalPlusLookInformations>=null) : TaxCollectorInFightWrapper {
+         var item:TaxCollectorInFightWrapper = null;
+         var ally:CharacterMinimalPlusLookInformations = null;
+         var enemy:CharacterMinimalPlusLookInformations = null;
+         item=new TaxCollectorInFightWrapper();
+         item.allyCharactersInformations=new Vector.<TaxCollectorFightersWrapper>();
+         item.enemyCharactersInformations=new Vector.<TaxCollectorFightersWrapper>();
+         item.uniqueId=pId;
+         for each (ally in pAllies)
+         {
+            item.allyCharactersInformations.push(TaxCollectorFightersWrapper.create(0,ally));
+         }
+         for each (enemy in pEnemies)
+         {
+            item.enemyCharactersInformations.push(TaxCollectorFightersWrapper.create(1,enemy));
+         }
+         return item;
+      }
 
-        public static function create(param1:int, param2:Vector.<CharacterMinimalPlusLookInformations> = null, param3:Vector.<CharacterMinimalPlusLookInformations> = null) : TaxCollectorInFightWrapper
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            _loc_4 = new TaxCollectorInFightWrapper;
-            _loc_4.allyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
-            _loc_4.enemyCharactersInformations = new Vector.<TaxCollectorFightersWrapper>;
-            _loc_4.uniqueId = param1;
-            for each (_loc_5 in param2)
-            {
-                
-                _loc_4.allyCharactersInformations.push(TaxCollectorFightersWrapper.create(0, _loc_5));
-            }
-            for each (_loc_6 in param3)
-            {
-                
-                _loc_4.enemyCharactersInformations.push(TaxCollectorFightersWrapper.create(1, _loc_6));
-            }
-            return _loc_4;
-        }// end function
+      public var uniqueId:int;
 
-    }
+      public var allyCharactersInformations:Vector.<TaxCollectorFightersWrapper>;
+
+      public var enemyCharactersInformations:Vector.<TaxCollectorFightersWrapper>;
+
+      public function update(pId:int, pAllies:Vector.<CharacterMinimalPlusLookInformations>, pEnemies:Vector.<CharacterMinimalPlusLookInformations>) : void {
+         var ally:CharacterMinimalPlusLookInformations = null;
+         var enemy:CharacterMinimalPlusLookInformations = null;
+         this.uniqueId=pId;
+         this.allyCharactersInformations=new Vector.<TaxCollectorFightersWrapper>();
+         this.enemyCharactersInformations=new Vector.<TaxCollectorFightersWrapper>();
+         for each (ally in pAllies)
+         {
+            this.allyCharactersInformations.push(TaxCollectorFightersWrapper.create(0,ally));
+         }
+         for each (enemy in pEnemies)
+         {
+            this.enemyCharactersInformations.push(TaxCollectorFightersWrapper.create(1,enemy));
+         }
+      }
+
+      public function addPonyFighter(info:TaxCollectorWrapper) : void {
+         var tcFighter:CharacterMinimalPlusLookInformations = null;
+         if(this.allyCharactersInformations==null)
+         {
+            this.allyCharactersInformations=new Vector.<TaxCollectorFightersWrapper>();
+         }
+         if((this.allyCharactersInformations.length==0)||(!this.allyCharactersInformations[0])||(!(this.allyCharactersInformations[0].playerCharactersInformations.entityLook==info.entityLook)))
+         {
+            tcFighter=new CharacterMinimalPlusLookInformations();
+            tcFighter.entityLook=info.entityLook;
+            tcFighter.id=info.uniqueId;
+            if(Kernel.getWorker().getFrame(SocialFrame)!=null)
+            {
+               tcFighter.level=(Kernel.getWorker().getFrame(SocialFrame) as SocialFrame).guild.level;
+            }
+            else
+            {
+               tcFighter.level=0;
+            }
+            tcFighter.name=info.lastName+" "+info.firstName;
+            this.allyCharactersInformations.splice(0,0,TaxCollectorFightersWrapper.create(0,tcFighter));
+         }
+      }
+   }
+
 }

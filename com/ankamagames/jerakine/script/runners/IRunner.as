@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.script.runners
+package com.ankamagames.jerakine.script.runners
 {
 
-    public interface IRunner
-    {
 
-        public function IRunner();
+   public interface IRunner
+   {
+         
 
-        function run(param1:Class) : uint;
 
-    }
+
+      function run(param1:Class) : uint;
+   }
+
 }

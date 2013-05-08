@@ -1,167 +1,149 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.internalDatacenter.spells.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.logic.game.roleplay.managers.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.dofus.types.entities.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayInteractivesFrame;
+   import com.ankamagames.dofus.logic.game.common.frames.SpellInventoryManagementFrame;
+   import com.ankamagames.dofus.logic.game.common.frames.EmoticonFrame;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.ZaapFrame;
+   import com.ankamagames.dofus.internalDatacenter.spells.SpellWrapper;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.atouin.managers.EntitiesManager;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+   import com.ankamagames.dofus.logic.game.roleplay.managers.RoleplayManager;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNamedActorInformations;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class RoleplayApi extends Object implements IApi
-    {
-        private var _module:UiModule;
-        protected var _log:Logger;
 
-        public function RoleplayApi()
-        {
-            this._log = Log.getLogger(getQualifiedClassName(RoleplayApi));
-            return;
-        }// end function
+   public class RoleplayApi extends Object implements IApi
+   {
+         
 
-        private function get roleplayEntitiesFrame() : RoleplayEntitiesFrame
-        {
-            return Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-        }// end function
+      public function RoleplayApi() {
+         this._log=Log.getLogger(getQualifiedClassName(RoleplayApi));
+         super();
+      }
 
-        private function get roleplayInteractivesFrame() : RoleplayInteractivesFrame
-        {
-            return Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
-        }// end function
 
-        private function get spellInventoryManagementFrame() : SpellInventoryManagementFrame
-        {
-            return Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
-        }// end function
 
-        private function get roleplayEmoticonFrame() : EmoticonFrame
-        {
-            return Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
-        }// end function
+      private var _module:UiModule;
 
-        private function get zaapFrame() : ZaapFrame
-        {
-            return Kernel.getWorker().getFrame(ZaapFrame) as ZaapFrame;
-        }// end function
+      protected var _log:Logger;
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      private function get roleplayEntitiesFrame() : RoleplayEntitiesFrame {
+         return Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+      }
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
+      private function get roleplayInteractivesFrame() : RoleplayInteractivesFrame {
+         return Kernel.getWorker().getFrame(RoleplayInteractivesFrame) as RoleplayInteractivesFrame;
+      }
 
-        public function getTotalFightOnCurrentMap() : uint
-        {
-            return this.roleplayEntitiesFrame.fightNumber;
-        }// end function
+      private function get spellInventoryManagementFrame() : SpellInventoryManagementFrame {
+         return Kernel.getWorker().getFrame(SpellInventoryManagementFrame) as SpellInventoryManagementFrame;
+      }
 
-        public function getSpellToForgetList() : Array
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = new Array();
-            for each (_loc_2 in PlayedCharacterManager.getInstance().spellsInventory)
+      private function get roleplayEmoticonFrame() : EmoticonFrame {
+         return Kernel.getWorker().getFrame(EmoticonFrame) as EmoticonFrame;
+      }
+
+      private function get zaapFrame() : ZaapFrame {
+         return Kernel.getWorker().getFrame(ZaapFrame) as ZaapFrame;
+      }
+
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
+
+      public function destroy() : void {
+         this._module=null;
+      }
+
+      public function getTotalFightOnCurrentMap() : uint {
+         return this.roleplayEntitiesFrame.fightNumber;
+      }
+
+      public function getSpellToForgetList() : Array {
+         var spell:SpellWrapper = null;
+         var spellList:Array = new Array();
+         for each (spell in PlayedCharacterManager.getInstance().spellsInventory)
+         {
+            if(spell.spellLevel>1)
             {
-                
-                if (_loc_2.spellLevel > 1)
-                {
-                    _loc_1.push(_loc_2);
-                }
+               spellList.push(spell);
             }
-            return _loc_1;
-        }// end function
+         }
+         return spellList;
+      }
 
-        public function getEmotesList() : Array
-        {
-            var _loc_1:* = this.roleplayEmoticonFrame.emotesList;
-            return _loc_1;
-        }// end function
+      public function getEmotesList() : Array {
+         var emotes:Array = this.roleplayEmoticonFrame.emotesList;
+         return emotes;
+      }
 
-        public function getUsableEmotesList() : Array
-        {
-            return this.roleplayEntitiesFrame.usableEmoticons;
-        }// end function
+      public function getUsableEmotesList() : Array {
+         return this.roleplayEntitiesFrame.usableEmoticons;
+      }
 
-        public function getSpawnMap() : uint
-        {
-            return this.zaapFrame.spawnMapId;
-        }// end function
+      public function getSpawnMap() : uint {
+         return this.zaapFrame.spawnMapId;
+      }
 
-        public function getEntitiesOnCell(param1:int) : Array
-        {
-            return EntitiesManager.getInstance().getEntitiesOnCell(param1);
-        }// end function
+      public function getEntitiesOnCell(cellId:int) : Array {
+         return EntitiesManager.getInstance().getEntitiesOnCell(cellId);
+      }
 
-        public function getPlayersIdOnCurrentMap() : Array
-        {
-            return this.roleplayEntitiesFrame.playersId;
-        }// end function
+      public function getPlayersIdOnCurrentMap() : Array {
+         return this.roleplayEntitiesFrame.playersId;
+      }
 
-        public function getPlayerIsInCurrentMap(param1:int) : Boolean
-        {
-            return this.roleplayEntitiesFrame.playersId.indexOf(param1) != -1;
-        }// end function
+      public function getPlayerIsInCurrentMap(playerId:int) : Boolean {
+         return !(this.roleplayEntitiesFrame.playersId.indexOf(playerId)==-1);
+      }
 
-        public function getFight(param1:int) : Object
-        {
-            return this.roleplayEntitiesFrame.fights[param1];
-        }// end function
+      public function getFight(id:int) : Object {
+         return this.roleplayEntitiesFrame.fights[id];
+      }
 
-        public function putEntityOnTop(param1:AnimatedCharacter) : void
-        {
-            RoleplayManager.getInstance().putEntityOnTop(param1);
-            return;
-        }// end function
+      public function putEntityOnTop(entity:AnimatedCharacter) : void {
+         RoleplayManager.getInstance().putEntityOnTop(entity);
+      }
 
-        public function getEntityInfos(param1:Object) : Object
-        {
-            var _loc_2:* = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-            return _loc_2.entitiesFrame.getEntityInfos(param1.id);
-        }// end function
+      public function getEntityInfos(entity:Object) : Object {
+         var roleplayContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         return roleplayContextFrame.entitiesFrame.getEntityInfos(entity.id);
+      }
 
-        public function getEntityByName(param1:String) : Object
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_2:* = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-            for each (_loc_3 in EntitiesManager.getInstance().entities)
+      public function getEntityByName(name:String) : Object {
+         var entity:IEntity = null;
+         var infos:GameRolePlayNamedActorInformations = null;
+         var roleplayContextFrame:RoleplayContextFrame = Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+         for each (entity in EntitiesManager.getInstance().entities)
+         {
+            infos=roleplayContextFrame.entitiesFrame.getEntityInfos(entity.id) as GameRolePlayNamedActorInformations;
+            if((infos)&&(name==infos.name))
             {
-                
-                _loc_4 = _loc_2.entitiesFrame.getEntityInfos(_loc_3.id) as GameRolePlayNamedActorInformations;
-                if (_loc_4 && param1 == _loc_4.name)
-                {
-                    return _loc_3;
-                }
+               return entity;
             }
-            return null;
-        }// end function
+         }
+         return null;
+      }
 
-        public function switchButtonWrappers(param1:Object, param2:Object) : void
-        {
-            var _loc_3:* = param2.position;
-            var _loc_4:* = param1.position;
-            param2.setPosition(_loc_4);
-            param1.setPosition(_loc_3);
-            return;
-        }// end function
+      public function switchButtonWrappers(btnWrapper1:Object, btnWrapper2:Object) : void {
+         var indexT:int = btnWrapper2.position;
+         var indexS:int = btnWrapper1.position;
+         btnWrapper2.setPosition(indexS);
+         btnWrapper1.setPosition(indexT);
+      }
 
-        public function setButtonWrapperActivation(param1:Object, param2:Boolean) : void
-        {
-            param1.active = param2;
-            return;
-        }// end function
+      public function setButtonWrapperActivation(btnWrapper:Object, active:Boolean) : void {
+         btnWrapper.active=active;
+      }
+   }
 
-    }
 }

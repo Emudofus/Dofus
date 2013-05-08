@@ -1,71 +1,72 @@
-﻿package com.ankamagames.jerakine.sequencer
+package com.ankamagames.jerakine.sequencer
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.jerakine.types.events.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.events.SequencerEvent;
 
-    public class ParallelStartSequenceStep extends AbstractSequencable implements ISubSequenceSequencable
-    {
-        private var _aSequence:Array;
-        private var _waitAllSequenceEnd:Boolean;
-        private var _waitFirstEndSequence:Boolean;
-        private var _sequenceEndCount:uint = 0;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(ParallelStartSequenceStep));
 
-        public function ParallelStartSequenceStep(param1:Array, param2:Boolean = true, param3:Boolean = false)
-        {
-            this._aSequence = param1;
-            this._waitAllSequenceEnd = param2;
-            this._waitFirstEndSequence = param3;
-            return;
-        }// end function
+   public class ParallelStartSequenceStep extends AbstractSequencable implements ISubSequenceSequencable
+   {
+         
 
-        override public function start() : void
-        {
-            var _loc_1:* = 0;
-            while (_loc_1 < this._aSequence.length)
+      public function ParallelStartSequenceStep(aSequence:Array, waitAllSequenceEnd:Boolean=true, waitFirstEndSequence:Boolean=false) {
+         super();
+         this._aSequence=aSequence;
+         this._waitAllSequenceEnd=waitAllSequenceEnd;
+         this._waitFirstEndSequence=waitFirstEndSequence;
+      }
+
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(ParallelStartSequenceStep));
+
+      private var _aSequence:Array;
+
+      private var _waitAllSequenceEnd:Boolean;
+
+      private var _waitFirstEndSequence:Boolean;
+
+      private var _sequenceEndCount:uint = 0;
+
+      override public function start() : void {
+         var i:uint = 0;
+         while(i<this._aSequence.length)
+         {
+            ISequencer(this._aSequence[i]).addEventListener(SequencerEvent.SEQUENCE_END,this.onSequenceEnd);
+            ISequencer(this._aSequence[i]).start();
+            i++;
+         }
+         if((!this._waitAllSequenceEnd)&&(!this._waitFirstEndSequence))
+         {
+            _log.debug("first executeCallbacks");
+            executeCallbacks();
+         }
+      }
+
+      public function get sequenceEndCount() : uint {
+         return this._sequenceEndCount;
+      }
+
+      private function onSequenceEnd(e:SequencerEvent) : void {
+         e.sequencer.removeEventListener(SequencerEvent.SEQUENCE_END,this.onSequenceEnd);
+         this._sequenceEndCount++;
+         _log.debug("onSequenceEnd");
+         if(this._sequenceEndCount==this._aSequence.length)
+         {
+            _log.debug("onSequenceEnd executeCallbacks");
+            executeCallbacks();
+            dispatchEvent(new SequencerEvent(SequencerEvent.SEQUENCE_END));
+         }
+         else
+         {
+            if(!this._waitAllSequenceEnd)
             {
-                
-                ISequencer(this._aSequence[_loc_1]).addEventListener(SequencerEvent.SEQUENCE_END, this.onSequenceEnd);
-                ISequencer(this._aSequence[_loc_1]).start();
-                _loc_1 = _loc_1 + 1;
+               if(this._sequenceEndCount==1)
+               {
+                  executeCallbacks();
+               }
             }
-            if (!this._waitAllSequenceEnd && !this._waitFirstEndSequence)
-            {
-                _log.debug("first executeCallbacks");
-                executeCallbacks();
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-        public function get sequenceEndCount() : uint
-        {
-            return this._sequenceEndCount;
-        }// end function
-
-        private function onSequenceEnd(event:SequencerEvent) : void
-        {
-            event.sequencer.removeEventListener(SequencerEvent.SEQUENCE_END, this.onSequenceEnd);
-            var _loc_2:* = this;
-            var _loc_3:* = this._sequenceEndCount + 1;
-            _loc_2._sequenceEndCount = _loc_3;
-            _log.debug("onSequenceEnd");
-            if (this._sequenceEndCount == this._aSequence.length)
-            {
-                _log.debug("onSequenceEnd executeCallbacks");
-                executeCallbacks();
-                dispatchEvent(new SequencerEvent(SequencerEvent.SEQUENCE_END));
-            }
-            else if (!this._waitAllSequenceEnd)
-            {
-                if (this._sequenceEndCount == 1)
-                {
-                    executeCallbacks();
-                }
-            }
-            return;
-        }// end function
-
-    }
 }

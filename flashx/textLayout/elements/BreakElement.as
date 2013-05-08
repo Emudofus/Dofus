@@ -1,24 +1,27 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
+   import flashx.textLayout.tlf_internal;
 
-    final public class BreakElement extends SpecialCharacterElement
-    {
+   use namespace tlf_internal;
 
-        public function BreakElement()
-        {
-            this.text = " ";
-            return;
-        }// end function
+   public final class BreakElement extends SpecialCharacterElement
+   {
+         
 
-        override protected function get abstract() : Boolean
-        {
-            return false;
-        }// end function
+      public function BreakElement() {
+         super();
+         this.text="?";
+      }
 
-        override function get defaultTypeName() : String
-        {
-            return "br";
-        }// end function
 
-    }
+
+      override protected function get abstract() : Boolean {
+         return false;
+      }
+
+      override tlf_internal function get defaultTypeName() : String {
+         return "br";
+      }
+   }
+
 }

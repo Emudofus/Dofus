@@ -1,79 +1,63 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.jerakine.types.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.berilia.types.data.UiModule;
+   import com.ankamagames.dofus.logic.common.managers.NotificationManager;
+   import com.ankamagames.jerakine.types.Uri;
 
-    public class NotificationApi extends Object implements IApi
-    {
-        private var _module:UiModule;
-        private static var _init:Boolean = false;
 
-        public function NotificationApi()
-        {
-            return;
-        }// end function
+   public class NotificationApi extends Object implements IApi
+   {
+         
 
-        public function set module(param1:UiModule) : void
-        {
-            this._module = param1;
-            return;
-        }// end function
+      public function NotificationApi() {
+         super();
+      }
 
-        public function destroy() : void
-        {
-            this._module = null;
-            return;
-        }// end function
+      private static var _init:Boolean = false;
 
-        public function showNotification(param1:String, param2:String, param3:uint = 0) : void
-        {
-            NotificationManager.getInstance().showNotification(param1, param2, param3);
-            return;
-        }// end function
+      private var _module:UiModule;
 
-        public function prepareNotification(param1:String, param2:String, param3:uint = 0, param4:String = "", param5:Boolean = false) : uint
-        {
-            return NotificationManager.getInstance().prepareNotification(param1, param2, param3, param4, param5);
-        }// end function
+      public function set module(value:UiModule) : void {
+         this._module=value;
+      }
 
-        public function addButtonToNotification(param1:uint, param2:String, param3:String, param4:Object = null, param5:Boolean = false, param6:Number = 0, param7:Number = 0, param8:String = "action") : void
-        {
-            NotificationManager.getInstance().addButtonToNotification(param1, param2, param3, param4, param5, param6, param7, param8);
-            return;
-        }// end function
+      public function destroy() : void {
+         this._module=null;
+      }
 
-        public function addCallbackToNotification(param1:uint, param2:String, param3:Object = null, param4:String = "action") : void
-        {
-            NotificationManager.getInstance().addCallbackToNotification(param1, param2, param3, param4);
-            return;
-        }// end function
+      public function showNotification(pTitle:String, pContent:String, pType:uint=0) : void {
+         NotificationManager.getInstance().showNotification(pTitle,pContent,pType);
+      }
 
-        public function addImageToNotification(param1:uint, param2:String, param3:Number = 0, param4:Number = 0, param5:Number = -1, param6:Number = -1, param7:String = "", param8:String = "") : void
-        {
-            var _loc_9:* = new Uri(param2);
-            NotificationManager.getInstance().addImageToNotification(param1, _loc_9, param3, param4, param5, param6, param7, param8);
-            return;
-        }// end function
+      public function prepareNotification(pTitle:String, pContent:String, pType:uint=0, pNotificationName:String="", pNotifyUser:Boolean=false) : uint {
+         return NotificationManager.getInstance().prepareNotification(pTitle,pContent,pType,pNotificationName,pNotifyUser);
+      }
 
-        public function addTimerToNotification(param1:uint, param2:uint, param3:Boolean = false, param4:Boolean = false, param5:Boolean = true) : void
-        {
-            NotificationManager.getInstance().addTimerToNotification(param1, param2, param3, param4, param5);
-            return;
-        }// end function
+      public function addButtonToNotification(pId:uint, pTitle:String, pAction:String, pParams:Object=null, pForceClose:Boolean=false, pWidth:Number=0, pHeight:Number=0, pType:String="action") : void {
+         NotificationManager.getInstance().addButtonToNotification(pId,pTitle,pAction,pParams,pForceClose,pWidth,pHeight,pType);
+      }
 
-        public function sendNotification(param1:int = -1) : void
-        {
-            NotificationManager.getInstance().sendNotification(param1);
-            return;
-        }// end function
+      public function addCallbackToNotification(pId:uint, pAction:String, pParams:Object=null, pType:String="action") : void {
+         NotificationManager.getInstance().addCallbackToNotification(pId,pAction,pParams,pType);
+      }
 
-        public function clearAllNotification() : void
-        {
-            NotificationManager.getInstance().clearAllNotification();
-            return;
-        }// end function
+      public function addImageToNotification(pId:uint, pUrl:String, pX:Number=0, pY:Number=0, pWidth:Number=-1, pHeight:Number=-1, pLabel:String="", pTips:String="") : void {
+         var pUri:Uri = new Uri(pUrl);
+         NotificationManager.getInstance().addImageToNotification(pId,pUri,pX,pY,pWidth,pHeight,pLabel,pTips);
+      }
 
-    }
+      public function addTimerToNotification(pId:uint, pTime:uint, pPauseOnOver:Boolean=false, pBlockCallbackOnClose:Boolean=false, pNotify:Boolean=true) : void {
+         NotificationManager.getInstance().addTimerToNotification(pId,pTime,pPauseOnOver,pBlockCallbackOnClose,pNotify);
+      }
+
+      public function sendNotification(notificationId:int=-1) : void {
+         NotificationManager.getInstance().sendNotification(notificationId);
+      }
+
+      public function clearAllNotification() : void {
+         NotificationManager.getInstance().clearAllNotification();
+      }
+   }
+
 }

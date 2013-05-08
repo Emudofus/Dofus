@@ -1,114 +1,126 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeBidHouseBuyMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var uid:uint = 0;
-        public var qty:uint = 0;
-        public var price:uint = 0;
-        public static const protocolId:uint = 5804;
 
-        public function ExchangeBidHouseBuyMessage()
-        {
-            return;
-        }// end function
+   public class ExchangeBidHouseBuyMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeBidHouseBuyMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5804;
-        }// end function
+      public static const protocolId:uint = 5804;
 
-        public function initExchangeBidHouseBuyMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0) : ExchangeBidHouseBuyMessage
-        {
-            this.uid = param1;
-            this.qty = param2;
-            this.price = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.uid = 0;
-            this.qty = 0;
-            this.price = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var uid:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var qty:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeBidHouseBuyMessage(param1);
-            return;
-        }// end function
+      public var price:uint = 0;
 
-        public function serializeAs_ExchangeBidHouseBuyMessage(param1:IDataOutput) : void
-        {
-            if (this.uid < 0)
+      override public function getMessageId() : uint {
+         return 5804;
+      }
+
+      public function initExchangeBidHouseBuyMessage(uid:uint=0, qty:uint=0, price:uint=0) : ExchangeBidHouseBuyMessage {
+         this.uid=uid;
+         this.qty=qty;
+         this.price=price;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.uid=0;
+         this.qty=0;
+         this.price=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseBuyMessage(output);
+      }
+
+      public function serializeAs_ExchangeBidHouseBuyMessage(output:IDataOutput) : void {
+         if(this.uid<0)
+         {
+            throw new Error("Forbidden value ("+this.uid+") on element uid.");
+         }
+         else
+         {
+            output.writeInt(this.uid);
+            if(this.qty<0)
             {
-                throw new Error("Forbidden value (" + this.uid + ") on element uid.");
+               throw new Error("Forbidden value ("+this.qty+") on element qty.");
             }
-            param1.writeInt(this.uid);
-            if (this.qty < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.qty + ") on element qty.");
+               output.writeInt(this.qty);
+               if(this.price<0)
+               {
+                  throw new Error("Forbidden value ("+this.price+") on element price.");
+               }
+               else
+               {
+                  output.writeInt(this.price);
+                  return;
+               }
             }
-            param1.writeInt(this.qty);
-            if (this.price < 0)
-            {
-                throw new Error("Forbidden value (" + this.price + ") on element price.");
-            }
-            param1.writeInt(this.price);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeBidHouseBuyMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseBuyMessage(input);
+      }
 
-        public function deserializeAs_ExchangeBidHouseBuyMessage(param1:IDataInput) : void
-        {
-            this.uid = param1.readInt();
-            if (this.uid < 0)
+      public function deserializeAs_ExchangeBidHouseBuyMessage(input:IDataInput) : void {
+         this.uid=input.readInt();
+         if(this.uid<0)
+         {
+            throw new Error("Forbidden value ("+this.uid+") on element of ExchangeBidHouseBuyMessage.uid.");
+         }
+         else
+         {
+            this.qty=input.readInt();
+            if(this.qty<0)
             {
-                throw new Error("Forbidden value (" + this.uid + ") on element of ExchangeBidHouseBuyMessage.uid.");
+               throw new Error("Forbidden value ("+this.qty+") on element of ExchangeBidHouseBuyMessage.qty.");
             }
-            this.qty = param1.readInt();
-            if (this.qty < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.qty + ") on element of ExchangeBidHouseBuyMessage.qty.");
+               this.price=input.readInt();
+               if(this.price<0)
+               {
+                  throw new Error("Forbidden value ("+this.price+") on element of ExchangeBidHouseBuyMessage.price.");
+               }
+               else
+               {
+                  return;
+               }
             }
-            this.price = param1.readInt();
-            if (this.price < 0)
-            {
-                throw new Error("Forbidden value (" + this.price + ") on element of ExchangeBidHouseBuyMessage.price.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

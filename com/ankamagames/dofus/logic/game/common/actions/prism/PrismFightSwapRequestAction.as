@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.prism
+package com.ankamagames.dofus.logic.game.common.actions.prism
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class PrismFightSwapRequestAction extends Object implements Action
-    {
-        public var targetId:uint;
 
-        public function PrismFightSwapRequestAction()
-        {
-            return;
-        }// end function
+   public class PrismFightSwapRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : PrismFightSwapRequestAction
-        {
-            var _loc_2:* = new PrismFightSwapRequestAction;
-            _loc_2.targetId = param1;
-            return _loc_2;
-        }// end function
+      public function PrismFightSwapRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(targetId:uint) : PrismFightSwapRequestAction {
+         var action:PrismFightSwapRequestAction = new PrismFightSwapRequestAction();
+         action.targetId=targetId;
+         return action;
+      }
+
+      public var targetId:uint;
+   }
+
 }

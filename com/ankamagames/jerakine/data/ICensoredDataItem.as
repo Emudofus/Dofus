@@ -1,18 +1,20 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
 
-    public interface ICensoredDataItem
-    {
 
-        public function ICensoredDataItem();
+   public interface ICensoredDataItem
+   {
+         
 
-        function get lang() : String;
 
-        function get type() : int;
 
-        function get oldValue() : int;
+      function get lang() : String;
 
-        function get newValue() : int;
+      function get type() : int;
 
-    }
+      function get oldValue() : int;
+
+      function get newValue() : int;
+   }
+
 }

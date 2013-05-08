@@ -1,21 +1,24 @@
-﻿package com.ankamagames.berilia.types.messages
+package com.ankamagames.berilia.types.messages
 {
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.Message;
 
-    public class UiXmlParsedMessage extends Object implements Message
-    {
-        private var _url:String;
 
-        public function UiXmlParsedMessage(param1:String)
-        {
-            this._url = param1;
-            return;
-        }// end function
+   public class UiXmlParsedMessage extends Object implements Message
+   {
+         
 
-        public function get url() : String
-        {
-            return this._url;
-        }// end function
+      public function UiXmlParsedMessage(url:String) {
+         super();
+         this._url=url;
+      }
 
-    }
+
+
+      private var _url:String;
+
+      public function get url() : String {
+         return this._url;
+      }
+   }
+
 }

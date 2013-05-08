@@ -1,48 +1,51 @@
-﻿package com.ankamagames.berilia.types.shortcut
+package com.ankamagames.berilia.types.shortcut
 {
 
-    public class ShortcutCategory extends Object
-    {
-        private var _name:String;
-        private var _description:String;
-        private static var _caterogies:Array = new Array();
 
-        public function ShortcutCategory(param1:String, param2:String)
-        {
-            _caterogies[param1] = this;
-            this._name = param1;
-            this._description = param2;
-            return;
-        }// end function
+   public class ShortcutCategory extends Object
+   {
+         
 
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
+      public function ShortcutCategory(name:String, description:String) {
+         super();
+         _caterogies[name]=this;
+         this._name=name;
+         this._description=description;
+      }
 
-        public function get description() : String
-        {
-            return this._description;
-        }// end function
+      private static var _caterogies:Array = new Array();
 
-        public function toString() : String
-        {
-            return this._name;
-        }// end function
-
-        public static function create(param1:String, param2:String) : ShortcutCategory
-        {
-            var _loc_3:* = _caterogies[param1];
-            if (!_loc_3)
+      public static function create(name:String, description:String) : ShortcutCategory {
+         var sc:ShortcutCategory = _caterogies[name];
+         if(!sc)
+         {
+            sc=new ShortcutCategory(name,description);
+         }
+         else
+         {
+            if(!_caterogies[name].description)
             {
-                _loc_3 = new ShortcutCategory(param1, param2);
+               _caterogies[name]._description=description;
             }
-            else if (!_caterogies[param1].description)
-            {
-                _caterogies[param1]._description = param2;
-            }
-            return _loc_3;
-        }// end function
+         }
+         return sc;
+      }
 
-    }
+      private var _name:String;
+
+      private var _description:String;
+
+      public function get name() : String {
+         return this._name;
+      }
+
+      public function get description() : String {
+         return this._description;
+      }
+
+      public function toString() : String {
+         return this._name;
+      }
+   }
+
 }

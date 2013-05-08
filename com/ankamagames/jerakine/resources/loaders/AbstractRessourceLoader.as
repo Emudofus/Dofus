@@ -1,169 +1,164 @@
-﻿package com.ankamagames.jerakine.resources.loaders
+package com.ankamagames.jerakine.resources.loaders
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.newCache.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.types.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.resources.IResourceObserver;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.jerakine.resources.CacheableResource;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceLoaderProgressEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceProgressEvent;
 
-    public class AbstractRessourceLoader extends EventDispatcher implements IResourceObserver
-    {
-        protected var _cache:ICache;
-        protected var _completed:Boolean;
-        protected var _filesLoaded:uint = 0;
-        protected var _filesTotal:uint = 0;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractRessourceLoader));
-        public static var MEMORY_TEST:Dictionary = new Dictionary(true);
-        static const RES_CACHE_PREFIX:String = "RES_";
 
-        public function AbstractRessourceLoader()
-        {
-            return;
-        }// end function
+   public class AbstractRessourceLoader extends EventDispatcher implements IResourceObserver
+   {
+         
 
-        protected function checkCache(param1:Uri) : Boolean
-        {
-            var _loc_2:* = this.getCachedValue(param1);
-            if (_loc_2 != null)
-            {
-                this.dispatchSuccess(param1, _loc_2.resourceType, _loc_2.resource);
-                return true;
-            }
-            return false;
-        }// end function
+      public function AbstractRessourceLoader() {
+         super();
+      }
 
-        private function getCachedValue(param1:Uri) : CacheableResource
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (param1.protocol == "pak" || param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0)
-            {
-                _loc_3 = RES_CACHE_PREFIX + param1.toSum();
-            }
-            else
-            {
-                _loc_3 = RES_CACHE_PREFIX + new Uri(param1.path).toSum();
-            }
-            if (this._cache && this._cache.contains(_loc_3))
-            {
-                _loc_2 = this._cache.peek(_loc_3);
-            }
-            return _loc_2;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(AbstractRessourceLoader));
 
-        public function isInCache(param1:Uri) : Boolean
-        {
-            return this.getCachedValue(param1) != null;
-        }// end function
+      public static var MEMORY_TEST:Dictionary = new Dictionary(true);
 
-        protected function dispatchSuccess(param1:Uri, param2:uint, param3) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            if (param1.fileType != "swf" || !param1.subPath || param1.subPath.length == 0)
-            {
-                _loc_4 = RES_CACHE_PREFIX + param1.toSum();
-            }
-            else
-            {
-                _loc_4 = RES_CACHE_PREFIX + new Uri(param1.path).toSum();
-            }
-            if (this._cache && !this._cache.contains(_loc_4))
-            {
-                _loc_5 = new CacheableResource(param2, param3);
-                this._cache.store(_loc_4, _loc_5);
-            }
-            var _loc_8:* = this;
-            var _loc_9:* = this._filesLoaded + 1;
-            _loc_8._filesLoaded = _loc_9;
-            if (hasEventListener(ResourceLoadedEvent.LOADED))
-            {
-                _loc_6 = new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
-                _loc_6.uri = param1;
-                _loc_6.resourceType = param2;
-                _loc_6.resource = param3;
-                dispatchEvent(_loc_6);
-            }
-            if (hasEventListener(ResourceLoaderProgressEvent.LOADER_PROGRESS))
-            {
-                _loc_7 = new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_PROGRESS);
-                _loc_7.uri = param1;
-                _loc_7.filesTotal = this._filesTotal;
-                _loc_7.filesLoaded = this._filesLoaded;
-                dispatchEvent(_loc_7);
-            }
-            if (this._filesLoaded == this._filesTotal)
-            {
-                this.dispatchComplete();
-            }
-            return;
-        }// end function
+      protected static const RES_CACHE_PREFIX:String = "RES_";
 
-        protected function dispatchFailure(param1:Uri, param2:String, param3:uint) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = this;
-            var _loc_6:* = this._filesLoaded + 1;
-            _loc_5._filesLoaded = _loc_6;
-            if (hasEventListener(ResourceErrorEvent.ERROR))
-            {
-                _loc_4 = new ResourceErrorEvent(ResourceErrorEvent.ERROR);
-                _loc_4.uri = param1;
-                _loc_4.errorMsg = param2;
-                _loc_4.errorCode = param3;
-                dispatchEvent(_loc_4);
-            }
-            else
-            {
-                _log.error("[Error code " + param3.toString(16) + "] Unable to load resource " + param1 + ": " + param2);
-            }
-            if (this._filesLoaded == this._filesTotal)
-            {
-                this.dispatchComplete();
-            }
-            return;
-        }// end function
+      protected var _cache:ICache;
 
-        private function dispatchComplete() : void
-        {
-            var _loc_1:* = null;
-            if (!this._completed)
-            {
-                this._completed = true;
-                _loc_1 = new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_COMPLETE);
-                _loc_1.filesTotal = this._filesTotal;
-                _loc_1.filesLoaded = this._filesLoaded;
-                dispatchEvent(_loc_1);
-            }
-            return;
-        }// end function
+      protected var _completed:Boolean;
 
-        public function onLoaded(param1:Uri, param2:uint, param3) : void
-        {
-            MEMORY_TEST[param3] = 1;
-            this.dispatchSuccess(param1, param2, param3);
-            return;
-        }// end function
+      protected var _filesLoaded:uint = 0;
 
-        public function onFailed(param1:Uri, param2:String, param3:uint) : void
-        {
-            this.dispatchFailure(param1, param2, param3);
-            return;
-        }// end function
+      protected var _filesTotal:uint = 0;
 
-        public function onProgress(param1:Uri, param2:uint, param3:uint) : void
-        {
-            var _loc_4:* = new ResourceProgressEvent(ResourceProgressEvent.PROGRESS);
-            new ResourceProgressEvent(ResourceProgressEvent.PROGRESS).uri = param1;
-            _loc_4.bytesLoaded = param2;
-            _loc_4.bytesTotal = param3;
-            dispatchEvent(_loc_4);
-            return;
-        }// end function
+      protected function checkCache(uri:Uri) : Boolean {
+         var cr:CacheableResource = this.getCachedValue(uri);
+         if(cr!=null)
+         {
+            this.dispatchSuccess(uri,cr.resourceType,cr.resource);
+            return true;
+         }
+         return false;
+      }
 
-    }
+      private function getCachedValue(uri:Uri) : CacheableResource {
+         var cr:CacheableResource = null;
+         var resourceUrl:String = null;
+         if((uri.protocol=="pak")||(!(uri.fileType=="swf"))||(!uri.subPath)||(uri.subPath.length==0))
+         {
+            resourceUrl=RES_CACHE_PREFIX+uri.toSum();
+         }
+         else
+         {
+            resourceUrl=RES_CACHE_PREFIX+new Uri(uri.path).toSum();
+         }
+         if((this._cache)&&(this._cache.contains(resourceUrl)))
+         {
+            cr=this._cache.peek(resourceUrl);
+         }
+         return cr;
+      }
+
+      public function isInCache(uri:Uri) : Boolean {
+         return !(this.getCachedValue(uri)==null);
+      }
+
+      protected function dispatchSuccess(uri:Uri, resourceType:uint, resource:*) : void {
+         var resourceUrl:String = null;
+         var cr:CacheableResource = null;
+         var rle:ResourceLoadedEvent = null;
+         var rlpe:ResourceLoaderProgressEvent = null;
+         if((!(uri.fileType=="swf"))||(!uri.subPath)||(uri.subPath.length==0))
+         {
+            resourceUrl=RES_CACHE_PREFIX+uri.toSum();
+         }
+         else
+         {
+            resourceUrl=RES_CACHE_PREFIX+new Uri(uri.path).toSum();
+         }
+         if((this._cache)&&(!this._cache.contains(resourceUrl)))
+         {
+            cr=new CacheableResource(resourceType,resource);
+            this._cache.store(resourceUrl,cr);
+         }
+         this._filesLoaded++;
+         if(hasEventListener(ResourceLoadedEvent.LOADED))
+         {
+            rle=new ResourceLoadedEvent(ResourceLoadedEvent.LOADED);
+            rle.uri=uri;
+            rle.resourceType=resourceType;
+            rle.resource=resource;
+            dispatchEvent(rle);
+         }
+         if(hasEventListener(ResourceLoaderProgressEvent.LOADER_PROGRESS))
+         {
+            rlpe=new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_PROGRESS);
+            rlpe.uri=uri;
+            rlpe.filesTotal=this._filesTotal;
+            rlpe.filesLoaded=this._filesLoaded;
+            dispatchEvent(rlpe);
+         }
+         if(this._filesLoaded==this._filesTotal)
+         {
+            this.dispatchComplete();
+         }
+      }
+
+      protected function dispatchFailure(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         var ree:ResourceErrorEvent = null;
+         this._filesLoaded++;
+         if(hasEventListener(ResourceErrorEvent.ERROR))
+         {
+            ree=new ResourceErrorEvent(ResourceErrorEvent.ERROR);
+            ree.uri=uri;
+            ree.errorMsg=errorMsg;
+            ree.errorCode=errorCode;
+            dispatchEvent(ree);
+         }
+         else
+         {
+            _log.error("[Error code "+errorCode.toString(16)+"] Unable to load resource "+uri+": "+errorMsg);
+         }
+         if(this._filesLoaded==this._filesTotal)
+         {
+            this.dispatchComplete();
+         }
+      }
+
+      private function dispatchComplete() : void {
+         var rlpe:ResourceLoaderProgressEvent = null;
+         if(!this._completed)
+         {
+            this._completed=true;
+            rlpe=new ResourceLoaderProgressEvent(ResourceLoaderProgressEvent.LOADER_COMPLETE);
+            rlpe.filesTotal=this._filesTotal;
+            rlpe.filesLoaded=this._filesLoaded;
+            dispatchEvent(rlpe);
+         }
+      }
+
+      public function onLoaded(uri:Uri, resourceType:uint, resource:*) : void {
+         MEMORY_TEST[resource]=1;
+         this.dispatchSuccess(uri,resourceType,resource);
+      }
+
+      public function onFailed(uri:Uri, errorMsg:String, errorCode:uint) : void {
+         this.dispatchFailure(uri,errorMsg,errorCode);
+      }
+
+      public function onProgress(uri:Uri, bytesLoaded:uint, bytesTotal:uint) : void {
+         var rpe:ResourceProgressEvent = new ResourceProgressEvent(ResourceProgressEvent.PROGRESS);
+         rpe.uri=uri;
+         rpe.bytesLoaded=bytesLoaded;
+         rpe.bytesTotal=bytesTotal;
+         dispatchEvent(rpe);
+      }
+   }
+
 }

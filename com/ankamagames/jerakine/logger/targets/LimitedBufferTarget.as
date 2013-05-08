@@ -1,55 +1,54 @@
-﻿package com.ankamagames.jerakine.logger.targets
+package com.ankamagames.jerakine.logger.targets
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.json.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.hurlant.util.*;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.logger.LogEvent;
+   import com.ankamagames.jerakine.json.JSON;
+   import com.hurlant.util.Base64;
 
-    public class LimitedBufferTarget extends AbstractTarget
-    {
-        private var _buffer:Vector.<LogEvent>;
-        private var _limit:int;
 
-        public function LimitedBufferTarget(param1:int = 50)
-        {
-            this._limit = param1;
-            this._buffer = new Vector.<LogEvent>;
-            return;
-        }// end function
+   public class LimitedBufferTarget extends AbstractTarget
+   {
+         
 
-        override public function logEvent(event:LogEvent) : void
-        {
-            if (this._buffer.length >= this._limit)
-            {
-                this._buffer.shift();
-            }
-            this._buffer.push(event);
-            return;
-        }// end function
+      public function LimitedBufferTarget(pLimit:int=50) {
+         super();
+         this._limit=pLimit;
+         this._buffer=new Vector.<LogEvent>();
+      }
 
-        public function getFormatedBuffer() : String
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_1:* = new Array();
-            for each (_loc_2 in this._buffer)
-            {
-                
-                _loc_3 = new Object();
-                _loc_3.message = _loc_2.message;
-                _loc_3.level = _loc_2.level;
-                _loc_1.push(_loc_3);
-            }
-            _loc_4 = JSON.encode(_loc_1);
-            return Base64.encode(_loc_4);
-        }// end function
 
-        public function clearBuffer() : void
-        {
-            this._buffer = new Vector.<LogEvent>;
-            return;
-        }// end function
 
-    }
+      private var _buffer:Vector.<LogEvent>;
+
+      private var _limit:int;
+
+      override public function logEvent(event:LogEvent) : void {
+         if(this._buffer.length>=this._limit)
+         {
+            this._buffer.shift();
+         }
+         this._buffer.push(event);
+      }
+
+      public function getFormatedBuffer() : String {
+         var log:LogEvent = null;
+         var obj:Object = null;
+         var json:String = null;
+         var newArray:Array = new Array();
+         for each (log in this._buffer)
+         {
+            obj=new Object();
+            obj.message=log.message;
+            obj.level=log.level;
+            newArray.push(obj);
+         }
+         json=com.ankamagames.jerakine.json.JSON.encode(newArray);
+         return Base64.encode(json);
+      }
+
+      public function clearBuffer() : void {
+         this._buffer=new Vector.<LogEvent>();
+      }
+   }
+
 }

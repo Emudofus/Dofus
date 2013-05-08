@@ -1,118 +1,109 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.spells
+package com.ankamagames.dofus.network.messages.game.inventory.spells
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.character.characteristic.*;
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.SpellItem;
+   import com.ankamagames.dofus.network.types.game.character.characteristic.CharacterCharacteristicsInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class SlaveSwitchContextMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var summonerId:int = 0;
-        public var slaveId:int = 0;
-        public var slaveSpells:Vector.<SpellItem>;
-        public var slaveStats:CharacterCharacteristicsInformations;
-        public static const protocolId:uint = 6214;
 
-        public function SlaveSwitchContextMessage()
-        {
-            this.slaveSpells = new Vector.<SpellItem>;
-            this.slaveStats = new CharacterCharacteristicsInformations();
-            return;
-        }// end function
+   public class SlaveSwitchContextMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function SlaveSwitchContextMessage() {
+         this.slaveSpells=new Vector.<SpellItem>();
+         this.slaveStats=new CharacterCharacteristicsInformations();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6214;
-        }// end function
+      public static const protocolId:uint = 6214;
 
-        public function initSlaveSwitchContextMessage(param1:int = 0, param2:int = 0, param3:Vector.<SpellItem> = null, param4:CharacterCharacteristicsInformations = null) : SlaveSwitchContextMessage
-        {
-            this.summonerId = param1;
-            this.slaveId = param2;
-            this.slaveSpells = param3;
-            this.slaveStats = param4;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.summonerId = 0;
-            this.slaveId = 0;
-            this.slaveSpells = new Vector.<SpellItem>;
-            this.slaveStats = new CharacterCharacteristicsInformations();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var summonerId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var slaveId:int = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_SlaveSwitchContextMessage(param1);
-            return;
-        }// end function
+      public var slaveSpells:Vector.<SpellItem>;
 
-        public function serializeAs_SlaveSwitchContextMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.summonerId);
-            param1.writeInt(this.slaveId);
-            param1.writeShort(this.slaveSpells.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.slaveSpells.length)
-            {
-                
-                (this.slaveSpells[_loc_2] as SpellItem).serializeAs_SpellItem(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            this.slaveStats.serializeAs_CharacterCharacteristicsInformations(param1);
-            return;
-        }// end function
+      public var slaveStats:CharacterCharacteristicsInformations;
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_SlaveSwitchContextMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6214;
+      }
 
-        public function deserializeAs_SlaveSwitchContextMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.summonerId = param1.readInt();
-            this.slaveId = param1.readInt();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new SpellItem();
-                _loc_4.deserialize(param1);
-                this.slaveSpells.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            this.slaveStats = new CharacterCharacteristicsInformations();
-            this.slaveStats.deserialize(param1);
-            return;
-        }// end function
+      public function initSlaveSwitchContextMessage(summonerId:int=0, slaveId:int=0, slaveSpells:Vector.<SpellItem>=null, slaveStats:CharacterCharacteristicsInformations=null) : SlaveSwitchContextMessage {
+         this.summonerId=summonerId;
+         this.slaveId=slaveId;
+         this.slaveSpells=slaveSpells;
+         this.slaveStats=slaveStats;
+         this._isInitialized=true;
+         return this;
+      }
 
-    }
+      override public function reset() : void {
+         this.summonerId=0;
+         this.slaveId=0;
+         this.slaveSpells=new Vector.<SpellItem>();
+         this.slaveStats=new CharacterCharacteristicsInformations();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SlaveSwitchContextMessage(output);
+      }
+
+      public function serializeAs_SlaveSwitchContextMessage(output:IDataOutput) : void {
+         output.writeInt(this.summonerId);
+         output.writeInt(this.slaveId);
+         output.writeShort(this.slaveSpells.length);
+         var _i3:uint = 0;
+         while(_i3<this.slaveSpells.length)
+         {
+            (this.slaveSpells[_i3] as SpellItem).serializeAs_SpellItem(output);
+            _i3++;
+         }
+         this.slaveStats.serializeAs_CharacterCharacteristicsInformations(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SlaveSwitchContextMessage(input);
+      }
+
+      public function deserializeAs_SlaveSwitchContextMessage(input:IDataInput) : void {
+         var _item3:SpellItem = null;
+         this.summonerId=input.readInt();
+         this.slaveId=input.readInt();
+         var _slaveSpellsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3<_slaveSpellsLen)
+         {
+            _item3=new SpellItem();
+            _item3.deserialize(input);
+            this.slaveSpells.push(_item3);
+            _i3++;
+         }
+         this.slaveStats=new CharacterCharacteristicsInformations();
+         this.slaveStats.deserialize(input);
+      }
+   }
+
 }

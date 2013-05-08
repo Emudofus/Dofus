@@ -1,147 +1,138 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flash.geom.*;
-    import flash.text.engine.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.tlf_internal;
+   import flash.text.engine.TextLine;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.formats.BlockProgression;
+   import flash.text.engine.TextRotation;
 
-    final public class TCYElement extends SubParagraphGroupElementBase
-    {
+   use namespace tlf_internal;
 
-        public function TCYElement()
-        {
-            return;
-        }// end function
+   public final class TCYElement extends SubParagraphGroupElementBase
+   {
+         
 
-        override function createContentElement() : void
-        {
-            super.createContentElement();
-            this.updateTCYRotation();
-            return;
-        }// end function
+      public function TCYElement() {
+         super();
+      }
 
-        override protected function get abstract() : Boolean
-        {
-            return false;
-        }// end function
 
-        override function get defaultTypeName() : String
-        {
-            return "tcy";
-        }// end function
 
-        override function get precedence() : uint
-        {
-            return 100;
-        }// end function
+      override tlf_internal function createContentElement() : void {
+         super.createContentElement();
+         this.updateTCYRotation();
+      }
 
-        override function mergeToPreviousIfPossible() : Boolean
-        {
-            var _loc_1:* = 0;
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (parent && !bindableElement)
+      override protected function get abstract() : Boolean {
+         return false;
+      }
+
+      override tlf_internal function get defaultTypeName() : String {
+         return "tcy";
+      }
+
+      override tlf_internal function get precedence() : uint {
+         return 100;
+      }
+
+      override tlf_internal function mergeToPreviousIfPossible() : Boolean {
+         var myidx:* = 0;
+         var prevEl:TCYElement = null;
+         var xferEl:FlowElement = null;
+         if((parent)&&(!bindableElement))
+         {
+            myidx=parent.getChildIndex(this);
+            if(myidx!=0)
             {
-                _loc_1 = parent.getChildIndex(this);
-                if (_loc_1 != 0)
-                {
-                    _loc_2 = parent.getChildAt((_loc_1 - 1)) as TCYElement;
-                    if (_loc_2)
-                    {
-                        while (this.numChildren > 0)
-                        {
-                            
-                            _loc_3 = this.getChildAt(0);
-                            replaceChildren(0, 1);
-                            _loc_2.replaceChildren(_loc_2.numChildren, _loc_2.numChildren, _loc_3);
-                        }
-                        parent.replaceChildren(_loc_1, (_loc_1 + 1));
-                        return true;
-                    }
-                }
+               prevEl=parent.getChildAt(myidx-1) as TCYElement;
+               if(prevEl)
+               {
+                  while(this.numChildren>0)
+                  {
+                     xferEl=this.getChildAt(0);
+                     replaceChildren(0,1);
+                     prevEl.replaceChildren(prevEl.numChildren,prevEl.numChildren,xferEl);
+                  }
+                  parent.replaceChildren(myidx,myidx+1);
+                  return true;
+               }
             }
-            return false;
-        }// end function
+         }
+         return false;
+      }
 
-        override function acceptTextBefore() : Boolean
-        {
-            return false;
-        }// end function
+      override tlf_internal function acceptTextBefore() : Boolean {
+         return false;
+      }
 
-        override function setParentAndRelativeStart(param1:FlowGroupElement, param2:int) : void
-        {
-            super.setParentAndRelativeStart(param1, param2);
-            this.updateTCYRotation();
-            return;
-        }// end function
+      override tlf_internal function setParentAndRelativeStart(newParent:FlowGroupElement, newStart:int) : void {
+         super.setParentAndRelativeStart(newParent,newStart);
+         this.updateTCYRotation();
+      }
 
-        override function formatChanged(param1:Boolean = true) : void
-        {
-            super.formatChanged(param1);
-            this.updateTCYRotation();
-            return;
-        }// end function
+      override tlf_internal function formatChanged(notifyModelChanged:Boolean=true) : void {
+         super.formatChanged(notifyModelChanged);
+         this.updateTCYRotation();
+      }
 
-        function calculateAdornmentBounds(param1:SubParagraphGroupElementBase, param2:TextLine, param3:String, param4:Rectangle) : void
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_5:* = 0;
-            while (_loc_5 < param1.numChildren)
+      tlf_internal function calculateAdornmentBounds(spg:SubParagraphGroupElementBase, tLine:TextLine, blockProgression:String, spgRect:Rectangle) : void {
+         var curChild:FlowElement = null;
+         var curFlowLeaf:FlowLeafElement = null;
+         var curBounds:Rectangle = null;
+         var childCount:int = 0;
+         while(childCount<spg.numChildren)
+         {
+            curChild=spg.getChildAt(childCount) as FlowElement;
+            curFlowLeaf=curChild as FlowLeafElement;
+            if((!curFlowLeaf)&&(curChild is SubParagraphGroupElementBase))
             {
-                
-                _loc_6 = param1.getChildAt(_loc_5) as FlowElement;
-                _loc_7 = _loc_6 as FlowLeafElement;
-                if (!_loc_7 && _loc_6 is SubParagraphGroupElementBase)
-                {
-                    this.calculateAdornmentBounds(_loc_6 as SubParagraphGroupElementBase, param2, param3, param4);
-                    _loc_5++;
-                    continue;
-                }
-                _loc_8 = null;
-                if (!(_loc_7 is InlineGraphicElement))
-                {
-                    _loc_8 = _loc_7.getSpanBoundsOnLine(param2, param3)[0];
-                }
-                else
-                {
-                    _loc_8 = (_loc_7 as InlineGraphicElement).graphic.getBounds(param2);
-                }
-                if (_loc_5 != 0)
-                {
-                    if (_loc_8.top < param4.top)
-                    {
-                        param4.top = _loc_8.top;
-                    }
-                    if (_loc_8.bottom > param4.bottom)
-                    {
-                        param4.bottom = _loc_8.bottom;
-                    }
-                    if (param4.x > _loc_8.x)
-                    {
-                        param4.x = _loc_8.x;
-                    }
-                }
-                else
-                {
-                    param4.top = _loc_8.top;
-                    param4.bottom = _loc_8.bottom;
-                    param4.x = _loc_8.x;
-                }
-                _loc_5++;
+               this.calculateAdornmentBounds(curChild as SubParagraphGroupElementBase,tLine,blockProgression,spgRect);
+               childCount++;
             }
-            return;
-        }// end function
-
-        private function updateTCYRotation() : void
-        {
-            var _loc_1:* = getAncestorWithContainer();
-            if (groupElement)
+            else
             {
-                groupElement.textRotation = _loc_1 && _loc_1.computedFormat.blockProgression == BlockProgression.RL ? (TextRotation.ROTATE_270) : (TextRotation.ROTATE_0);
+               curBounds=null;
+               if(!(curFlowLeaf is InlineGraphicElement))
+               {
+                  curBounds=curFlowLeaf.getSpanBoundsOnLine(tLine,blockProgression)[0];
+               }
+               else
+               {
+                  curBounds=(curFlowLeaf as InlineGraphicElement).graphic.getBounds(tLine);
+               }
+               if(childCount!=0)
+               {
+                  if(curBounds.top<spgRect.top)
+                  {
+                     spgRect.top=curBounds.top;
+                  }
+                  if(curBounds.bottom>spgRect.bottom)
+                  {
+                     spgRect.bottom=curBounds.bottom;
+                  }
+                  if(spgRect.x>curBounds.x)
+                  {
+                     spgRect.x=curBounds.x;
+                  }
+               }
+               else
+               {
+                  spgRect.top=curBounds.top;
+                  spgRect.bottom=curBounds.bottom;
+                  spgRect.x=curBounds.x;
+               }
+               childCount++;
             }
-            return;
-        }// end function
+         }
+      }
 
-    }
+      private function updateTCYRotation() : void {
+         var contElement:ContainerFormattedElement = getAncestorWithContainer();
+         if(groupElement)
+         {
+            groupElement.textRotation=(contElement)&&(contElement.computedFormat.blockProgression==BlockProgression.RL)?TextRotation.ROTATE_270:TextRotation.ROTATE_0;
+         }
+      }
+   }
+
 }

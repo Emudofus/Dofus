@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.quest
+package com.ankamagames.dofus.logic.game.common.actions.quest
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class QuestInfosRequestAction extends Object implements Action
-    {
-        public var questId:int;
 
-        public function QuestInfosRequestAction()
-        {
-            return;
-        }// end function
+   public class QuestInfosRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : QuestInfosRequestAction
-        {
-            var _loc_2:* = new QuestInfosRequestAction;
-            _loc_2.questId = param1;
-            return _loc_2;
-        }// end function
+      public function QuestInfosRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(questId:int) : QuestInfosRequestAction {
+         var a:QuestInfosRequestAction = new QuestInfosRequestAction();
+         a.questId=questId;
+         return a;
+      }
+
+      public var questId:int;
+   }
+
 }

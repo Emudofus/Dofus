@@ -1,100 +1,136 @@
-﻿package com.ankamagames.dofus.network.messages.game.basic
+package com.ankamagames.dofus.network.messages.game.basic
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class BasicWhoIsMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var self:Boolean = false;
-        public var position:int = 0;
-        public var accountNickname:String = "";
-        public var characterName:String = "";
-        public var areaId:int = 0;
-        public static const protocolId:uint = 180;
 
-        public function BasicWhoIsMessage()
-        {
-            return;
-        }// end function
+   public class BasicWhoIsMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function BasicWhoIsMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 180;
-        }// end function
+      public static const protocolId:uint = 180;
 
-        public function initBasicWhoIsMessage(param1:Boolean = false, param2:int = 0, param3:String = "", param4:String = "", param5:int = 0) : BasicWhoIsMessage
-        {
-            this.self = param1;
-            this.position = param2;
-            this.accountNickname = param3;
-            this.characterName = param4;
-            this.areaId = param5;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.self = false;
-            this.position = 0;
-            this.accountNickname = "";
-            this.characterName = "";
-            this.areaId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var self:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var position:int = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_BasicWhoIsMessage(param1);
-            return;
-        }// end function
+      public var accountNickname:String = "";
 
-        public function serializeAs_BasicWhoIsMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.self);
-            param1.writeByte(this.position);
-            param1.writeUTF(this.accountNickname);
-            param1.writeUTF(this.characterName);
-            param1.writeShort(this.areaId);
-            return;
-        }// end function
+      public var accountId:uint = 0;
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_BasicWhoIsMessage(param1);
-            return;
-        }// end function
+      public var playerName:String = "";
 
-        public function deserializeAs_BasicWhoIsMessage(param1:IDataInput) : void
-        {
-            this.self = param1.readBoolean();
-            this.position = param1.readByte();
-            this.accountNickname = param1.readUTF();
-            this.characterName = param1.readUTF();
-            this.areaId = param1.readShort();
-            return;
-        }// end function
+      public var playerId:uint = 0;
 
-    }
+      public var areaId:int = 0;
+
+      override public function getMessageId() : uint {
+         return 180;
+      }
+
+      public function initBasicWhoIsMessage(self:Boolean=false, position:int=0, accountNickname:String="", accountId:uint=0, playerName:String="", playerId:uint=0, areaId:int=0) : BasicWhoIsMessage {
+         this.self=self;
+         this.position=position;
+         this.accountNickname=accountNickname;
+         this.accountId=accountId;
+         this.playerName=playerName;
+         this.playerId=playerId;
+         this.areaId=areaId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.self=false;
+         this.position=0;
+         this.accountNickname="";
+         this.accountId=0;
+         this.playerName="";
+         this.playerId=0;
+         this.areaId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_BasicWhoIsMessage(output);
+      }
+
+      public function serializeAs_BasicWhoIsMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.self);
+         output.writeByte(this.position);
+         output.writeUTF(this.accountNickname);
+         if(this.accountId<0)
+         {
+            throw new Error("Forbidden value ("+this.accountId+") on element accountId.");
+         }
+         else
+         {
+            output.writeInt(this.accountId);
+            output.writeUTF(this.playerName);
+            if(this.playerId<0)
+            {
+               throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
+            }
+            else
+            {
+               output.writeInt(this.playerId);
+               output.writeShort(this.areaId);
+               return;
+            }
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_BasicWhoIsMessage(input);
+      }
+
+      public function deserializeAs_BasicWhoIsMessage(input:IDataInput) : void {
+         this.self=input.readBoolean();
+         this.position=input.readByte();
+         this.accountNickname=input.readUTF();
+         this.accountId=input.readInt();
+         if(this.accountId<0)
+         {
+            throw new Error("Forbidden value ("+this.accountId+") on element of BasicWhoIsMessage.accountId.");
+         }
+         else
+         {
+            this.playerName=input.readUTF();
+            this.playerId=input.readInt();
+            if(this.playerId<0)
+            {
+               throw new Error("Forbidden value ("+this.playerId+") on element of BasicWhoIsMessage.playerId.");
+            }
+            else
+            {
+               this.areaId=input.readShort();
+               return;
+            }
+         }
+      }
+   }
+
 }

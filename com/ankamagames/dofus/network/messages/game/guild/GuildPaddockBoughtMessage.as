@@ -1,83 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.guild
+package com.ankamagames.dofus.network.messages.game.guild
 {
-    import com.ankamagames.dofus.network.types.game.paddock.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.paddock.PaddockContentInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GuildPaddockBoughtMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var paddockInfo:PaddockContentInformations;
-        public static const protocolId:uint = 5952;
 
-        public function GuildPaddockBoughtMessage()
-        {
-            this.paddockInfo = new PaddockContentInformations();
-            return;
-        }// end function
+   public class GuildPaddockBoughtMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GuildPaddockBoughtMessage() {
+         this.paddockInfo=new PaddockContentInformations();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5952;
-        }// end function
+      public static const protocolId:uint = 5952;
 
-        public function initGuildPaddockBoughtMessage(param1:PaddockContentInformations = null) : GuildPaddockBoughtMessage
-        {
-            this.paddockInfo = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.paddockInfo = new PaddockContentInformations();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var paddockInfo:PaddockContentInformations;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5952;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GuildPaddockBoughtMessage(param1);
-            return;
-        }// end function
+      public function initGuildPaddockBoughtMessage(paddockInfo:PaddockContentInformations=null) : GuildPaddockBoughtMessage {
+         this.paddockInfo=paddockInfo;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_GuildPaddockBoughtMessage(param1:IDataOutput) : void
-        {
-            this.paddockInfo.serializeAs_PaddockContentInformations(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.paddockInfo=new PaddockContentInformations();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GuildPaddockBoughtMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_GuildPaddockBoughtMessage(param1:IDataInput) : void
-        {
-            this.paddockInfo = new PaddockContentInformations();
-            this.paddockInfo.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GuildPaddockBoughtMessage(output);
+      }
+
+      public function serializeAs_GuildPaddockBoughtMessage(output:IDataOutput) : void {
+         this.paddockInfo.serializeAs_PaddockContentInformations(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GuildPaddockBoughtMessage(input);
+      }
+
+      public function deserializeAs_GuildPaddockBoughtMessage(input:IDataInput) : void {
+         this.paddockInfo=new PaddockContentInformations();
+         this.paddockInfo.deserialize(input);
+      }
+   }
+
 }

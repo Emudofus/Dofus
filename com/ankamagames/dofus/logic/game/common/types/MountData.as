@@ -1,110 +1,117 @@
-﻿package com.ankamagames.dofus.logic.game.common.types
+package com.ankamagames.dofus.logic.game.common.types
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.datacenter.mounts.*;
-    import com.ankamagames.dofus.misc.*;
-    import com.ankamagames.dofus.network.types.game.mount.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.utils.misc.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import com.ankamagames.dofus.network.types.game.mount.MountClientData;
+   import com.ankamagames.jerakine.utils.misc.CopyObject;
+   import com.ankamagames.dofus.datacenter.mounts.Mount;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.tiphon.types.look.TiphonEntityLook;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.datacenter.mounts.MountBehavior;
+   import com.ankamagames.dofus.misc.ObjectEffectAdapter;
 
-    public class MountData extends Object
-    {
-        private static var _dictionary_cache:Dictionary = new Dictionary();
 
-        public function MountData()
-        {
-            return;
-        }// end function
+   public class MountData extends Object
+   {
+         
 
-        public static function makeMountData(param1:MountClientData, param2:Boolean = true, param3:uint = 0) : Object
-        {
-            var _loc_4:* = null;
-            var _loc_7:* = 0;
-            var _loc_8:* = 0;
-            var _loc_9:* = 0;
-            if (_dictionary_cache[param1.id] && param2)
-            {
-                _loc_4 = getMountFromCache(param1.id);
-            }
-            else
-            {
-                _loc_4 = CopyObject.copyObject(param1, ["behaviors", "ancestor"]);
-                _dictionary_cache[_loc_4.id] = _loc_4;
-            }
-            var _loc_5:* = Mount.getMountById(param1.model);
-            if (!param1.name)
-            {
-                _loc_4.name = I18n.getUiText("ui.common.noName");
-            }
-            _loc_4.id = param1.id;
-            _loc_4.model = param1.model;
-            _loc_4.description = _loc_5.name;
-            _loc_4.level = param1.level;
-            _loc_4.experience = param1.experience;
-            _loc_4.experienceForLevel = param1.experienceForLevel;
-            _loc_4.experienceForNextLevel = param1.experienceForNextLevel;
-            _loc_4.xpRatio = param3;
-            try
-            {
-                _loc_4.entityLook = TiphonEntityLook.fromString(_loc_5.look);
-                _loc_4.colors = _loc_4.entityLook.getColors();
-            }
-            catch (e:Error)
-            {
-            }
-            var _loc_6:* = param1.ancestor.concat();
-            param1.ancestor.concat().unshift(param1.model);
-            _loc_4.ancestor = makeParent(_loc_6, 0, -1, 0);
-            _loc_4.ability = new Array();
-            for each (_loc_7 in param1.behaviors)
-            {
-                
-                _loc_4.ability.push(MountBehavior.getMountBehaviorById(_loc_7));
-            }
-            _loc_4.effectList = new Array();
-            _loc_8 = param1.effectList.length;
-            _loc_9 = 0;
-            while (_loc_9 < _loc_8)
-            {
-                
-                _loc_4.effectList.push(ObjectEffectAdapter.fromNetwork(param1.effectList[_loc_9]));
-                _loc_9++;
-            }
-            _loc_4.isRideable = param1.isRideable;
-            _loc_4.stamina = param1.stamina;
-            _loc_4.energy = param1.energy;
-            _loc_4.maturity = param1.maturity;
-            _loc_4.serenity = param1.serenity;
-            _loc_4.love = param1.love;
-            _loc_4.fecondationTime = param1.fecondationTime;
-            _loc_4.isFecondationReady = param1.isFecondationReady;
-            _loc_4.reproductionCount = param1.reproductionCount;
-            _loc_4.boostLimiter = param1.boostLimiter;
-            return _loc_4;
-        }// end function
+      public function MountData() {
+         super();
+      }
 
-        public static function getMountFromCache(param1:uint) : Object
-        {
-            return _dictionary_cache[param1];
-        }// end function
+      private static var _dictionary_cache:Dictionary = new Dictionary();
 
-        private static function makeParent(param1:Vector.<uint>, param2:uint, param3:int, param4:uint) : Object
-        {
-            var _loc_5:* = param3 + Math.pow(2, (param2 - 1));
-            var _loc_6:* = param3 + Math.pow(2, (param2 - 1)) + param4;
-            if (param1.length <= _loc_6)
-            {
-                return null;
-            }
-            var _loc_7:* = Mount.getMountById(param1[_loc_6]);
-            if (!Mount.getMountById(param1[_loc_6]))
-            {
-                return null;
-            }
-            return {mount:_loc_7, mother:makeParent(param1, (param2 + 1), _loc_5, 0 + 2 * (_loc_6 - _loc_5)), father:makeParent(param1, (param2 + 1), _loc_5, 1 + 2 * (_loc_6 - _loc_5)), entityLook:TiphonEntityLook.fromString(_loc_7.look)};
-        }// end function
+      public static function makeMountData(o:MountClientData, cache:Boolean=true, xpRatio:uint=0) : Object {
+         var mountData:Object = null;
+         var ability:uint = 0;
+         var nEffect:* = 0;
+         var i:* = 0;
+         if((_dictionary_cache[o.id])&&(cache))
+         {
+            mountData=getMountFromCache(o.id);
+         }
+         else
+         {
+            mountData=CopyObject.copyObject(o,["behaviors","ancestor"]);
+            _dictionary_cache[mountData.id]=mountData;
+         }
+         var mount:Mount = Mount.getMountById(o.model);
+         if(!o.name)
+         {
+            mountData.name=I18n.getUiText("ui.common.noName");
+         }
+         mountData.id=o.id;
+         mountData.model=o.model;
+         mountData.description=mount.name;
+         mountData.level=o.level;
+         mountData.experience=o.experience;
+         mountData.experienceForLevel=o.experienceForLevel;
+         mountData.experienceForNextLevel=o.experienceForNextLevel;
+         mountData.xpRatio=xpRatio;
+         try
+         {
+            mountData.entityLook=TiphonEntityLook.fromString(mount.look);
+            mountData.colors=mountData.entityLook.getColors();
+         }
+         catch(e:Error)
+         {
+         }
+         var a:Vector.<uint> = o.ancestor.concat();
+         a.unshift(o.model);
+         mountData.ancestor=makeParent(a,0,-1,0);
+         mountData.ability=new Array();
+         for each (ability in o.behaviors)
+         {
+            mountData.ability.push(MountBehavior.getMountBehaviorById(ability));
+         }
+         mountData.effectList=new Array();
+         nEffect=o.effectList.length;
+         i=0;
+         while(i<nEffect)
+         {
+            mountData.effectList.push(ObjectEffectAdapter.fromNetwork(o.effectList[i]));
+            i++;
+         }
+         mountData.isRideable=o.isRideable;
+         mountData.stamina=o.stamina;
+         mountData.energy=o.energy;
+         mountData.maturity=o.maturity;
+         mountData.serenity=o.serenity;
+         mountData.love=o.love;
+         mountData.fecondationTime=o.fecondationTime;
+         mountData.isFecondationReady=o.isFecondationReady;
+         mountData.reproductionCount=o.reproductionCount;
+         mountData.boostLimiter=o.boostLimiter;
+         return mountData;
+      }
 
-    }
+      public static function getMountFromCache(id:uint) : Object {
+         return _dictionary_cache[id];
+      }
+
+      private static function makeParent(ancestor:Vector.<uint>, generation:uint, start:int, index:uint) : Object {
+         var nextStart:uint = start+Math.pow(2,generation-1);
+         var ancestorIndex:uint = nextStart+index;
+         if(ancestor.length<=ancestorIndex)
+         {
+            return null;
+         }
+         var mount:Mount = Mount.getMountById(ancestor[ancestorIndex]);
+         if(!mount)
+         {
+            return null;
+         }
+         return 
+            {
+               mount:mount,
+               mother:makeParent(ancestor,generation+1,nextStart,0+2*(ancestorIndex-nextStart)),
+               father:makeParent(ancestor,generation+1,nextStart,1+2*(ancestorIndex-nextStart)),
+               entityLook:TiphonEntityLook.fromString(mount.look)
+            }
+         ;
+      }
+
+
+   }
+
 }

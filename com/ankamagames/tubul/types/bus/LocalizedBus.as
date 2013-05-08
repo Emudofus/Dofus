@@ -1,31 +1,30 @@
-﻿package com.ankamagames.tubul.types.bus
+package com.ankamagames.tubul.types.bus
 {
-    import com.ankamagames.tubul.interfaces.*;
-    import com.ankamagames.tubul.types.sounds.*;
-    import flash.geom.*;
+   import flash.geom.Point;
+   import com.ankamagames.tubul.interfaces.ISound;
+   import com.ankamagames.tubul.types.sounds.LocalizedSound;
 
-    public class LocalizedBus extends AudioBus
-    {
 
-        public function LocalizedBus(param1:int, param2:String)
-        {
-            super(param1, param2);
-            return;
-        }// end function
+   public class LocalizedBus extends AudioBus
+   {
+         
 
-        public function updateObserverPosition(param1:Point) : void
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in _soundVector)
+      public function LocalizedBus(id:int, name:String) {
+         super(id,name);
+      }
+
+
+
+      public function updateObserverPosition(pEarPosition:Point) : void {
+         var isound:ISound = null;
+         for each (isound in _soundVector)
+         {
+            if(isound is LocalizedSound)
             {
-                
-                if (_loc_2 is LocalizedSound)
-                {
-                    (_loc_2 as LocalizedSound).updateObserverPosition(param1);
-                }
+               (isound as LocalizedSound).updateObserverPosition(pEarPosition);
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.mount
+package com.ankamagames.dofus.network.messages.game.context.mount
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PaddockMoveItemRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var oldCellId:uint = 0;
-        public var newCellId:uint = 0;
-        public static const protocolId:uint = 6052;
 
-        public function PaddockMoveItemRequestMessage()
-        {
-            return;
-        }// end function
+   public class PaddockMoveItemRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PaddockMoveItemRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6052;
-        }// end function
+      public static const protocolId:uint = 6052;
 
-        public function initPaddockMoveItemRequestMessage(param1:uint = 0, param2:uint = 0) : PaddockMoveItemRequestMessage
-        {
-            this.oldCellId = param1;
-            this.newCellId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.oldCellId = 0;
-            this.newCellId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var oldCellId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var newCellId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PaddockMoveItemRequestMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6052;
+      }
 
-        public function serializeAs_PaddockMoveItemRequestMessage(param1:IDataOutput) : void
-        {
-            if (this.oldCellId < 0 || this.oldCellId > 559)
+      public function initPaddockMoveItemRequestMessage(oldCellId:uint=0, newCellId:uint=0) : PaddockMoveItemRequestMessage {
+         this.oldCellId=oldCellId;
+         this.newCellId=newCellId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.oldCellId=0;
+         this.newCellId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PaddockMoveItemRequestMessage(output);
+      }
+
+      public function serializeAs_PaddockMoveItemRequestMessage(output:IDataOutput) : void {
+         if((this.oldCellId>0)||(this.oldCellId<559))
+         {
+            throw new Error("Forbidden value ("+this.oldCellId+") on element oldCellId.");
+         }
+         else
+         {
+            output.writeShort(this.oldCellId);
+            if((this.newCellId>0)||(this.newCellId<559))
             {
-                throw new Error("Forbidden value (" + this.oldCellId + ") on element oldCellId.");
+               throw new Error("Forbidden value ("+this.newCellId+") on element newCellId.");
             }
-            param1.writeShort(this.oldCellId);
-            if (this.newCellId < 0 || this.newCellId > 559)
+            else
             {
-                throw new Error("Forbidden value (" + this.newCellId + ") on element newCellId.");
+               output.writeShort(this.newCellId);
+               return;
             }
-            param1.writeShort(this.newCellId);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PaddockMoveItemRequestMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PaddockMoveItemRequestMessage(input);
+      }
 
-        public function deserializeAs_PaddockMoveItemRequestMessage(param1:IDataInput) : void
-        {
-            this.oldCellId = param1.readShort();
-            if (this.oldCellId < 0 || this.oldCellId > 559)
+      public function deserializeAs_PaddockMoveItemRequestMessage(input:IDataInput) : void {
+         this.oldCellId=input.readShort();
+         if((this.oldCellId>0)||(this.oldCellId<559))
+         {
+            throw new Error("Forbidden value ("+this.oldCellId+") on element of PaddockMoveItemRequestMessage.oldCellId.");
+         }
+         else
+         {
+            this.newCellId=input.readShort();
+            if((this.newCellId>0)||(this.newCellId<559))
             {
-                throw new Error("Forbidden value (" + this.oldCellId + ") on element of PaddockMoveItemRequestMessage.oldCellId.");
+               throw new Error("Forbidden value ("+this.newCellId+") on element of PaddockMoveItemRequestMessage.newCellId.");
             }
-            this.newCellId = param1.readShort();
-            if (this.newCellId < 0 || this.newCellId > 559)
+            else
             {
-                throw new Error("Forbidden value (" + this.newCellId + ") on element of PaddockMoveItemRequestMessage.newCellId.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

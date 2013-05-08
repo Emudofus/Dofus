@@ -1,75 +1,79 @@
-﻿package com.ankamagames.dofus.network.types.game.interactive
+package com.ankamagames.dofus.network.types.game.interactive
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class MapObstacle extends Object implements INetworkType
-    {
-        public var obstacleCellId:uint = 0;
-        public var state:uint = 0;
-        public static const protocolId:uint = 200;
 
-        public function MapObstacle()
-        {
+   public class MapObstacle extends Object implements INetworkType
+   {
+         
+
+      public function MapObstacle() {
+         super();
+      }
+
+      public static const protocolId:uint = 200;
+
+      public var obstacleCellId:uint = 0;
+
+      public var state:uint = 0;
+
+      public function getTypeId() : uint {
+         return 200;
+      }
+
+      public function initMapObstacle(obstacleCellId:uint=0, state:uint=0) : MapObstacle {
+         this.obstacleCellId=obstacleCellId;
+         this.state=state;
+         return this;
+      }
+
+      public function reset() : void {
+         this.obstacleCellId=0;
+         this.state=0;
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_MapObstacle(output);
+      }
+
+      public function serializeAs_MapObstacle(output:IDataOutput) : void {
+         if((this.obstacleCellId>0)||(this.obstacleCellId<559))
+         {
+            throw new Error("Forbidden value ("+this.obstacleCellId+") on element obstacleCellId.");
+         }
+         else
+         {
+            output.writeShort(this.obstacleCellId);
+            output.writeByte(this.state);
             return;
-        }// end function
+         }
+      }
 
-        public function getTypeId() : uint
-        {
-            return 200;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_MapObstacle(input);
+      }
 
-        public function initMapObstacle(param1:uint = 0, param2:uint = 0) : MapObstacle
-        {
-            this.obstacleCellId = param1;
-            this.state = param2;
-            return this;
-        }// end function
-
-        public function reset() : void
-        {
-            this.obstacleCellId = 0;
-            this.state = 0;
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_MapObstacle(param1);
-            return;
-        }// end function
-
-        public function serializeAs_MapObstacle(param1:IDataOutput) : void
-        {
-            if (this.obstacleCellId < 0 || this.obstacleCellId > 559)
+      public function deserializeAs_MapObstacle(input:IDataInput) : void {
+         this.obstacleCellId=input.readShort();
+         if((this.obstacleCellId>0)||(this.obstacleCellId<559))
+         {
+            throw new Error("Forbidden value ("+this.obstacleCellId+") on element of MapObstacle.obstacleCellId.");
+         }
+         else
+         {
+            this.state=input.readByte();
+            if(this.state<0)
             {
-                throw new Error("Forbidden value (" + this.obstacleCellId + ") on element obstacleCellId.");
+               throw new Error("Forbidden value ("+this.state+") on element of MapObstacle.state.");
             }
-            param1.writeShort(this.obstacleCellId);
-            param1.writeByte(this.state);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_MapObstacle(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_MapObstacle(param1:IDataInput) : void
-        {
-            this.obstacleCellId = param1.readShort();
-            if (this.obstacleCellId < 0 || this.obstacleCellId > 559)
+            else
             {
-                throw new Error("Forbidden value (" + this.obstacleCellId + ") on element of MapObstacle.obstacleCellId.");
+               return;
             }
-            this.state = param1.readByte();
-            if (this.state < 0)
-            {
-                throw new Error("Forbidden value (" + this.state + ") on element of MapObstacle.state.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

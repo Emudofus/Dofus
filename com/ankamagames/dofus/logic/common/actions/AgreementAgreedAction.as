@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.common.actions
+package com.ankamagames.dofus.logic.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class AgreementAgreedAction extends Object implements Action
-    {
-        public var fileName:String;
 
-        public function AgreementAgreedAction()
-        {
-            return;
-        }// end function
+   public class AgreementAgreedAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : AgreementAgreedAction
-        {
-            var _loc_2:* = new AgreementAgreedAction;
-            _loc_2.fileName = param1;
-            return _loc_2;
-        }// end function
+      public function AgreementAgreedAction() {
+         super();
+      }
 
-    }
+      public static function create(fileName:String) : AgreementAgreedAction {
+         var a:AgreementAgreedAction = new AgreementAgreedAction();
+         a.fileName=fileName;
+         return a;
+      }
+
+      public var fileName:String;
+   }
+
 }

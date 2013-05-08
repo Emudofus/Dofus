@@ -1,36 +1,34 @@
-﻿package org.flintparticles.common.initializers
+package org.flintparticles.common.initializers
 {
-    import org.flintparticles.common.emitters.*;
-    import org.flintparticles.common.initializers.*;
-    import org.flintparticles.common.particles.*;
+   import org.flintparticles.common.emitters.Emitter;
+   import org.flintparticles.common.particles.Particle;
 
-    public class InitializerBase extends Object implements Initializer
-    {
 
-        public function InitializerBase()
-        {
-            return;
-        }// end function
+   public class InitializerBase extends Object implements Initializer
+   {
+         
 
-        public function getDefaultPriority() : Number
-        {
-            return 0;
-        }// end function
+      public function InitializerBase() {
+         super();
+      }
 
-        public function addedToEmitter(param1:Emitter) : void
-        {
-            return;
-        }// end function
 
-        public function removedFromEmitter(param1:Emitter) : void
-        {
-            return;
-        }// end function
 
-        public function initialize(param1:Emitter, param2:Particle) : void
-        {
-            return;
-        }// end function
+      public function getDefaultPriority() : Number {
+         return 0;
+      }
 
-    }
+      public function addedToEmitter(emitter:Emitter) : void {
+         
+      }
+
+      public function removedFromEmitter(emitter:Emitter) : void {
+         
+      }
+
+      public function initialize(emitter:Emitter, particle:Particle) : void {
+         
+      }
+   }
+
 }

@@ -1,94 +1,95 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import com.ankamagames.atouin.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.jerakine.utils.system.*;
-    import flash.display.*;
-    import flash.filesystem.*;
-    import flash.geom.*;
-    import flash.utils.*;
-    import mx.graphics.codec.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import flash.display.BitmapData;
+   import flash.geom.Rectangle;
+   import com.ankamagames.jerakine.utils.display.StageShareManager;
+   import com.ankamagames.atouin.Atouin;
+   import com.ankamagames.atouin.AtouinConstants;
+   import com.ankamagames.berilia.managers.SecureCenter;
+   import flash.display.DisplayObject;
+   import flash.utils.ByteArray;
+   import mx.graphics.codec.JPEGEncoder;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import flash.filesystem.File;
+   import mx.graphics.codec.PNGEncoder;
+   import flash.geom.Matrix;
 
-    public class CaptureApi extends Object implements IApi
-    {
 
-        public function CaptureApi()
-        {
-            return;
-        }// end function
+   public class CaptureApi extends Object implements IApi
+   {
+         
 
-        public static function getScreen(param1:Rectangle = null, param2:Number = 1) : BitmapData
-        {
-            return capture(StageShareManager.stage, param1, new Rectangle(0, 0, StageShareManager.startWidth, StageShareManager.startHeight), param2);
-        }// end function
+      public function CaptureApi() {
+         super();
+      }
 
-        public static function getBattleField(param1:Rectangle = null, param2:Number = 1) : BitmapData
-        {
-            return capture(Atouin.getInstance().worldContainer, param1, new Rectangle(0, 0, AtouinConstants.CELL_WIDTH * AtouinConstants.MAP_WIDTH, AtouinConstants.CELL_HEIGHT * AtouinConstants.MAP_HEIGHT), param2);
-        }// end function
+      public static function getScreen(rect:Rectangle=null, scale:Number=1.0) : BitmapData {
+         return capture(StageShareManager.stage,rect,new Rectangle(0,0,StageShareManager.startWidth,StageShareManager.startHeight),scale);
+      }
 
-        public static function getFromTarget(param1:Object, param2:Rectangle = null, param3:Number = 1, param4:Boolean = false) : BitmapData
-        {
-            param1 = SecureCenter.unsecure(param1);
-            if (!param1 || !(param1 is DisplayObject))
-            {
-                return null;
-            }
-            var _loc_5:* = param1 as DisplayObject;
-            var _loc_6:* = (param1 as DisplayObject).getBounds(param1 as DisplayObject);
-            if (!(param1 as DisplayObject).getBounds(param1 as DisplayObject).width || !_loc_6.height)
-            {
-                return null;
-            }
-            return capture(_loc_5, param2, _loc_6, param3, param4);
-        }// end function
+      public static function getBattleField(rect:Rectangle=null, scale:Number=1.0) : BitmapData {
+         return capture(Atouin.getInstance().worldContainer,rect,new Rectangle(0,0,AtouinConstants.CELL_WIDTH*AtouinConstants.MAP_WIDTH,AtouinConstants.CELL_HEIGHT*AtouinConstants.MAP_HEIGHT),scale);
+      }
 
-        public static function jpegEncode(param1:BitmapData, param2:uint = 80, param3:Boolean = true, param4:String = "image.jpg") : ByteArray
-        {
-            var _loc_5:* = new JPEGEncoder(param2).encode(param1);
-            if (param3 && AirScanner.hasAir())
-            {
-                File.desktopDirectory.save(_loc_5, param4);
-            }
-            return _loc_5;
-        }// end function
-
-        public static function pngEncode(param1:BitmapData, param2:Boolean = true, param3:String = "image.png") : ByteArray
-        {
-            var _loc_4:* = new PNGEncoder().encode(param1);
-            if (param2 && AirScanner.hasAir())
-            {
-                File.desktopDirectory.save(_loc_4, param3);
-            }
-            return _loc_4;
-        }// end function
-
-        private static function capture(param1:DisplayObject, param2:Rectangle, param3:Rectangle, param4:Number = 1, param5:Boolean = false) : BitmapData
-        {
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            if (!param2)
-            {
-                _loc_6 = param3;
-            }
-            else
-            {
-                _loc_6 = param3.intersection(param2);
-            }
-            if (param1)
-            {
-                _loc_7 = new Matrix();
-                _loc_7.scale(param4, param4);
-                _loc_7.translate((-_loc_6.x) * param4, (-_loc_6.y) * param4);
-                _loc_8 = new BitmapData(_loc_6.width * param4, _loc_6.height * param4, param5, param5 ? (16711680) : (4294967295));
-                _loc_8.draw(param1, _loc_7);
-                return _loc_8;
-            }
+      public static function getFromTarget(target:Object, rect:Rectangle=null, scale:Number=1.0, transparent:Boolean=false) : BitmapData {
+         var target:Object = SecureCenter.unsecure(target);
+         if((!target)||(!(target is DisplayObject)))
+         {
             return null;
-        }// end function
+         }
+         var dObj:DisplayObject = target as DisplayObject;
+         var bounds:Rectangle = dObj.getBounds(dObj);
+         if((!bounds.width)||(!bounds.height))
+         {
+            return null;
+         }
+         return capture(dObj,rect,bounds,scale,transparent);
+      }
 
-    }
+      public static function jpegEncode(img:BitmapData, quality:uint=80, askForSave:Boolean=true, fileName:String="image.jpg") : ByteArray {
+         var encodedImg:ByteArray = new JPEGEncoder(quality).encode(img);
+         if((askForSave)&&(AirScanner.hasAir()))
+         {
+            File.desktopDirectory.save(encodedImg,fileName);
+         }
+         return encodedImg;
+      }
+
+      public static function pngEncode(img:BitmapData, askForSave:Boolean=true, fileName:String="image.png") : ByteArray {
+         var encodedImg:ByteArray = new PNGEncoder().encode(img);
+         if((askForSave)&&(AirScanner.hasAir()))
+         {
+            File.desktopDirectory.save(encodedImg,fileName);
+         }
+         return encodedImg;
+      }
+
+      private static function capture(target:DisplayObject, rect:Rectangle, maxRect:Rectangle, scale:Number=1.0, transparent:Boolean=false) : BitmapData {
+         var rect2:Rectangle = null;
+         var matrix:Matrix = null;
+         var data:BitmapData = null;
+         if(!rect)
+         {
+            rect2=maxRect;
+         }
+         else
+         {
+            rect2=maxRect.intersection(rect);
+         }
+         if(target)
+         {
+            matrix=new Matrix();
+            matrix.scale(scale,scale);
+            matrix.translate(-rect2.x*scale,-rect2.y*scale);
+            data=new BitmapData(rect2.width*scale,rect2.height*scale,transparent,transparent?16711680:4.294967295E9);
+            data.draw(target,matrix);
+            return data;
+         }
+         return null;
+      }
+
+
+   }
+
 }

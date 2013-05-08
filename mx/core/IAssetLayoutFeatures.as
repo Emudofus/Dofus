@@ -1,91 +1,94 @@
-﻿package mx.core
+package mx.core
 {
-    import flash.geom.*;
+   import flash.geom.Matrix;
+   import flash.geom.Matrix3D;
 
-    public interface IAssetLayoutFeatures
-    {
 
-        public function IAssetLayoutFeatures();
+   public interface IAssetLayoutFeatures
+   {
+         
 
-        function set layoutX(param1:Number) : void;
 
-        function get layoutX() : Number;
 
-        function set layoutY(param1:Number) : void;
+      function set layoutX(param1:Number) : void;
 
-        function get layoutY() : Number;
+      function get layoutX() : Number;
 
-        function set layoutZ(param1:Number) : void;
+      function set layoutY(param1:Number) : void;
 
-        function get layoutZ() : Number;
+      function get layoutY() : Number;
 
-        function get layoutWidth() : Number;
+      function set layoutZ(param1:Number) : void;
 
-        function set layoutWidth(param1:Number) : void;
+      function get layoutZ() : Number;
 
-        function set transformX(param1:Number) : void;
+      function get layoutWidth() : Number;
 
-        function get transformX() : Number;
+      function set layoutWidth(param1:Number) : void;
 
-        function set transformY(param1:Number) : void;
+      function set transformX(param1:Number) : void;
 
-        function get transformY() : Number;
+      function get transformX() : Number;
 
-        function set transformZ(param1:Number) : void;
+      function set transformY(param1:Number) : void;
 
-        function get transformZ() : Number;
+      function get transformY() : Number;
 
-        function set layoutRotationX(param1:Number) : void;
+      function set transformZ(param1:Number) : void;
 
-        function get layoutRotationX() : Number;
+      function get transformZ() : Number;
 
-        function set layoutRotationY(param1:Number) : void;
+      function set layoutRotationX(param1:Number) : void;
 
-        function get layoutRotationY() : Number;
+      function get layoutRotationX() : Number;
 
-        function set layoutRotationZ(param1:Number) : void;
+      function set layoutRotationY(param1:Number) : void;
 
-        function get layoutRotationZ() : Number;
+      function get layoutRotationY() : Number;
 
-        function set layoutScaleX(param1:Number) : void;
+      function set layoutRotationZ(param1:Number) : void;
 
-        function get layoutScaleX() : Number;
+      function get layoutRotationZ() : Number;
 
-        function set layoutScaleY(param1:Number) : void;
+      function set layoutScaleX(param1:Number) : void;
 
-        function get layoutScaleY() : Number;
+      function get layoutScaleX() : Number;
 
-        function set layoutScaleZ(param1:Number) : void;
+      function set layoutScaleY(param1:Number) : void;
 
-        function get layoutScaleZ() : Number;
+      function get layoutScaleY() : Number;
 
-        function set layoutMatrix(param1:Matrix) : void;
+      function set layoutScaleZ(param1:Number) : void;
 
-        function get layoutMatrix() : Matrix;
+      function get layoutScaleZ() : Number;
 
-        function set layoutMatrix3D(param1:Matrix3D) : void;
+      function set layoutMatrix(param1:Matrix) : void;
 
-        function get layoutMatrix3D() : Matrix3D;
+      function get layoutMatrix() : Matrix;
 
-        function get is3D() : Boolean;
+      function set layoutMatrix3D(param1:Matrix3D) : void;
 
-        function get layoutIs3D() : Boolean;
+      function get layoutMatrix3D() : Matrix3D;
 
-        function get mirror() : Boolean;
+      function get is3D() : Boolean;
 
-        function set mirror(param1:Boolean) : void;
+      function get layoutIs3D() : Boolean;
 
-        function get stretchX() : Number;
+      function get mirror() : Boolean;
 
-        function set stretchX(param1:Number) : void;
+      function set mirror(param1:Boolean) : void;
 
-        function get stretchY() : Number;
+      function get stretchX() : Number;
 
-        function set stretchY(param1:Number) : void;
+      function set stretchX(param1:Number) : void;
 
-        function get computedMatrix() : Matrix;
+      function get stretchY() : Number;
 
-        function get computedMatrix3D() : Matrix3D;
+      function set stretchY(param1:Number) : void;
 
-    }
+      function get computedMatrix() : Matrix;
+
+      function get computedMatrix3D() : Matrix3D;
+   }
+
 }

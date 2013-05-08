@@ -1,115 +1,121 @@
-﻿package com.ankamagames.dofus.network.messages.game.pvp
+package com.ankamagames.dofus.network.messages.game.pvp
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AlignmentSubAreaUpdateExtendedMessage extends AlignmentSubAreaUpdateMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var worldX:int = 0;
-        public var worldY:int = 0;
-        public var mapId:int = 0;
-        public var eventType:int = 0;
-        public static const protocolId:uint = 6319;
 
-        public function AlignmentSubAreaUpdateExtendedMessage()
-        {
-            return;
-        }// end function
+   public class AlignmentSubAreaUpdateExtendedMessage extends AlignmentSubAreaUpdateMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function AlignmentSubAreaUpdateExtendedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6319;
-        }// end function
+      public static const protocolId:uint = 6319;
 
-        public function initAlignmentSubAreaUpdateExtendedMessage(param1:uint = 0, param2:int = 0, param3:Boolean = false, param4:int = 0, param5:int = 0, param6:int = 0, param7:int = 0) : AlignmentSubAreaUpdateExtendedMessage
-        {
-            super.initAlignmentSubAreaUpdateMessage(param1, param2, param3);
-            this.worldX = param4;
-            this.worldY = param5;
-            this.mapId = param6;
-            this.eventType = param7;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.worldX = 0;
-            this.worldY = 0;
-            this.mapId = 0;
-            this.eventType = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var worldX:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var worldY:int = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AlignmentSubAreaUpdateExtendedMessage(param1);
-            return;
-        }// end function
+      public var mapId:int = 0;
 
-        public function serializeAs_AlignmentSubAreaUpdateExtendedMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AlignmentSubAreaUpdateMessage(param1);
-            if (this.worldX < -255 || this.worldX > 255)
+      public var eventType:int = 0;
+
+      override public function getMessageId() : uint {
+         return 6319;
+      }
+
+      public function initAlignmentSubAreaUpdateExtendedMessage(subAreaId:uint=0, side:int=0, quiet:Boolean=false, worldX:int=0, worldY:int=0, mapId:int=0, eventType:int=0) : AlignmentSubAreaUpdateExtendedMessage {
+         super.initAlignmentSubAreaUpdateMessage(subAreaId,side,quiet);
+         this.worldX=worldX;
+         this.worldY=worldY;
+         this.mapId=mapId;
+         this.eventType=eventType;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.worldX=0;
+         this.worldY=0;
+         this.mapId=0;
+         this.eventType=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AlignmentSubAreaUpdateExtendedMessage(output);
+      }
+
+      public function serializeAs_AlignmentSubAreaUpdateExtendedMessage(output:IDataOutput) : void {
+         super.serializeAs_AlignmentSubAreaUpdateMessage(output);
+         if((this.worldX>-255)||(this.worldX<255))
+         {
+            throw new Error("Forbidden value ("+this.worldX+") on element worldX.");
+         }
+         else
+         {
+            output.writeShort(this.worldX);
+            if((this.worldY>-255)||(this.worldY<255))
             {
-                throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+               throw new Error("Forbidden value ("+this.worldY+") on element worldY.");
             }
-            param1.writeShort(this.worldX);
-            if (this.worldY < -255 || this.worldY > 255)
+            else
             {
-                throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+               output.writeShort(this.worldY);
+               output.writeInt(this.mapId);
+               output.writeByte(this.eventType);
+               return;
             }
-            param1.writeShort(this.worldY);
-            param1.writeInt(this.mapId);
-            param1.writeByte(this.eventType);
-            return;
-        }// end function
+         }
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AlignmentSubAreaUpdateExtendedMessage(param1);
-            return;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AlignmentSubAreaUpdateExtendedMessage(input);
+      }
 
-        public function deserializeAs_AlignmentSubAreaUpdateExtendedMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.worldX = param1.readShort();
-            if (this.worldX < -255 || this.worldX > 255)
+      public function deserializeAs_AlignmentSubAreaUpdateExtendedMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.worldX=input.readShort();
+         if((this.worldX>-255)||(this.worldX<255))
+         {
+            throw new Error("Forbidden value ("+this.worldX+") on element of AlignmentSubAreaUpdateExtendedMessage.worldX.");
+         }
+         else
+         {
+            this.worldY=input.readShort();
+            if((this.worldY>-255)||(this.worldY<255))
             {
-                throw new Error("Forbidden value (" + this.worldX + ") on element of AlignmentSubAreaUpdateExtendedMessage.worldX.");
+               throw new Error("Forbidden value ("+this.worldY+") on element of AlignmentSubAreaUpdateExtendedMessage.worldY.");
             }
-            this.worldY = param1.readShort();
-            if (this.worldY < -255 || this.worldY > 255)
+            else
             {
-                throw new Error("Forbidden value (" + this.worldY + ") on element of AlignmentSubAreaUpdateExtendedMessage.worldY.");
+               this.mapId=input.readInt();
+               this.eventType=input.readByte();
+               return;
             }
-            this.mapId = param1.readInt();
-            this.eventType = param1.readByte();
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

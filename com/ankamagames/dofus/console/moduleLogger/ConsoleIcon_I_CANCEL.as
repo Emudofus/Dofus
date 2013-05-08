@@ -1,14 +1,19 @@
-﻿package com.ankamagames.dofus.console.moduleLogger
+package com.ankamagames.dofus.console.moduleLogger
 {
-    import mx.core.*;
+   import mx.core.SpriteAsset;
 
-    public class ConsoleIcon_I_CANCEL extends SpriteAsset
-    {
 
-        public function ConsoleIcon_I_CANCEL()
-        {
-            return;
-        }// end function
+   public class ConsoleIcon_I_CANCEL extends SpriteAsset
+   {
+         
 
-    }
+      public function ConsoleIcon_I_CANCEL() {
+         super();
+      }
+
+
+
+
+   }
+
 }

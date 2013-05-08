@@ -1,88 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
+package com.ankamagames.dofus.network.messages.game.context.roleplay.spell
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class SpellUpgradeRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var spellId:uint = 0;
-        public static const protocolId:uint = 5608;
 
-        public function SpellUpgradeRequestMessage()
-        {
-            return;
-        }// end function
+   public class SpellUpgradeRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function SpellUpgradeRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5608;
-        }// end function
+      public static const protocolId:uint = 5608;
 
-        public function initSpellUpgradeRequestMessage(param1:uint = 0) : SpellUpgradeRequestMessage
-        {
-            this.spellId = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.spellId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var spellId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var spellLevel:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_SpellUpgradeRequestMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5608;
+      }
 
-        public function serializeAs_SpellUpgradeRequestMessage(param1:IDataOutput) : void
-        {
-            if (this.spellId < 0)
+      public function initSpellUpgradeRequestMessage(spellId:uint=0, spellLevel:uint=0) : SpellUpgradeRequestMessage {
+         this.spellId=spellId;
+         this.spellLevel=spellLevel;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.spellId=0;
+         this.spellLevel=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_SpellUpgradeRequestMessage(output);
+      }
+
+      public function serializeAs_SpellUpgradeRequestMessage(output:IDataOutput) : void {
+         if(this.spellId<0)
+         {
+            throw new Error("Forbidden value ("+this.spellId+") on element spellId.");
+         }
+         else
+         {
+            output.writeShort(this.spellId);
+            if((this.spellLevel>1)||(this.spellLevel<6))
             {
-                throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+               throw new Error("Forbidden value ("+this.spellLevel+") on element spellLevel.");
             }
-            param1.writeShort(this.spellId);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_SpellUpgradeRequestMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_SpellUpgradeRequestMessage(param1:IDataInput) : void
-        {
-            this.spellId = param1.readShort();
-            if (this.spellId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.spellId + ") on element of SpellUpgradeRequestMessage.spellId.");
+               output.writeByte(this.spellLevel);
+               return;
             }
-            return;
-        }// end function
+         }
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_SpellUpgradeRequestMessage(input);
+      }
+
+      public function deserializeAs_SpellUpgradeRequestMessage(input:IDataInput) : void {
+         this.spellId=input.readShort();
+         if(this.spellId<0)
+         {
+            throw new Error("Forbidden value ("+this.spellId+") on element of SpellUpgradeRequestMessage.spellId.");
+         }
+         else
+         {
+            this.spellLevel=input.readByte();
+            if((this.spellLevel>1)||(this.spellLevel<6))
+            {
+               throw new Error("Forbidden value ("+this.spellLevel+") on element of SpellUpgradeRequestMessage.spellLevel.");
+            }
+            else
+            {
+               return;
+            }
+         }
+      }
+   }
+
 }

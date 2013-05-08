@@ -1,120 +1,107 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameFightTurnListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var ids:Vector.<int>;
-        public var deadsIds:Vector.<int>;
-        public static const protocolId:uint = 713;
 
-        public function GameFightTurnListMessage()
-        {
-            this.ids = new Vector.<int>;
-            this.deadsIds = new Vector.<int>;
-            return;
-        }// end function
+   public class GameFightTurnListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameFightTurnListMessage() {
+         this.ids=new Vector.<int>();
+         this.deadsIds=new Vector.<int>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 713;
-        }// end function
+      public static const protocolId:uint = 713;
 
-        public function initGameFightTurnListMessage(param1:Vector.<int> = null, param2:Vector.<int> = null) : GameFightTurnListMessage
-        {
-            this.ids = param1;
-            this.deadsIds = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.ids = new Vector.<int>;
-            this.deadsIds = new Vector.<int>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var ids:Vector.<int>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var deadsIds:Vector.<int>;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightTurnListMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 713;
+      }
 
-        public function serializeAs_GameFightTurnListMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.ids.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.ids.length)
-            {
-                
-                param1.writeInt(this.ids[_loc_2]);
-                _loc_2 = _loc_2 + 1;
-            }
-            param1.writeShort(this.deadsIds.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.deadsIds.length)
-            {
-                
-                param1.writeInt(this.deadsIds[_loc_3]);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      public function initGameFightTurnListMessage(ids:Vector.<int>=null, deadsIds:Vector.<int>=null) : GameFightTurnListMessage {
+         this.ids=ids;
+         this.deadsIds=deadsIds;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightTurnListMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.ids=new Vector.<int>();
+         this.deadsIds=new Vector.<int>();
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_GameFightTurnListMessage(param1:IDataInput) : void
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_6 = param1.readInt();
-                this.ids.push(_loc_6);
-                _loc_3 = _loc_3 + 1;
-            }
-            var _loc_4:* = param1.readUnsignedShort();
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
-            {
-                
-                _loc_7 = param1.readInt();
-                this.deadsIds.push(_loc_7);
-                _loc_5 = _loc_5 + 1;
-            }
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightTurnListMessage(output);
+      }
+
+      public function serializeAs_GameFightTurnListMessage(output:IDataOutput) : void {
+         output.writeShort(this.ids.length);
+         var _i1:uint = 0;
+         while(_i1<this.ids.length)
+         {
+            output.writeInt(this.ids[_i1]);
+            _i1++;
+         }
+         output.writeShort(this.deadsIds.length);
+         var _i2:uint = 0;
+         while(_i2<this.deadsIds.length)
+         {
+            output.writeInt(this.deadsIds[_i2]);
+            _i2++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightTurnListMessage(input);
+      }
+
+      public function deserializeAs_GameFightTurnListMessage(input:IDataInput) : void {
+         var _val1:* = 0;
+         var _val2:* = 0;
+         var _idsLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_idsLen)
+         {
+            _val1=input.readInt();
+            this.ids.push(_val1);
+            _i1++;
+         }
+         var _deadsIdsLen:uint = input.readUnsignedShort();
+         var _i2:uint = 0;
+         while(_i2<_deadsIdsLen)
+         {
+            _val2=input.readInt();
+            this.deadsIds.push(_val2);
+            _i2++;
+         }
+      }
+   }
+
 }

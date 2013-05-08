@@ -1,70 +1,70 @@
-﻿package com.ankamagames.dofus.network.types.game.actions.fight
+package com.ankamagames.dofus.network.types.game.actions.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkType;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class FightTemporarySpellBoostEffect extends FightTemporaryBoostEffect implements INetworkType
-    {
-        public var boostedSpellId:uint = 0;
-        public static const protocolId:uint = 207;
 
-        public function FightTemporarySpellBoostEffect()
-        {
+   public class FightTemporarySpellBoostEffect extends FightTemporaryBoostEffect implements INetworkType
+   {
+         
+
+      public function FightTemporarySpellBoostEffect() {
+         super();
+      }
+
+      public static const protocolId:uint = 207;
+
+      public var boostedSpellId:uint = 0;
+
+      override public function getTypeId() : uint {
+         return 207;
+      }
+
+      public function initFightTemporarySpellBoostEffect(uid:uint=0, targetId:int=0, turnDuration:int=0, dispelable:uint=1, spellId:uint=0, parentBoostUid:uint=0, delta:int=0, boostedSpellId:uint=0) : FightTemporarySpellBoostEffect {
+         super.initFightTemporaryBoostEffect(uid,targetId,turnDuration,dispelable,spellId,parentBoostUid,delta);
+         this.boostedSpellId=boostedSpellId;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.boostedSpellId=0;
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FightTemporarySpellBoostEffect(output);
+      }
+
+      public function serializeAs_FightTemporarySpellBoostEffect(output:IDataOutput) : void {
+         super.serializeAs_FightTemporaryBoostEffect(output);
+         if(this.boostedSpellId<0)
+         {
+            throw new Error("Forbidden value ("+this.boostedSpellId+") on element boostedSpellId.");
+         }
+         else
+         {
+            output.writeShort(this.boostedSpellId);
             return;
-        }// end function
+         }
+      }
 
-        override public function getTypeId() : uint
-        {
-            return 207;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FightTemporarySpellBoostEffect(input);
+      }
 
-        public function initFightTemporarySpellBoostEffect(param1:uint = 0, param2:int = 0, param3:int = 0, param4:uint = 1, param5:uint = 0, param6:uint = 0, param7:int = 0, param8:uint = 0) : FightTemporarySpellBoostEffect
-        {
-            super.initFightTemporaryBoostEffect(param1, param2, param3, param4, param5, param6, param7);
-            this.boostedSpellId = param8;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.boostedSpellId = 0;
+      public function deserializeAs_FightTemporarySpellBoostEffect(input:IDataInput) : void {
+         super.deserialize(input);
+         this.boostedSpellId=input.readShort();
+         if(this.boostedSpellId<0)
+         {
+            throw new Error("Forbidden value ("+this.boostedSpellId+") on element of FightTemporarySpellBoostEffect.boostedSpellId.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_FightTemporarySpellBoostEffect(param1);
-            return;
-        }// end function
-
-        public function serializeAs_FightTemporarySpellBoostEffect(param1:IDataOutput) : void
-        {
-            super.serializeAs_FightTemporaryBoostEffect(param1);
-            if (this.boostedSpellId < 0)
-            {
-                throw new Error("Forbidden value (" + this.boostedSpellId + ") on element boostedSpellId.");
-            }
-            param1.writeShort(this.boostedSpellId);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_FightTemporarySpellBoostEffect(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_FightTemporarySpellBoostEffect(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.boostedSpellId = param1.readShort();
-            if (this.boostedSpellId < 0)
-            {
-                throw new Error("Forbidden value (" + this.boostedSpellId + ") on element of FightTemporarySpellBoostEffect.boostedSpellId.");
-            }
-            return;
-        }// end function
-
-    }
 }

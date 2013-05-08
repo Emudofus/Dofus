@@ -1,72 +1,85 @@
-﻿package com.ankamagames.tiphon.types.cache
+package com.ankamagames.tiphon.types.cache
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.tiphon.types.*;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.tiphon.types.ScriptedAnimation;
 
-    public class AnimCache extends Object
-    {
-        private var _directions:Vector.<Vector.<ScriptedAnimation>>;
 
-        public function AnimCache()
-        {
-            this._directions = new Vector.<Vector.<ScriptedAnimation>>(8, true);
-            this._directions[0] = new Vector.<ScriptedAnimation>;
-            this._directions[1] = new Vector.<ScriptedAnimation>;
-            this._directions[2] = new Vector.<ScriptedAnimation>;
-            this._directions[6] = new Vector.<ScriptedAnimation>;
-            this._directions[7] = new Vector.<ScriptedAnimation>;
-            return;
-        }// end function
+   public class AnimCache extends Object
+   {
+         
 
-        public function getAnimation(param1:int) : ScriptedAnimation
-        {
-            var _loc_2:* = 0;
-            if (param1 == 3)
+      public function AnimCache() {
+         this._directions=new Vector.<Vector.<ScriptedAnimation>>(8,true);
+         super();
+         this._directions[0]=new Vector.<ScriptedAnimation>();
+         this._directions[1]=new Vector.<ScriptedAnimation>();
+         this._directions[2]=new Vector.<ScriptedAnimation>();
+         this._directions[6]=new Vector.<ScriptedAnimation>();
+         this._directions[7]=new Vector.<ScriptedAnimation>();
+      }
+
+
+
+      private var _directions:Vector.<Vector.<ScriptedAnimation>>;
+
+      public function getAnimation(direction:int) : ScriptedAnimation {
+         var directionModified:* = 0;
+         if(direction==3)
+         {
+            directionModified=1;
+         }
+         else
+         {
+            if(direction==4)
             {
-                _loc_2 = 1;
-            }
-            else if (param1 == 4)
-            {
-                _loc_2 = 0;
-            }
-            else if (param1 == 5)
-            {
-                _loc_2 = 7;
+               directionModified=0;
             }
             else
             {
-                _loc_2 = param1;
+               if(direction==5)
+               {
+                  directionModified=7;
+               }
+               else
+               {
+                  directionModified=direction;
+               }
             }
-            var _loc_3:* = this._directions[_loc_2];
-            if (_loc_3.length)
-            {
-                return _loc_3.shift();
-            }
-            return null;
-        }// end function
+         }
+         var animList:Vector.<ScriptedAnimation> = this._directions[directionModified];
+         if(animList.length)
+         {
+            return animList.shift();
+         }
+         return null;
+      }
 
-        public function pushAnimation(param1:ScriptedAnimation, param2:int) : void
-        {
-            var _loc_3:* = 0;
-            if (param2 == 3)
+      public function pushAnimation(scriptedAnimation:ScriptedAnimation, direction:int) : void {
+         var directionModified:* = 0;
+         if(direction==3)
+         {
+            directionModified=1;
+         }
+         else
+         {
+            if(direction==4)
             {
-                _loc_3 = 1;
-            }
-            else if (param2 == 4)
-            {
-                _loc_3 = 0;
-            }
-            else if (param2 == 5)
-            {
-                _loc_3 = 7;
+               directionModified=0;
             }
             else
             {
-                _loc_3 = param2;
+               if(direction==5)
+               {
+                  directionModified=7;
+               }
+               else
+               {
+                  directionModified=direction;
+               }
             }
-            this._directions[_loc_3].push(param1);
-            return;
-        }// end function
+         }
+         this._directions[directionModified].push(scriptedAnimation);
+      }
+   }
 
-    }
 }

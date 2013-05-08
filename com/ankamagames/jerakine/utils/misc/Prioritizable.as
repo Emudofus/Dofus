@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.utils.misc
+package com.ankamagames.jerakine.utils.misc
 {
 
-    public interface Prioritizable
-    {
 
-        public function Prioritizable();
+   public interface Prioritizable
+   {
+         
 
-        function get priority() : int;
 
-    }
+
+      function get priority() : int;
+   }
+
 }

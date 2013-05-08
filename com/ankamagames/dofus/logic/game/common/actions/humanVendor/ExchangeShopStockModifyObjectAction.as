@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.humanVendor
+package com.ankamagames.dofus.logic.game.common.actions.humanVendor
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeShopStockModifyObjectAction extends Object implements Action
-    {
-        public var objectUID:uint;
-        public var quantity:int;
-        public var price:int;
 
-        public function ExchangeShopStockModifyObjectAction()
-        {
-            return;
-        }// end function
+   public class ExchangeShopStockModifyObjectAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:int, param3:int) : ExchangeShopStockModifyObjectAction
-        {
-            var _loc_4:* = new ExchangeShopStockModifyObjectAction;
-            new ExchangeShopStockModifyObjectAction.objectUID = param1;
-            _loc_4.quantity = param2;
-            _loc_4.price = param3;
-            return _loc_4;
-        }// end function
+      public function ExchangeShopStockModifyObjectAction() {
+         super();
+      }
 
-    }
+      public static function create(pObjectUID:uint, pQuantity:int, pPrice:int) : ExchangeShopStockModifyObjectAction {
+         var a:ExchangeShopStockModifyObjectAction = new ExchangeShopStockModifyObjectAction();
+         a.objectUID=pObjectUID;
+         a.quantity=pQuantity;
+         a.price=pPrice;
+         return a;
+      }
+
+      public var objectUID:uint;
+
+      public var quantity:int;
+
+      public var price:int;
+   }
+
 }

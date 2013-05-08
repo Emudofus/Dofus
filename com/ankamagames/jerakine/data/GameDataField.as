@@ -1,138 +1,119 @@
-﻿package com.ankamagames.jerakine.data
+package com.ankamagames.jerakine.data
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataInput;
+   import com.ankamagames.jerakine.enum.GameDataTypeEnum;
+   import flash.utils.getDefinitionByName;
 
-    public class GameDataField extends Object
-    {
-        public var name:String;
-        public var readData:Function;
-        private var _innerReadMethods:Vector.<Function>;
-        private var _innerTypeNames:Vector.<String>;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataField));
-        private static const NULL_IDENTIFIER:int = -1.43166e+009;
 
-        public function GameDataField(param1:String)
-        {
-            this.name = param1;
-            return;
-        }// end function
+   public class GameDataField extends Object
+   {
+         
 
-        public function readType(param1:IDataInput) : void
-        {
-            var _loc_2:* = param1.readInt();
-            this.readData = this.getReadMethod(_loc_2, param1);
-            return;
-        }// end function
+      public function GameDataField(fieldName:String) {
+         super();
+         this.name=fieldName;
+      }
 
-        private function getReadMethod(param1:int, param2:IDataInput) : Function
-        {
-            switch(param1)
-            {
-                case -1:
-                {
-                    return this.readInteger;
-                }
-                case -2:
-                {
-                    return this.readBoolean;
-                }
-                case -3:
-                {
-                    return this.readString;
-                }
-                case -4:
-                {
-                    return this.readNumber;
-                }
-                case -5:
-                {
-                    return this.readI18n;
-                }
-                case -6:
-                {
-                    return this.readUnsignedInteger;
-                }
-                case -99:
-                {
-                    if (!this._innerReadMethods)
-                    {
-                        this._innerReadMethods = new Vector.<Function>;
-                        this._innerTypeNames = new Vector.<String>;
-                    }
-                    this._innerTypeNames.push(param2.readUTF());
-                    this._innerReadMethods.unshift(this.getReadMethod(param2.readInt(), param2));
-                    return this.readVector;
-                }
-                default:
-                {
-                    if (param1 > 0)
-                    {
-                        return this.readObject;
-                    }
-                    throw new Error("Unknown type \'" + param1 + "\'.");
-                    break;
-                }
-            }
-        }// end function
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(GameDataField));
 
-        private function readVector(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            var _loc_4:* = param2.readInt();
-            var _loc_5:* = this._innerTypeNames[param3];
-            var _loc_6:* = new getDefinitionByName(_loc_5)(_loc_4, true);
-            var _loc_7:* = 0;
-            while (_loc_7 < _loc_4)
-            {
-                
-                var _loc_8:* = this._innerReadMethods;
-                _loc_6[_loc_7] = _loc_8.this._innerReadMethods[param3](param1, param2, (param3 + 1));
-                _loc_7 = _loc_7 + 1;
-            }
-            return _loc_6;
-        }// end function
+      private static const NULL_IDENTIFIER:int = -1431655766;
 
-        private function readObject(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            var _loc_4:* = param2.readInt();
-            if (param2.readInt() == NULL_IDENTIFIER)
-            {
-                return null;
-            }
-            var _loc_5:* = GameDataFileAccessor.getInstance().getClassDefinition(param1, _loc_4);
-            return GameDataFileAccessor.getInstance().getClassDefinition(param1, _loc_4).read(param1, param2);
-        }// end function
+      public var name:String;
 
-        private function readInteger(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            return param2.readInt();
-        }// end function
+      public var readData:Function;
 
-        private function readBoolean(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            return param2.readBoolean();
-        }// end function
+      private var _innerReadMethods:Vector.<Function>;
 
-        private function readString(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            return param2.readUTF();
-        }// end function
+      private var _innerTypeNames:Vector.<String>;
 
-        private function readNumber(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            return param2.readDouble();
-        }// end function
+      public function readType(stream:IDataInput) : void {
+         var type:int = stream.readInt();
+         this.readData=this.getReadMethod(type,stream);
+      }
 
-        private function readI18n(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            return param2.readInt();
-        }// end function
+      private function getReadMethod(type:int, stream:IDataInput) : Function {
+         switch(type)
+         {
+            case GameDataTypeEnum.INT:
+               return this.readInteger;
+            case GameDataTypeEnum.BOOLEAN:
+               return this.readBoolean;
+            case GameDataTypeEnum.STRING:
+               return this.readString;
+            case GameDataTypeEnum.NUMBER:
+               return this.readNumber;
+            case GameDataTypeEnum.I18N:
+               return this.readI18n;
+            case GameDataTypeEnum.UINT:
+               return this.readUnsignedInteger;
+            case GameDataTypeEnum.VECTOR:
+               if(!this._innerReadMethods)
+               {
+                  this._innerReadMethods=new Vector.<Function>();
+                  this._innerTypeNames=new Vector.<String>();
+               }
+               this._innerTypeNames.push(stream.readUTF());
+               this._innerReadMethods.unshift(this.getReadMethod(stream.readInt(),stream));
+               return this.readVector;
+            default:
+               if(type>0)
+               {
+                  return this.readObject;
+               }
+               throw new Error("Unknown type \'"+type+"\'.");
+         }
+      }
 
-        private function readUnsignedInteger(param1:String, param2:IDataInput, param3:uint = 0)
-        {
-            return param2.readUnsignedInt();
-        }// end function
+      private function readVector(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         var len:uint = stream.readInt();
+         var vectorTypeName:String = this._innerTypeNames[innerIndex];
+         var content:* = new getDefinitionByName(vectorTypeName)(len,true);
+         var i:uint = 0;
+         while(i<len)
+         {
+            content[i]=this._innerReadMethods[innerIndex](moduleName,stream,innerIndex+1);
+            i++;
+         }
+         return content;
+      }
 
-    }
+      private function readObject(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         var classIdentifier:int = stream.readInt();
+         if(classIdentifier==NULL_IDENTIFIER)
+         {
+            return null;
+         }
+         var classDefinition:GameDataClassDefinition = GameDataFileAccessor.getInstance().getClassDefinition(moduleName,classIdentifier);
+         return classDefinition.read(moduleName,stream);
+      }
+
+      private function readInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readInt();
+      }
+
+      private function readBoolean(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readBoolean();
+      }
+
+      private function readString(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readUTF();
+      }
+
+      private function readNumber(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readDouble();
+      }
+
+      private function readI18n(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readInt();
+      }
+
+      private function readUnsignedInteger(moduleName:String, stream:IDataInput, innerIndex:uint=0) : * {
+         return stream.readUnsignedInt();
+      }
+   }
+
 }

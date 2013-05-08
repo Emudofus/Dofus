@@ -1,71 +1,73 @@
-﻿package flashx.textLayout.compose
+package flashx.textLayout.compose
 {
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
+   import flashx.textLayout.elements.ContainerFormattedElement;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.edit.ISelectionManager;
 
-    public interface IFlowComposer
-    {
 
-        public function IFlowComposer();
+   public interface IFlowComposer
+   {
+         
 
-        function get rootElement() : ContainerFormattedElement;
 
-        function setRootElement(param1:ContainerFormattedElement) : void;
 
-        function get damageAbsoluteStart() : int;
+      function get rootElement() : ContainerFormattedElement;
 
-        function updateAllControllers() : Boolean;
+      function setRootElement(param1:ContainerFormattedElement) : void;
 
-        function updateToController(param1:int = 2.14748e+009) : Boolean;
+      function get damageAbsoluteStart() : int;
 
-        function setFocus(param1:int, param2:Boolean = false) : void;
+      function updateAllControllers() : Boolean;
 
-        function compose() : Boolean;
+      function updateToController(param1:int=2.147483647E9) : Boolean;
 
-        function composeToPosition(param1:int = 2.14748e+009) : Boolean;
+      function setFocus(param1:int, param2:Boolean=false) : void;
 
-        function composeToController(param1:int = 2.14748e+009) : Boolean;
+      function compose() : Boolean;
 
-        function get numControllers() : int;
+      function composeToPosition(param1:int=2.147483647E9) : Boolean;
 
-        function addController(param1:ContainerController) : void;
+      function composeToController(param1:int=2.147483647E9) : Boolean;
 
-        function addControllerAt(param1:ContainerController, param2:int) : void;
+      function get numControllers() : int;
 
-        function removeController(param1:ContainerController) : void;
+      function addController(param1:ContainerController) : void;
 
-        function removeControllerAt(param1:int) : void;
+      function addControllerAt(param1:ContainerController, param2:int) : void;
 
-        function removeAllControllers() : void;
+      function removeController(param1:ContainerController) : void;
 
-        function getControllerAt(param1:int) : ContainerController;
+      function removeControllerAt(param1:int) : void;
 
-        function getControllerIndex(param1:ContainerController) : int;
+      function removeAllControllers() : void;
 
-        function findControllerIndexAtPosition(param1:int, param2:Boolean = false) : int;
+      function getControllerAt(param1:int) : ContainerController;
 
-        function findLineIndexAtPosition(param1:int, param2:Boolean = false) : int;
+      function getControllerIndex(param1:ContainerController) : int;
 
-        function findLineAtPosition(param1:int, param2:Boolean = false) : TextFlowLine;
+      function findControllerIndexAtPosition(param1:int, param2:Boolean=false) : int;
 
-        function getLineAt(param1:int) : TextFlowLine;
+      function findLineIndexAtPosition(param1:int, param2:Boolean=false) : int;
 
-        function get numLines() : int;
+      function findLineAtPosition(param1:int, param2:Boolean=false) : TextFlowLine;
 
-        function isDamaged(param1:int) : Boolean;
+      function getLineAt(param1:int) : TextFlowLine;
 
-        function get composing() : Boolean;
+      function get numLines() : int;
 
-        function get swfContext() : ISWFContext;
+      function isDamaged(param1:int) : Boolean;
 
-        function set swfContext(param1:ISWFContext) : void;
+      function get composing() : Boolean;
 
-        function interactionManagerChanged(param1:ISelectionManager) : void;
+      function get swfContext() : ISWFContext;
 
-        function updateLengths(param1:int, param2:int) : void;
+      function set swfContext(param1:ISWFContext) : void;
 
-        function damage(param1:int, param2:int, param3:String) : void;
+      function interactionManagerChanged(param1:ISelectionManager) : void;
 
-    }
+      function updateLengths(param1:int, param2:int) : void;
+
+      function damage(param1:int, param2:int, param3:String) : void;
+   }
+
 }

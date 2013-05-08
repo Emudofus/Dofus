@@ -1,86 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
+package com.ankamagames.dofus.network.messages.game.context.roleplay.quest
 {
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.quest.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class QuestStepInfoMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var infos:QuestActiveInformations;
-        public static const protocolId:uint = 5625;
 
-        public function QuestStepInfoMessage()
-        {
-            this.infos = new QuestActiveInformations();
-            return;
-        }// end function
+   public class QuestStepInfoMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function QuestStepInfoMessage() {
+         this.infos=new QuestActiveInformations();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5625;
-        }// end function
+      public static const protocolId:uint = 5625;
 
-        public function initQuestStepInfoMessage(param1:QuestActiveInformations = null) : QuestStepInfoMessage
-        {
-            this.infos = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.infos = new QuestActiveInformations();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var infos:QuestActiveInformations;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5625;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_QuestStepInfoMessage(param1);
-            return;
-        }// end function
+      public function initQuestStepInfoMessage(infos:QuestActiveInformations=null) : QuestStepInfoMessage {
+         this.infos=infos;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_QuestStepInfoMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.infos.getTypeId());
-            this.infos.serialize(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.infos=new QuestActiveInformations();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_QuestStepInfoMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_QuestStepInfoMessage(param1:IDataInput) : void
-        {
-            var _loc_2:* = param1.readUnsignedShort();
-            this.infos = ProtocolTypeManager.getInstance(QuestActiveInformations, _loc_2);
-            this.infos.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_QuestStepInfoMessage(output);
+      }
+
+      public function serializeAs_QuestStepInfoMessage(output:IDataOutput) : void {
+         output.writeShort(this.infos.getTypeId());
+         this.infos.serialize(output);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_QuestStepInfoMessage(input);
+      }
+
+      public function deserializeAs_QuestStepInfoMessage(input:IDataInput) : void {
+         var _id1:uint = input.readUnsignedShort();
+         this.infos=ProtocolTypeManager.getInstance(QuestActiveInformations,_id1);
+         this.infos.deserialize(input);
+      }
+   }
+
 }

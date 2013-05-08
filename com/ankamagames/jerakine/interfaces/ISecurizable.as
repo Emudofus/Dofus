@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.interfaces
+package com.ankamagames.jerakine.interfaces
 {
 
-    public interface ISecurizable
-    {
 
-        public function ISecurizable();
+   public interface ISecurizable
+   {
+         
 
-        function getSecureObject();
 
-    }
+
+      function getSecureObject() : *;
+   }
+
 }

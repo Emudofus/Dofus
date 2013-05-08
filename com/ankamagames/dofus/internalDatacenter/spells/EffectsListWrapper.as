@@ -1,120 +1,130 @@
-﻿package com.ankamagames.dofus.internalDatacenter.spells
+package com.ankamagames.dofus.internalDatacenter.spells
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.datacenter.effects.*;
-    import com.ankamagames.dofus.datacenter.effects.instances.*;
-    import com.ankamagames.dofus.logic.game.fight.types.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.datacenter.effects.EffectInstance;
+   import com.ankamagames.dofus.logic.game.fight.types.BasicBuff;
+   import com.ankamagames.dofus.datacenter.effects.Effect;
+   import com.ankamagames.dofus.logic.game.fight.types.StateBuff;
+   import com.ankamagames.dofus.datacenter.effects.instances.EffectInstanceInteger;
 
-    public class EffectsListWrapper extends Object implements IDataCenter
-    {
-        private var _categories:Array;
-        public var effects:Vector.<EffectInstance>;
-        public static const CATEGORY_ACTIVE_BONUS:int = 0;
-        public static const CATEGORY_ACTIVE_MALUS:int = 1;
-        public static const CATEGORY_PASSIVE_BONUS:int = 2;
-        public static const CATEGORY_PASSIVE_MALUS:int = 3;
-        public static const CATEGORY_TRIGGERED:int = 4;
-        public static const CATEGORY_STATE:int = 5;
-        public static const CATEGORY_OTHER:int = 6;
 
-        public function EffectsListWrapper(param1:Array)
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            this._categories = new Array();
-            for each (_loc_2 in param1)
+   public class EffectsListWrapper extends Object implements IDataCenter
+   {
+         
+
+      public function EffectsListWrapper(buffs:Array) {
+         var buff:BasicBuff = null;
+         var effect:EffectInstance = null;
+         var effectData:Effect = null;
+         var category:* = 0;
+         super();
+         this._categories=new Array();
+         for each (buff in buffs)
+         {
+            effect=buff.effects;
+            effectData=Effect.getEffectById(effect.effectId);
+            category=effect.trigger?CATEGORY_TRIGGERED:this.getCategory(effectData);
+            this.addBuff(category,buff);
+         }
+      }
+
+      public static const CATEGORY_ACTIVE_BONUS:int = 0;
+
+      public static const CATEGORY_ACTIVE_MALUS:int = 1;
+
+      public static const CATEGORY_PASSIVE_BONUS:int = 2;
+
+      public static const CATEGORY_PASSIVE_MALUS:int = 3;
+
+      public static const CATEGORY_TRIGGERED:int = 4;
+
+      public static const CATEGORY_STATE:int = 5;
+
+      public static const CATEGORY_OTHER:int = 6;
+
+      private var _categories:Array;
+
+      public var effects:Vector.<EffectInstance>;
+
+      public function get categories() : Array {
+         var c:String = null;
+         var cat:Array = new Array();
+         for (c in this._categories)
+         {
+            if((this._categories[c].length<0)&&(cat[c]==null))
             {
-                
-                _loc_3 = _loc_2.effects;
-                _loc_4 = Effect.getEffectById(_loc_3.effectId);
-                _loc_5 = this.getCategory(_loc_4);
-                this.addBuff(_loc_5, _loc_2);
+               cat.push(c);
             }
-            return;
-        }// end function
+         }
+         cat.sort();
+         return cat;
+      }
 
-        public function get categories() : Array
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = new Array();
-            for (_loc_2 in this._categories)
-            {
-                
-                if (this._categories[_loc_2].length > 0 && _loc_1[_loc_2] == null)
-                {
-                    _loc_1.push(_loc_2);
-                }
-            }
-            _loc_1.sort();
-            return _loc_1;
-        }// end function
+      public function getBuffs(category:int) : Array {
+         return this._categories[category];
+      }
 
-        public function getBuffs(param1:int) : Array
-        {
-            return this._categories[param1];
-        }// end function
+      public function get buffArray() : Array {
+         return this._categories;
+      }
 
-        public function get buffArray() : Array
-        {
-            return this._categories;
-        }// end function
+      private function addBuff(category:int, buff:BasicBuff) : void {
+         var b:BasicBuff = null;
+         var e:Effect = null;
+         if(!this._categories[category])
+         {
+            this._categories[category]=new Array();
+         }
+         for each (b in this._categories[category])
+         {
+            e=Effect.getEffectById(buff.actionId);
+            if((e.useDice)&&(b.actionId==buff.actionId)&&(buff.trigger==false)&&(!(buff is StateBuff)))
+            {
+               if(!(buff.effects is EffectInstanceInteger))
+               {
+                  throw new Error("Tentative de cumulation d\'effets ambigue");
+               }
+               else
+               {
+                  b.param1=b.param1+buff.param1;
+                  b.param2=b.param2+buff.param2;
+                  b.param3=b.param3+buff.param3;
+                  return;
+               }
+            }
+            else
+            {
+               continue;
+            }
+         }
+         b=buff.clone();
+         this._categories[category].push(b);
+      }
 
-        private function addBuff(param1:int, param2:BasicBuff) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (!this._categories[param1])
+      private function getCategory(effect:Effect) : int {
+         if(effect.characteristic==71)
+         {
+            return CATEGORY_STATE;
+         }
+         if(effect.operator=="-")
+         {
+            if(effect.active)
             {
-                this._categories[param1] = new Array();
+               return CATEGORY_ACTIVE_MALUS;
             }
-            for each (_loc_3 in this._categories[param1])
+            return CATEGORY_PASSIVE_MALUS;
+         }
+         if(effect.operator=="+")
+         {
+            if(effect.active)
             {
-                
-                _loc_4 = Effect.getEffectById(param2.actionId);
-                if (_loc_4.useDice && _loc_3.actionId == param2.actionId && param2.trigger == false && !(param2 is StateBuff))
-                {
-                    if (!(param2.effects is EffectInstanceInteger))
-                    {
-                        throw new Error("Tentative de cumulation d\'effets ambigue");
-                    }
-                    _loc_3.param1 = _loc_3.param1 + param2.param1;
-                    _loc_3.param2 = _loc_3.param2 + param2.param2;
-                    _loc_3.param3 = _loc_3.param3 + param2.param3;
-                    return;
-                }
+               return CATEGORY_ACTIVE_BONUS;
             }
-            _loc_3 = param2.clone();
-            this._categories[param1].push(_loc_3);
-            return;
-        }// end function
+            return CATEGORY_PASSIVE_BONUS;
+         }
+         return CATEGORY_OTHER;
+      }
+   }
 
-        private function getCategory(param1:Effect) : int
-        {
-            if (param1.characteristic == 71)
-            {
-                return CATEGORY_STATE;
-            }
-            if (param1.operator == "-")
-            {
-                if (param1.active)
-                {
-                    return CATEGORY_ACTIVE_MALUS;
-                }
-                return CATEGORY_PASSIVE_MALUS;
-            }
-            else if (param1.operator == "+")
-            {
-                if (param1.active)
-                {
-                    return CATEGORY_ACTIVE_BONUS;
-                }
-                return CATEGORY_PASSIVE_BONUS;
-            }
-            return CATEGORY_OTHER;
-        }// end function
-
-    }
 }

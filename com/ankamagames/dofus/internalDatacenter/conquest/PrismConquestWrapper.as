@@ -1,61 +1,62 @@
-﻿package com.ankamagames.dofus.internalDatacenter.conquest
+package com.ankamagames.dofus.internalDatacenter.conquest
 {
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
 
-    public class PrismConquestWrapper extends Object implements IDataCenter
-    {
-        private var _subId:uint;
-        private var _align:uint;
-        private var _isEntered:Boolean;
-        private var _isInRoom:Boolean;
-        private static var _cache:Array = new Array();
 
-        public function PrismConquestWrapper()
-        {
-            return;
-        }// end function
+   public class PrismConquestWrapper extends Object implements IDataCenter
+   {
+         
 
-        public function get subAreaId() : uint
-        {
-            return this._subId;
-        }// end function
+      public function PrismConquestWrapper() {
+         super();
+      }
 
-        public function get alignmentId() : uint
-        {
-            return this._align;
-        }// end function
+      private static var _cache:Array = new Array();
 
-        public function get isEntered() : Boolean
-        {
-            return this._isEntered;
-        }// end function
-
-        public function get isInRoom() : Boolean
-        {
-            return this._isInRoom;
-        }// end function
-
-        public static function create(param1:uint, param2:uint, param3:Boolean, param4:Boolean, param5:Boolean = false) : PrismConquestWrapper
-        {
-            var _loc_6:* = null;
-            if (!_cache[param1] || !param5)
+      public static function create(subId:uint, align:uint, isEntered:Boolean, isInRoom:Boolean, useCache:Boolean=false) : PrismConquestWrapper {
+         var prism:PrismConquestWrapper = null;
+         if((!_cache[subId])||(!useCache))
+         {
+            prism=new PrismConquestWrapper();
+            prism._subId=subId;
+            prism._align=align;
+            prism._isEntered=isEntered;
+            prism._isInRoom=isInRoom;
+            if(useCache)
             {
-                _loc_6 = new PrismConquestWrapper;
-                _loc_6._subId = param1;
-                _loc_6._align = param2;
-                _loc_6._isEntered = param3;
-                _loc_6._isInRoom = param4;
-                if (param5)
-                {
-                    _cache[param1] = _loc_6;
-                }
+               _cache[subId]=prism;
             }
-            else
-            {
-                _loc_6 = _cache[param1];
-            }
-            return _loc_6;
-        }// end function
+         }
+         else
+         {
+            prism=_cache[subId];
+         }
+         return prism;
+      }
 
-    }
+      private var _subId:uint;
+
+      private var _align:uint;
+
+      private var _isEntered:Boolean;
+
+      private var _isInRoom:Boolean;
+
+      public function get subAreaId() : uint {
+         return this._subId;
+      }
+
+      public function get alignmentId() : uint {
+         return this._align;
+      }
+
+      public function get isEntered() : Boolean {
+         return this._isEntered;
+      }
+
+      public function get isInRoom() : Boolean {
+         return this._isInRoom;
+      }
+   }
+
 }

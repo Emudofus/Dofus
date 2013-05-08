@@ -1,137 +1,123 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.managers
+package com.ankamagames.dofus.logic.game.roleplay.managers
 {
-    import com.ankamagames.atouin.managers.*;
-    import com.ankamagames.berilia.factories.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.dofus.logic.game.roleplay.types.*;
-    import com.ankamagames.dofus.network.types.game.context.*;
-    import com.ankamagames.dofus.network.types.game.context.roleplay.*;
-    import com.ankamagames.dofus.types.entities.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import flash.display.*;
+   import com.ankamagames.jerakine.interfaces.IDestroyable;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayContextFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.network.types.game.context.GameContextActorInformations;
+   import com.ankamagames.berilia.managers.UiModuleManager;
+   import com.ankamagames.berilia.factories.MenusFactory;
+   import com.ankamagames.berilia.types.data.ContextMenuData;
+   import com.ankamagames.jerakine.entities.interfaces.IInteractive;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMutantInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayCharacterInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMerchantInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayNpcInformations;
+   import com.ankamagames.dofus.network.types.game.context.GameRolePlayTaxCollectorInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayPrismInformations;
+   import com.ankamagames.dofus.logic.game.roleplay.types.GameContextPaddockItemInformations;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.GameRolePlayMountInformations;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+   import com.ankamagames.atouin.managers.InteractiveCellManager;
+   import flash.display.Sprite;
+   import com.ankamagames.atouin.managers.EntitiesDisplayManager;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
 
-    public class RoleplayManager extends Object implements IDestroyable
-    {
-        public var dofusTimeYearLag:int;
-        private static var _self:RoleplayManager;
 
-        public function RoleplayManager()
-        {
-            if (_self != null)
-            {
-                throw new SingletonError("RoleplayManager is a singleton and should not be instanciated directly.");
-            }
+   public class RoleplayManager extends Object implements IDestroyable
+   {
+         
+
+      public function RoleplayManager() {
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("RoleplayManager is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
 
-        private function get roleplayContextFrame() : RoleplayContextFrame
-        {
-            return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
-        }// end function
+      private static var _self:RoleplayManager;
 
-        public function destroy() : void
-        {
-            _self = null;
-            return;
-        }// end function
+      public static function getInstance() : RoleplayManager {
+         if(_self==null)
+         {
+            _self=new RoleplayManager();
+         }
+         return _self;
+      }
 
-        public function displayCharacterContextualMenu(param1:GameContextActorInformations) : Boolean
-        {
-            var _loc_2:* = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
-            var _loc_3:* = MenusFactory.create(param1, null, [{id:param1.contextualId}]);
-            if (_loc_3)
-            {
-                _loc_2.createContextMenu(_loc_3);
-                return true;
-            }
-            return false;
-        }// end function
+      public var dofusTimeYearLag:int;
 
-        public function displayContextualMenu(param1:GameContextActorInformations, param2:IInteractive) : Boolean
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
-            switch(true)
-            {
-                case param1 is GameRolePlayMutantInformations:
-                {
-                    if ((param1 as GameRolePlayMutantInformations).humanoidInfo.restrictions.cantAttack)
-                    {
-                        _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    }
-                    break;
-                }
-                case param1 is GameRolePlayCharacterInformations:
-                {
-                    _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    break;
-                }
-                case param1 is GameRolePlayMerchantInformations:
-                {
-                    _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    break;
-                }
-                case param1 is GameRolePlayNpcInformations:
-                {
-                    _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    break;
-                }
-                case param1 is GameRolePlayTaxCollectorInformations:
-                {
-                    _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    break;
-                }
-                case param1 is GameRolePlayPrismInformations:
-                {
-                    _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    break;
-                }
-                case param1 is GameContextPaddockItemInformations:
-                {
-                    if (this.roleplayContextFrame.currentPaddock.guildIdentity)
-                    {
-                        _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    }
-                    break;
-                }
-                case param1 is GameRolePlayMountInformations:
-                {
-                    _loc_3 = MenusFactory.create(param1, null, [param2]);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            if (_loc_3)
-            {
-                _loc_4.createContextMenu(_loc_3);
-                return true;
-            }
-            return false;
-        }// end function
+      private function get roleplayContextFrame() : RoleplayContextFrame {
+         return Kernel.getWorker().getFrame(RoleplayContextFrame) as RoleplayContextFrame;
+      }
 
-        public function putEntityOnTop(param1:AnimatedCharacter) : void
-        {
-            var _loc_2:* = InteractiveCellManager.getInstance().getCell(param1.position.cellId);
-            EntitiesDisplayManager.getInstance().orderEntity(param1, _loc_2);
-            return;
-        }// end function
+      public function destroy() : void {
+         _self=null;
+      }
 
-        public static function getInstance() : RoleplayManager
-        {
-            if (_self == null)
-            {
-                _self = new RoleplayManager;
-            }
-            return _self;
-        }// end function
+      public function displayCharacterContextualMenu(pGameContextActorInformations:GameContextActorInformations) : Boolean {
+         var modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+         var menu:ContextMenuData = MenusFactory.create(pGameContextActorInformations,null,[{id:pGameContextActorInformations.contextualId}]);
+         if(menu)
+         {
+            modContextMenu.createContextMenu(menu);
+            return true;
+         }
+         return false;
+      }
 
-    }
+      public function displayContextualMenu(pGameContextActorInformations:GameContextActorInformations, pEntity:IInteractive) : Boolean {
+         var menu:ContextMenuData = null;
+         var modContextMenu:Object = UiModuleManager.getInstance().getModule("Ankama_ContextMenu").mainClass;
+         switch(true)
+         {
+            case pGameContextActorInformations is GameRolePlayMutantInformations:
+               if((pGameContextActorInformations as GameRolePlayMutantInformations).humanoidInfo.restrictions.cantAttack)
+               {
+                  menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               }
+               break;
+            case pGameContextActorInformations is GameRolePlayCharacterInformations:
+               menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               break;
+            case pGameContextActorInformations is GameRolePlayMerchantInformations:
+               menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               break;
+            case pGameContextActorInformations is GameRolePlayNpcInformations:
+               menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               break;
+            case pGameContextActorInformations is GameRolePlayTaxCollectorInformations:
+               menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               break;
+            case pGameContextActorInformations is GameRolePlayPrismInformations:
+               menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               break;
+            case pGameContextActorInformations is GameContextPaddockItemInformations:
+               if(this.roleplayContextFrame.currentPaddock.guildIdentity)
+               {
+                  menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               }
+               break;
+            case pGameContextActorInformations is GameRolePlayMountInformations:
+               menu=MenusFactory.create(pGameContextActorInformations,null,[pEntity]);
+               break;
+         }
+         if(menu)
+         {
+            modContextMenu.createContextMenu(menu);
+            return true;
+         }
+         return false;
+      }
+
+      public function putEntityOnTop(entity:AnimatedCharacter) : void {
+         var cellSprite:Sprite = InteractiveCellManager.getInstance().getCell(entity.position.cellId);
+         EntitiesDisplayManager.getInstance().orderEntity(entity,cellSprite);
+      }
+   }
+
 }

@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.fight.actions
+package com.ankamagames.dofus.logic.game.fight.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class TogglePointCellAction extends Object implements Action
-    {
 
-        public function TogglePointCellAction()
-        {
-            return;
-        }// end function
+   public class TogglePointCellAction extends Object implements Action
+   {
+         
 
-        public static function create() : TogglePointCellAction
-        {
-            var _loc_1:* = new TogglePointCellAction;
-            return _loc_1;
-        }// end function
+      public function TogglePointCellAction() {
+         super();
+      }
 
-    }
+      public static function create() : TogglePointCellAction {
+         var a:TogglePointCellAction = new TogglePointCellAction();
+         return a;
+      }
+
+
+   }
+
 }

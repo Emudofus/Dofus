@@ -1,52 +1,62 @@
-﻿package com.ankamagames.berilia.types.data
+package com.ankamagames.berilia.types.data
 {
-    import com.ankamagames.jerakine.types.*;
-    import flash.display.*;
+   import flash.display.DisplayObjectContainer;
+   import com.ankamagames.jerakine.types.Uri;
 
-    public class Map extends Object
-    {
-        public var initialWidth:uint;
-        public var initialHeight:uint;
-        public var chunckWidth:uint;
-        public var chunckHeight:uint;
-        public var zoom:Number;
-        public var areas:Array;
-        public var container:DisplayObjectContainer;
-        public var numXChunck:uint;
-        public var numYChunck:uint;
 
-        public function Map(param1:Number, param2:String, param3:DisplayObjectContainer, param4:uint, param5:uint, param6:uint, param7:uint)
-        {
-            var _loc_8:* = null;
-            var _loc_11:* = 0;
-            this.areas = [];
-            this.zoom = param1;
-            this.container = param3;
-            this.initialHeight = param5;
-            this.initialWidth = param4;
-            this.chunckHeight = param7;
-            this.chunckWidth = param6;
-            param3.doubleClickEnabled = true;
-            this.numXChunck = Math.ceil(param4 * param1 / param6);
-            this.numYChunck = Math.ceil(param5 * param1 / param7);
-            var _loc_9:* = 1;
-            var _loc_10:* = 0;
-            while (_loc_10 < this.numYChunck)
+   public class Map extends Object
+   {
+         
+
+      public function Map(zoom:Number, srcFolder:String, container:DisplayObjectContainer, initialWidth:uint, initialHeight:uint, chunckWidth:uint, chunckHeight:uint) {
+         var area:MapArea = null;
+         var i:uint = 0;
+         this.areas=[];
+         super();
+         this.zoom=zoom;
+         this.container=container;
+         this.initialHeight=initialHeight;
+         this.initialWidth=initialWidth;
+         this.chunckHeight=chunckHeight;
+         this.chunckWidth=chunckWidth;
+         container.doubleClickEnabled=true;
+         this.numXChunck=Math.ceil(initialWidth*zoom/chunckWidth);
+         this.numYChunck=Math.ceil(initialHeight*zoom/chunckHeight);
+         var chunckId:uint = 1;
+         var j:uint = 0;
+         while(j<this.numYChunck)
+         {
+            i=0;
+            while(i<this.numXChunck)
             {
-                
-                _loc_11 = 0;
-                while (_loc_11 < this.numXChunck)
-                {
-                    
-                    _loc_8 = new MapArea(new Uri(param2 + _loc_9 + ".jpg"), _loc_11 * param6 / param1, _loc_10 * param7 / param1, param6 / param1, param7 / param1, this);
-                    this.areas.push(_loc_8);
-                    _loc_9 = _loc_9 + 1;
-                    _loc_11 = _loc_11 + 1;
-                }
-                _loc_10 = _loc_10 + 1;
+               area=new MapArea(new Uri(srcFolder+chunckId+".jpg"),i*chunckWidth/zoom,j*chunckHeight/zoom,chunckWidth/zoom,chunckHeight/zoom,this);
+               this.areas.push(area);
+               chunckId++;
+               i++;
             }
-            return;
-        }// end function
+            j++;
+         }
+      }
 
-    }
+
+
+      public var initialWidth:uint;
+
+      public var initialHeight:uint;
+
+      public var chunckWidth:uint;
+
+      public var chunckHeight:uint;
+
+      public var zoom:Number;
+
+      public var areas:Array;
+
+      public var container:DisplayObjectContainer;
+
+      public var numXChunck:uint;
+
+      public var numYChunck:uint;
+   }
+
 }

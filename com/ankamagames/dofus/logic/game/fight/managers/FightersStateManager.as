@@ -1,80 +1,77 @@
-﻿package com.ankamagames.dofus.logic.game.fight.managers
+package com.ankamagames.dofus.logic.game.fight.managers
 {
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import flash.utils.Dictionary;
 
-    public class FightersStateManager extends Object
-    {
-        private var _entityStates:Dictionary;
-        private static const _log:Logger = Log.getLogger(getQualifiedClassName(FightersStateManager));
-        private static var _self:FightersStateManager;
 
-        public function FightersStateManager()
-        {
-            this._entityStates = new Dictionary();
+   public class FightersStateManager extends Object
+   {
+         
+
+      public function FightersStateManager() {
+         this._entityStates=new Dictionary();
+         super();
+      }
+
+      private static const _log:Logger = Log.getLogger(getQualifiedClassName(FightersStateManager));
+
+      private static var _self:FightersStateManager;
+
+      public static function getInstance() : FightersStateManager {
+         if(!_self)
+         {
+            _self=new FightersStateManager();
+         }
+         return _self;
+      }
+
+      private var _entityStates:Dictionary;
+
+      public function addStateOnTarget(stateId:int, targetId:int) : void {
+         var stateList:Array = this._entityStates[targetId];
+         if(!stateList)
+         {
+            stateList=new Array();
+            this._entityStates[targetId]=stateList;
+         }
+         if(stateList.indexOf(stateId)==-1)
+         {
+            stateList.push(stateId);
+         }
+      }
+
+      public function removeStateOnTarget(stateId:int, targetId:int) : void {
+         var stateList:Array = this._entityStates[targetId];
+         if(!stateList)
+         {
+            _log.error("Can\'t find state list for "+targetId+" to remove state");
             return;
-        }// end function
+         }
+         var index:int = stateList.indexOf(stateId);
+         if(index!=-1)
+         {
+            stateList.splice(index,1);
+         }
+      }
 
-        public function addStateOnTarget(param1:int, param2:int) : void
-        {
-            var _loc_3:* = this._entityStates[param2];
-            if (!_loc_3)
-            {
-                _loc_3 = new Array();
-                this._entityStates[param2] = _loc_3;
-            }
-            if (_loc_3.indexOf(param1) == -1)
-            {
-                _loc_3.push(param1);
-            }
-            return;
-        }// end function
+      public function hasState(targetId:int, stateId:int) : Boolean {
+         var stateList:Array = this._entityStates[targetId];
+         if(!stateList)
+         {
+            return false;
+         }
+         return !(stateList.indexOf(stateId)==-1);
+      }
 
-        public function removeStateOnTarget(param1:int, param2:int) : void
-        {
-            var _loc_3:* = this._entityStates[param2];
-            if (!_loc_3)
-            {
-                _log.error("Can\'t find state list for " + param2 + " to remove state");
-                return;
-            }
-            var _loc_4:* = _loc_3.indexOf(param1);
-            if (_loc_3.indexOf(param1) != -1)
-            {
-                _loc_3.splice(_loc_4, 1);
-            }
-            return;
-        }// end function
+      public function getStates(targetId:int) : Array {
+         return this._entityStates[targetId];
+      }
 
-        public function hasState(param1:int, param2:int) : Boolean
-        {
-            var _loc_3:* = this._entityStates[param1];
-            if (!_loc_3)
-            {
-                return false;
-            }
-            return _loc_3.indexOf(param2) != -1;
-        }// end function
+      public function endFight() : void {
+         this._entityStates=new Dictionary();
+      }
+   }
 
-        public function getStates(param1:int) : Array
-        {
-            return this._entityStates[param1];
-        }// end function
-
-        public function endFight() : void
-        {
-            this._entityStates = new Dictionary();
-            return;
-        }// end function
-
-        public static function getInstance() : FightersStateManager
-        {
-            if (!_self)
-            {
-                _self = new FightersStateManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

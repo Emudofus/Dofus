@@ -1,41 +1,43 @@
-﻿package com.ankamagames.jerakine.network
+package com.ankamagames.jerakine.network
 {
-    import com.ankamagames.jerakine.messages.*;
+   import com.ankamagames.jerakine.messages.MessageHandler;
 
-    public interface IServerConnection
-    {
 
-        public function IServerConnection();
+   public interface IServerConnection
+   {
+         
 
-        function get rawParser() : RawDataParser;
 
-        function set rawParser(param1:RawDataParser) : void;
 
-        function get handler() : MessageHandler;
+      function get rawParser() : RawDataParser;
 
-        function set handler(param1:MessageHandler) : void;
+      function set rawParser(param1:RawDataParser) : void;
 
-        function get connected() : Boolean;
+      function get handler() : MessageHandler;
 
-        function get latencyAvg() : uint;
+      function set handler(param1:MessageHandler) : void;
 
-        function get latencySamplesCount() : uint;
+      function get connected() : Boolean;
 
-        function get latencySamplesMax() : uint;
+      function get latencyAvg() : uint;
 
-        function get lagometer() : ILagometer;
+      function get latencySamplesCount() : uint;
 
-        function set lagometer(param1:ILagometer) : void;
+      function get latencySamplesMax() : uint;
 
-        function connect(param1:String, param2:int) : void;
+      function get lagometer() : ILagometer;
 
-        function close() : void;
+      function set lagometer(param1:ILagometer) : void;
 
-        function pause() : void;
+      function connect(param1:String, param2:int) : void;
 
-        function resume() : void;
+      function close() : void;
 
-        function send(param1:INetworkMessage) : void;
+      function pause() : void;
 
-    }
+      function resume() : void;
+
+      function send(param1:INetworkMessage) : void;
+   }
+
 }

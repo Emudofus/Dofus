@@ -1,44 +1,47 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
-    import com.ankamagames.atouin.data.map.*;
-    import com.ankamagames.jerakine.messages.*;
-    import flash.display.*;
+   import com.ankamagames.jerakine.messages.Message;
+   import flash.display.DisplayObject;
+   import com.ankamagames.atouin.data.map.CellData;
 
-    public class AdjacentMapOverMessage extends Object implements Message
-    {
-        private var _nDirection:uint;
-        private var _spZone:DisplayObject;
-        private var _cellId:int;
-        private var _cellData:CellData;
 
-        public function AdjacentMapOverMessage(param1:uint, param2:DisplayObject, param3:int, param4:CellData)
-        {
-            this._nDirection = param1;
-            this._spZone = param2;
-            this._cellId = param3;
-            this._cellData = param4;
-            return;
-        }// end function
+   public class AdjacentMapOverMessage extends Object implements Message
+   {
+         
 
-        public function get direction() : uint
-        {
-            return this._nDirection;
-        }// end function
+      public function AdjacentMapOverMessage(nDirection:uint, zone:DisplayObject, cellId:int, cellData:CellData) {
+         super();
+         this._nDirection=nDirection;
+         this._spZone=zone;
+         this._cellId=cellId;
+         this._cellData=cellData;
+      }
 
-        public function get zone() : DisplayObject
-        {
-            return this._spZone;
-        }// end function
 
-        public function get cellId() : int
-        {
-            return this._cellId;
-        }// end function
 
-        public function get cellData() : CellData
-        {
-            return this._cellData;
-        }// end function
+      private var _nDirection:uint;
 
-    }
+      private var _spZone:DisplayObject;
+
+      private var _cellId:int;
+
+      private var _cellData:CellData;
+
+      public function get direction() : uint {
+         return this._nDirection;
+      }
+
+      public function get zone() : DisplayObject {
+         return this._spZone;
+      }
+
+      public function get cellId() : int {
+         return this._cellId;
+      }
+
+      public function get cellData() : CellData {
+         return this._cellData;
+      }
+   }
+
 }

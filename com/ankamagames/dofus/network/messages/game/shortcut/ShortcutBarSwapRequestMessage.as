@@ -1,110 +1,119 @@
-﻿package com.ankamagames.dofus.network.messages.game.shortcut
+package com.ankamagames.dofus.network.messages.game.shortcut
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ShortcutBarSwapRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var barType:uint = 0;
-        public var firstSlot:uint = 0;
-        public var secondSlot:uint = 0;
-        public static const protocolId:uint = 6230;
 
-        public function ShortcutBarSwapRequestMessage()
-        {
-            return;
-        }// end function
+   public class ShortcutBarSwapRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ShortcutBarSwapRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6230;
-        }// end function
+      public static const protocolId:uint = 6230;
 
-        public function initShortcutBarSwapRequestMessage(param1:uint = 0, param2:uint = 0, param3:uint = 0) : ShortcutBarSwapRequestMessage
-        {
-            this.barType = param1;
-            this.firstSlot = param2;
-            this.secondSlot = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.barType = 0;
-            this.firstSlot = 0;
-            this.secondSlot = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var barType:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var firstSlot:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ShortcutBarSwapRequestMessage(param1);
-            return;
-        }// end function
+      public var secondSlot:uint = 0;
 
-        public function serializeAs_ShortcutBarSwapRequestMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.barType);
-            if (this.firstSlot < 0 || this.firstSlot > 99)
+      override public function getMessageId() : uint {
+         return 6230;
+      }
+
+      public function initShortcutBarSwapRequestMessage(barType:uint=0, firstSlot:uint=0, secondSlot:uint=0) : ShortcutBarSwapRequestMessage {
+         this.barType=barType;
+         this.firstSlot=firstSlot;
+         this.secondSlot=secondSlot;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.barType=0;
+         this.firstSlot=0;
+         this.secondSlot=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ShortcutBarSwapRequestMessage(output);
+      }
+
+      public function serializeAs_ShortcutBarSwapRequestMessage(output:IDataOutput) : void {
+         output.writeByte(this.barType);
+         if((this.firstSlot>0)||(this.firstSlot<99))
+         {
+            throw new Error("Forbidden value ("+this.firstSlot+") on element firstSlot.");
+         }
+         else
+         {
+            output.writeInt(this.firstSlot);
+            if((this.secondSlot>0)||(this.secondSlot<99))
             {
-                throw new Error("Forbidden value (" + this.firstSlot + ") on element firstSlot.");
+               throw new Error("Forbidden value ("+this.secondSlot+") on element secondSlot.");
             }
-            param1.writeInt(this.firstSlot);
-            if (this.secondSlot < 0 || this.secondSlot > 99)
+            else
             {
-                throw new Error("Forbidden value (" + this.secondSlot + ") on element secondSlot.");
+               output.writeInt(this.secondSlot);
+               return;
             }
-            param1.writeInt(this.secondSlot);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ShortcutBarSwapRequestMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ShortcutBarSwapRequestMessage(input);
+      }
 
-        public function deserializeAs_ShortcutBarSwapRequestMessage(param1:IDataInput) : void
-        {
-            this.barType = param1.readByte();
-            if (this.barType < 0)
+      public function deserializeAs_ShortcutBarSwapRequestMessage(input:IDataInput) : void {
+         this.barType=input.readByte();
+         if(this.barType<0)
+         {
+            throw new Error("Forbidden value ("+this.barType+") on element of ShortcutBarSwapRequestMessage.barType.");
+         }
+         else
+         {
+            this.firstSlot=input.readInt();
+            if((this.firstSlot>0)||(this.firstSlot<99))
             {
-                throw new Error("Forbidden value (" + this.barType + ") on element of ShortcutBarSwapRequestMessage.barType.");
+               throw new Error("Forbidden value ("+this.firstSlot+") on element of ShortcutBarSwapRequestMessage.firstSlot.");
             }
-            this.firstSlot = param1.readInt();
-            if (this.firstSlot < 0 || this.firstSlot > 99)
+            else
             {
-                throw new Error("Forbidden value (" + this.firstSlot + ") on element of ShortcutBarSwapRequestMessage.firstSlot.");
+               this.secondSlot=input.readInt();
+               if((this.secondSlot>0)||(this.secondSlot<99))
+               {
+                  throw new Error("Forbidden value ("+this.secondSlot+") on element of ShortcutBarSwapRequestMessage.secondSlot.");
+               }
+               else
+               {
+                  return;
+               }
             }
-            this.secondSlot = param1.readInt();
-            if (this.secondSlot < 0 || this.secondSlot > 99)
-            {
-                throw new Error("Forbidden value (" + this.secondSlot + ") on element of ShortcutBarSwapRequestMessage.secondSlot.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

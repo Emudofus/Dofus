@@ -1,15 +1,19 @@
-﻿package com.ankamagames.berilia.components.messages
+package com.ankamagames.berilia.components.messages
 {
-    import flash.display.*;
+   import flash.display.InteractiveObject;
 
-    public class ColorChangeMessage extends ComponentMessage
-    {
 
-        public function ColorChangeMessage(param1:InteractiveObject)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class ColorChangeMessage extends ComponentMessage
+   {
+         
 
-    }
+      public function ColorChangeMessage(target:InteractiveObject) {
+         super(target);
+      }
+
+
+
+
+   }
+
 }

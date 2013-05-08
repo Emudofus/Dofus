@@ -1,47 +1,47 @@
-﻿package com.ankamagames.jerakine.types.events
+package com.ankamagames.jerakine.types.events
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class ErrorReportedEvent extends Event
-    {
-        private var _error:Error;
-        private var _text:String;
-        private var _showPopup:Boolean;
-        public static const ERROR:String = "ErrorReportedEvent";
 
-        public function ErrorReportedEvent(param1:Error, param2:String, param3:Boolean = true)
-        {
-            super(ERROR, false, false);
-            this._error = param1;
-            this._text = param2;
-            this._showPopup = param3;
-            return;
-        }// end function
+   public class ErrorReportedEvent extends Event
+   {
+         
 
-        public function get error() : Error
-        {
-            return this._error;
-        }// end function
+      public function ErrorReportedEvent(error:Error, text:String, pShowPopup:Boolean=true) {
+         super(ERROR,false,false);
+         this._error=error;
+         this._text=text;
+         this._showPopup=pShowPopup;
+      }
 
-        public function get text() : String
-        {
-            return this._text;
-        }// end function
+      public static const ERROR:String = "ErrorReportedEvent";
 
-        public function get showPopup() : Boolean
-        {
-            return this._showPopup;
-        }// end function
+      private var _error:Error;
 
-        public function get errorType() : String
-        {
-            if (this.error == null)
-            {
-                return "";
-            }
-            var _loc_1:* = this.error.toString().split(":");
-            return _loc_1[0];
-        }// end function
+      private var _text:String;
 
-    }
+      private var _showPopup:Boolean;
+
+      public function get error() : Error {
+         return this._error;
+      }
+
+      public function get text() : String {
+         return this._text;
+      }
+
+      public function get showPopup() : Boolean {
+         return this._showPopup;
+      }
+
+      public function get errorType() : String {
+         if(this.error==null)
+         {
+            return "";
+         }
+         var tmp1:Array = this.error.toString().split(":");
+         return tmp1[0];
+      }
+   }
+
 }

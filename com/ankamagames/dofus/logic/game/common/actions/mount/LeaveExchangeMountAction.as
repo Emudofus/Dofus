@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.mount
+package com.ankamagames.dofus.logic.game.common.actions.mount
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class LeaveExchangeMountAction extends Object implements Action
-    {
 
-        public function LeaveExchangeMountAction()
-        {
-            return;
-        }// end function
+   public class LeaveExchangeMountAction extends Object implements Action
+   {
+         
 
-        public static function create() : LeaveExchangeMountAction
-        {
-            return new LeaveExchangeMountAction;
-        }// end function
+      public function LeaveExchangeMountAction() {
+         super();
+      }
 
-    }
+      public static function create() : LeaveExchangeMountAction {
+         return new LeaveExchangeMountAction();
+      }
+
+
+   }
+
 }

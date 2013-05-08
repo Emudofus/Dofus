@@ -1,380 +1,348 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flash.display.*;
-    import flash.system.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.formats.*;
+   import flashx.textLayout.tlf_internal;
+   import flash.system.Capabilities;
+   import flash.display.Sprite;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.IListMarkerFormat;
+   import flashx.textLayout.edit.SelectionFormat;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flash.display.BlendMode;
+   import flashx.textLayout.formats.TextDecoration;
+   import flashx.textLayout.formats.ListMarkerFormat;
+   import flashx.textLayout.formats.FormatValue;
+   import flashx.textLayout.compose.StandardFlowComposer;
 
-    public class Configuration extends Object implements IConfiguration
-    {
-        private var _manageTabKey:Boolean;
-        private var _manageEnterKey:Boolean;
-        private var _overflowPolicy:String;
-        private var _enableAccessibility:Boolean;
-        private var _releaseLineCreationData:Boolean;
-        private var _defaultLinkNormalFormat:ITextLayoutFormat;
-        private var _defaultLinkActiveFormat:ITextLayoutFormat;
-        private var _defaultLinkHoverFormat:ITextLayoutFormat;
-        private var _defaultListMarkerFormat:IListMarkerFormat;
-        private var _textFlowInitialFormat:ITextLayoutFormat;
-        private var _focusedSelectionFormat:SelectionFormat;
-        private var _unfocusedSelectionFormat:SelectionFormat;
-        private var _inactiveSelectionFormat:SelectionFormat;
-        private var _scrollDragDelay:Number;
-        private var _scrollDragPixels:Number;
-        private var _scrollPagePercentage:Number;
-        private var _scrollMouseWheelMultiplier:Number;
-        private var _flowComposerClass:Class;
-        private var _inlineGraphicResolverFunction:Function;
-        private var _immutableClone:IConfiguration;
-        static const playerEnablesArgoFeatures:Boolean = versionIsAtLeast(10, 1);
-        static const playerEnablesSpicyFeatures:Boolean = versionIsAtLeast(10, 2) && new Sprite().hasOwnProperty("needsSoftKeyboard");
-        static const hasTouchScreen:Boolean = playerEnablesArgoFeatures && Capabilities["touchScreenType"] != "none";
+   use namespace tlf_internal;
 
-        public function Configuration(param1:Boolean = true)
-        {
-            if (param1)
-            {
-                this.initialize();
-            }
-            return;
-        }// end function
+   public class Configuration extends Object implements IConfiguration
+   {
+         
 
-        private function initialize() : void
-        {
-            var _loc_1:* = null;
-            this._manageTabKey = false;
-            this._manageEnterKey = true;
-            this._overflowPolicy = OverflowPolicy.FIT_DESCENDERS;
-            this._enableAccessibility = false;
-            this._releaseLineCreationData = false;
-            this._focusedSelectionFormat = new SelectionFormat(16777215, 1, BlendMode.DIFFERENCE);
-            this._unfocusedSelectionFormat = new SelectionFormat(16777215, 0, BlendMode.DIFFERENCE, 16777215, 0, BlendMode.DIFFERENCE, 0);
-            this._inactiveSelectionFormat = this._unfocusedSelectionFormat;
-            _loc_1 = new TextLayoutFormat();
-            _loc_1.textDecoration = TextDecoration.UNDERLINE;
-            _loc_1.color = 255;
-            this._defaultLinkNormalFormat = _loc_1;
-            var _loc_2:* = new ListMarkerFormat();
-            _loc_2.paragraphEndIndent = 4;
-            this._defaultListMarkerFormat = _loc_2;
-            _loc_1 = new TextLayoutFormat();
-            _loc_1.lineBreak = FormatValue.INHERIT;
-            _loc_1.paddingLeft = FormatValue.INHERIT;
-            _loc_1.paddingRight = FormatValue.INHERIT;
-            _loc_1.paddingTop = FormatValue.INHERIT;
-            _loc_1.paddingBottom = FormatValue.INHERIT;
-            _loc_1.verticalAlign = FormatValue.INHERIT;
-            _loc_1.columnCount = FormatValue.INHERIT;
-            _loc_1.columnCount = FormatValue.INHERIT;
-            _loc_1.columnGap = FormatValue.INHERIT;
-            _loc_1.columnWidth = FormatValue.INHERIT;
-            this._textFlowInitialFormat = _loc_1;
-            this._scrollDragDelay = 35;
-            this._scrollDragPixels = 20;
-            this._scrollPagePercentage = 7 / 8;
-            this._scrollMouseWheelMultiplier = 20;
-            this._flowComposerClass = StandardFlowComposer;
-            return;
-        }// end function
+      public function Configuration(initializeWithDefaults:Boolean=true) {
+         super();
+         if(initializeWithDefaults)
+         {
+            this.initialize();
+         }
+      }
 
-        function getImmutableClone() : IConfiguration
-        {
-            var _loc_1:* = null;
-            if (!this._immutableClone)
-            {
-                _loc_1 = this.clone();
-                this._immutableClone = _loc_1;
-                _loc_1._immutableClone = _loc_1;
-            }
-            return this._immutableClone;
-        }// end function
+      tlf_internal  static function versionIsAtLeast(major:int, minor:int) : Boolean {
+         var versionData:Array = Capabilities.version.split(" ")[1].split(",");
+         return (int(versionData[0])<major)||(int(versionData[0])==major)&&(int(versionData[1])>=minor);
+      }
 
-        public function clone() : Configuration
-        {
-            var _loc_1:* = new Configuration(false);
-            _loc_1.defaultLinkActiveFormat = this.defaultLinkActiveFormat;
-            _loc_1.defaultLinkHoverFormat = this.defaultLinkHoverFormat;
-            _loc_1.defaultLinkNormalFormat = this.defaultLinkNormalFormat;
-            _loc_1.defaultListMarkerFormat = this.defaultListMarkerFormat;
-            _loc_1.textFlowInitialFormat = this._textFlowInitialFormat;
-            _loc_1.focusedSelectionFormat = this._focusedSelectionFormat;
-            _loc_1.unfocusedSelectionFormat = this._unfocusedSelectionFormat;
-            _loc_1.inactiveSelectionFormat = this._inactiveSelectionFormat;
-            _loc_1.manageTabKey = this._manageTabKey;
-            _loc_1.manageEnterKey = this._manageEnterKey;
-            _loc_1.overflowPolicy = this._overflowPolicy;
-            _loc_1.enableAccessibility = this._enableAccessibility;
-            _loc_1.releaseLineCreationData = this._releaseLineCreationData;
-            _loc_1.scrollDragDelay = this._scrollDragDelay;
-            _loc_1.scrollDragPixels = this._scrollDragPixels;
-            _loc_1.scrollPagePercentage = this._scrollPagePercentage;
-            _loc_1.scrollMouseWheelMultiplier = this._scrollMouseWheelMultiplier;
-            _loc_1.flowComposerClass = this._flowComposerClass;
-            _loc_1._inlineGraphicResolverFunction = this._inlineGraphicResolverFunction;
-            return _loc_1;
-        }// end function
+      tlf_internal  static const playerEnablesArgoFeatures:Boolean = versionIsAtLeast(10,1);
 
-        public function get manageTabKey() : Boolean
-        {
-            return this._manageTabKey;
-        }// end function
+      tlf_internal  static const playerEnablesSpicyFeatures:Boolean = (versionIsAtLeast(10,2))&&(new Sprite().hasOwnProperty("needsSoftKeyboard"));
 
-        public function set manageTabKey(param1:Boolean) : void
-        {
-            this._manageTabKey = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      tlf_internal  static const hasTouchScreen:Boolean = (playerEnablesArgoFeatures)&&(!(Capabilities["touchScreenType"]=="none"));
 
-        public function get manageEnterKey() : Boolean
-        {
-            return this._manageEnterKey;
-        }// end function
+      tlf_internal  static function get debugCodeEnabled() : Boolean {
+         return false;
+      }
 
-        public function set manageEnterKey(param1:Boolean) : void
-        {
-            this._manageEnterKey = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      private var _manageTabKey:Boolean;
 
-        public function get overflowPolicy() : String
-        {
-            return this._overflowPolicy;
-        }// end function
+      private var _manageEnterKey:Boolean;
 
-        public function set overflowPolicy(param1:String) : void
-        {
-            this._overflowPolicy = param1;
-            return;
-        }// end function
+      private var _overflowPolicy:String;
 
-        public function get defaultLinkNormalFormat() : ITextLayoutFormat
-        {
-            return this._defaultLinkNormalFormat;
-        }// end function
+      private var _enableAccessibility:Boolean;
 
-        public function set defaultLinkNormalFormat(param1:ITextLayoutFormat) : void
-        {
-            this._defaultLinkNormalFormat = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      private var _releaseLineCreationData:Boolean;
 
-        public function get defaultListMarkerFormat() : IListMarkerFormat
-        {
-            return this._defaultListMarkerFormat;
-        }// end function
+      private var _defaultLinkNormalFormat:ITextLayoutFormat;
 
-        public function set defaultListMarkerFormat(param1:IListMarkerFormat) : void
-        {
-            this._defaultListMarkerFormat = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      private var _defaultLinkActiveFormat:ITextLayoutFormat;
 
-        public function get defaultLinkHoverFormat() : ITextLayoutFormat
-        {
-            return this._defaultLinkHoverFormat;
-        }// end function
+      private var _defaultLinkHoverFormat:ITextLayoutFormat;
 
-        public function set defaultLinkHoverFormat(param1:ITextLayoutFormat) : void
-        {
-            this._defaultLinkHoverFormat = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      private var _defaultListMarkerFormat:IListMarkerFormat;
 
-        public function get defaultLinkActiveFormat() : ITextLayoutFormat
-        {
-            return this._defaultLinkActiveFormat;
-        }// end function
+      private var _textFlowInitialFormat:ITextLayoutFormat;
 
-        public function set defaultLinkActiveFormat(param1:ITextLayoutFormat) : void
-        {
-            this._defaultLinkActiveFormat = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      private var _focusedSelectionFormat:SelectionFormat;
 
-        public function get textFlowInitialFormat() : ITextLayoutFormat
-        {
-            return this._textFlowInitialFormat;
-        }// end function
+      private var _unfocusedSelectionFormat:SelectionFormat;
 
-        public function set textFlowInitialFormat(param1:ITextLayoutFormat) : void
-        {
-            this._textFlowInitialFormat = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      private var _inactiveSelectionFormat:SelectionFormat;
 
-        public function get focusedSelectionFormat() : SelectionFormat
-        {
-            return this._focusedSelectionFormat;
-        }// end function
+      private var _scrollDragDelay:Number;
 
-        public function set focusedSelectionFormat(param1:SelectionFormat) : void
-        {
-            if (param1 != null)
-            {
-                this._focusedSelectionFormat = param1;
-                this._immutableClone = null;
-            }
-            return;
-        }// end function
+      private var _scrollDragPixels:Number;
 
-        public function get unfocusedSelectionFormat() : SelectionFormat
-        {
-            return this._unfocusedSelectionFormat;
-        }// end function
+      private var _scrollPagePercentage:Number;
 
-        public function set unfocusedSelectionFormat(param1:SelectionFormat) : void
-        {
-            if (param1 != null)
-            {
-                this._unfocusedSelectionFormat = param1;
-                this._immutableClone = null;
-            }
-            return;
-        }// end function
+      private var _scrollMouseWheelMultiplier:Number;
 
-        public function get inactiveSelectionFormat() : SelectionFormat
-        {
-            return this._inactiveSelectionFormat;
-        }// end function
+      private var _flowComposerClass:Class;
 
-        public function set inactiveSelectionFormat(param1:SelectionFormat) : void
-        {
-            if (param1 != null)
-            {
-                this._inactiveSelectionFormat = param1;
-                this._immutableClone = null;
-            }
-            return;
-        }// end function
+      private var _inlineGraphicResolverFunction:Function;
 
-        public function get scrollDragDelay() : Number
-        {
-            return this._scrollDragDelay;
-        }// end function
+      private function initialize() : void {
+         var scratchFormat:TextLayoutFormat = null;
+         this._manageTabKey=false;
+         this._manageEnterKey=true;
+         this._overflowPolicy=OverflowPolicy.FIT_DESCENDERS;
+         this._enableAccessibility=false;
+         this._releaseLineCreationData=false;
+         this._focusedSelectionFormat=new SelectionFormat(16777215,1,BlendMode.DIFFERENCE);
+         this._unfocusedSelectionFormat=new SelectionFormat(16777215,0,BlendMode.DIFFERENCE,16777215,0.0,BlendMode.DIFFERENCE,0);
+         this._inactiveSelectionFormat=this._unfocusedSelectionFormat;
+         scratchFormat=new TextLayoutFormat();
+         scratchFormat.textDecoration=TextDecoration.UNDERLINE;
+         scratchFormat.color=255;
+         this._defaultLinkNormalFormat=scratchFormat;
+         var listMarkerFormat:ListMarkerFormat = new ListMarkerFormat();
+         listMarkerFormat.paragraphEndIndent=4;
+         this._defaultListMarkerFormat=listMarkerFormat;
+         scratchFormat=new TextLayoutFormat();
+         scratchFormat.lineBreak=FormatValue.INHERIT;
+         scratchFormat.paddingLeft=FormatValue.INHERIT;
+         scratchFormat.paddingRight=FormatValue.INHERIT;
+         scratchFormat.paddingTop=FormatValue.INHERIT;
+         scratchFormat.paddingBottom=FormatValue.INHERIT;
+         scratchFormat.verticalAlign=FormatValue.INHERIT;
+         scratchFormat.columnCount=FormatValue.INHERIT;
+         scratchFormat.columnCount=FormatValue.INHERIT;
+         scratchFormat.columnGap=FormatValue.INHERIT;
+         scratchFormat.columnWidth=FormatValue.INHERIT;
+         this._textFlowInitialFormat=scratchFormat;
+         this._scrollDragDelay=35;
+         this._scrollDragPixels=20;
+         this._scrollPagePercentage=7/8;
+         this._scrollMouseWheelMultiplier=20;
+         this._flowComposerClass=StandardFlowComposer;
+      }
 
-        public function set scrollDragDelay(param1:Number) : void
-        {
-            if (param1 > 0)
-            {
-                this._scrollDragDelay = param1;
-                this._immutableClone = null;
-            }
-            return;
-        }// end function
+      private var _immutableClone:IConfiguration;
 
-        public function get scrollDragPixels() : Number
-        {
-            return this._scrollDragPixels;
-        }// end function
+      tlf_internal function getImmutableClone() : IConfiguration {
+         var clonedConifg:Configuration = null;
+         if(!this._immutableClone)
+         {
+            clonedConifg=this.clone();
+            this._immutableClone=clonedConifg;
+            clonedConifg._immutableClone=clonedConifg;
+         }
+         return this._immutableClone;
+      }
 
-        public function set scrollDragPixels(param1:Number) : void
-        {
-            if (param1 > 0)
-            {
-                this._scrollDragPixels = param1;
-                this._immutableClone = null;
-            }
-            return;
-        }// end function
+      public function clone() : Configuration {
+         var config:Configuration = new Configuration(false);
+         config.defaultLinkActiveFormat=this.defaultLinkActiveFormat;
+         config.defaultLinkHoverFormat=this.defaultLinkHoverFormat;
+         config.defaultLinkNormalFormat=this.defaultLinkNormalFormat;
+         config.defaultListMarkerFormat=this.defaultListMarkerFormat;
+         config.textFlowInitialFormat=this._textFlowInitialFormat;
+         config.focusedSelectionFormat=this._focusedSelectionFormat;
+         config.unfocusedSelectionFormat=this._unfocusedSelectionFormat;
+         config.inactiveSelectionFormat=this._inactiveSelectionFormat;
+         config.manageTabKey=this._manageTabKey;
+         config.manageEnterKey=this._manageEnterKey;
+         config.overflowPolicy=this._overflowPolicy;
+         config.enableAccessibility=this._enableAccessibility;
+         config.releaseLineCreationData=this._releaseLineCreationData;
+         config.scrollDragDelay=this._scrollDragDelay;
+         config.scrollDragPixels=this._scrollDragPixels;
+         config.scrollPagePercentage=this._scrollPagePercentage;
+         config.scrollMouseWheelMultiplier=this._scrollMouseWheelMultiplier;
+         config.flowComposerClass=this._flowComposerClass;
+         config._inlineGraphicResolverFunction=this._inlineGraphicResolverFunction;
+         return config;
+      }
 
-        public function get scrollPagePercentage() : Number
-        {
-            return this._scrollPagePercentage;
-        }// end function
+      public function get manageTabKey() : Boolean {
+         return this._manageTabKey;
+      }
 
-        public function set scrollPagePercentage(param1:Number) : void
-        {
-            if (param1 > 0)
-            {
-                this._scrollPagePercentage = param1;
-                this._immutableClone = null;
-            }
-            return;
-        }// end function
+      public function set manageTabKey(val:Boolean) : void {
+         this._manageTabKey=val;
+         this._immutableClone=null;
+      }
 
-        public function get scrollMouseWheelMultiplier() : Number
-        {
-            return this._scrollMouseWheelMultiplier;
-        }// end function
+      public function get manageEnterKey() : Boolean {
+         return this._manageEnterKey;
+      }
 
-        public function set scrollMouseWheelMultiplier(param1:Number) : void
-        {
-            if (param1 > 0)
-            {
-                this._scrollMouseWheelMultiplier = param1;
-                this._immutableClone = null;
-            }
-            return;
-        }// end function
+      public function set manageEnterKey(val:Boolean) : void {
+         this._manageEnterKey=val;
+         this._immutableClone=null;
+      }
 
-        public function get flowComposerClass() : Class
-        {
-            return this._flowComposerClass;
-        }// end function
+      public function get overflowPolicy() : String {
+         return this._overflowPolicy;
+      }
 
-        public function set flowComposerClass(param1:Class) : void
-        {
-            this._flowComposerClass = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      public function set overflowPolicy(value:String) : void {
+         this._overflowPolicy=value;
+      }
 
-        public function get enableAccessibility() : Boolean
-        {
-            return this._enableAccessibility;
-        }// end function
+      public function get defaultLinkNormalFormat() : ITextLayoutFormat {
+         return this._defaultLinkNormalFormat;
+      }
 
-        public function set enableAccessibility(param1:Boolean) : void
-        {
-            this._enableAccessibility = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      public function set defaultLinkNormalFormat(val:ITextLayoutFormat) : void {
+         this._defaultLinkNormalFormat=val;
+         this._immutableClone=null;
+      }
 
-        public function get releaseLineCreationData() : Boolean
-        {
-            return this._releaseLineCreationData;
-        }// end function
+      public function get defaultListMarkerFormat() : IListMarkerFormat {
+         return this._defaultListMarkerFormat;
+      }
 
-        public function set releaseLineCreationData(param1:Boolean) : void
-        {
-            this._releaseLineCreationData = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      public function set defaultListMarkerFormat(val:IListMarkerFormat) : void {
+         this._defaultListMarkerFormat=val;
+         this._immutableClone=null;
+      }
 
-        public function get inlineGraphicResolverFunction() : Function
-        {
-            return this._inlineGraphicResolverFunction;
-        }// end function
+      public function get defaultLinkHoverFormat() : ITextLayoutFormat {
+         return this._defaultLinkHoverFormat;
+      }
 
-        public function set inlineGraphicResolverFunction(param1:Function) : void
-        {
-            this._inlineGraphicResolverFunction = param1;
-            this._immutableClone = null;
-            return;
-        }// end function
+      public function set defaultLinkHoverFormat(val:ITextLayoutFormat) : void {
+         this._defaultLinkHoverFormat=val;
+         this._immutableClone=null;
+      }
 
-        static function versionIsAtLeast(param1:int, param2:int) : Boolean
-        {
-            var _loc_3:* = Capabilities.version.split(" ")[1].split(",");
-            return int(_loc_3[0]) > param1 || int(_loc_3[0]) == param1 && int(_loc_3[1]) >= param2;
-        }// end function
+      public function get defaultLinkActiveFormat() : ITextLayoutFormat {
+         return this._defaultLinkActiveFormat;
+      }
 
-        static function get debugCodeEnabled() : Boolean
-        {
-            return false;
-        }// end function
+      public function set defaultLinkActiveFormat(val:ITextLayoutFormat) : void {
+         this._defaultLinkActiveFormat=val;
+         this._immutableClone=null;
+      }
 
-    }
+      public function get textFlowInitialFormat() : ITextLayoutFormat {
+         return this._textFlowInitialFormat;
+      }
+
+      public function set textFlowInitialFormat(val:ITextLayoutFormat) : void {
+         this._textFlowInitialFormat=val;
+         this._immutableClone=null;
+      }
+
+      public function get focusedSelectionFormat() : SelectionFormat {
+         return this._focusedSelectionFormat;
+      }
+
+      public function set focusedSelectionFormat(val:SelectionFormat) : void {
+         if(val!=null)
+         {
+            this._focusedSelectionFormat=val;
+            this._immutableClone=null;
+         }
+      }
+
+      public function get unfocusedSelectionFormat() : SelectionFormat {
+         return this._unfocusedSelectionFormat;
+      }
+
+      public function set unfocusedSelectionFormat(val:SelectionFormat) : void {
+         if(val!=null)
+         {
+            this._unfocusedSelectionFormat=val;
+            this._immutableClone=null;
+         }
+      }
+
+      public function get inactiveSelectionFormat() : SelectionFormat {
+         return this._inactiveSelectionFormat;
+      }
+
+      public function set inactiveSelectionFormat(val:SelectionFormat) : void {
+         if(val!=null)
+         {
+            this._inactiveSelectionFormat=val;
+            this._immutableClone=null;
+         }
+      }
+
+      public function get scrollDragDelay() : Number {
+         return this._scrollDragDelay;
+      }
+
+      public function set scrollDragDelay(val:Number) : void {
+         if(val>0)
+         {
+            this._scrollDragDelay=val;
+            this._immutableClone=null;
+         }
+      }
+
+      public function get scrollDragPixels() : Number {
+         return this._scrollDragPixels;
+      }
+
+      public function set scrollDragPixels(val:Number) : void {
+         if(val>0)
+         {
+            this._scrollDragPixels=val;
+            this._immutableClone=null;
+         }
+      }
+
+      public function get scrollPagePercentage() : Number {
+         return this._scrollPagePercentage;
+      }
+
+      public function set scrollPagePercentage(val:Number) : void {
+         if(val>0)
+         {
+            this._scrollPagePercentage=val;
+            this._immutableClone=null;
+         }
+      }
+
+      public function get scrollMouseWheelMultiplier() : Number {
+         return this._scrollMouseWheelMultiplier;
+      }
+
+      public function set scrollMouseWheelMultiplier(val:Number) : void {
+         if(val>0)
+         {
+            this._scrollMouseWheelMultiplier=val;
+            this._immutableClone=null;
+         }
+      }
+
+      public function get flowComposerClass() : Class {
+         return this._flowComposerClass;
+      }
+
+      public function set flowComposerClass(val:Class) : void {
+         this._flowComposerClass=val;
+         this._immutableClone=null;
+      }
+
+      public function get enableAccessibility() : Boolean {
+         return this._enableAccessibility;
+      }
+
+      public function set enableAccessibility(val:Boolean) : void {
+         this._enableAccessibility=val;
+         this._immutableClone=null;
+      }
+
+      public function get releaseLineCreationData() : Boolean {
+         return this._releaseLineCreationData;
+      }
+
+      public function set releaseLineCreationData(val:Boolean) : void {
+         this._releaseLineCreationData=val;
+         this._immutableClone=null;
+      }
+
+      public function get inlineGraphicResolverFunction() : Function {
+         return this._inlineGraphicResolverFunction;
+      }
+
+      public function set inlineGraphicResolverFunction(val:Function) : void {
+         this._inlineGraphicResolverFunction=val;
+         this._immutableClone=null;
+      }
+   }
+
 }

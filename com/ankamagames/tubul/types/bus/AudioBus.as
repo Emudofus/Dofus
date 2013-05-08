@@ -1,484 +1,431 @@
-﻿package com.ankamagames.tubul.types.bus
+package com.ankamagames.tubul.types.bus
 {
-    import __AS3__.vec.*;
-    import com.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.newCache.*;
-    import com.ankamagames.jerakine.newCache.garbage.*;
-    import com.ankamagames.jerakine.newCache.impl.*;
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.tubul.*;
-    import com.ankamagames.tubul.enum.*;
-    import com.ankamagames.tubul.events.*;
-    import com.ankamagames.tubul.events.LoadingSound.*;
-    import com.ankamagames.tubul.interfaces.*;
-    import com.ankamagames.tubul.types.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import com.ankamagames.tubul.interfaces.IAudioBus;
+   import com.ankamagames.jerakine.logger.Logger;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.tubul.interfaces.ISound;
+   import com.ankamagames.jerakine.newCache.ICache;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.tubul.interfaces.IEffect;
+   import com.ankamagames.tubul.types.VolumeFadeEffect;
+   import com.ankamagames.jerakine.resources.CacheableResource;
+   import com.ankamagames.tubul.events.SoundCompleteEvent;
+   import com.ankamagames.tubul.enum.EventListenerPriority;
+   import com.ankamagames.tubul.Tubul;
+   import com.TubulConstants;
+   import com.ankamagames.tubul.events.LoadingSound.LoadingSoundEvent;
+   import com.ankamagames.jerakine.newCache.impl.Cache;
+   import com.ankamagames.jerakine.newCache.garbage.LruGarbageCollector;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.tubul.events.AudioBusVolumeEvent;
+   import com.ankamagames.tubul.interfaces.ILocalizedSoundListener;
+   import com.ankamagames.tubul.events.FadeEvent;
+   import com.ankamagames.tubul.events.AudioBusEvent;
+   import com.ankamagames.jerakine.logger.Log;
 
-    public class AudioBus extends Object implements IAudioBus
-    {
-        private const _log:Logger;
-        protected var _id:uint;
-        protected var _name:String;
-        protected var _soundVector:Vector.<ISound>;
-        protected var _volume:Number;
-        protected var _volumeMax:Number;
-        protected var _fadeVolume:Number;
-        protected var _cache:ICache;
-        protected var _eventDispatcher:EventDispatcher;
-        protected var _numberSoundsLimitation:int = -1;
-        protected var _effects:Vector.<IEffect>;
-        static var _totalPlayingSounds:int = 0;
-        static var id_sound:uint = 0;
 
-        public function AudioBus(param1:int, param2:String)
-        {
-            this._log = Log.getLogger(getQualifiedClassName(AudioBus));
-            this.init(param1, param2);
+   public class AudioBus extends Object implements IAudioBus
+   {
+         
+
+      public function AudioBus(id:int, name:String) {
+         super();
+         this.init(id,name);
+      }
+
+      protected static var _totalPlayingSounds:int = 0;
+
+      protected static var id_sound:uint = 0;
+
+      private const _log:Logger = Log.getLogger(getQualifiedClassName(AudioBus));
+
+      protected var _id:uint;
+
+      protected var _name:String;
+
+      protected var _soundVector:Vector.<ISound>;
+
+      protected var _volume:Number;
+
+      protected var _volumeMax:Number;
+
+      protected var _fadeVolume:Number;
+
+      protected var _cache:ICache;
+
+      protected var _eventDispatcher:EventDispatcher;
+
+      protected var _numberSoundsLimitation:int = -1;
+
+      protected var _effects:Vector.<IEffect>;
+
+      public function get soundList() : Vector.<ISound> {
+         return this._soundVector;
+      }
+
+      public function set volumeMax(pVolMax:Number) : void {
+         if(pVolMax>1)
+         {
+            pVolMax=1;
+         }
+         if(pVolMax<0)
+         {
+            pVolMax=0;
+         }
+         this._volumeMax=pVolMax;
+      }
+
+      public function get volumeMax() : Number {
+         return this._volumeMax;
+      }
+
+      public function get numberSoundsLimitation() : int {
+         return this._numberSoundsLimitation;
+      }
+
+      public function set numberSoundsLimitation(pLimit:int) : void {
+         this._numberSoundsLimitation=pLimit;
+      }
+
+      public function get effects() : Vector.<IEffect> {
+         return this._effects;
+      }
+
+      public function get eventDispatcher() : EventDispatcher {
+         return this._eventDispatcher;
+      }
+
+      public function get name() : String {
+         return this._name;
+      }
+
+      public function get id() : uint {
+         return this._id;
+      }
+
+      public function set volume(pVolume:Number) : void {
+         if(pVolume>1)
+         {
+            pVolume=1;
+         }
+         if(pVolume<0)
+         {
+            pVolume=0;
+         }
+         this._volume=pVolume;
+         if(isNaN(this.volumeMax))
+         {
+            this._volumeMax=this._volume;
+         }
+         this._log.warn("Bus "+"("+this.id+") vol. r�el : "+this.effectiveVolume+" (vol. max : "+this._volumeMax+" / % vol : "+this._volume+") ["+this.name+"]");
+         this.informSoundsNewVolume();
+      }
+
+      public function get volume() : Number {
+         return this._volume;
+      }
+
+      public function get currentFadeVolume() : Number {
+         return this._fadeVolume;
+      }
+
+      public function set currentFadeVolume(pFadeVolume:Number) : void {
+         if(pFadeVolume>1)
+         {
+            pFadeVolume=1;
+         }
+         if(pFadeVolume<0)
+         {
+            pFadeVolume=0;
+         }
+         this._fadeVolume=pFadeVolume;
+         this.informSoundsNewVolume();
+      }
+
+      public function get effectiveVolume() : Number {
+         return Math.round(this._volume*this._volumeMax*this._fadeVolume*1000)/1000;
+      }
+
+      public function clear(pFade:VolumeFadeEffect=null) : void {
+         var isound:ISound = null;
+         for each (isound in this._soundVector)
+         {
+            this.removeSound(isound,pFade);
+         }
+      }
+
+      public function playISound(newSound:ISound, pLoop:Boolean=false, pLoops:int=-1) : void {
+         var isound:ISound = null;
+         var existingSound:Boolean = false;
+         for each (isound in this._soundVector)
+         {
+            if(isound===newSound)
+            {
+               existingSound=true;
+               break;
+            }
+         }
+         if(!existingSound)
+         {
+            this.addISound(newSound);
+         }
+         if(!newSound.isPlaying)
+         {
+            newSound.play(pLoop,pLoops);
+         }
+      }
+
+      public function addISound(pISound:ISound) : void {
+         var sound3:ISound = null;
+         var sound2:ISound = null;
+         var effect:IEffect = null;
+         var bus:IAudioBus = null;
+         var sound:ISound = null;
+         var sound4:ISound = null;
+         var cr:CacheableResource = null;
+         var resource:* = undefined;
+         pISound.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete,false,EventListenerPriority.MINIMAL,true);
+         var busState:String = "";
+         for each (sound3 in this.soundList)
+         {
+            busState=busState+(" "+sound3.id+";"+sound3.uri);
+         }
+         if(Tubul.getInstance().totalPlayingSounds>=TubulConstants.MAXIMUM_SOUNDS_PLAYING_SAME_TIME)
+         {
+            this._log.warn("We have reached the maximum number of sounds playing simultaneously");
+            this._log.warn("");
+            for each (bus in Tubul.getInstance().audioBusList)
+            {
+               this._log.warn("Registered sounds in bus "+bus.name+" :");
+               for each (sound in bus.soundList)
+               {
+                  this._log.warn("- "+sound.uri);
+               }
+            }
             return;
-        }// end function
-
-        public function get soundList() : Vector.<ISound>
-        {
-            return this._soundVector;
-        }// end function
-
-        public function set volumeMax(param1:Number) : void
-        {
-            if (param1 > 1)
+         }
+         if((this._numberSoundsLimitation>=0)&&(this.soundList.length>=this._numberSoundsLimitation))
+         {
+            this._log.warn("We have reached the maximum number of sounds for this bus ("+this._id+" / "+this._name+")");
+            this._log.warn("Registered sounds in bus "+this._name+" :");
+            for each (sound4 in this.soundList)
             {
-                param1 = 1;
-            }
-            if (param1 < 0)
-            {
-                param1 = 0;
-            }
-            this._volumeMax = param1;
-            return;
-        }// end function
-
-        public function get volumeMax() : Number
-        {
-            return this._volumeMax;
-        }// end function
-
-        public function get numberSoundsLimitation() : int
-        {
-            return this._numberSoundsLimitation;
-        }// end function
-
-        public function set numberSoundsLimitation(param1:int) : void
-        {
-            this._numberSoundsLimitation = param1;
-            return;
-        }// end function
-
-        public function get effects() : Vector.<IEffect>
-        {
-            return this._effects;
-        }// end function
-
-        public function get eventDispatcher() : EventDispatcher
-        {
-            return this._eventDispatcher;
-        }// end function
-
-        public function get name() : String
-        {
-            return this._name;
-        }// end function
-
-        public function get id() : uint
-        {
-            return this._id;
-        }// end function
-
-        public function set volume(param1:Number) : void
-        {
-            if (param1 > 1)
-            {
-                param1 = 1;
-            }
-            if (param1 < 0)
-            {
-                param1 = 0;
-            }
-            this._volume = param1;
-            if (isNaN(this.volumeMax))
-            {
-                this._volumeMax = this._volume;
-            }
-            this._log.warn("Bus " + "(" + this.id + ") vol. réel : " + this.effectiveVolume + " (vol. max : " + this._volumeMax + " / % vol : " + this._volume + ") [" + this.name + "]");
-            this.informSoundsNewVolume();
-            return;
-        }// end function
-
-        public function get volume() : Number
-        {
-            return this._volume;
-        }// end function
-
-        public function get currentFadeVolume() : Number
-        {
-            return this._fadeVolume;
-        }// end function
-
-        public function set currentFadeVolume(param1:Number) : void
-        {
-            if (param1 > 1)
-            {
-                param1 = 1;
-            }
-            if (param1 < 0)
-            {
-                param1 = 0;
-            }
-            this._fadeVolume = param1;
-            this.informSoundsNewVolume();
-            return;
-        }// end function
-
-        public function get effectiveVolume() : Number
-        {
-            return Math.round(this._volume * this._volumeMax * this._fadeVolume * 1000) / 1000;
-        }// end function
-
-        public function clear(param1:VolumeFadeEffect = null) : void
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this._soundVector)
-            {
-                
-                this.removeSound(_loc_2, param1);
+               this._log.warn("- "+sound4.uri);
             }
             return;
-        }// end function
-
-        public function playISound(param1:ISound, param2:Boolean = false, param3:int = -1) : void
-        {
-            var _loc_5:* = null;
-            var _loc_4:* = false;
-            for each (_loc_5 in this._soundVector)
-            {
-                
-                if (_loc_5 === param1)
-                {
-                    _loc_4 = true;
-                    break;
-                }
-            }
-            if (!_loc_4)
-            {
-                this.addISound(param1);
-            }
-            if (!param1.isPlaying)
-            {
-                param1.play(param2, param3);
-            }
+         }
+         this._log.warn("Registered sounds in bus "+this._name+" :");
+         for each (sound2 in this.soundList)
+         {
+            this._log.warn("- "+sound2.uri);
+         }
+         if(this.contains(pISound))
+         {
             return;
-        }// end function
+         }
+         pISound.busId=this.id;
+         for each (effect in this._effects)
+         {
+            pISound.addEffect(effect);
+         }
+         this._soundVector.push(pISound);
+         if(this._cache.contains(TubulConstants.PREFIXE_LOADER+pISound.uri.toSum()))
+         {
+            cr=this._cache.peek(TubulConstants.PREFIXE_LOADER+pISound.uri.toSum());
+            resource=cr.resource;
+            pISound.sound=resource;
+         }
+         else
+         {
+            pISound.loadSound(this._cache);
+            pISound.eventDispatcher.addEventListener(LoadingSoundEvent.LOADED,this.onLoadComplete);
+            pISound.eventDispatcher.addEventListener(LoadingSoundEvent.LOADING_FAILED,this.onLoadFail);
+         }
+      }
 
-        public function addISound(param1:ISound) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = undefined;
-            param1.eventDispatcher.addEventListener(SoundCompleteEvent.SOUND_COMPLETE, this.onSoundComplete, false, EventListenerPriority.MINIMAL, true);
-            var _loc_2:* = "";
-            for each (_loc_3 in this.soundList)
+      public function addEffect(pEffect:IEffect) : void {
+         var effect:IEffect = null;
+         var isound:ISound = null;
+         for each (effect in this._effects)
+         {
+            if(effect.name==pEffect.name)
             {
-                
-                _loc_2 = _loc_2 + (" " + _loc_3.id + ";" + _loc_3.uri);
+               return;
             }
-            if (Tubul.getInstance().totalPlayingSounds >= TubulConstants.MAXIMUM_SOUNDS_PLAYING_SAME_TIME)
+         }
+         this._effects.push(pEffect);
+         for each (isound in this._soundVector)
+         {
+            isound.addEffect(pEffect);
+         }
+      }
+
+      public function removeEffect(pEffect:IEffect) : void {
+         var effect:IEffect = null;
+         var isound:ISound = null;
+         var compt:uint = 0;
+         for each (effect in this._effects)
+         {
+            if(effect==pEffect)
             {
-                this._log.warn("We have reached the maximum number of sounds playing simultaneously");
-                this._log.warn("");
-                for each (_loc_6 in Tubul.getInstance().audioBusList)
-                {
-                    
-                    this._log.warn("Registered sounds in bus " + _loc_6.name + " :");
-                    for each (_loc_7 in _loc_6.soundList)
-                    {
-                        
-                        this._log.warn("- " + _loc_7.uri);
-                    }
-                }
-                return;
-            }
-            if (this._numberSoundsLimitation >= 0 && this.soundList.length >= this._numberSoundsLimitation)
-            {
-                this._log.warn("We have reached the maximum number of sounds for this bus (" + this._id + " / " + this._name + ")");
-                this._log.warn("Registered sounds in bus " + this._name + " :");
-                for each (_loc_8 in this.soundList)
-                {
-                    
-                    this._log.warn("- " + _loc_8.uri);
-                }
-                return;
-            }
-            this._log.warn("Registered sounds in bus " + this._name + " :");
-            for each (_loc_4 in this.soundList)
-            {
-                
-                this._log.warn("- " + _loc_4.uri);
-            }
-            if (this.contains(param1))
-            {
-                return;
-            }
-            param1.busId = this.id;
-            for each (_loc_5 in this._effects)
-            {
-                
-                param1.addEffect(_loc_5);
-            }
-            this._soundVector.push(param1);
-            if (this._cache.contains(TubulConstants.PREFIXE_LOADER + param1.uri.toSum()))
-            {
-                _loc_9 = this._cache.peek(TubulConstants.PREFIXE_LOADER + param1.uri.toSum());
-                _loc_10 = _loc_9.resource;
-                param1.sound = _loc_10;
+               this._effects.splice(compt,1);
             }
             else
             {
-                param1.loadSound(this._cache);
-                param1.eventDispatcher.addEventListener(LoadingSoundEvent.LOADED, this.onLoadComplete);
-                param1.eventDispatcher.addEventListener(LoadingSoundEvent.LOADING_FAILED, this.onLoadFail);
+               compt++;
             }
-            return;
-        }// end function
+         }
+         for each (isound in this._soundVector)
+         {
+            isound.removeEffect(pEffect);
+         }
+      }
 
-        public function addEffect(param1:IEffect) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            for each (_loc_2 in this._effects)
-            {
-                
-                if (_loc_2.com.ankamagames.tubul.interfaces:IEffect::name == param1.com.ankamagames.tubul.interfaces:IEffect::name)
-                {
-                    return;
-                }
-            }
-            this._effects.push(param1);
-            for each (_loc_3 in this._soundVector)
-            {
-                
-                _loc_3.addEffect(param1);
-            }
-            return;
-        }// end function
+      public function play() : void {
+         var isound:ISound = null;
+         for each (isound in this._soundVector)
+         {
+            isound.play();
+         }
+      }
 
-        public function removeEffect(param1:IEffect) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_2:* = 0;
-            for each (_loc_3 in this._effects)
-            {
-                
-                if (_loc_3 == param1)
-                {
-                    this._effects.splice(_loc_2, 1);
-                    continue;
-                }
-                _loc_2 = _loc_2 + 1;
-            }
-            for each (_loc_4 in this._soundVector)
-            {
-                
-                _loc_4.removeEffect(param1);
-            }
-            return;
-        }// end function
+      public function stop() : void {
+         var isound:ISound = null;
+         for each (isound in this._soundVector)
+         {
+            isound.stop();
+         }
+      }
 
-        public function play() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._soundVector)
-            {
-                
-                _loc_1.play();
-            }
-            return;
-        }// end function
+      public function applyDynamicMix(pFadeIn:VolumeFadeEffect, pWaitingTime:uint, pFadeOut:VolumeFadeEffect) : void {
+         
+      }
 
-        public function stop() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._soundVector)
+      public function contains(pISound:ISound) : Boolean {
+         var isound:ISound = null;
+         for each (isound in this._soundVector)
+         {
+            if(isound.id==pISound.id)
             {
-                
-                _loc_1.stop();
+               return true;
             }
-            return;
-        }// end function
+         }
+         return false;
+      }
 
-        public function applyDynamicMix(param1:VolumeFadeEffect, param2:uint, param3:VolumeFadeEffect) : void
-        {
-            return;
-        }// end function
+      public function clearCache() : void {
+         this._cache=Cache.create(TubulConstants.MAXIMUM_BOUNDS_CACHE,new LruGarbageCollector(),getQualifiedClassName(this));
+      }
 
-        public function contains(param1:ISound) : Boolean
-        {
-            var _loc_2:* = null;
-            for each (_loc_2 in this._soundVector)
-            {
-                
-                if (_loc_2.id == param1.id)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }// end function
+      private function init(id:int, name:String) : void {
+         this._eventDispatcher=new EventDispatcher();
+         this._cache=Cache.create(TubulConstants.MAXIMUM_BOUNDS_CACHE,new LruGarbageCollector(),getQualifiedClassName(this));
+         this._soundVector=new Vector.<ISound>();
+         this._name=name;
+         this._id=id;
+         this._effects=new Vector.<IEffect>();
+         this.volume=1;
+         this.currentFadeVolume=1;
+      }
 
-        public function clearCache() : void
-        {
-            this._cache = Cache.create(TubulConstants.MAXIMUM_BOUNDS_CACHE, new LruGarbageCollector(), getQualifiedClassName(this));
-            return;
-        }// end function
-
-        private function init(param1:int, param2:String) : void
-        {
-            this._eventDispatcher = new EventDispatcher();
-            this._cache = Cache.create(TubulConstants.MAXIMUM_BOUNDS_CACHE, new LruGarbageCollector(), getQualifiedClassName(this));
-            this._soundVector = new Vector.<ISound>;
-            this._name = param2;
-            this._id = param1;
-            this._effects = new Vector.<IEffect>;
-            this.volume = 1;
-            this.currentFadeVolume = 1;
-            return;
-        }// end function
-
-        protected function removeSound(param1:ISound, param2:VolumeFadeEffect = null) : uint
-        {
-            var sound3:ISound;
-            var pISound:* = param1;
-            var pFade:* = param2;
-            if (!this._soundVector)
-            {
-                return 0;
-            }
-            if (pISound == null)
-            {
-                this._log.warn("We tried to remove a null-sound.");
-                return this._soundVector.length;
-            }
-            var indexOfSound:* = this._soundVector.indexOf(pISound);
-            try
-            {
-                this._soundVector.splice(indexOfSound, 1);
-            }
-            catch (e:Error)
-            {
-                _log.warn("We tried to remove a non existing sound. Allready removed ? (" + pISound.uri + ")");
-            }
-            var busState:String;
-            var _loc_4:* = 0;
-            var _loc_5:* = this.soundList;
-            while (_loc_5 in _loc_4)
-            {
-                
-                sound3 = _loc_5[_loc_4];
-                busState = busState + (" " + sound3.id + ";" + sound3.uri);
-            }
-            pISound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE, this.onSoundComplete);
-            pISound.eventDispatcher.removeEventListener(LoadingSoundEvent.LOADING_FAILED, this.onLoadFail);
-            if (pISound.isPlaying)
-            {
-                pISound.stop(pFade);
-            }
-            pISound;
+      protected function removeSound(pISound:ISound, pFade:VolumeFadeEffect=null) : uint {
+         var sound3:ISound = null;
+         if(!this._soundVector)
+         {
+            return 0;
+         }
+         if(pISound==null)
+         {
+            this._log.warn("We tried to remove a null-sound.");
             return this._soundVector.length;
-        }// end function
+         }
+         var indexOfSound:int = this._soundVector.indexOf(pISound);
+         try
+         {
+            this._soundVector.splice(indexOfSound,1);
+         }
+         catch(e:Error)
+         {
+            _log.warn("We tried to remove a non existing sound. Allready removed ? ("+pISound.uri+")");
+         }
+         var busState:String = "";
+         for each (sound3 in this.soundList)
+         {
+            busState=busState+(" "+sound3.id+";"+sound3.uri);
+         }
+         pISound.eventDispatcher.removeEventListener(SoundCompleteEvent.SOUND_COMPLETE,this.onSoundComplete);
+         pISound.eventDispatcher.removeEventListener(LoadingSoundEvent.LOADING_FAILED,this.onLoadFail);
+         if(pISound.isPlaying)
+         {
+            pISound.stop(pFade);
+         }
+         return this._soundVector.length;
+      }
 
-        protected function getOlderSound() : ISound
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            for each (_loc_2 in this._soundVector)
+      protected function getOlderSound() : ISound {
+         var olderSound:ISound = null;
+         var isound:ISound = null;
+         for each (isound in this._soundVector)
+         {
+            if(olderSound==null)
             {
-                
-                if (_loc_1 == null)
-                {
-                    _loc_1 = _loc_2;
-                    continue;
-                }
-                if (_loc_2.id < _loc_1.id)
-                {
-                    _loc_1 = _loc_2;
-                }
+               olderSound=isound;
             }
-            return _loc_1;
-        }// end function
-
-        protected function informSoundsNewVolume() : void
-        {
-            var _loc_1:* = new AudioBusVolumeEvent(AudioBusVolumeEvent.VOLUME_CHANGED);
-            _loc_1.newVolume = this.effectiveVolume;
-            this._eventDispatcher.dispatchEvent(_loc_1);
-            return;
-        }// end function
-
-        private function onLoadComplete(event:LoadingSoundEvent) : void
-        {
-            return;
-        }// end function
-
-        private function onLoadFail(event:LoadingSoundEvent) : void
-        {
-            this._log.warn("A sound failed to load : " + event.data.uri);
-            this.removeSound(event.data);
-            return;
-        }// end function
-
-        protected function onSoundComplete(event:SoundCompleteEvent) : void
-        {
-            var _loc_2:* = null;
-            this._eventDispatcher.dispatchEvent(event);
-            for each (_loc_2 in Tubul.getInstance().localizedSoundListeners)
+            else
             {
-                
-                _loc_2.removeSoundEntity(event.sound);
+               if(isound.id<olderSound.id)
+               {
+                  olderSound=isound;
+               }
             }
-            this.removeSound(event.sound);
-            event = null;
-            return;
-        }// end function
+         }
+         return olderSound;
+      }
 
-        protected function onFadeBeforeDeleteComplete(event:FadeEvent) : void
-        {
-            if (event.soundSource is ISound)
-            {
-                this.removeSound(event.soundSource as ISound);
-            }
-            return;
-        }// end function
+      protected function informSoundsNewVolume() : void {
+         var abve:AudioBusVolumeEvent = new AudioBusVolumeEvent(AudioBusVolumeEvent.VOLUME_CHANGED);
+         abve.newVolume=this.effectiveVolume;
+         this._eventDispatcher.dispatchEvent(abve);
+      }
 
-        private function onRemoveSound(param1:ISound) : void
-        {
-            var _loc_2:* = new AudioBusEvent(AudioBusEvent.REMOVE_SOUND_IN_BUS);
-            _loc_2.sound = param1;
-            this._eventDispatcher.dispatchEvent(_loc_2);
-            return;
-        }// end function
+      private function onLoadComplete(event:LoadingSoundEvent) : void {
+         
+      }
 
-        private function onAddSound(param1:ISound) : void
-        {
-            var _loc_2:* = new AudioBusEvent(AudioBusEvent.ADD_SOUND_IN_BUS);
-            _loc_2.sound = param1;
-            this._eventDispatcher.dispatchEvent(_loc_2);
-            return;
-        }// end function
+      private function onLoadFail(event:LoadingSoundEvent) : void {
+         this._log.warn("A sound failed to load : "+event.data.uri);
+         this.removeSound(event.data);
+      }
 
-    }
+      protected function onSoundComplete(pEvent:SoundCompleteEvent) : void {
+         var listener:ILocalizedSoundListener = null;
+         this._eventDispatcher.dispatchEvent(pEvent);
+         for each (listener in Tubul.getInstance().localizedSoundListeners)
+         {
+            listener.removeSoundEntity(pEvent.sound);
+         }
+         this.removeSound(pEvent.sound);
+         var pEvent:SoundCompleteEvent = null;
+      }
+
+      protected function onFadeBeforeDeleteComplete(e:FadeEvent) : void {
+         if(e.soundSource is ISound)
+         {
+            this.removeSound(e.soundSource as ISound);
+         }
+      }
+
+      private function onRemoveSound(sound:ISound) : void {
+         var event:AudioBusEvent = new AudioBusEvent(AudioBusEvent.REMOVE_SOUND_IN_BUS);
+         event.sound=sound;
+         this._eventDispatcher.dispatchEvent(event);
+      }
+
+      private function onAddSound(sound:ISound) : void {
+         var event:AudioBusEvent = new AudioBusEvent(AudioBusEvent.ADD_SOUND_IN_BUS);
+         event.sound=sound;
+         this._eventDispatcher.dispatchEvent(event);
+      }
+   }
+
 }

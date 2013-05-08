@@ -1,44 +1,46 @@
-﻿package com.ankamagames.dofus.logic.game.fight.steps
+package com.ankamagames.dofus.logic.game.fight.steps
 {
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.fight.steps.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.tiphon.display.*;
+   import com.ankamagames.jerakine.sequencer.AbstractSequencable;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.jerakine.entities.interfaces.IEntity;
+   import com.ankamagames.tiphon.display.TiphonSprite;
 
-    public class FightRemoveSubEntityStep extends AbstractSequencable implements IFightStep
-    {
-        private var _fighterId:int;
-        private var _category:uint;
-        private var _slot:uint;
 
-        public function FightRemoveSubEntityStep(param1:int, param2:uint, param3:uint)
-        {
-            this._fighterId = param1;
-            this._category = param2;
-            this._slot = param3;
-            return;
-        }// end function
+   public class FightRemoveSubEntityStep extends AbstractSequencable implements IFightStep
+   {
+         
 
-        public function get stepType() : String
-        {
-            return "removeSubEntity";
-        }// end function
+      public function FightRemoveSubEntityStep(fighterId:int, category:uint, slot:uint) {
+         super();
+         this._fighterId=fighterId;
+         this._category=category;
+         this._slot=slot;
+      }
 
-        override public function start() : void
-        {
-            var _loc_1:* = DofusEntities.getEntity(this._fighterId);
-            if (_loc_1 && _loc_1 is TiphonSprite)
-            {
-                (_loc_1 as TiphonSprite).look.removeSubEntity(this._category, this._slot);
-            }
-            else
-            {
-                _log.warn("Unable to remove a subentity from fighter " + this._fighterId + ", non-existing or not a sprite.");
-            }
-            executeCallbacks();
-            return;
-        }// end function
 
-    }
+
+      private var _fighterId:int;
+
+      private var _category:uint;
+
+      private var _slot:uint;
+
+      public function get stepType() : String {
+         return "removeSubEntity";
+      }
+
+      override public function start() : void {
+         var parentEntity:IEntity = DofusEntities.getEntity(this._fighterId);
+         if((parentEntity)&&(parentEntity is TiphonSprite))
+         {
+            (parentEntity as TiphonSprite).look.removeSubEntity(this._category,this._slot);
+         }
+         else
+         {
+            _log.warn("Unable to remove a subentity from fighter "+this._fighterId+", non-existing or not a sprite.");
+         }
+         executeCallbacks();
+      }
+   }
+
 }

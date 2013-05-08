@@ -1,85 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameFightJoinRequestMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fighterId:int = 0;
-        public var fightId:int = 0;
-        public static const protocolId:uint = 701;
 
-        public function GameFightJoinRequestMessage()
-        {
-            return;
-        }// end function
+   public class GameFightJoinRequestMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameFightJoinRequestMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 701;
-        }// end function
+      public static const protocolId:uint = 701;
 
-        public function initGameFightJoinRequestMessage(param1:int = 0, param2:int = 0) : GameFightJoinRequestMessage
-        {
-            this.fighterId = param1;
-            this.fightId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fighterId = 0;
-            this.fightId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fighterId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var fightId:int = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightJoinRequestMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 701;
+      }
 
-        public function serializeAs_GameFightJoinRequestMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.fighterId);
-            param1.writeInt(this.fightId);
-            return;
-        }// end function
+      public function initGameFightJoinRequestMessage(fighterId:int=0, fightId:int=0) : GameFightJoinRequestMessage {
+         this.fighterId=fighterId;
+         this.fightId=fightId;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightJoinRequestMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.fighterId=0;
+         this.fightId=0;
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_GameFightJoinRequestMessage(param1:IDataInput) : void
-        {
-            this.fighterId = param1.readInt();
-            this.fightId = param1.readInt();
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightJoinRequestMessage(output);
+      }
+
+      public function serializeAs_GameFightJoinRequestMessage(output:IDataOutput) : void {
+         output.writeInt(this.fighterId);
+         output.writeInt(this.fightId);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightJoinRequestMessage(input);
+      }
+
+      public function deserializeAs_GameFightJoinRequestMessage(input:IDataInput) : void {
+         this.fighterId=input.readInt();
+         this.fightId=input.readInt();
+      }
+   }
+
 }

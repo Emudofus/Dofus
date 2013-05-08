@@ -1,134 +1,128 @@
-﻿package com.ankamagames.dofus.network.messages.connection
+package com.ankamagames.dofus.network.messages.connection
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.version.*;
-    import com.ankamagames.jerakine.network.*;
-    import com.ankamagames.jerakine.network.utils.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.version.VersionExtended;
+   import __AS3__.vec.Vector;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
 
-    public class IdentificationMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var version:VersionExtended;
-        public var lang:String = "";
-        public var credentials:Vector.<int>;
-        public var serverId:int = 0;
-        public var autoconnect:Boolean = false;
-        public var useCertificate:Boolean = false;
-        public var useLoginToken:Boolean = false;
-        public static const protocolId:uint = 4;
 
-        public function IdentificationMessage()
-        {
-            this.version = new VersionExtended();
-            this.credentials = new Vector.<int>;
-            return;
-        }// end function
+   public class IdentificationMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function IdentificationMessage() {
+         this.version=new VersionExtended();
+         this.credentials=new Vector.<int>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 4;
-        }// end function
+      public static const protocolId:uint = 4;
 
-        public function initIdentificationMessage(param1:VersionExtended = null, param2:String = "", param3:Vector.<int> = null, param4:int = 0, param5:Boolean = false, param6:Boolean = false, param7:Boolean = false) : IdentificationMessage
-        {
-            this.version = param1;
-            this.lang = param2;
-            this.credentials = param3;
-            this.serverId = param4;
-            this.autoconnect = param5;
-            this.useCertificate = param6;
-            this.useLoginToken = param7;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.version = new VersionExtended();
-            this.credentials = new Vector.<int>;
-            this.serverId = 0;
-            this.autoconnect = false;
-            this.useCertificate = false;
-            this.useLoginToken = false;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var version:VersionExtended;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var lang:String = "";
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_IdentificationMessage(param1);
-            return;
-        }// end function
+      public var credentials:Vector.<int>;
 
-        public function serializeAs_IdentificationMessage(param1:IDataOutput) : void
-        {
-            var _loc_2:* = 0;
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.autoconnect);
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.useCertificate);
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 2, this.useLoginToken);
-            param1.writeByte(_loc_2);
-            this.version.serializeAs_VersionExtended(param1);
-            param1.writeUTF(this.lang);
-            param1.writeShort(this.credentials.length);
-            var _loc_3:* = 0;
-            while (_loc_3 < this.credentials.length)
-            {
-                
-                param1.writeByte(this.credentials[_loc_3]);
-                _loc_3 = _loc_3 + 1;
-            }
-            param1.writeShort(this.serverId);
-            return;
-        }// end function
+      public var serverId:int = 0;
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_IdentificationMessage(param1);
-            return;
-        }// end function
+      public var autoconnect:Boolean = false;
 
-        public function deserializeAs_IdentificationMessage(param1:IDataInput) : void
-        {
-            var _loc_5:* = 0;
-            var _loc_2:* = param1.readByte();
-            this.autoconnect = BooleanByteWrapper.getFlag(_loc_2, 0);
-            this.useCertificate = BooleanByteWrapper.getFlag(_loc_2, 1);
-            this.useLoginToken = BooleanByteWrapper.getFlag(_loc_2, 2);
-            this.version = new VersionExtended();
-            this.version.deserialize(param1);
-            this.lang = param1.readUTF();
-            var _loc_3:* = param1.readUnsignedShort();
-            var _loc_4:* = 0;
-            while (_loc_4 < _loc_3)
-            {
-                
-                _loc_5 = param1.readByte();
-                this.credentials.push(_loc_5);
-                _loc_4 = _loc_4 + 1;
-            }
-            this.serverId = param1.readShort();
-            return;
-        }// end function
+      public var useCertificate:Boolean = false;
 
-    }
+      public var useLoginToken:Boolean = false;
+
+      override public function getMessageId() : uint {
+         return 4;
+      }
+
+      public function initIdentificationMessage(version:VersionExtended=null, lang:String="", credentials:Vector.<int>=null, serverId:int=0, autoconnect:Boolean=false, useCertificate:Boolean=false, useLoginToken:Boolean=false) : IdentificationMessage {
+         this.version=version;
+         this.lang=lang;
+         this.credentials=credentials;
+         this.serverId=serverId;
+         this.autoconnect=autoconnect;
+         this.useCertificate=useCertificate;
+         this.useLoginToken=useLoginToken;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.version=new VersionExtended();
+         this.credentials=new Vector.<int>();
+         this.serverId=0;
+         this.autoconnect=false;
+         this.useCertificate=false;
+         this.useLoginToken=false;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IdentificationMessage(output);
+      }
+
+      public function serializeAs_IdentificationMessage(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0=BooleanByteWrapper.setFlag(_box0,0,this.autoconnect);
+         _box0=BooleanByteWrapper.setFlag(_box0,1,this.useCertificate);
+         _box0=BooleanByteWrapper.setFlag(_box0,2,this.useLoginToken);
+         output.writeByte(_box0);
+         this.version.serializeAs_VersionExtended(output);
+         output.writeUTF(this.lang);
+         output.writeShort(this.credentials.length);
+         var _i3:uint = 0;
+         while(_i3<this.credentials.length)
+         {
+            output.writeByte(this.credentials[_i3]);
+            _i3++;
+         }
+         output.writeShort(this.serverId);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IdentificationMessage(input);
+      }
+
+      public function deserializeAs_IdentificationMessage(input:IDataInput) : void {
+         var _val3:* = 0;
+         var _box0:uint = input.readByte();
+         this.autoconnect=BooleanByteWrapper.getFlag(_box0,0);
+         this.useCertificate=BooleanByteWrapper.getFlag(_box0,1);
+         this.useLoginToken=BooleanByteWrapper.getFlag(_box0,2);
+         this.version=new VersionExtended();
+         this.version.deserialize(input);
+         this.lang=input.readUTF();
+         var _credentialsLen:uint = input.readUnsignedShort();
+         var _i3:uint = 0;
+         while(_i3<_credentialsLen)
+         {
+            _val3=input.readByte();
+            this.credentials.push(_val3);
+            _i3++;
+         }
+         this.serverId=input.readShort();
+      }
+   }
+
 }

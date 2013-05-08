@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.fight.actions
+package com.ankamagames.dofus.logic.game.fight.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class TimelineEntityClickAction extends Object implements Action
-    {
-        public var fighterId:int;
 
-        public function TimelineEntityClickAction()
-        {
-            return;
-        }// end function
+   public class TimelineEntityClickAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:int) : TimelineEntityClickAction
-        {
-            var _loc_2:* = new TimelineEntityClickAction;
-            _loc_2.fighterId = param1;
-            return _loc_2;
-        }// end function
+      public function TimelineEntityClickAction() {
+         super();
+      }
 
-    }
+      public static function create(id:int) : TimelineEntityClickAction {
+         var a:TimelineEntityClickAction = new TimelineEntityClickAction();
+         a.fighterId=id;
+         return a;
+      }
+
+      public var fighterId:int;
+   }
+
 }

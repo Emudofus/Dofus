@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.fight.actions
+package com.ankamagames.dofus.logic.game.fight.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class BannerEmptySlotClickAction extends Object implements Action
-    {
 
-        public function BannerEmptySlotClickAction()
-        {
-            return;
-        }// end function
+   public class BannerEmptySlotClickAction extends Object implements Action
+   {
+         
 
-        public static function create() : BannerEmptySlotClickAction
-        {
-            var _loc_1:* = new BannerEmptySlotClickAction;
-            return _loc_1;
-        }// end function
+      public function BannerEmptySlotClickAction() {
+         super();
+      }
 
-    }
+      public static function create() : BannerEmptySlotClickAction {
+         var a:BannerEmptySlotClickAction = new BannerEmptySlotClickAction();
+         return a;
+      }
+
+
+   }
+
 }

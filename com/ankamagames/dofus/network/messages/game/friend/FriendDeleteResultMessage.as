@@ -1,85 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.friend
+package com.ankamagames.dofus.network.messages.game.friend
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class FriendDeleteResultMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var success:Boolean = false;
-        public var name:String = "";
-        public static const protocolId:uint = 5601;
 
-        public function FriendDeleteResultMessage()
-        {
-            return;
-        }// end function
+   public class FriendDeleteResultMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function FriendDeleteResultMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5601;
-        }// end function
+      public static const protocolId:uint = 5601;
 
-        public function initFriendDeleteResultMessage(param1:Boolean = false, param2:String = "") : FriendDeleteResultMessage
-        {
-            this.success = param1;
-            this.name = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.success = false;
-            this.name = "";
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var success:Boolean = false;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var name:String = "";
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_FriendDeleteResultMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5601;
+      }
 
-        public function serializeAs_FriendDeleteResultMessage(param1:IDataOutput) : void
-        {
-            param1.writeBoolean(this.success);
-            param1.writeUTF(this.name);
-            return;
-        }// end function
+      public function initFriendDeleteResultMessage(success:Boolean=false, name:String="") : FriendDeleteResultMessage {
+         this.success=success;
+         this.name=name;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_FriendDeleteResultMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.success=false;
+         this.name="";
+         this._isInitialized=false;
+      }
 
-        public function deserializeAs_FriendDeleteResultMessage(param1:IDataInput) : void
-        {
-            this.success = param1.readBoolean();
-            this.name = param1.readUTF();
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-    }
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_FriendDeleteResultMessage(output);
+      }
+
+      public function serializeAs_FriendDeleteResultMessage(output:IDataOutput) : void {
+         output.writeBoolean(this.success);
+         output.writeUTF(this.name);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_FriendDeleteResultMessage(input);
+      }
+
+      public function deserializeAs_FriendDeleteResultMessage(input:IDataInput) : void {
+         this.success=input.readBoolean();
+         this.name=input.readUTF();
+      }
+   }
+
 }

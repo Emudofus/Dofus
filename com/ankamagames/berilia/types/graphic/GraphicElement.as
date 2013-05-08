@@ -1,68 +1,75 @@
-﻿package com.ankamagames.berilia.types.graphic
+package com.ankamagames.berilia.types.graphic
 {
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class GraphicElement extends Object
-    {
-        public var sprite:GraphicContainer;
-        public var location:GraphicLocation;
-        public var name:String;
-        public var render:Boolean = false;
-        public var size:GraphicSize;
-        public var locations:Array;
-        private static var _aGEIndex:Array = new Array();
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(GraphicElement));
 
-        public function GraphicElement(param1:GraphicContainer, param2:Array, param3:String)
-        {
-            this.sprite = param1;
-            if (param2 != null && param2[0] != null)
-            {
-                this.locations = param2;
-                this.location = param2[0];
-            }
-            else
-            {
-                this.location = new GraphicLocation();
-                this.locations = new Array(this.location);
-            }
-            this.name = param3;
-            this.size = new GraphicSize();
-            return;
-        }// end function
+   public class GraphicElement extends Object
+   {
+         
 
-        public static function getGraphicElement(param1:GraphicContainer, param2:Array, param3:String = null) : GraphicElement
-        {
-            var _loc_4:* = null;
-            if (param3 == null || _aGEIndex[param3] == null)
-            {
-                _loc_4 = new GraphicElement(param1, param2, param3);
-                if (param3 != null)
-                {
-                    _aGEIndex[param3] = _loc_4;
-                }
-            }
-            else
-            {
-                _loc_4 = _aGEIndex[param3];
-            }
-            if (param2 != null)
-            {
-                _loc_4.locations = param2;
-                if (param2 != null && param2[0] != null)
-                {
-                    _loc_4.location = param2[0];
-                }
-            }
-            return _loc_4;
-        }// end function
+      public function GraphicElement(spSprite:GraphicContainer, aLocations:Array, sName:String) {
+         super();
+         this.sprite=spSprite;
+         if((!(aLocations==null))&&(!(aLocations[0]==null)))
+         {
+            this.locations=aLocations;
+            this.location=aLocations[0];
+         }
+         else
+         {
+            this.location=new GraphicLocation();
+            this.locations=new Array(this.location);
+         }
+         this.name=sName;
+         this.size=new GraphicSize();
+      }
 
-        public static function init() : void
-        {
-            _aGEIndex = new Array();
-            return;
-        }// end function
+      private static var _aGEIndex:Array = new Array();
 
-    }
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(GraphicElement));
+
+      public static function getGraphicElement(spSprite:GraphicContainer, aLocations:Array, sName:String=null) : GraphicElement {
+         var ge:GraphicElement = null;
+         if((sName==null)||(_aGEIndex[sName]==null))
+         {
+            ge=new GraphicElement(spSprite,aLocations,sName);
+            if(sName!=null)
+            {
+               _aGEIndex[sName]=ge;
+            }
+         }
+         else
+         {
+            ge=_aGEIndex[sName];
+         }
+         if(aLocations!=null)
+         {
+            ge.locations=aLocations;
+            if((!(aLocations==null))&&(!(aLocations[0]==null)))
+            {
+               ge.location=aLocations[0];
+            }
+         }
+         return ge;
+      }
+
+      public static function init() : void {
+         _aGEIndex=new Array();
+      }
+
+      public var sprite:GraphicContainer;
+
+      public var location:GraphicLocation;
+
+      public var name:String;
+
+      public var render:Boolean = false;
+
+      public var size:GraphicSize;
+
+      public var locations:Array;
+   }
+
 }

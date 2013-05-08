@@ -1,21 +1,23 @@
-﻿package org.flintparticles.common.activities
+package org.flintparticles.common.activities
 {
-    import org.flintparticles.common.emitters.*;
+   import org.flintparticles.common.emitters.Emitter;
 
-    public interface Activity
-    {
 
-        public function Activity();
+   public interface Activity
+   {
+         
 
-        function getDefaultPriority() : Number;
 
-        function addedToEmitter(param1:Emitter) : void;
 
-        function removedFromEmitter(param1:Emitter) : void;
+      function getDefaultPriority() : Number;
 
-        function initialize(param1:Emitter) : void;
+      function addedToEmitter(param1:Emitter) : void;
 
-        function update(param1:Emitter, param2:Number) : void;
+      function removedFromEmitter(param1:Emitter) : void;
 
-    }
+      function initialize(param1:Emitter) : void;
+
+      function update(param1:Emitter, param2:Number) : void;
+   }
+
 }

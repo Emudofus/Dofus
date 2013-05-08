@@ -1,95 +1,83 @@
-﻿package com.ankamagames.dofus.network.messages.common
+package com.ankamagames.dofus.network.messages.common
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkDataContainerMessage;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataOutput;
+   import flash.utils.IDataInput;
 
-    public class NetworkDataContainerMessage extends NetworkMessage implements INetworkMessage, INetworkDataContainerMessage
-    {
-        private var _content:ByteArray;
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 2;
 
-        public function NetworkDataContainerMessage()
-        {
-            return;
-        }// end function
+   public class NetworkDataContainerMessage extends NetworkMessage implements INetworkMessage, INetworkDataContainerMessage
+   {
+         
 
-        public function get content() : ByteArray
-        {
-            return this._content;
-        }// end function
+      public function NetworkDataContainerMessage() {
+         super();
+      }
 
-        public function set content(param1:ByteArray) : void
-        {
-            this._content = param1;
-            return;
-        }// end function
+      public static const protocolId:uint = 2;
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      private var _content:ByteArray;
 
-        override public function getMessageId() : uint
-        {
-            return 2;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        public function initNetworkDataContainerMessage(param1:ByteArray = null) : NetworkDataContainerMessage
-        {
-            this.content = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      public function get content() : ByteArray {
+         return this._content;
+      }
 
-        override public function reset() : void
-        {
-            this.content = new ByteArray();
-            this._isInitialized = false;
-            return;
-        }// end function
+      public function set content(value:ByteArray) : void {
+         this._content=value;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 2;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_NetworkDataContainerMessage(param1);
-            return;
-        }// end function
+      public function initNetworkDataContainerMessage(content:ByteArray=null) : NetworkDataContainerMessage {
+         this.content=content;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_NetworkDataContainerMessage(param1:IDataOutput) : void
-        {
-            param1.writeBytes(this.content);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.content=new ByteArray();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_NetworkDataContainerMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_NetworkDataContainerMessage(param1:IDataInput) : void
-        {
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = new ByteArray();
-            param1.readBytes(_loc_3);
-            _loc_3.uncompress();
-            this.content = _loc_3;
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NetworkDataContainerMessage(output);
+      }
+
+      public function serializeAs_NetworkDataContainerMessage(output:IDataOutput) : void {
+         output.writeBytes(this.content);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NetworkDataContainerMessage(input);
+      }
+
+      public function deserializeAs_NetworkDataContainerMessage(input:IDataInput) : void {
+         var _contentLen:uint = input.readUnsignedShort();
+         var tmpBuffer:ByteArray = new ByteArray();
+         input.readBytes(tmpBuffer);
+         tmpBuffer.uncompress();
+         this.content=tmpBuffer;
+      }
+   }
+
 }

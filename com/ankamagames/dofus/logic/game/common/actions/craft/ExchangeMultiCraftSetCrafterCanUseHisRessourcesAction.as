@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.craft
+package com.ankamagames.dofus.logic.game.common.actions.craft
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction extends Object implements Action
-    {
-        public var allow:Boolean;
 
-        public function ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction()
-        {
-            return;
-        }// end function
+   public class ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction
-        {
-            var _loc_2:* = new ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction;
-            _loc_2.allow = param1;
-            return _loc_2;
-        }// end function
+      public function ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction() {
+         super();
+      }
 
-    }
+      public static function create(pAllow:Boolean) : ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction {
+         var action:ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction = new ExchangeMultiCraftSetCrafterCanUseHisRessourcesAction();
+         action.allow=pAllow;
+         return action;
+      }
+
+      public var allow:Boolean;
+   }
+
 }

@@ -1,73 +1,71 @@
-﻿package com.ankamagames.atouin.utils
+package com.ankamagames.atouin.utils
 {
-    import com.ankamagames.atouin.*;
-    import flash.geom.*;
+   import flash.geom.Point;
+   import com.ankamagames.atouin.AtouinConstants;
 
-    public class CellIdConverter extends Object
-    {
-        public static var CELLPOS:Array = new Array();
-        private static var _bInit:Boolean = false;
 
-        public function CellIdConverter()
-        {
-            return;
-        }// end function
+   public class CellIdConverter extends Object
+   {
+         
 
-        private static function init() : void
-        {
-            var _loc_4:* = 0;
-            _bInit = true;
-            var _loc_1:* = 0;
-            var _loc_2:* = 0;
-            var _loc_3:* = 0;
-            var _loc_5:* = 0;
-            while (_loc_5 < AtouinConstants.MAP_HEIGHT)
+      public function CellIdConverter() {
+         super();
+      }
+
+      public static var CELLPOS:Array = new Array();
+
+      private static var _bInit:Boolean = false;
+
+      private static function init() : void {
+         var b:* = 0;
+         _bInit=true;
+         var startX:int = 0;
+         var startY:int = 0;
+         var cell:int = 0;
+         var a:int = 0;
+         while(a<AtouinConstants.MAP_HEIGHT)
+         {
+            b=0;
+            while(b<AtouinConstants.MAP_WIDTH)
             {
-                
-                _loc_4 = 0;
-                while (_loc_4 < AtouinConstants.MAP_WIDTH)
-                {
-                    
-                    CELLPOS[_loc_3] = new Point(_loc_1 + _loc_4, _loc_2 + _loc_4);
-                    _loc_3++;
-                    _loc_4++;
-                }
-                _loc_1++;
-                _loc_4 = 0;
-                while (_loc_4 < AtouinConstants.MAP_WIDTH)
-                {
-                    
-                    CELLPOS[_loc_3] = new Point(_loc_1 + _loc_4, _loc_2 + _loc_4);
-                    _loc_3++;
-                    _loc_4++;
-                }
-                _loc_2 = _loc_2 - 1;
-                _loc_5++;
+               CELLPOS[cell]=new Point(startX+b,startY+b);
+               cell++;
+               b++;
             }
-            return;
-        }// end function
-
-        public static function coordToCellId(param1:int, param2:int) : uint
-        {
-            if (!_bInit)
+            startX++;
+            b=0;
+            while(b<AtouinConstants.MAP_WIDTH)
             {
-                init();
+               CELLPOS[cell]=new Point(startX+b,startY+b);
+               cell++;
+               b++;
             }
-            return (param1 - param2) * AtouinConstants.MAP_WIDTH + param2 + (param1 - param2) / 2;
-        }// end function
+            startY--;
+            a++;
+         }
+      }
 
-        public static function cellIdToCoord(param1:uint) : Point
-        {
-            if (!_bInit)
-            {
-                init();
-            }
-            if (!CELLPOS[param1])
-            {
-                return null;
-            }
-            return CELLPOS[param1];
-        }// end function
+      public static function coordToCellId(x:int, y:int) : uint {
+         if(!_bInit)
+         {
+            init();
+         }
+         return (x-y)*AtouinConstants.MAP_WIDTH+y+(x-y)/2;
+      }
 
-    }
+      public static function cellIdToCoord(cellId:uint) : Point {
+         if(!_bInit)
+         {
+            init();
+         }
+         if(!CELLPOS[cellId])
+         {
+            return null;
+         }
+         return CELLPOS[cellId];
+      }
+
+
+   }
+
 }

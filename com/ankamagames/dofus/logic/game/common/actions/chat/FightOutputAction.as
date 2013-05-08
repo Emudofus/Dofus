@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.chat
+package com.ankamagames.dofus.logic.game.common.actions.chat
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class FightOutputAction extends Object implements Action
-    {
-        public var content:String;
-        public var channel:uint;
 
-        public function FightOutputAction()
-        {
-            return;
-        }// end function
+   public class FightOutputAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String, param2:uint = 0) : FightOutputAction
-        {
-            var _loc_3:* = new FightOutputAction;
-            _loc_3.content = param1;
-            _loc_3.channel = param2;
-            return _loc_3;
-        }// end function
+      public function FightOutputAction() {
+         super();
+      }
 
-    }
+      public static function create(msg:String, channel:uint=0) : FightOutputAction {
+         var a:FightOutputAction = new FightOutputAction();
+         a.content=msg;
+         a.channel=channel;
+         return a;
+      }
+
+      public var content:String;
+
+      public var channel:uint;
+   }
+
 }

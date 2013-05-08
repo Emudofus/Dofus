@@ -1,140 +1,129 @@
-﻿package com.ankamagames.dofus.console.debug.frames
+package com.ankamagames.dofus.console.debug.frames
 {
-    import com.ankamagames.dofus.kernel.updater.*;
-    import com.ankamagames.dofus.network.messages.updater.parts.*;
-    import com.ankamagames.dofus.network.types.updater.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.messages.updater.parts.PartsListMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.PartInfoMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.DownloadCurrentSpeedMessage;
+   import com.ankamagames.dofus.network.types.updater.ContentPart;
+   import com.ankamagames.dofus.network.messages.updater.parts.GetPartsListMessage;
+   import com.ankamagames.dofus.kernel.updater.UpdaterConnexionHandler;
+   import com.ankamagames.dofus.network.messages.updater.parts.GetPartInfoMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.DownloadSetSpeedRequestMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.DownloadGetCurrentSpeedRequestMessage;
+   import com.ankamagames.dofus.network.messages.updater.parts.DownloadPartMessage;
 
-    public class UpdaterDebugFrame extends Object implements Frame
-    {
-        private var _partInfoCallback:Function;
-        private var _updaterSpeedCallback:Function;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(UpdaterDebugFrame));
 
-        public function UpdaterDebugFrame()
-        {
-            return;
-        }// end function
+   public class UpdaterDebugFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.LOW;
-        }// end function
+      public function UpdaterDebugFrame() {
+         super();
+      }
 
-        public function pushed() : Boolean
-        {
-            this._partInfoCallback = null;
-            this._updaterSpeedCallback = null;
-            return true;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(UpdaterDebugFrame));
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            switch(true)
-            {
-                case param1 is PartsListMessage:
-                {
-                    _loc_2 = param1 as PartsListMessage;
-                    if (this._partInfoCallback != null)
-                    {
-                        for each (_loc_5 in _loc_2.parts)
-                        {
-                            
-                            this._partInfoCallback(_loc_5);
-                        }
-                        this._partInfoCallback = null;
-                    }
-                    return false;
-                }
-                case param1 is PartInfoMessage:
-                {
-                    _loc_3 = param1 as PartInfoMessage;
-                    if (this._partInfoCallback != null)
-                    {
-                        this._partInfoCallback(_loc_3.part);
-                        this._partInfoCallback = null;
-                    }
-                    return false;
-                }
-                case param1 is DownloadCurrentSpeedMessage:
-                {
-                    _loc_4 = param1 as DownloadCurrentSpeedMessage;
-                    if (this._updaterSpeedCallback != null)
-                    {
-                        this._updaterSpeedCallback(_loc_4.downloadSpeed);
-                        this._updaterSpeedCallback = null;
-                    }
-                    return false;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      private var _partInfoCallback:Function;
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      private var _updaterSpeedCallback:Function;
 
-        public function partListRequest(param1:Function) : void
-        {
-            _log.info("Send part list request");
-            this._partInfoCallback = param1;
-            var _loc_2:* = new GetPartsListMessage();
-            _loc_2.initGetPartsListMessage();
-            UpdaterConnexionHandler.getConnection().send(_loc_2);
-            return;
-        }// end function
+      public function get priority() : int {
+         return Priority.LOW;
+      }
 
-        public function partInfoRequest(param1:String, param2:Function) : void
-        {
-            _log.info("Send part info request");
-            this._partInfoCallback = param2;
-            var _loc_3:* = new GetPartInfoMessage();
-            _loc_3.initGetPartInfoMessage(param1);
-            UpdaterConnexionHandler.getConnection().send(_loc_3);
-            return;
-        }// end function
+      public function pushed() : Boolean {
+         this._partInfoCallback=null;
+         this._updaterSpeedCallback=null;
+         return true;
+      }
 
-        public function setUpdaterSpeedRequest(param1:int, param2:Function) : void
-        {
-            _log.info("Send updater speed request");
-            this._updaterSpeedCallback = param2;
-            var _loc_3:* = new DownloadSetSpeedRequestMessage();
-            _loc_3.initDownloadSetSpeedRequestMessage(param1);
-            UpdaterConnexionHandler.getConnection().send(_loc_3);
-            return;
-        }// end function
+      public function process(msg:Message) : Boolean {
+         var plmsg:PartsListMessage = null;
+         var pimsg:PartInfoMessage = null;
+         var dcsmsg:DownloadCurrentSpeedMessage = null;
+         var cp:ContentPart = null;
+         switch(true)
+         {
+            case msg is PartsListMessage:
+               plmsg=msg as PartsListMessage;
+               if(this._partInfoCallback!=null)
+               {
+                  for each (cp in plmsg.parts)
+                  {
+                     this._partInfoCallback(cp);
+                  }
+                  this._partInfoCallback=null;
+               }
+               return false;
+            case msg is PartInfoMessage:
+               pimsg=msg as PartInfoMessage;
+               if(this._partInfoCallback!=null)
+               {
+                  this._partInfoCallback(pimsg.part);
+                  this._partInfoCallback=null;
+               }
+               return false;
+            case msg is DownloadCurrentSpeedMessage:
+               dcsmsg=msg as DownloadCurrentSpeedMessage;
+               if(this._updaterSpeedCallback!=null)
+               {
+                  this._updaterSpeedCallback(dcsmsg.downloadSpeed);
+                  this._updaterSpeedCallback=null;
+               }
+               return false;
+            default:
+               return false;
+         }
+      }
 
-        public function getUpdaterSpeedRequest(param1:Function) : void
-        {
-            _log.info("Send updater speed request");
-            this._updaterSpeedCallback = param1;
-            var _loc_2:* = new DownloadGetCurrentSpeedRequestMessage();
-            _loc_2.initDownloadGetCurrentSpeedRequestMessage();
-            UpdaterConnexionHandler.getConnection().send(_loc_2);
-            return;
-        }// end function
+      public function pulled() : Boolean {
+         return true;
+      }
 
-        public function downloadPartRequest(param1:String, param2:Function) : void
-        {
-            _log.info("Send download part request");
-            this._partInfoCallback = param2;
-            var _loc_3:* = new DownloadPartMessage();
-            _loc_3.initDownloadPartMessage(param1);
-            UpdaterConnexionHandler.getConnection().send(_loc_3);
-            return;
-        }// end function
+      public function partListRequest(partInfoCallback:Function) : void {
+         _log.info("Send part list request");
+         this._partInfoCallback=partInfoCallback;
+         var gplmsg:GetPartsListMessage = new GetPartsListMessage();
+         gplmsg.initGetPartsListMessage();
+         UpdaterConnexionHandler.getConnection().send(gplmsg);
+      }
 
-    }
+      public function partInfoRequest(id:String, partInfoCallback:Function) : void {
+         _log.info("Send part info request");
+         this._partInfoCallback=partInfoCallback;
+         var gpimsg:GetPartInfoMessage = new GetPartInfoMessage();
+         gpimsg.initGetPartInfoMessage(id);
+         UpdaterConnexionHandler.getConnection().send(gpimsg);
+      }
+
+      public function setUpdaterSpeedRequest(speed:int, updaterSpeedCallback:Function) : void {
+         _log.info("Send updater speed request");
+         this._updaterSpeedCallback=updaterSpeedCallback;
+         var dssrmsg:DownloadSetSpeedRequestMessage = new DownloadSetSpeedRequestMessage();
+         dssrmsg.initDownloadSetSpeedRequestMessage(speed);
+         UpdaterConnexionHandler.getConnection().send(dssrmsg);
+      }
+
+      public function getUpdaterSpeedRequest(updaterSpeedCallback:Function) : void {
+         _log.info("Send updater speed request");
+         this._updaterSpeedCallback=updaterSpeedCallback;
+         var dgcsrmsg:DownloadGetCurrentSpeedRequestMessage = new DownloadGetCurrentSpeedRequestMessage();
+         dgcsrmsg.initDownloadGetCurrentSpeedRequestMessage();
+         UpdaterConnexionHandler.getConnection().send(dgcsrmsg);
+      }
+
+      public function downloadPartRequest(id:String, partInfoCallback:Function) : void {
+         _log.info("Send download part request");
+         this._partInfoCallback=partInfoCallback;
+         var dpmsg:DownloadPartMessage = new DownloadPartMessage();
+         dpmsg.initDownloadPartMessage(id);
+         UpdaterConnexionHandler.getConnection().send(dpmsg);
+      }
+   }
+
 }

@@ -1,22 +1,24 @@
-﻿package com.ankamagames.berilia.components.messages
+package com.ankamagames.berilia.components.messages
 {
-    import flash.display.*;
+   import flash.display.InteractiveObject;
 
-    public class DeleteTabMessage extends ComponentMessage
-    {
-        private var _deletedIndex:int;
 
-        public function DeleteTabMessage(param1:InteractiveObject, param2:int)
-        {
-            super(param1);
-            this._deletedIndex = param2;
-            return;
-        }// end function
+   public class DeleteTabMessage extends ComponentMessage
+   {
+         
 
-        public function get deletedIndex() : int
-        {
-            return this._deletedIndex;
-        }// end function
+      public function DeleteTabMessage(target:InteractiveObject, deletedIndex:int) {
+         super(target);
+         this._deletedIndex=deletedIndex;
+      }
 
-    }
+
+
+      private var _deletedIndex:int;
+
+      public function get deletedIndex() : int {
+         return this._deletedIndex;
+      }
+   }
+
 }

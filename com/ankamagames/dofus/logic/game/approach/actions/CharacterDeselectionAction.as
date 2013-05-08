@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.approach.actions
+package com.ankamagames.dofus.logic.game.approach.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class CharacterDeselectionAction extends Object implements Action
-    {
 
-        public function CharacterDeselectionAction()
-        {
-            return;
-        }// end function
+   public class CharacterDeselectionAction extends Object implements Action
+   {
+         
 
-        public static function create() : CharacterDeselectionAction
-        {
-            var _loc_1:* = new CharacterDeselectionAction;
-            return _loc_1;
-        }// end function
+      public function CharacterDeselectionAction() {
+         super();
+      }
 
-    }
+      public static function create() : CharacterDeselectionAction {
+         var a:CharacterDeselectionAction = new CharacterDeselectionAction();
+         return a;
+      }
+
+
+   }
+
 }

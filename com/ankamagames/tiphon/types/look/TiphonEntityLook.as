@@ -1,907 +1,824 @@
-﻿package com.ankamagames.tiphon.types.look
+package com.ankamagames.tiphon.types.look
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.tiphon.types.look.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.DefaultableColor;
 
-    public class TiphonEntityLook extends Object implements EntityLookObserver
-    {
-        private var _observers:Dictionary;
-        private var _locked:Boolean;
-        private var _boneChangedWhileLocked:Boolean;
-        private var _skinsChangedWhileLocked:Boolean;
-        private var _colorsChangedWhileLocked:Boolean;
-        private var _scalesChangedWhileLocked:Boolean;
-        private var _subEntitiesChangedWhileLocked:Boolean;
-        private var _bone:uint;
-        private var _skins:Vector.<uint>;
-        private var _colors:Array;
-        private var _scaleX:Number = 1;
-        private var _scaleY:Number = 1;
-        private var _subEntities:Array;
-        private var _defaultSkin:int = -1;
-        public static var MEMORY_LOG:Dictionary = new Dictionary(true);
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonEntityLook));
 
-        public function TiphonEntityLook()
-        {
-            MEMORY_LOG[this] = 1;
+   public class TiphonEntityLook extends Object implements EntityLookObserver
+   {
+         
+
+      public function TiphonEntityLook() {
+         super();
+         MEMORY_LOG[this]=1;
+      }
+
+      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(TiphonEntityLook));
+
+      public static function fromString(str:String) : TiphonEntityLook {
+         return EntityLookParser.fromString(str);
+      }
+
+      private var _observers:Dictionary;
+
+      private var _locked:Boolean;
+
+      private var _boneChangedWhileLocked:Boolean;
+
+      private var _skinsChangedWhileLocked:Boolean;
+
+      private var _colorsChangedWhileLocked:Boolean;
+
+      private var _scalesChangedWhileLocked:Boolean;
+
+      private var _subEntitiesChangedWhileLocked:Boolean;
+
+      private var _bone:uint;
+
+      private var _skins:Vector.<uint>;
+
+      private var _colors:Array;
+
+      private var _scaleX:Number = 1;
+
+      private var _scaleY:Number = 1;
+
+      private var _subEntities:Array;
+
+      private var _defaultSkin:int = -1;
+
+      public function get skins() : Vector.<uint> {
+         return this._skins;
+      }
+
+      public function set defaultSkin(id:int) : void {
+         if((!(this._defaultSkin==-1))&&(this._skins))
+         {
+            this._skins.shift();
+         }
+         if(!this._skins)
+         {
+            this._skins=new Vector.<uint>(0,false);
+         }
+         this._defaultSkin=id;
+         if((!this._skins.length)||(!(this._skins[0]==this._defaultSkin)))
+         {
+            this._skins.unshift(id);
+         }
+      }
+
+      public function get firstSkin() : uint {
+         if((!this._skins)||(!this._skins.length))
+         {
+            return 0;
+         }
+         if((!(this._defaultSkin==-1))&&(this._skins.length<1))
+         {
+            return this._skins[1];
+         }
+         return this._skins[0];
+      }
+
+      public function get defaultSkin() : int {
+         return this._defaultSkin;
+      }
+
+      public function getBone() : uint {
+         return this._bone;
+      }
+
+      public function setBone(bone:uint) : void {
+         var elo:Object = null;
+         if(this._bone==bone)
+         {
             return;
-        }// end function
+         }
+         this._bone=bone;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.boneChanged(this);
+            }
+         }
+         else
+         {
+            this._boneChangedWhileLocked=true;
+         }
+      }
 
-        public function get skins() : Vector.<uint>
-        {
+      public function getSkins(byRef:Boolean=false, keepDefaultSkin:Boolean=true) : Vector.<uint> {
+         if(!this._skins)
+         {
+            return null;
+         }
+         if(byRef)
+         {
             return this._skins;
-        }// end function
+         }
+         var skinsLength:uint = this._skins.length;
+         var offset:uint = 0;
+         if((!keepDefaultSkin)&&(!(this._defaultSkin==-1)))
+         {
+            offset=1;
+         }
+         var skinsDeepCopy:Vector.<uint> = new Vector.<uint>(skinsLength,true);
+         var i:uint = offset;
+         while(i<skinsLength)
+         {
+            skinsDeepCopy[i-offset]=this._skins[i];
+            i++;
+         }
+         return skinsDeepCopy;
+      }
 
-        public function set defaultSkin(param1:int) : void
-        {
-            if (this._defaultSkin != -1 && this._skins)
-            {
-                this._skins.shift();
-            }
-            if (!this._skins)
-            {
-                this._skins = new Vector.<uint>(0, false);
-            }
-            this._defaultSkin = param1;
-            if (!this._skins.length || this._skins[0] != this._defaultSkin)
-            {
-                this._skins.unshift(param1);
-            }
+      public function resetSkins() : void {
+         var elo:Object = null;
+         if((!this._skins)||(this._skins.length==0))
+         {
             return;
-        }// end function
+         }
+         this._skins=null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.skinsChanged(this);
+            }
+         }
+         else
+         {
+            this._skinsChangedWhileLocked=true;
+         }
+      }
 
-        public function get firstSkin() : uint
-        {
-            if (!this._skins || !this._skins.length)
+      public function addSkin(skin:uint, addInFirstPosition:Boolean=false) : void {
+         var elo:Object = null;
+         if(!this._skins)
+         {
+            this._skins=new Vector.<uint>(0,false);
+         }
+         if(!addInFirstPosition)
+         {
+            this._skins.push(skin);
+         }
+         else
+         {
+            this._skins.unshift(skin);
+         }
+         if(!this._locked)
+         {
+            for (elo in this._observers)
             {
-                return 0;
+               elo.skinsChanged(this);
             }
-            if (this._defaultSkin != -1)
-            {
-                return this._skins[1];
-            }
-            return this._skins[0];
-        }// end function
+         }
+         else
+         {
+            this._skinsChangedWhileLocked=true;
+         }
+      }
 
-        public function get defaultSkin() : int
-        {
-            return this._defaultSkin;
-        }// end function
+      public function getColors(byRef:Boolean=false) : Array {
+         var colorIndex:String = null;
+         if(!this._colors)
+         {
+            return null;
+         }
+         if(byRef)
+         {
+            return this._colors;
+         }
+         var colorsDeepCopy:Array = new Array();
+         for (colorIndex in this._colors)
+         {
+            colorsDeepCopy[uint(colorIndex)]=this._colors[colorIndex];
+         }
+         return colorsDeepCopy;
+      }
 
-        public function getBone() : uint
-        {
-            return this._bone;
-        }// end function
+      public function getColor(index:uint) : DefaultableColor {
+         var defaultColor:DefaultableColor = null;
+         if((!this._colors)||(!this._colors[index]))
+         {
+            defaultColor=new DefaultableColor();
+            defaultColor.isDefault=true;
+            return defaultColor;
+         }
+         return new DefaultableColor(this._colors[index]);
+      }
 
-        public function setBone(param1:uint) : void
-        {
-            var _loc_2:* = null;
-            if (this._bone == param1)
-            {
-                return;
-            }
-            this._bone = param1;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.boneChanged(this);
-                }
-            }
-            else
-            {
-                this._boneChangedWhileLocked = true;
-            }
+      public function hasColor(index:uint) : Boolean {
+         return (this._colors)&&(this._colors[index]);
+      }
+
+      public function resetColor(index:uint) : void {
+         var elo:Object = null;
+         if((!this._colors)||(!this._colors[index]))
+         {
             return;
-        }// end function
+         }
+         delete this._colors[[index]];
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.colorsChanged(this);
+            }
+         }
+         else
+         {
+            this._colorsChangedWhileLocked=true;
+         }
+      }
 
-        public function getSkins(param1:Boolean = false, param2:Boolean = true) : Vector.<uint>
-        {
-            if (!this._skins)
-            {
-                return null;
-            }
-            if (param1)
-            {
-                return this._skins;
-            }
-            var _loc_3:* = this._skins.length;
-            var _loc_4:* = 0;
-            if (!param2 && this._defaultSkin != -1)
-            {
-                _loc_4 = 1;
-            }
-            var _loc_5:* = new Vector.<uint>(_loc_3, true);
-            var _loc_6:* = _loc_4;
-            while (_loc_6 < _loc_3)
-            {
-                
-                _loc_5[_loc_6 - _loc_4] = this._skins[_loc_6];
-                _loc_6 = _loc_6 + 1;
-            }
-            return _loc_5;
-        }// end function
-
-        public function resetSkins() : void
-        {
-            var _loc_1:* = null;
-            if (!this._skins || this._skins.length == 0)
-            {
-                return;
-            }
-            this._skins = null;
-            if (!this._locked)
-            {
-                for (_loc_1 in this._observers)
-                {
-                    
-                    _loc_1.skinsChanged(this);
-                }
-            }
-            else
-            {
-                this._skinsChangedWhileLocked = true;
-            }
+      public function resetColors() : void {
+         var elo:Object = null;
+         if(!this._colors)
+         {
             return;
-        }// end function
+         }
+         this._colors=null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.colorsChanged(this);
+            }
+         }
+         else
+         {
+            this._colorsChangedWhileLocked=true;
+         }
+      }
 
-        public function addSkin(param1:uint, param2:Boolean = false) : void
-        {
-            var _loc_3:* = null;
-            if (!this._skins)
-            {
-                this._skins = new Vector.<uint>(0, false);
-            }
-            if (!param2)
-            {
-                this._skins.push(param1);
-            }
-            else
-            {
-                this._skins.unshift(param1);
-            }
-            if (!this._locked)
-            {
-                for (_loc_3 in this._observers)
-                {
-                    
-                    _loc_3.skinsChanged(this);
-                }
-            }
-            else
-            {
-                this._skinsChangedWhileLocked = true;
-            }
+      public function setColor(index:uint, color:uint) : void {
+         var elo:Object = null;
+         if(!this._colors)
+         {
+            this._colors=new Array();
+         }
+         if((this._colors[index])&&(this._colors[index]==color))
+         {
             return;
-        }// end function
+         }
+         if(color==0)
+         {
+            this._colors[index]=1;
+         }
+         else
+         {
+            this._colors[index]=color;
+         }
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.colorsChanged(this);
+            }
+         }
+         else
+         {
+            this._colorsChangedWhileLocked=true;
+         }
+      }
 
-        public function getColors(param1:Boolean = false) : Array
-        {
-            var _loc_3:* = null;
-            if (!this._colors)
-            {
-                return null;
-            }
-            if (param1)
-            {
-                return this._colors;
-            }
-            var _loc_2:* = new Array();
-            for (_loc_3 in this._colors)
-            {
-                
-                _loc_2[uint(_loc_3)] = this._colors[_loc_3];
-            }
-            return _loc_2;
-        }// end function
+      public function getScaleX() : Number {
+         return this._scaleX;
+      }
 
-        public function getColor(param1:uint) : DefaultableColor
-        {
-            var _loc_2:* = null;
-            if (!this._colors || !this._colors[param1])
-            {
-                _loc_2 = new DefaultableColor();
-                _loc_2.isDefault = true;
-                return _loc_2;
-            }
-            return new DefaultableColor(this._colors[param1]);
-        }// end function
-
-        public function hasColor(param1:uint) : Boolean
-        {
-            return this._colors && this._colors[param1];
-        }// end function
-
-        public function resetColor(param1:uint) : void
-        {
-            var _loc_2:* = null;
-            if (!this._colors || !this._colors[param1])
-            {
-                return;
-            }
-            delete this._colors[param1];
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.colorsChanged(this);
-                }
-            }
-            else
-            {
-                this._colorsChangedWhileLocked = true;
-            }
+      public function setScaleX(value:Number) : void {
+         var elo:Object = null;
+         if(this._scaleX==value)
+         {
             return;
-        }// end function
+         }
+         this._scaleX=value;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.scalesChanged(this);
+            }
+         }
+         else
+         {
+            this._scalesChangedWhileLocked=true;
+         }
+      }
 
-        public function resetColors() : void
-        {
-            var _loc_1:* = null;
-            if (!this._colors)
-            {
-                return;
-            }
-            this._colors = null;
-            if (!this._locked)
-            {
-                for (_loc_1 in this._observers)
-                {
-                    
-                    _loc_1.colorsChanged(this);
-                }
-            }
-            else
-            {
-                this._colorsChangedWhileLocked = true;
-            }
+      public function getScaleY() : Number {
+         return this._scaleY;
+      }
+
+      public function setScaleY(value:Number) : void {
+         var elo:Object = null;
+         if(this._scaleY==value)
+         {
             return;
-        }// end function
+         }
+         this._scaleY=value;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.scalesChanged(this);
+            }
+         }
+         else
+         {
+            this._scalesChangedWhileLocked=true;
+         }
+      }
 
-        public function setColor(param1:uint, param2:uint) : void
-        {
-            var _loc_3:* = null;
-            if (!this._colors)
-            {
-                this._colors = new Array();
-            }
-            if (this._colors[param1] && this._colors[param1] == param2)
-            {
-                return;
-            }
-            if (param2 == 0)
-            {
-                this._colors[param1] = 1;
-            }
-            else
-            {
-                this._colors[param1] = param2;
-            }
-            if (!this._locked)
-            {
-                for (_loc_3 in this._observers)
-                {
-                    
-                    _loc_3.colorsChanged(this);
-                }
-            }
-            else
-            {
-                this._colorsChangedWhileLocked = true;
-            }
+      public function setScales(x:Number, y:Number) : void {
+         var elo:Object = null;
+         if((this._scaleX==x)&&(this._scaleY==y))
+         {
             return;
-        }// end function
+         }
+         this._scaleX=x;
+         this._scaleY=y;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.scalesChanged(this);
+            }
+         }
+         else
+         {
+            this._scalesChangedWhileLocked=true;
+         }
+      }
 
-        public function getScaleX() : Number
-        {
-            return this._scaleX;
-        }// end function
+      public function getSubEntities(byRef:Boolean=false) : Array {
+         var subEntityCategory:String = null;
+         var category:uint = 0;
+         var subEntityIndex:String = null;
+         var index:uint = 0;
+         if(!this._subEntities)
+         {
+            return null;
+         }
+         if(byRef)
+         {
+            return this._subEntities;
+         }
+         var subEntitesDeepCopy:Array = new Array();
+         for (subEntityCategory in this._subEntities)
+         {
+            category=uint(subEntityCategory);
+            if(!subEntitesDeepCopy[category])
+            {
+               subEntitesDeepCopy[category]=new Array();
+            }
+            for (subEntityIndex in this._subEntities[subEntityCategory])
+            {
+               index=uint(subEntityIndex);
+               subEntitesDeepCopy[category][index]=this._subEntities[subEntityCategory][subEntityIndex];
+            }
+         }
+         return subEntitesDeepCopy;
+      }
 
-        public function setScaleX(param1:Number) : void
-        {
-            var _loc_2:* = null;
-            if (this._scaleX == param1)
-            {
-                return;
-            }
-            this._scaleX = param1;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.scalesChanged(this);
-                }
-            }
-            else
-            {
-                this._scalesChangedWhileLocked = true;
-            }
+      public function getSubEntitiesFromCategory(category:uint) : Array {
+         var subEntityIndex:String = null;
+         var index:uint = 0;
+         if(!this._subEntities)
+         {
+            return null;
+         }
+         var subEntitiesDeepCopy:Array = new Array();
+         for (subEntityIndex in this._subEntities[category])
+         {
+            index=uint(subEntityIndex);
+            subEntitiesDeepCopy[index]=this._subEntities[category][subEntityIndex];
+         }
+         return subEntitiesDeepCopy;
+      }
+
+      public function getSubEntity(category:uint, index:uint) : TiphonEntityLook {
+         if(!this._subEntities)
+         {
+            return null;
+         }
+         if(!this._subEntities[category])
+         {
+            return null;
+         }
+         return this._subEntities[category][index];
+      }
+
+      public function resetSubEntities() : void {
+         var subEntityCategory:String = null;
+         var subEntityIndex:String = null;
+         var subEntity:TiphonEntityLook = null;
+         var elo:Object = null;
+         if(!this._subEntities)
+         {
             return;
-        }// end function
+         }
+         for (subEntityCategory in this._subEntities)
+         {
+            for (subEntityIndex in this._subEntities[subEntityCategory])
+            {
+               subEntity=this._subEntities[subEntityCategory][subEntityIndex];
+               subEntity.removeObserver(this);
+            }
+         }
+         this._subEntities=null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.subEntitiesChanged(this);
+            }
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function getScaleY() : Number
-        {
-            return this._scaleY;
-        }// end function
+      public function addSubEntity(category:uint, index:uint, subEntity:TiphonEntityLook) : void {
+         var elo:Object = null;
+         if(!this._subEntities)
+         {
+            this._subEntities=new Array();
+         }
+         if(!this._subEntities[category])
+         {
+            this._subEntities[category]=new Array();
+         }
+         subEntity.addObserver(this);
+         this._subEntities[category][index]=subEntity;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.subEntitiesChanged(this);
+            }
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function setScaleY(param1:Number) : void
-        {
-            var _loc_2:* = null;
-            if (this._scaleY == param1)
-            {
-                return;
-            }
-            this._scaleY = param1;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.scalesChanged(this);
-                }
-            }
-            else
-            {
-                this._scalesChangedWhileLocked = true;
-            }
+      public function removeSubEntity(category:uint, index:uint=0) : void {
+         var elo:Object = null;
+         if((!this._subEntities)||(!this._subEntities[category])||(!this._subEntities[category][index]))
+         {
             return;
-        }// end function
+         }
+         delete this._subEntities[category][[index]];
+         if(this._subEntities[category].length==1)
+         {
+            delete this._subEntities[[category]];
+         }
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.subEntitiesChanged(this);
+            }
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function setScales(param1:Number, param2:Number) : void
-        {
-            var _loc_3:* = null;
-            if (this._scaleX == param1 && this._scaleY == param2)
-            {
-                return;
-            }
-            this._scaleX = param1;
-            this._scaleY = param2;
-            if (!this._locked)
-            {
-                for (_loc_3 in this._observers)
-                {
-                    
-                    _loc_3.scalesChanged(this);
-                }
-            }
-            else
-            {
-                this._scalesChangedWhileLocked = true;
-            }
+      public function lock() : void {
+         if(this._locked)
+         {
             return;
-        }// end function
+         }
+         this._locked=true;
+         this._boneChangedWhileLocked=false;
+         this._skinsChangedWhileLocked=false;
+         this._colorsChangedWhileLocked=false;
+         this._scalesChangedWhileLocked=false;
+         this._subEntitiesChangedWhileLocked=false;
+      }
 
-        public function getSubEntities(param1:Boolean = false) : Array
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            if (!this._subEntities)
-            {
-                return null;
-            }
-            if (param1)
-            {
-                return this._subEntities;
-            }
-            var _loc_2:* = new Array();
-            for (_loc_3 in this._subEntities)
-            {
-                
-                _loc_4 = uint(_loc_3);
-                if (!_loc_2[_loc_4])
-                {
-                    _loc_2[_loc_4] = new Array();
-                }
-                for (_loc_5 in this._subEntities[_loc_3])
-                {
-                    
-                    _loc_6 = uint(_loc_5);
-                    _loc_2[_loc_4][_loc_6] = this._subEntities[_loc_3][_loc_5];
-                }
-            }
-            return _loc_2;
-        }// end function
-
-        public function getSubEntitiesFromCategory(param1:uint) : Array
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = 0;
-            if (!this._subEntities)
-            {
-                return null;
-            }
-            var _loc_2:* = new Array();
-            for (_loc_3 in this._subEntities[param1])
-            {
-                
-                _loc_4 = uint(_loc_3);
-                _loc_2[_loc_4] = this._subEntities[param1][_loc_3];
-            }
-            return _loc_2;
-        }// end function
-
-        public function getSubEntity(param1:uint, param2:uint) : TiphonEntityLook
-        {
-            if (!this._subEntities)
-            {
-                return null;
-            }
-            if (!this._subEntities[param1])
-            {
-                return null;
-            }
-            return this._subEntities[param1][param2];
-        }// end function
-
-        public function resetSubEntities() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            if (!this._subEntities)
-            {
-                return;
-            }
-            for (_loc_1 in this._subEntities)
-            {
-                
-                for (_loc_2 in this._subEntities[_loc_1])
-                {
-                    
-                    _loc_3 = this._subEntities[_loc_1][_loc_2];
-                    _loc_3.removeObserver(this);
-                }
-            }
-            this._subEntities = null;
-            if (!this._locked)
-            {
-                for (_loc_4 in this._observers)
-                {
-                    
-                    _loc_4.subEntitiesChanged(this);
-                }
-            }
-            else
-            {
-                this._subEntitiesChangedWhileLocked = true;
-            }
+      public function unlock(silentUnlock:Boolean=false) : void {
+         var elo0:Object = null;
+         var elo1:Object = null;
+         var elo2:Object = null;
+         var elo3:Object = null;
+         var elo4:Object = null;
+         if(!this._locked)
+         {
             return;
-        }// end function
+         }
+         this._locked=false;
+         if(!silentUnlock)
+         {
+            if(this._boneChangedWhileLocked)
+            {
+               for (elo0 in this._observers)
+               {
+                  elo0.boneChanged(this);
+               }
+               this._boneChangedWhileLocked=false;
+            }
+            if(this._skinsChangedWhileLocked)
+            {
+               for (elo1 in this._observers)
+               {
+                  elo1.skinsChanged(this);
+               }
+               this._skinsChangedWhileLocked=false;
+            }
+            if(this._colorsChangedWhileLocked)
+            {
+               for (elo2 in this._observers)
+               {
+                  elo2.colorsChanged(this);
+               }
+               this._colorsChangedWhileLocked=false;
+            }
+            if(this._scalesChangedWhileLocked)
+            {
+               for (elo3 in this._observers)
+               {
+                  elo3.scalesChanged(this);
+               }
+               this._scalesChangedWhileLocked=false;
+            }
+            if(this._subEntitiesChangedWhileLocked)
+            {
+               for (elo4 in this._observers)
+               {
+                  elo4.subEntitiesChanged(this);
+               }
+               this._subEntitiesChangedWhileLocked=false;
+            }
+         }
+      }
 
-        public function addSubEntity(param1:uint, param2:uint, param3:TiphonEntityLook) : void
-        {
-            var _loc_4:* = null;
-            if (!this._subEntities)
-            {
-                this._subEntities = new Array();
-            }
-            if (!this._subEntities[param1])
-            {
-                this._subEntities[param1] = new Array();
-            }
-            param3.addObserver(this);
-            this._subEntities[param1][param2] = param3;
-            if (!this._locked)
-            {
-                for (_loc_4 in this._observers)
-                {
-                    
-                    _loc_4.subEntitiesChanged(this);
-                }
-            }
-            else
-            {
-                this._subEntitiesChangedWhileLocked = true;
-            }
+      public function addObserver(elo:EntityLookObserver) : void {
+         if(!this._observers)
+         {
+            this._observers=new Dictionary(true);
+         }
+         this._observers[elo]=1;
+      }
+
+      public function removeObserver(elo:EntityLookObserver) : void {
+         if(!this._observers)
+         {
             return;
-        }// end function
+         }
+         delete this._observers[[elo]];
+      }
 
-        public function removeSubEntity(param1:uint, param2:uint = 0) : void
-        {
-            var _loc_3:* = null;
-            if (!this._subEntities || !this._subEntities[param1] || !this._subEntities[param1][param2])
+      public function toString() : String {
+         return EntityLookParser.toString(this);
+      }
+
+      public function equals(el:TiphonEntityLook) : Boolean {
+         var skin:uint = 0;
+         var colorIndexStr:String = null;
+         var colorIndexStr2:String = null;
+         var subEntityCatStr:String = null;
+         var subEntityCatStr2:String = null;
+         var subEntityCatIndexStr:String = null;
+         var se:TiphonEntityLook = null;
+         var subEntityCatIndexStr2:String = null;
+         var se2:TiphonEntityLook = null;
+         if(this._bone!=el._bone)
+         {
+            return false;
+         }
+         if(this._scaleX!=el._scaleX)
+         {
+            return false;
+         }
+         if(this._scaleY!=el._scaleY)
+         {
+            return false;
+         }
+         if((this._skins==null)&&(!(el._skins==null))||(!(this._skins==null))&&(el._skins==null))
+         {
+            return false;
+         }
+         if((this._skins)&&(el._skins))
+         {
+            if(this._skins.length!=el._skins.length)
             {
-                return;
+               return false;
             }
-            delete this._subEntities[param1][param2];
-            if (this._subEntities[param1].length == 1)
+            for each (skin in this._skins)
             {
-                delete this._subEntities[param1];
+               if(el._skins.indexOf(skin)==-1)
+               {
+                  return false;
+               }
             }
-            if (!this._locked)
+         }
+         if((this._colors==null)&&(!(el._colors==null))||(!(this._colors==null))&&(el._colors==null))
+         {
+            return false;
+         }
+         if((this._colors)&&(el._colors))
+         {
+            for (colorIndexStr in this._colors)
             {
-                for (_loc_3 in this._observers)
-                {
-                    
-                    _loc_3.subEntitiesChanged(this);
-                }
+               if(el._colors[colorIndexStr]!=this._colors[colorIndexStr])
+               {
+                  return false;
+               }
             }
-            else
+            for (colorIndexStr2 in el._colors)
             {
-                this._subEntitiesChangedWhileLocked = true;
+               if(this._colors[colorIndexStr2]!=el._colors[colorIndexStr2])
+               {
+                  return false;
+               }
             }
+         }
+         if((this._subEntities==null)&&(!(el._subEntities==null))||(!(this._subEntities==null))&&(el._subEntities==null))
+         {
+            return false;
+         }
+         if((this._subEntities)&&(el._subEntities))
+         {
+            for (subEntityCatStr in this._subEntities)
+            {
+               if((!el._subEntities)||(el._subEntities[subEntityCatStr]==null))
+               {
+                  return false;
+               }
+               for (subEntityCatIndexStr in this._subEntities[subEntityCatStr])
+               {
+                  se=el._subEntities[subEntityCatStr][subEntityCatIndexStr];
+                  if(se==null)
+                  {
+                     return false;
+                  }
+                  if(!se.equals(this._subEntities[subEntityCatStr][subEntityCatIndexStr]))
+                  {
+                     return false;
+                  }
+               }
+            }
+            for (subEntityCatStr2 in el._subEntities)
+            {
+               if((!this._subEntities)||(this._subEntities[subEntityCatStr2]==null))
+               {
+                  return false;
+               }
+               for (subEntityCatIndexStr2 in el._subEntities[subEntityCatStr2])
+               {
+                  se2=this._subEntities[subEntityCatStr2][subEntityCatIndexStr2];
+                  if(se2==null)
+                  {
+                     return false;
+                  }
+                  if(!se2.equals(el._subEntities[subEntityCatStr2][subEntityCatIndexStr2]))
+                  {
+                     return false;
+                  }
+               }
+            }
+         }
+         return true;
+      }
+
+      public function updateFrom(el:TiphonEntityLook) : void {
+         if(this.equals(el))
+         {
             return;
-        }// end function
+         }
+         this.lock();
+         this._boneChangedWhileLocked=true;
+         this.setBone(el.getBone());
+         this.resetColors();
+         this._colorsChangedWhileLocked=true;
+         this._colors=el.getColors();
+         this.resetSkins();
+         this._skinsChangedWhileLocked=true;
+         this._skins=el.getSkins();
+         this._defaultSkin=el.defaultSkin;
+         this.resetSubEntities();
+         this._subEntitiesChangedWhileLocked=true;
+         this._subEntities=el.getSubEntities();
+         this.setScales(el.getScaleX(),el.getScaleY());
+         this._scalesChangedWhileLocked=true;
+         this.unlock(false);
+      }
 
-        public function lock() : void
-        {
-            if (this._locked)
+      public function boneChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
             {
-                return;
+               elo.subEntitiesChanged(this);
             }
-            this._locked = true;
-            this._boneChangedWhileLocked = false;
-            this._skinsChangedWhileLocked = false;
-            this._colorsChangedWhileLocked = false;
-            this._scalesChangedWhileLocked = false;
-            this._subEntitiesChangedWhileLocked = false;
-            return;
-        }// end function
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function unlock(param1:Boolean = false) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            if (!this._locked)
+      public function skinsChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
             {
-                return;
+               elo.subEntitiesChanged(this);
             }
-            this._locked = false;
-            if (!param1)
-            {
-                if (this._boneChangedWhileLocked)
-                {
-                    for (_loc_2 in this._observers)
-                    {
-                        
-                        _loc_2.boneChanged(this);
-                    }
-                    this._boneChangedWhileLocked = false;
-                }
-                if (this._skinsChangedWhileLocked)
-                {
-                    for (_loc_3 in this._observers)
-                    {
-                        
-                        _loc_3.skinsChanged(this);
-                    }
-                    this._skinsChangedWhileLocked = false;
-                }
-                if (this._colorsChangedWhileLocked)
-                {
-                    for (_loc_4 in this._observers)
-                    {
-                        
-                        _loc_4.colorsChanged(this);
-                    }
-                    this._colorsChangedWhileLocked = false;
-                }
-                if (this._scalesChangedWhileLocked)
-                {
-                    for (_loc_5 in this._observers)
-                    {
-                        
-                        _loc_5.scalesChanged(this);
-                    }
-                    this._scalesChangedWhileLocked = false;
-                }
-                if (this._subEntitiesChangedWhileLocked)
-                {
-                    for (_loc_6 in this._observers)
-                    {
-                        
-                        _loc_6.subEntitiesChanged(this);
-                    }
-                    this._subEntitiesChangedWhileLocked = false;
-                }
-            }
-            return;
-        }// end function
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function addObserver(param1:EntityLookObserver) : void
-        {
-            if (!this._observers)
+      public function colorsChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
             {
-                this._observers = new Dictionary(true);
+               elo.subEntitiesChanged(this);
             }
-            this._observers[param1] = 1;
-            return;
-        }// end function
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function removeObserver(param1:EntityLookObserver) : void
-        {
-            if (!this._observers)
+      public function scalesChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
             {
-                return;
+               elo.subEntitiesChanged(this);
             }
-            delete this._observers[param1];
-            return;
-        }// end function
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function toString() : String
-        {
-            return EntityLookParser.toString(this);
-        }// end function
+      public function subEntitiesChanged(look:TiphonEntityLook) : void {
+         var elo:Object = null;
+         if(!this._locked)
+         {
+            for (elo in this._observers)
+            {
+               elo.subEntitiesChanged(this);
+            }
+         }
+         else
+         {
+            this._subEntitiesChangedWhileLocked=true;
+         }
+      }
 
-        public function equals(param1:TiphonEntityLook) : Boolean
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            if (this._bone != param1._bone)
+      public function clone() : TiphonEntityLook {
+         var i:String = null;
+         var j:String = null;
+         var o:TiphonEntityLook = new TiphonEntityLook();
+         o._bone=this._bone;
+         o._colors=this._colors?this._colors.concat():this._colors;
+         o._skins=this._skins?this._skins.concat():this._skins;
+         o._defaultSkin=this._defaultSkin;
+         o._scaleX=this._scaleX;
+         o._scaleY=this._scaleY;
+         if(this._subEntities)
+         {
+            o._subEntities=[];
+            for (i in this._subEntities)
             {
-                return false;
+               o._subEntities[i]=[];
+               for (j in this._subEntities[i])
+               {
+                  if(this._subEntities[i][j])
+                  {
+                     o._subEntities[i][j]=this._subEntities[i][j].clone();
+                  }
+               }
             }
-            if (this._scaleX != param1._scaleX)
-            {
-                return false;
-            }
-            if (this._scaleY != param1._scaleY)
-            {
-                return false;
-            }
-            if (this._skins == null && param1._skins != null || this._skins != null && param1._skins == null)
-            {
-                return false;
-            }
-            if (this._skins && param1._skins)
-            {
-                if (this._skins.length != param1._skins.length)
-                {
-                    return false;
-                }
-                for each (_loc_2 in this._skins)
-                {
-                    
-                    if (param1._skins.indexOf(_loc_2) == -1)
-                    {
-                        return false;
-                    }
-                }
-            }
-            if (this._colors == null && param1._colors != null || this._colors != null && param1._colors == null)
-            {
-                return false;
-            }
-            if (this._colors && param1._colors)
-            {
-                for (_loc_3 in this._colors)
-                {
-                    
-                    if (param1._colors[_loc_3] != this._colors[_loc_3])
-                    {
-                        return false;
-                    }
-                }
-                for (_loc_4 in param1._colors)
-                {
-                    
-                    if (this._colors[_loc_4] != param1._colors[_loc_4])
-                    {
-                        return false;
-                    }
-                }
-            }
-            if (this._subEntities == null && param1._subEntities != null || this._subEntities != null && param1._subEntities == null)
-            {
-                return false;
-            }
-            if (this._subEntities && param1._subEntities)
-            {
-                for (_loc_5 in this._subEntities)
-                {
-                    
-                    if (!param1._subEntities || param1._subEntities[_loc_5] == null)
-                    {
-                        return false;
-                    }
-                    for (_loc_7 in this._subEntities[_loc_5])
-                    {
-                        
-                        _loc_8 = param1._subEntities[_loc_5][_loc_7];
-                        if (_loc_8 == null)
-                        {
-                            return false;
-                        }
-                        if (!_loc_8.equals(this._subEntities[_loc_5][_loc_7]))
-                        {
-                            return false;
-                        }
-                    }
-                }
-                for (_loc_6 in param1._subEntities)
-                {
-                    
-                    if (!this._subEntities || this._subEntities[_loc_6] == null)
-                    {
-                        return false;
-                    }
-                    for (_loc_9 in param1._subEntities[_loc_6])
-                    {
-                        
-                        _loc_10 = this._subEntities[_loc_6][_loc_9];
-                        if (_loc_10 == null)
-                        {
-                            return false;
-                        }
-                        if (!_loc_10.equals(param1._subEntities[_loc_6][_loc_9]))
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }// end function
+         }
+         return o;
+      }
+   }
 
-        public function updateFrom(param1:TiphonEntityLook) : void
-        {
-            if (this.equals(param1))
-            {
-                return;
-            }
-            this.lock();
-            this._boneChangedWhileLocked = true;
-            this.setBone(param1.getBone());
-            this.resetColors();
-            this._colorsChangedWhileLocked = true;
-            this._colors = param1.getColors();
-            this.resetSkins();
-            this._skinsChangedWhileLocked = true;
-            this._skins = param1.getSkins();
-            this._defaultSkin = param1.defaultSkin;
-            this.resetSubEntities();
-            this._subEntitiesChangedWhileLocked = true;
-            this._subEntities = param1.getSubEntities();
-            this.setScales(param1.getScaleX(), param1.getScaleY());
-            this._scalesChangedWhileLocked = true;
-            this.unlock(false);
-            return;
-        }// end function
-
-        public function boneChanged(param1:TiphonEntityLook) : void
-        {
-            var _loc_2:* = null;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.subEntitiesChanged(this);
-                }
-            }
-            else
-            {
-                this._subEntitiesChangedWhileLocked = true;
-            }
-            return;
-        }// end function
-
-        public function skinsChanged(param1:TiphonEntityLook) : void
-        {
-            var _loc_2:* = null;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.subEntitiesChanged(this);
-                }
-            }
-            else
-            {
-                this._subEntitiesChangedWhileLocked = true;
-            }
-            return;
-        }// end function
-
-        public function colorsChanged(param1:TiphonEntityLook) : void
-        {
-            var _loc_2:* = null;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.subEntitiesChanged(this);
-                }
-            }
-            else
-            {
-                this._subEntitiesChangedWhileLocked = true;
-            }
-            return;
-        }// end function
-
-        public function scalesChanged(param1:TiphonEntityLook) : void
-        {
-            var _loc_2:* = null;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.subEntitiesChanged(this);
-                }
-            }
-            else
-            {
-                this._subEntitiesChangedWhileLocked = true;
-            }
-            return;
-        }// end function
-
-        public function subEntitiesChanged(param1:TiphonEntityLook) : void
-        {
-            var _loc_2:* = null;
-            if (!this._locked)
-            {
-                for (_loc_2 in this._observers)
-                {
-                    
-                    _loc_2.subEntitiesChanged(this);
-                }
-            }
-            else
-            {
-                this._subEntitiesChangedWhileLocked = true;
-            }
-            return;
-        }// end function
-
-        public function clone() : TiphonEntityLook
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_1:* = new TiphonEntityLook();
-            _loc_1._bone = this._bone;
-            _loc_1._colors = this._colors ? (this._colors.concat()) : (this._colors);
-            _loc_1._skins = this._skins ? (this._skins.concat()) : (this._skins);
-            _loc_1._defaultSkin = this._defaultSkin;
-            _loc_1._scaleX = this._scaleX;
-            _loc_1._scaleY = this._scaleY;
-            if (this._subEntities)
-            {
-                _loc_1._subEntities = [];
-                for (_loc_2 in this._subEntities)
-                {
-                    
-                    _loc_1._subEntities[_loc_2] = [];
-                    for (_loc_3 in this._subEntities[_loc_2])
-                    {
-                        
-                        if (this._subEntities[_loc_2][_loc_3])
-                        {
-                            _loc_1._subEntities[_loc_2][_loc_3] = this._subEntities[_loc_2][_loc_3].clone();
-                        }
-                    }
-                }
-            }
-            return _loc_1;
-        }// end function
-
-        public static function fromString(param1:String) : TiphonEntityLook
-        {
-            return EntityLookParser.fromString(param1);
-        }// end function
-
-    }
 }

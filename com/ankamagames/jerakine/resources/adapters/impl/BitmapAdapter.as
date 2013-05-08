@@ -1,26 +1,29 @@
-﻿package com.ankamagames.jerakine.resources.adapters.impl
+package com.ankamagames.jerakine.resources.adapters.impl
 {
-    import com.ankamagames.jerakine.resources.*;
-    import com.ankamagames.jerakine.resources.adapters.*;
-    import flash.display.*;
+   import com.ankamagames.jerakine.resources.adapters.AbstractLoaderAdapter;
+   import com.ankamagames.jerakine.resources.adapters.IAdapter;
+   import flash.display.LoaderInfo;
+   import flash.display.Bitmap;
+   import com.ankamagames.jerakine.resources.ResourceType;
 
-    public class BitmapAdapter extends AbstractLoaderAdapter implements IAdapter
-    {
 
-        public function BitmapAdapter()
-        {
-            return;
-        }// end function
+   public class BitmapAdapter extends AbstractLoaderAdapter implements IAdapter
+   {
+         
 
-        override protected function getResource(param1:LoaderInfo)
-        {
-            return Bitmap(param1.loader.content).bitmapData;
-        }// end function
+      public function BitmapAdapter() {
+         super();
+      }
 
-        override public function getResourceType() : uint
-        {
-            return ResourceType.RESOURCE_BITMAP;
-        }// end function
 
-    }
+
+      override protected function getResource(ldr:LoaderInfo) : * {
+         return Bitmap(ldr.loader.content).bitmapData;
+      }
+
+      override public function getResourceType() : uint {
+         return ResourceType.RESOURCE_BITMAP;
+      }
+   }
+
 }

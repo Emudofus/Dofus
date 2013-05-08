@@ -1,156 +1,180 @@
-﻿package com.ankamagames.dofus.network.messages.connection
+package com.ankamagames.dofus.network.messages.connection
 {
-    import com.ankamagames.jerakine.network.*;
-    import com.ankamagames.jerakine.network.utils.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.jerakine.network.utils.BooleanByteWrapper;
 
-    public class IdentificationSuccessMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var login:String = "";
-        public var nickname:String = "";
-        public var accountId:uint = 0;
-        public var communityId:uint = 0;
-        public var hasRights:Boolean = false;
-        public var secretQuestion:String = "";
-        public var subscriptionEndDate:Number = 0;
-        public var wasAlreadyConnected:Boolean = false;
-        public var accountCreation:Number = 0;
-        public static const protocolId:uint = 22;
 
-        public function IdentificationSuccessMessage()
-        {
-            return;
-        }// end function
+   public class IdentificationSuccessMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function IdentificationSuccessMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 22;
-        }// end function
+      public static const protocolId:uint = 22;
 
-        public function initIdentificationSuccessMessage(param1:String = "", param2:String = "", param3:uint = 0, param4:uint = 0, param5:Boolean = false, param6:String = "", param7:Number = 0, param8:Boolean = false, param9:Number = 0) : IdentificationSuccessMessage
-        {
-            this.login = param1;
-            this.nickname = param2;
-            this.accountId = param3;
-            this.communityId = param4;
-            this.hasRights = param5;
-            this.secretQuestion = param6;
-            this.subscriptionEndDate = param7;
-            this.wasAlreadyConnected = param8;
-            this.accountCreation = param9;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.login = "";
-            this.nickname = "";
-            this.accountId = 0;
-            this.communityId = 0;
-            this.hasRights = false;
-            this.secretQuestion = "";
-            this.subscriptionEndDate = 0;
-            this.wasAlreadyConnected = false;
-            this.accountCreation = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var login:String = "";
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var nickname:String = "";
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_IdentificationSuccessMessage(param1);
-            return;
-        }// end function
+      public var accountId:uint = 0;
 
-        public function serializeAs_IdentificationSuccessMessage(param1:IDataOutput) : void
-        {
-            var _loc_2:* = 0;
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 0, this.hasRights);
-            _loc_2 = BooleanByteWrapper.setFlag(_loc_2, 1, this.wasAlreadyConnected);
-            param1.writeByte(_loc_2);
-            param1.writeUTF(this.login);
-            param1.writeUTF(this.nickname);
-            if (this.accountId < 0)
+      public var communityId:uint = 0;
+
+      public var hasRights:Boolean = false;
+
+      public var secretQuestion:String = "";
+
+      public var subscriptionEndDate:Number = 0;
+
+      public var wasAlreadyConnected:Boolean = false;
+
+      public var accountCreation:Number = 0;
+
+      override public function getMessageId() : uint {
+         return 22;
+      }
+
+      public function initIdentificationSuccessMessage(login:String="", nickname:String="", accountId:uint=0, communityId:uint=0, hasRights:Boolean=false, secretQuestion:String="", subscriptionEndDate:Number=0, wasAlreadyConnected:Boolean=false, accountCreation:Number=0) : IdentificationSuccessMessage {
+         this.login=login;
+         this.nickname=nickname;
+         this.accountId=accountId;
+         this.communityId=communityId;
+         this.hasRights=hasRights;
+         this.secretQuestion=secretQuestion;
+         this.subscriptionEndDate=subscriptionEndDate;
+         this.wasAlreadyConnected=wasAlreadyConnected;
+         this.accountCreation=accountCreation;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.login="";
+         this.nickname="";
+         this.accountId=0;
+         this.communityId=0;
+         this.hasRights=false;
+         this.secretQuestion="";
+         this.subscriptionEndDate=0;
+         this.wasAlreadyConnected=false;
+         this.accountCreation=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_IdentificationSuccessMessage(output);
+      }
+
+      public function serializeAs_IdentificationSuccessMessage(output:IDataOutput) : void {
+         var _box0:uint = 0;
+         _box0=BooleanByteWrapper.setFlag(_box0,0,this.hasRights);
+         _box0=BooleanByteWrapper.setFlag(_box0,1,this.wasAlreadyConnected);
+         output.writeByte(_box0);
+         output.writeUTF(this.login);
+         output.writeUTF(this.nickname);
+         if(this.accountId<0)
+         {
+            throw new Error("Forbidden value ("+this.accountId+") on element accountId.");
+         }
+         else
+         {
+            output.writeInt(this.accountId);
+            if(this.communityId<0)
             {
-                throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+               throw new Error("Forbidden value ("+this.communityId+") on element communityId.");
             }
-            param1.writeInt(this.accountId);
-            if (this.communityId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.communityId + ") on element communityId.");
+               output.writeByte(this.communityId);
+               output.writeUTF(this.secretQuestion);
+               if(this.subscriptionEndDate<0)
+               {
+                  throw new Error("Forbidden value ("+this.subscriptionEndDate+") on element subscriptionEndDate.");
+               }
+               else
+               {
+                  output.writeDouble(this.subscriptionEndDate);
+                  if(this.accountCreation<0)
+                  {
+                     throw new Error("Forbidden value ("+this.accountCreation+") on element accountCreation.");
+                  }
+                  else
+                  {
+                     output.writeDouble(this.accountCreation);
+                     return;
+                  }
+               }
             }
-            param1.writeByte(this.communityId);
-            param1.writeUTF(this.secretQuestion);
-            if (this.subscriptionEndDate < 0)
-            {
-                throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element subscriptionEndDate.");
-            }
-            param1.writeDouble(this.subscriptionEndDate);
-            if (this.accountCreation < 0)
-            {
-                throw new Error("Forbidden value (" + this.accountCreation + ") on element accountCreation.");
-            }
-            param1.writeDouble(this.accountCreation);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_IdentificationSuccessMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_IdentificationSuccessMessage(input);
+      }
 
-        public function deserializeAs_IdentificationSuccessMessage(param1:IDataInput) : void
-        {
-            var _loc_2:* = param1.readByte();
-            this.hasRights = BooleanByteWrapper.getFlag(_loc_2, 0);
-            this.wasAlreadyConnected = BooleanByteWrapper.getFlag(_loc_2, 1);
-            this.login = param1.readUTF();
-            this.nickname = param1.readUTF();
-            this.accountId = param1.readInt();
-            if (this.accountId < 0)
+      public function deserializeAs_IdentificationSuccessMessage(input:IDataInput) : void {
+         var _box0:uint = input.readByte();
+         this.hasRights=BooleanByteWrapper.getFlag(_box0,0);
+         this.wasAlreadyConnected=BooleanByteWrapper.getFlag(_box0,1);
+         this.login=input.readUTF();
+         this.nickname=input.readUTF();
+         this.accountId=input.readInt();
+         if(this.accountId<0)
+         {
+            throw new Error("Forbidden value ("+this.accountId+") on element of IdentificationSuccessMessage.accountId.");
+         }
+         else
+         {
+            this.communityId=input.readByte();
+            if(this.communityId<0)
             {
-                throw new Error("Forbidden value (" + this.accountId + ") on element of IdentificationSuccessMessage.accountId.");
+               throw new Error("Forbidden value ("+this.communityId+") on element of IdentificationSuccessMessage.communityId.");
             }
-            this.communityId = param1.readByte();
-            if (this.communityId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.communityId + ") on element of IdentificationSuccessMessage.communityId.");
+               this.secretQuestion=input.readUTF();
+               this.subscriptionEndDate=input.readDouble();
+               if(this.subscriptionEndDate<0)
+               {
+                  throw new Error("Forbidden value ("+this.subscriptionEndDate+") on element of IdentificationSuccessMessage.subscriptionEndDate.");
+               }
+               else
+               {
+                  this.accountCreation=input.readDouble();
+                  if(this.accountCreation<0)
+                  {
+                     throw new Error("Forbidden value ("+this.accountCreation+") on element of IdentificationSuccessMessage.accountCreation.");
+                  }
+                  else
+                  {
+                     return;
+                  }
+               }
             }
-            this.secretQuestion = param1.readUTF();
-            this.subscriptionEndDate = param1.readDouble();
-            if (this.subscriptionEndDate < 0)
-            {
-                throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element of IdentificationSuccessMessage.subscriptionEndDate.");
-            }
-            this.accountCreation = param1.readDouble();
-            if (this.accountCreation < 0)
-            {
-                throw new Error("Forbidden value (" + this.accountCreation + ") on element of IdentificationSuccessMessage.accountCreation.");
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

@@ -1,29 +1,32 @@
-﻿package com.ankamagames.atouin.messages
+package com.ankamagames.atouin.messages
 {
-    import com.ankamagames.jerakine.messages.*;
-    import flash.display.*;
+   import com.ankamagames.jerakine.messages.Message;
+   import flash.display.DisplayObject;
 
-    public class AdjacentMapOutMessage extends Object implements Message
-    {
-        private var _nDirection:uint;
-        private var _spZone:DisplayObject;
 
-        public function AdjacentMapOutMessage(param1:uint, param2:DisplayObject)
-        {
-            this._nDirection = param1;
-            this._spZone = param2;
-            return;
-        }// end function
+   public class AdjacentMapOutMessage extends Object implements Message
+   {
+         
 
-        public function get direction() : uint
-        {
-            return this._nDirection;
-        }// end function
+      public function AdjacentMapOutMessage(nDirection:uint, zone:DisplayObject) {
+         super();
+         this._nDirection=nDirection;
+         this._spZone=zone;
+      }
 
-        public function get zone() : DisplayObject
-        {
-            return this._spZone;
-        }// end function
 
-    }
+
+      private var _nDirection:uint;
+
+      private var _spZone:DisplayObject;
+
+      public function get direction() : uint {
+         return this._nDirection;
+      }
+
+      public function get zone() : DisplayObject {
+         return this._spZone;
+      }
+   }
+
 }

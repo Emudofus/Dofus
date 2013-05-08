@@ -1,28 +1,30 @@
-﻿package mx.core
+package mx.core
 {
-    import flash.display.*;
-    import mx.utils.*;
+   import flash.display.SimpleButton;
+   import mx.utils.NameUtil;
 
-    public class FlexSimpleButton extends SimpleButton
-    {
-        static const VERSION:String = "4.6.0.23201";
+   use namespace mx_internal;
 
-        public function FlexSimpleButton()
-        {
-            try
-            {
-                name = NameUtil.createUniqueName(this);
-            }
-            catch (e:Error)
-            {
-            }
-            return;
-        }// end function
+   public class FlexSimpleButton extends SimpleButton
+   {
+         
 
-        override public function toString() : String
-        {
-            return NameUtil.displayObjectToString(this);
-        }// end function
+      public function FlexSimpleButton() {
+         super();
+         try
+         {
+            name=NameUtil.createUniqueName(this);
+         }
+         catch(e:Error)
+         {
+         }
+      }
 
-    }
+      mx_internal  static const VERSION:String = "4.6.0.23201";
+
+      override public function toString() : String {
+         return NameUtil.displayObjectToString(this);
+      }
+   }
+
 }

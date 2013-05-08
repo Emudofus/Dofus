@@ -1,16 +1,18 @@
-﻿package mx.core
+package mx.core
 {
 
-    public interface ILayoutDirectionElement
-    {
 
-        public function ILayoutDirectionElement();
+   public interface ILayoutDirectionElement
+   {
+         
 
-        function get layoutDirection() : String;
 
-        function set layoutDirection(param1:String) : void;
 
-        function invalidateLayoutDirection() : void;
+      function get layoutDirection() : String;
 
-    }
+      function set layoutDirection(param1:String) : void;
+
+      function invalidateLayoutDirection() : void;
+   }
+
 }

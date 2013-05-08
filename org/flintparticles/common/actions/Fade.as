@@ -1,54 +1,50 @@
-﻿package org.flintparticles.common.actions
+package org.flintparticles.common.actions
 {
-    import org.flintparticles.common.emitters.*;
-    import org.flintparticles.common.particles.*;
+   import org.flintparticles.common.emitters.Emitter;
+   import org.flintparticles.common.particles.Particle;
 
-    public class Fade extends ActionBase
-    {
-        private var _diffAlpha:Number;
-        private var _endAlpha:Number;
 
-        public function Fade(param1:Number = 1, param2:Number = 0)
-        {
-            this._diffAlpha = param1 - param2;
-            this._endAlpha = param2;
-            return;
-        }// end function
+   public class Fade extends ActionBase
+   {
+         
 
-        public function get startAlpha() : Number
-        {
-            return this._endAlpha + this._diffAlpha;
-        }// end function
+      public function Fade(startAlpha:Number=1, endAlpha:Number=0) {
+         super();
+         this._diffAlpha=startAlpha-endAlpha;
+         this._endAlpha=endAlpha;
+      }
 
-        public function set startAlpha(param1:Number) : void
-        {
-            this._diffAlpha = param1 - this._endAlpha;
-            return;
-        }// end function
 
-        public function get endAlpha() : Number
-        {
-            return this._endAlpha;
-        }// end function
 
-        public function set endAlpha(param1:Number) : void
-        {
-            this._diffAlpha = this._endAlpha + this._diffAlpha - param1;
-            this._endAlpha = param1;
-            return;
-        }// end function
+      private var _diffAlpha:Number;
 
-        override public function getDefaultPriority() : Number
-        {
-            return -5;
-        }// end function
+      private var _endAlpha:Number;
 
-        override public function update(param1:Emitter, param2:Particle, param3:Number) : void
-        {
-            var _loc_4:* = this._endAlpha + this._diffAlpha * param2.energy;
-            param2.color = param2.color & 16777215 | Math.round(_loc_4 * 255) << 24;
-            return;
-        }// end function
+      public function get startAlpha() : Number {
+         return this._endAlpha+this._diffAlpha;
+      }
 
-    }
+      public function set startAlpha(value:Number) : void {
+         this._diffAlpha=value-this._endAlpha;
+      }
+
+      public function get endAlpha() : Number {
+         return this._endAlpha;
+      }
+
+      public function set endAlpha(value:Number) : void {
+         this._diffAlpha=this._endAlpha+this._diffAlpha-value;
+         this._endAlpha=value;
+      }
+
+      override public function getDefaultPriority() : Number {
+         return -5;
+      }
+
+      override public function update(emitter:Emitter, particle:Particle, time:Number) : void {
+         var alpha:Number = this._endAlpha+this._diffAlpha*particle.energy;
+         particle.color=particle.color&16777215|Math.round(alpha*255)<<24;
+      }
+   }
+
 }

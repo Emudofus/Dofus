@@ -1,199 +1,198 @@
-﻿package com.ankamagames.jerakine.utils.display
+package com.ankamagames.jerakine.utils.display
 {
-    import com.ankamagames.jerakine.utils.system.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.geom.*;
+   import flash.display.Stage;
+   import flash.display.DisplayObjectContainer;
+   import flash.geom.Point;
+   import com.ankamagames.jerakine.utils.system.AirScanner;
+   import flash.events.NativeWindowDisplayStateEvent;
+   import flash.display.StageQuality;
+   import flash.display.StageDisplayState;
+   import flash.display.NativeWindow;
+   import flash.display.NativeWindowDisplayState;
 
-    public class StageShareManager extends Object
-    {
-        private static const NOT_INITIALIZED:int = -77777;
-        private static var _stage:Stage;
-        private static var _startWidth:uint;
-        private static var _startHeight:uint;
-        private static var _rootContainer:DisplayObjectContainer;
-        private static var _customMouseX:int = -77777;
-        private static var _customMouseY:int = -77777;
-        private static var _setQualityIsEnable:Boolean;
-        private static var _chrome:Point = new Point();
 
-        public function StageShareManager()
-        {
-            return;
-        }// end function
+   public class StageShareManager extends Object
+   {
+         
 
-        public static function set rootContainer(param1:DisplayObjectContainer) : void
-        {
-            _rootContainer = param1;
-            return;
-        }// end function
+      public function StageShareManager() {
+         super();
+      }
 
-        public static function get rootContainer() : DisplayObjectContainer
-        {
-            return _rootContainer;
-        }// end function
+      private static const NOT_INITIALIZED:int = -77777;
 
-        public static function get stage() : Stage
-        {
-            return _stage;
-        }// end function
+      private static var _stage:Stage;
 
-        public static function get windowScale() : Number
-        {
-            var _loc_1:* = NaN;
-            var _loc_2:* = NaN;
-            var _loc_3:* = NaN;
-            if (AirScanner.hasAir())
+      private static var _startWidth:uint;
+
+      private static var _startHeight:uint;
+
+      private static var _rootContainer:DisplayObjectContainer;
+
+      private static var _customMouseX:int = NOT_INITIALIZED;
+
+      private static var _customMouseY:int = NOT_INITIALIZED;
+
+      private static var _setQualityIsEnable:Boolean;
+
+      private static var _chrome:Point = new Point();
+
+      public static var nativeWindowStartWidth:uint;
+
+      public static var nativeWindowStartHeight:uint;
+
+      public static var chromeWidth:uint;
+
+      public static var chromeHeight:uint;
+
+      public static function set rootContainer(d:DisplayObjectContainer) : void {
+         _rootContainer=d;
+      }
+
+      public static function get rootContainer() : DisplayObjectContainer {
+         return _rootContainer;
+      }
+
+      public static function get stage() : Stage {
+         return _stage;
+      }
+
+      public static function get windowScale() : Number {
+         var stageWidth:* = NaN;
+         var stageHeight:* = NaN;
+         var scale:* = NaN;
+         if(AirScanner.hasAir())
+         {
+            stageWidth=(stage.nativeWindow.width-chrome.x)/startWidth;
+            stageHeight=(stage.nativeWindow.height-chrome.y)/startHeight;
+            scale=Math.min(stageWidth,stageHeight);
+            return scale;
+         }
+         return Math.min(stage.stageWidth/startWidth,stage.stageHeight/startHeight);
+      }
+
+      public static function set stage(value:Stage) : void {
+         _stage=value;
+         _startWidth=1280;
+         _startHeight=1024;
+         if(AirScanner.hasAir())
+         {
+            _stage["nativeWindow"].addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE,displayStateChangeHandler);
+         }
+      }
+
+      public static function testQuality() : void {
+         var oldQuality:String = _stage.quality;
+         _stage.quality=StageQuality.MEDIUM;
+         _setQualityIsEnable=_stage.quality.toLowerCase()==StageQuality.MEDIUM;
+         _stage.quality=oldQuality;
+      }
+
+      public static function setFullScreen(enabled:Boolean, onlyMaximize:Boolean=false) : void {
+         if(AirScanner.hasAir())
+         {
+            if(enabled)
             {
-                _loc_1 = (stage.nativeWindow.width - chrome.x) / startWidth;
-                _loc_2 = (stage.nativeWindow.height - chrome.y) / startHeight;
-                _loc_3 = Math.min(_loc_1, _loc_2);
-                return _loc_3;
+               if(!onlyMaximize)
+               {
+                  StageShareManager.stage.displayState=StageDisplayState["FULL_SCREEN_INTERACTIVE"];
+               }
+               else
+               {
+                  StageShareManager.stage["nativeWindow"].maximize();
+               }
             }
-            return Math.min(stage.stageWidth / startWidth, stage.stageHeight / startHeight);
-        }// end function
-
-        public static function set stage(param1:Stage) : void
-        {
-            _stage = param1;
-            _startWidth = 1280;
-            _startHeight = 1024;
-            if (AirScanner.hasAir())
+            else
             {
-                _stage["nativeWindow"].addEventListener(NativeWindowDisplayStateEvent.DISPLAY_STATE_CHANGE, displayStateChangeHandler);
+               if(!onlyMaximize)
+               {
+                  StageShareManager.stage.displayState=StageDisplayState.NORMAL;
+               }
+               else
+               {
+                  StageShareManager.stage["nativeWindow"].minimize();
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        public static function testQuality() : void
-        {
-            var _loc_1:* = _stage.quality;
-            _stage.quality = StageQuality.MEDIUM;
-            _setQualityIsEnable = _stage.quality.toLowerCase() == StageQuality.MEDIUM;
-            _stage.quality = _loc_1;
-            return;
-        }// end function
+      public static function get startWidth() : uint {
+         return _startWidth;
+      }
 
-        public static function setFullScreen(param1:Boolean, param2:Boolean = false) : void
-        {
-            if (AirScanner.hasAir())
+      public static function get startHeight() : uint {
+         return _startHeight;
+      }
+
+      public static function get setQualityIsEnable() : Boolean {
+         return _setQualityIsEnable;
+      }
+
+      public static function get mouseX() : int {
+         if(_customMouseX==NOT_INITIALIZED)
+         {
+            return _rootContainer.mouseX;
+         }
+         return _customMouseX;
+      }
+
+      public static function set mouseX(v:int) : void {
+         _customMouseX=v;
+      }
+
+      public static function get mouseY() : int {
+         if(_customMouseY==NOT_INITIALIZED)
+         {
+            return _rootContainer.mouseY;
+         }
+         return _customMouseY;
+      }
+
+      public static function set mouseY(v:int) : void {
+         _customMouseY=v;
+      }
+
+      public static function get stageOffsetX() : int {
+         return _rootContainer.x;
+      }
+
+      public static function get stageOffsetY() : int {
+         return _rootContainer.y;
+      }
+
+      public static function get stageScaleX() : Number {
+         return _rootContainer.scaleX;
+      }
+
+      public static function get stageScaleY() : Number {
+         return _rootContainer.scaleY;
+      }
+
+      private static function displayStateChangeHandler(event:NativeWindowDisplayStateEvent) : void {
+         var nativeWindow:NativeWindow = null;
+         if(event.beforeDisplayState==NativeWindowDisplayState.MINIMIZED)
+         {
+            if(AirScanner.hasAir())
             {
-                if (param1)
-                {
-                    if (!param2)
-                    {
-                        StageShareManager.stage.displayState = StageDisplayState["FULL_SCREEN_INTERACTIVE"];
-                    }
-                    else
-                    {
-                        StageShareManager.stage["nativeWindow"].maximize();
-                    }
-                }
-                else if (!param2)
-                {
-                    StageShareManager.stage.displayState = StageDisplayState.NORMAL;
-                }
-                else
-                {
-                    StageShareManager.stage["nativeWindow"].minimize();
-                }
+               nativeWindow=_stage["nativeWindow"];
+               if(event.afterDisplayState==NativeWindowDisplayState.NORMAL)
+               {
+                  nativeWindow.width=nativeWindow.width-1;
+                  nativeWindow.width=nativeWindow.width+1;
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        public static function get startWidth() : uint
-        {
-            return _startWidth;
-        }// end function
+      public static function get chrome() : Point {
+         return _chrome;
+      }
 
-        public static function get startHeight() : uint
-        {
-            return _startHeight;
-        }// end function
+      public static function set chrome(value:Point) : void {
+         _chrome=value;
+      }
 
-        public static function get setQualityIsEnable() : Boolean
-        {
-            return _setQualityIsEnable;
-        }// end function
 
-        public static function get mouseX() : int
-        {
-            if (_customMouseX == NOT_INITIALIZED)
-            {
-                return _rootContainer.mouseX;
-            }
-            return _customMouseX;
-        }// end function
+   }
 
-        public static function set mouseX(param1:int) : void
-        {
-            _customMouseX = param1;
-            return;
-        }// end function
-
-        public static function get mouseY() : int
-        {
-            if (_customMouseY == NOT_INITIALIZED)
-            {
-                return _rootContainer.mouseY;
-            }
-            return _customMouseY;
-        }// end function
-
-        public static function set mouseY(param1:int) : void
-        {
-            _customMouseY = param1;
-            return;
-        }// end function
-
-        public static function get stageOffsetX() : int
-        {
-            return _rootContainer.x;
-        }// end function
-
-        public static function get stageOffsetY() : int
-        {
-            return _rootContainer.y;
-        }// end function
-
-        public static function get stageScaleX() : Number
-        {
-            return _rootContainer.scaleX;
-        }// end function
-
-        public static function get stageScaleY() : Number
-        {
-            return _rootContainer.scaleY;
-        }// end function
-
-        private static function displayStateChangeHandler(event:NativeWindowDisplayStateEvent) : void
-        {
-            var _loc_2:* = null;
-            if (event.beforeDisplayState == NativeWindowDisplayState.MINIMIZED)
-            {
-                if (AirScanner.hasAir())
-                {
-                    _loc_2 = _stage["nativeWindow"];
-                    if (event.afterDisplayState == NativeWindowDisplayState.NORMAL)
-                    {
-                        (_loc_2.width - 1);
-                        (_loc_2.width + 1);
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        public static function get chrome() : Point
-        {
-            return _chrome;
-        }// end function
-
-        public static function set chrome(param1:Point) : void
-        {
-            _chrome = param1;
-            return;
-        }// end function
-
-    }
 }

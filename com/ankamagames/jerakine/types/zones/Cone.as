@@ -1,200 +1,174 @@
-﻿package com.ankamagames.jerakine.types.zones
+package com.ankamagames.jerakine.types.zones
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.map.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.types.zones.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.map.IDataMapProvider;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.jerakine.types.enums.DirectionsEnum;
 
-    public class Cone extends Object implements IZone
-    {
-        private var _radius:uint = 0;
-        private var _minRadius:uint = 0;
-        private var _nDirection:uint = 1;
-        private var _dataMapProvider:IDataMapProvider;
-        private var _diagonalFree:Boolean = false;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Cone));
 
-        public function Cone(param1:uint, param2:uint, param3:IDataMapProvider)
-        {
-            this.radius = param2;
-            this.minRadius = param1;
-            this._dataMapProvider = param3;
-            return;
-        }// end function
+   public class Cone extends Object implements IZone
+   {
+         
 
-        public function get radius() : uint
-        {
-            return this._radius;
-        }// end function
+      public function Cone(nMinRadius:uint, nRadius:uint, dataMapProvider:IDataMapProvider) {
+         super();
+         this.radius=nRadius;
+         this.minRadius=nMinRadius;
+         this._dataMapProvider=dataMapProvider;
+      }
 
-        public function set radius(param1:uint) : void
-        {
-            this._radius = param1;
-            return;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Cone));
 
-        public function set minRadius(param1:uint) : void
-        {
-            this._minRadius = param1;
-            return;
-        }// end function
+      private var _radius:uint = 0;
 
-        public function get minRadius() : uint
-        {
-            return this._minRadius;
-        }// end function
+      private var _minRadius:uint = 0;
 
-        public function set direction(param1:uint) : void
-        {
-            this._nDirection = param1;
-            return;
-        }// end function
+      private var _nDirection:uint = 1;
 
-        public function get direction() : uint
-        {
-            return this._nDirection;
-        }// end function
+      private var _dataMapProvider:IDataMapProvider;
 
-        public function get surface() : uint
-        {
-            return Math.pow((this._radius + 1), 2);
-        }// end function
+      private var _diagonalFree:Boolean = false;
 
-        public function getCells(param1:uint = 0) : Vector.<uint>
-        {
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            var _loc_2:* = new Vector.<uint>;
-            var _loc_3:* = MapPoint.fromCellId(param1);
-            var _loc_4:* = _loc_3.x;
-            var _loc_5:* = _loc_3.y;
-            if (this._radius == 0)
+      public function get radius() : uint {
+         return this._radius;
+      }
+
+      public function set radius(n:uint) : void {
+         this._radius=n;
+      }
+
+      public function set minRadius(r:uint) : void {
+         this._minRadius=r;
+      }
+
+      public function get minRadius() : uint {
+         return this._minRadius;
+      }
+
+      public function set direction(d:uint) : void {
+         this._nDirection=d;
+      }
+
+      public function get direction() : uint {
+         return this._nDirection;
+      }
+
+      public function get surface() : uint {
+         return Math.pow(this._radius+1,2);
+      }
+
+      public function getCells(cellId:uint=0) : Vector.<uint> {
+         var i:* = 0;
+         var j:* = 0;
+         var aCells:Vector.<uint> = new Vector.<uint>();
+         var origin:MapPoint = MapPoint.fromCellId(cellId);
+         var x:int = origin.x;
+         var y:int = origin.y;
+         if(this._radius==0)
+         {
+            if(this._minRadius==0)
             {
-                if (this._minRadius == 0)
-                {
-                    _loc_2.push(param1);
-                }
-                return _loc_2;
+               aCells.push(cellId);
             }
-            var _loc_8:* = 1;
-            var _loc_9:* = 0;
-            switch(this._nDirection)
-            {
-                case DirectionsEnum.UP_LEFT:
-                {
-                    _loc_6 = _loc_4;
-                    while (_loc_6 >= _loc_4 - this._radius)
-                    {
-                        
-                        _loc_7 = -_loc_9;
-                        while (_loc_7 <= _loc_9)
+            return aCells;
+         }
+         var inc:int = 1;
+         var step:uint = 0;
+         switch(this._nDirection)
+         {
+            case DirectionsEnum.UP_LEFT:
+               i=x;
+               while(i>=x-this._radius)
+               {
+                  j=-step;
+                  while(j<=step)
+                  {
+                     if((!this._minRadius)||(Math.abs(x-i)+Math.abs(j)>=this._minRadius))
+                     {
+                        if(MapPoint.isInMap(i,j+y))
                         {
-                            
-                            if (!this._minRadius || Math.abs(_loc_4 - _loc_6) + Math.abs(_loc_7) >= this._minRadius)
-                            {
-                                if (MapPoint.isInMap(_loc_6, _loc_7 + _loc_5))
-                                {
-                                    this.addCell(_loc_6, _loc_7 + _loc_5, _loc_2);
-                                }
-                            }
-                            _loc_7++;
+                           this.addCell(i,j+y,aCells);
                         }
-                        _loc_9 = _loc_9 + _loc_8;
-                        _loc_6 = _loc_6 - 1;
-                    }
-                    break;
-                }
-                case DirectionsEnum.DOWN_LEFT:
-                {
-                    _loc_7 = _loc_5;
-                    while (_loc_7 >= _loc_5 - this._radius)
-                    {
-                        
-                        _loc_6 = -_loc_9;
-                        while (_loc_6 <= _loc_9)
+                     }
+                     j++;
+                  }
+                  step=step+inc;
+                  i--;
+               }
+               break;
+            case DirectionsEnum.DOWN_LEFT:
+               j=y;
+               while(j>=y-this._radius)
+               {
+                  i=-step;
+                  while(i<=step)
+                  {
+                     if((!this._minRadius)||(Math.abs(i)+Math.abs(y-j)>=this._minRadius))
+                     {
+                        if(MapPoint.isInMap(i+x,j))
                         {
-                            
-                            if (!this._minRadius || Math.abs(_loc_6) + Math.abs(_loc_5 - _loc_7) >= this._minRadius)
-                            {
-                                if (MapPoint.isInMap(_loc_6 + _loc_4, _loc_7))
-                                {
-                                    this.addCell(_loc_6 + _loc_4, _loc_7, _loc_2);
-                                }
-                            }
-                            _loc_6++;
+                           this.addCell(i+x,j,aCells);
                         }
-                        _loc_9 = _loc_9 + _loc_8;
-                        _loc_7 = _loc_7 - 1;
-                    }
-                    break;
-                }
-                case DirectionsEnum.DOWN_RIGHT:
-                {
-                    _loc_6 = _loc_4;
-                    while (_loc_6 <= _loc_4 + this._radius)
-                    {
-                        
-                        _loc_7 = -_loc_9;
-                        while (_loc_7 <= _loc_9)
+                     }
+                     i++;
+                  }
+                  step=step+inc;
+                  j--;
+               }
+               break;
+            case DirectionsEnum.DOWN_RIGHT:
+               i=x;
+               while(i<=x+this._radius)
+               {
+                  j=-step;
+                  while(j<=step)
+                  {
+                     if((!this._minRadius)||(Math.abs(x-i)+Math.abs(j)>=this._minRadius))
+                     {
+                        if(MapPoint.isInMap(i,j+y))
                         {
-                            
-                            if (!this._minRadius || Math.abs(_loc_4 - _loc_6) + Math.abs(_loc_7) >= this._minRadius)
-                            {
-                                if (MapPoint.isInMap(_loc_6, _loc_7 + _loc_5))
-                                {
-                                    this.addCell(_loc_6, _loc_7 + _loc_5, _loc_2);
-                                }
-                            }
-                            _loc_7++;
+                           this.addCell(i,j+y,aCells);
                         }
-                        _loc_9 = _loc_9 + _loc_8;
-                        _loc_6++;
-                    }
-                    break;
-                }
-                case DirectionsEnum.UP_RIGHT:
-                {
-                    _loc_7 = _loc_5;
-                    while (_loc_7 <= _loc_5 + this._radius)
-                    {
-                        
-                        _loc_6 = -_loc_9;
-                        while (_loc_6 <= _loc_9)
+                     }
+                     j++;
+                  }
+                  step=step+inc;
+                  i++;
+               }
+               break;
+            case DirectionsEnum.UP_RIGHT:
+               j=y;
+               while(j<=y+this._radius)
+               {
+                  i=-step;
+                  while(i<=step)
+                  {
+                     if((!this._minRadius)||(Math.abs(i)+Math.abs(y-j)>=this._minRadius))
+                     {
+                        if(MapPoint.isInMap(i+x,j))
                         {
-                            
-                            if (!this._minRadius || Math.abs(_loc_6) + Math.abs(_loc_5 - _loc_7) >= this._minRadius)
-                            {
-                                if (MapPoint.isInMap(_loc_6 + _loc_4, _loc_7))
-                                {
-                                    this.addCell(_loc_6 + _loc_4, _loc_7, _loc_2);
-                                }
-                            }
-                            _loc_6++;
+                           this.addCell(i+x,j,aCells);
                         }
-                        _loc_9 = _loc_9 + _loc_8;
-                        _loc_7++;
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return _loc_2;
-        }// end function
+                     }
+                     i++;
+                  }
+                  step=step+inc;
+                  j++;
+               }
+               break;
+         }
+         return aCells;
+      }
 
-        private function addCell(param1:int, param2:int, param3:Vector.<uint>) : void
-        {
-            if (this._dataMapProvider == null || this._dataMapProvider.pointMov(param1, param2))
-            {
-                param3.push(MapPoint.fromCoords(param1, param2).cellId);
-            }
-            return;
-        }// end function
+      private function addCell(x:int, y:int, cellMap:Vector.<uint>) : void {
+         if((this._dataMapProvider==null)||(this._dataMapProvider.pointMov(x,y)))
+         {
+            cellMap.push(MapPoint.fromCoords(x,y).cellId);
+         }
+      }
+   }
 
-    }
 }

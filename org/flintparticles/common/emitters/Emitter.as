@@ -1,461 +1,408 @@
-﻿package org.flintparticles.common.emitters
+package org.flintparticles.common.emitters
 {
-    import flash.events.*;
-    import org.flintparticles.common.actions.*;
-    import org.flintparticles.common.activities.*;
-    import org.flintparticles.common.counters.*;
-    import org.flintparticles.common.events.*;
-    import org.flintparticles.common.initializers.*;
-    import org.flintparticles.common.particles.*;
-    import org.flintparticles.common.utils.*;
+   import flash.events.EventDispatcher;
+   import org.flintparticles.common.particles.ParticleFactory;
+   import org.flintparticles.common.utils.PriorityArray;
+   import org.flintparticles.common.counters.Counter;
+   import org.flintparticles.common.initializers.Initializer;
+   import org.flintparticles.common.actions.Action;
+   import org.flintparticles.common.activities.Activity;
+   import org.flintparticles.common.utils.FrameUpdater;
+   import org.flintparticles.common.events.UpdateEvent;
+   import org.flintparticles.common.particles.Particle;
+   import org.flintparticles.common.events.ParticleEvent;
+   import org.flintparticles.common.events.EmitterEvent;
+   import org.flintparticles.common.counters.ZeroCounter;
 
-    public class Emitter extends EventDispatcher
-    {
-        protected var _particleFactory:ParticleFactory;
-        protected var _initializers:PriorityArray;
-        protected var _actions:PriorityArray;
-        protected var _activities:PriorityArray;
-        protected var _particles:Array;
-        protected var _counter:Counter;
-        protected var _useInternalTick:Boolean = true;
-        protected var _fixedFrameTime:Number = 0;
-        protected var _running:Boolean = false;
-        protected var _started:Boolean = false;
-        protected var _maximumFrameTime:Number = 0.1;
 
-        public function Emitter()
-        {
-            this._particles = new Array();
-            this._actions = new PriorityArray();
-            this._initializers = new PriorityArray();
-            this._activities = new PriorityArray();
-            this._counter = new ZeroCounter();
+   public class Emitter extends EventDispatcher
+   {
+         
+
+      public function Emitter() {
+         super();
+         this._particles=new Array();
+         this._actions=new PriorityArray();
+         this._initializers=new PriorityArray();
+         this._activities=new PriorityArray();
+         this._counter=new ZeroCounter();
+      }
+
+
+
+      protected var _particleFactory:ParticleFactory;
+
+      protected var _initializers:PriorityArray;
+
+      protected var _actions:PriorityArray;
+
+      protected var _activities:PriorityArray;
+
+      protected var _particles:Array;
+
+      protected var _counter:Counter;
+
+      protected var _useInternalTick:Boolean = true;
+
+      protected var _fixedFrameTime:Number = 0;
+
+      protected var _running:Boolean = false;
+
+      protected var _started:Boolean = false;
+
+      protected var _maximumFrameTime:Number = 0.1;
+
+      public function get maximumFrameTime() : Number {
+         return this._maximumFrameTime;
+      }
+
+      public function set maximumFrameTime(value:Number) : void {
+         this._maximumFrameTime=value;
+      }
+
+      public function addInitializer(initializer:Initializer, priority:Number=NaN) : void {
+         if(isNaN(priority))
+         {
+            priority=initializer.getDefaultPriority();
+         }
+         this._initializers.add(initializer,priority);
+         initializer.addedToEmitter(this);
+      }
+
+      public function removeInitializer(initializer:Initializer) : void {
+         if(this._initializers.remove(initializer))
+         {
+            initializer.removedFromEmitter(this);
+         }
+      }
+
+      public function hasInitializer(initializer:Initializer) : Boolean {
+         return this._initializers.contains(initializer);
+      }
+
+      public function hasInitializerOfType(initializerClass:Class) : Boolean {
+         var len:uint = this._initializers.length;
+         var i:uint = 0;
+         while(i<len)
+         {
+            if(this._initializers[i] is initializerClass)
+            {
+               return true;
+            }
+            i++;
+         }
+         return false;
+      }
+
+      public function addAction(action:Action, priority:Number=NaN) : void {
+         if(isNaN(priority))
+         {
+            priority=action.getDefaultPriority();
+         }
+         this._actions.add(action,priority);
+         action.addedToEmitter(this);
+      }
+
+      public function removeAction(action:Action) : void {
+         if(this._actions.remove(action))
+         {
+            action.removedFromEmitter(this);
+         }
+      }
+
+      public function hasAction(action:Action) : Boolean {
+         return this._actions.contains(action);
+      }
+
+      public function hasActionOfType(actionClass:Class) : Boolean {
+         var len:uint = this._actions.length;
+         var i:uint = 0;
+         while(i<len)
+         {
+            if(this._actions[i] is actionClass)
+            {
+               return true;
+            }
+            i++;
+         }
+         return false;
+      }
+
+      public function addActivity(activity:Activity, priority:Number=NaN) : void {
+         if(isNaN(priority))
+         {
+            priority=activity.getDefaultPriority();
+         }
+         this._activities.add(activity,priority);
+         activity.addedToEmitter(this);
+      }
+
+      public function removeActivity(activity:Activity) : void {
+         if(this._activities.remove(activity))
+         {
+            activity.removedFromEmitter(this);
+         }
+      }
+
+      public function hasActivity(activity:Activity) : Boolean {
+         return this._activities.contains(activity);
+      }
+
+      public function hasActivityOfType(activityClass:Class) : Boolean {
+         var len:uint = this._activities.length;
+         var i:uint = 0;
+         while(i<len)
+         {
+            if(this._activities[i] is activityClass)
+            {
+               return true;
+            }
+            i++;
+         }
+         return false;
+      }
+
+      public function get counter() : Counter {
+         return this._counter;
+      }
+
+      public function set counter(value:Counter) : void {
+         this._counter=value;
+      }
+
+      public function get useInternalTick() : Boolean {
+         return this._useInternalTick;
+      }
+
+      public function set useInternalTick(value:Boolean) : void {
+         if(this._useInternalTick!=value)
+         {
+            this._useInternalTick=value;
+            if(this._started)
+            {
+               if(this._useInternalTick)
+               {
+                  FrameUpdater.instance.addEventListener(UpdateEvent.UPDATE,this.updateEventListener,false,0,true);
+               }
+               else
+               {
+                  FrameUpdater.instance.removeEventListener(UpdateEvent.UPDATE,this.updateEventListener);
+               }
+            }
+         }
+      }
+
+      public function get fixedFrameTime() : Number {
+         return this._fixedFrameTime;
+      }
+
+      public function set fixedFrameTime(value:Number) : void {
+         this._fixedFrameTime=value;
+      }
+
+      public function get running() : Boolean {
+         return this._running;
+      }
+
+      public function get particleFactory() : ParticleFactory {
+         return this._particleFactory;
+      }
+
+      public function set particleFactory(value:ParticleFactory) : void {
+         this._particleFactory=value;
+      }
+
+      public function get particles() : Array {
+         return this._particles;
+      }
+
+      protected function createParticle() : Particle {
+         var particle:Particle = this._particleFactory.createParticle();
+         var len:int = this._initializers.length;
+         this.initParticle(particle);
+         var i:int = 0;
+         while(i<len)
+         {
+            this._initializers[i].initialize(this,particle);
+            i++;
+         }
+         this._particles.push(particle);
+         dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_CREATED,particle));
+         return particle;
+      }
+
+      protected function initParticle(particle:Particle) : void {
+         
+      }
+
+      public function addExistingParticles(particles:Array, applyInitializers:Boolean=false) : void {
+         var i:* = 0;
+         var len2:* = 0;
+         var j:* = 0;
+         var len:int = particles.length;
+         if(applyInitializers)
+         {
+            len2=this._initializers.length;
+            j=0;
+            while(j<len2)
+            {
+               i=0;
+               while(i<len)
+               {
+                  this._initializers[j].initialize(this,particles[i]);
+                  i++;
+               }
+               j++;
+            }
+         }
+         i=0;
+         while(i<len)
+         {
+            this._particles.push(particles[i]);
+            dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_ADDED,particles[i]));
+            i++;
+         }
+      }
+
+      public function killAllParticles() : void {
+         var len:int = this._particles.length;
+         var i:int = 0;
+         while(i<len)
+         {
+            dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD,this._particles[i]));
+            this._particleFactory.disposeParticle(this._particles[i]);
+            i++;
+         }
+         this._particles.length=0;
+      }
+
+      public function start() : void {
+         if(this._useInternalTick)
+         {
+            FrameUpdater.instance.addEventListener(UpdateEvent.UPDATE,this.updateEventListener,false,0,true);
+         }
+         this._started=true;
+         this._running=true;
+         var len:int = this._activities.length;
+         var i:int = 0;
+         while(i<len)
+         {
+            this._activities[i].initialize(this);
+            i++;
+         }
+         len=this._counter.startEmitter(this);
+         i=0;
+         while(i<len)
+         {
+            this.createParticle();
+            i++;
+         }
+      }
+
+      private function updateEventListener(ev:UpdateEvent) : void {
+         if(this._fixedFrameTime)
+         {
+            this.update(this._fixedFrameTime);
+         }
+         else
+         {
+            this.update(ev.time);
+         }
+      }
+
+      public function update(time:Number) : void {
+         var i:* = 0;
+         var particle:Particle = null;
+         var action:Action = null;
+         var len2:* = 0;
+         var j:* = 0;
+         if((!this._running)||(time<this._maximumFrameTime))
+         {
             return;
-        }// end function
-
-        public function get maximumFrameTime() : Number
-        {
-            return this._maximumFrameTime;
-        }// end function
-
-        public function set maximumFrameTime(param1:Number) : void
-        {
-            this._maximumFrameTime = param1;
-            return;
-        }// end function
-
-        public function addInitializer(param1:Initializer, param2:Number = NaN) : void
-        {
-            if (isNaN(param2))
+         }
+         var len:int = this._counter.updateEmitter(this,time);
+         i=0;
+         while(i<len)
+         {
+            this.createParticle();
+            i++;
+         }
+         this.sortParticles();
+         len=this._activities.length;
+         i=0;
+         while(i<len)
+         {
+            this._activities[i].update(this,time);
+            i++;
+         }
+         if(this._particles.length>0)
+         {
+            len=this._actions.length;
+            len2=this._particles.length;
+            j=0;
+            while(j<len)
             {
-                param2 = param1.getDefaultPriority();
+               action=this._actions[j];
+               i=0;
+               while(i<len2)
+               {
+                  particle=this._particles[i];
+                  action.update(this,particle,time);
+                  i++;
+               }
+               j++;
             }
-            this._initializers.add(param1, param2);
-            param1.addedToEmitter(this);
-            return;
-        }// end function
-
-        public function removeInitializer(param1:Initializer) : void
-        {
-            if (this._initializers.remove(param1))
+            i=len2;
+            while(i--)
             {
-                param1.removedFromEmitter(this);
+               particle=this._particles[i];
+               if(particle.isDead)
+               {
+                  dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD,particle));
+                  this._particleFactory.disposeParticle(particle);
+                  this._particles.splice(i,1);
+               }
             }
-            return;
-        }// end function
+         }
+         else
+         {
+            dispatchEvent(new EmitterEvent(EmitterEvent.EMITTER_EMPTY));
+         }
+         dispatchEvent(new EmitterEvent(EmitterEvent.EMITTER_UPDATED));
+      }
 
-        public function hasInitializer(param1:Initializer) : Boolean
-        {
-            return this._initializers.contains(param1);
-        }// end function
+      protected function sortParticles() : void {
+         
+      }
 
-        public function hasInitializerOfType(param1:Class) : Boolean
-        {
-            var _loc_2:* = this._initializers.length;
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                if (this._initializers[_loc_3] is param1)
-                {
-                    return true;
-                }
-                _loc_3 = _loc_3 + 1;
-            }
-            return false;
-        }// end function
+      public function pause() : void {
+         this._running=false;
+      }
 
-        public function addAction(param1:Action, param2:Number = NaN) : void
-        {
-            if (isNaN(param2))
-            {
-                param2 = param1.org.flintparticles.common.actions:Action::getDefaultPriority();
-            }
-            this._actions.add(param1, param2);
-            param1.org.flintparticles.common.actions:Action::addedToEmitter(this);
-            return;
-        }// end function
+      public function resume() : void {
+         this._running=true;
+      }
 
-        public function removeAction(param1:Action) : void
-        {
-            if (this._actions.remove(param1))
-            {
-                param1.org.flintparticles.common.actions:Action::removedFromEmitter(this);
-            }
-            return;
-        }// end function
+      public function stop() : void {
+         if(this._useInternalTick)
+         {
+            FrameUpdater.instance.removeEventListener(UpdateEvent.UPDATE,this.updateEventListener);
+         }
+         this._started=false;
+         this.killAllParticles();
+      }
 
-        public function hasAction(param1:Action) : Boolean
-        {
-            return this._actions.contains(param1);
-        }// end function
+      public function runAhead(time:Number, frameRate:Number=10) : void {
+         var maxTime:Number = this._maximumFrameTime;
+         var step:Number = 1/frameRate;
+         this._maximumFrameTime=step;
+         while(time>0)
+         {
+            time=time-step;
+            this.update(step);
+         }
+         this._maximumFrameTime=maxTime;
+      }
+   }
 
-        public function hasActionOfType(param1:Class) : Boolean
-        {
-            var _loc_2:* = this._actions.length;
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                if (this._actions[_loc_3] is param1)
-                {
-                    return true;
-                }
-                _loc_3 = _loc_3 + 1;
-            }
-            return false;
-        }// end function
-
-        public function addActivity(param1:Activity, param2:Number = NaN) : void
-        {
-            if (isNaN(param2))
-            {
-                param2 = param1.org.flintparticles.common.activities:Activity::getDefaultPriority();
-            }
-            this._activities.add(param1, param2);
-            param1.org.flintparticles.common.activities:Activity::addedToEmitter(this);
-            return;
-        }// end function
-
-        public function removeActivity(param1:Activity) : void
-        {
-            if (this._activities.remove(param1))
-            {
-                param1.org.flintparticles.common.activities:Activity::removedFromEmitter(this);
-            }
-            return;
-        }// end function
-
-        public function hasActivity(param1:Activity) : Boolean
-        {
-            return this._activities.contains(param1);
-        }// end function
-
-        public function hasActivityOfType(param1:Class) : Boolean
-        {
-            var _loc_2:* = this._activities.length;
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                if (this._activities[_loc_3] is param1)
-                {
-                    return true;
-                }
-                _loc_3 = _loc_3 + 1;
-            }
-            return false;
-        }// end function
-
-        public function get counter() : Counter
-        {
-            return this._counter;
-        }// end function
-
-        public function set counter(param1:Counter) : void
-        {
-            this._counter = param1;
-            return;
-        }// end function
-
-        public function get useInternalTick() : Boolean
-        {
-            return this._useInternalTick;
-        }// end function
-
-        public function set useInternalTick(param1:Boolean) : void
-        {
-            if (this._useInternalTick != param1)
-            {
-                this._useInternalTick = param1;
-                if (this._started)
-                {
-                    if (this._useInternalTick)
-                    {
-                        FrameUpdater.instance.addEventListener(UpdateEvent.UPDATE, this.updateEventListener, false, 0, true);
-                    }
-                    else
-                    {
-                        FrameUpdater.instance.removeEventListener(UpdateEvent.UPDATE, this.updateEventListener);
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        public function get fixedFrameTime() : Number
-        {
-            return this._fixedFrameTime;
-        }// end function
-
-        public function set fixedFrameTime(param1:Number) : void
-        {
-            this._fixedFrameTime = param1;
-            return;
-        }// end function
-
-        public function get running() : Boolean
-        {
-            return this._running;
-        }// end function
-
-        public function get particleFactory() : ParticleFactory
-        {
-            return this._particleFactory;
-        }// end function
-
-        public function set particleFactory(param1:ParticleFactory) : void
-        {
-            this._particleFactory = param1;
-            return;
-        }// end function
-
-        public function get particles() : Array
-        {
-            return this._particles;
-        }// end function
-
-        protected function createParticle() : Particle
-        {
-            var _loc_1:* = this._particleFactory.org.flintparticles.common.particles:ParticleFactory::createParticle();
-            var _loc_2:* = this._initializers.length;
-            this.initParticle(_loc_1);
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                this._initializers[_loc_3].initialize(this, _loc_1);
-                _loc_3++;
-            }
-            this._particles.push(_loc_1);
-            dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_CREATED, _loc_1));
-            return _loc_1;
-        }// end function
-
-        protected function initParticle(param1:Particle) : void
-        {
-            return;
-        }// end function
-
-        public function addExistingParticles(param1:Array, param2:Boolean = false) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_3:* = param1.length;
-            if (param2)
-            {
-                _loc_5 = this._initializers.length;
-                _loc_6 = 0;
-                while (_loc_6 < _loc_5)
-                {
-                    
-                    _loc_4 = 0;
-                    while (_loc_4 < _loc_3)
-                    {
-                        
-                        this._initializers[_loc_6].initialize(this, param1[_loc_4]);
-                        _loc_4++;
-                    }
-                    _loc_6++;
-                }
-            }
-            _loc_4 = 0;
-            while (_loc_4 < _loc_3)
-            {
-                
-                this._particles.push(param1[_loc_4]);
-                dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_ADDED, param1[_loc_4]));
-                _loc_4++;
-            }
-            return;
-        }// end function
-
-        public function killAllParticles() : void
-        {
-            var _loc_1:* = this._particles.length;
-            var _loc_2:* = 0;
-            while (_loc_2 < _loc_1)
-            {
-                
-                dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD, this._particles[_loc_2]));
-                this._particleFactory.disposeParticle(this._particles[_loc_2]);
-                _loc_2++;
-            }
-            this._particles.length = 0;
-            return;
-        }// end function
-
-        public function start() : void
-        {
-            if (this._useInternalTick)
-            {
-                FrameUpdater.instance.addEventListener(UpdateEvent.UPDATE, this.updateEventListener, false, 0, true);
-            }
-            this._started = true;
-            this._running = true;
-            var _loc_1:* = this._activities.length;
-            var _loc_2:* = 0;
-            while (_loc_2 < _loc_1)
-            {
-                
-                this._activities[_loc_2].initialize(this);
-                _loc_2++;
-            }
-            _loc_1 = this._counter.startEmitter(this);
-            _loc_2 = 0;
-            while (_loc_2 < _loc_1)
-            {
-                
-                this.createParticle();
-                _loc_2++;
-            }
-            return;
-        }// end function
-
-        private function updateEventListener(event:UpdateEvent) : void
-        {
-            if (this._fixedFrameTime)
-            {
-                this.update(this._fixedFrameTime);
-            }
-            else
-            {
-                this.update(event.time);
-            }
-            return;
-        }// end function
-
-        public function update(param1:Number) : void
-        {
-            var _loc_2:* = 0;
-            var _loc_3:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = 0;
-            if (!this._running || param1 > this._maximumFrameTime)
-            {
-                return;
-            }
-            var _loc_4:* = this._counter.updateEmitter(this, param1);
-            _loc_2 = 0;
-            while (_loc_2 < _loc_4)
-            {
-                
-                this.createParticle();
-                _loc_2++;
-            }
-            this.sortParticles();
-            _loc_4 = this._activities.length;
-            _loc_2 = 0;
-            while (_loc_2 < _loc_4)
-            {
-                
-                this._activities[_loc_2].update(this, param1);
-                _loc_2++;
-            }
-            if (this._particles.length > 0)
-            {
-                _loc_4 = this._actions.length;
-                _loc_6 = this._particles.length;
-                _loc_7 = 0;
-                while (_loc_7 < _loc_4)
-                {
-                    
-                    _loc_5 = this._actions[_loc_7];
-                    _loc_2 = 0;
-                    while (_loc_2 < _loc_6)
-                    {
-                        
-                        _loc_3 = this._particles[_loc_2];
-                        _loc_5.update(this, _loc_3, param1);
-                        _loc_2++;
-                    }
-                    _loc_7++;
-                }
-                _loc_2 = _loc_6;
-                while (_loc_2--)
-                {
-                    
-                    _loc_3 = this._particles[_loc_2];
-                    if (_loc_3.isDead)
-                    {
-                        dispatchEvent(new ParticleEvent(ParticleEvent.PARTICLE_DEAD, _loc_3));
-                        this._particleFactory.disposeParticle(_loc_3);
-                        this._particles.splice(_loc_2, 1);
-                    }
-                }
-            }
-            else
-            {
-                dispatchEvent(new EmitterEvent(EmitterEvent.EMITTER_EMPTY));
-            }
-            dispatchEvent(new EmitterEvent(EmitterEvent.EMITTER_UPDATED));
-            return;
-        }// end function
-
-        protected function sortParticles() : void
-        {
-            return;
-        }// end function
-
-        public function pause() : void
-        {
-            this._running = false;
-            return;
-        }// end function
-
-        public function resume() : void
-        {
-            this._running = true;
-            return;
-        }// end function
-
-        public function stop() : void
-        {
-            if (this._useInternalTick)
-            {
-                FrameUpdater.instance.removeEventListener(UpdateEvent.UPDATE, this.updateEventListener);
-            }
-            this._started = false;
-            this.killAllParticles();
-            return;
-        }// end function
-
-        public function runAhead(param1:Number, param2:Number = 10) : void
-        {
-            var _loc_3:* = this._maximumFrameTime;
-            var _loc_4:* = 1 / param2;
-            this._maximumFrameTime = _loc_4;
-            while (param1 > 0)
-            {
-                
-                param1 = param1 - _loc_4;
-                this.update(_loc_4);
-            }
-            this._maximumFrameTime = _loc_3;
-            return;
-        }// end function
-
-    }
 }

@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.interfaces
+package com.ankamagames.jerakine.interfaces
 {
 
-    public interface IObstacle
-    {
 
-        public function IObstacle();
+   public interface IObstacle
+   {
+         
 
-        function canSeeThrough() : Boolean;
 
-    }
+
+      function canSeeThrough() : Boolean;
+   }
+
 }

@@ -1,179 +1,187 @@
-﻿package com.ankamagames.jerakine.managers
+package com.ankamagames.jerakine.managers
 {
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.utils.errors.*;
-    import com.ankamagames.jerakine.utils.files.*;
-    import flash.text.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.messages.MessageHandler;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.utils.files.FileUtils;
+   import com.ankamagames.jerakine.utils.errors.FileTypeError;
+   import com.ankamagames.jerakine.types.Uri;
+   import flash.text.AntiAliasType;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.messages.LangFileLoadedMessage;
+   import com.ankamagames.jerakine.messages.LangAllFilesLoadedMessage;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.utils.errors.SingletonError;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
 
-    public class FontManager extends Object
-    {
-        private var _log:Logger;
-        private var _handler:MessageHandler;
-        private var _loader:IResourceLoader;
-        private var _data:XML;
-        private var _lang:String;
-        private var _fonts:Dictionary;
-        private static var _self:FontManager;
-        public static var initialized:Boolean = false;
 
-        public function FontManager()
-        {
-            this._log = Log.getLogger(getQualifiedClassName(FontManager));
-            if (_self != null)
-            {
-                throw new SingletonError("FontManager is a singleton and should not be instanciated directly.");
-            }
-            this._loader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
-            this._loader.addEventListener(ResourceLoadedEvent.LOADED, this.onFileLoaded);
-            this._loader.addEventListener(ResourceErrorEvent.ERROR, this.onLoadError);
+   public class FontManager extends Object
+   {
+         
+
+      public function FontManager() {
+         this._log=Log.getLogger(getQualifiedClassName(FontManager));
+         super();
+         if(_self!=null)
+         {
+            throw new SingletonError("FontManager is a singleton and should not be instanciated directly.");
+         }
+         else
+         {
+            this._loader=ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
+            this._loader.addEventListener(ResourceLoadedEvent.LOADED,this.onFileLoaded);
+            this._loader.addEventListener(ResourceErrorEvent.ERROR,this.onLoadError);
             return;
-        }// end function
+         }
+      }
 
-        public function set handler(param1:MessageHandler) : void
-        {
-            this._handler = param1;
+      private static var _self:FontManager;
+
+      public static var initialized:Boolean = false;
+
+      public static function getInstance() : FontManager {
+         if(_self==null)
+         {
+            _self=new FontManager();
+         }
+         return _self;
+      }
+
+      private var _log:Logger;
+
+      private var _handler:MessageHandler;
+
+      private var _loader:IResourceLoader;
+
+      private var _data:XML;
+
+      private var _lang:String;
+
+      private var _fonts:Dictionary;
+
+      public function set handler(value:MessageHandler) : void {
+         this._handler=value;
+      }
+
+      public function loadFile(sUrl:String) : void {
+         var sExtension:String = FileUtils.getExtension(sUrl);
+         this._lang=LangManager.getInstance().getEntry("config.lang.current");
+         if(sExtension==null)
+         {
+            throw new FileTypeError(sUrl+" have no type (no extension found).");
+         }
+         else
+         {
+            uri=new Uri(sUrl);
+            uri.tag=sUrl;
+            this._loader.load(uri);
             return;
-        }// end function
+         }
+      }
 
-        public function loadFile(param1:String) : void
-        {
-            var _loc_2:* = FileUtils.getExtension(param1);
-            this._lang = LangManager.getInstance().getEntry("config.lang.current");
-            if (_loc_2 == null)
+      public function getRealFontName(font:String) : String {
+         if(this._fonts[font])
+         {
+            return this._fonts[font].realname;
+         }
+         return "";
+      }
+
+      public function getFontsList() : Array {
+         var o:Object = null;
+         var fontList:Array = new Array();
+         for each (o in this._fonts)
+         {
+            fontList.push(o.url);
+         }
+         return fontList;
+      }
+
+      public function getSizeMultipicator(fontName:String) : Number {
+         if(this._fonts[fontName])
+         {
+            return Number(this._fonts[fontName].sizemultiplicator);
+         }
+         return 1;
+      }
+
+      public function getFontClassName(cssName:String) : String {
+         return this._fonts[cssName].classname;
+      }
+
+      public function getFontClassRenderingMode(fontName:String) : String {
+         if(this._fonts[fontName].embedAsCff)
+         {
+            return AntiAliasType.ADVANCED;
+         }
+         return AntiAliasType.NORMAL;
+      }
+
+      private function onFileLoaded(e:ResourceLoadedEvent) : void {
+         var xml:XMLList = null;
+         var length:int = 0;
+         var i:int = 0;
+         var name:String = null;
+         var o:Object = null;
+         this._data=new XML(e.resource);
+         this._fonts=new Dictionary();
+         for each (_loc7_ in this._data.Fonts)
+         {
+            with(_loc7_)
             {
-                throw new FileTypeError(param1 + " have no type (no extension found).");
+               
+               if(@lang==_lang)
+               {
+                  _loc3_[_loc4_]=_loc6_;
+               }
             }
-            var _loc_3:* = new Uri(param1);
-            _loc_3.tag = param1;
-            this._loader.load(_loc_3);
-            return;
-        }// end function
-
-        public function getRealFontName(param1:String) : String
-        {
-            if (this._fonts[param1])
+         }
+         xml=_loc3_;
+         if(xml.length()==0)
+         {
+            for each (_loc7_ in this._data.Fonts)
             {
-                return this._fonts[param1].realname;
+               with(_loc6_)
+               {
+                  
+                  if(@lang=="")
+                  {
+                     _loc3_[_loc4_]=_loc6_;
+                  }
+               }
             }
-            return "";
-        }// end function
+            xml=_loc3_;
+         }
+         length=xml.font.length();
+         i=0;
+         while(i<length)
+         {
+            name=xml.font[i].@name;
+            o=
+               {
+                  realname:xml.font[i].@realName,
+                  classname:xml.font[i].@classname,
+                  sizemultiplicator:xml.font[i].@sizemultiplicator,
+                  url:LangManager.getInstance().replaceKey(xml.font[i]),
+                  embedAsCff:xml.font[i].@embedAsCff=="true"
+               }
+            ;
+            this._fonts[name]=o;
+            i++;
+         }
+         this._handler.process(new LangFileLoadedMessage(e.uri.uri,true,e.uri.uri));
+         this._handler.process(new LangAllFilesLoadedMessage(e.uri.uri,true));
+         initialized=true;
+      }
 
-        public function getFontsList() : Array
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = new Array();
-            for each (_loc_2 in this._fonts)
-            {
-                
-                _loc_1.push(_loc_2.url);
-            }
-            return _loc_1;
-        }// end function
+      private function onLoadError(e:ResourceErrorEvent) : void {
+         this._handler.process(new LangFileLoadedMessage(e.uri.uri,false,e.uri.uri));
+         this._log.warn("can\'t load "+e.uri.uri);
+      }
+   }
 
-        public function getSizeMultipicator(param1:String) : Number
-        {
-            if (this._fonts[param1])
-            {
-                return Number(this._fonts[param1].sizemultiplicator);
-            }
-            return 1;
-        }// end function
-
-        public function getFontClassName(param1:String) : String
-        {
-            return this._fonts[param1].classname;
-        }// end function
-
-        public function getFontClassRenderingMode(param1:String) : String
-        {
-            if (this._fonts[param1].embedAsCff)
-            {
-                return AntiAliasType.ADVANCED;
-            }
-            return AntiAliasType.NORMAL;
-        }// end function
-
-        private function onFileLoaded(event:ResourceLoadedEvent) : void
-        {
-            var xml:XMLList;
-            var length:int;
-            var i:int;
-            var name:String;
-            var o:Object;
-            var e:* = event;
-            this._data = new XML(e.resource);
-            this._fonts = new Dictionary();
-            var _loc_4:* = 0;
-            var _loc_5:* = this._data.Fonts;
-            var _loc_3:* = new XMLList("");
-            for each (_loc_6 in _loc_5)
-            {
-                
-                var _loc_7:* = _loc_5[_loc_4];
-                with (_loc_5[_loc_4])
-                {
-                    if (@lang == _lang)
-                    {
-                        _loc_3[_loc_4] = _loc_6;
-                    }
-                }
-            }
-            xml = _loc_3;
-            if (xml.length() == 0)
-            {
-                var _loc_4:* = 0;
-                var _loc_5:* = this._data.Fonts;
-                var _loc_3:* = new XMLList("");
-                for each (_loc_6 in _loc_5)
-                {
-                    
-                    var _loc_7:* = _loc_5[_loc_4];
-                    with (_loc_5[_loc_4])
-                    {
-                        if (@lang == "")
-                        {
-                            _loc_3[_loc_4] = _loc_6;
-                        }
-                    }
-                }
-                xml = _loc_3;
-            }
-            length = xml.font.length();
-            i;
-            while (i < length)
-            {
-                
-                name = xml.font[i].@name;
-                o;
-                this._fonts[name] = o;
-                i = (i + 1);
-            }
-            this._handler.process(new LangFileLoadedMessage(e.uri.uri, true, e.uri.uri));
-            this._handler.process(new LangAllFilesLoadedMessage(e.uri.uri, true));
-            initialized = true;
-            return;
-        }// end function
-
-        private function onLoadError(event:ResourceErrorEvent) : void
-        {
-            this._handler.process(new LangFileLoadedMessage(event.uri.uri, false, event.uri.uri));
-            this._log.warn("can\'t load " + event.uri.uri);
-            return;
-        }// end function
-
-        public static function getInstance() : FontManager
-        {
-            if (_self == null)
-            {
-                _self = new FontManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

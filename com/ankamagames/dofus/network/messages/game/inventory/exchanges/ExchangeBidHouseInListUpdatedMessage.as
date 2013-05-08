@@ -1,80 +1,69 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.data.items.effects.ObjectEffect;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeBidHouseInListUpdatedMessage extends ExchangeBidHouseInListAddedMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public static const protocolId:uint = 6337;
 
-        public function ExchangeBidHouseInListUpdatedMessage()
-        {
-            return;
-        }// end function
+   public class ExchangeBidHouseInListUpdatedMessage extends ExchangeBidHouseInListAddedMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function ExchangeBidHouseInListUpdatedMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6337;
-        }// end function
+      public static const protocolId:uint = 6337;
 
-        public function initExchangeBidHouseInListUpdatedMessage(param1:int = 0, param2:int = 0, param3:int = 0, param4:Boolean = false, param5:Vector.<ObjectEffect> = null, param6:Vector.<uint> = null) : ExchangeBidHouseInListUpdatedMessage
-        {
-            super.initExchangeBidHouseInListAddedMessage(param1, param2, param3, param4, param5, param6);
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6337;
+      }
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public function initExchangeBidHouseInListUpdatedMessage(itemUID:int=0, objGenericId:int=0, powerRate:int=0, overMax:Boolean=false, effects:Vector.<ObjectEffect>=null, prices:Vector.<uint>=null) : ExchangeBidHouseInListUpdatedMessage {
+         super.initExchangeBidHouseInListAddedMessage(itemUID,objGenericId,powerRate,overMax,effects,prices);
+         this._isInitialized=true;
+         return this;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeBidHouseInListUpdatedMessage(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this._isInitialized=false;
+      }
 
-        public function serializeAs_ExchangeBidHouseInListUpdatedMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_ExchangeBidHouseInListAddedMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeBidHouseInListUpdatedMessage(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-        public function deserializeAs_ExchangeBidHouseInListUpdatedMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            return;
-        }// end function
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeBidHouseInListUpdatedMessage(output);
+      }
 
-    }
+      public function serializeAs_ExchangeBidHouseInListUpdatedMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeBidHouseInListAddedMessage(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeBidHouseInListUpdatedMessage(input);
+      }
+
+      public function deserializeAs_ExchangeBidHouseInListUpdatedMessage(input:IDataInput) : void {
+         super.deserialize(input);
+      }
+   }
+
 }

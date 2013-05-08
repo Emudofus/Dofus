@@ -1,19 +1,20 @@
-﻿package com.ankamagames.jerakine.entities.interfaces
+package com.ankamagames.jerakine.entities.interfaces
 {
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.messages.*;
-    import flash.events.*;
+   import flash.events.IEventDispatcher;
+   import com.ankamagames.jerakine.messages.MessageHandler;
 
-    public interface IInteractive extends IEventDispatcher, IEntity
-    {
 
-        public function IInteractive();
+   public interface IInteractive extends IEventDispatcher, IEntity
+   {
+         
 
-        function get handler() : MessageHandler;
 
-        function get useHandCursor() : Boolean;
 
-        function get enabledInteractions() : uint;
+      function get handler() : MessageHandler;
 
-    }
+      function get useHandCursor() : Boolean;
+
+      function get enabledInteractions() : uint;
+   }
+
 }

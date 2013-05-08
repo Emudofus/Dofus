@@ -1,19 +1,21 @@
-﻿package org.flintparticles.common.counters
+package org.flintparticles.common.counters
 {
-    import org.flintparticles.common.emitters.*;
+   import org.flintparticles.common.emitters.Emitter;
 
-    public interface Counter
-    {
 
-        public function Counter();
+   public interface Counter
+   {
+         
 
-        function startEmitter(param1:Emitter) : uint;
 
-        function updateEmitter(param1:Emitter, param2:Number) : uint;
 
-        function stop() : void;
+      function startEmitter(param1:Emitter) : uint;
 
-        function resume() : void;
+      function updateEmitter(param1:Emitter, param2:Number) : uint;
 
-    }
+      function stop() : void;
+
+      function resume() : void;
+   }
+
 }

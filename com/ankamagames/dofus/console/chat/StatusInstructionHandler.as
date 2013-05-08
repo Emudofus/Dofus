@@ -1,82 +1,108 @@
-﻿package com.ankamagames.dofus.console.chat
+package com.ankamagames.dofus.console.chat
 {
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.network.messages.game.basic.*;
-    import com.ankamagames.dofus.network.messages.game.context.roleplay.death.*;
-    import com.ankamagames.jerakine.console.*;
-    import com.ankamagames.jerakine.data.*;
+   import com.ankamagames.jerakine.console.ConsoleInstructionHandler;
+   import com.ankamagames.jerakine.console.ConsoleHandler;
+   import com.ankamagames.dofus.network.types.game.character.status.PlayerStatus;
+   import com.ankamagames.dofus.network.messages.game.character.status.PlayerStatusUpdateRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.roleplay.death.GameRolePlayFreeSoulRequestMessage;
+   import com.ankamagames.dofus.network.types.game.character.status.PlayerStatusExtended;
+   import com.ankamagames.dofus.network.enums.PlayerStatusEnum;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.SocialHookList;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class StatusInstructionHandler extends Object implements ConsoleInstructionHandler
-    {
 
-        public function StatusInstructionHandler()
-        {
-            return;
-        }// end function
+   public class StatusInstructionHandler extends Object implements ConsoleInstructionHandler
+   {
+         
 
-        public function handle(param1:ConsoleHandler, param2:String, param3:Array) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            switch(param2)
-            {
-                case "away":
-                {
-                    _loc_4 = new BasicSwitchModeRequestMessage();
-                    _loc_4.initBasicSwitchModeRequestMessage(0);
-                    ConnectionsHandler.getConnection().send(_loc_4);
-                    break;
-                }
-                case "invisible":
-                {
-                    _loc_5 = new BasicSwitchModeRequestMessage();
-                    _loc_5.initBasicSwitchModeRequestMessage(1);
-                    ConnectionsHandler.getConnection().send(_loc_5);
-                    break;
-                }
-                case "release":
-                {
-                    _loc_6 = new GameRolePlayFreeSoulRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_6);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
+      public function StatusInstructionHandler() {
+         super();
+      }
 
-        public function getHelp(param1:String) : String
-        {
-            switch(param1)
-            {
-                case "away":
-                {
-                    return I18n.getUiText("ui.chat.console.help.away");
-                }
-                case "invisible":
-                {
-                    return I18n.getUiText("ui.chat.console.help.invisible");
-                }
-                case "release":
-                {
-                    return I18n.getUiText("ui.common.freeSoul");
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return I18n.getUiText("ui.chat.console.noHelp", [param1]);
-        }// end function
 
-        public function getParamPossibilities(param1:String, param2:uint = 0, param3:Array = null) : Array
-        {
-            return [];
-        }// end function
 
-    }
+      public function handle(console:ConsoleHandler, cmd:String, args:Array) : void {
+         var status:PlayerStatus = null;
+         var psurmsg:PlayerStatusUpdateRequestMessage = null;
+         var grpfsrmmsg:GameRolePlayFreeSoulRequestMessage = null;
+         var message:String = null;
+         var s:String = null;
+         switch(cmd)
+         {
+            case "away":
+            case I18n.getUiText("ui.chat.status.away").toLocaleLowerCase():
+               if(args.length>0)
+               {
+                  message="";
+                  for each (s in args)
+                  {
+                     message=message+(s+" ");
+                  }
+                  status=new PlayerStatusExtended();
+                  PlayerStatusExtended(status).initPlayerStatusExtended(PlayerStatusEnum.PLAYER_STATUS_AFK,message);
+                  KernelEventsManager.getInstance().processCallback(SocialHookList.NewAwayMessage,message);
+               }
+               else
+               {
+                  status=new PlayerStatus();
+                  status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_AFK);
+               }
+               psurmsg=new PlayerStatusUpdateRequestMessage();
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
+               break;
+            case I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase():
+               status=new PlayerStatus();
+               status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_SOLO);
+               psurmsg=new PlayerStatusUpdateRequestMessage();
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
+               break;
+            case I18n.getUiText("ui.chat.status.private").toLocaleLowerCase():
+               status=new PlayerStatus();
+               status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_PRIVATE);
+               psurmsg=new PlayerStatusUpdateRequestMessage();
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
+               break;
+            case I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase():
+               status=new PlayerStatus();
+               status.initPlayerStatus(PlayerStatusEnum.PLAYER_STATUS_AVAILABLE);
+               psurmsg=new PlayerStatusUpdateRequestMessage();
+               psurmsg.initPlayerStatusUpdateRequestMessage(status);
+               ConnectionsHandler.getConnection().send(psurmsg);
+               break;
+            case "release":
+               grpfsrmmsg=new GameRolePlayFreeSoulRequestMessage();
+               ConnectionsHandler.getConnection().send(grpfsrmmsg);
+               break;
+         }
+      }
+
+      public function getHelp(cmd:String) : String {
+         switch(cmd)
+         {
+            case "away":
+            case I18n.getUiText("ui.chat.status.away").toLocaleLowerCase():
+               return "- /"+I18n.getUiText("ui.chat.status.away".toLocaleLowerCase())+I18n.getUiText("ui.common.colon")+I18n.getUiText("ui.chat.status.awaytooltip");
+            case I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase():
+               return "- /"+I18n.getUiText("ui.chat.status.solo").toLocaleLowerCase()+I18n.getUiText("ui.common.colon")+I18n.getUiText("ui.chat.status.solotooltip");
+            case I18n.getUiText("ui.chat.status.private").toLocaleLowerCase():
+               return "- /"+I18n.getUiText("ui.chat.status.private").toLocaleLowerCase()+I18n.getUiText("ui.common.colon")+I18n.getUiText("ui.chat.status.privatetooltip");
+            case I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase():
+               return "- /"+I18n.getUiText("ui.chat.status.availiable").toLocaleLowerCase()+I18n.getUiText("ui.common.colon")+I18n.getUiText("ui.chat.status.availiabletooltip");
+            case "release":
+               return I18n.getUiText("ui.common.freeSoul");
+            default:
+               return I18n.getUiText("ui.chat.console.noHelp",[cmd]);
+         }
+      }
+
+      public function getParamPossibilities(cmd:String, paramIndex:uint=0, currentParams:Array=null) : Array {
+         return [];
+      }
+   }
+
 }

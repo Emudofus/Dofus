@@ -1,51 +1,57 @@
-﻿package com.ankamagames.jerakine.utils.misc
+package com.ankamagames.jerakine.utils.misc
 {
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import flash.utils.getTimer;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class Chrono extends Object
-    {
-        private static var times:Array = [];
-        private static var labels:Array = [];
-        private static var level:int = 0;
-        private static var indent:String = "";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Chrono));
-        public static var show_total_time:Boolean = true;
 
-        public function Chrono()
-        {
-            return;
-        }// end function
+   public class Chrono extends Object
+   {
+         
 
-        public static function start(param1:String = "") : void
-        {
-            param1 = param1.length ? (param1) : ("Chrono " + times.length);
-            times.push(getTimer());
-            labels.push(param1);
-            (level + 1);
-            indent = indent + "  ";
-            _log.trace(">>" + indent + "START " + param1);
-            return;
-        }// end function
+      public function Chrono() {
+         super();
+      }
 
-        public static function stop() : int
-        {
-            var _loc_1:* = getTimer() - times.pop();
-            if (!show_total_time && times.length)
-            {
-                times[(times.length - 1)] = times[(times.length - 1)] - _loc_1;
-            }
-            _log.trace("<<" + indent + "DONE " + labels.pop() + " " + _loc_1 + "ms.");
-            (level - 1);
-            indent = indent.slice(0, 2 * level + 1);
-            return _loc_1;
-        }// end function
+      private static var times:Array = [];
 
-        public static function display(param1:String) : void
-        {
-            _log.trace("!!" + indent + "TRACE " + param1);
-            return;
-        }// end function
+      private static var labels:Array = [];
 
-    }
+      private static var level:int = 0;
+
+      private static var indent:String = "";
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Chrono));
+
+      public static var show_total_time:Boolean = true;
+
+      public static function start(label:String="") : void {
+         var label:String = label.length?label:"Chrono "+times.length;
+         times.push(getTimer());
+         labels.push(label);
+         level=level+1;
+         indent=indent+"  ";
+         _log.trace(">>"+indent+"START "+label);
+      }
+
+      public static function stop() : int {
+         var elapsed:int = getTimer()-times.pop();
+         if((!show_total_time)&&(times.length))
+         {
+            times[times.length-1]=times[times.length-1]-elapsed;
+         }
+         _log.trace("<<"+indent+"DONE "+labels.pop()+" "+elapsed+"ms.");
+         level=level-1;
+         indent=indent.slice(0,2*level+1);
+         return elapsed;
+      }
+
+      public static function display(str:String) : void {
+         _log.trace("!!"+indent+"TRACE "+str);
+      }
+
+
+   }
+
 }

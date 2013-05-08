@@ -1,1596 +1,1356 @@
-﻿package flashx.textLayout.edit
+package flashx.textLayout.edit
 {
-    import flash.desktop.*;
-    import flash.display.*;
-    import flash.errors.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.text.engine.*;
-    import flash.ui.*;
-    import flash.utils.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.container.*;
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.elements.*;
-    import flashx.textLayout.events.*;
-    import flashx.textLayout.formats.*;
-    import flashx.textLayout.operations.*;
-    import flashx.textLayout.utils.*;
+   import flashx.textLayout.elements.TextFlow;
+   import flashx.textLayout.container.ContainerController;
+   import flashx.textLayout.compose.TextFlowLine;
+   import flash.text.engine.TextLine;
+   import flash.geom.Rectangle;
+   import flashx.textLayout.formats.BlockProgression;
+   import flashx.textLayout.formats.Direction;
+   import flash.display.DisplayObject;
+   import flashx.textLayout.container.ColumnState;
+   import flash.text.engine.TextLineValidity;
+   import flash.geom.Point;
+   import flash.text.engine.TextRotation;
+   import flash.display.Stage;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.elements.ParagraphElement;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flash.ui.MouseCursor;
+   import flash.display.InteractiveObject;
+   import flashx.textLayout.utils.NavigationUtil;
+   import flash.ui.Mouse;
+   import flashx.textLayout.compose.IFlowComposer;
+   import flashx.textLayout.events.SelectionEvent;
+   import flash.events.MouseEvent;
+   import flash.events.FocusEvent;
+   import flash.events.Event;
+   import flashx.textLayout.operations.FlowOperation;
+   import flashx.textLayout.events.FlowOperationEvent;
+   import flashx.textLayout.operations.CopyOperation;
+   import flash.errors.IllegalOperationError;
+   import flashx.textLayout.elements.GlobalSettings;
+   import flash.utils.getQualifiedClassName;
+   import flash.events.KeyboardEvent;
+   import flash.ui.Keyboard;
+   import flash.events.TextEvent;
+   import flash.events.IMEEvent;
+   import flash.events.ContextMenuEvent;
+   import flash.ui.ContextMenu;
+   import flash.desktop.Clipboard;
+   import flash.desktop.ClipboardFormats;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flashx.textLayout.elements.TextRange;
 
-    public class SelectionManager extends Object implements ISelectionManager
-    {
-        private var _focusedSelectionFormat:SelectionFormat;
-        private var _unfocusedSelectionFormat:SelectionFormat;
-        private var _inactiveSelectionFormat:SelectionFormat;
-        private var _selFormatState:String = "unfocused";
-        private var _isActive:Boolean;
-        private var _textFlow:TextFlow;
-        private var anchorMark:Mark;
-        private var activeMark:Mark;
-        private var _pointFormat:ITextLayoutFormat;
-        protected var ignoreNextTextEvent:Boolean = false;
-        protected var allowOperationMerge:Boolean = false;
-        private var _mouseOverSelectionArea:Boolean = false;
-        private var marks:Array;
+   use namespace tlf_internal;
 
-        public function SelectionManager()
-        {
-            this.marks = [];
-            this._textFlow = null;
-            this.anchorMark = this.createMark();
-            this.activeMark = this.createMark();
-            this._pointFormat = null;
-            this._isActive = false;
-            return;
-        }// end function
+   public class SelectionManager extends Object implements ISelectionManager
+   {
+         
 
-        protected function get pointFormat() : ITextLayoutFormat
-        {
-            return this._pointFormat;
-        }// end function
+      public function SelectionManager() {
+         this.marks=[];
+         super();
+         this._textFlow=null;
+         this.anchorMark=this.createMark();
+         this.activeMark=this.createMark();
+         this._pointFormat=null;
+         this._isActive=false;
+      }
 
-        public function getSelectionState() : SelectionState
-        {
-            return new SelectionState(this._textFlow, this.anchorMark.position, this.activeMark.position, this.pointFormat);
-        }// end function
-
-        public function setSelectionState(param1:SelectionState) : void
-        {
-            this.internalSetSelection(param1.textFlow, param1.anchorPosition, param1.activePosition, param1.pointFormat);
-            return;
-        }// end function
-
-        public function hasSelection() : Boolean
-        {
-            return this.anchorMark.position != -1;
-        }// end function
-
-        public function isRangeSelection() : Boolean
-        {
-            return this.anchorMark.position != -1 && this.anchorMark.position != this.activeMark.position;
-        }// end function
-
-        public function get textFlow() : TextFlow
-        {
-            return this._textFlow;
-        }// end function
-
-        public function set textFlow(param1:TextFlow) : void
-        {
-            if (this._textFlow != param1)
+      private static function computeSelectionIndexInContainer(textFlow:TextFlow, controller:ContainerController, localX:Number, localY:Number) : int {
+         var rtline:TextFlowLine = null;
+         var rtTextLine:TextLine = null;
+         var bounds:Rectangle = null;
+         var linePerpCoor:* = NaN;
+         var midPerpCoor:* = NaN;
+         var isLineBelow:* = false;
+         var prevPerpCoor:* = NaN;
+         var inPrevLine:* = false;
+         var lastLinePosInPar:* = 0;
+         var lastChar:String = null;
+         var lineIndex:int = -1;
+         var firstCharVisible:int = controller.absoluteStart;
+         var length:int = controller.textLength;
+         var bp:String = textFlow.computedFormat.blockProgression;
+         var isTTB:Boolean = bp==BlockProgression.RL;
+         var isDirectionRTL:Boolean = textFlow.computedFormat.direction==Direction.RTL;
+         var perpCoor:Number = isTTB?localX:localY;
+         var nearestColIdx:int = locateNearestColumn(controller,localX,localY,textFlow.computedFormat.blockProgression,textFlow.computedFormat.direction);
+         var prevLineBounds:Rectangle = null;
+         var previousLineIndex:int = -1;
+         var lastLineIndexInColumn:int = -1;
+         var testIndex:int = textFlow.flowComposer.numLines-1;
+         while(testIndex>=0)
+         {
+            rtline=textFlow.flowComposer.getLineAt(testIndex);
+            if((!(rtline.controller==controller))||(!(rtline.columnIndex==nearestColIdx)))
             {
-                if (this._textFlow)
-                {
-                    this.flushPendingOperations();
-                }
-                this.clear();
-                if (!param1)
-                {
-                    this.setMouseCursor(MouseCursor.AUTO);
-                }
-                this._textFlow = param1;
-                if (this._textFlow && this._textFlow.interactionManager != this)
-                {
-                    this._textFlow.interactionManager = this;
-                }
-            }
-            return;
-        }// end function
-
-        public function get editingMode() : String
-        {
-            return EditingMode.READ_SELECT;
-        }// end function
-
-        public function get windowActive() : Boolean
-        {
-            return this._selFormatState != SelectionFormatState.INACTIVE;
-        }// end function
-
-        public function get focused() : Boolean
-        {
-            return this._selFormatState == SelectionFormatState.FOCUSED;
-        }// end function
-
-        public function get currentSelectionFormat() : SelectionFormat
-        {
-            if (this._selFormatState == SelectionFormatState.UNFOCUSED)
-            {
-                return this.unfocusedSelectionFormat;
-            }
-            if (this._selFormatState == SelectionFormatState.INACTIVE)
-            {
-                return this.inactiveSelectionFormat;
-            }
-            return this.focusedSelectionFormat;
-        }// end function
-
-        public function set focusedSelectionFormat(param1:SelectionFormat) : void
-        {
-            this._focusedSelectionFormat = param1;
-            if (this._selFormatState == SelectionFormatState.FOCUSED)
-            {
-                this.refreshSelection();
-            }
-            return;
-        }// end function
-
-        public function get focusedSelectionFormat() : SelectionFormat
-        {
-            return this._focusedSelectionFormat ? (this._focusedSelectionFormat) : (this._textFlow ? (this._textFlow.configuration.focusedSelectionFormat) : (null));
-        }// end function
-
-        public function set unfocusedSelectionFormat(param1:SelectionFormat) : void
-        {
-            this._unfocusedSelectionFormat = param1;
-            if (this._selFormatState == SelectionFormatState.UNFOCUSED)
-            {
-                this.refreshSelection();
-            }
-            return;
-        }// end function
-
-        public function get unfocusedSelectionFormat() : SelectionFormat
-        {
-            return this._unfocusedSelectionFormat ? (this._unfocusedSelectionFormat) : (this._textFlow ? (this._textFlow.configuration.unfocusedSelectionFormat) : (null));
-        }// end function
-
-        public function set inactiveSelectionFormat(param1:SelectionFormat) : void
-        {
-            this._inactiveSelectionFormat = param1;
-            if (this._selFormatState == SelectionFormatState.INACTIVE)
-            {
-                this.refreshSelection();
-            }
-            return;
-        }// end function
-
-        public function get inactiveSelectionFormat() : SelectionFormat
-        {
-            return this._inactiveSelectionFormat ? (this._inactiveSelectionFormat) : (this._textFlow ? (this._textFlow.configuration.inactiveSelectionFormat) : (null));
-        }// end function
-
-        function get selectionFormatState() : String
-        {
-            return this._selFormatState;
-        }// end function
-
-        function setSelectionFormatState(param1:String) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            if (param1 != this._selFormatState)
-            {
-                _loc_2 = this.currentSelectionFormat;
-                this._selFormatState = param1;
-                _loc_3 = this.currentSelectionFormat;
-                if (!_loc_3.equals(_loc_2))
-                {
-                    this.refreshSelection();
-                }
-            }
-            return;
-        }// end function
-
-        function cloneSelectionFormatState(param1:ISelectionManager) : void
-        {
-            var _loc_2:* = param1 as SelectionManager;
-            if (_loc_2)
-            {
-                this._isActive = _loc_2._isActive;
-                this._mouseOverSelectionArea = _loc_2._mouseOverSelectionArea;
-                this.setSelectionFormatState(_loc_2.selectionFormatState);
-            }
-            return;
-        }// end function
-
-        private function selectionPoint(param1:Object, param2:InteractiveObject, param3:Number, param4:Number, param5:Boolean = false) : SelectionState
-        {
-            if (!this._textFlow)
-            {
-                return null;
-            }
-            if (!this.hasSelection())
-            {
-                param5 = false;
-            }
-            var _loc_6:* = this.anchorMark.position;
-            var _loc_7:* = this.activeMark.position;
-            _loc_7 = computeSelectionIndex(this._textFlow, param2, param1, param3, param4);
-            if (_loc_7 == -1)
-            {
-                return null;
-            }
-            _loc_7 = Math.min(_loc_7, (this._textFlow.textLength - 1));
-            if (!param5)
-            {
-                _loc_6 = _loc_7;
-            }
-            if (_loc_6 == _loc_7)
-            {
-                _loc_6 = NavigationUtil.updateStartIfInReadOnlyElement(this._textFlow, _loc_6);
-                _loc_7 = NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow, _loc_7);
+               if(lastLineIndexInColumn!=-1)
+               {
+                  lineIndex=testIndex+1;
+               }
             }
             else
             {
-                _loc_7 = NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow, _loc_7);
+               if((rtline.absoluteStart>firstCharVisible)||(rtline.absoluteStart>=firstCharVisible+length))
+               {
+               }
+               else
+               {
+                  rtTextLine=rtline.getTextLine();
+                  if((rtTextLine==null)||(rtTextLine.parent==null))
+                  {
+                  }
+                  else
+                  {
+                     if(lastLineIndexInColumn==-1)
+                     {
+                        lastLineIndexInColumn=testIndex;
+                     }
+                     bounds=rtTextLine.getBounds(DisplayObject(controller.container));
+                     linePerpCoor=isTTB?bounds.left:bounds.bottom;
+                     midPerpCoor=-1;
+                     if(prevLineBounds)
+                     {
+                        prevPerpCoor=isTTB?prevLineBounds.right:prevLineBounds.top;
+                        midPerpCoor=(linePerpCoor+prevPerpCoor)/2;
+                     }
+                     isLineBelow=isTTB?linePerpCoor<perpCoor:linePerpCoor>perpCoor;
+                     if((isLineBelow)||(testIndex==0))
+                     {
+                        inPrevLine=(!(midPerpCoor==-1))&&(isTTB?perpCoor>midPerpCoor:perpCoor<midPerpCoor);
+                        lineIndex=(inPrevLine)&&(!(testIndex==lastLineIndexInColumn))?testIndex+1:testIndex;
+                     }
+                     else
+                     {
+                        prevLineBounds=bounds;
+                        previousLineIndex=testIndex;
+                     }
+                  }
+               }
             }
-            return new SelectionState(this.textFlow, _loc_6, _loc_7);
-        }// end function
+            testIndex--;
+         }
+      }
 
-        public function setFocus() : void
-        {
-            if (!this._textFlow)
+      private static function locateNearestColumn(container:ContainerController, localX:Number, localY:Number, wm:String, direction:String) : int {
+         var curCol:Rectangle = null;
+         var nextCol:Rectangle = null;
+         var colIdx:int = 0;
+         var columnState:ColumnState = container.columnState;
+         while(colIdx<columnState.columnCount-1)
+         {
+            curCol=columnState.getColumnAt(colIdx);
+            nextCol=columnState.getColumnAt(colIdx+1);
+            if(curCol.contains(localX,localY))
             {
-                return;
-            }
-            if (this._textFlow.flowComposer)
-            {
-                this._textFlow.flowComposer.setFocus(this.activePosition, false);
-            }
-            this.setSelectionFormatState(SelectionFormatState.FOCUSED);
-            return;
-        }// end function
-
-        protected function setMouseCursor(param1:String) : void
-        {
-            Mouse.cursor = param1;
-            return;
-        }// end function
-
-        public function get anchorPosition() : int
-        {
-            return this.anchorMark.position;
-        }// end function
-
-        public function get activePosition() : int
-        {
-            return this.activeMark.position;
-        }// end function
-
-        public function get absoluteStart() : int
-        {
-            return this.anchorMark.position < this.activeMark.position ? (this.anchorMark.position) : (this.activeMark.position);
-        }// end function
-
-        public function get absoluteEnd() : int
-        {
-            return this.anchorMark.position > this.activeMark.position ? (this.anchorMark.position) : (this.activeMark.position);
-        }// end function
-
-        public function selectAll() : void
-        {
-            this.selectRange(0, int.MAX_VALUE);
-            return;
-        }// end function
-
-        public function selectRange(param1:int, param2:int) : void
-        {
-            this.flushPendingOperations();
-            if (param1 != this.anchorMark.position || param2 != this.activeMark.position)
-            {
-                this.clearSelectionShapes();
-                this.internalSetSelection(this._textFlow, param1, param2);
-                this.selectionChanged();
-                this.allowOperationMerge = false;
-            }
-            return;
-        }// end function
-
-        private function internalSetSelection(param1:TextFlow, param2:int, param3:int, param4:ITextLayoutFormat = null) : void
-        {
-            this._textFlow = param1;
-            if (param2 < 0 || param3 < 0)
-            {
-                param2 = -1;
-                param3 = -1;
-            }
-            var _loc_5:* = this._textFlow.textLength > 0 ? ((this._textFlow.textLength - 1)) : (0);
-            if (param2 != -1 && param3 != -1)
-            {
-                if (param2 > _loc_5)
-                {
-                    param2 = _loc_5;
-                }
-                if (param3 > _loc_5)
-                {
-                    param3 = _loc_5;
-                }
-            }
-            this._pointFormat = param4;
-            this.anchorMark.position = param2;
-            this.activeMark.position = param3;
-            return;
-        }// end function
-
-        private function clear() : void
-        {
-            if (this.hasSelection())
-            {
-                this.flushPendingOperations();
-                this.clearSelectionShapes();
-                this.internalSetSelection(this._textFlow, -1, -1);
-                this.selectionChanged();
-                this.allowOperationMerge = false;
-            }
-            return;
-        }// end function
-
-        private function addSelectionShapes() : void
-        {
-            var _loc_1:* = 0;
-            if (this._textFlow.flowComposer)
-            {
-                this.internalSetSelection(this._textFlow, this.anchorMark.position, this.activeMark.position, this._pointFormat);
-                if (this.currentSelectionFormat && (this.absoluteStart == this.absoluteEnd && this.currentSelectionFormat.pointAlpha != 0 || this.absoluteStart != this.absoluteEnd && this.currentSelectionFormat.rangeAlpha != 0))
-                {
-                    _loc_1 = 0;
-                    while (_loc_1 < this._textFlow.flowComposer.numControllers)
-                    {
-                        
-                        this._textFlow.flowComposer.getControllerAt(_loc_1++).addSelectionShapes(this.currentSelectionFormat, this.absoluteStart, this.absoluteEnd);
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        private function clearSelectionShapes() : void
-        {
-            var _loc_2:* = 0;
-            var _loc_1:* = this._textFlow ? (this._textFlow.flowComposer) : (null);
-            if (_loc_1)
-            {
-                _loc_2 = 0;
-                while (_loc_2 < _loc_1.numControllers)
-                {
-                    
-                    _loc_1.getControllerAt(_loc_2++).clearSelectionShapes();
-                }
-            }
-            return;
-        }// end function
-
-        public function refreshSelection() : void
-        {
-            if (this.hasSelection())
-            {
-                this.clearSelectionShapes();
-                this.addSelectionShapes();
-            }
-            return;
-        }// end function
-
-        function selectionChanged(param1:Boolean = true, param2:Boolean = true) : void
-        {
-            if (param2)
-            {
-                this._pointFormat = null;
-            }
-            if (param1 && this._textFlow)
-            {
-                this.textFlow.dispatchEvent(new SelectionEvent(SelectionEvent.SELECTION_CHANGE, false, false, this.hasSelection() ? (this.getSelectionState()) : (null)));
-            }
-            return;
-        }// end function
-
-        function setNewSelectionPoint(param1:Object, param2:InteractiveObject, param3:Number, param4:Number, param5:Boolean = false) : Boolean
-        {
-            var _loc_6:* = this.selectionPoint(param1, param2, param3, param4, param5);
-            if (this.selectionPoint(param1, param2, param3, param4, param5) == null)
-            {
-                return false;
-            }
-            if (_loc_6.anchorPosition != this.anchorMark.position || _loc_6.activePosition != this.activeMark.position)
-            {
-                this.selectRange(_loc_6.anchorPosition, _loc_6.activePosition);
-                return true;
-            }
-            return false;
-        }// end function
-
-        public function mouseDownHandler(event:MouseEvent) : void
-        {
-            this.handleMouseEventForSelection(event, event.shiftKey);
-            return;
-        }// end function
-
-        public function mouseMoveHandler(event:MouseEvent) : void
-        {
-            var _loc_2:* = this.textFlow.computedFormat.blockProgression;
-            if (_loc_2 != BlockProgression.RL)
-            {
-                this.setMouseCursor(MouseCursor.IBEAM);
-            }
-            if (event.buttonDown)
-            {
-                this.handleMouseEventForSelection(event, true);
-            }
-            return;
-        }// end function
-
-        function handleMouseEventForSelection(event:MouseEvent, param2:Boolean) : void
-        {
-            var _loc_3:* = this.hasSelection();
-            if (this.setNewSelectionPoint(event.currentTarget, event.target as InteractiveObject, event.localX, event.localY, _loc_3 && param2))
-            {
-                if (_loc_3)
-                {
-                    this.clearSelectionShapes();
-                }
-                if (this.hasSelection())
-                {
-                    this.addSelectionShapes();
-                }
-            }
-            this.allowOperationMerge = false;
-            return;
-        }// end function
-
-        public function mouseUpHandler(event:MouseEvent) : void
-        {
-            if (!this._mouseOverSelectionArea)
-            {
-                this.setMouseCursor(MouseCursor.AUTO);
-            }
-            return;
-        }// end function
-
-        private function atBeginningWordPos(param1:ParagraphElement, param2:int) : Boolean
-        {
-            if (param2 == 0)
-            {
-                return true;
-            }
-            var _loc_3:* = param1.findNextWordBoundary(param2);
-            _loc_3 = param1.findPreviousWordBoundary(_loc_3);
-            return param2 == _loc_3;
-        }// end function
-
-        public function mouseDoubleClickHandler(event:MouseEvent) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = 0;
-            var _loc_6:* = null;
-            var _loc_7:* = 0;
-            if (!this.hasSelection())
-            {
-                return;
-            }
-            var _loc_2:* = this._textFlow.findAbsoluteParagraph(this.activeMark.position);
-            var _loc_3:* = _loc_2.getAbsoluteStart();
-            if (this.anchorMark.position <= this.activeMark.position)
-            {
-                _loc_4 = _loc_2.findNextWordBoundary(this.activeMark.position - _loc_3) + _loc_3;
             }
             else
             {
-                _loc_4 = _loc_2.findPreviousWordBoundary(this.activeMark.position - _loc_3) + _loc_3;
+               if(nextCol.contains(localX,localY))
+               {
+                  colIdx++;
+               }
+               else
+               {
+                  if(wm==BlockProgression.RL)
+                  {
+                     if((localY>curCol.top)||(localY>nextCol.top)&&(Math.abs(curCol.bottom-localY)<=Math.abs(nextCol.top-localY)))
+                     {
+                     }
+                     else
+                     {
+                        if(localY>nextCol.top)
+                        {
+                           colIdx++;
+                        }
+                     }
+                  }
+                  else
+                  {
+                     if(direction==Direction.LTR)
+                     {
+                        if((localX>curCol.left)||(localX>nextCol.left)&&(Math.abs(curCol.right-localX)<=Math.abs(nextCol.left-localX)))
+                        {
+                        }
+                        else
+                        {
+                           if(localX<nextCol.left)
+                           {
+                              colIdx++;
+                           }
+                        }
+                     }
+                     else
+                     {
+                        if((localX<curCol.right)||(localX<nextCol.right)&&(Math.abs(curCol.left-localX)<=Math.abs(nextCol.right-localX)))
+                        {
+                        }
+                        else
+                        {
+                           if(localX>nextCol.right)
+                           {
+                              colIdx++;
+                           }
+                        }
+                     }
+                  }
+                  colIdx++;
+                  continue;
+               }
             }
-            if (_loc_4 == _loc_3 + _loc_2.textLength)
+         }
+      }
+
+      private static function computeSelectionIndexInLine(textFlow:TextFlow, textLine:TextLine, localX:Number, localY:Number) : int {
+         var paraSelectionIdx:* = 0;
+         if(!(textLine.userData is TextFlowLine))
+         {
+            return -1;
+         }
+         var rtline:TextFlowLine = TextFlowLine(textLine.userData);
+         if(rtline.validity==TextLineValidity.INVALID)
+         {
+            return -1;
+         }
+         var textLine:TextLine = rtline.getTextLine(true);
+         var isTTB:Boolean = textFlow.computedFormat.blockProgression==BlockProgression.RL;
+         var perpCoor:Number = isTTB?localX:localY;
+         var pt:Point = new Point();
+         pt.x=localX;
+         pt.y=localY;
+         pt=textLine.localToGlobal(pt);
+         var elemIdx:int = textLine.getAtomIndexAtPoint(pt.x,pt.y);
+         if(elemIdx==-1)
+         {
+            pt.x=localX;
+            pt.y=localY;
+            if((pt.x>0)||(isTTB)&&(perpCoor<textLine.ascent))
             {
-                _loc_4 = _loc_4 - 1;
+               pt.x=0;
             }
-            if (event.shiftKey)
+            if((pt.y>0)||(!isTTB)&&(perpCoor<textLine.descent))
             {
-                _loc_5 = this.anchorMark.position;
+               pt.y=0;
+            }
+            pt=textLine.localToGlobal(pt);
+            elemIdx=textLine.getAtomIndexAtPoint(pt.x,pt.y);
+         }
+         if(elemIdx==-1)
+         {
+            pt.x=localX;
+            pt.y=localY;
+            pt=textLine.localToGlobal(pt);
+            if(textLine.parent)
+            {
+               pt=textLine.parent.globalToLocal(pt);
+            }
+            if(!isTTB)
+            {
+               return pt.x<=textLine.x?rtline.absoluteStart:rtline.absoluteStart+rtline.textLength-1;
+            }
+            return pt.y<=textLine.y?rtline.absoluteStart:rtline.absoluteStart+rtline.textLength-1;
+         }
+         var glyphRect:Rectangle = textLine.getAtomBounds(elemIdx);
+         var leanRight:Boolean = false;
+         if(glyphRect)
+         {
+            if((isTTB)&&(!(textLine.getAtomTextRotation(elemIdx)==TextRotation.ROTATE_0)))
+            {
+               leanRight=localY<glyphRect.y+glyphRect.height/2;
             }
             else
             {
-                _loc_6 = this._textFlow.findAbsoluteParagraph(this.anchorMark.position);
-                _loc_7 = _loc_6.getAbsoluteStart();
-                if (this.atBeginningWordPos(_loc_6, this.anchorMark.position - _loc_7))
-                {
-                    _loc_5 = this.anchorMark.position;
-                }
-                else
-                {
-                    if (this.anchorMark.position <= this.activeMark.position)
-                    {
-                        _loc_5 = _loc_6.findPreviousWordBoundary(this.anchorMark.position - _loc_7) + _loc_7;
-                    }
-                    else
-                    {
-                        _loc_5 = _loc_6.findNextWordBoundary(this.anchorMark.position - _loc_7) + _loc_7;
-                    }
-                    if (_loc_5 == _loc_7 + _loc_6.textLength)
-                    {
-                        _loc_5 = _loc_5 - 1;
-                    }
-                }
+               leanRight=localX<glyphRect.x+glyphRect.width/2;
             }
-            if (_loc_5 != this.anchorMark.position || _loc_4 != this.activeMark.position)
+         }
+         if(textLine.getAtomBidiLevel(elemIdx)%2!=0)
+         {
+            paraSelectionIdx=leanRight?textLine.getAtomTextBlockBeginIndex(elemIdx):textLine.getAtomTextBlockEndIndex(elemIdx);
+         }
+         else
+         {
+            paraSelectionIdx=leanRight?textLine.getAtomTextBlockEndIndex(elemIdx):textLine.getAtomTextBlockBeginIndex(elemIdx);
+         }
+         return rtline.paragraph.getAbsoluteStart()+paraSelectionIdx;
+      }
+
+      private static function checkForDisplayed(container:DisplayObject) : Boolean {
+         try
+         {
+            while(container)
             {
-                this.internalSetSelection(this._textFlow, _loc_5, _loc_4, null);
-                this.selectionChanged();
-                this.clearSelectionShapes();
-                if (this.hasSelection())
-                {
-                    this.addSelectionShapes();
-                }
+               if(!container.visible)
+               {
+                  return false;
+               }
+               if(container is Stage)
+               {
+                  return true;
+               }
             }
-            this.allowOperationMerge = false;
+         }
+         catch(e:Error)
+         {
+            return true;
+         }
+         return false;
+      }
+
+      tlf_internal  static function computeSelectionIndex(textFlow:TextFlow, target:Object, currentTarget:Object, localX:Number, localY:Number) : int {
+         var containerPoint:Point = null;
+         var tfl:TextFlowLine = null;
+         var para:ParagraphElement = null;
+         var controller:ContainerController = null;
+         var idx:* = 0;
+         var testController:ContainerController = null;
+         var controllerCandidate:ContainerController = null;
+         var candidateLocalX:* = NaN;
+         var candidateLocalY:* = NaN;
+         var relDistance:* = NaN;
+         var containerIndex:* = 0;
+         var curContainerController:ContainerController = null;
+         var bounds:Rectangle = null;
+         var containerWidth:* = NaN;
+         var containerHeight:* = NaN;
+         var adjustX:* = NaN;
+         var adjustY:* = NaN;
+         var relDistanceX:* = NaN;
+         var relDistanceY:* = NaN;
+         var tempDist:* = NaN;
+         var rslt:int = 0;
+         var useTargetedTextLine:Boolean = false;
+         if(target is TextLine)
+         {
+            tfl=TextLine(target).userData as TextFlowLine;
+            if(tfl)
+            {
+               para=tfl.paragraph;
+               if(para.getTextFlow()==textFlow)
+               {
+                  useTargetedTextLine=true;
+               }
+            }
+         }
+         if(useTargetedTextLine)
+         {
+            rslt=computeSelectionIndexInLine(textFlow,TextLine(target),localX,localY);
+         }
+         else
+         {
+            idx=0;
+            while(idx<textFlow.flowComposer.numControllers)
+            {
+               testController=textFlow.flowComposer.getControllerAt(idx);
+               if((testController.container==target)||(testController.container==currentTarget))
+               {
+                  controller=testController;
+               }
+               else
+               {
+                  idx++;
+                  continue;
+               }
+            }
+         }
+         if(rslt>=textFlow.textLength)
+         {
+            rslt=textFlow.textLength-1;
+         }
+         return rslt;
+      }
+
+      private var _focusedSelectionFormat:SelectionFormat;
+
+      private var _unfocusedSelectionFormat:SelectionFormat;
+
+      private var _inactiveSelectionFormat:SelectionFormat;
+
+      private var _selFormatState:String = "unfocused";
+
+      private var _isActive:Boolean;
+
+      private var _textFlow:TextFlow;
+
+      private var anchorMark:Mark;
+
+      private var activeMark:Mark;
+
+      private var _pointFormat:ITextLayoutFormat;
+
+      protected function get pointFormat() : ITextLayoutFormat {
+         return this._pointFormat;
+      }
+
+      protected var ignoreNextTextEvent:Boolean = false;
+
+      protected var allowOperationMerge:Boolean = false;
+
+      private var _mouseOverSelectionArea:Boolean = false;
+
+      public function getSelectionState() : SelectionState {
+         return new SelectionState(this._textFlow,this.anchorMark.position,this.activeMark.position,this.pointFormat);
+      }
+
+      public function setSelectionState(sel:SelectionState) : void {
+         this.internalSetSelection(sel.textFlow,sel.anchorPosition,sel.activePosition,sel.pointFormat);
+      }
+
+      public function hasSelection() : Boolean {
+         return !(this.anchorMark.position==-1);
+      }
+
+      public function isRangeSelection() : Boolean {
+         return (!(this.anchorMark.position==-1))&&(!(this.anchorMark.position==this.activeMark.position));
+      }
+
+      public function get textFlow() : TextFlow {
+         return this._textFlow;
+      }
+
+      public function set textFlow(value:TextFlow) : void {
+         if(this._textFlow!=value)
+         {
+            if(this._textFlow)
+            {
+               this.flushPendingOperations();
+            }
+            this.clear();
+            if(!value)
+            {
+               this.setMouseCursor(MouseCursor.AUTO);
+            }
+            this._textFlow=value;
+            if((this._textFlow)&&(!(this._textFlow.interactionManager==this)))
+            {
+               this._textFlow.interactionManager=this;
+            }
+         }
+      }
+
+      public function get editingMode() : String {
+         return EditingMode.READ_SELECT;
+      }
+
+      public function get windowActive() : Boolean {
+         return !(this._selFormatState==SelectionFormatState.INACTIVE);
+      }
+
+      public function get focused() : Boolean {
+         return this._selFormatState==SelectionFormatState.FOCUSED;
+      }
+
+      public function get currentSelectionFormat() : SelectionFormat {
+         if(this._selFormatState==SelectionFormatState.UNFOCUSED)
+         {
+            return this.unfocusedSelectionFormat;
+         }
+         if(this._selFormatState==SelectionFormatState.INACTIVE)
+         {
+            return this.inactiveSelectionFormat;
+         }
+         return this.focusedSelectionFormat;
+      }
+
+      public function set focusedSelectionFormat(val:SelectionFormat) : void {
+         this._focusedSelectionFormat=val;
+         if(this._selFormatState==SelectionFormatState.FOCUSED)
+         {
+            this.refreshSelection();
+         }
+      }
+
+      public function get focusedSelectionFormat() : SelectionFormat {
+         return this._focusedSelectionFormat?this._focusedSelectionFormat:this._textFlow?this._textFlow.configuration.focusedSelectionFormat:null;
+      }
+
+      public function set unfocusedSelectionFormat(val:SelectionFormat) : void {
+         this._unfocusedSelectionFormat=val;
+         if(this._selFormatState==SelectionFormatState.UNFOCUSED)
+         {
+            this.refreshSelection();
+         }
+      }
+
+      public function get unfocusedSelectionFormat() : SelectionFormat {
+         return this._unfocusedSelectionFormat?this._unfocusedSelectionFormat:this._textFlow?this._textFlow.configuration.unfocusedSelectionFormat:null;
+      }
+
+      public function set inactiveSelectionFormat(val:SelectionFormat) : void {
+         this._inactiveSelectionFormat=val;
+         if(this._selFormatState==SelectionFormatState.INACTIVE)
+         {
+            this.refreshSelection();
+         }
+      }
+
+      public function get inactiveSelectionFormat() : SelectionFormat {
+         return this._inactiveSelectionFormat?this._inactiveSelectionFormat:this._textFlow?this._textFlow.configuration.inactiveSelectionFormat:null;
+      }
+
+      tlf_internal function get selectionFormatState() : String {
+         return this._selFormatState;
+      }
+
+      tlf_internal function setSelectionFormatState(selFormatState:String) : void {
+         var oldSelectionFormat:SelectionFormat = null;
+         var newSelectionFormat:SelectionFormat = null;
+         if(selFormatState!=this._selFormatState)
+         {
+            oldSelectionFormat=this.currentSelectionFormat;
+            this._selFormatState=selFormatState;
+            newSelectionFormat=this.currentSelectionFormat;
+            if(!newSelectionFormat.equals(oldSelectionFormat))
+            {
+               this.refreshSelection();
+            }
+         }
+      }
+
+      tlf_internal function cloneSelectionFormatState(oldISelectionManager:ISelectionManager) : void {
+         var oldSelectionManager:SelectionManager = oldISelectionManager as SelectionManager;
+         if(oldSelectionManager)
+         {
+            this._isActive=oldSelectionManager._isActive;
+            this._mouseOverSelectionArea=oldSelectionManager._mouseOverSelectionArea;
+            this.setSelectionFormatState(oldSelectionManager.selectionFormatState);
+         }
+      }
+
+      private function selectionPoint(currentTarget:Object, target:InteractiveObject, localX:Number, localY:Number, extendSelection:Boolean=false) : SelectionState {
+         if(!this._textFlow)
+         {
+            return null;
+         }
+         if(!this.hasSelection())
+         {
+            extendSelection=false;
+         }
+         var begIdx:int = this.anchorMark.position;
+         var endIdx:int = this.activeMark.position;
+         endIdx=computeSelectionIndex(this._textFlow,target,currentTarget,localX,localY);
+         if(endIdx==-1)
+         {
+            return null;
+         }
+         endIdx=Math.min(endIdx,this._textFlow.textLength-1);
+         if(!extendSelection)
+         {
+            begIdx=endIdx;
+         }
+         if(begIdx==endIdx)
+         {
+            begIdx=NavigationUtil.updateStartIfInReadOnlyElement(this._textFlow,begIdx);
+            endIdx=NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow,endIdx);
+         }
+         else
+         {
+            endIdx=NavigationUtil.updateEndIfInReadOnlyElement(this._textFlow,endIdx);
+         }
+         return new SelectionState(this.textFlow,begIdx,endIdx);
+      }
+
+      public function setFocus() : void {
+         if(!this._textFlow)
+         {
             return;
-        }// end function
+         }
+         if(this._textFlow.flowComposer)
+         {
+            this._textFlow.flowComposer.setFocus(this.activePosition,false);
+         }
+         this.setSelectionFormatState(SelectionFormatState.FOCUSED);
+      }
 
-        public function mouseOverHandler(event:MouseEvent) : void
-        {
-            this._mouseOverSelectionArea = true;
-            var _loc_2:* = this.textFlow.computedFormat.blockProgression;
-            if (_loc_2 != BlockProgression.RL)
-            {
-                this.setMouseCursor(MouseCursor.IBEAM);
-            }
-            else
-            {
-                this.setMouseCursor(MouseCursor.AUTO);
-            }
-            return;
-        }// end function
+      protected function setMouseCursor(cursor:String) : void {
+         Mouse.cursor=cursor;
+      }
 
-        public function mouseOutHandler(event:MouseEvent) : void
-        {
-            this._mouseOverSelectionArea = false;
-            this.setMouseCursor(MouseCursor.AUTO);
-            return;
-        }// end function
+      public function get anchorPosition() : int {
+         return this.anchorMark.position;
+      }
 
-        public function focusInHandler(event:FocusEvent) : void
-        {
-            this._isActive = true;
-            this.setSelectionFormatState(SelectionFormatState.FOCUSED);
-            return;
-        }// end function
+      public function get activePosition() : int {
+         return this.activeMark.position;
+      }
 
-        public function focusOutHandler(event:FocusEvent) : void
-        {
-            if (this._isActive)
-            {
-                this.setSelectionFormatState(SelectionFormatState.UNFOCUSED);
-            }
-            return;
-        }// end function
+      public function get absoluteStart() : int {
+         return this.anchorMark.position<this.activeMark.position?this.anchorMark.position:this.activeMark.position;
+      }
 
-        public function activateHandler(event:Event) : void
-        {
-            if (!this._isActive)
-            {
-                this._isActive = true;
-                this.setSelectionFormatState(SelectionFormatState.UNFOCUSED);
-            }
-            return;
-        }// end function
+      public function get absoluteEnd() : int {
+         return this.anchorMark.position>this.activeMark.position?this.anchorMark.position:this.activeMark.position;
+      }
 
-        public function deactivateHandler(event:Event) : void
-        {
-            if (this._isActive)
-            {
-                this._isActive = false;
-                this.setSelectionFormatState(SelectionFormatState.INACTIVE);
-            }
-            return;
-        }// end function
+      public function selectAll() : void {
+         this.selectRange(0,int.MAX_VALUE);
+      }
 
-        public function doOperation(param1:FlowOperation) : void
-        {
-            var opError:Error;
-            var op:* = param1;
-            var opEvent:* = new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_BEGIN, false, true, op, 0, null);
-            this.textFlow.dispatchEvent(opEvent);
-            if (!opEvent.isDefaultPrevented())
-            {
-                op = opEvent.operation;
-                if (!(op is CopyOperation))
-                {
-                    throw new IllegalOperationError(GlobalSettings.resourceStringFunction("illegalOperation", [getQualifiedClassName(op)]));
-                }
-                opError;
-                try
-                {
-                    op.doOperation();
-                }
-                catch (e:Error)
-                {
-                    opError = e;
-                }
-                opEvent = new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_END, false, true, op, 0, opError);
-                this.textFlow.dispatchEvent(opEvent);
-                opError = opEvent.isDefaultPrevented() ? (null) : (opEvent.error);
-                if (opError)
-                {
-                    throw opError;
-                }
-                this.textFlow.dispatchEvent(new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_COMPLETE, false, false, op, 0, null));
-            }
-            return;
-        }// end function
-
-        public function editHandler(event:Event) : void
-        {
-            switch(event.type)
-            {
-                case Event.COPY:
-                {
-                    this.flushPendingOperations();
-                    this.doOperation(new CopyOperation(this.getSelectionState()));
-                    break;
-                }
-                case Event.SELECT_ALL:
-                {
-                    this.flushPendingOperations();
-                    this.selectAll();
-                    this.refreshSelection();
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
-
-        private function handleLeftArrow(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            if (this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
-            {
-                if (this._textFlow.computedFormat.direction == Direction.LTR)
-                {
-                    if (event.ctrlKey || event.altKey)
-                    {
-                        NavigationUtil.previousWord(_loc_2, event.shiftKey);
-                    }
-                    else
-                    {
-                        NavigationUtil.previousCharacter(_loc_2, event.shiftKey);
-                    }
-                }
-                else if (event.ctrlKey || event.altKey)
-                {
-                    NavigationUtil.nextWord(_loc_2, event.shiftKey);
-                }
-                else
-                {
-                    NavigationUtil.nextCharacter(_loc_2, event.shiftKey);
-                }
-            }
-            else if (event.altKey)
-            {
-                NavigationUtil.endOfParagraph(_loc_2, event.shiftKey);
-            }
-            else if (event.ctrlKey)
-            {
-                NavigationUtil.endOfDocument(_loc_2, event.shiftKey);
-            }
-            else
-            {
-                NavigationUtil.nextLine(_loc_2, event.shiftKey);
-            }
-            return _loc_2;
-        }// end function
-
-        private function handleUpArrow(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            if (this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
-            {
-                if (event.altKey)
-                {
-                    NavigationUtil.startOfParagraph(_loc_2, event.shiftKey);
-                }
-                else if (event.ctrlKey)
-                {
-                    NavigationUtil.startOfDocument(_loc_2, event.shiftKey);
-                }
-                else
-                {
-                    NavigationUtil.previousLine(_loc_2, event.shiftKey);
-                }
-            }
-            else if (this._textFlow.computedFormat.direction == Direction.LTR)
-            {
-                if (event.ctrlKey || event.altKey)
-                {
-                    NavigationUtil.previousWord(_loc_2, event.shiftKey);
-                }
-                else
-                {
-                    NavigationUtil.previousCharacter(_loc_2, event.shiftKey);
-                }
-            }
-            else if (event.ctrlKey || event.altKey)
-            {
-                NavigationUtil.nextWord(_loc_2, event.shiftKey);
-            }
-            else
-            {
-                NavigationUtil.nextCharacter(_loc_2, event.shiftKey);
-            }
-            return _loc_2;
-        }// end function
-
-        private function handleRightArrow(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            if (this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
-            {
-                if (this._textFlow.computedFormat.direction == Direction.LTR)
-                {
-                    if (event.ctrlKey || event.altKey)
-                    {
-                        NavigationUtil.nextWord(_loc_2, event.shiftKey);
-                    }
-                    else
-                    {
-                        NavigationUtil.nextCharacter(_loc_2, event.shiftKey);
-                    }
-                }
-                else if (event.ctrlKey || event.altKey)
-                {
-                    NavigationUtil.previousWord(_loc_2, event.shiftKey);
-                }
-                else
-                {
-                    NavigationUtil.previousCharacter(_loc_2, event.shiftKey);
-                }
-            }
-            else if (event.altKey)
-            {
-                NavigationUtil.startOfParagraph(_loc_2, event.shiftKey);
-            }
-            else if (event.ctrlKey)
-            {
-                NavigationUtil.startOfDocument(_loc_2, event.shiftKey);
-            }
-            else
-            {
-                NavigationUtil.previousLine(_loc_2, event.shiftKey);
-            }
-            return _loc_2;
-        }// end function
-
-        private function handleDownArrow(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            if (this._textFlow.computedFormat.blockProgression != BlockProgression.RL)
-            {
-                if (event.altKey)
-                {
-                    NavigationUtil.endOfParagraph(_loc_2, event.shiftKey);
-                }
-                else if (event.ctrlKey)
-                {
-                    NavigationUtil.endOfDocument(_loc_2, event.shiftKey);
-                }
-                else
-                {
-                    NavigationUtil.nextLine(_loc_2, event.shiftKey);
-                }
-            }
-            else if (this._textFlow.computedFormat.direction == Direction.LTR)
-            {
-                if (event.ctrlKey || event.altKey)
-                {
-                    NavigationUtil.nextWord(_loc_2, event.shiftKey);
-                }
-                else
-                {
-                    NavigationUtil.nextCharacter(_loc_2, event.shiftKey);
-                }
-            }
-            else if (event.ctrlKey || event.altKey)
-            {
-                NavigationUtil.previousWord(_loc_2, event.shiftKey);
-            }
-            else
-            {
-                NavigationUtil.previousCharacter(_loc_2, event.shiftKey);
-            }
-            return _loc_2;
-        }// end function
-
-        private function handleHomeKey(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            if (event.ctrlKey && !event.altKey)
-            {
-                NavigationUtil.startOfDocument(_loc_2, event.shiftKey);
-            }
-            else
-            {
-                NavigationUtil.startOfLine(_loc_2, event.shiftKey);
-            }
-            return _loc_2;
-        }// end function
-
-        private function handleEndKey(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            if (event.ctrlKey && !event.altKey)
-            {
-                NavigationUtil.endOfDocument(_loc_2, event.shiftKey);
-            }
-            else
-            {
-                NavigationUtil.endOfLine(_loc_2, event.shiftKey);
-            }
-            return _loc_2;
-        }// end function
-
-        private function handlePageUpKey(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            NavigationUtil.previousPage(_loc_2, event.shiftKey);
-            return _loc_2;
-        }// end function
-
-        private function handlePageDownKey(event:KeyboardEvent) : SelectionState
-        {
-            var _loc_2:* = this.getSelectionState();
-            NavigationUtil.nextPage(_loc_2, event.shiftKey);
-            return _loc_2;
-        }// end function
-
-        private function handleKeyEvent(event:KeyboardEvent) : void
-        {
-            var _loc_2:* = null;
-            this.flushPendingOperations();
-            switch(event.keyCode)
-            {
-                case Keyboard.LEFT:
-                {
-                    _loc_2 = this.handleLeftArrow(event);
-                    break;
-                }
-                case Keyboard.UP:
-                {
-                    _loc_2 = this.handleUpArrow(event);
-                    break;
-                }
-                case Keyboard.RIGHT:
-                {
-                    _loc_2 = this.handleRightArrow(event);
-                    break;
-                }
-                case Keyboard.DOWN:
-                {
-                    _loc_2 = this.handleDownArrow(event);
-                    break;
-                }
-                case Keyboard.HOME:
-                {
-                    _loc_2 = this.handleHomeKey(event);
-                    break;
-                }
-                case Keyboard.END:
-                {
-                    _loc_2 = this.handleEndKey(event);
-                    break;
-                }
-                case Keyboard.PAGE_DOWN:
-                {
-                    _loc_2 = this.handlePageDownKey(event);
-                    break;
-                }
-                case Keyboard.PAGE_UP:
-                {
-                    _loc_2 = this.handlePageUpKey(event);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            if (_loc_2 != null)
-            {
-                event.preventDefault();
-                this.updateSelectionAndShapes(this._textFlow, _loc_2.anchorPosition, _loc_2.activePosition);
-                if (this._textFlow.flowComposer && this._textFlow.flowComposer.numControllers != 0)
-                {
-                    this._textFlow.flowComposer.getControllerAt((this._textFlow.flowComposer.numControllers - 1)).scrollToRange(_loc_2.activePosition, _loc_2.activePosition);
-                }
-            }
-            this.allowOperationMerge = false;
-            return;
-        }// end function
-
-        public function keyDownHandler(event:KeyboardEvent) : void
-        {
-            if (!this.hasSelection() || event.isDefaultPrevented())
-            {
-                return;
-            }
-            switch(event.keyCode)
-            {
-                case Keyboard.LEFT:
-                case Keyboard.UP:
-                case Keyboard.RIGHT:
-                case Keyboard.DOWN:
-                case Keyboard.HOME:
-                case Keyboard.END:
-                case Keyboard.PAGE_DOWN:
-                case Keyboard.PAGE_UP:
-                case Keyboard.ESCAPE:
-                {
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            if (event.keyCode == Keyboard.ESCAPE)
-            {
-            }
-            return;
-        }// end function
-
-        public function keyUpHandler(event:KeyboardEvent) : void
-        {
-            return;
-        }// end function
-
-        public function keyFocusChangeHandler(event:FocusEvent) : void
-        {
-            return;
-        }// end function
-
-        public function textInputHandler(event:TextEvent) : void
-        {
-            this.ignoreNextTextEvent = false;
-            return;
-        }// end function
-
-        public function imeStartCompositionHandler(event:IMEEvent) : void
-        {
-            return;
-        }// end function
-
-        public function softKeyboardActivatingHandler(event:Event) : void
-        {
-            return;
-        }// end function
-
-        protected function enterFrameHandler(event:Event) : void
-        {
-            this.flushPendingOperations();
-            return;
-        }// end function
-
-        public function focusChangeHandler(event:FocusEvent) : void
-        {
-            return;
-        }// end function
-
-        public function menuSelectHandler(event:ContextMenuEvent) : void
-        {
-            var _loc_2:* = event.target as ContextMenu;
-            if (this.activePosition != this.anchorPosition)
-            {
-                _loc_2.clipboardItems.copy = true;
-                _loc_2.clipboardItems.cut = this.editingMode == EditingMode.READ_WRITE;
-                _loc_2.clipboardItems.clear = this.editingMode == EditingMode.READ_WRITE;
-            }
-            else
-            {
-                _loc_2.clipboardItems.copy = false;
-                _loc_2.clipboardItems.cut = false;
-                _loc_2.clipboardItems.clear = false;
-            }
-            var _loc_3:* = Clipboard.generalClipboard;
-            if (this.activePosition != -1 && this.editingMode == EditingMode.READ_WRITE && (_loc_3.hasFormat(TextClipboard.TEXT_LAYOUT_MARKUP) || _loc_3.hasFormat(ClipboardFormats.TEXT_FORMAT)))
-            {
-                _loc_2.clipboardItems.paste = true;
-            }
-            else
-            {
-                _loc_2.clipboardItems.paste = false;
-            }
-            _loc_2.clipboardItems.selectAll = true;
-            return;
-        }// end function
-
-        public function mouseWheelHandler(event:MouseEvent) : void
-        {
-            return;
-        }// end function
-
-        public function flushPendingOperations() : void
-        {
-            return;
-        }// end function
-
-        public function getCommonCharacterFormat(param1:TextRange = null) : TextLayoutFormat
-        {
-            if (!param1 && !this.hasSelection())
-            {
-                return null;
-            }
-            var _loc_2:* = ElementRange.createElementRange(this._textFlow, param1 ? (param1.absoluteStart) : (this.absoluteStart), param1 ? (param1.absoluteEnd) : (this.absoluteEnd));
-            var _loc_3:* = _loc_2.getCommonCharacterFormat();
-            if (_loc_2.absoluteEnd == _loc_2.absoluteStart && this.pointFormat)
-            {
-                _loc_3.apply(this.pointFormat);
-            }
-            return _loc_3;
-        }// end function
-
-        public function getCommonParagraphFormat(param1:TextRange = null) : TextLayoutFormat
-        {
-            if (!param1 && !this.hasSelection())
-            {
-                return null;
-            }
-            return ElementRange.createElementRange(this._textFlow, param1 ? (param1.absoluteStart) : (this.absoluteStart), param1 ? (param1.absoluteEnd) : (this.absoluteEnd)).getCommonParagraphFormat();
-        }// end function
-
-        public function getCommonContainerFormat(param1:TextRange = null) : TextLayoutFormat
-        {
-            if (!param1 && !this.hasSelection())
-            {
-                return null;
-            }
-            return ElementRange.createElementRange(this._textFlow, param1 ? (param1.absoluteStart) : (this.absoluteStart), param1 ? (param1.absoluteEnd) : (this.absoluteEnd)).getCommonContainerFormat();
-        }// end function
-
-        private function updateSelectionAndShapes(param1:TextFlow, param2:int, param3:int) : void
-        {
-            this.internalSetSelection(param1, param2, param3);
-            if (this._textFlow.flowComposer && this._textFlow.flowComposer.numControllers != 0)
-            {
-                this._textFlow.flowComposer.getControllerAt((this._textFlow.flowComposer.numControllers - 1)).scrollToRange(this.activeMark.position, this.anchorMark.position);
-            }
+      public function selectRange(anchorPosition:int, activePosition:int) : void {
+         this.flushPendingOperations();
+         if((!(anchorPosition==this.anchorMark.position))||(!(activePosition==this.activeMark.position)))
+         {
+            this.clearSelectionShapes();
+            this.internalSetSelection(this._textFlow,anchorPosition,activePosition);
             this.selectionChanged();
+            this.allowOperationMerge=false;
+         }
+      }
+
+      private function internalSetSelection(root:TextFlow, anchorPosition:int, activePosition:int, format:ITextLayoutFormat=null) : void {
+         this._textFlow=root;
+         if((anchorPosition>0)||(activePosition>0))
+         {
+            anchorPosition=-1;
+            activePosition=-1;
+         }
+         var lastSelectablePos:int = this._textFlow.textLength>0?this._textFlow.textLength-1:0;
+         if((!(anchorPosition==-1))&&(!(activePosition==-1)))
+         {
+            if(anchorPosition>lastSelectablePos)
+            {
+               anchorPosition=lastSelectablePos;
+            }
+            if(activePosition>lastSelectablePos)
+            {
+               activePosition=lastSelectablePos;
+            }
+         }
+         this._pointFormat=format;
+         this.anchorMark.position=anchorPosition;
+         this.activeMark.position=activePosition;
+      }
+
+      private function clear() : void {
+         if(this.hasSelection())
+         {
+            this.flushPendingOperations();
+            this.clearSelectionShapes();
+            this.internalSetSelection(this._textFlow,-1,-1);
+            this.selectionChanged();
+            this.allowOperationMerge=false;
+         }
+      }
+
+      private function addSelectionShapes() : void {
+         var containerIter:* = 0;
+         if(this._textFlow.flowComposer)
+         {
+            this.internalSetSelection(this._textFlow,this.anchorMark.position,this.activeMark.position,this._pointFormat);
+            if((this.currentSelectionFormat)&&((this.absoluteStart==this.absoluteEnd)&&(!(this.currentSelectionFormat.pointAlpha==0))||(!(this.absoluteStart==this.absoluteEnd))&&(!(this.currentSelectionFormat.rangeAlpha==0))))
+            {
+               containerIter=0;
+               while(containerIter<this._textFlow.flowComposer.numControllers)
+               {
+                  this._textFlow.flowComposer.getControllerAt(containerIter++).addSelectionShapes(this.currentSelectionFormat,this.absoluteStart,this.absoluteEnd);
+               }
+            }
+         }
+      }
+
+      private function clearSelectionShapes() : void {
+         var containerIter:* = 0;
+         var flowComposer:IFlowComposer = this._textFlow?this._textFlow.flowComposer:null;
+         if(flowComposer)
+         {
+            containerIter=0;
+            while(containerIter<flowComposer.numControllers)
+            {
+               flowComposer.getControllerAt(containerIter++).clearSelectionShapes();
+            }
+         }
+      }
+
+      public function refreshSelection() : void {
+         if(this.hasSelection())
+         {
             this.clearSelectionShapes();
             this.addSelectionShapes();
-            return;
-        }// end function
+         }
+      }
 
-        function createMark() : Mark
-        {
-            var _loc_1:* = new Mark(-1);
-            this.marks.push(_loc_1);
-            return _loc_1;
-        }// end function
+      tlf_internal function selectionChanged(doDispatchEvent:Boolean=true, resetPointFormat:Boolean=true) : void {
+         if(resetPointFormat)
+         {
+            this._pointFormat=null;
+         }
+         if((doDispatchEvent)&&(this._textFlow))
+         {
+            this.textFlow.dispatchEvent(new SelectionEvent(SelectionEvent.SELECTION_CHANGE,false,false,this.hasSelection()?this.getSelectionState():null));
+         }
+      }
 
-        function removeMark(param1:Mark) : void
-        {
-            var _loc_2:* = this.marks.indexOf(param1);
-            if (_loc_2 != -1)
-            {
-                this.marks.splice(_loc_2, (_loc_2 + 1));
-            }
-            return;
-        }// end function
-
-        public function notifyInsertOrDelete(param1:int, param2:int) : void
-        {
-            var _loc_4:* = null;
-            if (param2 == 0)
-            {
-                return;
-            }
-            var _loc_3:* = 0;
-            while (_loc_3 < this.marks.length)
-            {
-                
-                _loc_4 = this.marks[_loc_3];
-                if (_loc_4.position >= param1)
-                {
-                    if (param2 < 0)
-                    {
-                        _loc_4.position = _loc_4.position + param2 < param1 ? (param1) : (_loc_4.position + param2);
-                    }
-                    else
-                    {
-                        _loc_4.position = _loc_4.position + param2;
-                    }
-                }
-                _loc_3++;
-            }
-            return;
-        }// end function
-
-        private static function computeSelectionIndexInContainer(param1:TextFlow, param2:ContainerController, param3:Number, param4:Number) : int
-        {
-            var _loc_16:* = null;
-            var _loc_17:* = null;
-            var _loc_25:* = null;
-            var _loc_26:* = NaN;
-            var _loc_27:* = NaN;
-            var _loc_28:* = false;
-            var _loc_29:* = NaN;
-            var _loc_30:* = false;
-            var _loc_31:* = 0;
-            var _loc_32:* = null;
-            var _loc_5:* = -1;
-            var _loc_6:* = param2.absoluteStart;
-            var _loc_7:* = param2.textLength;
-            var _loc_8:* = param1.computedFormat.blockProgression;
-            var _loc_9:* = param1.computedFormat.blockProgression == BlockProgression.RL;
-            var _loc_10:* = param1.computedFormat.direction == Direction.RTL;
-            var _loc_11:* = _loc_9 ? (param3) : (param4);
-            var _loc_12:* = locateNearestColumn(param2, param3, param4, param1.computedFormat.blockProgression, param1.computedFormat.direction);
-            var _loc_13:* = null;
-            var _loc_14:* = -1;
-            var _loc_15:* = -1;
-            var _loc_18:* = param1.flowComposer.numLines - 1;
-            while (_loc_18 >= 0)
-            {
-                
-                _loc_16 = param1.flowComposer.getLineAt(_loc_18);
-                if (_loc_16.controller != param2 || _loc_16.columnIndex != _loc_12)
-                {
-                    if (_loc_15 != -1)
-                    {
-                        _loc_5 = _loc_18 + 1;
-                        break;
-                    }
-                }
-                else if (_loc_16.absoluteStart < _loc_6 || _loc_16.absoluteStart >= _loc_6 + _loc_7)
-                {
-                }
-                else
-                {
-                    _loc_17 = _loc_16.getTextLine();
-                    if (_loc_17 == null || _loc_17.parent == null)
-                    {
-                    }
-                    else
-                    {
-                        if (_loc_15 == -1)
-                        {
-                            _loc_15 = _loc_18;
-                        }
-                        _loc_25 = _loc_17.getBounds(DisplayObject(param2.container));
-                        _loc_26 = _loc_9 ? (_loc_25.left) : (_loc_25.bottom);
-                        _loc_27 = -1;
-                        if (_loc_13)
-                        {
-                            _loc_29 = _loc_9 ? (_loc_13.right) : (_loc_13.top);
-                            _loc_27 = (_loc_26 + _loc_29) / 2;
-                        }
-                        _loc_28 = _loc_9 ? (_loc_26 > _loc_11) : (_loc_26 < _loc_11);
-                        if (_loc_28 || _loc_18 == 0)
-                        {
-                            _loc_30 = _loc_27 != -1 && (_loc_9 ? (_loc_11 < _loc_27) : (_loc_11 > _loc_27));
-                            _loc_5 = _loc_30 && _loc_18 != _loc_15 ? ((_loc_18 + 1)) : (_loc_18);
-                            break;
-                        }
-                        else
-                        {
-                            _loc_13 = _loc_25;
-                            _loc_14 = _loc_18;
-                        }
-                    }
-                }
-                _loc_18 = _loc_18 - 1;
-            }
-            if (_loc_5 == -1)
-            {
-                _loc_5 = _loc_14;
-                if (_loc_5 == -1)
-                {
-                    return -1;
-                }
-            }
-            var _loc_19:* = param1.flowComposer.getLineAt(_loc_5);
-            var _loc_20:* = param1.flowComposer.getLineAt(_loc_5).getTextLine(true);
-            param3 = param3 - _loc_20.x;
-            param4 = param4 - _loc_20.y;
-            var _loc_21:* = false;
-            var _loc_22:* = -1;
-            if (_loc_10)
-            {
-                _loc_22 = _loc_20.atomCount - 1;
-            }
-            else if (_loc_19.absoluteStart + _loc_19.textLength >= _loc_19.paragraph.getAbsoluteStart() + _loc_19.paragraph.textLength)
-            {
-                if (_loc_20.atomCount > 1)
-                {
-                    _loc_22 = _loc_20.atomCount - 2;
-                }
-            }
-            else
-            {
-                _loc_31 = _loc_19.absoluteStart + _loc_19.textLength - 1;
-                _loc_32 = _loc_20.textBlock.content.rawText.charAt(_loc_31);
-                if (_loc_32 == " ")
-                {
-                    if (_loc_20.atomCount > 1)
-                    {
-                        _loc_22 = _loc_20.atomCount - 2;
-                    }
-                }
-                else
-                {
-                    _loc_21 = true;
-                    if (_loc_20.atomCount > 0)
-                    {
-                        _loc_22 = _loc_20.atomCount - 1;
-                    }
-                }
-            }
-            var _loc_23:* = _loc_22 > 0 ? (_loc_20.getAtomBounds(_loc_22)) : (new Rectangle(0, 0, 0, 0));
-            if (!_loc_9)
-            {
-                if (param3 < 0)
-                {
-                    param3 = 0;
-                }
-                else if (param3 > _loc_23.x + _loc_23.width)
-                {
-                    if (_loc_21)
-                    {
-                        return _loc_19.absoluteStart + _loc_19.textLength - 1;
-                    }
-                    if (_loc_23.x + _loc_23.width > 0)
-                    {
-                        param3 = _loc_23.x + _loc_23.width;
-                    }
-                }
-            }
-            else if (param4 < 0)
-            {
-                param4 = 0;
-            }
-            else if (param4 > _loc_23.y + _loc_23.height)
-            {
-                if (_loc_21)
-                {
-                    return _loc_19.absoluteStart + _loc_19.textLength - 1;
-                }
-                if (_loc_23.y + _loc_23.height > 0)
-                {
-                    param4 = _loc_23.y + _loc_23.height;
-                }
-            }
-            var _loc_24:* = computeSelectionIndexInLine(param1, _loc_20, param3, param4);
-            return computeSelectionIndexInLine(param1, _loc_20, param3, param4) != -1 ? (_loc_24) : (_loc_6 + _loc_7);
-        }// end function
-
-        private static function locateNearestColumn(param1:ContainerController, param2:Number, param3:Number, param4:String, param5:String) : int
-        {
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = param1.columnState;
-            while (_loc_6 < (_loc_7.columnCount - 1))
-            {
-                
-                _loc_8 = _loc_7.getColumnAt(_loc_6);
-                _loc_9 = _loc_7.getColumnAt((_loc_6 + 1));
-                if (_loc_8.contains(param2, param3))
-                {
-                    break;
-                }
-                if (_loc_9.contains(param2, param3))
-                {
-                    _loc_6++;
-                    break;
-                }
-                else if (param4 == BlockProgression.RL)
-                {
-                    if (param3 < _loc_8.top || param3 < _loc_9.top && Math.abs(_loc_8.bottom - param3) <= Math.abs(_loc_9.top - param3))
-                    {
-                        break;
-                    }
-                    if (param3 > _loc_9.top)
-                    {
-                        _loc_6++;
-                        break;
-                    }
-                }
-                else if (param5 == Direction.LTR)
-                {
-                    if (param2 < _loc_8.left || param2 < _loc_9.left && Math.abs(_loc_8.right - param2) <= Math.abs(_loc_9.left - param2))
-                    {
-                        break;
-                    }
-                    if (param2 < _loc_9.left)
-                    {
-                        _loc_6++;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (param2 > _loc_8.right || param2 > _loc_9.right && Math.abs(_loc_8.left - param2) <= Math.abs(_loc_9.right - param2))
-                    {
-                        break;
-                    }
-                    if (param2 > _loc_9.right)
-                    {
-                        _loc_6++;
-                        break;
-                    }
-                }
-                _loc_6++;
-            }
-            return _loc_6;
-        }// end function
-
-        private static function computeSelectionIndexInLine(param1:TextFlow, param2:TextLine, param3:Number, param4:Number) : int
-        {
-            var _loc_12:* = 0;
-            if (!(param2.userData is TextFlowLine))
-            {
-                return -1;
-            }
-            var _loc_5:* = TextFlowLine(param2.userData);
-            if (TextFlowLine(param2.userData).validity == TextLineValidity.INVALID)
-            {
-                return -1;
-            }
-            param2 = _loc_5.getTextLine(true);
-            var _loc_6:* = param1.computedFormat.blockProgression == BlockProgression.RL;
-            var _loc_7:* = param1.computedFormat.blockProgression == BlockProgression.RL ? (param3) : (param4);
-            var _loc_8:* = new Point();
-            new Point().x = param3;
-            _loc_8.y = param4;
-            _loc_8 = param2.localToGlobal(_loc_8);
-            var _loc_9:* = param2.getAtomIndexAtPoint(_loc_8.x, _loc_8.y);
-            if (param2.getAtomIndexAtPoint(_loc_8.x, _loc_8.y) == -1)
-            {
-                _loc_8.x = param3;
-                _loc_8.y = param4;
-                if (_loc_8.x < 0 || _loc_6 && _loc_7 > param2.ascent)
-                {
-                    _loc_8.x = 0;
-                }
-                if (_loc_8.y < 0 || !_loc_6 && _loc_7 > param2.descent)
-                {
-                    _loc_8.y = 0;
-                }
-                _loc_8 = param2.localToGlobal(_loc_8);
-                _loc_9 = param2.getAtomIndexAtPoint(_loc_8.x, _loc_8.y);
-            }
-            if (_loc_9 == -1)
-            {
-                _loc_8.x = param3;
-                _loc_8.y = param4;
-                _loc_8 = param2.localToGlobal(_loc_8);
-                if (param2.parent)
-                {
-                    _loc_8 = param2.parent.globalToLocal(_loc_8);
-                }
-                if (!_loc_6)
-                {
-                    return _loc_8.x <= param2.x ? (_loc_5.absoluteStart) : (_loc_5.absoluteStart + _loc_5.textLength - 1);
-                }
-                else
-                {
-                    return _loc_8.y <= param2.y ? (_loc_5.absoluteStart) : (_loc_5.absoluteStart + _loc_5.textLength - 1);
-                }
-            }
-            var _loc_10:* = param2.getAtomBounds(_loc_9);
-            var _loc_11:* = false;
-            if (_loc_10)
-            {
-                if (_loc_6 && param2.getAtomTextRotation(_loc_9) != TextRotation.ROTATE_0)
-                {
-                    _loc_11 = param4 > _loc_10.y + _loc_10.height / 2;
-                }
-                else
-                {
-                    _loc_11 = param3 > _loc_10.x + _loc_10.width / 2;
-                }
-            }
-            if (param2.getAtomBidiLevel(_loc_9) % 2 != 0)
-            {
-                _loc_12 = _loc_11 ? (param2.getAtomTextBlockBeginIndex(_loc_9)) : (param2.getAtomTextBlockEndIndex(_loc_9));
-            }
-            else
-            {
-                _loc_12 = _loc_11 ? (param2.getAtomTextBlockEndIndex(_loc_9)) : (param2.getAtomTextBlockBeginIndex(_loc_9));
-            }
-            return _loc_5.paragraph.getAbsoluteStart() + _loc_12;
-        }// end function
-
-        private static function checkForDisplayed(param1:DisplayObject) : Boolean
-        {
-            var container:* = param1;
-            try
-            {
-                while (container)
-                {
-                    
-                    if (!container.visible)
-                    {
-                        return false;
-                    }
-                    container = container.parent;
-                    if (container is Stage)
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch (e:Error)
-            {
-                return true;
-            }
+      tlf_internal function setNewSelectionPoint(currentTarget:Object, target:InteractiveObject, localX:Number, localY:Number, extendSelection:Boolean=false) : Boolean {
+         var selState:SelectionState = this.selectionPoint(currentTarget,target,localX,localY,extendSelection);
+         if(selState==null)
+         {
             return false;
-        }// end function
+         }
+         if((!(selState.anchorPosition==this.anchorMark.position))||(!(selState.activePosition==this.activeMark.position)))
+         {
+            this.selectRange(selState.anchorPosition,selState.activePosition);
+            return true;
+         }
+         return false;
+      }
 
-        static function computeSelectionIndex(param1:TextFlow, param2:Object, param3:Object, param4:Number, param5:Number) : int
-        {
-            var _loc_7:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = 0;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_15:* = NaN;
-            var _loc_16:* = NaN;
-            var _loc_17:* = NaN;
-            var _loc_18:* = 0;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            var _loc_21:* = NaN;
-            var _loc_22:* = NaN;
-            var _loc_23:* = NaN;
-            var _loc_24:* = NaN;
-            var _loc_25:* = NaN;
-            var _loc_26:* = NaN;
-            var _loc_27:* = NaN;
-            var _loc_6:* = 0;
-            var _loc_8:* = false;
-            if (param2 is TextLine)
+      public function mouseDownHandler(event:MouseEvent) : void {
+         this.handleMouseEventForSelection(event,event.shiftKey);
+      }
+
+      public function mouseMoveHandler(event:MouseEvent) : void {
+         var wmode:String = this.textFlow.computedFormat.blockProgression;
+         if(wmode!=BlockProgression.RL)
+         {
+            this.setMouseCursor(MouseCursor.IBEAM);
+         }
+         if(event.buttonDown)
+         {
+            this.handleMouseEventForSelection(event,true);
+         }
+      }
+
+      tlf_internal function handleMouseEventForSelection(event:MouseEvent, allowExtend:Boolean) : void {
+         var startSelectionActive:Boolean = this.hasSelection();
+         if(this.setNewSelectionPoint(event.currentTarget,event.target as InteractiveObject,event.localX,event.localY,(startSelectionActive)&&(allowExtend)))
+         {
+            if(startSelectionActive)
             {
-                _loc_9 = TextLine(param2).userData as TextFlowLine;
-                if (_loc_9)
-                {
-                    _loc_10 = _loc_9.paragraph;
-                    if (_loc_10.getTextFlow() == param1)
-                    {
-                        _loc_8 = true;
-                    }
-                }
+               this.clearSelectionShapes();
             }
-            if (_loc_8)
+            if(this.hasSelection())
             {
-                _loc_6 = computeSelectionIndexInLine(param1, TextLine(param2), param4, param5);
+               this.addSelectionShapes();
+            }
+         }
+         this.allowOperationMerge=false;
+      }
+
+      public function mouseUpHandler(event:MouseEvent) : void {
+         if(!this._mouseOverSelectionArea)
+         {
+            this.setMouseCursor(MouseCursor.AUTO);
+         }
+      }
+
+      private function atBeginningWordPos(activePara:ParagraphElement, pos:int) : Boolean {
+         if(pos==0)
+         {
+            return true;
+         }
+         var nextPos:int = activePara.findNextWordBoundary(pos);
+         nextPos=activePara.findPreviousWordBoundary(nextPos);
+         return pos==nextPos;
+      }
+
+      public function mouseDoubleClickHandler(event:MouseEvent) : void {
+         var newActiveIndex:* = 0;
+         var newAnchorIndex:* = 0;
+         var anchorPara:ParagraphElement = null;
+         var anchorParaStart:* = 0;
+         if(!this.hasSelection())
+         {
+            return;
+         }
+         var activePara:ParagraphElement = this._textFlow.findAbsoluteParagraph(this.activeMark.position);
+         var activeParaStart:int = activePara.getAbsoluteStart();
+         if(this.anchorMark.position<=this.activeMark.position)
+         {
+            newActiveIndex=activePara.findNextWordBoundary(this.activeMark.position-activeParaStart)+activeParaStart;
+         }
+         else
+         {
+            newActiveIndex=activePara.findPreviousWordBoundary(this.activeMark.position-activeParaStart)+activeParaStart;
+         }
+         if(newActiveIndex==activeParaStart+activePara.textLength)
+         {
+            newActiveIndex--;
+         }
+         if(event.shiftKey)
+         {
+            newAnchorIndex=this.anchorMark.position;
+         }
+         else
+         {
+            anchorPara=this._textFlow.findAbsoluteParagraph(this.anchorMark.position);
+            anchorParaStart=anchorPara.getAbsoluteStart();
+            if(this.atBeginningWordPos(anchorPara,this.anchorMark.position-anchorParaStart))
+            {
+               newAnchorIndex=this.anchorMark.position;
             }
             else
             {
-                _loc_12 = 0;
-                while (_loc_12 < param1.flowComposer.numControllers)
-                {
-                    
-                    _loc_13 = param1.flowComposer.getControllerAt(_loc_12);
-                    if (_loc_13.container == param2 || _loc_13.container == param3)
-                    {
-                        _loc_11 = _loc_13;
-                        break;
-                    }
-                    _loc_12++;
-                }
-                if (_loc_11)
-                {
-                    if (param2 != _loc_11.container)
-                    {
-                        _loc_7 = DisplayObject(param2).localToGlobal(new Point(param4, param5));
-                        _loc_7 = DisplayObject(_loc_11.container).globalToLocal(_loc_7);
-                        param4 = _loc_7.x;
-                        param5 = _loc_7.y;
-                    }
-                    _loc_6 = computeSelectionIndexInContainer(param1, _loc_11, param4, param5);
-                }
-                else
-                {
-                    _loc_14 = null;
-                    _loc_17 = Number.MAX_VALUE;
-                    _loc_18 = 0;
-                    while (_loc_18 < param1.flowComposer.numControllers)
-                    {
-                        
-                        _loc_19 = param1.flowComposer.getControllerAt(_loc_18);
-                        if (!checkForDisplayed(_loc_19.container as DisplayObject))
-                        {
-                        }
-                        else
-                        {
-                            _loc_20 = _loc_19.getContentBounds();
-                            _loc_21 = isNaN(_loc_19.compositionWidth) ? (_loc_19.getTotalPaddingLeft() + _loc_20.width) : (_loc_19.compositionWidth);
-                            _loc_22 = isNaN(_loc_19.compositionHeight) ? (_loc_19.getTotalPaddingTop() + _loc_20.height) : (_loc_19.compositionHeight);
-                            _loc_7 = DisplayObject(param2).localToGlobal(new Point(param4, param5));
-                            _loc_7 = DisplayObject(_loc_19.container).globalToLocal(_loc_7);
-                            _loc_23 = 0;
-                            _loc_24 = 0;
-                            if (_loc_19.hasScrollRect)
-                            {
-                                var _loc_28:* = _loc_19.container.scrollRect.x;
-                                _loc_23 = _loc_19.container.scrollRect.x;
-                                _loc_7.x = _loc_7.x - _loc_28;
-                                var _loc_28:* = _loc_19.container.scrollRect.y;
-                                _loc_24 = _loc_19.container.scrollRect.y;
-                                _loc_7.y = _loc_7.y - _loc_28;
-                            }
-                            if (_loc_7.x >= 0 && _loc_7.x <= _loc_21 && _loc_7.y >= 0 && _loc_7.y <= _loc_22)
-                            {
-                                _loc_14 = _loc_19;
-                                _loc_15 = _loc_7.x + _loc_23;
-                                _loc_16 = _loc_7.y + _loc_24;
-                                break;
-                            }
-                            _loc_25 = 0;
-                            _loc_26 = 0;
-                            if (_loc_7.x < 0)
-                            {
-                                _loc_25 = _loc_7.x;
-                                if (_loc_7.y < 0)
-                                {
-                                    _loc_26 = _loc_7.y;
-                                }
-                                else if (_loc_7.y > _loc_22)
-                                {
-                                    _loc_26 = _loc_7.y - _loc_22;
-                                }
-                            }
-                            else if (_loc_7.x > _loc_21)
-                            {
-                                _loc_25 = _loc_7.x - _loc_21;
-                                if (_loc_7.y < 0)
-                                {
-                                    _loc_26 = _loc_7.y;
-                                }
-                                else if (_loc_7.y > _loc_22)
-                                {
-                                    _loc_26 = _loc_7.y - _loc_22;
-                                }
-                            }
-                            else if (_loc_7.y < 0)
-                            {
-                                _loc_26 = -_loc_7.y;
-                            }
-                            else
-                            {
-                                _loc_26 = _loc_7.y - _loc_22;
-                            }
-                            _loc_27 = _loc_25 * _loc_25 + _loc_26 * _loc_26;
-                            if (_loc_27 <= _loc_17)
-                            {
-                                _loc_17 = _loc_27;
-                                _loc_14 = _loc_19;
-                                _loc_15 = _loc_7.x + _loc_23;
-                                _loc_16 = _loc_7.y + _loc_24;
-                            }
-                        }
-                        _loc_18++;
-                    }
-                    _loc_6 = _loc_14 ? (computeSelectionIndexInContainer(param1, _loc_14, _loc_15, _loc_16)) : (-1);
-                }
+               if(this.anchorMark.position<=this.activeMark.position)
+               {
+                  newAnchorIndex=anchorPara.findPreviousWordBoundary(this.anchorMark.position-anchorParaStart)+anchorParaStart;
+               }
+               else
+               {
+                  newAnchorIndex=anchorPara.findNextWordBoundary(this.anchorMark.position-anchorParaStart)+anchorParaStart;
+               }
+               if(newAnchorIndex==anchorParaStart+anchorPara.textLength)
+               {
+                  newAnchorIndex--;
+               }
             }
-            if (_loc_6 >= param1.textLength)
+         }
+         if((!(newAnchorIndex==this.anchorMark.position))||(!(newActiveIndex==this.activeMark.position)))
+         {
+            this.internalSetSelection(this._textFlow,newAnchorIndex,newActiveIndex,null);
+            this.selectionChanged();
+            this.clearSelectionShapes();
+            if(this.hasSelection())
             {
-                _loc_6 = param1.textLength - 1;
+               this.addSelectionShapes();
             }
-            return _loc_6;
-        }// end function
+         }
+         this.allowOperationMerge=false;
+      }
 
-    }
+      public function mouseOverHandler(event:MouseEvent) : void {
+         this._mouseOverSelectionArea=true;
+         var wmode:String = this.textFlow.computedFormat.blockProgression;
+         if(wmode!=BlockProgression.RL)
+         {
+            this.setMouseCursor(MouseCursor.IBEAM);
+         }
+         else
+         {
+            this.setMouseCursor(MouseCursor.AUTO);
+         }
+      }
+
+      public function mouseOutHandler(event:MouseEvent) : void {
+         this._mouseOverSelectionArea=false;
+         this.setMouseCursor(MouseCursor.AUTO);
+      }
+
+      public function focusInHandler(event:FocusEvent) : void {
+         this._isActive=true;
+         this.setSelectionFormatState(SelectionFormatState.FOCUSED);
+      }
+
+      public function focusOutHandler(event:FocusEvent) : void {
+         if(this._isActive)
+         {
+            this.setSelectionFormatState(SelectionFormatState.UNFOCUSED);
+         }
+      }
+
+      public function activateHandler(event:Event) : void {
+         if(!this._isActive)
+         {
+            this._isActive=true;
+            this.setSelectionFormatState(SelectionFormatState.UNFOCUSED);
+         }
+      }
+
+      public function deactivateHandler(event:Event) : void {
+         if(this._isActive)
+         {
+            this._isActive=false;
+            this.setSelectionFormatState(SelectionFormatState.INACTIVE);
+         }
+      }
+
+      public function doOperation(op:FlowOperation) : void {
+         var opError:Error = null;
+         var opEvent:FlowOperationEvent = new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_BEGIN,false,true,op,0,null);
+         this.textFlow.dispatchEvent(opEvent);
+         if(!opEvent.isDefaultPrevented())
+         {
+            if(!(op is CopyOperation))
+            {
+               throw new IllegalOperationError(GlobalSettings.resourceStringFunction("illegalOperation",[getQualifiedClassName(op)]));
+            }
+            else
+            {
+               opError=null;
+               try
+               {
+                  op.doOperation();
+               }
+               catch(e:Error)
+               {
+                  opError=e;
+               }
+               opEvent=new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_END,false,true,op,0,opError);
+               this.textFlow.dispatchEvent(opEvent);
+               opError=opEvent.isDefaultPrevented()?null:opEvent.error;
+               if(opError)
+               {
+                  throw opError;
+               }
+               else
+               {
+                  this.textFlow.dispatchEvent(new FlowOperationEvent(FlowOperationEvent.FLOW_OPERATION_COMPLETE,false,false,op,0,null));
+               }
+            }
+         }
+      }
+
+      public function editHandler(event:Event) : void {
+         switch(event.type)
+         {
+            case Event.COPY:
+               this.flushPendingOperations();
+               this.doOperation(new CopyOperation(this.getSelectionState()));
+               break;
+            case Event.SELECT_ALL:
+               this.flushPendingOperations();
+               this.selectAll();
+               this.refreshSelection();
+               break;
+         }
+      }
+
+      private function handleLeftArrow(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+         {
+            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.previousWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+               }
+            }
+            else
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.nextWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+               }
+            }
+         }
+         else
+         {
+            if(event.altKey)
+            {
+               NavigationUtil.endOfParagraph(selState,event.shiftKey);
+            }
+            else
+            {
+               if(event.ctrlKey)
+               {
+                  NavigationUtil.endOfDocument(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.nextLine(selState,event.shiftKey);
+               }
+            }
+         }
+         return selState;
+      }
+
+      private function handleUpArrow(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+         {
+            if(event.altKey)
+            {
+               NavigationUtil.startOfParagraph(selState,event.shiftKey);
+            }
+            else
+            {
+               if(event.ctrlKey)
+               {
+                  NavigationUtil.startOfDocument(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.previousLine(selState,event.shiftKey);
+               }
+            }
+         }
+         else
+         {
+            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.previousWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+               }
+            }
+            else
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.nextWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+               }
+            }
+         }
+         return selState;
+      }
+
+      private function handleRightArrow(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+         {
+            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.nextWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+               }
+            }
+            else
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.previousWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+               }
+            }
+         }
+         else
+         {
+            if(event.altKey)
+            {
+               NavigationUtil.startOfParagraph(selState,event.shiftKey);
+            }
+            else
+            {
+               if(event.ctrlKey)
+               {
+                  NavigationUtil.startOfDocument(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.previousLine(selState,event.shiftKey);
+               }
+            }
+         }
+         return selState;
+      }
+
+      private function handleDownArrow(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         if(this._textFlow.computedFormat.blockProgression!=BlockProgression.RL)
+         {
+            if(event.altKey)
+            {
+               NavigationUtil.endOfParagraph(selState,event.shiftKey);
+            }
+            else
+            {
+               if(event.ctrlKey)
+               {
+                  NavigationUtil.endOfDocument(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.nextLine(selState,event.shiftKey);
+               }
+            }
+         }
+         else
+         {
+            if(this._textFlow.computedFormat.direction==Direction.LTR)
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.nextWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.nextCharacter(selState,event.shiftKey);
+               }
+            }
+            else
+            {
+               if((event.ctrlKey)||(event.altKey))
+               {
+                  NavigationUtil.previousWord(selState,event.shiftKey);
+               }
+               else
+               {
+                  NavigationUtil.previousCharacter(selState,event.shiftKey);
+               }
+            }
+         }
+         return selState;
+      }
+
+      private function handleHomeKey(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         if((event.ctrlKey)&&(!event.altKey))
+         {
+            NavigationUtil.startOfDocument(selState,event.shiftKey);
+         }
+         else
+         {
+            NavigationUtil.startOfLine(selState,event.shiftKey);
+         }
+         return selState;
+      }
+
+      private function handleEndKey(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         if((event.ctrlKey)&&(!event.altKey))
+         {
+            NavigationUtil.endOfDocument(selState,event.shiftKey);
+         }
+         else
+         {
+            NavigationUtil.endOfLine(selState,event.shiftKey);
+         }
+         return selState;
+      }
+
+      private function handlePageUpKey(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         NavigationUtil.previousPage(selState,event.shiftKey);
+         return selState;
+      }
+
+      private function handlePageDownKey(event:KeyboardEvent) : SelectionState {
+         var selState:SelectionState = this.getSelectionState();
+         NavigationUtil.nextPage(selState,event.shiftKey);
+         return selState;
+      }
+
+      private function handleKeyEvent(event:KeyboardEvent) : void {
+         var selState:SelectionState = null;
+         this.flushPendingOperations();
+         switch(event.keyCode)
+         {
+            case Keyboard.LEFT:
+               selState=this.handleLeftArrow(event);
+               break;
+            case Keyboard.UP:
+               selState=this.handleUpArrow(event);
+               break;
+            case Keyboard.RIGHT:
+               selState=this.handleRightArrow(event);
+               break;
+            case Keyboard.DOWN:
+               selState=this.handleDownArrow(event);
+               break;
+            case Keyboard.HOME:
+               selState=this.handleHomeKey(event);
+               break;
+            case Keyboard.END:
+               selState=this.handleEndKey(event);
+               break;
+            case Keyboard.PAGE_DOWN:
+               selState=this.handlePageDownKey(event);
+               break;
+            case Keyboard.PAGE_UP:
+               selState=this.handlePageUpKey(event);
+               break;
+         }
+         if(selState!=null)
+         {
+            event.preventDefault();
+            this.updateSelectionAndShapes(this._textFlow,selState.anchorPosition,selState.activePosition);
+            if((this._textFlow.flowComposer)&&(!(this._textFlow.flowComposer.numControllers==0)))
+            {
+               this._textFlow.flowComposer.getControllerAt(this._textFlow.flowComposer.numControllers-1).scrollToRange(selState.activePosition,selState.activePosition);
+            }
+         }
+         this.allowOperationMerge=false;
+      }
+
+      public function keyDownHandler(event:KeyboardEvent) : void {
+         if((!this.hasSelection())||(event.isDefaultPrevented()))
+         {
+            return;
+         }
+         if(event.charCode==0)
+         {
+            switch(event.keyCode)
+            {
+               case Keyboard.LEFT:
+               case Keyboard.UP:
+               case Keyboard.RIGHT:
+               case Keyboard.DOWN:
+               case Keyboard.HOME:
+               case Keyboard.END:
+               case Keyboard.PAGE_DOWN:
+               case Keyboard.PAGE_UP:
+               case Keyboard.ESCAPE:
+                  this.handleKeyEvent(event);
+                  break;
+            }
+         }
+         else
+         {
+            if(event.keyCode==Keyboard.ESCAPE)
+            {
+               this.handleKeyEvent(event);
+            }
+         }
+      }
+
+      public function keyUpHandler(event:KeyboardEvent) : void {
+         
+      }
+
+      public function keyFocusChangeHandler(event:FocusEvent) : void {
+         
+      }
+
+      public function textInputHandler(event:TextEvent) : void {
+         this.ignoreNextTextEvent=false;
+      }
+
+      public function imeStartCompositionHandler(event:IMEEvent) : void {
+         
+      }
+
+      public function softKeyboardActivatingHandler(event:Event) : void {
+         
+      }
+
+      protected function enterFrameHandler(event:Event) : void {
+         this.flushPendingOperations();
+      }
+
+      public function focusChangeHandler(event:FocusEvent) : void {
+         
+      }
+
+      public function menuSelectHandler(event:ContextMenuEvent) : void {
+         var menu:ContextMenu = event.target as ContextMenu;
+         if(this.activePosition!=this.anchorPosition)
+         {
+            menu.clipboardItems.copy=true;
+            menu.clipboardItems.cut=this.editingMode==EditingMode.READ_WRITE;
+            menu.clipboardItems.clear=this.editingMode==EditingMode.READ_WRITE;
+         }
+         else
+         {
+            menu.clipboardItems.copy=false;
+            menu.clipboardItems.cut=false;
+            menu.clipboardItems.clear=false;
+         }
+         var systemClipboard:Clipboard = Clipboard.generalClipboard;
+         if((!(this.activePosition==-1))&&(this.editingMode==EditingMode.READ_WRITE)&&((systemClipboard.hasFormat(TextClipboard.TEXT_LAYOUT_MARKUP))||(systemClipboard.hasFormat(ClipboardFormats.TEXT_FORMAT))))
+         {
+            menu.clipboardItems.paste=true;
+         }
+         else
+         {
+            menu.clipboardItems.paste=false;
+         }
+         menu.clipboardItems.selectAll=true;
+      }
+
+      public function mouseWheelHandler(event:MouseEvent) : void {
+         
+      }
+
+      public function flushPendingOperations() : void {
+         
+      }
+
+      public function getCommonCharacterFormat(range:TextRange=null) : TextLayoutFormat {
+         if((!range)&&(!this.hasSelection()))
+         {
+            return null;
+         }
+         var selRange:ElementRange = ElementRange.createElementRange(this._textFlow,range?range.absoluteStart:this.absoluteStart,range?range.absoluteEnd:this.absoluteEnd);
+         var rslt:TextLayoutFormat = selRange.getCommonCharacterFormat();
+         if((selRange.absoluteEnd==selRange.absoluteStart)&&(this.pointFormat))
+         {
+            rslt.apply(this.pointFormat);
+         }
+         return rslt;
+      }
+
+      public function getCommonParagraphFormat(range:TextRange=null) : TextLayoutFormat {
+         if((!range)&&(!this.hasSelection()))
+         {
+            return null;
+         }
+         return ElementRange.createElementRange(this._textFlow,range?range.absoluteStart:this.absoluteStart,range?range.absoluteEnd:this.absoluteEnd).getCommonParagraphFormat();
+      }
+
+      public function getCommonContainerFormat(range:TextRange=null) : TextLayoutFormat {
+         if((!range)&&(!this.hasSelection()))
+         {
+            return null;
+         }
+         return ElementRange.createElementRange(this._textFlow,range?range.absoluteStart:this.absoluteStart,range?range.absoluteEnd:this.absoluteEnd).getCommonContainerFormat();
+      }
+
+      private function updateSelectionAndShapes(tf:TextFlow, begIdx:int, endIdx:int) : void {
+         this.internalSetSelection(tf,begIdx,endIdx);
+         if((this._textFlow.flowComposer)&&(!(this._textFlow.flowComposer.numControllers==0)))
+         {
+            this._textFlow.flowComposer.getControllerAt(this._textFlow.flowComposer.numControllers-1).scrollToRange(this.activeMark.position,this.anchorMark.position);
+         }
+         this.selectionChanged();
+         this.clearSelectionShapes();
+         this.addSelectionShapes();
+      }
+
+      private var marks:Array;
+
+      tlf_internal function createMark() : Mark {
+         var mark:Mark = new Mark(-1);
+         this.marks.push(mark);
+         return mark;
+      }
+
+      tlf_internal function removeMark(mark:Mark) : void {
+         var idx:int = this.marks.indexOf(mark);
+         if(idx!=-1)
+         {
+            this.marks.splice(idx,idx+1);
+         }
+      }
+
+      public function notifyInsertOrDelete(absolutePosition:int, length:int) : void {
+         var mark:Mark = null;
+         if(length==0)
+         {
+            return;
+         }
+         var i:int = 0;
+         while(i<this.marks.length)
+         {
+            mark=this.marks[i];
+            if(mark.position>=absolutePosition)
+            {
+               if(length<0)
+               {
+                  mark.position=mark.position+length<absolutePosition?absolutePosition:mark.position+length;
+               }
+               else
+               {
+                  mark.position=mark.position+length;
+               }
+            }
+            i++;
+         }
+      }
+   }
+
 }

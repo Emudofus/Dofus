@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.guild
+package com.ankamagames.dofus.logic.game.common.actions.guild
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuildFightJoinRequestAction extends Object implements Action
-    {
-        public var taxCollectorId:uint;
 
-        public function GuildFightJoinRequestAction()
-        {
-            return;
-        }// end function
+   public class GuildFightJoinRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : GuildFightJoinRequestAction
-        {
-            var _loc_2:* = new GuildFightJoinRequestAction;
-            _loc_2.taxCollectorId = param1;
-            return _loc_2;
-        }// end function
+      public function GuildFightJoinRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pTaxCollectorId:uint) : GuildFightJoinRequestAction {
+         var action:GuildFightJoinRequestAction = new GuildFightJoinRequestAction();
+         action.taxCollectorId=pTaxCollectorId;
+         return action;
+      }
+
+      public var taxCollectorId:uint;
+   }
+
 }

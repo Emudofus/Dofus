@@ -1,46 +1,56 @@
-﻿package com.ankamagames.dofus.datacenter.communication
+package com.ankamagames.dofus.datacenter.communication
 {
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class ChatChannel extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var nameId:uint;
-        public var descriptionId:uint;
-        public var shortcut:String;
-        public var shortcutKey:String;
-        public var isPrivate:Boolean;
-        public var allowObjects:Boolean;
-        private var _name:String;
-        private static const MODULE:String = "ChatChannels";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatChannel));
 
-        public function ChatChannel()
-        {
-            return;
-        }// end function
+   public class ChatChannel extends Object implements IDataCenter
+   {
+         
 
-        public function get name() : String
-        {
-            if (!this._name)
-            {
-                this._name = I18n.getText(this.nameId);
-            }
-            return this._name;
-        }// end function
+      public function ChatChannel() {
+         super();
+      }
 
-        public static function getChannelById(param1:int) : ChatChannel
-        {
-            return GameData.getObject(MODULE, param1) as ;
-        }// end function
+      public static const MODULE:String = "ChatChannels";
 
-        public static function getChannels() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ChatChannel));
 
-    }
+      public static function getChannelById(id:int) : ChatChannel {
+         return GameData.getObject(MODULE,id) as ChatChannel;
+      }
+
+      public static function getChannels() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var nameId:uint;
+
+      public var descriptionId:uint;
+
+      public var shortcut:String;
+
+      public var shortcutKey:String;
+
+      public var isPrivate:Boolean;
+
+      public var allowObjects:Boolean;
+
+      private var _name:String;
+
+      public function get name() : String {
+         if(!this._name)
+         {
+            this._name=I18n.getText(this.nameId);
+         }
+         return this._name;
+      }
+   }
+
 }

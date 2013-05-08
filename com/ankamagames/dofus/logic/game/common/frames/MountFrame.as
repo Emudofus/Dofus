@@ -1,571 +1,515 @@
-﻿package com.ankamagames.dofus.logic.game.common.frames
+package com.ankamagames.dofus.logic.game.common.frames
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.game.common.actions.mount.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.logic.game.common.types.*;
-    import com.ankamagames.dofus.logic.game.fight.frames.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.context.mount.*;
-    import com.ankamagames.dofus.network.messages.game.inventory.exchanges.*;
-    import com.ankamagames.dofus.network.types.game.mount.*;
-    import com.ankamagames.dofus.types.entities.*;
-    import com.ankamagames.dofus.types.enums.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.entities.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.sequencer.*;
-    import com.ankamagames.tiphon.display.*;
-    import com.ankamagames.tiphon.sequence.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.mount.MountClientData;
+   import com.ankamagames.dofus.logic.game.common.types.MountData;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountInformationInPaddockRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountInformationInPaddockRequestMessage;
+   import com.ankamagames.jerakine.entities.interfaces.IMovable;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountFeedRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountReleaseRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountSterilizeRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountRenameRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountRenameRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountSetXpRatioRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountSetXpRatioRequestMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountInfoRequestAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountInformationRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeRequestOnMountStockMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountRenamedMessage;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.ExchangeHandleMountStableAction;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeHandleMountStableMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeMountStableBornAddMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeMountStableAddMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeMountStableRemoveMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeMountPaddockAddMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeMountPaddockRemoveMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountDataMessage;
+   import com.ankamagames.dofus.types.entities.AnimatedCharacter;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountEquipedErrorMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeWeightMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeStartOkMountMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeStartOkMountWithOutPaddockMessage;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.UpdateMountBoostMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountEmoteIconUsedOkMessage;
+   import com.ankamagames.tiphon.display.TiphonSprite;
+   import com.ankamagames.dofus.network.messages.game.inventory.exchanges.ExchangeMountTakenFromPaddockMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountReleasedMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountToggleRidingRequestMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountFeedRequestMessage;
+   import com.ankamagames.dofus.network.types.game.mount.UpdateMountBoost;
+   import com.ankamagames.dofus.network.types.game.mount.UpdateMountIntBoost;
+   import com.ankamagames.jerakine.sequencer.SerialSequencer;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.logic.game.common.misc.DofusEntities;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.fight.frames.FightBattleFrame;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountSterilizedMessage;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.MountHookList;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountXpRatioMessage;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountRidingMessage;
+   import com.ankamagames.dofus.types.enums.AnimationEnum;
+   import com.ankamagames.dofus.network.enums.MountEquipedErrorEnum;
+   import com.ankamagames.dofus.misc.lists.ExchangeHookList;
+   import com.ankamagames.berilia.managers.TooltipManager;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountSetMessage;
+   import com.ankamagames.dofus.network.enums.UpdatableMountBoostEnum;
+   import com.ankamagames.tiphon.sequence.PlayAnimationStep;
+   import com.ankamagames.tiphon.sequence.SetAnimationStep;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.misc.lists.ChatHookList;
+   import com.ankamagames.dofus.network.enums.ChatActivableChannelsEnum;
+   import com.ankamagames.dofus.logic.game.common.managers.TimeManager;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountToggleRidingRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountReleaseRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.MountSterilizeRequestAction;
+   import com.ankamagames.dofus.logic.game.common.actions.mount.ExchangeRequestOnMountStockAction;
+   import com.ankamagames.dofus.network.messages.game.context.mount.MountUnSetMessage;
 
-    public class MountFrame extends Object implements Frame
-    {
-        private var _mountDialogFrame:MountDialogFrame;
-        private var _mountXpRatio:uint;
-        private var _stableList:Array;
-        private var _paddockList:Array;
-        private var _inventoryWeight:uint;
-        private var _inventoryMaxWeight:uint;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(MountFrame));
-        public static const MAX_XP_RATIO:uint = 90;
 
-        public function MountFrame()
-        {
-            return;
-        }// end function
+   public class MountFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return 0;
-        }// end function
+      public function MountFrame() {
+         super();
+      }
 
-        public function get mountXpRatio() : uint
-        {
-            return this._mountXpRatio;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(MountFrame));
 
-        public function get stableList() : Array
-        {
-            return this._stableList;
-        }// end function
+      public static const MAX_XP_RATIO:uint = 90;
 
-        public function get paddockList() : Array
-        {
-            return this._paddockList;
-        }// end function
+      private var _mountDialogFrame:MountDialogFrame;
 
-        public function pushed() : Boolean
-        {
-            this._mountDialogFrame = new MountDialogFrame();
-            return true;
-        }// end function
+      private var _mountXpRatio:uint;
 
-        public function initializeMountLists(param1:Vector.<MountClientData>, param2:Vector.<MountClientData>) : void
-        {
-            var _loc_3:* = null;
-            this._stableList = new Array();
-            if (param1)
+      private var _stableList:Array;
+
+      private var _paddockList:Array;
+
+      private var _inventoryWeight:uint;
+
+      private var _inventoryMaxWeight:uint;
+
+      public function get priority() : int {
+         return 0;
+      }
+
+      public function get mountXpRatio() : uint {
+         return this._mountXpRatio;
+      }
+
+      public function get stableList() : Array {
+         return this._stableList;
+      }
+
+      public function get paddockList() : Array {
+         return this._paddockList;
+      }
+
+      public function pushed() : Boolean {
+         this._mountDialogFrame=new MountDialogFrame();
+         return true;
+      }
+
+      public function initializeMountLists(stables:Vector.<MountClientData>, paddocks:Vector.<MountClientData>) : void {
+         var mcd:MountClientData = null;
+         this._stableList=new Array();
+         if(stables)
+         {
+            for each (mcd in stables)
             {
-                for each (_loc_3 in param1)
-                {
-                    
-                    this._stableList.push(MountData.makeMountData(_loc_3, true, this._mountXpRatio));
-                }
+               this._stableList.push(MountData.makeMountData(mcd,true,this._mountXpRatio));
             }
-            this._paddockList = new Array();
-            if (param2)
+         }
+         this._paddockList=new Array();
+         if(paddocks)
+         {
+            for each (mcd in paddocks)
             {
-                for each (_loc_3 in param2)
-                {
-                    
-                    this._paddockList.push(MountData.makeMountData(_loc_3, true, this._mountXpRatio));
-                }
+               this._paddockList.push(MountData.makeMountData(mcd,true,this._mountXpRatio));
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = null;
-            var _loc_7:* = null;
-            var _loc_8:* = null;
-            var _loc_9:* = null;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_12:* = null;
-            var _loc_13:* = null;
-            var _loc_14:* = null;
-            var _loc_15:* = null;
-            var _loc_16:* = null;
-            var _loc_17:* = NaN;
-            var _loc_18:* = null;
-            var _loc_19:* = null;
-            var _loc_20:* = null;
-            var _loc_21:* = null;
-            var _loc_22:* = null;
-            var _loc_23:* = null;
-            var _loc_24:* = null;
-            var _loc_25:* = null;
-            var _loc_26:* = null;
-            var _loc_27:* = null;
-            var _loc_28:* = false;
-            var _loc_29:* = null;
-            var _loc_30:* = null;
-            var _loc_31:* = null;
-            var _loc_32:* = null;
-            var _loc_33:* = null;
-            var _loc_34:* = null;
-            var _loc_35:* = null;
-            var _loc_36:* = null;
-            var _loc_37:* = null;
-            var _loc_38:* = null;
-            var _loc_39:* = null;
-            var _loc_40:* = null;
-            var _loc_41:* = null;
-            var _loc_42:* = null;
-            var _loc_43:* = null;
-            var _loc_44:* = 0;
-            var _loc_45:* = null;
-            var _loc_46:* = null;
-            var _loc_47:* = null;
-            var _loc_48:* = null;
-            var _loc_49:* = null;
-            switch(true)
-            {
-                case param1 is MountInformationInPaddockRequestAction:
-                {
-                    _loc_2 = param1 as MountInformationInPaddockRequestAction;
-                    _loc_3 = new MountInformationInPaddockRequestMessage();
-                    _loc_3.initMountInformationInPaddockRequestMessage(_loc_2.mountId);
-                    ConnectionsHandler.getConnection().send(_loc_3);
-                    return true;
-                }
-                case param1 is MountToggleRidingRequestAction:
-                {
-                    _loc_4 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as IMovable;
-                    if (_loc_4 && !_loc_4.isMoving)
-                    {
-                        _loc_42 = new MountToggleRidingRequestMessage();
-                        _loc_42.initMountToggleRidingRequestMessage();
-                        ConnectionsHandler.getConnection().send(_loc_42);
-                    }
-                    return true;
-                }
-                case param1 is MountFeedRequestAction:
-                {
-                    _loc_5 = param1 as MountFeedRequestAction;
-                    if (Kernel.getWorker().getFrame(FightBattleFrame) == null)
-                    {
-                        _loc_43 = new MountFeedRequestMessage();
-                        _loc_43.initMountFeedRequestMessage(_loc_5.mountId, _loc_5.mountLocation, _loc_5.mountFoodUid, _loc_5.quantity);
-                        ConnectionsHandler.getConnection().send(_loc_43);
-                    }
-                    return true;
-                }
-                case param1 is MountReleaseRequestAction:
-                {
-                    _loc_6 = new MountReleaseRequestMessage();
-                    _loc_6.initMountReleaseRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_6);
-                    return true;
-                }
-                case param1 is MountSterilizeRequestAction:
-                {
-                    _loc_7 = new MountSterilizeRequestMessage();
-                    _loc_7.initMountSterilizeRequestMessage();
-                    ConnectionsHandler.getConnection().send(_loc_7);
-                    return true;
-                }
-                case param1 is MountRenameRequestAction:
-                {
-                    _loc_8 = param1 as MountRenameRequestAction;
-                    _loc_9 = new MountRenameRequestMessage();
-                    _loc_9.initMountRenameRequestMessage(_loc_8.newName ? (_loc_8.newName) : (""), _loc_8.mountId);
-                    ConnectionsHandler.getConnection().send(_loc_9);
-                    return true;
-                }
-                case param1 is MountSetXpRatioRequestAction:
-                {
-                    _loc_10 = param1 as MountSetXpRatioRequestAction;
-                    _loc_11 = new MountSetXpRatioRequestMessage();
-                    _loc_11.initMountSetXpRatioRequestMessage(_loc_10.xpRatio > MAX_XP_RATIO ? (MAX_XP_RATIO) : (_loc_10.xpRatio));
-                    ConnectionsHandler.getConnection().send(_loc_11);
-                    return true;
-                }
-                case param1 is MountInfoRequestAction:
-                {
-                    _loc_12 = param1 as MountInfoRequestAction;
-                    _loc_13 = new MountInformationRequestMessage();
-                    _loc_13.initMountInformationRequestMessage(_loc_12.mountId, _loc_12.time);
-                    ConnectionsHandler.getConnection().send(_loc_13);
-                    return true;
-                }
-                case param1 is ExchangeRequestOnMountStockAction:
-                {
-                    _loc_14 = new ExchangeRequestOnMountStockMessage();
-                    _loc_14.initExchangeRequestOnMountStockMessage();
-                    ConnectionsHandler.getConnection().send(_loc_14);
-                    return true;
-                }
-                case param1 is MountSterilizedMessage:
-                {
-                    _loc_17 = MountSterilizedMessage(param1).mountId;
-                    _loc_15 = MountData.getMountFromCache(_loc_17);
-                    if (_loc_15)
-                    {
-                        _loc_15.reproductionCount = -1;
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountSterilized, _loc_17);
-                    return true;
-                }
-                case param1 is MountRenamedMessage:
-                {
-                    _loc_16 = param1 as MountRenamedMessage;
-                    _loc_17 = _loc_16.mountId;
-                    _loc_18 = _loc_16.name;
-                    _loc_15 = MountData.getMountFromCache(_loc_17);
-                    if (_loc_15)
-                    {
-                        _loc_15.name = _loc_18;
-                    }
-                    if (this._mountDialogFrame.inStable)
-                    {
-                        KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate, this._stableList, null, null);
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountRenamed, _loc_17, _loc_18);
-                    return true;
-                }
-                case param1 is ExchangeHandleMountStableAction:
-                {
-                    _loc_19 = param1 as ExchangeHandleMountStableAction;
-                    _loc_20 = new ExchangeHandleMountStableMessage();
-                    _loc_20.initExchangeHandleMountStableMessage(_loc_19.actionType, _loc_19.rideId);
-                    ConnectionsHandler.getConnection().send(_loc_20);
-                    return true;
-                }
-                case param1 is ExchangeMountStableBornAddMessage:
-                {
-                    _loc_21 = param1 as ExchangeMountStableBornAddMessage;
-                    _loc_22 = MountData.makeMountData(_loc_21.mountDescription, true, this._mountXpRatio);
-                    _loc_22.borning = true;
-                    if (this._stableList)
-                    {
-                        this._stableList.push(_loc_22);
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate, this._stableList, null, null);
-                    return true;
-                }
-                case param1 is ExchangeMountStableAddMessage:
-                {
-                    _loc_23 = param1 as ExchangeMountStableAddMessage;
-                    if (this._stableList)
-                    {
-                        this._stableList.push(MountData.makeMountData(_loc_23.mountDescription, true, this._mountXpRatio));
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate, this._stableList, null, null);
-                    return true;
-                }
-                case param1 is ExchangeMountStableRemoveMessage:
-                {
-                    _loc_24 = param1 as ExchangeMountStableRemoveMessage;
-                    _loc_44 = 0;
-                    while (_loc_44 < this._stableList.length)
-                    {
-                        
-                        if (this._stableList[_loc_44].id == _loc_24.mountId)
-                        {
-                            this._stableList.splice(_loc_44, 1);
-                            break;
-                        }
-                        _loc_44++;
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate, this._stableList, null, null);
-                    return true;
-                }
-                case param1 is ExchangeMountPaddockAddMessage:
-                {
-                    _loc_25 = param1 as ExchangeMountPaddockAddMessage;
-                    this._paddockList.push(MountData.makeMountData(_loc_25.mountDescription, true, this._mountXpRatio));
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate, null, this._paddockList, null);
-                    return true;
-                }
-                case param1 is ExchangeMountPaddockRemoveMessage:
-                {
-                    _loc_26 = param1 as ExchangeMountPaddockRemoveMessage;
-                    _loc_44 = 0;
-                    while (_loc_44 < this._paddockList.length)
-                    {
-                        
-                        if (this._paddockList[_loc_44].id == _loc_26.mountId)
-                        {
-                            this._paddockList.splice(_loc_44, 1);
-                            break;
-                        }
-                        _loc_44++;
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate, null, this._paddockList, null);
-                    return true;
-                }
-                case param1 is MountXpRatioMessage:
-                {
-                    this._mountXpRatio = MountXpRatioMessage(param1).ratio;
-                    _loc_15 = PlayedCharacterManager.getInstance().mount;
-                    if (_loc_15)
-                    {
-                        _loc_15.xpRatio = this._mountXpRatio;
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountXpRatio, this._mountXpRatio);
-                    return true;
-                }
-                case param1 is MountDataMessage:
-                {
-                    _loc_27 = param1 as MountDataMessage;
-                    if (this._mountDialogFrame.inStable)
-                    {
-                        KernelEventsManager.getInstance().processCallback(MountHookList.CertificateMountData, MountData.makeMountData(_loc_27.mountData, false, this.mountXpRatio));
-                    }
-                    else
-                    {
-                        KernelEventsManager.getInstance().processCallback(MountHookList.PaddockedMountData, MountData.makeMountData(_loc_27.mountData, false, this.mountXpRatio));
-                    }
-                    return true;
-                }
-                case param1 is MountRidingMessage:
-                {
-                    _loc_28 = MountRidingMessage(param1).isRiding;
-                    _loc_29 = DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as AnimatedCharacter;
-                    if (_loc_29)
-                    {
-                        _loc_29.setAnimation(AnimationEnum.ANIM_STATIQUE);
-                    }
-                    PlayedCharacterManager.getInstance().isRidding = _loc_28;
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountRiding, _loc_28);
-                    return true;
-                }
-                case param1 is MountEquipedErrorMessage:
-                {
-                    _loc_30 = MountEquipedErrorMessage(param1);
-                    switch(_loc_30.errorType)
-                    {
-                        case MountEquipedErrorEnum.UNSET:
-                        {
-                            _loc_31 = "UNSET";
-                            break;
-                        }
-                        case MountEquipedErrorEnum.SET:
-                        {
-                            _loc_31 = "SET";
-                            break;
-                        }
-                        case MountEquipedErrorEnum.RIDING:
-                        {
-                            _loc_31 = "RIDING";
-                            KernelEventsManager.getInstance().processCallback(MountHookList.MountRiding, false);
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountEquipedError, _loc_31);
-                    return true;
-                }
-                case param1 is ExchangeWeightMessage:
-                {
-                    _loc_32 = param1 as ExchangeWeightMessage;
-                    this._inventoryWeight = _loc_32.currentWeight;
-                    this._inventoryMaxWeight = _loc_32.maxWeight;
-                    KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeWeight, _loc_32.currentWeight, _loc_32.maxWeight);
-                    return true;
-                }
-                case param1 is ExchangeStartOkMountMessage:
-                {
-                    _loc_33 = param1 as ExchangeStartOkMountMessage;
-                    TooltipManager.hideAll();
-                    this.initializeMountLists(_loc_33.stabledMountsDescription, _loc_33.paddockedMountsDescription);
-                    Kernel.getWorker().addFrame(this._mountDialogFrame);
-                    return true;
-                }
-                case param1 is MountSetMessage:
-                {
-                    PlayedCharacterManager.getInstance().mount = MountData.makeMountData(MountSetMessage(param1).mountData, false, this.mountXpRatio);
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountSet);
-                    return true;
-                }
-                case param1 is MountUnSetMessage:
-                {
-                    PlayedCharacterManager.getInstance().mount = null;
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountUnSet);
-                    return true;
-                }
-                case param1 is ExchangeStartOkMountWithOutPaddockMessage:
-                {
-                    _loc_34 = param1 as ExchangeStartOkMountWithOutPaddockMessage;
-                    this.initializeMountLists(_loc_34.stabledMountsDescription, null);
-                    Kernel.getWorker().addFrame(this._mountDialogFrame);
-                    return true;
-                }
-                case param1 is UpdateMountBoostMessage:
-                {
-                    _loc_35 = param1 as UpdateMountBoostMessage;
-                    _loc_36 = null;
-                    for each (_loc_45 in this._paddockList)
-                    {
-                        
-                        if (_loc_45.id == _loc_35.rideId)
-                        {
-                            _loc_36 = _loc_45;
-                            break;
-                        }
-                    }
-                    if (!_loc_36)
-                    {
-                        _log.error("Can\'t find " + _loc_35.rideId + " ride ID for update mount boost");
-                        return true;
-                    }
-                    for each (_loc_46 in _loc_35.boostToUpdateList)
-                    {
-                        
-                        if (_loc_46 is UpdateMountIntBoost)
-                        {
-                            _loc_47 = _loc_46 as UpdateMountIntBoost;
-                            switch(_loc_47.type)
-                            {
-                                case UpdatableMountBoostEnum.ENERGY:
-                                {
-                                    _loc_36.energy = _loc_47.value;
-                                    break;
-                                }
-                                case UpdatableMountBoostEnum.LOVE:
-                                {
-                                    _loc_36.love = _loc_47.value;
-                                    break;
-                                }
-                                case UpdatableMountBoostEnum.MATURITY:
-                                {
-                                    _loc_36.maturity = _loc_47.value;
-                                    break;
-                                }
-                                case UpdatableMountBoostEnum.SERENITY:
-                                {
-                                    _loc_36.serenity = _loc_47.value;
-                                    break;
-                                }
-                                case UpdatableMountBoostEnum.STAMINA:
-                                {
-                                    _loc_36.stamina = _loc_47.value;
-                                    break;
-                                }
-                                case UpdatableMountBoostEnum.TIREDNESS:
-                                {
-                                    _loc_36.boostLimiter = _loc_47.value;
-                                }
-                                default:
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate, null, this._paddockList, null);
-                    return true;
-                }
-                case param1 is MountEmoteIconUsedOkMessage:
-                {
-                    _loc_37 = param1 as MountEmoteIconUsedOkMessage;
-                    _loc_38 = DofusEntities.getEntity(_loc_37.mountId) as TiphonSprite;
-                    if (_loc_38)
-                    {
-                        _loc_48 = null;
-                        switch(_loc_37.reactionType)
-                        {
-                            case 1:
-                            {
-                                _loc_48 = "AnimEmoteRest_Statique";
-                                break;
-                            }
-                            case 2:
-                            {
-                                _loc_48 = "AnimAttaque0";
-                                break;
-                            }
-                            case 3:
-                            {
-                                _loc_48 = "AnimEmoteCaresse";
-                                break;
-                            }
-                            case 4:
-                            {
-                                _loc_48 = "AnimEmoteReproductionF";
-                                break;
-                            }
-                            case 5:
-                            {
-                                _loc_48 = "AnimEmoteReproductionM";
-                                break;
-                            }
-                            default:
-                            {
-                                break;
-                            }
-                        }
-                        if (_loc_48)
-                        {
-                            _loc_49 = new SerialSequencer();
-                            _loc_49.addStep(new PlayAnimationStep(_loc_38, _loc_48, false));
-                            _loc_49.addStep(new SetAnimationStep(_loc_38, AnimationEnum.ANIM_STATIQUE));
-                            _loc_49.start();
-                        }
-                    }
-                    return true;
-                }
-                case param1 is ExchangeMountTakenFromPaddockMessage:
-                {
-                    _loc_39 = param1 as ExchangeMountTakenFromPaddockMessage;
-                    _loc_40 = I18n.getUiText("ui.mount.takenFromPaddock", [_loc_39.name, "[" + _loc_39.worldX + "," + _loc_39.worldY + "]", _loc_39.ownername]);
-                    KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation, _loc_40, ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO, TimeManager.getInstance().getTimestamp());
-                    return true;
-                }
-                case param1 is MountReleasedMessage:
-                {
-                    _loc_41 = param1 as MountReleasedMessage;
-                    KernelEventsManager.getInstance().processCallback(MountHookList.MountReleased, _loc_41.mountId);
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function process(msg:Message) : Boolean {
+         var miipra:MountInformationInPaddockRequestAction = null;
+         var miiprmsg:MountInformationInPaddockRequestMessage = null;
+         var playerEntity:IMovable = null;
+         var mtfra:MountFeedRequestAction = null;
+         var mrrmsg:MountReleaseRequestMessage = null;
+         var msrmsg:MountSterilizeRequestMessage = null;
+         var mrra:MountRenameRequestAction = null;
+         var mountRenameRequestMessage:MountRenameRequestMessage = null;
+         var msxrra:MountSetXpRatioRequestAction = null;
+         var msxrpmsg:MountSetXpRatioRequestMessage = null;
+         var mira:MountInfoRequestAction = null;
+         var mirmsg:MountInformationRequestMessage = null;
+         var eromsmsg:ExchangeRequestOnMountStockMessage = null;
+         var mount:Object = null;
+         var mrmsg:MountRenamedMessage = null;
+         var mountId:* = NaN;
+         var mountName:String = null;
+         var ehmsa:ExchangeHandleMountStableAction = null;
+         var ehmsmsg:ExchangeHandleMountStableMessage = null;
+         var emsbamsg:ExchangeMountStableBornAddMessage = null;
+         var newMount:Object = null;
+         var emsamsg:ExchangeMountStableAddMessage = null;
+         var emsrmsg:ExchangeMountStableRemoveMessage = null;
+         var empamsg:ExchangeMountPaddockAddMessage = null;
+         var emprmsg:ExchangeMountPaddockRemoveMessage = null;
+         var mdmsg:MountDataMessage = null;
+         var isRiding:* = false;
+         var player:AnimatedCharacter = null;
+         var meemsg:MountEquipedErrorMessage = null;
+         var typeError:String = null;
+         var ewmsg:ExchangeWeightMessage = null;
+         var esokmmsg:ExchangeStartOkMountMessage = null;
+         var esomwopmsg:ExchangeStartOkMountWithOutPaddockMessage = null;
+         var umbmsg:UpdateMountBoostMessage = null;
+         var mountToUpdate:Object = null;
+         var meiuomsg:MountEmoteIconUsedOkMessage = null;
+         var mountSprite:TiphonSprite = null;
+         var emtfpmsg:ExchangeMountTakenFromPaddockMessage = null;
+         var takenMessage:String = null;
+         var mremsg:MountReleasedMessage = null;
+         var mtrrmsg:MountToggleRidingRequestMessage = null;
+         var mfrmsg:MountFeedRequestMessage = null;
+         var i:* = 0;
+         var m:Object = null;
+         var boost:UpdateMountBoost = null;
+         var intBoost:UpdateMountIntBoost = null;
+         var animationName:String = null;
+         var seq:SerialSequencer = null;
+         switch(true)
+         {
+            case msg is MountInformationInPaddockRequestAction:
+               miipra=msg as MountInformationInPaddockRequestAction;
+               miiprmsg=new MountInformationInPaddockRequestMessage();
+               miiprmsg.initMountInformationInPaddockRequestMessage(miipra.mountId);
+               ConnectionsHandler.getConnection().send(miiprmsg);
+               return true;
+            case msg is MountToggleRidingRequestAction:
+               playerEntity=DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as IMovable;
+               if((playerEntity)&&(!playerEntity.isMoving))
+               {
+                  mtrrmsg=new MountToggleRidingRequestMessage();
+                  mtrrmsg.initMountToggleRidingRequestMessage();
+                  ConnectionsHandler.getConnection().send(mtrrmsg);
+               }
+               return true;
+            case msg is MountFeedRequestAction:
+               mtfra=msg as MountFeedRequestAction;
+               if(Kernel.getWorker().getFrame(FightBattleFrame)==null)
+               {
+                  mfrmsg=new MountFeedRequestMessage();
+                  mfrmsg.initMountFeedRequestMessage(mtfra.mountId,mtfra.mountLocation,mtfra.mountFoodUid,mtfra.quantity);
+                  ConnectionsHandler.getConnection().send(mfrmsg);
+               }
+               return true;
+            case msg is MountReleaseRequestAction:
+               mrrmsg=new MountReleaseRequestMessage();
+               mrrmsg.initMountReleaseRequestMessage();
+               ConnectionsHandler.getConnection().send(mrrmsg);
+               return true;
+            case msg is MountSterilizeRequestAction:
+               msrmsg=new MountSterilizeRequestMessage();
+               msrmsg.initMountSterilizeRequestMessage();
+               ConnectionsHandler.getConnection().send(msrmsg);
+               return true;
+            case msg is MountRenameRequestAction:
+               mrra=msg as MountRenameRequestAction;
+               mountRenameRequestMessage=new MountRenameRequestMessage();
+               mountRenameRequestMessage.initMountRenameRequestMessage(mrra.newName?mrra.newName:"",mrra.mountId);
+               ConnectionsHandler.getConnection().send(mountRenameRequestMessage);
+               return true;
+            case msg is MountSetXpRatioRequestAction:
+               msxrra=msg as MountSetXpRatioRequestAction;
+               msxrpmsg=new MountSetXpRatioRequestMessage();
+               msxrpmsg.initMountSetXpRatioRequestMessage(msxrra.xpRatio<MAX_XP_RATIO?MAX_XP_RATIO:msxrra.xpRatio);
+               ConnectionsHandler.getConnection().send(msxrpmsg);
+               return true;
+            case msg is MountInfoRequestAction:
+               mira=msg as MountInfoRequestAction;
+               mirmsg=new MountInformationRequestMessage();
+               mirmsg.initMountInformationRequestMessage(mira.mountId,mira.time);
+               ConnectionsHandler.getConnection().send(mirmsg);
+               return true;
+            case msg is ExchangeRequestOnMountStockAction:
+               eromsmsg=new ExchangeRequestOnMountStockMessage();
+               eromsmsg.initExchangeRequestOnMountStockMessage();
+               ConnectionsHandler.getConnection().send(eromsmsg);
+               return true;
+            case msg is MountSterilizedMessage:
+               mountId=MountSterilizedMessage(msg).mountId;
+               mount=MountData.getMountFromCache(mountId);
+               if(mount)
+               {
+                  mount.reproductionCount=-1;
+               }
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountSterilized,mountId);
+               return true;
+            case msg is MountRenamedMessage:
+               mrmsg=msg as MountRenamedMessage;
+               mountId=mrmsg.mountId;
+               mountName=mrmsg.name;
+               mount=MountData.getMountFromCache(mountId);
+               if(mount)
+               {
+                  mount.name=mountName;
+               }
+               if(this._mountDialogFrame.inStable)
+               {
+                  KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate,this._stableList,null,null);
+               }
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountRenamed,mountId,mountName);
+               return true;
+            case msg is ExchangeHandleMountStableAction:
+               ehmsa=msg as ExchangeHandleMountStableAction;
+               ehmsmsg=new ExchangeHandleMountStableMessage();
+               ehmsmsg.initExchangeHandleMountStableMessage(ehmsa.actionType,ehmsa.rideId);
+               ConnectionsHandler.getConnection().send(ehmsmsg);
+               return true;
+            case msg is ExchangeMountStableBornAddMessage:
+               emsbamsg=msg as ExchangeMountStableBornAddMessage;
+               newMount=MountData.makeMountData(emsbamsg.mountDescription,true,this._mountXpRatio);
+               newMount.borning=true;
+               if(this._stableList)
+               {
+                  this._stableList.push(newMount);
+               }
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate,this._stableList,null,null);
+               return true;
+            case msg is ExchangeMountStableAddMessage:
+               emsamsg=msg as ExchangeMountStableAddMessage;
+               if(this._stableList)
+               {
+                  this._stableList.push(MountData.makeMountData(emsamsg.mountDescription,true,this._mountXpRatio));
+               }
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate,this._stableList,null,null);
+               return true;
+            case msg is ExchangeMountStableRemoveMessage:
+               emsrmsg=msg as ExchangeMountStableRemoveMessage;
+               i=0;
+               while(i<this._stableList.length)
+               {
+                  if(this._stableList[i].id==emsrmsg.mountId)
+                  {
+                     this._stableList.splice(i,1);
+                  }
+                  else
+                  {
+                     i++;
+                     continue;
+                  }
+               }
+            case msg is ExchangeMountPaddockAddMessage:
+               empamsg=msg as ExchangeMountPaddockAddMessage;
+               this._paddockList.push(MountData.makeMountData(empamsg.mountDescription,true,this._mountXpRatio));
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate,null,this._paddockList,null);
+               return true;
+            case msg is ExchangeMountPaddockRemoveMessage:
+               emprmsg=msg as ExchangeMountPaddockRemoveMessage;
+               i=0;
+               while(i<this._paddockList.length)
+               {
+                  if(this._paddockList[i].id==emprmsg.mountId)
+                  {
+                     this._paddockList.splice(i,1);
+                  }
+                  else
+                  {
+                     i++;
+                     continue;
+                  }
+               }
+            case msg is MountXpRatioMessage:
+               this._mountXpRatio=MountXpRatioMessage(msg).ratio;
+               mount=PlayedCharacterManager.getInstance().mount;
+               if(mount)
+               {
+                  mount.xpRatio=this._mountXpRatio;
+               }
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountXpRatio,this._mountXpRatio);
+               return true;
+            case msg is MountDataMessage:
+               mdmsg=msg as MountDataMessage;
+               if(this._mountDialogFrame.inStable)
+               {
+                  KernelEventsManager.getInstance().processCallback(MountHookList.CertificateMountData,MountData.makeMountData(mdmsg.mountData,false,this.mountXpRatio));
+               }
+               else
+               {
+                  KernelEventsManager.getInstance().processCallback(MountHookList.PaddockedMountData,MountData.makeMountData(mdmsg.mountData,false,this.mountXpRatio));
+               }
+               return true;
+            case msg is MountRidingMessage:
+               isRiding=MountRidingMessage(msg).isRiding;
+               player=DofusEntities.getEntity(PlayedCharacterManager.getInstance().id) as AnimatedCharacter;
+               if(player)
+               {
+                  player.setAnimation(AnimationEnum.ANIM_STATIQUE);
+               }
+               PlayedCharacterManager.getInstance().isRidding=isRiding;
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountRiding,isRiding);
+               return true;
+            case msg is MountEquipedErrorMessage:
+               meemsg=MountEquipedErrorMessage(msg);
+               switch(meemsg.errorType)
+               {
+                  case MountEquipedErrorEnum.UNSET:
+                     typeError="UNSET";
+                     break;
+                  case MountEquipedErrorEnum.SET:
+                     typeError="SET";
+                     break;
+                  case MountEquipedErrorEnum.RIDING:
+                     typeError="RIDING";
+                     KernelEventsManager.getInstance().processCallback(MountHookList.MountRiding,false);
+                     break;
+               }
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountEquipedError,typeError);
+               return true;
+            case msg is ExchangeWeightMessage:
+               ewmsg=msg as ExchangeWeightMessage;
+               this._inventoryWeight=ewmsg.currentWeight;
+               this._inventoryMaxWeight=ewmsg.maxWeight;
+               KernelEventsManager.getInstance().processCallback(ExchangeHookList.ExchangeWeight,ewmsg.currentWeight,ewmsg.maxWeight);
+               return true;
+            case msg is ExchangeStartOkMountMessage:
+               esokmmsg=msg as ExchangeStartOkMountMessage;
+               TooltipManager.hideAll();
+               this.initializeMountLists(esokmmsg.stabledMountsDescription,esokmmsg.paddockedMountsDescription);
+               Kernel.getWorker().addFrame(this._mountDialogFrame);
+               return true;
+            case msg is MountSetMessage:
+               PlayedCharacterManager.getInstance().mount=MountData.makeMountData(MountSetMessage(msg).mountData,false,this.mountXpRatio);
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountSet);
+               return true;
+            case msg is MountUnSetMessage:
+               PlayedCharacterManager.getInstance().mount=null;
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountUnSet);
+               return true;
+            case msg is ExchangeStartOkMountWithOutPaddockMessage:
+               esomwopmsg=msg as ExchangeStartOkMountWithOutPaddockMessage;
+               this.initializeMountLists(esomwopmsg.stabledMountsDescription,null);
+               Kernel.getWorker().addFrame(this._mountDialogFrame);
+               return true;
+            case msg is UpdateMountBoostMessage:
+               umbmsg=msg as UpdateMountBoostMessage;
+               mountToUpdate=null;
+               for each (m in this._paddockList)
+               {
+                  if(m.id==umbmsg.rideId)
+                  {
+                     mountToUpdate=m;
+                     break;
+                  }
+               }
+               if(!mountToUpdate)
+               {
+                  _log.error("Can\'t find "+umbmsg.rideId+" ride ID for update mount boost");
+                  return true;
+               }
+               for each (boost in umbmsg.boostToUpdateList)
+               {
+                  if(boost is UpdateMountIntBoost)
+                  {
+                     intBoost=boost as UpdateMountIntBoost;
+                     switch(intBoost.type)
+                     {
+                        case UpdatableMountBoostEnum.ENERGY:
+                           mountToUpdate.energy=intBoost.value;
+                           continue;
+                           break;
+                        case UpdatableMountBoostEnum.LOVE:
+                           mountToUpdate.love=intBoost.value;
+                           continue;
+                           break;
+                        case UpdatableMountBoostEnum.MATURITY:
+                           mountToUpdate.maturity=intBoost.value;
+                           continue;
+                           break;
+                        case UpdatableMountBoostEnum.SERENITY:
+                           mountToUpdate.serenity=intBoost.value;
+                           continue;
+                           break;
+                        case UpdatableMountBoostEnum.STAMINA:
+                           mountToUpdate.stamina=intBoost.value;
+                           continue;
+                           break;
+                        case UpdatableMountBoostEnum.TIREDNESS:
+                           mountToUpdate.boostLimiter=intBoost.value;
+                     }
+                  }
+               }
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountStableUpdate,null,this._paddockList,null);
+               return true;
+            case msg is MountEmoteIconUsedOkMessage:
+               meiuomsg=msg as MountEmoteIconUsedOkMessage;
+               mountSprite=DofusEntities.getEntity(meiuomsg.mountId) as TiphonSprite;
+               if(mountSprite)
+               {
+                  animationName=null;
+                  switch(meiuomsg.reactionType)
+                  {
+                     case 1:
+                        animationName="AnimEmoteRest_Statique";
+                        break;
+                     case 2:
+                        animationName="AnimAttaque0";
+                        break;
+                     case 3:
+                        animationName="AnimEmoteCaresse";
+                        break;
+                     case 4:
+                        animationName="AnimEmoteReproductionF";
+                        break;
+                     case 5:
+                        animationName="AnimEmoteReproductionM";
+                        break;
+                  }
+                  if(animationName)
+                  {
+                     seq=new SerialSequencer();
+                     seq.addStep(new PlayAnimationStep(mountSprite,animationName,false));
+                     seq.addStep(new SetAnimationStep(mountSprite,AnimationEnum.ANIM_STATIQUE));
+                     seq.start();
+                  }
+               }
+               return true;
+            case msg is ExchangeMountTakenFromPaddockMessage:
+               emtfpmsg=msg as ExchangeMountTakenFromPaddockMessage;
+               takenMessage=I18n.getUiText("ui.mount.takenFromPaddock",[emtfpmsg.name,"["+emtfpmsg.worldX+","+emtfpmsg.worldY+"]",emtfpmsg.ownername]);
+               KernelEventsManager.getInstance().processCallback(ChatHookList.TextInformation,takenMessage,ChatActivableChannelsEnum.PSEUDO_CHANNEL_INFO,TimeManager.getInstance().getTimestamp());
+               return true;
+            case msg is MountReleasedMessage:
+               mremsg=msg as MountReleasedMessage;
+               KernelEventsManager.getInstance().processCallback(MountHookList.MountReleased,mremsg.mountId);
+               return true;
+            default:
+               return false;
+         }
+      }
 
-        public function pulled() : Boolean
-        {
-            return true;
-        }// end function
+      public function pulled() : Boolean {
+         return true;
+      }
 
-        public function get inventoryWeight() : uint
-        {
-            return this._inventoryWeight;
-        }// end function
+      public function get inventoryWeight() : uint {
+         return this._inventoryWeight;
+      }
 
-        public function get inventoryMaxWeight() : uint
-        {
-            return this._inventoryMaxWeight;
-        }// end function
+      public function get inventoryMaxWeight() : uint {
+         return this._inventoryMaxWeight;
+      }
+   }
 
-    }
 }

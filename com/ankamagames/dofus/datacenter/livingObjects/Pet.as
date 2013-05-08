@@ -1,33 +1,38 @@
-﻿package com.ankamagames.dofus.datacenter.livingObjects
+package com.ankamagames.dofus.datacenter.livingObjects
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
 
-    public class Pet extends Object implements IDataCenter
-    {
-        public var id:int;
-        public var foodItems:Vector.<int>;
-        public var foodTypes:Vector.<int>;
-        private static const MODULE:String = "Pets";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Pet));
 
-        public function Pet()
-        {
-            return;
-        }// end function
+   public class Pet extends Object implements IDataCenter
+   {
+         
 
-        public static function getPetById(param1:int) : Pet
-        {
-            return GameData.getObject(MODULE, param1) as Pet;
-        }// end function
+      public function Pet() {
+         super();
+      }
 
-        public static function getPets() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static const MODULE:String = "Pets";
 
-    }
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Pet));
+
+      public static function getPetById(id:int) : Pet {
+         return GameData.getObject(MODULE,id) as Pet;
+      }
+
+      public static function getPets() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:int;
+
+      public var foodItems:Vector.<int>;
+
+      public var foodTypes:Vector.<int>;
+   }
+
 }

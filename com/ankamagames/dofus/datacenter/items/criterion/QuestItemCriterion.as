@@ -1,99 +1,89 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.dofus.datacenter.quest.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.dofus.datacenter.quest.Quest;
+   import com.ankamagames.jerakine.data.I18n;
+   import com.ankamagames.dofus.network.types.game.context.roleplay.quest.QuestActiveInformations;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.QuestFrame;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
 
-    public class QuestItemCriterion extends ItemCriterion implements IDataCenter
-    {
-        private var _questId:uint;
 
-        public function QuestItemCriterion(param1:String)
-        {
-            super(param1);
-            this._questId = _criterionValue;
-            return;
-        }// end function
+   public class QuestItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            var _loc_1:* = "";
-            var _loc_2:* = Quest.getQuestById(this._questId);
-            if (!_loc_2)
-            {
-                return _loc_1;
-            }
-            var _loc_3:* = _loc_2.name;
-            var _loc_4:* = _serverCriterionForm.slice(0, 2);
-            switch(_loc_4)
-            {
-                case "Qa":
-                {
-                    _loc_1 = I18n.getUiText("ui.grimoire.quest.active", [_loc_3]);
-                    break;
-                }
-                case "Qc":
-                {
-                    _loc_1 = I18n.getUiText("ui.grimoire.quest.startable", [_loc_3]);
-                    break;
-                }
-                case "Qf":
-                {
-                    _loc_1 = I18n.getUiText("ui.grimoire.quest.done", [_loc_3]);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return _loc_1;
-        }// end function
+      public function QuestItemCriterion(pCriterion:String) {
+         super(pCriterion);
+         this._questId=_criterionValue;
+      }
 
-        override public function get isRespected() : Boolean
-        {
-            var _loc_1:* = Quest.getQuestById(this._questId);
-            if (!_loc_1)
-            {
-                return false;
-            }
-            var _loc_2:* = Kernel.getWorker().getFrame(QuestFrame) as QuestFrame;
-            var _loc_3:* = _serverCriterionForm.slice(0, 2);
-            switch(_loc_3)
-            {
-                case "Qa":
-                {
-                    return _loc_2.getActiveQuests().indexOf(this._questId) != -1;
-                }
-                case "Qc":
-                {
-                    return true;
-                }
-                case "Qf":
-                {
-                    return _loc_2.getCompletedQuests().indexOf(this._questId) != -1;
-                }
-                default:
-                {
-                    break;
-                }
-            }
+
+
+      private var _questId:uint;
+
+      override public function get text() : String {
+         var readableCriterion:String = "";
+         var quest:Quest = Quest.getQuestById(this._questId);
+         if(!quest)
+         {
+            return readableCriterion;
+         }
+         var readableCriterionValue:String = quest.name;
+         var s:String = _serverCriterionForm.slice(0,2);
+         switch(s)
+         {
+            case "Qa":
+               readableCriterion=I18n.getUiText("ui.grimoire.quest.active",[readableCriterionValue]);
+               break;
+            case "Qc":
+               readableCriterion=I18n.getUiText("ui.grimoire.quest.startable",[readableCriterionValue]);
+               break;
+            case "Qf":
+               readableCriterion=I18n.getUiText("ui.grimoire.quest.done",[readableCriterionValue]);
+               break;
+         }
+         return readableCriterion;
+      }
+
+      override public function get isRespected() : Boolean {
+         var questA:QuestActiveInformations = null;
+         var quest:Quest = Quest.getQuestById(this._questId);
+         if(!quest)
+         {
             return false;
-        }// end function
+         }
+         var questFrame:QuestFrame = Kernel.getWorker().getFrame(QuestFrame) as QuestFrame;
+         var s:String = _serverCriterionForm.slice(0,2);
+         switch(s)
+         {
+            case "Qa":
+               for each (questA in questFrame.getActiveQuests())
+               {
+                  if(questA.questId==this._questId)
+                  {
+                     return true;
+                  }
+               }
+               break;
+            case "Qc":
+               return true;
+               break;
+            case "Qf":
+               return !(questFrame.getCompletedQuests().indexOf(this._questId)==-1);
+               break;
+         }
+         return false;
+      }
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new QuestItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:QuestItemCriterion = new QuestItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
 
-        override protected function getCriterion() : int
-        {
-            return PlayedCharacterManager.getInstance().infos.level;
-        }// end function
+      override protected function getCriterion() : int {
+         return PlayedCharacterManager.getInstance().infos.level;
+      }
+   }
 
-    }
 }

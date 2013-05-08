@@ -1,104 +1,92 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.context.fight.GameFightFighterInformations;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class GameFightSynchronizeMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var fighters:Vector.<GameFightFighterInformations>;
-        public static const protocolId:uint = 5921;
 
-        public function GameFightSynchronizeMessage()
-        {
-            this.fighters = new Vector.<GameFightFighterInformations>;
-            return;
-        }// end function
+   public class GameFightSynchronizeMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameFightSynchronizeMessage() {
+         this.fighters=new Vector.<GameFightFighterInformations>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5921;
-        }// end function
+      public static const protocolId:uint = 5921;
 
-        public function initGameFightSynchronizeMessage(param1:Vector.<GameFightFighterInformations> = null) : GameFightSynchronizeMessage
-        {
-            this.fighters = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.fighters = new Vector.<GameFightFighterInformations>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var fighters:Vector.<GameFightFighterInformations>;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5921;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightSynchronizeMessage(param1);
-            return;
-        }// end function
+      public function initGameFightSynchronizeMessage(fighters:Vector.<GameFightFighterInformations>=null) : GameFightSynchronizeMessage {
+         this.fighters=fighters;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_GameFightSynchronizeMessage(param1:IDataOutput) : void
-        {
-            param1.writeShort(this.fighters.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.fighters.length)
-            {
-                
-                param1.writeShort((this.fighters[_loc_2] as GameFightFighterInformations).getTypeId());
-                (this.fighters[_loc_2] as GameFightFighterInformations).serialize(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+      override public function reset() : void {
+         this.fighters=new Vector.<GameFightFighterInformations>();
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightSynchronizeMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_GameFightSynchronizeMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUnsignedShort();
-                _loc_5 = ProtocolTypeManager.getInstance(GameFightFighterInformations, _loc_4);
-                _loc_5.deserialize(param1);
-                this.fighters.push(_loc_5);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightSynchronizeMessage(output);
+      }
+
+      public function serializeAs_GameFightSynchronizeMessage(output:IDataOutput) : void {
+         output.writeShort(this.fighters.length);
+         var _i1:uint = 0;
+         while(_i1<this.fighters.length)
+         {
+            output.writeShort((this.fighters[_i1] as GameFightFighterInformations).getTypeId());
+            (this.fighters[_i1] as GameFightFighterInformations).serialize(output);
+            _i1++;
+         }
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightSynchronizeMessage(input);
+      }
+
+      public function deserializeAs_GameFightSynchronizeMessage(input:IDataInput) : void {
+         var _id1:uint = 0;
+         var _item1:GameFightFighterInformations = null;
+         var _fightersLen:uint = input.readUnsignedShort();
+         var _i1:uint = 0;
+         while(_i1<_fightersLen)
+         {
+            _id1=input.readUnsignedShort();
+            _item1=ProtocolTypeManager.getInstance(GameFightFighterInformations,_id1);
+            _item1.deserialize(input);
+            this.fighters.push(_item1);
+            _i1++;
+         }
+      }
+   }
+
 }

@@ -1,80 +1,70 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeReplayMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var count:int = 0;
-        public static const protocolId:uint = 6002;
 
-        public function ExchangeReplayMessage()
-        {
-            return;
-        }// end function
+   public class ExchangeReplayMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function ExchangeReplayMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6002;
-        }// end function
+      public static const protocolId:uint = 6002;
 
-        public function initExchangeReplayMessage(param1:int = 0) : ExchangeReplayMessage
-        {
-            this.count = param1;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.count = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var count:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6002;
+      }
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeReplayMessage(param1);
-            return;
-        }// end function
+      public function initExchangeReplayMessage(count:int=0) : ExchangeReplayMessage {
+         this.count=count;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ExchangeReplayMessage(param1:IDataOutput) : void
-        {
-            param1.writeInt(this.count);
-            return;
-        }// end function
+      override public function reset() : void {
+         this.count=0;
+         this._isInitialized=false;
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeReplayMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ExchangeReplayMessage(param1:IDataInput) : void
-        {
-            this.count = param1.readInt();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeReplayMessage(output);
+      }
+
+      public function serializeAs_ExchangeReplayMessage(output:IDataOutput) : void {
+         output.writeInt(this.count);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeReplayMessage(input);
+      }
+
+      public function deserializeAs_ExchangeReplayMessage(input:IDataInput) : void {
+         this.count=input.readInt();
+      }
+   }
+
 }

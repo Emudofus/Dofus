@@ -1,92 +1,82 @@
-ï»¿package com.ankamagames.dofus.logic.game.common.misc.inventoryView
+package com.ankamagames.dofus.logic.game.common.misc.inventoryView
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.internalDatacenter.items.*;
-    import com.ankamagames.dofus.logic.game.common.misc.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.dofus.logic.game.common.misc.IInventoryView;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.items.ItemWrapper;
+   import com.ankamagames.dofus.logic.game.common.misc.HookLock;
+   import com.ankamagames.dofus.misc.lists.MountHookList;
 
-    public class CertificateView extends Object implements IInventoryView
-    {
-        private var _content:Vector.<ItemWrapper>;
-        private var _hookLock:HookLock;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(CertificateView));
 
-        public function CertificateView(param1:HookLock)
-        {
-            this._hookLock = param1;
-            return;
-        }// end function
+   public class CertificateView extends Object implements IInventoryView
+   {
+         
 
-        public function initialize(param1:Vector.<ItemWrapper>) : void
-        {
-            var _loc_2:* = null;
-            this._content = new Vector.<ItemWrapper>;
-            for each (_loc_2 in param1)
+      public function CertificateView(hookLock:HookLock) {
+         super();
+         this._hookLock=hookLock;
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(CertificateView));
+
+      private var _content:Vector.<ItemWrapper>;
+
+      private var _hookLock:HookLock;
+
+      public function initialize(items:Vector.<ItemWrapper>) : void {
+         var item:ItemWrapper = null;
+         this._content=new Vector.<ItemWrapper>();
+         for each (item in items)
+         {
+            if(this.isListening(item))
             {
-                
-                if (this.isListening(_loc_2))
-                {
-                    this.addItem(_loc_2, 0);
-                }
+               this.addItem(item,0);
             }
+         }
+      }
+
+      public function get name() : String {
+         return "certificate";
+      }
+
+      public function get content() : Vector.<ItemWrapper> {
+         return this._content;
+      }
+
+      public function addItem(item:ItemWrapper, invisible:int) : void {
+         this._content.unshift(item);
+         this.updateView();
+      }
+
+      public function removeItem(item:ItemWrapper, invisible:int) : void {
+         var idx:int = this.content.indexOf(item);
+         if(idx==-1)
+         {
+            _log.warn("L\'item qui doit être supprimé n\'est pas présent dans la liste");
             return;
-        }// end function
+         }
+         this.content.splice(idx,1);
+         this.updateView();
+      }
 
-        public function get name() : String
-        {
-            return "certificate";
-        }// end function
+      public function modifyItem(item:ItemWrapper, oldItem:ItemWrapper, invisible:int) : void {
+         this.updateView();
+      }
 
-        public function get content() : Vector.<ItemWrapper>
-        {
-            return this._content;
-        }// end function
+      public function isListening(item:ItemWrapper) : Boolean {
+         return item.isCertificate;
+      }
 
-        public function addItem(param1:ItemWrapper, param2:int) : void
-        {
-            this._content.unshift(param1);
-            this.updateView();
-            return;
-        }// end function
+      public function updateView() : void {
+         this._hookLock.addHook(MountHookList.MountStableUpdate,[null,null,this.content]);
+      }
 
-        public function removeItem(param1:ItemWrapper, param2:int) : void
-        {
-            var _loc_3:* = this.content.indexOf(param1);
-            if (_loc_3 == -1)
-            {
-                _log.warn("L\'item qui doit Ãªtre supprimÃ© n\'est pas prÃ©sent dans la liste");
-                return;
-            }
-            this.content.splice(_loc_3, 1);
-            this.updateView();
-            return;
-        }// end function
+      public function empty() : void {
+         this._content=new Vector.<ItemWrapper>();
+         this.updateView();
+      }
+   }
 
-        public function modifyItem(param1:ItemWrapper, param2:ItemWrapper, param3:int) : void
-        {
-            this.updateView();
-            return;
-        }// end function
-
-        public function isListening(param1:ItemWrapper) : Boolean
-        {
-            return param1.isCertificate;
-        }// end function
-
-        public function updateView() : void
-        {
-            this._hookLock.addHook(MountHookList.MountStableUpdate, [null, null, this.content]);
-            return;
-        }// end function
-
-        public function empty() : void
-        {
-            this._content = new Vector.<ItemWrapper>;
-            this.updateView();
-            return;
-        }// end function
-
-    }
 }

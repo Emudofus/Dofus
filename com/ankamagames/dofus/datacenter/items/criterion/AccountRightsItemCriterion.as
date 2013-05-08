@@ -1,41 +1,40 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.dofus.logic.common.managers.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.dofus.logic.common.managers.PlayerManager;
+   import com.ankamagames.jerakine.data.I18n;
 
-    public class AccountRightsItemCriterion extends ItemCriterion implements IDataCenter
-    {
 
-        public function AccountRightsItemCriterion(param1:String)
-        {
-            super(param1);
-            return;
-        }// end function
+   public class AccountRightsItemCriterion extends ItemCriterion implements IDataCenter
+   {
+         
 
-        override public function get text() : String
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            if (PlayerManager.getInstance().hasRights)
-            {
-                _loc_1 = _criterionValue.toString();
-                _loc_2 = I18n.getUiText("ui.social.guildHouseRights");
-                return _loc_2 + " " + _operator.text + " " + _loc_1;
-            }
-            return "";
-        }// end function
+      public function AccountRightsItemCriterion(pCriterion:String) {
+         super(pCriterion);
+      }
 
-        override public function clone() : IItemCriterion
-        {
-            var _loc_1:* = new AccountRightsItemCriterion(this.basicText);
-            return _loc_1;
-        }// end function
 
-        override protected function getCriterion() : int
-        {
-            return 0;
-        }// end function
 
-    }
+      override public function get text() : String {
+         var readableCriterionValue:String = null;
+         var readableCriterionRef:String = null;
+         if(PlayerManager.getInstance().hasRights)
+         {
+            readableCriterionValue=_criterionValue.toString();
+            readableCriterionRef=I18n.getUiText("ui.social.guildHouseRights");
+            return readableCriterionRef+" "+_operator.text+" "+readableCriterionValue;
+         }
+         return "";
+      }
+
+      override public function clone() : IItemCriterion {
+         var clonedCriterion:AccountRightsItemCriterion = new AccountRightsItemCriterion(this.basicText);
+         return clonedCriterion;
+      }
+
+      override protected function getCriterion() : int {
+         return 0;
+      }
+   }
+
 }

@@ -1,126 +1,130 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
+package com.ankamagames.dofus.network.messages.game.context.roleplay.paddock
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.types.game.paddock.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.paddock.PaddockInformationsForSell;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class PaddockToSellListMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var pageIndex:uint = 0;
-        public var totalPage:uint = 0;
-        public var paddockList:Vector.<PaddockInformationsForSell>;
-        public static const protocolId:uint = 6138;
 
-        public function PaddockToSellListMessage()
-        {
-            this.paddockList = new Vector.<PaddockInformationsForSell>;
-            return;
-        }// end function
+   public class PaddockToSellListMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function PaddockToSellListMessage() {
+         this.paddockList=new Vector.<PaddockInformationsForSell>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6138;
-        }// end function
+      public static const protocolId:uint = 6138;
 
-        public function initPaddockToSellListMessage(param1:uint = 0, param2:uint = 0, param3:Vector.<PaddockInformationsForSell> = null) : PaddockToSellListMessage
-        {
-            this.pageIndex = param1;
-            this.totalPage = param2;
-            this.paddockList = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.pageIndex = 0;
-            this.totalPage = 0;
-            this.paddockList = new Vector.<PaddockInformationsForSell>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var pageIndex:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var totalPage:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_PaddockToSellListMessage(param1);
-            return;
-        }// end function
+      public var paddockList:Vector.<PaddockInformationsForSell>;
 
-        public function serializeAs_PaddockToSellListMessage(param1:IDataOutput) : void
-        {
-            if (this.pageIndex < 0)
+      override public function getMessageId() : uint {
+         return 6138;
+      }
+
+      public function initPaddockToSellListMessage(pageIndex:uint=0, totalPage:uint=0, paddockList:Vector.<PaddockInformationsForSell>=null) : PaddockToSellListMessage {
+         this.pageIndex=pageIndex;
+         this.totalPage=totalPage;
+         this.paddockList=paddockList;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.pageIndex=0;
+         this.totalPage=0;
+         this.paddockList=new Vector.<PaddockInformationsForSell>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_PaddockToSellListMessage(output);
+      }
+
+      public function serializeAs_PaddockToSellListMessage(output:IDataOutput) : void {
+         if(this.pageIndex<0)
+         {
+            throw new Error("Forbidden value ("+this.pageIndex+") on element pageIndex.");
+         }
+         else
+         {
+            output.writeShort(this.pageIndex);
+            if(this.totalPage<0)
             {
-                throw new Error("Forbidden value (" + this.pageIndex + ") on element pageIndex.");
+               throw new Error("Forbidden value ("+this.totalPage+") on element totalPage.");
             }
-            param1.writeShort(this.pageIndex);
-            if (this.totalPage < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.totalPage + ") on element totalPage.");
+               output.writeShort(this.totalPage);
+               output.writeShort(this.paddockList.length);
+               _i3=0;
+               while(_i3<this.paddockList.length)
+               {
+                  (this.paddockList[_i3] as PaddockInformationsForSell).serializeAs_PaddockInformationsForSell(output);
+                  _i3++;
+               }
+               return;
             }
-            param1.writeShort(this.totalPage);
-            param1.writeShort(this.paddockList.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.paddockList.length)
-            {
-                
-                (this.paddockList[_loc_2] as PaddockInformationsForSell).serializeAs_PaddockInformationsForSell(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_PaddockToSellListMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_PaddockToSellListMessage(input);
+      }
 
-        public function deserializeAs_PaddockToSellListMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = null;
-            this.pageIndex = param1.readShort();
-            if (this.pageIndex < 0)
+      public function deserializeAs_PaddockToSellListMessage(input:IDataInput) : void {
+         var _item3:PaddockInformationsForSell = null;
+         this.pageIndex=input.readShort();
+         if(this.pageIndex<0)
+         {
+            throw new Error("Forbidden value ("+this.pageIndex+") on element of PaddockToSellListMessage.pageIndex.");
+         }
+         else
+         {
+            this.totalPage=input.readShort();
+            if(this.totalPage<0)
             {
-                throw new Error("Forbidden value (" + this.pageIndex + ") on element of PaddockToSellListMessage.pageIndex.");
+               throw new Error("Forbidden value ("+this.totalPage+") on element of PaddockToSellListMessage.totalPage.");
             }
-            this.totalPage = param1.readShort();
-            if (this.totalPage < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.totalPage + ") on element of PaddockToSellListMessage.totalPage.");
+               _paddockListLen=input.readUnsignedShort();
+               _i3=0;
+               while(_i3<_paddockListLen)
+               {
+                  _item3=new PaddockInformationsForSell();
+                  _item3.deserialize(input);
+                  this.paddockList.push(_item3);
+                  _i3++;
+               }
+               return;
             }
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = new PaddockInformationsForSell();
-                _loc_4.deserialize(param1);
-                this.paddockList.push(_loc_4);
-                _loc_3 = _loc_3 + 1;
-            }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

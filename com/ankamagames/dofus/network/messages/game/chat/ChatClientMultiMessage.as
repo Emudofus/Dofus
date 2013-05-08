@@ -1,88 +1,81 @@
-﻿package com.ankamagames.dofus.network.messages.game.chat
+package com.ankamagames.dofus.network.messages.game.chat
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ChatClientMultiMessage extends ChatAbstractClientMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var channel:uint = 0;
-        public static const protocolId:uint = 861;
 
-        public function ChatClientMultiMessage()
-        {
+   public class ChatClientMultiMessage extends ChatAbstractClientMessage implements INetworkMessage
+   {
+         
+
+      public function ChatClientMultiMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 861;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
+
+      public var channel:uint = 0;
+
+      override public function getMessageId() : uint {
+         return 861;
+      }
+
+      public function initChatClientMultiMessage(content:String="", channel:uint=0) : ChatClientMultiMessage {
+         super.initChatAbstractClientMessage(content);
+         this.channel=channel;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.channel=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ChatClientMultiMessage(output);
+      }
+
+      public function serializeAs_ChatClientMultiMessage(output:IDataOutput) : void {
+         super.serializeAs_ChatAbstractClientMessage(output);
+         output.writeByte(this.channel);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ChatClientMultiMessage(input);
+      }
+
+      public function deserializeAs_ChatClientMultiMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.channel=input.readByte();
+         if(this.channel<0)
+         {
+            throw new Error("Forbidden value ("+this.channel+") on element of ChatClientMultiMessage.channel.");
+         }
+         else
+         {
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 861;
-        }// end function
-
-        public function initChatClientMultiMessage(param1:String = "", param2:uint = 0) : ChatClientMultiMessage
-        {
-            super.initChatAbstractClientMessage(param1);
-            this.channel = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            super.reset();
-            this.channel = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ChatClientMultiMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_ChatClientMultiMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_ChatAbstractClientMessage(param1);
-            param1.writeByte(this.channel);
-            return;
-        }// end function
-
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ChatClientMultiMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_ChatClientMultiMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.channel = param1.readByte();
-            if (this.channel < 0)
-            {
-                throw new Error("Forbidden value (" + this.channel + ") on element of ChatClientMultiMessage.channel.");
-            }
-            return;
-        }// end function
-
-    }
 }

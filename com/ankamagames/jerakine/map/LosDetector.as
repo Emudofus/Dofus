@@ -1,103 +1,117 @@
-﻿package com.ankamagames.jerakine.map
+package com.ankamagames.jerakine.map
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.types.positions.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.logger.Logger;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.jerakine.types.positions.MapPoint;
+   import com.ankamagames.jerakine.utils.display.Dofus1Line;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class LosDetector extends Object
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(LosDetector));
 
-        public function LosDetector()
-        {
-            return;
-        }// end function
+   public class LosDetector extends Object
+   {
+         
 
-        public static function getCell(param1:IDataMapProvider, param2:Vector.<uint>, param3:MapPoint) : Vector.<uint>
-        {
-            var _loc_5:* = 0;
-            var _loc_8:* = null;
-            var _loc_9:* = false;
-            var _loc_10:* = null;
-            var _loc_11:* = null;
-            var _loc_13:* = 0;
-            var _loc_4:* = new Array();
-            var _loc_6:* = null;
-            _loc_5 = 0;
-            while (_loc_5 < param2.length)
+      public function LosDetector() {
+         super();
+      }
+
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(LosDetector));
+
+      public static function getCell(mapData:IDataMapProvider, range:Vector.<uint>, refPosition:MapPoint) : Vector.<uint> {
+         var i:uint = 0;
+         var line:Array = null;
+         var los:* = false;
+         var currentPoint:String = null;
+         var p:MapPoint = null;
+         var j:* = 0;
+         var orderedCell:Array = new Array();
+         var mp:MapPoint = null;
+         i=0;
+         while(i<range.length)
+         {
+            mp=MapPoint.fromCellId(range[i]);
+            orderedCell.push(
+               {
+                  p:mp,
+                  dist:refPosition.distanceToCell(mp)
+               }
+            );
+            i++;
+         }
+         orderedCell.sortOn("dist",Array.DESCENDING|Array.NUMERIC);
+         var tested:Object = new Object();
+         var result:Vector.<uint> = new Vector.<uint>();
+         i=0;
+         while(i<orderedCell.length)
+         {
+            p=MapPoint(orderedCell[i].p);
+            if((!(tested[p.x+"_"+p.y]==null))&&(!(refPosition.x+refPosition.y==p.x+p.y))&&(!(refPosition.x-refPosition.y==p.x-p.y)))
             {
-                
-                _loc_6 = MapPoint.fromCellId(param2[_loc_5]);
-                _loc_4.push({p:_loc_6, dist:param3.distanceToCell(_loc_6)});
-                _loc_5 = _loc_5 + 1;
             }
-            _loc_4.sortOn("dist", Array.DESCENDING | Array.NUMERIC);
-            var _loc_7:* = new Object();
-            var _loc_12:* = new Vector.<uint>;
-            _loc_5 = 0;
-            while (_loc_5 < _loc_4.length)
+            else
             {
-                
-                _loc_11 = MapPoint(_loc_4[_loc_5].p);
-                if (_loc_7[_loc_11.x + "_" + _loc_11.y] != null && param3.x + param3.y != _loc_11.x + _loc_11.y && param3.x - param3.y != _loc_11.x - _loc_11.y)
-                {
-                }
-                else
-                {
-                    _loc_8 = Dofus1Line.getLine(param3.x, param3.y, 0, _loc_11.x, _loc_11.y, 0);
-                    if (_loc_8.length == 0)
-                    {
-                        _loc_12.push(_loc_11.cellId);
-                    }
-                    else
-                    {
-                        _loc_9 = true;
-                        _loc_13 = 0;
-                        while (_loc_13 < _loc_8.length)
+               line=Dofus1Line.getLine(refPosition.x,refPosition.y,0,p.x,p.y,0);
+               if(line.length==0)
+               {
+                  result.push(p.cellId);
+               }
+               else
+               {
+                  los=true;
+                  j=0;
+                  while(j<line.length)
+                  {
+                     currentPoint=Math.floor(line[j].x)+"_"+Math.floor(line[j].y);
+                     if(!MapPoint.isInMap(line[j].x,line[j].y))
+                     {
+                     }
+                     else
+                     {
+                        if((j<0)&&(mapData.hasEntity(Math.floor(line[j-1].x),Math.floor(line[j-1].y))))
                         {
-                            
-                            _loc_10 = Math.floor(_loc_8[_loc_13].x) + "_" + Math.floor(_loc_8[_loc_13].y);
-                            if (!MapPoint.isInMap(_loc_8[_loc_13].x, _loc_8[_loc_13].y))
-                            {
-                            }
-                            else if (_loc_13 > 0 && param1.hasEntity(Math.floor(_loc_8[(_loc_13 - 1)].x), Math.floor(_loc_8[(_loc_13 - 1)].y)))
-                            {
-                                _loc_9 = false;
-                            }
-                            else if (_loc_8[_loc_13].x + _loc_8[_loc_13].y == param3.x + param3.y || _loc_8[_loc_13].x - _loc_8[_loc_13].y == param3.x - param3.y)
-                            {
-                                _loc_9 = _loc_9 && param1.pointLos(Math.floor(_loc_8[_loc_13].x), Math.floor(_loc_8[_loc_13].y), true);
-                            }
-                            else if (_loc_7[_loc_10] == null)
-                            {
-                                _loc_9 = _loc_9 && param1.pointLos(Math.floor(_loc_8[_loc_13].x), Math.floor(_loc_8[_loc_13].y), true);
-                            }
-                            else
-                            {
-                                _loc_9 = _loc_9 && _loc_7[_loc_10];
-                            }
-                            _loc_13++;
+                           los=false;
                         }
-                        _loc_7[_loc_10] = _loc_9;
-                    }
-                }
-                _loc_5 = _loc_5 + 1;
+                        else
+                        {
+                           if((line[j].x+line[j].y==refPosition.x+refPosition.y)||(line[j].x-line[j].y==refPosition.x-refPosition.y))
+                           {
+                              los=(los)&&(mapData.pointLos(Math.floor(line[j].x),Math.floor(line[j].y),true));
+                           }
+                           else
+                           {
+                              if(tested[currentPoint]==null)
+                              {
+                                 los=(los)&&(mapData.pointLos(Math.floor(line[j].x),Math.floor(line[j].y),true));
+                              }
+                              else
+                              {
+                                 los=(los)&&(tested[currentPoint]);
+                              }
+                           }
+                        }
+                     }
+                     j++;
+                  }
+                  tested[currentPoint]=los;
+               }
             }
-            _loc_5 = 0;
-            while (_loc_5 < param2.length)
+            i++;
+         }
+         i=0;
+         while(i<range.length)
+         {
+            mp=MapPoint.fromCellId(range[i]);
+            if(tested[mp.x+"_"+mp.y])
             {
-                
-                _loc_6 = MapPoint.fromCellId(param2[_loc_5]);
-                if (_loc_7[_loc_6.x + "_" + _loc_6.y])
-                {
-                    _loc_12.push(_loc_6.cellId);
-                }
-                _loc_5 = _loc_5 + 1;
+               result.push(mp.cellId);
             }
-            return _loc_12;
-        }// end function
+            i++;
+         }
+         return result;
+      }
 
-    }
+
+   }
+
 }

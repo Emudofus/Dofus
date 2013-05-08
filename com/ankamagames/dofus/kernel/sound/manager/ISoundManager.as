@@ -1,68 +1,73 @@
-﻿package com.ankamagames.dofus.kernel.sound.manager
+package com.ankamagames.dofus.kernel.sound.manager
 {
-    import com.ankamagames.atouin.data.map.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.tubul.interfaces.*;
-    import com.ankamagames.tubul.types.*;
+   import com.ankamagames.tubul.interfaces.ILocalizedSoundListener;
+   import com.ankamagames.jerakine.interfaces.IInterfaceListener;
+   import com.ankamagames.jerakine.interfaces.IFLAEventHandler;
+   import com.ankamagames.jerakine.interfaces.ISoundPositionListener;
+   import com.ankamagames.atouin.data.map.Map;
+   import com.ankamagames.tubul.interfaces.ISound;
+   import com.ankamagames.tubul.types.VolumeFadeEffect;
 
-    public interface ISoundManager extends ILocalizedSoundListener, IInterfaceListener, IFLAEventHandler, ISoundPositionListener
-    {
 
-        public function ISoundManager();
+   public interface ISoundManager extends ILocalizedSoundListener, IInterfaceListener, IFLAEventHandler, ISoundPositionListener
+   {
+         
 
-        function set soundDirectoryExist(param1:Boolean) : void;
 
-        function get soundDirectoryExist() : Boolean;
 
-        function get soundIsActivate() : Boolean;
+      function set soundDirectoryExist(param1:Boolean) : void;
 
-        function retriveXMLSounds() : void;
+      function get soundDirectoryExist() : Boolean;
 
-        function retriveRollOffPresets() : void;
+      function get soundIsActivate() : Boolean;
 
-        function setSubArea(param1:Map = null) : void;
+      function retriveXMLSounds() : void;
 
-        function playSound(param1:ISound, param2:Boolean = false, param3:int = -1) : ISound;
+      function retriveRollOffPresets() : void;
 
-        function playFightMusic() : void;
+      function setSubArea(param1:Map=null) : void;
 
-        function prepareFightMusic() : void;
+      function playSound(param1:ISound, param2:Boolean=false, param3:int=-1) : ISound;
 
-        function stopFightMusic() : void;
+      function playFightMusic() : void;
 
-        function applyDynamicMix(param1:VolumeFadeEffect, param2:uint, param3:VolumeFadeEffect) : void;
+      function prepareFightMusic() : void;
 
-        function playIntroMusic(param1:Boolean = true) : void;
+      function stopFightMusic() : void;
 
-        function switchIntroMusic(param1:Boolean) : void;
+      function applyDynamicMix(param1:VolumeFadeEffect, param2:uint, param3:VolumeFadeEffect) : void;
 
-        function stopIntroMusic(param1:Boolean = false) : void;
+      function playIntroMusic(param1:Boolean=true) : void;
 
-        function removeAllSounds(param1:Number = 0, param2:Number = 0) : void;
+      function switchIntroMusic(param1:Boolean) : void;
 
-        function reset() : void;
+      function stopIntroMusic(param1:Boolean=false) : void;
 
-        function fadeBusVolume(param1:int, param2:Number, param3:Number) : void;
+      function removeAllSounds(param1:Number=0, param2:Number=0) : void;
 
-        function setBusVolume(param1:int, param2:Number) : void;
+      function reset() : void;
 
-        function activateSound() : void;
+      function fadeBusVolume(param1:int, param2:Number, param3:Number) : void;
 
-        function deactivateSound() : void;
+      function setBusVolume(param1:int, param2:Number) : void;
 
-        function playAdminSound(param1:String, param2:Number, param3:Boolean, param4:uint) : void;
+      function activateSound() : void;
 
-        function stopAdminSound(param1:uint) : void;
+      function deactivateSound() : void;
 
-        function addSoundInPlaylist(param1:String, param2:Number, param3:uint, param4:uint) : Boolean;
+      function playAdminSound(param1:String, param2:Number, param3:Boolean, param4:uint) : void;
 
-        function removeSoundInPLaylist(param1:String) : Boolean;
+      function stopAdminSound(param1:uint) : void;
 
-        function playPlaylist() : void;
+      function addSoundInPlaylist(param1:String, param2:Number, param3:uint, param4:uint) : Boolean;
 
-        function stopPlaylist() : void;
+      function removeSoundInPLaylist(param1:String) : Boolean;
 
-        function resetPlaylist() : void;
+      function playPlaylist() : void;
 
-    }
+      function stopPlaylist() : void;
+
+      function resetPlaylist() : void;
+   }
+
 }

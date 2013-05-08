@@ -1,98 +1,98 @@
-﻿package com.ankamagames.dofus.network.messages.game.pvp
+package com.ankamagames.dofus.network.messages.game.pvp
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AlignmentSubAreaUpdateMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var subAreaId:uint = 0;
-        public var side:int = 0;
-        public var quiet:Boolean = false;
-        public static const protocolId:uint = 6057;
 
-        public function AlignmentSubAreaUpdateMessage()
-        {
+   public class AlignmentSubAreaUpdateMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function AlignmentSubAreaUpdateMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 6057;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var subAreaId:uint = 0;
+
+      public var side:int = 0;
+
+      public var quiet:Boolean = false;
+
+      override public function getMessageId() : uint {
+         return 6057;
+      }
+
+      public function initAlignmentSubAreaUpdateMessage(subAreaId:uint=0, side:int=0, quiet:Boolean=false) : AlignmentSubAreaUpdateMessage {
+         this.subAreaId=subAreaId;
+         this.side=side;
+         this.quiet=quiet;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.subAreaId=0;
+         this.side=0;
+         this.quiet=false;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AlignmentSubAreaUpdateMessage(output);
+      }
+
+      public function serializeAs_AlignmentSubAreaUpdateMessage(output:IDataOutput) : void {
+         if(this.subAreaId<0)
+         {
+            throw new Error("Forbidden value ("+this.subAreaId+") on element subAreaId.");
+         }
+         else
+         {
+            output.writeShort(this.subAreaId);
+            output.writeByte(this.side);
+            output.writeBoolean(this.quiet);
             return;
-        }// end function
+         }
+      }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AlignmentSubAreaUpdateMessage(input);
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6057;
-        }// end function
-
-        public function initAlignmentSubAreaUpdateMessage(param1:uint = 0, param2:int = 0, param3:Boolean = false) : AlignmentSubAreaUpdateMessage
-        {
-            this.subAreaId = param1;
-            this.side = param2;
-            this.quiet = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.subAreaId = 0;
-            this.side = 0;
-            this.quiet = false;
-            this._isInitialized = false;
+      public function deserializeAs_AlignmentSubAreaUpdateMessage(input:IDataInput) : void {
+         this.subAreaId=input.readShort();
+         if(this.subAreaId<0)
+         {
+            throw new Error("Forbidden value ("+this.subAreaId+") on element of AlignmentSubAreaUpdateMessage.subAreaId.");
+         }
+         else
+         {
+            this.side=input.readByte();
+            this.quiet=input.readBoolean();
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AlignmentSubAreaUpdateMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_AlignmentSubAreaUpdateMessage(param1:IDataOutput) : void
-        {
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
-            }
-            param1.writeShort(this.subAreaId);
-            param1.writeByte(this.side);
-            param1.writeBoolean(this.quiet);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AlignmentSubAreaUpdateMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_AlignmentSubAreaUpdateMessage(param1:IDataInput) : void
-        {
-            this.subAreaId = param1.readShort();
-            if (this.subAreaId < 0)
-            {
-                throw new Error("Forbidden value (" + this.subAreaId + ") on element of AlignmentSubAreaUpdateMessage.subAreaId.");
-            }
-            this.side = param1.readByte();
-            this.quiet = param1.readBoolean();
-            return;
-        }// end function
-
-    }
 }

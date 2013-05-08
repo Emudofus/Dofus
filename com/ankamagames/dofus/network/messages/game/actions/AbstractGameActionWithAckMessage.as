@@ -1,84 +1,73 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions
+package com.ankamagames.dofus.network.messages.game.actions
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class AbstractGameActionWithAckMessage extends AbstractGameActionMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var waitAckId:int = 0;
-        public static const protocolId:uint = 1001;
 
-        public function AbstractGameActionWithAckMessage()
-        {
-            return;
-        }// end function
+   public class AbstractGameActionWithAckMessage extends AbstractGameActionMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function AbstractGameActionWithAckMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 1001;
-        }// end function
+      public static const protocolId:uint = 1001;
 
-        public function initAbstractGameActionWithAckMessage(param1:uint = 0, param2:int = 0, param3:int = 0) : AbstractGameActionWithAckMessage
-        {
-            super.initAbstractGameActionMessage(param1, param2);
-            this.waitAckId = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.waitAckId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var waitAckId:int = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 1001;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_AbstractGameActionWithAckMessage(param1);
-            return;
-        }// end function
+      public function initAbstractGameActionWithAckMessage(actionId:uint=0, sourceId:int=0, waitAckId:int=0) : AbstractGameActionWithAckMessage {
+         super.initAbstractGameActionMessage(actionId,sourceId);
+         this.waitAckId=waitAckId;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_AbstractGameActionWithAckMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractGameActionMessage(param1);
-            param1.writeShort(this.waitAckId);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.waitAckId=0;
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_AbstractGameActionWithAckMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_AbstractGameActionWithAckMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.waitAckId = param1.readShort();
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_AbstractGameActionWithAckMessage(output);
+      }
+
+      public function serializeAs_AbstractGameActionWithAckMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionMessage(output);
+         output.writeShort(this.waitAckId);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_AbstractGameActionWithAckMessage(input);
+      }
+
+      public function deserializeAs_AbstractGameActionWithAckMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.waitAckId=input.readShort();
+      }
+   }
+
 }

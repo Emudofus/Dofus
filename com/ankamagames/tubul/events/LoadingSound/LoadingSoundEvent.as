@@ -1,26 +1,29 @@
-﻿package com.ankamagames.tubul.events.LoadingSound
+package com.ankamagames.tubul.events.LoadingSound
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class LoadingSoundEvent extends Event
-    {
-        public var data:Object;
-        public static const LOADED:String = "loaded";
-        public static const LOADING_FAILED:String = "loading_failed";
-        public static const ON_PROGRESS:String = "on_progress";
 
-        public function LoadingSoundEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
-        {
-            super(param1, param2, param3);
-            return;
-        }// end function
+   public class LoadingSoundEvent extends Event
+   {
+         
 
-        override public function clone() : Event
-        {
-            var _loc_1:* = new LoadingSoundEvent(type, bubbles, cancelable);
-            _loc_1.data = this.data;
-            return _loc_1;
-        }// end function
+      public function LoadingSoundEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
+      }
 
-    }
+      public static const LOADED:String = "loaded";
+
+      public static const LOADING_FAILED:String = "loading_failed";
+
+      public static const ON_PROGRESS:String = "on_progress";
+
+      public var data;
+
+      override public function clone() : Event {
+         var lse:LoadingSoundEvent = new LoadingSoundEvent(type,bubbles,cancelable);
+         lse.data=this.data;
+         return lse;
+      }
+   }
+
 }

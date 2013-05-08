@@ -1,17 +1,19 @@
-﻿package org.flintparticles.common.renderers
+package org.flintparticles.common.renderers
 {
-    import org.flintparticles.common.emitters.*;
+   import org.flintparticles.common.emitters.Emitter;
 
-    public interface Renderer
-    {
 
-        public function Renderer();
+   public interface Renderer
+   {
+         
 
-        function addEmitter(param1:Emitter) : void;
 
-        function removeEmitter(param1:Emitter) : void;
 
-        function get emitters() : Array;
+      function addEmitter(param1:Emitter) : void;
 
-    }
+      function removeEmitter(param1:Emitter) : void;
+
+      function get emitters() : Array;
+   }
+
 }

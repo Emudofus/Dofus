@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.game.approach.actions
+package com.ankamagames.dofus.logic.game.approach.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class CharacterNameSuggestionRequestAction extends Object implements Action
-    {
 
-        public function CharacterNameSuggestionRequestAction()
-        {
-            return;
-        }// end function
+   public class CharacterNameSuggestionRequestAction extends Object implements Action
+   {
+         
 
-        public static function create() : CharacterNameSuggestionRequestAction
-        {
-            return new CharacterNameSuggestionRequestAction;
-        }// end function
+      public function CharacterNameSuggestionRequestAction() {
+         super();
+      }
 
-    }
+      public static function create() : CharacterNameSuggestionRequestAction {
+         return new CharacterNameSuggestionRequestAction();
+      }
+
+
+   }
+
 }

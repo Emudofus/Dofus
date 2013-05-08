@@ -1,71 +1,73 @@
-﻿package com.ankamagames.jerakine.types
+package com.ankamagames.jerakine.types
 {
-    import flash.utils.*;
+   import flash.utils.Dictionary;
 
-    public class ColorMultiplicator extends Object
-    {
-        public var red:Number;
-        public var green:Number;
-        public var blue:Number;
-        private var _isOne:Boolean;
-        public static var MEMORY_LOG:Dictionary = new Dictionary(true);
 
-        public function ColorMultiplicator(param1:int, param2:int, param3:int, param4:Boolean = false)
-        {
-            MEMORY_LOG[this] = 1;
-            this.red = param1;
-            this.green = param2;
-            this.blue = param3;
-            if (!param4 && param1 + param2 + param3 == 0)
-            {
-                this._isOne = true;
-            }
-            return;
-        }// end function
+   public class ColorMultiplicator extends Object
+   {
+         
 
-        public function isOne() : Boolean
-        {
-            return this._isOne;
-        }// end function
+      public function ColorMultiplicator(redComponent:int, greenComponent:int, blueComponent:int, forceCalculation:Boolean=false) {
+         super();
+         MEMORY_LOG[this]=1;
+         this.red=redComponent;
+         this.green=greenComponent;
+         this.blue=blueComponent;
+         if((!forceCalculation)&&(redComponent+greenComponent+blueComponent==0))
+         {
+            this._isOne=true;
+         }
+      }
 
-        public function multiply(param1:ColorMultiplicator) : ColorMultiplicator
-        {
-            if (this._isOne)
-            {
-                return param1;
-            }
-            if (param1.isOne())
-            {
-                return this;
-            }
-            var _loc_2:* = new ColorMultiplicator(0, 0, 0);
-            _loc_2.red = this.red + param1.red;
-            _loc_2.green = this.green + param1.green;
-            _loc_2.blue = this.blue + param1.blue;
-            _loc_2.red = clamp(_loc_2.red, -128, 127);
-            _loc_2.green = clamp(_loc_2.green, -128, 127);
-            _loc_2.blue = clamp(_loc_2.blue, -128, 127);
-            _loc_2._isOne = false;
-            return _loc_2;
-        }// end function
+      public static var MEMORY_LOG:Dictionary = new Dictionary(true);
 
-        public function toString() : String
-        {
-            return "[r: " + this.red + ", g: " + this.green + ", b: " + this.blue + "]";
-        }// end function
+      public static function clamp(value:Number, min:Number, max:Number) : Number {
+         if(value>max)
+         {
+            return max;
+         }
+         if(value<min)
+         {
+            return min;
+         }
+         return value;
+      }
 
-        public static function clamp(param1:Number, param2:Number, param3:Number) : Number
-        {
-            if (param1 > param3)
-            {
-                return param3;
-            }
-            if (param1 < param2)
-            {
-                return param2;
-            }
-            return param1;
-        }// end function
+      public var red:Number;
 
-    }
+      public var green:Number;
+
+      public var blue:Number;
+
+      private var _isOne:Boolean;
+
+      public function isOne() : Boolean {
+         return this._isOne;
+      }
+
+      public function multiply(cm:ColorMultiplicator) : ColorMultiplicator {
+         if(this._isOne)
+         {
+            return cm;
+         }
+         if(cm.isOne())
+         {
+            return this;
+         }
+         var cmr:ColorMultiplicator = new ColorMultiplicator(0,0,0);
+         cmr.red=this.red+cm.red;
+         cmr.green=this.green+cm.green;
+         cmr.blue=this.blue+cm.blue;
+         cmr.red=clamp(cmr.red,-128,127);
+         cmr.green=clamp(cmr.green,-128,127);
+         cmr.blue=clamp(cmr.blue,-128,127);
+         cmr._isOne=false;
+         return cmr;
+      }
+
+      public function toString() : String {
+         return "[r: "+this.red+", g: "+this.green+", b: "+this.blue+"]";
+      }
+   }
+
 }

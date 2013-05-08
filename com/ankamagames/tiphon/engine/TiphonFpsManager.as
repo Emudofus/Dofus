@@ -1,135 +1,140 @@
-﻿package com.ankamagames.tiphon.engine
+package com.ankamagames.tiphon.engine
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.utils.display.*;
-    import com.ankamagames.tiphon.types.*;
-    import flash.display.*;
-    import flash.events.*;
-    import flash.utils.*;
+   import flash.utils.Timer;
+   import flash.utils.Dictionary;
+   import flash.events.TimerEvent;
+   import com.ankamagames.tiphon.types.ScriptedAnimation;
+   import flash.events.Event;
+   import __AS3__.vec.Vector;
+   import flash.utils.getTimer;
+   import flash.display.MovieClip;
+   import com.ankamagames.jerakine.utils.display.FpsControler;
+   import flash.display.DisplayObjectContainer;
+   import flash.display.DisplayObject;
+   import com.ankamagames.tiphon.types.DynamicSprite;
+   import flash.display.Shape;
 
-    public class TiphonFpsManager extends Object
-    {
-        private static var _tiphonGarbageCollectorTimer:Timer = new Timer(60000);
-        private static var _oldScriptedAnimation:Dictionary = new Dictionary(true);
 
-        public function TiphonFpsManager()
-        {
-            return;
-        }// end function
+   public class TiphonFpsManager extends Object
+   {
+         
 
-        public static function init() : void
-        {
-            _tiphonGarbageCollectorTimer.addEventListener(TimerEvent.TIMER, onTiphonGarbageCollector);
-            return;
-        }// end function
+      public function TiphonFpsManager() {
+         super();
+      }
 
-        public static function addOldScriptedAnimation(param1:ScriptedAnimation, param2:Boolean = false) : void
-        {
-            return;
-        }// end function
+      private static var _tiphonGarbageCollectorTimer:Timer = new Timer(60000);
 
-        private static function onTiphonGarbageCollector(event:Event) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = 0;
-            var _loc_6:* = 0;
-            var _loc_7:* = null;
-            var _loc_2:* = new Vector.<ScriptedAnimation>;
-            var _loc_3:* = getTimer();
-            for (_loc_4 in _oldScriptedAnimation)
+      private static var _oldScriptedAnimation:Dictionary = new Dictionary(true);
+
+      public static function init() : void {
+         _tiphonGarbageCollectorTimer.addEventListener(TimerEvent.TIMER,onTiphonGarbageCollector);
+      }
+
+      public static function addOldScriptedAnimation(scriptedAnimation:ScriptedAnimation, destroyNow:Boolean=false) : void {
+         
+      }
+
+      private static function onTiphonGarbageCollector(e:Event) : void {
+         var object:Object = null;
+         var i:* = 0;
+         var num:* = 0;
+         var scriptedAnimation:ScriptedAnimation = null;
+         var destroyedScriptedAnimation:Vector.<ScriptedAnimation> = new Vector.<ScriptedAnimation>();
+         var time:int = getTimer();
+         for (object in _oldScriptedAnimation)
+         {
+            scriptedAnimation=object as ScriptedAnimation;
+            if(time-_oldScriptedAnimation[scriptedAnimation]>300000)
             {
-                
-                _loc_7 = _loc_4 as ScriptedAnimation;
-                if (_loc_3 - _oldScriptedAnimation[_loc_7] > 300000)
-                {
-                    _loc_2.push(_loc_7);
-                    destroyScriptedAnimation(_loc_7);
-                }
+               destroyedScriptedAnimation.push(scriptedAnimation);
+               destroyScriptedAnimation(scriptedAnimation);
             }
-            _loc_5 = -1;
-            _loc_6 = _loc_2.length;
-            while (++_loc_5 < _loc_6)
-            {
-                
-                delete _oldScriptedAnimation[_loc_2[_loc_5]];
-            }
-            return;
-        }// end function
+         }
+         i=-1;
+         num=destroyedScriptedAnimation.length;
+         while(++i<num)
+         {
+            delete _oldScriptedAnimation[[destroyedScriptedAnimation[i]]];
+         }
+      }
 
-        private static function destroyScriptedAnimation(param1:ScriptedAnimation) : void
-        {
-            if (param1 && !param1.parent)
+      private static function destroyScriptedAnimation(scriptedAnimation:ScriptedAnimation) : void {
+         if((scriptedAnimation)&&(!scriptedAnimation.parent))
+         {
+            scriptedAnimation.destroyed=true;
+            if(scriptedAnimation.parent)
             {
-                param1.destroyed = true;
-                if (param1.parent)
-                {
-                    param1.parent.removeChild(param1);
-                }
-                param1.spriteHandler = null;
-                eraseMovieClip(param1);
+               scriptedAnimation.parent.removeChild(scriptedAnimation);
             }
-            return;
-        }// end function
+            scriptedAnimation.spriteHandler=null;
+            eraseMovieClip(scriptedAnimation);
+         }
+      }
 
-        private static function eraseMovieClip(param1:MovieClip) : void
-        {
-            var _loc_2:* = param1.totalFrames + 1;
-            var _loc_3:* = 1;
-            while (_loc_3 < _loc_2)
-            {
-                
-                param1.gotoAndStop(_loc_3);
-                eraseFrame(param1);
-                _loc_3++;
-            }
-            param1.stop();
-            if (param1.isControled)
-            {
-                FpsControler.uncontrolFps(param1);
-            }
-            return;
-        }// end function
+      private static function eraseMovieClip(clip:MovieClip) : void {
+         var frames:int = clip.totalFrames+1;
+         var i:int = 1;
+         while(i<frames)
+         {
+            clip.gotoAndStop(i);
+            eraseFrame(clip);
+            i++;
+         }
+         clip.stop();
+         if(clip.isControled)
+         {
+            FpsControler.uncontrolFps(clip);
+         }
+      }
 
-        private static function eraseFrame(param1:DisplayObjectContainer) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_2:* = 0;
-            while (param1.numChildren > _loc_2)
+      private static function eraseFrame(clip:DisplayObjectContainer) : void {
+         var lastChild:DisplayObject = null;
+         var child:DisplayObject = null;
+         var index:int = 0;
+         while(clip.numChildren>index)
+         {
+            child=clip.removeChildAt(index);
+            if(child==lastChild)
             {
-                
-                _loc_4 = param1.removeChildAt(_loc_2);
-                if (_loc_4 == _loc_3)
-                {
-                    _loc_2++;
-                }
-                _loc_3 = _loc_4;
-                if (_loc_4 is DynamicSprite)
-                {
-                    continue;
-                }
-                if (_loc_4 is ScriptedAnimation)
-                {
-                    destroyScriptedAnimation(param1 as ScriptedAnimation);
-                    continue;
-                }
-                if (_loc_4 is MovieClip)
-                {
-                    eraseMovieClip(_loc_4 as MovieClip);
-                    continue;
-                }
-                if (_loc_4 is DisplayObjectContainer)
-                {
-                    eraseFrame(_loc_4 as DisplayObjectContainer);
-                    continue;
-                }
-                if (_loc_4 is Shape)
-                {
-                    (_loc_4 as Shape).graphics.clear();
-                }
+               index++;
             }
-            return;
-        }// end function
+            lastChild=child;
+            if(child is DynamicSprite)
+            {
+            }
+            else
+            {
+               if(child is ScriptedAnimation)
+               {
+                  destroyScriptedAnimation(clip as ScriptedAnimation);
+               }
+               else
+               {
+                  if(child is MovieClip)
+                  {
+                     eraseMovieClip(child as MovieClip);
+                  }
+                  else
+                  {
+                     if(child is DisplayObjectContainer)
+                     {
+                        eraseFrame(child as DisplayObjectContainer);
+                     }
+                     else
+                     {
+                        if(child is Shape)
+                        {
+                           (child as Shape).graphics.clear();
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
 
-    }
+
+   }
+
 }

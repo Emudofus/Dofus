@@ -1,35 +1,42 @@
-﻿package com.ankamagames.dofus.datacenter.communication
+package com.ankamagames.dofus.datacenter.communication
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.data.*;
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.data.GameData;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import __AS3__.vec.Vector;
 
-    public class Smiley extends Object implements IDataCenter
-    {
-        public var id:uint;
-        public var order:uint;
-        public var gfxId:String;
-        public var forPlayers:Boolean;
-        public var triggers:Vector.<String>;
-        private static const MODULE:String = "Smileys";
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Smiley));
 
-        public function Smiley()
-        {
-            return;
-        }// end function
+   public class Smiley extends Object implements IDataCenter
+   {
+         
 
-        public static function getSmileyById(param1:int) : Smiley
-        {
-            return GameData.getObject(MODULE, param1) as ;
-        }// end function
+      public function Smiley() {
+         super();
+      }
 
-        public static function getSmileys() : Array
-        {
-            return GameData.getObjects(MODULE);
-        }// end function
+      public static const MODULE:String = "Smileys";
 
-    }
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Smiley));
+
+      public static function getSmileyById(id:int) : Smiley {
+         return GameData.getObject(MODULE,id) as Smiley;
+      }
+
+      public static function getSmileys() : Array {
+         return GameData.getObjects(MODULE);
+      }
+
+      public var id:uint;
+
+      public var order:uint;
+
+      public var gfxId:String;
+
+      public var forPlayers:Boolean;
+
+      public var triggers:Vector.<String>;
+   }
+
 }

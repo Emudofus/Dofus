@@ -1,119 +1,123 @@
-﻿package com.ankamagames.berilia.managers
+package com.ankamagames.berilia.managers
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.types.data.*;
-    import com.ankamagames.berilia.types.graphic.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import com.ankamagames.berilia.types.data.BeriliaUiSound;
+   import com.ankamagames.berilia.types.data.BeriliaUiElementSound;
+   import com.ankamagames.berilia.types.data.Hook;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.berilia.types.graphic.GraphicContainer;
+   import com.ankamagames.berilia.types.graphic.UiRootContainer;
 
-    public class UiSoundManager extends Object
-    {
-        private var _registeredHook:Dictionary;
-        private var _registeredUi:Dictionary;
-        private var _registeredUiElement:Dictionary;
-        public var playSound:Function;
-        public static const UI_LOAD:uint = 0;
-        public static const UI_UNLOAD:uint = 1;
-        private static var _self:UiSoundManager;
 
-        public function UiSoundManager()
-        {
-            this._registeredHook = new Dictionary();
-            this._registeredUi = new Dictionary();
-            this._registeredUiElement = new Dictionary();
-            return;
-        }// end function
+   public class UiSoundManager extends Object
+   {
+         
 
-        public function registerUi(param1:String, param2:String = null, param3:String = null) : void
-        {
-            var _loc_4:* = this._registeredUi[param1];
-            if (!this._registeredUi[param1])
+      public function UiSoundManager() {
+         this._registeredHook=new Dictionary();
+         this._registeredUi=new Dictionary();
+         this._registeredUiElement=new Dictionary();
+         super();
+      }
+
+      public static const UI_LOAD:uint = 0;
+
+      public static const UI_UNLOAD:uint = 1;
+
+      private static var _self:UiSoundManager;
+
+      public static function getInstance() : UiSoundManager {
+         if(!_self)
+         {
+            _self=new UiSoundManager();
+         }
+         return _self;
+      }
+
+      private var _registeredHook:Dictionary;
+
+      private var _registeredUi:Dictionary;
+
+      private var _registeredUiElement:Dictionary;
+
+      public var playSound:Function;
+
+      public function registerUi(uiName:String, openFile:String=null, closeFile:String=null) : void {
+         var uiSound:BeriliaUiSound = this._registeredUi[uiName];
+         if(!uiSound)
+         {
+            uiSound=new BeriliaUiSound();
+            uiSound.uiName=uiName;
+            uiSound.openFile=openFile;
+            uiSound.closeFile=closeFile;
+            this._registeredUi[uiName]=uiSound;
+         }
+         else
+         {
+            uiSound.openFile=openFile;
+            uiSound.closeFile=closeFile;
+         }
+      }
+
+      public function getUi(uiName:String) : BeriliaUiSound {
+         return this._registeredUi[uiName];
+      }
+
+      public function registerUiElement(uiName:String, instanceName:String, hookFct:String, file:String) : void {
+         var uiElementSound:BeriliaUiElementSound = new BeriliaUiElementSound();
+         uiElementSound.name=instanceName;
+         uiElementSound.file=file;
+         uiElementSound.hook=hookFct;
+         this._registeredUiElement[uiName+"::"+instanceName+"::"+hookFct]=uiElementSound;
+      }
+
+      public function fromHook(target:Hook, params:Array=null) : Boolean {
+         return true;
+      }
+
+      public function getAllSoundUiElement(target:GraphicContainer) : Vector.<BeriliaUiElementSound> {
+         var elementHash:String = null;
+         var result:Vector.<BeriliaUiElementSound> = new Vector.<BeriliaUiElementSound>();
+         if(!target.getUi())
+         {
+            return result;
+         }
+         var uiName:String = target.getUi().name+"::";
+         var uiNameLen:uint = uiName.length;
+         for (elementHash in this._registeredUiElement)
+         {
+            if((elementHash.substr(0,uiNameLen)==uiName)&&(elementHash.substr(uiNameLen,target.name.length)==target.name))
             {
-                _loc_4 = new BeriliaUiSound();
-                _loc_4.uiName = param1;
-                _loc_4.openFile = param2;
-                _loc_4.closeFile = param3;
-                this._registeredUi[param1] = _loc_4;
+               result.push(this._registeredUiElement[elementHash]);
             }
-            else
+         }
+         return result;
+      }
+
+      public function fromUiElement(target:GraphicContainer, hookFct:String) : Boolean {
+         if((!target)||(!hookFct)||(!target.getUi()))
+         {
+            return false;
+         }
+         var sndElem:BeriliaUiElementSound = this._registeredUiElement[target.getUi().name+"::"+target.name+"::"+hookFct];
+         if((target.getUi())&&(sndElem))
+         {
+            if(this.playSound!=null)
             {
-                _loc_4.openFile = param2;
-                _loc_4.closeFile = param3;
+               this.playSound(sndElem.file);
             }
-            return;
-        }// end function
-
-        public function getUi(param1:String) : BeriliaUiSound
-        {
-            return this._registeredUi[param1];
-        }// end function
-
-        public function registerUiElement(param1:String, param2:String, param3:String, param4:String) : void
-        {
-            var _loc_5:* = new BeriliaUiElementSound();
-            new BeriliaUiElementSound().name = param2;
-            _loc_5.file = param4;
-            _loc_5.hook = param3;
-            this._registeredUiElement[param1 + "::" + param2 + "::" + param3] = _loc_5;
-            return;
-        }// end function
-
-        public function fromHook(param1:Hook, param2:Array = null) : Boolean
-        {
             return true;
-        }// end function
+         }
+         return false;
+      }
 
-        public function getAllSoundUiElement(param1:GraphicContainer) : Vector.<BeriliaUiElementSound>
-        {
-            var _loc_5:* = null;
-            var _loc_2:* = new Vector.<BeriliaUiElementSound>;
-            var _loc_3:* = param1.getUi().name + "::";
-            var _loc_4:* = _loc_3.length;
-            for (_loc_5 in this._registeredUiElement)
-            {
-                
-                if (_loc_5.substr(0, _loc_4) == _loc_3 && _loc_5.substr(_loc_4, param1.name.length) == param1.name)
-                {
-                    _loc_2.push(this._registeredUiElement[_loc_5]);
-                }
-            }
-            return _loc_2;
-        }// end function
+      public function fromUi(target:UiRootContainer, eventType:uint) : Boolean {
+         if(this._registeredUi[target.name])
+         {
+            return true;
+         }
+         return false;
+      }
+   }
 
-        public function fromUiElement(param1:GraphicContainer, param2:String) : Boolean
-        {
-            if (!param1 || !param2 || !param1.getUi())
-            {
-                return false;
-            }
-            var _loc_3:* = this._registeredUiElement[param1.getUi().name + "::" + param1.name + "::" + param2];
-            if (param1.getUi() && _loc_3)
-            {
-                if (this.playSound != null)
-                {
-                    this.playSound(_loc_3.file);
-                }
-                return true;
-            }
-            return false;
-        }// end function
-
-        public function fromUi(param1:UiRootContainer, param2:uint) : Boolean
-        {
-            if (this._registeredUi[param1.name])
-            {
-                return true;
-            }
-            return false;
-        }// end function
-
-        public static function getInstance() : UiSoundManager
-        {
-            if (!_self)
-            {
-                _self = new UiSoundManager;
-            }
-            return _self;
-        }// end function
-
-    }
 }

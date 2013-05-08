@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions
+package com.ankamagames.dofus.logic.game.roleplay.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ShortcutBarSwapRequestAction extends Object implements Action
-    {
-        public var barType:uint;
-        public var firstSlot:uint;
-        public var secondSlot:uint;
 
-        public function ShortcutBarSwapRequestAction()
-        {
-            return;
-        }// end function
+   public class ShortcutBarSwapRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint, param3:uint) : ShortcutBarSwapRequestAction
-        {
-            var _loc_4:* = new ShortcutBarSwapRequestAction;
-            new ShortcutBarSwapRequestAction.barType = param1;
-            _loc_4.firstSlot = param2;
-            _loc_4.secondSlot = param3;
-            return _loc_4;
-        }// end function
+      public function ShortcutBarSwapRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(barType:uint, firstSlot:uint, secondSlot:uint) : ShortcutBarSwapRequestAction {
+         var a:ShortcutBarSwapRequestAction = new ShortcutBarSwapRequestAction();
+         a.barType=barType;
+         a.firstSlot=firstSlot;
+         a.secondSlot=secondSlot;
+         return a;
+      }
+
+      public var barType:uint;
+
+      public var firstSlot:uint;
+
+      public var secondSlot:uint;
+   }
+
 }

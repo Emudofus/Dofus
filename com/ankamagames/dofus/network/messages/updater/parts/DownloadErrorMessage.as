@@ -1,94 +1,90 @@
-﻿package com.ankamagames.dofus.network.messages.updater.parts
+package com.ankamagames.dofus.network.messages.updater.parts
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class DownloadErrorMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var errorId:uint = 0;
-        public var message:String = "";
-        public var helpUrl:String = "";
-        public static const protocolId:uint = 1513;
 
-        public function DownloadErrorMessage()
-        {
+   public class DownloadErrorMessage extends NetworkMessage implements INetworkMessage
+   {
+         
+
+      public function DownloadErrorMessage() {
+         super();
+      }
+
+      public static const protocolId:uint = 1513;
+
+      private var _isInitialized:Boolean = false;
+
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
+
+      public var errorId:uint = 0;
+
+      public var message:String = "";
+
+      public var helpUrl:String = "";
+
+      override public function getMessageId() : uint {
+         return 1513;
+      }
+
+      public function initDownloadErrorMessage(errorId:uint=0, message:String="", helpUrl:String="") : DownloadErrorMessage {
+         this.errorId=errorId;
+         this.message=message;
+         this.helpUrl=helpUrl;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.errorId=0;
+         this.message="";
+         this.helpUrl="";
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_DownloadErrorMessage(output);
+      }
+
+      public function serializeAs_DownloadErrorMessage(output:IDataOutput) : void {
+         output.writeByte(this.errorId);
+         output.writeUTF(this.message);
+         output.writeUTF(this.helpUrl);
+      }
+
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_DownloadErrorMessage(input);
+      }
+
+      public function deserializeAs_DownloadErrorMessage(input:IDataInput) : void {
+         this.errorId=input.readByte();
+         if(this.errorId<0)
+         {
+            throw new Error("Forbidden value ("+this.errorId+") on element of DownloadErrorMessage.errorId.");
+         }
+         else
+         {
+            this.message=input.readUTF();
+            this.helpUrl=input.readUTF();
             return;
-        }// end function
+         }
+      }
+   }
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
-
-        override public function getMessageId() : uint
-        {
-            return 1513;
-        }// end function
-
-        public function initDownloadErrorMessage(param1:uint = 0, param2:String = "", param3:String = "") : DownloadErrorMessage
-        {
-            this.errorId = param1;
-            this.message = param2;
-            this.helpUrl = param3;
-            this._isInitialized = true;
-            return this;
-        }// end function
-
-        override public function reset() : void
-        {
-            this.errorId = 0;
-            this.message = "";
-            this.helpUrl = "";
-            this._isInitialized = false;
-            return;
-        }// end function
-
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
-
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
-
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_DownloadErrorMessage(param1);
-            return;
-        }// end function
-
-        public function serializeAs_DownloadErrorMessage(param1:IDataOutput) : void
-        {
-            param1.writeByte(this.errorId);
-            param1.writeUTF(this.message);
-            param1.writeUTF(this.helpUrl);
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_DownloadErrorMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_DownloadErrorMessage(param1:IDataInput) : void
-        {
-            this.errorId = param1.readByte();
-            if (this.errorId < 0)
-            {
-                throw new Error("Forbidden value (" + this.errorId + ") on element of DownloadErrorMessage.errorId.");
-            }
-            this.message = param1.readUTF();
-            this.helpUrl = param1.readUTF();
-            return;
-        }// end function
-
-    }
 }

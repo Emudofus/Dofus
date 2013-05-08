@@ -1,12 +1,14 @@
-﻿package com.ankamagames.jerakine.utils.display
+package com.ankamagames.jerakine.utils.display
 {
 
-    public interface IFramerateListener
-    {
 
-        public function IFramerateListener();
+   public interface IFramerateListener
+   {
+         
 
-        function onFps(param1:uint) : void;
 
-    }
+
+      function onFps(param1:uint) : void;
+   }
+
 }

@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class HouseGuildShareAction extends Object implements Action
-    {
-        public var enabled:Boolean;
-        public var rights:int;
 
-        public function HouseGuildShareAction()
-        {
-            return;
-        }// end function
+   public class HouseGuildShareAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean, param2:int = 0) : HouseGuildShareAction
-        {
-            var _loc_3:* = new HouseGuildShareAction;
-            _loc_3.enabled = param1;
-            _loc_3.rights = param2;
-            return _loc_3;
-        }// end function
+      public function HouseGuildShareAction() {
+         super();
+      }
 
-    }
+      public static function create(enabled:Boolean, rights:int=0) : HouseGuildShareAction {
+         var action:HouseGuildShareAction = new HouseGuildShareAction();
+         action.enabled=enabled;
+         action.rights=rights;
+         return action;
+      }
+
+      public var enabled:Boolean;
+
+      public var rights:int;
+   }
+
 }

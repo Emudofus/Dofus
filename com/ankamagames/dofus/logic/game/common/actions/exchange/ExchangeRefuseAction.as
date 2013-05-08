@@ -1,20 +1,22 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.exchange
+package com.ankamagames.dofus.logic.game.common.actions.exchange
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeRefuseAction extends Object implements Action
-    {
 
-        public function ExchangeRefuseAction()
-        {
-            return;
-        }// end function
+   public class ExchangeRefuseAction extends Object implements Action
+   {
+         
 
-        public static function create() : ExchangeRefuseAction
-        {
-            var _loc_1:* = new ExchangeRefuseAction;
-            return _loc_1;
-        }// end function
+      public function ExchangeRefuseAction() {
+         super();
+      }
 
-    }
+      public static function create() : ExchangeRefuseAction {
+         var a:ExchangeRefuseAction = new ExchangeRefuseAction();
+         return a;
+      }
+
+
+   }
+
 }

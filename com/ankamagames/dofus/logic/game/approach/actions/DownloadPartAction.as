@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.approach.actions
+package com.ankamagames.dofus.logic.game.approach.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class DownloadPartAction extends Object implements Action
-    {
-        public var id:String;
 
-        public function DownloadPartAction()
-        {
-            return;
-        }// end function
+   public class DownloadPartAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:String) : DownloadPartAction
-        {
-            var _loc_2:* = new DownloadPartAction;
-            _loc_2.id = param1;
-            return _loc_2;
-        }// end function
+      public function DownloadPartAction() {
+         super();
+      }
 
-    }
+      public static function create(id:String) : DownloadPartAction {
+         var a:DownloadPartAction = new DownloadPartAction();
+         a.id=id;
+         return a;
+      }
+
+      public var id:String;
+   }
+
 }

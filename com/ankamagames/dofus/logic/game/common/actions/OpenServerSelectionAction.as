@@ -1,21 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class OpenServerSelectionAction extends Object implements Action
-    {
-        private var _name:String;
-        public var value:String;
 
-        public function OpenServerSelectionAction()
-        {
-            return;
-        }// end function
+   public class OpenServerSelectionAction extends Object implements Action
+   {
+         
 
-        public static function create() : OpenServerSelectionAction
-        {
-            return new OpenServerSelectionAction;
-        }// end function
+      public function OpenServerSelectionAction() {
+         super();
+      }
 
-    }
+      public static function create() : OpenServerSelectionAction {
+         return new OpenServerSelectionAction();
+      }
+
+      private var _name:String;
+
+      public var value:String;
+   }
+
 }

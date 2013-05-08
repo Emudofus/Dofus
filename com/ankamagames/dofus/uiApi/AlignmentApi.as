@@ -1,270 +1,248 @@
-﻿package com.ankamagames.dofus.uiApi
+package com.ankamagames.dofus.uiApi
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.berilia.interfaces.*;
-    import com.ankamagames.dofus.datacenter.alignments.*;
-    import com.ankamagames.dofus.datacenter.world.*;
-    import com.ankamagames.dofus.internalDatacenter.conquest.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.logic.game.common.frames.*;
-    import com.ankamagames.dofus.logic.game.common.managers.*;
-    import com.ankamagames.dofus.logic.game.roleplay.frames.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.berilia.interfaces.IApi;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.dofus.datacenter.world.MapPosition;
+   import com.ankamagames.dofus.logic.game.common.frames.PrismFrame;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.game.common.frames.AlignmentFrame;
+   import com.ankamagames.dofus.logic.game.roleplay.frames.RoleplayEntitiesFrame;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentBalance;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentEffect;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentGift;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentRankJntGift;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentOrder;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentRank;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentSide;
+   import com.ankamagames.dofus.datacenter.alignments.AlignmentTitle;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.internalDatacenter.conquest.PrismFightersWrapper;
+   import com.ankamagames.dofus.logic.game.common.managers.PlayedCharacterManager;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class AlignmentApi extends Object implements IApi
-    {
-        protected var _log:Logger;
-        private var _orderRanks:Array;
-        private var _rankGifts:Array;
-        private var _rankId:uint;
-        private var _sideOrders:Array;
-        private var _sideId:uint;
-        private var include_mapPosition:MapPosition = null;
 
-        public function AlignmentApi()
-        {
-            this._log = Log.getLogger(getQualifiedClassName(DataApi));
-            return;
-        }// end function
+   public class AlignmentApi extends Object implements IApi
+   {
+         
 
-        private function get prismFrame() : PrismFrame
-        {
-            return Kernel.getWorker().getFrame(PrismFrame) as PrismFrame;
-        }// end function
+      public function AlignmentApi() {
+         this._log=Log.getLogger(getQualifiedClassName(DataApi));
+         super();
+      }
 
-        private function get alignmentFrame() : AlignmentFrame
-        {
-            return Kernel.getWorker().getFrame(AlignmentFrame) as AlignmentFrame;
-        }// end function
 
-        private function get roleplayEntitiesFrame() : RoleplayEntitiesFrame
-        {
-            return Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
-        }// end function
 
-        public function destroy() : void
-        {
-            this._orderRanks = null;
-            this._rankGifts = null;
-            this._sideOrders = null;
-            return;
-        }// end function
+      protected var _log:Logger;
 
-        public function getBalance(param1:uint) : AlignmentBalance
-        {
-            return AlignmentBalance.getAlignmentBalanceById(param1);
-        }// end function
+      private var _orderRanks:Array;
 
-        public function getBalances() : Array
-        {
-            return AlignmentBalance.getAlignmentBalances();
-        }// end function
+      private var _rankGifts:Array;
 
-        public function getEffect(param1:uint) : AlignmentEffect
-        {
-            return AlignmentEffect.getAlignmentEffectById(param1);
-        }// end function
+      private var _rankId:uint;
 
-        public function getGift(param1:uint) : AlignmentGift
-        {
-            return AlignmentGift.getAlignmentGiftById(param1);
-        }// end function
+      private var _sideOrders:Array;
 
-        public function getGifts() : Array
-        {
-            return AlignmentGift.getAlignmentGifts();
-        }// end function
+      private var _sideId:uint;
 
-        public function getRankGifts(param1:uint) : AlignmentRankJntGift
-        {
-            return AlignmentRankJntGift.getAlignmentRankJntGiftById(param1);
-        }// end function
+      private var include_mapPosition:MapPosition = null;
 
-        public function getGiftEffect(param1:uint) : AlignmentEffect
-        {
-            return this.getEffect(this.getGift(param1).effectId);
-        }// end function
+      private function get prismFrame() : PrismFrame {
+         return Kernel.getWorker().getFrame(PrismFrame) as PrismFrame;
+      }
 
-        public function getOrder(param1:uint) : AlignmentOrder
-        {
-            return AlignmentOrder.getAlignmentOrderById(param1);
-        }// end function
+      private function get alignmentFrame() : AlignmentFrame {
+         return Kernel.getWorker().getFrame(AlignmentFrame) as AlignmentFrame;
+      }
 
-        public function getOrders() : Array
-        {
-            return AlignmentOrder.getAlignmentOrders();
-        }// end function
+      private function get roleplayEntitiesFrame() : RoleplayEntitiesFrame {
+         return Kernel.getWorker().getFrame(RoleplayEntitiesFrame) as RoleplayEntitiesFrame;
+      }
 
-        public function getRank(param1:uint) : AlignmentRank
-        {
-            return AlignmentRank.getAlignmentRankById(param1);
-        }// end function
+      public function destroy() : void {
+         this._orderRanks=null;
+         this._rankGifts=null;
+         this._sideOrders=null;
+      }
 
-        public function getRanks() : Array
-        {
-            return AlignmentRank.getAlignmentRanks();
-        }// end function
+      public function getBalance(balanceId:uint) : AlignmentBalance {
+         return AlignmentBalance.getAlignmentBalanceById(balanceId);
+      }
 
-        public function getRankOrder(param1:uint) : AlignmentOrder
-        {
-            return this.getOrder(this.getRank(param1).orderId);
-        }// end function
+      public function getBalances() : Array {
+         return AlignmentBalance.getAlignmentBalances();
+      }
 
-        public function getOrderRanks(param1:uint) : Array
-        {
-            var _loc_6:* = null;
-            var _loc_2:* = new Array();
-            var _loc_3:* = AlignmentRank.getAlignmentRanks();
-            var _loc_4:* = _loc_3.length;
-            var _loc_5:* = 0;
-            while (_loc_5 < _loc_4)
+      public function getEffect(effectId:uint) : AlignmentEffect {
+         return AlignmentEffect.getAlignmentEffectById(effectId);
+      }
+
+      public function getGift(giftId:uint) : AlignmentGift {
+         return AlignmentGift.getAlignmentGiftById(giftId);
+      }
+
+      public function getGifts() : Array {
+         return AlignmentGift.getAlignmentGifts();
+      }
+
+      public function getRankGifts(rankId:uint) : AlignmentRankJntGift {
+         return AlignmentRankJntGift.getAlignmentRankJntGiftById(rankId);
+      }
+
+      public function getGiftEffect(giftId:uint) : AlignmentEffect {
+         return this.getEffect(this.getGift(giftId).effectId);
+      }
+
+      public function getOrder(orderId:uint) : AlignmentOrder {
+         return AlignmentOrder.getAlignmentOrderById(orderId);
+      }
+
+      public function getOrders() : Array {
+         return AlignmentOrder.getAlignmentOrders();
+      }
+
+      public function getRank(rankId:uint) : AlignmentRank {
+         return AlignmentRank.getAlignmentRankById(rankId);
+      }
+
+      public function getRanks() : Array {
+         return AlignmentRank.getAlignmentRanks();
+      }
+
+      public function getRankOrder(rankId:uint) : AlignmentOrder {
+         return this.getOrder(this.getRank(rankId).orderId);
+      }
+
+      public function getOrderRanks(orderId:uint) : Array {
+         var alignmentRank:AlignmentRank = null;
+         var listOrderRanks:Array = new Array();
+         var listRanks:Array = AlignmentRank.getAlignmentRanks();
+         var nRanks:int = listRanks.length;
+         var i:int = 0;
+         while(i<nRanks)
+         {
+            alignmentRank=listRanks[i];
+            if(alignmentRank)
             {
-                
-                _loc_6 = _loc_3[_loc_5];
-                if (_loc_6)
-                {
-                    if (_loc_6.orderId == param1)
-                    {
-                        _loc_2.push(_loc_6);
-                    }
-                }
-                _loc_5++;
+               if(alignmentRank.orderId==orderId)
+               {
+                  listOrderRanks.push(alignmentRank);
+               }
             }
-            return _loc_2.sortOn("minimumAlignment", Array.NUMERIC);
-        }// end function
+            i++;
+         }
+         return listOrderRanks.sortOn("minimumAlignment",Array.NUMERIC);
+      }
 
-        public function getSide(param1:uint) : AlignmentSide
-        {
-            return AlignmentSide.getAlignmentSideById(param1);
-        }// end function
+      public function getSide(sideId:uint) : AlignmentSide {
+         return AlignmentSide.getAlignmentSideById(sideId);
+      }
 
-        public function getOrderSide(param1:uint) : AlignmentSide
-        {
-            return this.getSide(this.getOrder(param1).sideId);
-        }// end function
+      public function getOrderSide(orderId:uint) : AlignmentSide {
+         return this.getSide(this.getOrder(orderId).sideId);
+      }
 
-        public function getSideOrders(param1:uint) : Array
-        {
-            this._sideId = param1;
-            AlignmentRank.getAlignmentRanks().forEach(this.filterOrdersBySide);
-            return this._sideOrders;
-        }// end function
+      public function getSideOrders(sideId:uint) : Array {
+         this._sideId=sideId;
+         AlignmentRank.getAlignmentRanks().forEach(this.filterOrdersBySide);
+         return this._sideOrders;
+      }
 
-        public function getTitleName(param1:uint, param2:int) : String
-        {
-            return AlignmentTitle.getAlignmentTitlesById(param1).getNameFromGrade(param2);
-        }// end function
+      public function getTitleName(sideId:uint, grade:int) : String {
+         return AlignmentTitle.getAlignmentTitlesById(sideId).getNameFromGrade(grade);
+      }
 
-        public function getTitleShortName(param1:uint, param2:int) : String
-        {
-            return AlignmentTitle.getAlignmentTitlesById(param1).getShortNameFromGrade(param2);
-        }// end function
+      public function getTitleShortName(sideId:uint, grade:int) : String {
+         return AlignmentTitle.getAlignmentTitlesById(sideId).getShortNameFromGrade(grade);
+      }
 
-        public function getAngelsSubAreas() : Vector.<int>
-        {
-            return this.alignmentFrame.angelsSubAreas;
-        }// end function
+      public function getAngelsSubAreas() : Vector.<int> {
+         return this.alignmentFrame.angelsSubAreas;
+      }
 
-        public function getEvilsSubAreas() : Vector.<int>
-        {
-            return this.alignmentFrame.evilsSubAreas;
-        }// end function
+      public function getEvilsSubAreas() : Vector.<int> {
+         return this.alignmentFrame.evilsSubAreas;
+      }
 
-        public function getPlayerRank() : int
-        {
-            return this.alignmentFrame.playerRank;
-        }// end function
+      public function getPlayerRank() : int {
+         return this.alignmentFrame.playerRank;
+      }
 
-        public function getPrismAttackers() : Array
-        {
-            return this.prismFrame.attackers;
-        }// end function
+      public function getPrismAttackers() : Array {
+         return this.prismFrame.attackers;
+      }
 
-        public function getPrismReserves() : Array
-        {
-            return this.prismFrame.reserves;
-        }// end function
+      public function getPrismReserves() : Array {
+         return this.prismFrame.reserves;
+      }
 
-        public function getPrismDefenders() : Array
-        {
-            return this.prismFrame.defenders;
-        }// end function
+      public function getPrismDefenders() : Array {
+         return this.prismFrame.defenders;
+      }
 
-        public function isPlayerDefender() : Boolean
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_1:* = PlayedCharacterManager.getInstance().id;
-            for each (_loc_2 in this.getPrismDefenders())
+      public function isPlayerDefender() : Boolean {
+         var def:PrismFightersWrapper = null;
+         var res:PrismFightersWrapper = null;
+         var id:int = PlayedCharacterManager.getInstance().id;
+         for each (def in this.getPrismDefenders())
+         {
+            if(def.playerCharactersInformations.id==id)
             {
-                
-                if (_loc_2.playerCharactersInformations.id == _loc_1)
-                {
-                    return true;
-                }
+               return true;
             }
-            for each (_loc_3 in this.getPrismReserves())
+         }
+         for each (res in this.getPrismReserves())
+         {
+            if(def.playerCharactersInformations.id==id)
             {
-                
-                if (_loc_2.playerCharactersInformations.id == _loc_1)
-                {
-                    return true;
-                }
+               return true;
             }
-            return false;
-        }// end function
+         }
+         return false;
+      }
 
-        public function getPrismLocalisation() : Object
-        {
-            var _loc_1:* = new Object();
-            _loc_1.worldX = this.prismFrame.worldX;
-            _loc_1.worldY = this.prismFrame.worldY;
-            _loc_1.subareaId = this.prismFrame.subareaId;
-            return _loc_1;
-        }// end function
+      public function getPrismLocalisation() : Object {
+         var obj:Object = new Object();
+         obj.worldX=this.prismFrame.worldX;
+         obj.worldY=this.prismFrame.worldY;
+         obj.subareaId=this.prismFrame.subareaId;
+         return obj;
+      }
 
-        public function getCurrentSubAreaAlignment() : int
-        {
-            return this.roleplayEntitiesFrame.currentSubAreaSide;
-        }// end function
+      public function getCurrentSubAreaAlignment() : int {
+         return this.roleplayEntitiesFrame.currentSubAreaSide;
+      }
 
-        private function filterGiftsByRank(param1, param2:int, param3:Array) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_7:* = undefined;
-            this._rankGifts = new Array();
-            if (param1.id == this._rankId)
+      private function filterGiftsByRank(rankJntGift:*, index:int, rankJntGifts:Array) : void {
+         var giftsIds:Array = null;
+         var gifts:Array = null;
+         var giftId:* = 0;
+         var gift:* = undefined;
+         this._rankGifts=new Array();
+         if(rankJntGift.id==this._rankId)
+         {
+            giftsIds=rankJntGift.gifts;
+            gifts=AlignmentGift.getAlignmentGifts();
+            for each (giftId in giftsIds)
             {
-                _loc_4 = param1.gifts;
-                _loc_5 = AlignmentGift.getAlignmentGifts();
-                for each (_loc_6 in _loc_4)
-                {
-                    
-                    for each (_loc_7 in _loc_5)
-                    {
-                        
-                        if (_loc_6 == _loc_7.id)
-                        {
-                            this._rankGifts.push(_loc_7);
-                        }
-                    }
-                }
+               for each (gift in gifts)
+               {
+                  if(giftId==gift.id)
+                  {
+                     this._rankGifts.push(gift);
+                  }
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        private function filterOrdersBySide(param1, param2:int, param3:Array) : void
-        {
-            this._sideOrders = new Array();
-            if (param1.sideId == this._sideId)
-            {
-                this._sideOrders.push(param1);
-            }
-            return;
-        }// end function
+      private function filterOrdersBySide(order:*, index:int, orders:Array) : void {
+         this._sideOrders=new Array();
+         if(order.sideId==this._sideId)
+         {
+            this._sideOrders.push(order);
+         }
+      }
+   }
 
-    }
 }

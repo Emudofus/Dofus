@@ -1,726 +1,652 @@
-﻿package flashx.textLayout.elements
+package flashx.textLayout.elements
 {
-    import flash.events.*;
-    import flash.text.engine.*;
-    import flash.utils.*;
-    import flashx.textLayout.compose.*;
-    import flashx.textLayout.edit.*;
-    import flashx.textLayout.events.*;
-    import flashx.textLayout.formats.*;
+   import flash.events.IEventDispatcher;
+   import flashx.textLayout.compose.IFlowComposer;
+   import flashx.textLayout.edit.ISelectionManager;
+   import flash.events.EventDispatcher;
+   import flashx.textLayout.tlf_internal;
+   import flashx.textLayout.compose.ISWFContext;
+   import flashx.textLayout.compose.FlowComposerBase;
+   import flash.text.engine.TextLineValidity;
+   import flashx.textLayout.events.DamageEvent;
+   import flash.events.Event;
+   import flash.utils.Dictionary;
+   import flashx.textLayout.events.ModelChange;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flashx.textLayout.compose.StandardFlowComposer;
 
-    public class TextFlow extends ContainerFormattedElement implements IEventDispatcher
-    {
-        private var _flowComposer:IFlowComposer;
-        private var _interactionManager:ISelectionManager;
-        private var _configuration:IConfiguration;
-        private var _backgroundManager:BackgroundManager;
-        private var normalizeStart:int = 0;
-        private var normalizeLen:int = 0;
-        private var _eventDispatcher:EventDispatcher;
-        private var _generation:uint;
-        private var _formatResolver:IFormatResolver;
-        private var _interactiveObjectCount:int;
-        private var _graphicObjectCount:int;
-        private var _elemsToUpdate:Dictionary;
-        private var _hostFormatHelper:HostFormatHelper;
-        public static var defaultConfiguration:Configuration = new Configuration();
-        private static var _nextGeneration:uint = 1;
+   use namespace tlf_internal;
 
-        public function TextFlow(param1:IConfiguration = null)
-        {
-            this.initializeForConstructor(param1);
-            return;
-        }// end function
+   public class TextFlow extends ContainerFormattedElement implements IEventDispatcher
+   {
+         
 
-        private function initializeForConstructor(param1:IConfiguration) : void
-        {
-            if (param1 == null)
+      public function TextFlow(config:IConfiguration=null) {
+         super();
+         this.initializeForConstructor(config);
+      }
+
+      public static var defaultConfiguration:Configuration = new Configuration();
+
+      private static var _nextGeneration:uint = 1;
+
+      private var _flowComposer:IFlowComposer;
+
+      private var _interactionManager:ISelectionManager;
+
+      private var _configuration:IConfiguration;
+
+      private var _backgroundManager:BackgroundManager;
+
+      private var normalizeStart:int = 0;
+
+      private var normalizeLen:int = 0;
+
+      private var _eventDispatcher:EventDispatcher;
+
+      private var _generation:uint;
+
+      private var _formatResolver:IFormatResolver;
+
+      private var _interactiveObjectCount:int;
+
+      private var _graphicObjectCount:int;
+
+      private function initializeForConstructor(config:IConfiguration) : void {
+         if(config==null)
+         {
+            config=defaultConfiguration;
+         }
+         this._configuration=Configuration(config).getImmutableClone();
+         format=this._configuration.textFlowInitialFormat;
+         if(this._configuration.flowComposerClass)
+         {
+            this.flowComposer=new this._configuration.flowComposerClass();
+         }
+         this._generation=_nextGeneration++;
+         this._interactiveObjectCount=0;
+         this._graphicObjectCount=0;
+      }
+
+      override public function shallowCopy(startPos:int=0, endPos:int=-1) : FlowElement {
+         var retFlow:TextFlow = super.shallowCopy(startPos,endPos) as TextFlow;
+         retFlow._configuration=this._configuration;
+         retFlow._generation=_nextGeneration++;
+         if(this.formatResolver)
+         {
+            retFlow.formatResolver=this.formatResolver.getResolverForNewFlow(this,retFlow);
+         }
+         if((retFlow.flowComposer)&&(this.flowComposer))
+         {
+            retFlow.flowComposer.swfContext=this.flowComposer.swfContext;
+         }
+         return retFlow;
+      }
+
+      tlf_internal function get interactiveObjectCount() : int {
+         return this._interactiveObjectCount;
+      }
+
+      tlf_internal function incInteractiveObjectCount() : void {
+         this._interactiveObjectCount++;
+      }
+
+      tlf_internal function decInteractiveObjectCount() : void {
+         this._interactiveObjectCount--;
+      }
+
+      tlf_internal function get graphicObjectCount() : int {
+         return this._graphicObjectCount;
+      }
+
+      tlf_internal function incGraphicObjectCount() : void {
+         this._graphicObjectCount++;
+      }
+
+      tlf_internal function decGraphicObjectCount() : void {
+         this._graphicObjectCount--;
+      }
+
+      public function get configuration() : IConfiguration {
+         return this._configuration;
+      }
+
+      public function get interactionManager() : ISelectionManager {
+         return this._interactionManager;
+      }
+
+      public function set interactionManager(newInteractionManager:ISelectionManager) : void {
+         if(this._interactionManager!=newInteractionManager)
+         {
+            if(this._interactionManager)
             {
-                param1 = defaultConfiguration;
+               this._interactionManager.textFlow=null;
             }
-            this._configuration = Configuration(param1).getImmutableClone();
-            format = this._configuration.textFlowInitialFormat;
-            if (this._configuration.flowComposerClass)
+            this._interactionManager=newInteractionManager;
+            if(this._interactionManager)
             {
-                this.flowComposer = new this._configuration.flowComposerClass();
+               this._interactionManager.textFlow=this;
+               this.normalize();
             }
-            this._generation = _nextGeneration + 1;
-            this._interactiveObjectCount = 0;
-            this._graphicObjectCount = 0;
-            return;
-        }// end function
-
-        override public function shallowCopy(param1:int = 0, param2:int = -1) : FlowElement
-        {
-            var _loc_3:* = super.shallowCopy(param1, param2) as TextFlow;
-            _loc_3._configuration = this._configuration;
-            _loc_3._generation = _nextGeneration + 1;
-            if (this.formatResolver)
+            if(this.flowComposer)
             {
-                _loc_3.formatResolver = this.formatResolver.getResolverForNewFlow(this, _loc_3);
+               this.flowComposer.interactionManagerChanged(newInteractionManager);
             }
-            if (_loc_3.flowComposer && this.flowComposer)
+         }
+      }
+
+      override public function get flowComposer() : IFlowComposer {
+         return this._flowComposer;
+      }
+
+      public function set flowComposer(composer:IFlowComposer) : void {
+         this.changeFlowComposer(composer,true);
+      }
+
+      tlf_internal function changeFlowComposer(newComposer:IFlowComposer, okToUnloadGraphics:Boolean) : void {
+         var oldSWFContext:ISWFContext = null;
+         var newSWFContext:ISWFContext = null;
+         var containerIter:* = 0;
+         var origComposer:IFlowComposer = this._flowComposer;
+         if(this._flowComposer!=newComposer)
+         {
+            oldSWFContext=FlowComposerBase.computeBaseSWFContext(this._flowComposer?this._flowComposer.swfContext:null);
+            newSWFContext=FlowComposerBase.computeBaseSWFContext(newComposer?newComposer.swfContext:null);
+            if(this._flowComposer)
             {
-                _loc_3.flowComposer.swfContext = this.flowComposer.swfContext;
+               containerIter=0;
+               while(containerIter<this._flowComposer.numControllers)
+               {
+                  this._flowComposer.getControllerAt(containerIter++).clearSelectionShapes();
+               }
+               this._flowComposer.setRootElement(null);
             }
-            return _loc_3;
-        }// end function
-
-        function get interactiveObjectCount() : int
-        {
-            return this._interactiveObjectCount;
-        }// end function
-
-        function incInteractiveObjectCount() : void
-        {
-            var _loc_1:* = this;
-            var _loc_2:* = this._interactiveObjectCount + 1;
-            _loc_1._interactiveObjectCount = _loc_2;
-            return;
-        }// end function
-
-        function decInteractiveObjectCount() : void
-        {
-            var _loc_1:* = this;
-            var _loc_2:* = this._interactiveObjectCount - 1;
-            _loc_1._interactiveObjectCount = _loc_2;
-            return;
-        }// end function
-
-        function get graphicObjectCount() : int
-        {
-            return this._graphicObjectCount;
-        }// end function
-
-        function incGraphicObjectCount() : void
-        {
-            var _loc_1:* = this;
-            var _loc_2:* = this._graphicObjectCount + 1;
-            _loc_1._graphicObjectCount = _loc_2;
-            return;
-        }// end function
-
-        function decGraphicObjectCount() : void
-        {
-            var _loc_1:* = this;
-            var _loc_2:* = this._graphicObjectCount - 1;
-            _loc_1._graphicObjectCount = _loc_2;
-            return;
-        }// end function
-
-        public function get configuration() : IConfiguration
-        {
-            return this._configuration;
-        }// end function
-
-        public function get interactionManager() : ISelectionManager
-        {
-            return this._interactionManager;
-        }// end function
-
-        public function set interactionManager(param1:ISelectionManager) : void
-        {
-            if (this._interactionManager != param1)
+            this._flowComposer=newComposer;
+            if(this._flowComposer)
             {
-                if (this._interactionManager)
-                {
-                    this._interactionManager.textFlow = null;
-                }
-                this._interactionManager = param1;
-                if (this._interactionManager)
-                {
-                    this._interactionManager.textFlow = this;
-                    this.normalize();
-                }
-                if (this.flowComposer)
-                {
-                    this.flowComposer.interactionManagerChanged(param1);
-                }
+               this._flowComposer.setRootElement(this);
             }
-            return;
-        }// end function
-
-        override public function get flowComposer() : IFlowComposer
-        {
-            return this._flowComposer;
-        }// end function
-
-        public function set flowComposer(param1:IFlowComposer) : void
-        {
-            this.changeFlowComposer(param1, true);
-            return;
-        }// end function
-
-        function changeFlowComposer(param1:IFlowComposer, param2:Boolean) : void
-        {
-            var _loc_4:* = null;
-            var _loc_5:* = null;
-            var _loc_6:* = 0;
-            var _loc_3:* = this._flowComposer;
-            if (this._flowComposer != param1)
+            if(textLength)
             {
-                _loc_4 = FlowComposerBase.computeBaseSWFContext(this._flowComposer ? (this._flowComposer.swfContext) : (null));
-                _loc_5 = FlowComposerBase.computeBaseSWFContext(param1 ? (param1.swfContext) : (null));
-                if (this._flowComposer)
-                {
-                    _loc_6 = 0;
-                    while (_loc_6 < this._flowComposer.numControllers)
-                    {
-                        
-                        this._flowComposer.getControllerAt(_loc_6++).clearSelectionShapes();
-                    }
-                    this._flowComposer.setRootElement(null);
-                }
-                this._flowComposer = param1;
-                if (this._flowComposer)
-                {
-                    this._flowComposer.setRootElement(this);
-                }
-                if (textLength)
-                {
-                    this.damage(getAbsoluteStart(), textLength, TextLineValidity.INVALID, false);
-                }
-                if (_loc_4 != _loc_5)
-                {
-                    this.invalidateAllFormats();
-                }
-                if (this._flowComposer == null)
-                {
-                    if (param2)
-                    {
-                        this.unloadGraphics();
-                    }
-                }
-                else if (_loc_3 == null)
-                {
-                    this.prepareGraphicsForLoad();
-                }
+               this.damage(getAbsoluteStart(),textLength,TextLineValidity.INVALID,false);
             }
-            return;
-        }// end function
-
-        function unloadGraphics() : void
-        {
-            if (this._graphicObjectCount)
+            if(oldSWFContext!=newSWFContext)
             {
-                applyFunctionToElements(function (param1:FlowElement) : Boolean
-            {
-                if (param1 is InlineGraphicElement)
-                {
-                    (param1 as InlineGraphicElement).stop(true);
-                }
-                return false;
-            }// end function
-            );
+               this.invalidateAllFormats();
             }
-            return;
-        }// end function
-
-        function prepareGraphicsForLoad() : void
-        {
-            if (this._graphicObjectCount)
+            if(this._flowComposer==null)
             {
-                appendElementsForDelayedUpdate(this, null);
+               if(okToUnloadGraphics)
+               {
+                  this.unloadGraphics();
+               }
             }
-            return;
-        }// end function
-
-        public function getElementByID(param1:String) : FlowElement
-        {
-            var rslt:FlowElement;
-            var idName:* = param1;
-            applyFunctionToElements(function (param1:FlowElement) : Boolean
+            else
             {
-                if (param1.id == idName)
-                {
-                    rslt = param1;
-                    return true;
-                }
-                return false;
-            }// end function
-            );
+               if(origComposer==null)
+               {
+                  this.prepareGraphicsForLoad();
+               }
+            }
+         }
+      }
+
+      tlf_internal function unloadGraphics() : void {
+         if(this._graphicObjectCount)
+         {
+            applyFunctionToElements(new function(elem:FlowElement):Boolean
+            {
+               if(elem is InlineGraphicElement)
+               {
+                     (elem as InlineGraphicElement).stop(true);
+               }
+               return false;
+               });
+            }
+      }
+
+      tlf_internal function prepareGraphicsForLoad() : void {
+         if(this._graphicObjectCount)
+         {
+            appendElementsForDelayedUpdate(this,null);
+         }
+      }
+
+      public function getElementByID(idName:String) : FlowElement {
+         var rslt:FlowElement = null;
+         applyFunctionToElements(new function(elem:FlowElement):Boolean
+         {
+            if(elem.id==idName)
+            {
+                  rslt=elem;
+                  return true;
+            }
+            return false;
+            });
             return rslt;
-        }// end function
+      }
 
-        public function getElementsByStyleName(param1:String) : Array
-        {
-            var a:Array;
-            var styleNameValue:* = param1;
-            a = new Array();
-            applyFunctionToElements(function (param1:FlowElement) : Boolean
+      public function getElementsByStyleName(styleNameValue:String) : Array {
+         var a:Array = null;
+         a=new Array();
+         applyFunctionToElements(new function(elem:FlowElement):Boolean
+         {
+            if(elem.styleName==styleNameValue)
             {
-                if (param1.styleName == styleNameValue)
-                {
-                    a.push(param1);
-                }
-                return false;
-            }// end function
-            );
-            return a;
-        }// end function
-
-        public function getElementsByTypeName(param1:String) : Array
-        {
-            var a:Array;
-            var typeNameValue:* = param1;
-            a = new Array();
-            applyFunctionToElements(function (param1:FlowElement) : Boolean
-            {
-                if (param1.typeName == typeNameValue)
-                {
-                    a.push(param1);
-                }
-                return false;
-            }// end function
-            );
-            return a;
-        }// end function
-
-        override protected function get abstract() : Boolean
-        {
-            return false;
-        }// end function
-
-        override function get defaultTypeName() : String
-        {
-            return "TextFlow";
-        }// end function
-
-        override function updateLengths(param1:int, param2:int, param3:Boolean) : void
-        {
-            var _loc_4:* = 0;
-            if (this.normalizeStart != -1)
-            {
-                _loc_4 = param1 < this.normalizeStart ? (param1) : (this.normalizeStart);
-                if (_loc_4 < this.normalizeStart)
-                {
-                    this.normalizeLen = this.normalizeLen + (this.normalizeStart - _loc_4);
-                }
-                this.normalizeLen = this.normalizeLen + param2;
-                this.normalizeStart = _loc_4;
-            }
-            else
-            {
-                this.normalizeStart = param1;
-                this.normalizeLen = param2;
-            }
-            if (this.normalizeLen < 0)
-            {
-                this.normalizeLen = 0;
-            }
-            if (param3 && this._flowComposer)
-            {
-                this._flowComposer.updateLengths(param1, param2);
-                super.updateLengths(param1, param2, false);
-            }
-            else
-            {
-                super.updateLengths(param1, param2, param3);
-            }
-            return;
-        }// end function
-
-        override public function set mxmlChildren(param1:Array) : void
-        {
-            super.mxmlChildren = param1;
-            this.normalize();
-            applyWhiteSpaceCollapse(null);
-            return;
-        }// end function
-
-        function applyUpdateElements(param1:Boolean) : Boolean
-        {
-            var _loc_2:* = false;
-            var _loc_3:* = null;
-            if (this._elemsToUpdate)
-            {
-                _loc_2 = this.flowComposer && this.flowComposer.numControllers != 0;
-                for (_loc_3 in this._elemsToUpdate)
-                {
-                    
-                    (_loc_3 as FlowElement).applyDelayedElementUpdate(this, param1, _loc_2);
-                }
-                if (_loc_2)
-                {
-                    this._elemsToUpdate = null;
-                    return true;
-                }
+                  a.push(elem);
             }
             return false;
-        }// end function
+            });
+            return a;
+      }
 
-        override function preCompose() : void
-        {
-            do
+      public function getElementsByTypeName(typeNameValue:String) : Array {
+         var a:Array = null;
+         a=new Array();
+         applyFunctionToElements(new function(elem:FlowElement):Boolean
+         {
+            if(elem.typeName==typeNameValue)
             {
-                
-                this.normalize();
-            }while (this.applyUpdateElements(true))
-            return;
-        }// end function
+                  a.push(elem);
+            }
+            return false;
+            });
+            return a;
+      }
 
-        function damage(param1:int, param2:int, param3:String, param4:Boolean = true) : void
-        {
-            var _loc_5:* = 0;
-            if (param4)
-            {
-                if (this.normalizeStart == -1)
-                {
-                    this.normalizeStart = param1;
-                    this.normalizeLen = param2;
-                }
-                else if (param1 < this.normalizeStart)
-                {
-                    _loc_5 = this.normalizeLen;
-                    _loc_5 = this.normalizeStart + this.normalizeLen - param1;
-                    if (param2 > _loc_5)
-                    {
-                        _loc_5 = param2;
-                    }
-                    this.normalizeStart = param1;
-                    this.normalizeLen = _loc_5;
-                }
-                else if (this.normalizeStart + this.normalizeLen > param1)
-                {
-                    if (param1 + param2 > this.normalizeStart + this.normalizeLen)
-                    {
-                        this.normalizeLen = param1 + param2 - this.normalizeStart;
-                    }
-                }
-                else
-                {
-                    this.normalizeLen = param1 + param2 - this.normalizeStart;
-                }
-                if (this.normalizeStart + this.normalizeLen > textLength)
-                {
-                    this.normalizeLen = textLength - this.normalizeStart;
-                }
-            }
-            if (this._flowComposer)
-            {
-                this._flowComposer.damage(param1, param2, param3);
-            }
-            if (this.hasEventListener(DamageEvent.DAMAGE))
-            {
-                this.dispatchEvent(new DamageEvent(DamageEvent.DAMAGE, false, false, this, param1, param2));
-            }
-            return;
-        }// end function
+      override protected function get abstract() : Boolean {
+         return false;
+      }
 
-        function findAbsoluteParagraph(param1:int) : ParagraphElement
-        {
-            var _loc_2:* = findLeaf(param1);
-            return _loc_2 ? (_loc_2.getParagraph()) : (null);
-        }// end function
+      override tlf_internal function get defaultTypeName() : String {
+         return "TextFlow";
+      }
 
-        function findAbsoluteFlowGroupElement(param1:int) : FlowGroupElement
-        {
-            var _loc_2:* = findLeaf(param1);
-            return _loc_2.parent;
-        }// end function
+      override tlf_internal function updateLengths(startIdx:int, len:int, updateLines:Boolean) : void {
+         var newNormalizeStart:* = 0;
+         if(this.normalizeStart!=-1)
+         {
+            newNormalizeStart=startIdx>this.normalizeStart?startIdx:this.normalizeStart;
+            if(newNormalizeStart<this.normalizeStart)
+            {
+               this.normalizeLen=this.normalizeLen+(this.normalizeStart-newNormalizeStart);
+            }
+            this.normalizeLen=this.normalizeLen+len;
+            this.normalizeStart=newNormalizeStart;
+         }
+         else
+         {
+            this.normalizeStart=startIdx;
+            this.normalizeLen=len;
+         }
+         if(this.normalizeLen<0)
+         {
+            this.normalizeLen=0;
+         }
+         if((updateLines)&&(this._flowComposer))
+         {
+            this._flowComposer.updateLengths(startIdx,len);
+            super.updateLengths(startIdx,len,false);
+         }
+         else
+         {
+            super.updateLengths(startIdx,len,updateLines);
+         }
+      }
 
-        public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
-        {
-            if (!this._eventDispatcher)
-            {
-                this._eventDispatcher = new EventDispatcher(this);
-            }
-            this._eventDispatcher.addEventListener(param1, param2, param3, param4, param5);
-            return;
-        }// end function
+      override public function set mxmlChildren(array:Array) : void {
+         super.mxmlChildren=array;
+         this.normalize();
+         applyWhiteSpaceCollapse(null);
+      }
 
-        public function dispatchEvent(event:Event) : Boolean
-        {
-            if (!this._eventDispatcher)
+      tlf_internal function applyUpdateElements(okToUnloadGraphics:Boolean) : Boolean {
+         var hasController:* = false;
+         var child:Object = null;
+         if(this._elemsToUpdate)
+         {
+            hasController=(this.flowComposer)&&(!(this.flowComposer.numControllers==0));
+            for (child in this._elemsToUpdate)
             {
-                return true;
+               (child as FlowElement).applyDelayedElementUpdate(this,okToUnloadGraphics,hasController);
             }
-            return this._eventDispatcher.dispatchEvent(event);
-        }// end function
+            if(hasController)
+            {
+               this._elemsToUpdate=null;
+               return true;
+            }
+         }
+         return false;
+      }
 
-        public function hasEventListener(param1:String) : Boolean
-        {
-            if (!this._eventDispatcher)
-            {
-                return false;
-            }
-            return this._eventDispatcher.hasEventListener(param1);
-        }// end function
-
-        public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
-        {
-            if (!this._eventDispatcher)
-            {
-                return;
-            }
-            this._eventDispatcher.removeEventListener(param1, param2, param3);
-            return;
-        }// end function
-
-        public function willTrigger(param1:String) : Boolean
-        {
-            if (!this._eventDispatcher)
-            {
-                return false;
-            }
-            return this._eventDispatcher.willTrigger(param1);
-        }// end function
-
-        function appendOneElementForUpdate(param1:FlowElement) : void
-        {
-            if (this._elemsToUpdate == null)
-            {
-                this._elemsToUpdate = new Dictionary();
-            }
-            this._elemsToUpdate[param1] = null;
-            return;
-        }// end function
-
-        function mustUseComposer() : Boolean
-        {
-            var _loc_2:* = null;
-            if (this._interactiveObjectCount != 0)
-            {
-                return true;
-            }
-            if (this._elemsToUpdate == null || this._elemsToUpdate.length == 0)
-            {
-                return false;
-            }
+      override tlf_internal function preCompose() : void {
+         do
+         {
             this.normalize();
-            var _loc_1:* = false;
-            for (_loc_2 in this._elemsToUpdate)
-            {
-                
-                if ((_loc_2 as FlowElement).updateForMustUseComposer(this))
-                {
-                    _loc_1 = true;
-                }
-            }
-            return _loc_1;
-        }// end function
+         }
+         while(this.applyUpdateElements(true));
+      }
 
-        function processModelChanged(param1:String, param2:Object, param3:int, param4:int, param5:Boolean, param6:Boolean) : void
-        {
-            if (param2 is FlowElement)
+      tlf_internal function damage(damageStart:int, damageLen:int, damageType:String, needNormalize:Boolean=true) : void {
+         var newNormalizeLen:uint = 0;
+         if(needNormalize)
+         {
+            if(this.normalizeStart==-1)
             {
-                (param2 as FlowElement).appendElementsForDelayedUpdate(this, param1);
-            }
-            if (param6)
-            {
-                this._generation = _nextGeneration + 1;
-            }
-            if (param4 > 0 || param1 == ModelChange.ELEMENT_ADDED)
-            {
-                this.damage(param3, param4, TextLineValidity.INVALID, param5);
-            }
-            if (this.formatResolver)
-            {
-                switch(param1)
-                {
-                    case ModelChange.ELEMENT_REMOVAL:
-                    case ModelChange.ELEMENT_ADDED:
-                    case ModelChange.STYLE_SELECTOR_CHANGED:
-                    {
-                        this.formatResolver.invalidate(param2);
-                        param2.formatChanged(false);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-            }
-            return;
-        }// end function
-
-        public function get generation() : uint
-        {
-            return this._generation;
-        }// end function
-
-        function setGeneration(param1:uint) : void
-        {
-            this._generation = param1;
-            return;
-        }// end function
-
-        function processAutoSizeImageLoaded(param1:InlineGraphicElement) : void
-        {
-            if (this.flowComposer)
-            {
-                param1.appendElementsForDelayedUpdate(this, null);
-            }
-            return;
-        }// end function
-
-        function normalize() : void
-        {
-            var _loc_1:* = 0;
-            if (this.normalizeStart != -1)
-            {
-                _loc_1 = this.normalizeStart + (this.normalizeLen == 0 ? (1) : (this.normalizeLen));
-                normalizeRange(this.normalizeStart == 0 ? (this.normalizeStart) : ((this.normalizeStart - 1)), _loc_1);
-                this.normalizeStart = -1;
-                this.normalizeLen = 0;
-            }
-            return;
-        }// end function
-
-        public function get hostFormat() : ITextLayoutFormat
-        {
-            return this._hostFormatHelper ? (this._hostFormatHelper.format) : (null);
-        }// end function
-
-        public function set hostFormat(param1:ITextLayoutFormat) : void
-        {
-            if (param1 == null)
-            {
-                this._hostFormatHelper = null;
+               this.normalizeStart=damageStart;
+               this.normalizeLen=damageLen;
             }
             else
             {
-                if (this._hostFormatHelper == null)
-                {
-                    this._hostFormatHelper = new HostFormatHelper();
-                }
-                this._hostFormatHelper.format = param1;
+               if(damageStart<this.normalizeStart)
+               {
+                  newNormalizeLen=this.normalizeLen;
+                  newNormalizeLen=this.normalizeStart+this.normalizeLen-damageStart;
+                  if(damageLen>newNormalizeLen)
+                  {
+                     newNormalizeLen=damageLen;
+                  }
+                  this.normalizeStart=damageStart;
+                  this.normalizeLen=newNormalizeLen;
+               }
+               else
+               {
+                  if(this.normalizeStart+this.normalizeLen>damageStart)
+                  {
+                     if(damageStart+damageLen>this.normalizeStart+this.normalizeLen)
+                     {
+                        this.normalizeLen=damageStart+damageLen-this.normalizeStart;
+                     }
+                  }
+                  else
+                  {
+                     this.normalizeLen=damageStart+damageLen-this.normalizeStart;
+                  }
+               }
             }
-            formatChanged();
+            if(this.normalizeStart+this.normalizeLen>textLength)
+            {
+               this.normalizeLen=textLength-this.normalizeStart;
+            }
+         }
+         if(this._flowComposer)
+         {
+            this._flowComposer.damage(damageStart,damageLen,damageType);
+         }
+         if(this.hasEventListener(DamageEvent.DAMAGE))
+         {
+            this.dispatchEvent(new DamageEvent(DamageEvent.DAMAGE,false,false,this,damageStart,damageLen));
+         }
+      }
+
+      tlf_internal function findAbsoluteParagraph(pos:int) : ParagraphElement {
+         var elem:FlowElement = findLeaf(pos);
+         return elem?elem.getParagraph():null;
+      }
+
+      tlf_internal function findAbsoluteFlowGroupElement(pos:int) : FlowGroupElement {
+         var elem:FlowElement = findLeaf(pos);
+         return elem.parent;
+      }
+
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false) : void {
+         if(!this._eventDispatcher)
+         {
+            this._eventDispatcher=new EventDispatcher(this);
+         }
+         this._eventDispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
+      }
+
+      public function dispatchEvent(event:Event) : Boolean {
+         if(!this._eventDispatcher)
+         {
+            return true;
+         }
+         return this._eventDispatcher.dispatchEvent(event);
+      }
+
+      public function hasEventListener(type:String) : Boolean {
+         if(!this._eventDispatcher)
+         {
+            return false;
+         }
+         return this._eventDispatcher.hasEventListener(type);
+      }
+
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean=false) : void {
+         if(!this._eventDispatcher)
+         {
             return;
-        }// end function
+         }
+         this._eventDispatcher.removeEventListener(type,listener,useCapture);
+      }
 
-        override function doComputeTextLayoutFormat() : TextLayoutFormat
-        {
-            var _loc_1:* = this._hostFormatHelper ? (this._hostFormatHelper.getComputedPrototypeFormat()) : (null);
-            return FlowElement.createTextLayoutFormatPrototype(formatForCascade, _loc_1);
-        }// end function
+      public function willTrigger(type:String) : Boolean {
+         if(!this._eventDispatcher)
+         {
+            return false;
+         }
+         return this._eventDispatcher.willTrigger(type);
+      }
 
-        function getTextLayoutFormatStyle(param1:Object) : TextLayoutFormat
-        {
-            if (this._formatResolver == null)
+      private var _elemsToUpdate:Dictionary;
+
+      tlf_internal function appendOneElementForUpdate(elem:FlowElement) : void {
+         if(this._elemsToUpdate==null)
+         {
+            this._elemsToUpdate=new Dictionary();
+         }
+         this._elemsToUpdate[elem]=null;
+      }
+
+      tlf_internal function mustUseComposer() : Boolean {
+         var elem:Object = null;
+         if(this._interactiveObjectCount!=0)
+         {
+            return true;
+         }
+         if((this._elemsToUpdate==null)||(this._elemsToUpdate.length==0))
+         {
+            return false;
+         }
+         this.normalize();
+         var rslt:Boolean = false;
+         for (elem in this._elemsToUpdate)
+         {
+            if((elem as FlowElement).updateForMustUseComposer(this))
             {
-                return null;
+               rslt=true;
             }
-            var _loc_2:* = this._formatResolver.resolveFormat(param1);
-            if (_loc_2 == null)
+         }
+         return rslt;
+      }
+
+      tlf_internal function processModelChanged(changeType:String, elem:Object, changeStart:int, changeLen:int, needNormalize:Boolean, bumpGeneration:Boolean) : void {
+         if(elem is FlowElement)
+         {
+            (elem as FlowElement).appendElementsForDelayedUpdate(this,changeType);
+         }
+         if(bumpGeneration)
+         {
+            this._generation=_nextGeneration++;
+         }
+         if((changeLen<0)||(changeType==ModelChange.ELEMENT_ADDED))
+         {
+            this.damage(changeStart,changeLen,TextLineValidity.INVALID,needNormalize);
+         }
+         if(this.formatResolver)
+         {
+            switch(changeType)
             {
-                return null;
+               case ModelChange.ELEMENT_REMOVAL:
+               case ModelChange.ELEMENT_ADDED:
+               case ModelChange.STYLE_SELECTOR_CHANGED:
+                  this.formatResolver.invalidate(elem);
+                  elem.formatChanged(false);
+                  break;
             }
-            var _loc_3:* = _loc_2 as TextLayoutFormat;
-            return _loc_3 ? (_loc_3) : (new TextLayoutFormat(_loc_2));
-        }// end function
+         }
+      }
 
-        function get backgroundManager() : BackgroundManager
-        {
-            return this._backgroundManager;
-        }// end function
+      public function get generation() : uint {
+         return this._generation;
+      }
 
-        function clearBackgroundManager() : void
-        {
-            this._backgroundManager = null;
-            return;
-        }// end function
+      tlf_internal function setGeneration(num:uint) : void {
+         this._generation=num;
+      }
 
-        function getBackgroundManager() : BackgroundManager
-        {
-            if (!this._backgroundManager && this.flowComposer is StandardFlowComposer)
+      tlf_internal function processAutoSizeImageLoaded(elem:InlineGraphicElement) : void {
+         if(this.flowComposer)
+         {
+            elem.appendElementsForDelayedUpdate(this,null);
+         }
+      }
+
+      tlf_internal function normalize() : void {
+         var normalizeEnd:* = 0;
+         if(this.normalizeStart!=-1)
+         {
+            normalizeEnd=this.normalizeStart+(this.normalizeLen==0?1:this.normalizeLen);
+            normalizeRange(this.normalizeStart==0?this.normalizeStart:this.normalizeStart-1,normalizeEnd);
+            this.normalizeStart=-1;
+            this.normalizeLen=0;
+         }
+      }
+
+      private var _hostFormatHelper:HostFormatHelper;
+
+      public function get hostFormat() : ITextLayoutFormat {
+         return this._hostFormatHelper?this._hostFormatHelper.format:null;
+      }
+
+      public function set hostFormat(value:ITextLayoutFormat) : void {
+         if(value==null)
+         {
+            this._hostFormatHelper=null;
+         }
+         else
+         {
+            if(this._hostFormatHelper==null)
             {
-                this._backgroundManager = (this.flowComposer as StandardFlowComposer).createBackgroundManager();
+               this._hostFormatHelper=new HostFormatHelper();
             }
-            return this._backgroundManager;
-        }// end function
+            this._hostFormatHelper.format=value;
+         }
+         formatChanged();
+      }
 
-        public function get formatResolver() : IFormatResolver
-        {
-            return this._formatResolver;
-        }// end function
+      override tlf_internal function doComputeTextLayoutFormat() : TextLayoutFormat {
+         var parentPrototype:TextLayoutFormat = this._hostFormatHelper?this._hostFormatHelper.getComputedPrototypeFormat():null;
+         return FlowElement.createTextLayoutFormatPrototype(formatForCascade,parentPrototype);
+      }
 
-        public function set formatResolver(param1:IFormatResolver) : void
-        {
-            if (this._formatResolver != param1)
+      tlf_internal function getTextLayoutFormatStyle(elem:Object) : TextLayoutFormat {
+         if(this._formatResolver==null)
+         {
+            return null;
+         }
+         var rslt:ITextLayoutFormat = this._formatResolver.resolveFormat(elem);
+         if(rslt==null)
+         {
+            return null;
+         }
+         var tlfvh:TextLayoutFormat = rslt as TextLayoutFormat;
+         return tlfvh?tlfvh:new TextLayoutFormat(rslt);
+      }
+
+      tlf_internal function get backgroundManager() : BackgroundManager {
+         return this._backgroundManager;
+      }
+
+      tlf_internal function clearBackgroundManager() : void {
+         this._backgroundManager=null;
+      }
+
+      tlf_internal function getBackgroundManager() : BackgroundManager {
+         if((!this._backgroundManager)&&(this.flowComposer is StandardFlowComposer))
+         {
+            this._backgroundManager=(this.flowComposer as StandardFlowComposer).createBackgroundManager();
+         }
+         return this._backgroundManager;
+      }
+
+      public function get formatResolver() : IFormatResolver {
+         return this._formatResolver;
+      }
+
+      public function set formatResolver(val:IFormatResolver) : void {
+         if(this._formatResolver!=val)
+         {
+            if(this._formatResolver)
             {
-                if (this._formatResolver)
-                {
-                    this._formatResolver.invalidateAll(this);
-                }
-                this._formatResolver = param1;
-                if (this._formatResolver)
-                {
-                    this._formatResolver.invalidateAll(this);
-                }
-                formatChanged(true);
+               this._formatResolver.invalidateAll(this);
             }
-            return;
-        }// end function
-
-        public function invalidateAllFormats() : void
-        {
-            if (this._formatResolver)
+            this._formatResolver=val;
+            if(this._formatResolver)
             {
-                this._formatResolver.invalidateAll(this);
+               this._formatResolver.invalidateAll(this);
             }
             formatChanged(true);
-            return;
-        }// end function
+         }
+      }
 
-    }
+      public function invalidateAllFormats() : void {
+         if(this._formatResolver)
+         {
+            this._formatResolver.invalidateAll(this);
+         }
+         formatChanged(true);
+      }
+   }
+
 }
 
-import flash.events.*;
+   import flashx.textLayout.formats.ITextLayoutFormat;
+   import flashx.textLayout.formats.TextLayoutFormat;
+   import flashx.textLayout.elements.FlowElement;
+   import flashx.textLayout.tlf_internal;
 
-import flash.text.engine.*;
+   use namespace tlf_internal;
 
-import flash.utils.*;
+   class HostFormatHelper extends Object
+   {
+         
 
-import flashx.textLayout.compose.*;
+      function HostFormatHelper() {
+         super();
+      }
 
-import flashx.textLayout.edit.*;
 
-import flashx.textLayout.events.*;
 
-import flashx.textLayout.formats.*;
+      private var _format:ITextLayoutFormat;
 
-class HostFormatHelper extends Object
-{
-    private var _format:ITextLayoutFormat;
-    private var _computedPrototypeFormat:TextLayoutFormat;
+      private var _computedPrototypeFormat:TextLayoutFormat;
 
-    function HostFormatHelper()
-    {
-        return;
-    }// end function
+      public function get format() : ITextLayoutFormat {
+         return this._format;
+      }
 
-    public function get format() : ITextLayoutFormat
-    {
-        return this._format;
-    }// end function
+      public function set format(value:ITextLayoutFormat) : void {
+         this._format=value;
+         this._computedPrototypeFormat=null;
+      }
 
-    public function set format(param1:ITextLayoutFormat) : void
-    {
-        this._format = param1;
-        this._computedPrototypeFormat = null;
-        return;
-    }// end function
-
-    public function getComputedPrototypeFormat() : TextLayoutFormat
-    {
-        var _loc_1:* = null;
-        if (this._computedPrototypeFormat == null)
-        {
-            if (this._format is TextLayoutFormat || this._format is TextLayoutFormat)
+      public function getComputedPrototypeFormat() : TextLayoutFormat {
+         var useFormat:ITextLayoutFormat = null;
+         if(this._computedPrototypeFormat==null)
+         {
+            if((this._format is TextLayoutFormat)||(this._format is TextLayoutFormat))
             {
-                _loc_1 = this._format;
+               useFormat=this._format;
             }
             else
             {
-                _loc_1 = new TextLayoutFormat(this._format);
+               useFormat=new TextLayoutFormat(this._format);
             }
-            this._computedPrototypeFormat = FlowElement.createTextLayoutFormatPrototype(_loc_1, null);
-        }
-        return this._computedPrototypeFormat;
-    }// end function
-
-}
-
+            this._computedPrototypeFormat=FlowElement.createTextLayoutFormatPrototype(useFormat,null);
+         }
+         return this._computedPrototypeFormat;
+      }
+   }

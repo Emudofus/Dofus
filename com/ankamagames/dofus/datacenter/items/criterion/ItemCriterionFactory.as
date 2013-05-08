@@ -1,262 +1,183 @@
-﻿package com.ankamagames.dofus.datacenter.items.criterion
+package com.ankamagames.dofus.datacenter.items.criterion
 {
-    import com.ankamagames.jerakine.interfaces.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.interfaces.IDataCenter;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class ItemCriterionFactory extends Object implements IDataCenter
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemCriterionFactory));
 
-        public function ItemCriterionFactory()
-        {
-            return;
-        }// end function
+   public class ItemCriterionFactory extends Object implements IDataCenter
+   {
+         
 
-        public static function create(param1:String) : ItemCriterion
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = param1.slice(0, 2);
-            switch(_loc_3)
-            {
-                case "BI":
-                {
-                    _loc_2 = new UnusableItemCriterion(param1);
-                    break;
-                }
-                case "Ca":
-                case "CA":
-                case "Cc":
-                case "CC":
-                case "Ce":
-                case "CE":
-                case "CD":
-                case "CH":
-                case "Ci":
-                case "CI":
-                case "CL":
-                case "CM":
-                case "CP":
-                case "Cs":
-                case "CS":
-                case "Cv":
-                case "CV":
-                case "Cw":
-                case "CW":
-                case "Ct":
-                case "CT":
-                {
-                    _loc_2 = new ItemCriterion(param1);
-                    break;
-                }
-                case "Pa":
-                {
-                    _loc_2 = new AlignmentLevelItemCriterion(param1);
-                    break;
-                }
-                case "PA":
-                {
-                    _loc_2 = new SoulStoneItemCriterion(param1);
-                    break;
-                }
-                case "Pb":
-                {
-                    _loc_2 = new FriendlistItemCriterion(param1);
-                    break;
-                }
-                case "PB":
-                {
-                    _loc_2 = new SubareaItemCriterion(param1);
-                    break;
-                }
-                case "Pe":
-                {
-                    _loc_2 = new PremiumAccountItemCriterion(param1);
-                    break;
-                }
-                case "PE":
-                {
-                    _loc_2 = new EmoteItemCriterion(param1);
-                    break;
-                }
-                case "Pf":
-                {
-                    _loc_2 = new RideItemCriterion(param1);
-                    break;
-                }
-                case "Pg":
-                {
-                    _loc_2 = new GiftItemCriterion(param1);
-                    break;
-                }
-                case "PG":
-                {
-                    _loc_2 = new BreedItemCriterion(param1);
-                    break;
-                }
-                case "Pi":
-                case "PI":
-                {
-                    _loc_2 = new SkillItemCriterion(param1);
-                    break;
-                }
-                case "PJ":
-                case "Pj":
-                {
-                    _loc_2 = new JobItemCriterion(param1);
-                    break;
-                }
-                case "PK":
-                {
-                    _loc_2 = new KamaItemCriterion(param1);
-                    break;
-                }
-                case "PL":
-                {
-                    _loc_2 = new LevelItemCriterion(param1);
-                    break;
-                }
-                case "PN":
-                {
-                    _loc_2 = new NameItemCriterion(param1);
-                    break;
-                }
-                case "PO":
-                {
-                    _loc_2 = new ObjectItemCriterion(param1);
-                    break;
-                }
-                case "Po":
-                {
-                    _loc_2 = new AreaItemCriterion(param1);
-                    break;
-                }
-                case "Pp":
-                case "PP":
-                {
-                    _loc_2 = new PVPRankItemCriterion(param1);
-                    break;
-                }
-                case "Pr":
-                {
-                    _loc_2 = new SpecializationItemCriterion(param1);
-                    break;
-                }
-                case "PR":
-                {
-                    _loc_2 = new MariedItemCriterion(param1);
-                    break;
-                }
-                case "Ps":
-                {
-                    _loc_2 = new AlignmentItemCriterion(param1);
-                    break;
-                }
-                case "PS":
-                {
-                    _loc_2 = new SexItemCriterion(param1);
-                    break;
-                }
-                case "PT":
-                {
-                    _loc_2 = new SpellItemCriterion(param1);
-                    break;
-                }
-                case "PU":
-                {
-                    _loc_2 = new BonesItemCriterion(param1);
-                    break;
-                }
-                case "Pw":
-                {
-                    _loc_2 = new GuildItemCriterion(param1);
-                    break;
-                }
-                case "PW":
-                {
-                    _loc_2 = new WeightItemCriterion(param1);
-                    break;
-                }
-                case "Px":
-                {
-                    _loc_2 = new GuildRightsItemCriterion(param1);
-                    break;
-                }
-                case "PX":
-                {
-                    _loc_2 = new AccountRightsItemCriterion(param1);
-                    break;
-                }
-                case "Pz":
-                {
-                    break;
-                }
-                case "Py":
-                {
-                    _loc_2 = new GuildLevelItemCriterion(param1);
-                    break;
-                }
-                case "PZ":
-                {
-                    _loc_2 = new SubscribeItemCriterion(param1);
-                    break;
-                }
-                case "Qa":
-                case "Qc":
-                case "Qf":
-                {
-                    _loc_2 = new QuestItemCriterion(param1);
-                    break;
-                }
-                case "MK":
-                {
-                    _loc_2 = new MapCharactersItemCriterion(param1);
-                    break;
-                }
-                case "Sc":
-                {
-                    _loc_2 = new StaticCriterionItemCriterion(param1);
-                    break;
-                }
-                case "SG":
-                {
-                    _loc_2 = new MonthItemCriterion(param1);
-                    break;
-                }
-                case "Sd":
-                {
-                    _loc_2 = new DayItemCriterion(param1);
-                    break;
-                }
-                case "SI":
-                {
-                    _loc_2 = new ServerItemCriterion(param1);
-                    break;
-                }
-                case "Sy":
-                {
-                    _loc_2 = new CommunityItemCriterion(param1);
-                    break;
-                }
-                case "Pq":
-                {
-                    _loc_2 = new RankCriterion(param1);
-                    break;
-                }
-                case "PQ":
-                {
-                    _loc_2 = new MaxRankCriterion(param1);
-                    break;
-                }
-                default:
-                {
-                    _log.warn("Criterion \'" + _loc_3 + "\' unknow or unused (" + param1 + ")");
-                    break;
-                    break;
-                }
-            }
-            return _loc_2;
-        }// end function
+      public function ItemCriterionFactory() {
+         super();
+      }
 
-    }
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(ItemCriterionFactory));
+
+      public static function create(pServerCriterionForm:String) : ItemCriterion {
+         var criterion:ItemCriterion = null;
+         var s:String = pServerCriterionForm.slice(0,2);
+         switch(s)
+         {
+            case "BI":
+               criterion=new UnusableItemCriterion(pServerCriterionForm);
+               break;
+            case "Ca":
+            case "CA":
+            case "Cc":
+            case "CC":
+            case "Ce":
+            case "CE":
+            case "CD":
+            case "CH":
+            case "Ci":
+            case "CI":
+            case "CL":
+            case "CM":
+            case "CP":
+            case "Cs":
+            case "CS":
+            case "Cv":
+            case "CV":
+            case "Cw":
+            case "CW":
+            case "Ct":
+            case "CT":
+               criterion=new ItemCriterion(pServerCriterionForm);
+               break;
+            case "OA":
+               criterion=new AchievementItemCriterion(pServerCriterionForm);
+               break;
+            case "Pa":
+               criterion=new AlignmentLevelItemCriterion(pServerCriterionForm);
+               break;
+            case "PA":
+               criterion=new SoulStoneItemCriterion(pServerCriterionForm);
+               break;
+            case "Pb":
+               criterion=new FriendlistItemCriterion(pServerCriterionForm);
+               break;
+            case "PB":
+               criterion=new SubareaItemCriterion(pServerCriterionForm);
+               break;
+            case "Pe":
+               criterion=new PremiumAccountItemCriterion(pServerCriterionForm);
+               break;
+            case "PE":
+               criterion=new EmoteItemCriterion(pServerCriterionForm);
+               break;
+            case "Pf":
+               criterion=new RideItemCriterion(pServerCriterionForm);
+               break;
+            case "Pg":
+               criterion=new GiftItemCriterion(pServerCriterionForm);
+               break;
+            case "PG":
+               criterion=new BreedItemCriterion(pServerCriterionForm);
+               break;
+            case "Pi":
+            case "PI":
+               criterion=new SkillItemCriterion(pServerCriterionForm);
+               break;
+            case "PJ":
+            case "Pj":
+               criterion=new JobItemCriterion(pServerCriterionForm);
+               break;
+            case "PK":
+               criterion=new KamaItemCriterion(pServerCriterionForm);
+               break;
+            case "PL":
+               criterion=new LevelItemCriterion(pServerCriterionForm);
+               break;
+            case "PN":
+               criterion=new NameItemCriterion(pServerCriterionForm);
+               break;
+            case "PO":
+               criterion=new ObjectItemCriterion(pServerCriterionForm);
+               break;
+            case "Po":
+               criterion=new AreaItemCriterion(pServerCriterionForm);
+               break;
+            case "Pp":
+            case "PP":
+               criterion=new PVPRankItemCriterion(pServerCriterionForm);
+               break;
+            case "Pq":
+               criterion=new RankCriterion(pServerCriterionForm);
+               break;
+            case "PQ":
+               criterion=new MaxRankCriterion(pServerCriterionForm);
+               break;
+            case "Pr":
+               criterion=new SpecializationItemCriterion(pServerCriterionForm);
+               break;
+            case "PR":
+               criterion=new MariedItemCriterion(pServerCriterionForm);
+               break;
+            case "Ps":
+               criterion=new AlignmentItemCriterion(pServerCriterionForm);
+               break;
+            case "PS":
+               criterion=new SexItemCriterion(pServerCriterionForm);
+               break;
+            case "PT":
+               criterion=new SpellItemCriterion(pServerCriterionForm);
+               break;
+            case "PU":
+               criterion=new BonesItemCriterion(pServerCriterionForm);
+               break;
+            case "Pw":
+               criterion=new GuildItemCriterion(pServerCriterionForm);
+               break;
+            case "PW":
+               criterion=new WeightItemCriterion(pServerCriterionForm);
+               break;
+            case "Px":
+               criterion=new GuildRightsItemCriterion(pServerCriterionForm);
+               break;
+            case "PX":
+               criterion=new AccountRightsItemCriterion(pServerCriterionForm);
+               break;
+            case "Pz":
+               break;
+            case "Py":
+               criterion=new GuildLevelItemCriterion(pServerCriterionForm);
+               break;
+            case "PZ":
+               criterion=new SubscribeItemCriterion(pServerCriterionForm);
+               break;
+            case "Qa":
+            case "Qc":
+            case "Qf":
+               criterion=new QuestItemCriterion(pServerCriterionForm);
+               break;
+            case "MK":
+               criterion=new MapCharactersItemCriterion(pServerCriterionForm);
+               break;
+            case "Sc":
+               criterion=new StaticCriterionItemCriterion(pServerCriterionForm);
+               break;
+            case "SG":
+               criterion=new MonthItemCriterion(pServerCriterionForm);
+               break;
+            case "Sd":
+               criterion=new DayItemCriterion(pServerCriterionForm);
+               break;
+            case "SI":
+               criterion=new ServerItemCriterion(pServerCriterionForm);
+               break;
+            case "Sy":
+               criterion=new CommunityItemCriterion(pServerCriterionForm);
+               break;
+            default:
+               _log.warn("Criterion \'"+s+"\' unknow or unused ("+pServerCriterionForm+")");
+         }
+         return criterion;
+      }
+
+
+   }
+
 }

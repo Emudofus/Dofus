@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.guild
+package com.ankamagames.dofus.logic.game.common.actions.guild
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class GuildInvitationAnswerAction extends Object implements Action
-    {
-        public var accept:Boolean;
 
-        public function GuildInvitationAnswerAction()
-        {
-            return;
-        }// end function
+   public class GuildInvitationAnswerAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean) : GuildInvitationAnswerAction
-        {
-            var _loc_2:* = new GuildInvitationAnswerAction;
-            _loc_2.accept = param1;
-            return _loc_2;
-        }// end function
+      public function GuildInvitationAnswerAction() {
+         super();
+      }
 
-    }
+      public static function create(pAccept:Boolean) : GuildInvitationAnswerAction {
+         var action:GuildInvitationAnswerAction = new GuildInvitationAnswerAction();
+         action.accept=pAccept;
+         return action;
+      }
+
+      public var accept:Boolean;
+   }
+
 }

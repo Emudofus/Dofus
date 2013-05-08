@@ -1,18 +1,21 @@
-﻿package com.ankamagames.jerakine.utils.display.spellZone
+package com.ankamagames.jerakine.utils.display.spellZone
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class SpellZoneEvent extends Event
-    {
-        public var cell:SpellZoneCell;
-        public static const CELL_ROLLOVER:String = "cell_rollover";
-        public static const CELL_ROLLOUT:String = "cell_rollout";
 
-        public function SpellZoneEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
-        {
-            super(param1, param2, param3);
-            return;
-        }// end function
+   public class SpellZoneEvent extends Event
+   {
+         
 
-    }
+      public function SpellZoneEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false) {
+         super(type,bubbles,cancelable);
+      }
+
+      public static const CELL_ROLLOVER:String = "cell_rollover";
+
+      public static const CELL_ROLLOUT:String = "cell_rollout";
+
+      public var cell:SpellZoneCell;
+   }
+
 }

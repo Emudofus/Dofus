@@ -1,19 +1,21 @@
-﻿package com.ankamagames.dofus.logic.common.actions
+package com.ankamagames.dofus.logic.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class QuitGameAction extends Object implements Action
-    {
 
-        public function QuitGameAction()
-        {
-            return;
-        }// end function
+   public class QuitGameAction extends Object implements Action
+   {
+         
 
-        public static function create() : QuitGameAction
-        {
-            return new QuitGameAction;
-        }// end function
+      public function QuitGameAction() {
+         super();
+      }
 
-    }
+      public static function create() : QuitGameAction {
+         return new QuitGameAction();
+      }
+
+
+   }
+
 }

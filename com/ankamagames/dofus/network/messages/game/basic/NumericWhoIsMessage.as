@@ -1,101 +1,106 @@
-﻿package com.ankamagames.dofus.network.messages.game.basic
+package com.ankamagames.dofus.network.messages.game.basic
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class NumericWhoIsMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var playerId:uint = 0;
-        public var accountId:uint = 0;
-        public static const protocolId:uint = 6297;
 
-        public function NumericWhoIsMessage()
-        {
-            return;
-        }// end function
+   public class NumericWhoIsMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function NumericWhoIsMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 6297;
-        }// end function
+      public static const protocolId:uint = 6297;
 
-        public function initNumericWhoIsMessage(param1:uint = 0, param2:uint = 0) : NumericWhoIsMessage
-        {
-            this.playerId = param1;
-            this.accountId = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.playerId = 0;
-            this.accountId = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var playerId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var accountId:uint = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_NumericWhoIsMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 6297;
+      }
 
-        public function serializeAs_NumericWhoIsMessage(param1:IDataOutput) : void
-        {
-            if (this.playerId < 0)
+      public function initNumericWhoIsMessage(playerId:uint=0, accountId:uint=0) : NumericWhoIsMessage {
+         this.playerId=playerId;
+         this.accountId=accountId;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.playerId=0;
+         this.accountId=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_NumericWhoIsMessage(output);
+      }
+
+      public function serializeAs_NumericWhoIsMessage(output:IDataOutput) : void {
+         if(this.playerId<0)
+         {
+            throw new Error("Forbidden value ("+this.playerId+") on element playerId.");
+         }
+         else
+         {
+            output.writeInt(this.playerId);
+            if(this.accountId<0)
             {
-                throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+               throw new Error("Forbidden value ("+this.accountId+") on element accountId.");
             }
-            param1.writeInt(this.playerId);
-            if (this.accountId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+               output.writeInt(this.accountId);
+               return;
             }
-            param1.writeInt(this.accountId);
-            return;
-        }// end function
+         }
+      }
 
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_NumericWhoIsMessage(param1);
-            return;
-        }// end function
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_NumericWhoIsMessage(input);
+      }
 
-        public function deserializeAs_NumericWhoIsMessage(param1:IDataInput) : void
-        {
-            this.playerId = param1.readInt();
-            if (this.playerId < 0)
+      public function deserializeAs_NumericWhoIsMessage(input:IDataInput) : void {
+         this.playerId=input.readInt();
+         if(this.playerId<0)
+         {
+            throw new Error("Forbidden value ("+this.playerId+") on element of NumericWhoIsMessage.playerId.");
+         }
+         else
+         {
+            this.accountId=input.readInt();
+            if(this.accountId<0)
             {
-                throw new Error("Forbidden value (" + this.playerId + ") on element of NumericWhoIsMessage.playerId.");
+               throw new Error("Forbidden value ("+this.accountId+") on element of NumericWhoIsMessage.accountId.");
             }
-            this.accountId = param1.readInt();
-            if (this.accountId < 0)
+            else
             {
-                throw new Error("Forbidden value (" + this.accountId + ") on element of NumericWhoIsMessage.accountId.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

@@ -1,26 +1,29 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.livingObject
+package com.ankamagames.dofus.logic.game.common.actions.livingObject
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class LivingObjectFeedAction extends Object implements Action
-    {
-        public var objectUID:uint;
-        public var foodUID:uint;
-        public var foodQuantity:uint;
 
-        public function LivingObjectFeedAction()
-        {
-            return;
-        }// end function
+   public class LivingObjectFeedAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:uint, param3:uint) : LivingObjectFeedAction
-        {
-            var _loc_4:* = new LivingObjectFeedAction;
-            new LivingObjectFeedAction.objectUID = param1;
-            _loc_4.foodUID = param2;
-            _loc_4.foodQuantity = param3;
-            return _loc_4;
-        }// end function
+      public function LivingObjectFeedAction() {
+         super();
+      }
 
-    }
+      public static function create(objectUID:uint, foodUID:uint, foodQuantity:uint) : LivingObjectFeedAction {
+         var action:LivingObjectFeedAction = new LivingObjectFeedAction();
+         action.objectUID=objectUID;
+         action.foodUID=foodUID;
+         action.foodQuantity=foodQuantity;
+         return action;
+      }
+
+      public var objectUID:uint;
+
+      public var foodUID:uint;
+
+      public var foodQuantity:uint;
+   }
+
 }

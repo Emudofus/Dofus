@@ -1,136 +1,138 @@
-﻿package flashx.textLayout.formats
+package flashx.textLayout.formats
 {
 
-    public interface ITextLayoutFormat
-    {
 
-        public function ITextLayoutFormat();
+   public interface ITextLayoutFormat
+   {
+         
 
-        function getStyle(param1:String);
 
-        function get color();
 
-        function get backgroundColor();
+      function getStyle(param1:String) : *;
 
-        function get lineThrough();
+      function get color() : *;
 
-        function get textAlpha();
+      function get backgroundColor() : *;
 
-        function get backgroundAlpha();
+      function get lineThrough() : *;
 
-        function get fontSize();
+      function get textAlpha() : *;
 
-        function get baselineShift();
+      function get backgroundAlpha() : *;
 
-        function get trackingLeft();
+      function get fontSize() : *;
 
-        function get trackingRight();
+      function get baselineShift() : *;
 
-        function get lineHeight();
+      function get trackingLeft() : *;
 
-        function get breakOpportunity();
+      function get trackingRight() : *;
 
-        function get digitCase();
+      function get lineHeight() : *;
 
-        function get digitWidth();
+      function get breakOpportunity() : *;
 
-        function get dominantBaseline();
+      function get digitCase() : *;
 
-        function get kerning();
+      function get digitWidth() : *;
 
-        function get ligatureLevel();
+      function get dominantBaseline() : *;
 
-        function get alignmentBaseline();
+      function get kerning() : *;
 
-        function get locale();
+      function get ligatureLevel() : *;
 
-        function get typographicCase();
+      function get alignmentBaseline() : *;
 
-        function get fontFamily();
+      function get locale() : *;
 
-        function get textDecoration();
+      function get typographicCase() : *;
 
-        function get fontWeight();
+      function get fontFamily() : *;
 
-        function get fontStyle();
+      function get textDecoration() : *;
 
-        function get whiteSpaceCollapse();
+      function get fontWeight() : *;
 
-        function get renderingMode();
+      function get fontStyle() : *;
 
-        function get cffHinting();
+      function get whiteSpaceCollapse() : *;
 
-        function get fontLookup();
+      function get renderingMode() : *;
 
-        function get textRotation();
+      function get cffHinting() : *;
 
-        function get textIndent();
+      function get fontLookup() : *;
 
-        function get paragraphStartIndent();
+      function get textRotation() : *;
 
-        function get paragraphEndIndent();
+      function get textIndent() : *;
 
-        function get paragraphSpaceBefore();
+      function get paragraphStartIndent() : *;
 
-        function get paragraphSpaceAfter();
+      function get paragraphEndIndent() : *;
 
-        function get textAlign();
+      function get paragraphSpaceBefore() : *;
 
-        function get textAlignLast();
+      function get paragraphSpaceAfter() : *;
 
-        function get textJustify();
+      function get textAlign() : *;
 
-        function get justificationRule();
+      function get textAlignLast() : *;
 
-        function get justificationStyle();
+      function get textJustify() : *;
 
-        function get direction();
+      function get justificationRule() : *;
 
-        function get wordSpacing();
+      function get justificationStyle() : *;
 
-        function get tabStops();
+      function get direction() : *;
 
-        function get leadingModel();
+      function get wordSpacing() : *;
 
-        function get columnGap();
+      function get tabStops() : *;
 
-        function get paddingLeft();
+      function get leadingModel() : *;
 
-        function get paddingTop();
+      function get columnGap() : *;
 
-        function get paddingRight();
+      function get paddingLeft() : *;
 
-        function get paddingBottom();
+      function get paddingTop() : *;
 
-        function get columnCount();
+      function get paddingRight() : *;
 
-        function get columnWidth();
+      function get paddingBottom() : *;
 
-        function get firstBaselineOffset();
+      function get columnCount() : *;
 
-        function get verticalAlign();
+      function get columnWidth() : *;
 
-        function get blockProgression();
+      function get firstBaselineOffset() : *;
 
-        function get lineBreak();
+      function get verticalAlign() : *;
 
-        function get listStyleType();
+      function get blockProgression() : *;
 
-        function get listStylePosition();
+      function get lineBreak() : *;
 
-        function get listAutoPadding();
+      function get listStyleType() : *;
 
-        function get clearFloats();
+      function get listStylePosition() : *;
 
-        function get styleName();
+      function get listAutoPadding() : *;
 
-        function get linkNormalFormat();
+      function get clearFloats() : *;
 
-        function get linkActiveFormat();
+      function get styleName() : *;
 
-        function get linkHoverFormat();
+      function get linkNormalFormat() : *;
 
-        function get listMarkerFormat();
+      function get linkActiveFormat() : *;
 
-    }
+      function get linkHoverFormat() : *;
+
+      function get listMarkerFormat() : *;
+   }
+
 }

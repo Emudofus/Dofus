@@ -1,10 +1,14 @@
-﻿package com.ankamagames.berilia.interfaces
+package com.ankamagames.berilia.interfaces
 {
 
-    public interface IApi
-    {
 
-        public function IApi();
+   public interface IApi
+   {
+         
 
-    }
+
+
+
+   }
+
 }

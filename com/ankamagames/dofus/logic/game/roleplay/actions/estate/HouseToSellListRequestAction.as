@@ -1,22 +1,23 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.actions.estate
+package com.ankamagames.dofus.logic.game.roleplay.actions.estate
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class HouseToSellListRequestAction extends Object implements Action
-    {
-        public var pageIndex:uint;
 
-        public function HouseToSellListRequestAction()
-        {
-            return;
-        }// end function
+   public class HouseToSellListRequestAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint) : HouseToSellListRequestAction
-        {
-            var _loc_2:* = new HouseToSellListRequestAction;
-            _loc_2.pageIndex = param1;
-            return _loc_2;
-        }// end function
+      public function HouseToSellListRequestAction() {
+         super();
+      }
 
-    }
+      public static function create(pageIndex:uint) : HouseToSellListRequestAction {
+         var a:HouseToSellListRequestAction = new HouseToSellListRequestAction();
+         a.pageIndex=pageIndex;
+         return a;
+      }
+
+      public var pageIndex:uint;
+   }
+
 }

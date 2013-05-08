@@ -1,135 +1,132 @@
-﻿package com.ankamagames.berilia.managers
+package com.ankamagames.berilia.managers
 {
-    import com.ankamagames.berilia.types.listener.*;
-    import com.ankamagames.jerakine.logger.*;
-    import flash.utils.*;
+   import flash.utils.Dictionary;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.berilia.types.listener.GenericListener;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
 
-    public class GenericEventsManager extends Object
-    {
-        protected var _aEvent:Array;
-        protected var _listenerRef:Dictionary;
-        protected var _log:Logger;
 
-        public function GenericEventsManager()
-        {
-            this._aEvent = new Array();
-            this._listenerRef = new Dictionary(true);
-            this._log = Log.getLogger(getQualifiedClassName(GenericEventsManager));
-            return;
-        }// end function
+   public class GenericEventsManager extends Object
+   {
+         
 
-        public function initialize() : void
-        {
-            this._aEvent = new Array();
-            return;
-        }// end function
+      public function GenericEventsManager() {
+         this._aEvent=new Array();
+         this._listenerRef=new Dictionary(true);
+         this._log=Log.getLogger(getQualifiedClassName(GenericEventsManager));
+         super();
+      }
 
-        public function registerEvent(param1:GenericListener) : void
-        {
-            this._listenerRef[param1] = true;
-            if (this._aEvent[param1.event] == null)
+
+
+      protected var _aEvent:Array;
+
+      protected var _listenerRef:Dictionary;
+
+      protected var _log:Logger;
+
+      public function initialize() : void {
+         this._aEvent=new Array();
+      }
+
+      public function registerEvent(e:GenericListener) : void {
+         this._listenerRef[e]=true;
+         if(this._aEvent[e.event]==null)
+         {
+            this._aEvent[e.event]=new Array();
+         }
+         this._aEvent[e.event].push(e);
+         (this._aEvent[e.event] as Array).sortOn("sortIndex",Array.NUMERIC|Array.DESCENDING);
+      }
+
+      public function removeEventListener(ge:GenericListener) : void {
+         var i:String = null;
+         var j:Object = null;
+         for (i in this._aEvent)
+         {
+            for (j in this._aEvent[i])
             {
-                this._aEvent[param1.event] = new Array();
+               if((this._aEvent[i]==null)||(this._aEvent[i][j]==null))
+               {
+               }
+               else
+               {
+                  if(this._aEvent[i][j]==ge)
+                  {
+                     delete this._aEvent[i][[j]];
+                     if(!this._aEvent[i].length)
+                     {
+                        this._aEvent[i]=null;
+                        delete this._aEvent[[i]];
+                     }
+                  }
+               }
             }
-            this._aEvent[param1.event].push(param1);
-            (this._aEvent[param1.event] as Array).sortOn("sortIndex", Array.NUMERIC | Array.DESCENDING);
-            return;
-        }// end function
+         }
+      }
 
-        public function removeEventListener(param1:GenericListener) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            for (_loc_2 in this._aEvent)
+      public function removeEventListenerByName(name:String) : void {
+         var i:String = null;
+         var j:Object = null;
+         var l:GenericListener = null;
+         for (i in this._aEvent)
+         {
+            for (j in this._aEvent[i])
             {
-                
-                for (_loc_3 in this._aEvent[_loc_2])
-                {
-                    
-                    if (this._aEvent[_loc_2] == null || this._aEvent[_loc_2][_loc_3] == null)
-                    {
-                        continue;
-                    }
-                    if (this._aEvent[_loc_2][_loc_3] == param1)
-                    {
-                        delete this._aEvent[_loc_2][_loc_3];
-                        if (!this._aEvent[_loc_2].length)
-                        {
-                            this._aEvent[_loc_2] = null;
-                            delete this._aEvent[_loc_2];
-                        }
-                    }
-                }
+               if((this._aEvent[i]==null)||(this._aEvent[i][j]==null))
+               {
+               }
+               else
+               {
+                  l=this._aEvent[i][j];
+                  if(l.listener==name)
+                  {
+                     delete this._aEvent[i][[j]];
+                     if(!this._aEvent[i].length)
+                     {
+                        this._aEvent[i]=null;
+                        delete this._aEvent[[i]];
+                     }
+                  }
+               }
             }
-            return;
-        }// end function
+         }
+      }
 
-        public function removeEventListenerByName(param1:String) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            for (_loc_2 in this._aEvent)
+      public function removeEvent(sListener:*) : void {
+         var e:GenericListener = null;
+         var deleteIndex:Array = null;
+         var i:* = undefined;
+         var j:* = undefined;
+         var index:* = undefined;
+         for (i in this._aEvent)
+         {
+            deleteIndex=null;
+            for (j in this._aEvent[i])
             {
-                
-                for (_loc_3 in this._aEvent[_loc_2])
-                {
-                    
-                    if (this._aEvent[_loc_2] == null || this._aEvent[_loc_2][_loc_3] == null)
-                    {
-                        continue;
-                    }
-                    _loc_4 = this._aEvent[_loc_2][_loc_3];
-                    if (_loc_4.listener == param1)
-                    {
-                        delete this._aEvent[_loc_2][_loc_3];
-                        if (!this._aEvent[_loc_2].length)
-                        {
-                            this._aEvent[_loc_2] = null;
-                            delete this._aEvent[_loc_2];
-                        }
-                    }
-                }
+               if((this._aEvent[i]==null)||(this._aEvent[i][j]==null))
+               {
+               }
+               else
+               {
+                  e=this._aEvent[i][j];
+                  if(e.listener==sListener)
+                  {
+                     if(!deleteIndex)
+                     {
+                        deleteIndex=[];
+                     }
+                     deleteIndex.push(j);
+                  }
+               }
             }
-            return;
-        }// end function
-
-        public function removeEvent(param1) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            var _loc_4:* = undefined;
-            var _loc_5:* = undefined;
-            var _loc_6:* = undefined;
-            for (_loc_4 in this._aEvent)
+            for each (index in deleteIndex)
             {
-                
-                _loc_3 = null;
-                for (_loc_5 in this._aEvent[_loc_4])
-                {
-                    
-                    if (this._aEvent[_loc_4] == null || this._aEvent[_loc_4][_loc_5] == null)
-                    {
-                        continue;
-                    }
-                    _loc_2 = this._aEvent[_loc_4][_loc_5];
-                    if (_loc_2.listener == param1)
-                    {
-                        if (!_loc_3)
-                        {
-                            _loc_3 = [];
-                        }
-                        _loc_3.push(_loc_5);
-                    }
-                }
-                for each (_loc_6 in _loc_3)
-                {
-                    
-                    delete this._aEvent[_loc_4][_loc_6];
-                }
+               delete this._aEvent[i][[index]];
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

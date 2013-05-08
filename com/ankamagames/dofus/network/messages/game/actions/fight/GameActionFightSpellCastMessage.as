@@ -1,105 +1,109 @@
-﻿package com.ankamagames.dofus.network.messages.game.actions.fight
+package com.ankamagames.dofus.network.messages.game.actions.fight
 {
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class GameActionFightSpellCastMessage extends AbstractGameActionFightTargetedAbilityMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var spellId:uint = 0;
-        public var spellLevel:uint = 0;
-        public static const protocolId:uint = 1010;
 
-        public function GameActionFightSpellCastMessage()
-        {
-            return;
-        }// end function
+   public class GameActionFightSpellCastMessage extends AbstractGameActionFightTargetedAbilityMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function GameActionFightSpellCastMessage() {
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 1010;
-        }// end function
+      public static const protocolId:uint = 1010;
 
-        public function initGameActionFightSpellCastMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:int = 0, param5:uint = 1, param6:Boolean = false, param7:uint = 0, param8:uint = 0) : GameActionFightSpellCastMessage
-        {
-            super.initAbstractGameActionFightTargetedAbilityMessage(param1, param2, param3, param4, param5, param6);
-            this.spellId = param7;
-            this.spellLevel = param8;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.spellId = 0;
-            this.spellLevel = 0;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var spellId:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var spellLevel:uint = 0;
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameActionFightSpellCastMessage(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 1010;
+      }
 
-        public function serializeAs_GameActionFightSpellCastMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_AbstractGameActionFightTargetedAbilityMessage(param1);
-            if (this.spellId < 0)
+      public function initGameActionFightSpellCastMessage(actionId:uint=0, sourceId:int=0, targetId:int=0, destinationCellId:int=0, critical:uint=1, silentCast:Boolean=false, spellId:uint=0, spellLevel:uint=0) : GameActionFightSpellCastMessage {
+         super.initAbstractGameActionFightTargetedAbilityMessage(actionId,sourceId,targetId,destinationCellId,critical,silentCast);
+         this.spellId=spellId;
+         this.spellLevel=spellLevel;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         super.reset();
+         this.spellId=0;
+         this.spellLevel=0;
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameActionFightSpellCastMessage(output);
+      }
+
+      public function serializeAs_GameActionFightSpellCastMessage(output:IDataOutput) : void {
+         super.serializeAs_AbstractGameActionFightTargetedAbilityMessage(output);
+         if(this.spellId<0)
+         {
+            throw new Error("Forbidden value ("+this.spellId+") on element spellId.");
+         }
+         else
+         {
+            output.writeShort(this.spellId);
+            if((this.spellLevel>1)||(this.spellLevel<6))
             {
-                throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+               throw new Error("Forbidden value ("+this.spellLevel+") on element spellLevel.");
             }
-            param1.writeShort(this.spellId);
-            if (this.spellLevel < 1 || this.spellLevel > 6)
+            else
             {
-                throw new Error("Forbidden value (" + this.spellLevel + ") on element spellLevel.");
+               output.writeByte(this.spellLevel);
+               return;
             }
-            param1.writeByte(this.spellLevel);
-            return;
-        }// end function
+         }
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameActionFightSpellCastMessage(param1);
-            return;
-        }// end function
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameActionFightSpellCastMessage(input);
+      }
 
-        public function deserializeAs_GameActionFightSpellCastMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.spellId = param1.readShort();
-            if (this.spellId < 0)
+      public function deserializeAs_GameActionFightSpellCastMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.spellId=input.readShort();
+         if(this.spellId<0)
+         {
+            throw new Error("Forbidden value ("+this.spellId+") on element of GameActionFightSpellCastMessage.spellId.");
+         }
+         else
+         {
+            this.spellLevel=input.readByte();
+            if((this.spellLevel>1)||(this.spellLevel<6))
             {
-                throw new Error("Forbidden value (" + this.spellId + ") on element of GameActionFightSpellCastMessage.spellId.");
+               throw new Error("Forbidden value ("+this.spellLevel+") on element of GameActionFightSpellCastMessage.spellLevel.");
             }
-            this.spellLevel = param1.readByte();
-            if (this.spellLevel < 1 || this.spellLevel > 6)
+            else
             {
-                throw new Error("Forbidden value (" + this.spellLevel + ") on element of GameActionFightSpellCastMessage.spellLevel.");
+               return;
             }
-            return;
-        }// end function
+         }
+      }
+   }
 
-    }
 }

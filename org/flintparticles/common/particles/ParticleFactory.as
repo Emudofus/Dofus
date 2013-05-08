@@ -1,14 +1,16 @@
-﻿package org.flintparticles.common.particles
+package org.flintparticles.common.particles
 {
 
-    public interface ParticleFactory
-    {
 
-        public function ParticleFactory();
+   public interface ParticleFactory
+   {
+         
 
-        function createParticle() : Particle;
 
-        function disposeParticle(param1:Particle) : void;
 
-    }
+      function createParticle() : Particle;
+
+      function disposeParticle(param1:Particle) : void;
+   }
+
 }

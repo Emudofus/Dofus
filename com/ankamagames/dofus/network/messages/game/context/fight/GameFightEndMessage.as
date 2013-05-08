@@ -1,127 +1,126 @@
-﻿package com.ankamagames.dofus.network.messages.game.context.fight
+package com.ankamagames.dofus.network.messages.game.context.fight
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.dofus.network.*;
-    import com.ankamagames.dofus.network.types.game.context.fight.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.NetworkMessage;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.dofus.network.types.game.context.fight.FightResultListEntry;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
+   import com.ankamagames.dofus.network.ProtocolTypeManager;
 
-    public class GameFightEndMessage extends NetworkMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var duration:uint = 0;
-        public var ageBonus:int = 0;
-        public var lootShareLimitMalus:int = 0;
-        public var results:Vector.<FightResultListEntry>;
-        public static const protocolId:uint = 720;
 
-        public function GameFightEndMessage()
-        {
-            this.results = new Vector.<FightResultListEntry>;
-            return;
-        }// end function
+   public class GameFightEndMessage extends NetworkMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return this._isInitialized;
-        }// end function
+      public function GameFightEndMessage() {
+         this.results=new Vector.<FightResultListEntry>();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 720;
-        }// end function
+      public static const protocolId:uint = 720;
 
-        public function initGameFightEndMessage(param1:uint = 0, param2:int = 0, param3:int = 0, param4:Vector.<FightResultListEntry> = null) : GameFightEndMessage
-        {
-            this.duration = param1;
-            this.ageBonus = param2;
-            this.lootShareLimitMalus = param3;
-            this.results = param4;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            this.duration = 0;
-            this.ageBonus = 0;
-            this.lootShareLimitMalus = 0;
-            this.results = new Vector.<FightResultListEntry>;
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return this._isInitialized;
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var duration:uint = 0;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      public var ageBonus:int = 0;
 
-        public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_GameFightEndMessage(param1);
-            return;
-        }// end function
+      public var lootShareLimitMalus:int = 0;
 
-        public function serializeAs_GameFightEndMessage(param1:IDataOutput) : void
-        {
-            if (this.duration < 0)
+      public var results:Vector.<FightResultListEntry>;
+
+      override public function getMessageId() : uint {
+         return 720;
+      }
+
+      public function initGameFightEndMessage(duration:uint=0, ageBonus:int=0, lootShareLimitMalus:int=0, results:Vector.<FightResultListEntry>=null) : GameFightEndMessage {
+         this.duration=duration;
+         this.ageBonus=ageBonus;
+         this.lootShareLimitMalus=lootShareLimitMalus;
+         this.results=results;
+         this._isInitialized=true;
+         return this;
+      }
+
+      override public function reset() : void {
+         this.duration=0;
+         this.ageBonus=0;
+         this.lootShareLimitMalus=0;
+         this.results=new Vector.<FightResultListEntry>();
+         this._isInitialized=false;
+      }
+
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
+
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
+
+      public function serialize(output:IDataOutput) : void {
+         this.serializeAs_GameFightEndMessage(output);
+      }
+
+      public function serializeAs_GameFightEndMessage(output:IDataOutput) : void {
+         if(this.duration<0)
+         {
+            throw new Error("Forbidden value ("+this.duration+") on element duration.");
+         }
+         else
+         {
+            output.writeInt(this.duration);
+            output.writeShort(this.ageBonus);
+            output.writeShort(this.lootShareLimitMalus);
+            output.writeShort(this.results.length);
+            _i4=0;
+            while(_i4<this.results.length)
             {
-                throw new Error("Forbidden value (" + this.duration + ") on element duration.");
-            }
-            param1.writeInt(this.duration);
-            param1.writeShort(this.ageBonus);
-            param1.writeShort(this.lootShareLimitMalus);
-            param1.writeShort(this.results.length);
-            var _loc_2:* = 0;
-            while (_loc_2 < this.results.length)
-            {
-                
-                param1.writeShort((this.results[_loc_2] as FightResultListEntry).getTypeId());
-                (this.results[_loc_2] as FightResultListEntry).serialize(param1);
-                _loc_2 = _loc_2 + 1;
-            }
-            return;
-        }// end function
-
-        public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_GameFightEndMessage(param1);
-            return;
-        }// end function
-
-        public function deserializeAs_GameFightEndMessage(param1:IDataInput) : void
-        {
-            var _loc_4:* = 0;
-            var _loc_5:* = null;
-            this.duration = param1.readInt();
-            if (this.duration < 0)
-            {
-                throw new Error("Forbidden value (" + this.duration + ") on element of GameFightEndMessage.duration.");
-            }
-            this.ageBonus = param1.readShort();
-            this.lootShareLimitMalus = param1.readShort();
-            var _loc_2:* = param1.readUnsignedShort();
-            var _loc_3:* = 0;
-            while (_loc_3 < _loc_2)
-            {
-                
-                _loc_4 = param1.readUnsignedShort();
-                _loc_5 = ProtocolTypeManager.getInstance(FightResultListEntry, _loc_4);
-                _loc_5.deserialize(param1);
-                this.results.push(_loc_5);
-                _loc_3 = _loc_3 + 1;
+               output.writeShort((this.results[_i4] as FightResultListEntry).getTypeId());
+               (this.results[_i4] as FightResultListEntry).serialize(output);
+               _i4++;
             }
             return;
-        }// end function
+         }
+      }
 
-    }
+      public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_GameFightEndMessage(input);
+      }
+
+      public function deserializeAs_GameFightEndMessage(input:IDataInput) : void {
+         var _id4:uint = 0;
+         var _item4:FightResultListEntry = null;
+         this.duration=input.readInt();
+         if(this.duration<0)
+         {
+            throw new Error("Forbidden value ("+this.duration+") on element of GameFightEndMessage.duration.");
+         }
+         else
+         {
+            this.ageBonus=input.readShort();
+            this.lootShareLimitMalus=input.readShort();
+            _resultsLen=input.readUnsignedShort();
+            _i4=0;
+            while(_i4<_resultsLen)
+            {
+               _id4=input.readUnsignedShort();
+               _item4=ProtocolTypeManager.getInstance(FightResultListEntry,_id4);
+               _item4.deserialize(input);
+               this.results.push(_item4);
+               _i4++;
+            }
+            return;
+         }
+      }
+   }
+
 }

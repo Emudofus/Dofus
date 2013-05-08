@@ -1,87 +1,76 @@
-﻿package com.ankamagames.dofus.network.messages.game.inventory.exchanges
+package com.ankamagames.dofus.network.messages.game.inventory.exchanges
 {
-    import com.ankamagames.dofus.network.types.game.data.items.*;
-    import com.ankamagames.jerakine.network.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.network.INetworkMessage;
+   import com.ankamagames.dofus.network.types.game.data.items.ObjectItemNotInContainer;
+   import flash.utils.IDataOutput;
+   import flash.utils.ByteArray;
+   import flash.utils.IDataInput;
 
-    public class ExchangeCraftResultWithObjectDescMessage extends ExchangeCraftResultMessage implements INetworkMessage
-    {
-        private var _isInitialized:Boolean = false;
-        public var objectInfo:ObjectItemNotInContainer;
-        public static const protocolId:uint = 5999;
 
-        public function ExchangeCraftResultWithObjectDescMessage()
-        {
-            this.objectInfo = new ObjectItemNotInContainer();
-            return;
-        }// end function
+   public class ExchangeCraftResultWithObjectDescMessage extends ExchangeCraftResultMessage implements INetworkMessage
+   {
+         
 
-        override public function get isInitialized() : Boolean
-        {
-            return super.isInitialized && this._isInitialized;
-        }// end function
+      public function ExchangeCraftResultWithObjectDescMessage() {
+         this.objectInfo=new ObjectItemNotInContainer();
+         super();
+      }
 
-        override public function getMessageId() : uint
-        {
-            return 5999;
-        }// end function
+      public static const protocolId:uint = 5999;
 
-        public function initExchangeCraftResultWithObjectDescMessage(param1:uint = 0, param2:ObjectItemNotInContainer = null) : ExchangeCraftResultWithObjectDescMessage
-        {
-            super.initExchangeCraftResultMessage(param1);
-            this.objectInfo = param2;
-            this._isInitialized = true;
-            return this;
-        }// end function
+      private var _isInitialized:Boolean = false;
 
-        override public function reset() : void
-        {
-            super.reset();
-            this.objectInfo = new ObjectItemNotInContainer();
-            this._isInitialized = false;
-            return;
-        }// end function
+      override public function get isInitialized() : Boolean {
+         return (super.isInitialized)&&(this._isInitialized);
+      }
 
-        override public function pack(param1:IDataOutput) : void
-        {
-            var _loc_2:* = new ByteArray();
-            this.serialize(_loc_2);
-            writePacket(param1, this.getMessageId(), _loc_2);
-            return;
-        }// end function
+      public var objectInfo:ObjectItemNotInContainer;
 
-        override public function unpack(param1:IDataInput, param2:uint) : void
-        {
-            this.deserialize(param1);
-            return;
-        }// end function
+      override public function getMessageId() : uint {
+         return 5999;
+      }
 
-        override public function serialize(param1:IDataOutput) : void
-        {
-            this.serializeAs_ExchangeCraftResultWithObjectDescMessage(param1);
-            return;
-        }// end function
+      public function initExchangeCraftResultWithObjectDescMessage(craftResult:uint=0, objectInfo:ObjectItemNotInContainer=null) : ExchangeCraftResultWithObjectDescMessage {
+         super.initExchangeCraftResultMessage(craftResult);
+         this.objectInfo=objectInfo;
+         this._isInitialized=true;
+         return this;
+      }
 
-        public function serializeAs_ExchangeCraftResultWithObjectDescMessage(param1:IDataOutput) : void
-        {
-            super.serializeAs_ExchangeCraftResultMessage(param1);
-            this.objectInfo.serializeAs_ObjectItemNotInContainer(param1);
-            return;
-        }// end function
+      override public function reset() : void {
+         super.reset();
+         this.objectInfo=new ObjectItemNotInContainer();
+         this._isInitialized=false;
+      }
 
-        override public function deserialize(param1:IDataInput) : void
-        {
-            this.deserializeAs_ExchangeCraftResultWithObjectDescMessage(param1);
-            return;
-        }// end function
+      override public function pack(output:IDataOutput) : void {
+         var data:ByteArray = new ByteArray();
+         this.serialize(data);
+         writePacket(output,this.getMessageId(),data);
+      }
 
-        public function deserializeAs_ExchangeCraftResultWithObjectDescMessage(param1:IDataInput) : void
-        {
-            super.deserialize(param1);
-            this.objectInfo = new ObjectItemNotInContainer();
-            this.objectInfo.deserialize(param1);
-            return;
-        }// end function
+      override public function unpack(input:IDataInput, length:uint) : void {
+         this.deserialize(input);
+      }
 
-    }
+      override public function serialize(output:IDataOutput) : void {
+         this.serializeAs_ExchangeCraftResultWithObjectDescMessage(output);
+      }
+
+      public function serializeAs_ExchangeCraftResultWithObjectDescMessage(output:IDataOutput) : void {
+         super.serializeAs_ExchangeCraftResultMessage(output);
+         this.objectInfo.serializeAs_ObjectItemNotInContainer(output);
+      }
+
+      override public function deserialize(input:IDataInput) : void {
+         this.deserializeAs_ExchangeCraftResultWithObjectDescMessage(input);
+      }
+
+      public function deserializeAs_ExchangeCraftResultWithObjectDescMessage(input:IDataInput) : void {
+         super.deserialize(input);
+         this.objectInfo=new ObjectItemNotInContainer();
+         this.objectInfo.deserialize(input);
+      }
+   }
+
 }

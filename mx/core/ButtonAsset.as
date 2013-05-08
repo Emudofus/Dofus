@@ -1,43 +1,41 @@
-﻿package mx.core
+package mx.core
 {
-    import mx.core.*;
 
-    public class ButtonAsset extends FlexSimpleButton implements IFlexAsset, IFlexDisplayObject
-    {
-        private var _measuredHeight:Number;
-        private var _measuredWidth:Number;
-        static const VERSION:String = "4.6.0.23201";
+   use namespace mx_internal;
 
-        public function ButtonAsset()
-        {
-            this._measuredWidth = width;
-            this._measuredHeight = height;
-            return;
-        }// end function
+   public class ButtonAsset extends FlexSimpleButton implements IFlexAsset, IFlexDisplayObject
+   {
+         
 
-        public function get measuredHeight() : Number
-        {
-            return this._measuredHeight;
-        }// end function
+      public function ButtonAsset() {
+         super();
+         this._measuredWidth=width;
+         this._measuredHeight=height;
+      }
 
-        public function get measuredWidth() : Number
-        {
-            return this._measuredWidth;
-        }// end function
+      mx_internal  static const VERSION:String = "4.6.0.23201";
 
-        public function move(param1:Number, param2:Number) : void
-        {
-            this.x = param1;
-            this.y = param2;
-            return;
-        }// end function
+      private var _measuredHeight:Number;
 
-        public function setActualSize(param1:Number, param2:Number) : void
-        {
-            width = param1;
-            height = param2;
-            return;
-        }// end function
+      public function get measuredHeight() : Number {
+         return this._measuredHeight;
+      }
 
-    }
+      private var _measuredWidth:Number;
+
+      public function get measuredWidth() : Number {
+         return this._measuredWidth;
+      }
+
+      public function move(x:Number, y:Number) : void {
+         this.x=x;
+         this.y=y;
+      }
+
+      public function setActualSize(newWidth:Number, newHeight:Number) : void {
+         width=newWidth;
+         height=newHeight;
+      }
+   }
+
 }

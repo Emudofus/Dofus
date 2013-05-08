@@ -1,485 +1,440 @@
-Ôªøpackage com.ankamagames.tubul
+package com.ankamagames.tubul
 {
-    import __AS3__.vec.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.resources.adapters.*;
-    import com.ankamagames.jerakine.resources.events.*;
-    import com.ankamagames.jerakine.resources.loaders.*;
-    import com.ankamagames.jerakine.types.*;
-    import com.ankamagames.jerakine.types.events.*;
-    import com.ankamagames.tubul.events.*;
-    import com.ankamagames.tubul.interfaces.*;
-    import com.ankamagames.tubul.resources.adapters.*;
-    import com.ankamagames.tubul.types.*;
-    import com.ankamagames.tubul.types.bus.*;
-    import com.ankamagames.tubul.utils.error.*;
-    import flash.events.*;
-    import flash.geom.*;
-    import flash.utils.*;
+   import flash.events.EventDispatcher;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.resources.loaders.IResourceLoader;
+   import __AS3__.vec.Vector;
+   import com.ankamagames.tubul.interfaces.IAudioBus;
+   import flash.utils.Dictionary;
+   import flash.geom.Point;
+   import com.ankamagames.tubul.types.SoundMerger;
+   import com.ankamagames.tubul.types.TubulOptions;
+   import com.ankamagames.tubul.types.bus.LocalizedBus;
+   import com.ankamagames.tubul.interfaces.ISound;
+   import com.ankamagames.tubul.events.TubulEvent;
+   import com.ankamagames.jerakine.types.events.PropertyChangeEvent;
+   import com.ankamagames.tubul.utils.error.TubulError;
+   import com.ankamagames.tubul.events.AudioBusEvent;
+   import com.ankamagames.tubul.types.LoadedSoundInformations;
+   import com.ankamagames.jerakine.types.Uri;
+   import com.ankamagames.tubul.interfaces.ILocalizedSoundListener;
+   import com.ankamagames.jerakine.resources.events.ResourceLoadedEvent;
+   import com.ankamagames.jerakine.resources.events.ResourceErrorEvent;
+   import com.ankamagames.tubul.types.RollOffPreset;
+   import com.ankamagames.jerakine.resources.adapters.AdapterFactory;
+   import com.ankamagames.tubul.resources.adapters.MP3Adapter;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderFactory;
+   import com.ankamagames.jerakine.resources.loaders.ResourceLoaderType;
+   import flash.events.TimerEvent;
 
-    public class Tubul extends EventDispatcher
-    {
-        private var _resourceLoader:IResourceLoader;
-        private var _audioBusList:Vector.<IAudioBus>;
-        private var _busDictionary:Dictionary;
-        private var _XMLSoundFilesDictionary:Dictionary;
-        private var _rollOffPresets:Array;
-        private var _earPosition:Point;
-        private var _localizedSoundListeners:Array;
-        private var _soundMerger:SoundMerger;
-        private var _loadedSoundsInformations:Dictionary;
-        public var playedCharacterId:int;
-        private var _tuOptions:TubulOptions;
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(Tubul));
-        private static var _self:Tubul;
 
-        public function Tubul()
-        {
-            if (_self)
-            {
-                throw new TubulError("Warning : Tubul is a singleton class and shoulnd\'t be instancied directly!");
-            }
+   public class Tubul extends EventDispatcher
+   {
+         
+
+      public function Tubul() {
+         super();
+         if(_self)
+         {
+            throw new TubulError("Warning : Tubul is a singleton class and shoulnd\'t be instancied directly!");
+         }
+         else
+         {
             this.init();
             return;
-        }// end function
+         }
+      }
 
-        public function get options() : TubulOptions
-        {
-            return this._tuOptions;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(Tubul));
 
-        public function get totalPlayingSounds() : uint
-        {
-            var _loc_2:* = null;
-            var _loc_1:* = 0;
-            for each (_loc_2 in this._audioBusList)
+      private static var _self:Tubul;
+
+      public static function getInstance() : Tubul {
+         if(!_self)
+         {
+            _self=new Tubul();
+         }
+         return _self;
+      }
+
+      private var _resourceLoader:IResourceLoader;
+
+      private var _audioBusList:Vector.<IAudioBus>;
+
+      private var _busDictionary:Dictionary;
+
+      private var _XMLSoundFilesDictionary:Dictionary;
+
+      private var _rollOffPresets:Array;
+
+      private var _earPosition:Point;
+
+      private var _localizedSoundListeners:Array;
+
+      private var _soundMerger:SoundMerger;
+
+      private var _loadedSoundsInformations:Dictionary;
+
+      public var playedCharacterId:int;
+
+      private var _tuOptions:TubulOptions;
+
+      public function get options() : TubulOptions {
+         return this._tuOptions;
+      }
+
+      public function get totalPlayingSounds() : uint {
+         var bus:IAudioBus = null;
+         var sounds:uint = 0;
+         for each (bus in this._audioBusList)
+         {
+            sounds=sounds+bus.soundList.length;
+         }
+         return sounds;
+      }
+
+      public function get localizedSoundListeners() : Array {
+         return this._localizedSoundListeners;
+      }
+
+      public function get earPosition() : Point {
+         return this._earPosition;
+      }
+
+      public function set earPosition(pPosition:Point) : void {
+         var bus:IAudioBus = null;
+         this._earPosition=pPosition;
+         for each (bus in this._audioBusList)
+         {
+            if(bus is LocalizedBus)
             {
-                
-                _loc_1 = _loc_1 + _loc_2.soundList.length;
+               (bus as LocalizedBus).updateObserverPosition(pPosition);
             }
-            return _loc_1;
-        }// end function
+         }
+      }
 
-        public function get localizedSoundListeners() : Array
-        {
-            return this._localizedSoundListeners;
-        }// end function
+      public function get audioBusList() : Vector.<IAudioBus> {
+         return this._audioBusList;
+      }
 
-        public function get earPosition() : Point
-        {
-            return this._earPosition;
-        }// end function
+      public function get isActive() : Boolean {
+         return true;
+      }
 
-        public function set earPosition(param1:Point) : void
-        {
-            var _loc_2:* = null;
-            this._earPosition = param1;
-            for each (_loc_2 in this._audioBusList)
+      public function get soundMerger() : SoundMerger {
+         return this._soundMerger;
+      }
+
+      public function getSoundById(pSoundID:int) : ISound {
+         var bus:IAudioBus = null;
+         var sound:ISound = null;
+         for each (bus in this.audioBusList)
+         {
+            for each (sound in bus.soundList)
             {
-                
-                if (_loc_2 is LocalizedBus)
-                {
-                    (_loc_2 as LocalizedBus).updateObserverPosition(param1);
-                }
+               if(sound.id==pSoundID)
+               {
+                  return sound;
+               }
+            }
+         }
+         return null;
+      }
+
+      public function activate(bValue:Boolean=true) : void {
+         if(this.isActive)
+         {
+            _log.info("Tubul is now ACTIVATED");
+         }
+         else
+         {
+            _log.info("Tubul is now DESACTIVATED");
+            this.resetTubul();
+         }
+         var tea:TubulEvent = new TubulEvent(TubulEvent.ACTIVATION);
+         tea.activated=this.isActive;
+         dispatchEvent(tea);
+      }
+
+      public function setDisplayOptions(topt:TubulOptions) : void {
+         var propertyKey:String = null;
+         var e:PropertyChangeEvent = null;
+         this._tuOptions=topt;
+         this._tuOptions.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED,this.onPropertyChanged);
+         for (propertyKey in this._tuOptions)
+         {
+            e=new PropertyChangeEvent(this._tuOptions,propertyKey,this._tuOptions[propertyKey],this._tuOptions[propertyKey]);
+         }
+      }
+
+      public function addBus(pBus:IAudioBus) : void {
+         var busID:int = pBus.id;
+         if(this._busDictionary[busID]!=null)
+         {
+            return;
+         }
+         if(this._audioBusList.length>BusConstants.MAXIMUM_NUMBER_OF_BUS)
+         {
+            throw new TubulError("The maximum number of audio Bus have been reached !");
+         }
+         else
+         {
+            this._audioBusList.push(pBus);
+            this._busDictionary[busID]=pBus;
+            pBus.eventDispatcher.addEventListener(AudioBusEvent.REMOVE_SOUND_IN_BUS,this.onRemoveSoundInBus);
+            return;
+         }
+      }
+
+      public function clearCache() : void {
+         var bus:IAudioBus = null;
+         for each (bus in this._busDictionary)
+         {
+            bus.clearCache();
+         }
+      }
+
+      public function getBus(pBusID:uint) : IAudioBus {
+         if(this.contains(pBusID))
+         {
+            return this._busDictionary[pBusID];
+         }
+         _log.warn("The audio BUS "+pBusID+" doesn\'t exists");
+         return null;
+      }
+
+      public function removeBus(pBusID:uint) : void {
+         var bus:IAudioBus = null;
+         var size:* = 0;
+         var i:* = 0;
+         if(!this.isActive)
+         {
+            return;
+         }
+         if(this.contains(pBusID))
+         {
+            bus=this._busDictionary[pBusID];
+            bus.eventDispatcher.addEventListener(AudioBusEvent.REMOVE_SOUND_IN_BUS,this.onRemoveSoundInBus);
+            delete this._busDictionary[[pBusID]];
+            size=this._audioBusList.length;
+            i=0;
+            while(i<size)
+            {
+               if(this._audioBusList[i]==bus)
+               {
+                  this._audioBusList[i]=null;
+                  this._audioBusList.splice(i,1);
+                  break;
+               }
+               i++;
             }
             return;
-        }// end function
+         }
+         throw new TubulError("The audio BUS "+pBusID+" doesn\'t exist !");
+      }
 
-        public function get audioBusList() : Vector.<IAudioBus>
-        {
-            return this._audioBusList;
-        }// end function
+      public function clearBuses() : void {
+         var key:IAudioBus = null;
+         if(!this.isActive)
+         {
+            return;
+         }
+         for each (key in this._busDictionary)
+         {
+            this.removeBus(key.id);
+         }
+      }
 
-        public function get isActive() : Boolean
-        {
+      public function contains(pBusID:uint) : Boolean {
+         if(this._busDictionary[pBusID]!=null)
+         {
             return true;
-        }// end function
+         }
+         return false;
+      }
 
-        public function get soundMerger() : SoundMerger
-        {
-            return this._soundMerger;
-        }// end function
+      public function getLoadedSoundInformations(pSoundUri:Uri) : LoadedSoundInformations {
+         if(this._loadedSoundsInformations[pSoundUri])
+         {
+            trace("Existe dÈj‡");
+         }
+         return null;
+      }
 
-        public function getSoundById(param1:int) : ISound
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            for each (_loc_2 in this.audioBusList)
-            {
-                
-                for each (_loc_3 in _loc_2.soundList)
-                {
-                    
-                    if (_loc_3.id == param1)
-                    {
-                        return _loc_3;
-                    }
-                }
-            }
-            return null;
-        }// end function
+      public function setLoadedSoundInformations(pSoundUri:Uri, pInfo:LoadedSoundInformations) : void {
+         if(this._loadedSoundsInformations[pSoundUri])
+         {
+            trace("Existe dÈj‡");
+         }
+         else
+         {
+            this._loadedSoundsInformations[pSoundUri]=pInfo;
+         }
+      }
 
-        public function activate(param1:Boolean = true) : void
-        {
-            if (this.isActive)
-            {
-                _log.info("Tubul is now ACTIVATED");
-            }
-            else
-            {
-                _log.info("Tubul is now DESACTIVATED");
-                this.resetTubul();
-            }
-            var _loc_2:* = new TubulEvent(TubulEvent.ACTIVATION);
-            _loc_2.activated = this.isActive;
-            dispatchEvent(_loc_2);
+      public function addListener(pListener:ILocalizedSoundListener) : void {
+         if(!this.isActive)
+         {
             return;
-        }// end function
-
-        public function setDisplayOptions(param1:TubulOptions) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = null;
-            this._tuOptions = param1;
-            this._tuOptions.addEventListener(PropertyChangeEvent.PROPERTY_CHANGED, this.onPropertyChanged);
-            for (_loc_2 in this._tuOptions)
-            {
-                
-                _loc_3 = new PropertyChangeEvent(this._tuOptions, _loc_2, this._tuOptions[_loc_2], this._tuOptions[_loc_2]);
-            }
+         }
+         if(this._localizedSoundListeners==null)
+         {
+            this._localizedSoundListeners=new Array();
+         }
+         if(!this._localizedSoundListeners.indexOf(pListener))
+         {
             return;
-        }// end function
+         }
+         this._localizedSoundListeners.push(pListener);
+      }
 
-        public function addBus(param1:IAudioBus) : void
-        {
-            var _loc_2:* = param1.id;
-            if (this._busDictionary[_loc_2] != null)
-            {
-                return;
-            }
-            if (this._audioBusList.length > BusConstants.MAXIMUM_NUMBER_OF_BUS)
-            {
-                throw new TubulError("The maximum number of audio Bus have been reached !");
-            }
-            this._audioBusList.push(param1);
-            this._busDictionary[_loc_2] = param1;
-            param1.eventDispatcher.addEventListener(AudioBusEvent.REMOVE_SOUND_IN_BUS, this.onRemoveSoundInBus);
+      public function removeListener(pListener:ILocalizedSoundListener) : void {
+         if(this._localizedSoundListeners==null)
+         {
+            this._localizedSoundListeners=new Array();
+         }
+         var index:int = this._localizedSoundListeners.indexOf(pListener);
+         if(index<0)
+         {
             return;
-        }// end function
+         }
+         this._localizedSoundListeners[index]=null;
+         this._localizedSoundListeners.splice(index,1);
+      }
 
-        public function clearCache() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._busDictionary)
+      public function dumpPlayingSounds() : void {
+         var bus:IAudioBus = null;
+         var sound:ISound = null;
+         _log.debug("--------------- dumpPlayingSounds --------------------");
+         for each (bus in this._audioBusList)
+         {
+            _log.debug(bus.name);
+            for each (sound in bus.soundList)
             {
-                
-                _loc_1.clearCache();
+               _log.debug("-> "+sound.uri);
             }
-            return;
-        }// end function
+         }
+         _log.debug("--------------- end --------------------");
+      }
 
-        public function getBus(param1:uint) : IAudioBus
-        {
-            if (this.contains(param1))
-            {
-                return this._busDictionary[param1];
-            }
-            _log.warn("The audio BUS " + param1 + " doesn\'t exists");
-            return null;
-        }// end function
+      private function resetTubul() : void {
+         var bus:IAudioBus = null;
+         for each (bus in this._audioBusList)
+         {
+            bus.clear();
+         }
+         this._resourceLoader.removeEventListener(ResourceLoadedEvent.LOADED,this.onXMLSoundsLoaded);
+         this._resourceLoader.removeEventListener(ResourceErrorEvent.ERROR,this.onXMLSoundsFailed);
+      }
 
-        public function removeBus(param1:uint) : void
-        {
-            var _loc_2:* = null;
-            var _loc_3:* = 0;
-            var _loc_4:* = 0;
-            if (!this.isActive)
-            {
-                return;
-            }
-            if (this.contains(param1))
-            {
-                _loc_2 = this._busDictionary[param1];
-                _loc_2.eventDispatcher.addEventListener(AudioBusEvent.REMOVE_SOUND_IN_BUS, this.onRemoveSoundInBus);
-                delete this._busDictionary[param1];
-                _loc_3 = this._audioBusList.length;
-                _loc_4 = 0;
-                while (_loc_4 < _loc_3)
-                {
-                    
-                    if (this._audioBusList[_loc_4] == _loc_2)
-                    {
-                        this._audioBusList[_loc_4] = null;
-                        this._audioBusList.splice(_loc_4, 1);
-                        break;
-                    }
-                    _loc_4++;
-                }
-            }
-            else
-            {
-                throw new TubulError("The audio BUS " + param1 + " doesn\'t exist !");
-            }
-            return;
-        }// end function
+      private function retriveRollOffPresets(pXMLPreset:XML) : void {
+         var preset:XML = null;
+         var rollOffPreset:RollOffPreset = null;
+         var presets:XMLList = pXMLPreset.elements();
+         if(this._rollOffPresets==null)
+         {
+            this._rollOffPresets=new Array();
+         }
+         for each (preset in presets)
+         {
+            rollOffPreset=new RollOffPreset(uint(preset.GainMax),uint(preset.DistMax),uint(preset.DistMaxSat));
+            this._rollOffPresets[preset.@id]=rollOffPreset;
+         }
+      }
 
-        public function clearBuses() : void
-        {
-            var _loc_1:* = null;
-            if (!this.isActive)
-            {
-                return;
-            }
-            for each (_loc_1 in this._busDictionary)
-            {
-                
-                this.removeBus(_loc_1.id);
-            }
-            return;
-        }// end function
+      public function init() : void {
+         this._audioBusList=new Vector.<IAudioBus>();
+         this._busDictionary=new Dictionary(true);
+         this._XMLSoundFilesDictionary=new Dictionary();
+         this._earPosition=new Point();
+         this._loadedSoundsInformations=new Dictionary();
+         AdapterFactory.addAdapter("mp3",MP3Adapter);
+         this._resourceLoader=ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
+         this._resourceLoader.addEventListener(ResourceLoadedEvent.LOADED,this.onXMLSoundsLoaded);
+         this._resourceLoader.addEventListener(ResourceErrorEvent.ERROR,this.onXMLSoundsFailed);
+         this._soundMerger=new SoundMerger();
+      }
 
-        public function contains(param1:uint) : Boolean
-        {
-            if (this._busDictionary[param1] != null)
-            {
-                return true;
-            }
-            return false;
-        }// end function
+      private function setVolumeToBus(pBusId:int, pVolume:uint) : void {
+         var audioBus:IAudioBus = Tubul.getInstance().getBus(pBusId);
+         if(audioBus!=null)
+         {
+            audioBus.volume=pVolume/100;
+         }
+      }
 
-        public function getLoadedSoundInformations(param1:Uri) : LoadedSoundInformations
-        {
-            if (this._loadedSoundsInformations[param1])
-            {
-                trace("Existe d√©j√†");
-            }
-            return null;
-        }// end function
+      private function onTimerEnd(pEvent:TimerEvent) : void {
+         this._resourceLoader.load([XMLSounds.BREED_BONES_BARKS,XMLSounds.ROLLOFF_PRESET]);
+      }
 
-        public function setLoadedSoundInformations(param1:Uri, param2:LoadedSoundInformations) : void
-        {
-            if (this._loadedSoundsInformations[param1])
+      private function onXMLSoundsLoaded(pEvent:ResourceLoadedEvent) : void {
+         var fileName:String = pEvent.uri.fileName.split(".")[0];
+         if(fileName==XMLSounds.ROLLOFF_FILENAME)
+         {
+            this.retriveRollOffPresets(pEvent.resource);
+         }
+         else
+         {
+            if(!this._XMLSoundFilesDictionary[fileName])
             {
-                trace("Existe d√©j√†");
+               this._XMLSoundFilesDictionary[fileName]=pEvent.resource;
             }
-            else
-            {
-                this._loadedSoundsInformations[param1] = param2;
-            }
-            return;
-        }// end function
+         }
+      }
 
-        public function addListener(param1:ILocalizedSoundListener) : void
-        {
-            if (!this.isActive)
-            {
-                return;
-            }
-            if (this._localizedSoundListeners == null)
-            {
-                this._localizedSoundListeners = new Array();
-            }
-            if (!this._localizedSoundListeners.indexOf(param1))
-            {
-                return;
-            }
-            this._localizedSoundListeners.push(param1);
-            return;
-        }// end function
+      private function onXMLSoundsFailed(pEvent:ResourceErrorEvent) : void {
+         this.activate(false);
+         _log.error("An XML sound file failed to load : "+pEvent.uri+" / ["+pEvent.errorCode+"] "+pEvent.errorMsg);
+      }
 
-        public function removeListener(param1:ILocalizedSoundListener) : void
-        {
-            if (this._localizedSoundListeners == null)
-            {
-                this._localizedSoundListeners = new Array();
-            }
-            var _loc_2:* = this._localizedSoundListeners.indexOf(param1);
-            if (_loc_2 < 0)
-            {
-                return;
-            }
-            this._localizedSoundListeners[_loc_2] = null;
-            this._localizedSoundListeners.splice(_loc_2, 1);
-            return;
-        }// end function
+      private function onRemoveSoundInBus(pEvent:AudioBusEvent) : void {
+         dispatchEvent(pEvent);
+      }
 
-        public function dumpPlayingSounds() : void
-        {
-            var _loc_1:* = null;
-            var _loc_2:* = null;
-            _log.debug("--------------- dumpPlayingSounds --------------------");
-            for each (_loc_1 in this._audioBusList)
-            {
-                
-                _log.debug(_loc_1.name);
-                for each (_loc_2 in _loc_1.soundList)
-                {
-                    
-                    _log.debug("-> " + _loc_2.uri);
-                }
-            }
-            _log.debug("--------------- end --------------------");
-            return;
-        }// end function
+      private function onPropertyChanged(e:PropertyChangeEvent) : void {
+         switch(e.propertyName)
+         {
+            case "muteMusic":
+               this.setVolumeToBus(0,e.propertyValue?0:this._tuOptions.volumeMusic);
+               break;
+            case "muteSound":
+               this.setVolumeToBus(4,e.propertyValue?0:this._tuOptions.volumeSound);
+               break;
+            case "muteAmbientSound":
+               this.setVolumeToBus(1,e.propertyValue?0:this._tuOptions.volumeAmbientSound);
+               this.setVolumeToBus(2,e.propertyValue?0:this._tuOptions.volumeAmbientSound);
+               this.setVolumeToBus(3,e.propertyValue?0:this._tuOptions.volumeAmbientSound);
+               this.setVolumeToBus(5,e.propertyValue?0:this._tuOptions.volumeAmbientSound);
+               this.setVolumeToBus(6,e.propertyValue?0:this._tuOptions.volumeAmbientSound);
+               this.setVolumeToBus(7,e.propertyValue?0:this._tuOptions.volumeAmbientSound);
+               break;
+            case "volumeMusic":
+               if(this._tuOptions.muteMusic==false)
+               {
+                  this.setVolumeToBus(0,e.propertyValue);
+               }
+               break;
+            case "volumeSound":
+               if(this._tuOptions.muteSound==false)
+               {
+                  this.setVolumeToBus(4,e.propertyValue);
+               }
+               break;
+            case "volumeAmbientSound":
+               if(this._tuOptions.muteAmbientSound==false)
+               {
+                  this.setVolumeToBus(1,e.propertyValue);
+                  this.setVolumeToBus(2,e.propertyValue);
+                  this.setVolumeToBus(3,e.propertyValue);
+                  this.setVolumeToBus(5,e.propertyValue);
+                  this.setVolumeToBus(6,e.propertyValue);
+                  this.setVolumeToBus(7,e.propertyValue);
+               }
+               break;
+         }
+      }
+   }
 
-        private function resetTubul() : void
-        {
-            var _loc_1:* = null;
-            for each (_loc_1 in this._audioBusList)
-            {
-                
-                _loc_1.clear();
-            }
-            this._resourceLoader.removeEventListener(ResourceLoadedEvent.LOADED, this.onXMLSoundsLoaded);
-            this._resourceLoader.removeEventListener(ResourceErrorEvent.ERROR, this.onXMLSoundsFailed);
-            return;
-        }// end function
-
-        private function retriveRollOffPresets(param1:XML) : void
-        {
-            var _loc_3:* = null;
-            var _loc_4:* = null;
-            var _loc_2:* = param1.elements();
-            if (this._rollOffPresets == null)
-            {
-                this._rollOffPresets = new Array();
-            }
-            for each (_loc_3 in _loc_2)
-            {
-                
-                _loc_4 = new RollOffPreset(uint(_loc_3.GainMax), uint(_loc_3.DistMax), uint(_loc_3.DistMaxSat));
-                this._rollOffPresets[_loc_3.@id] = _loc_4;
-            }
-            return;
-        }// end function
-
-        public function init() : void
-        {
-            this._audioBusList = new Vector.<IAudioBus>;
-            this._busDictionary = new Dictionary(true);
-            this._XMLSoundFilesDictionary = new Dictionary();
-            this._earPosition = new Point();
-            this._loadedSoundsInformations = new Dictionary();
-            AdapterFactory.addAdapter("mp3", MP3Adapter);
-            this._resourceLoader = ResourceLoaderFactory.getLoader(ResourceLoaderType.SERIAL_LOADER);
-            this._resourceLoader.addEventListener(ResourceLoadedEvent.LOADED, this.onXMLSoundsLoaded);
-            this._resourceLoader.addEventListener(ResourceErrorEvent.ERROR, this.onXMLSoundsFailed);
-            this._soundMerger = new SoundMerger();
-            return;
-        }// end function
-
-        private function setVolumeToBus(param1:int, param2:uint) : void
-        {
-            var _loc_3:* = Tubul.getInstance().getBus(param1);
-            if (_loc_3 != null)
-            {
-                _loc_3.volume = param2 / 100;
-            }
-            return;
-        }// end function
-
-        private function onTimerEnd(event:TimerEvent) : void
-        {
-            this._resourceLoader.load([XMLSounds.BREED_BONES_BARKS, XMLSounds.ROLLOFF_PRESET]);
-            return;
-        }// end function
-
-        private function onXMLSoundsLoaded(event:ResourceLoadedEvent) : void
-        {
-            var _loc_2:* = event.uri.fileName.split(".")[0];
-            if (_loc_2 == XMLSounds.ROLLOFF_FILENAME)
-            {
-                this.retriveRollOffPresets(event.resource);
-            }
-            else if (!this._XMLSoundFilesDictionary[_loc_2])
-            {
-                this._XMLSoundFilesDictionary[_loc_2] = event.resource;
-            }
-            return;
-        }// end function
-
-        private function onXMLSoundsFailed(event:ResourceErrorEvent) : void
-        {
-            this.activate(false);
-            _log.error("An XML sound file failed to load : " + event.uri + " / [" + event.errorCode + "] " + event.errorMsg);
-            return;
-        }// end function
-
-        private function onRemoveSoundInBus(event:AudioBusEvent) : void
-        {
-            dispatchEvent(event);
-            return;
-        }// end function
-
-        private function onPropertyChanged(event:PropertyChangeEvent) : void
-        {
-            switch(event.propertyName)
-            {
-                case "muteMusic":
-                {
-                    this.setVolumeToBus(0, event.propertyValue ? (0) : (this._tuOptions.volumeMusic));
-                    break;
-                }
-                case "muteSound":
-                {
-                    this.setVolumeToBus(4, event.propertyValue ? (0) : (this._tuOptions.volumeSound));
-                    break;
-                }
-                case "muteAmbientSound":
-                {
-                    this.setVolumeToBus(1, event.propertyValue ? (0) : (this._tuOptions.volumeAmbientSound));
-                    this.setVolumeToBus(2, event.propertyValue ? (0) : (this._tuOptions.volumeAmbientSound));
-                    this.setVolumeToBus(3, event.propertyValue ? (0) : (this._tuOptions.volumeAmbientSound));
-                    this.setVolumeToBus(5, event.propertyValue ? (0) : (this._tuOptions.volumeAmbientSound));
-                    this.setVolumeToBus(6, event.propertyValue ? (0) : (this._tuOptions.volumeAmbientSound));
-                    this.setVolumeToBus(7, event.propertyValue ? (0) : (this._tuOptions.volumeAmbientSound));
-                    break;
-                }
-                case "volumeMusic":
-                {
-                    if (this._tuOptions.muteMusic == false)
-                    {
-                        this.setVolumeToBus(0, event.propertyValue);
-                    }
-                    break;
-                }
-                case "volumeSound":
-                {
-                    if (this._tuOptions.muteSound == false)
-                    {
-                        this.setVolumeToBus(4, event.propertyValue);
-                    }
-                    break;
-                }
-                case "volumeAmbientSound":
-                {
-                    if (this._tuOptions.muteAmbientSound == false)
-                    {
-                        this.setVolumeToBus(1, event.propertyValue);
-                        this.setVolumeToBus(2, event.propertyValue);
-                        this.setVolumeToBus(3, event.propertyValue);
-                        this.setVolumeToBus(5, event.propertyValue);
-                        this.setVolumeToBus(6, event.propertyValue);
-                        this.setVolumeToBus(7, event.propertyValue);
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return;
-        }// end function
-
-        public static function getInstance() : Tubul
-        {
-            if (!_self)
-            {
-                _self = new Tubul;
-            }
-            return _self;
-        }// end function
-
-    }
 }

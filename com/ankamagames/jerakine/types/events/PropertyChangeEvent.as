@@ -1,44 +1,45 @@
-﻿package com.ankamagames.jerakine.types.events
+package com.ankamagames.jerakine.types.events
 {
-    import flash.events.*;
+   import flash.events.Event;
 
-    public class PropertyChangeEvent extends Event
-    {
-        private var _watchedClassInstance:Object;
-        private var _propertyName:String;
-        private var _propertyValue:Object;
-        private var _propertyOldValue:Object;
-        public static var PROPERTY_CHANGED:String = "watchPropertyChanged";
 
-        public function PropertyChangeEvent(param1, param2:String, param3, param4)
-        {
-            super(PROPERTY_CHANGED, false, false);
-            this._watchedClassInstance = param1;
-            this._propertyName = param2;
-            this._propertyValue = param3;
-            this._propertyOldValue = param4;
-            return;
-        }// end function
+   public class PropertyChangeEvent extends Event
+   {
+         
 
-        public function get watchedClassInstance()
-        {
-            return this._watchedClassInstance;
-        }// end function
+      public function PropertyChangeEvent(watchedClassInstance:*, propertyName:String, propertyValue:*, propertyOldValue:*) {
+         super(PROPERTY_CHANGED,false,false);
+         this._watchedClassInstance=watchedClassInstance;
+         this._propertyName=propertyName;
+         this._propertyValue=propertyValue;
+         this._propertyOldValue=propertyOldValue;
+      }
 
-        public function get propertyName() : String
-        {
-            return this._propertyName;
-        }// end function
+      public static var PROPERTY_CHANGED:String = "watchPropertyChanged";
 
-        public function get propertyValue()
-        {
-            return this._propertyValue;
-        }// end function
+      private var _watchedClassInstance;
 
-        public function get propertyOldValue()
-        {
-            return this._propertyOldValue;
-        }// end function
+      private var _propertyName:String;
 
-    }
+      private var _propertyValue;
+
+      private var _propertyOldValue;
+
+      public function get watchedClassInstance() : * {
+         return this._watchedClassInstance;
+      }
+
+      public function get propertyName() : String {
+         return this._propertyName;
+      }
+
+      public function get propertyValue() : * {
+         return this._propertyValue;
+      }
+
+      public function get propertyOldValue() : * {
+         return this._propertyOldValue;
+      }
+   }
+
 }

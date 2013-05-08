@@ -1,70 +1,64 @@
-﻿package com.ankamagames.dofus.logic.game.roleplay.frames
+package com.ankamagames.dofus.logic.game.roleplay.frames
 {
-    import com.ankamagames.berilia.managers.*;
-    import com.ankamagames.dofus.kernel.*;
-    import com.ankamagames.dofus.kernel.net.*;
-    import com.ankamagames.dofus.logic.common.actions.*;
-    import com.ankamagames.dofus.logic.game.roleplay.actions.*;
-    import com.ankamagames.dofus.misc.lists.*;
-    import com.ankamagames.dofus.network.enums.*;
-    import com.ankamagames.dofus.network.messages.game.dialog.*;
-    import com.ankamagames.jerakine.logger.*;
-    import com.ankamagames.jerakine.messages.*;
-    import com.ankamagames.jerakine.types.enums.*;
-    import flash.utils.*;
+   import com.ankamagames.jerakine.messages.Frame;
+   import com.ankamagames.jerakine.logger.Logger;
+   import com.ankamagames.jerakine.logger.Log;
+   import flash.utils.getQualifiedClassName;
+   import com.ankamagames.jerakine.types.enums.Priority;
+   import com.ankamagames.jerakine.messages.Message;
+   import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogMessage;
+   import com.ankamagames.dofus.kernel.net.ConnectionsHandler;
+   import com.ankamagames.dofus.network.messages.game.dialog.LeaveDialogRequestMessage;
+   import com.ankamagames.dofus.network.enums.DialogTypeEnum;
+   import com.ankamagames.dofus.kernel.Kernel;
+   import com.ankamagames.dofus.logic.common.actions.ChangeWorldInteractionAction;
+   import com.ankamagames.dofus.logic.game.roleplay.actions.LeaveDialogRequestAction;
+   import com.ankamagames.berilia.managers.KernelEventsManager;
+   import com.ankamagames.dofus.misc.lists.HookList;
 
-    public class DocumentFrame extends Object implements Frame
-    {
-        static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
 
-        public function DocumentFrame()
-        {
-            return;
-        }// end function
+   public class DocumentFrame extends Object implements Frame
+   {
+         
 
-        public function get priority() : int
-        {
-            return Priority.NORMAL;
-        }// end function
+      public function DocumentFrame() {
+         super();
+      }
 
-        public function pushed() : Boolean
-        {
-            return true;
-        }// end function
+      protected static const _log:Logger = Log.getLogger(getQualifiedClassName(NpcDialogFrame));
 
-        public function process(param1:Message) : Boolean
-        {
-            var _loc_2:* = null;
-            switch(true)
-            {
-                case param1 is LeaveDialogRequestAction:
-                {
-                    ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
-                    return true;
-                }
-                case param1 is LeaveDialogMessage:
-                {
-                    _loc_2 = param1 as LeaveDialogMessage;
-                    if (_loc_2.dialogType == DialogTypeEnum.DIALOG_BOOK)
-                    {
-                        Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
-                        Kernel.getWorker().removeFrame(this);
-                    }
-                    return true;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-            return false;
-        }// end function
+      public function get priority() : int {
+         return Priority.NORMAL;
+      }
 
-        public function pulled() : Boolean
-        {
-            KernelEventsManager.getInstance().processCallback(HookList.LeaveDialog);
-            return true;
-        }// end function
+      public function pushed() : Boolean {
+         return true;
+      }
 
-    }
+      public function process(msg:Message) : Boolean {
+         var ldm:LeaveDialogMessage = null;
+         switch(true)
+         {
+            case msg is LeaveDialogRequestAction:
+               ConnectionsHandler.getConnection().send(new LeaveDialogRequestMessage());
+               return true;
+            case msg is LeaveDialogMessage:
+               ldm=msg as LeaveDialogMessage;
+               if(ldm.dialogType==DialogTypeEnum.DIALOG_BOOK)
+               {
+                  Kernel.getWorker().process(ChangeWorldInteractionAction.create(true));
+                  Kernel.getWorker().removeFrame(this);
+               }
+               return true;
+            default:
+               return false;
+         }
+      }
+
+      public function pulled() : Boolean {
+         KernelEventsManager.getInstance().processCallback(HookList.LeaveDialog);
+         return true;
+      }
+   }
+
 }

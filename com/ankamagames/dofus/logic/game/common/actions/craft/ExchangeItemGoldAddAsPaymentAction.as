@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions.craft
+package com.ankamagames.dofus.logic.game.common.actions.craft
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class ExchangeItemGoldAddAsPaymentAction extends Object implements Action
-    {
-        public var onlySuccess:Boolean;
-        public var kamas:uint;
 
-        public function ExchangeItemGoldAddAsPaymentAction()
-        {
-            return;
-        }// end function
+   public class ExchangeItemGoldAddAsPaymentAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:Boolean, param2:uint) : ExchangeItemGoldAddAsPaymentAction
-        {
-            var _loc_3:* = new ExchangeItemGoldAddAsPaymentAction;
-            _loc_3.onlySuccess = param1;
-            _loc_3.kamas = param2;
-            return _loc_3;
-        }// end function
+      public function ExchangeItemGoldAddAsPaymentAction() {
+         super();
+      }
 
-    }
+      public static function create(pOnlySuccess:Boolean, pKamas:uint) : ExchangeItemGoldAddAsPaymentAction {
+         var action:ExchangeItemGoldAddAsPaymentAction = new ExchangeItemGoldAddAsPaymentAction();
+         action.onlySuccess=pOnlySuccess;
+         action.kamas=pKamas;
+         return action;
+      }
+
+      public var onlySuccess:Boolean;
+
+      public var kamas:uint;
+   }
+
 }

@@ -1,24 +1,26 @@
-﻿package com.ankamagames.dofus.logic.game.common.actions
+package com.ankamagames.dofus.logic.game.common.actions
 {
-    import com.ankamagames.jerakine.handlers.messages.*;
+   import com.ankamagames.jerakine.handlers.messages.Action;
 
-    public class StartZoomAction extends Object implements Action
-    {
-        public var playerId:uint;
-        public var value:Number;
 
-        public function StartZoomAction()
-        {
-            return;
-        }// end function
+   public class StartZoomAction extends Object implements Action
+   {
+         
 
-        public static function create(param1:uint, param2:Number) : StartZoomAction
-        {
-            var _loc_3:* = new StartZoomAction;
-            _loc_3.playerId = param1;
-            _loc_3.value = param2;
-            return _loc_3;
-        }// end function
+      public function StartZoomAction() {
+         super();
+      }
 
-    }
+      public static function create(playerId:uint, value:Number) : StartZoomAction {
+         var action:StartZoomAction = new StartZoomAction();
+         action.playerId=playerId;
+         action.value=value;
+         return action;
+      }
+
+      public var playerId:uint;
+
+      public var value:Number;
+   }
+
 }
